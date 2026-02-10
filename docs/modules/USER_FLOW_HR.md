@@ -2,7 +2,8 @@
 
 **Purpose:** Clear, actionable user experience guide for HR module  
 **Audience:** Designers, Developers, Product Managers  
-**Version:** 1.0 | February 2026
+**Version:** 2.0 | February 2026  
+**Alignment:** Based on MODULE_HR_COMPLETE.md (50 forms across 8 sub-systems)
 
 ---
 
@@ -19,7 +20,132 @@
 
 ## 2. Core User Flows
 
-### Flow 1: Leave Request (Employee)
+**Structure Overview:** This documentation covers 22 primary user flows aligned with the 8 HR sub-systems documented in MODULE_HR_COMPLETE.md. Each flow represents a complete user journey from initiation to completion, with detailed UX considerations and screen designs.
+
+### Sub-System Mapping:
+- **Sub-System 1: Recruitment & Hiring** (Flows 1-5)
+- **Sub-System 2: Onboarding & Probation** (Flows 7-8)
+- **Sub-System 3: Employee Profiles & Records** (Flow 9)
+- **Sub-System 4: Attendance, Leave & Time Management** (Flows 6, 16-17, 21-22)
+- **Sub-System 5: Performance, OKRs & Career Development** (Flows 10-11, 18-20)
+- **Sub-System 6: Training & Skill Development** (Flow 12)
+- **Sub-System 7: Employee Relations** (Flows 13-14)
+- **Sub-System 8: Exit, Offboarding & Compliance** (Flow 15)
+
+---
+
+### Flow 1: Recruitment Request (Team Lead)
+
+```
+Team Dashboard → Click "Request Hiring" → Fill Position Details → Set Budget 
+→ Submit for Approval → Finance Review → CEO Approval → HR Processing
+```
+
+**Key Screens:**
+1. **Request Initiation** - Team, Job Name, Supervisor, Type (New/Replacement)
+2. **Rationale** - Hiring Motivation, Role Overview, Organizational Impact
+3. **Staffing & Financials** - Current vs. Needed Staff, Salary Bracket, Perks
+4. **Schedule** - Target Join Date, Priority Level
+5. **Approval Chain** - Finance → Executive Director → HR with status tracking
+
+**UX Principles:**
+- Budget availability check in real-time
+- Auto-populate from similar positions
+- Show approval timeline
+- Link to organizational chart
+
+---
+
+### Flow 2: Job Posting Creation (HR)
+
+```
+Recruitment Dashboard → Select Approved Request → Create Job Post 
+→ Fill Description → Set Requirements → Choose Distribution → Publish
+```
+
+**Key Screens:**
+1. **Request Import** - Auto-populate from approved recruitment request
+2. **Position Details** - Title, Department, Work Type, Work Mode
+3. **Description Builder** - Rich text editor with templates
+4. **Requirements** - Education, Experience, Skills (tag-based)
+5. **Distribution** - Career site, LinkedIn, Telegram, Internal boards
+6. **Preview & Publish** - Live preview with analytics tracking
+
+**UX Principles:**
+- Template library for common roles
+- SEO optimization suggestions
+- Multi-platform preview
+- Auto-save drafts every 30 seconds
+
+---
+
+### Flow 3: Job Application (Candidate)
+
+```
+Job Ad → Click "Apply Now" → Fill Application Form → Upload Resume 
+→ Answer Role Questions → Submit → Confirmation & Tracking
+```
+
+**Key Screens:**
+1. **Job Preview** - Position details with "Apply Now" CTA
+2. **Application Form** - Personal info, career data, role-specific questions
+3. **Document Upload** - Resume, portfolio, certificates (drag-drop)
+4. **Role Questions** - Experience, BLIH knowledge, salary expectations
+5. **Confirmation** - Application ID, next steps, timeline
+
+**UX Principles:**
+- Progressive disclosure (sections expand as user completes)
+- Auto-save to prevent data loss
+- Mobile-optimized form
+- Real-time validation
+
+---
+
+### Flow 4: CV Screening & Interview Scheduling (HR + Hiring Manager)
+
+```
+Applications Inbox → Review CVs → Score Candidates → Select for Interview 
+→ Schedule Interviews → Send Invites → Collect Feedback
+```
+
+**Key Screens:**
+1. **Applications Dashboard** - Filter by role, status, ratings
+2. **CV Viewer** - Side-by-side: Original PDF | Parsed data | Score breakdown
+3. **Scoring Panel** - 5 criteria: Qualifications, Background, Technical, Fit, Expression
+4. **Interview Scheduler** - Calendar integration, room booking, automated invites
+5. **Feedback Collection** - Standardized rating form with comments
+
+**UX Principles:**
+- AI-powered CV parsing and scoring
+- Bulk actions for multiple candidates
+- Calendar conflict detection
+- Anonymous review option
+
+---
+
+### Flow 5: Hiring Decision & Offer (HR + Leadership)
+
+```
+Interview Complete → Review Feedback → Compare Candidates 
+→ Select Finalist → Prepare Offer → Finance Approval → CEO Approval → Send Offer
+```
+
+**Key Screens:**
+1. **Candidate Comparison** - Side-by-side comparison of top 3 candidates
+2. **Offer Builder** - Salary, benefits, start date, terms
+3. **Budget Check** - Real-time budget availability and approval
+4. **Offer Document** - Auto-generated offer letter with e-signature
+5. **Candidate Communication** - Offer delivery, negotiation tracking
+
+**UX Principles:**
+- Visual candidate ranking
+- Real-time budget validation
+- Template-based offer generation
+- Communication timeline tracking
+
+---
+
+### Flow 6: Leave Request (Employee)
 
 ```
 Dashboard → Click "Request Leave" → Select Type/Dates → Add Reason 
@@ -41,7 +167,29 @@ Dashboard → Click "Request Leave" → Select Type/Dates → Add Reason
 
 ---
 
-### Flow 2: Approve Leave (Manager)
+### Flow 20: Salary Adjustment & Compensation Review (HR + Finance)
+
+```
+Performance Review Complete → Identify Adjustment Need 
+→ Prepare Justification → Finance Review → CEO Approval → Update Profile
+```
+
+**Key Screens:**
+1. **Adjustment Request** - Current vs. proposed compensation, reason
+2. **Market Analysis** - Salary benchmark data, compa-ratio calculations
+3. **Budget Impact** - Annual cost, budget source, approval workflow
+4. **Approval Chain** - Finance → HR → CEO with status tracking
+5. **Implementation** - Update payroll, notification to employee
+
+**UX Principles:**
+- Real-time market data integration
+- Budget impact visualization
+- Clear approval timeline
+- Automated payroll updates
+
+---
+
+### Flow 21: Leave Approval (Manager)
 
 ```
 Notification → Click → Review Details → Approve/Reject → Add Comment 
@@ -63,52 +211,29 @@ Notification → Click → Review Details → Approve/Reject → Add Comment
 
 ---
 
-### Flow 3: New Hire Onboarding (HR)
+### Flow 22: Overtime Request & Approval (Employee + Manager)
 
 ```
-Hiring Decision Approved → Click "Start Onboarding" → Fill Profile 
-→ Assign Checklist → IT/Admin/Team Tasks → Monitor Progress → Complete
-```
-
-**Key Screens:**
-1. **Trigger** - "Hiring Approved" alert with "Start Onboarding" CTA
-2. **Profile Form** - Pre-filled from hiring data, 4 sections (Personal/Work/Comp/Access)
-3. **Checklist Builder** - 4 tabs (HR/IT/Admin/Team), task checkboxes
-4. **Monitor View** - Progress bars per department, overdue alerts
-5. **Complete** - All checkmarks green, "Employee Active" status
-
-**UX Principles:**
-- Pre-fill from hiring decision (reduce typing)
-- Progress bars for visual tracking
-- Automated task assignment based on role
-- Red alerts for overdue tasks
-
----
-
-### Flow 4: Recruitment Pipeline (HR + Hiring Manager)
-
-```
-Create Job Post → Review Applications → Screen CVs → Schedule Interviews 
-→ Collect Feedback → Make Decision → Send Offer
+Project Dashboard → Click "Request Overtime" → Select Dates/Hours 
+→ Justify Need → Manager Approval → Finance Budget Check → Approval
 ```
 
 **Key Screens:**
-1. **Pipeline Board** - Kanban columns: New → Screening → Interview → Offer → Hired
-2. **Candidate Card** - Photo, name, rating stars, quick actions
-3. **CV Viewer** - Inline PDF, score form sidebar
-4. **Interview Scheduler** - Calendar integration, room booking
-5. **Feedback Form** - 6 ratings + overall recommendation
-6. **Decision Panel** - Compare candidates, approve offer
+1. **OT Request Form** - Date, expected hours, project, task, reason
+2. **Budget Check** - Remaining OT budget, approval status
+3. **Manager Review** - Workload assessment, business justification
+4. **Finance Approval** - Budget validation, cost impact analysis
+5. **Time Tracking** - Auto-update timesheet with approved OT
 
 **UX Principles:**
-- Drag-and-drop between pipeline stages
-- Bulk actions (select multiple, mass email)
-- Color-coded ratings (red/yellow/green)
-- Comparison view for top 3 candidates
+- Real-time budget availability
+- Project impact visualization
+- Automated timesheet integration
+- Mobile request approval
 
 ---
 
-### Flow 5: Performance Review (Employee + Manager)
+### Flow 10: Performance Review (Employee + Manager)
 
 ```
 Review Period Opens → Self-Assessment → Manager Review → 1-on-1 Meeting 
@@ -130,52 +255,51 @@ Review Period Opens → Self-Assessment → Manager Review → 1-on-1 Meeting
 
 ---
 
-### Flow 6: Job Posting Creation (HR)
+### Flow 18: Career Development & Promotion (Employee + Manager)
 
 ```
-Recruitment Dashboard → Click "New Job Post" → Fill Position Details → Set Requirements 
-→ Define Salary Range → Set Approval Chain → Submit for Approval → Publish
-```
-
-**Key Screens:**
-1. **Dashboard** - "Active Openings" card with "New Job Post" CTA
-2. **Position Form** - Title, department, reports to, employment type
-3. **Requirements** - Experience, skills (tag input), education, certifications
-4. **Compensation** - Salary range, benefits, bonus eligibility
-5. **Approval** - Select approvers (HR Manager, Department Head, CEO)
-6. **Publish** - Auto-post to careers page, social media toggle
-
-**UX Principles:**
-- Template library for common roles
-- Auto-save drafts every 30 seconds
-- Skill suggestions from database
-- Salary benchmark data display
-
----
-
-### Flow 7: CV Screening & Scoring (HR + Hiring Manager)
-
-```
-Application Received → Auto-parse CV → Score against Requirements 
-→ Review Scored CVs → Add Manual Ratings → Move to Interview/Decline
+Performance Review Complete → Discuss Career Goals 
+→ Create Development Plan → Track Progress → Promotion Request → Approval
 ```
 
 **Key Screens:**
-1. **Inbox** - New applications with auto-parsed summary cards
-2. **CV Viewer** - Side-by-side: Original PDF | Parsed data | Score breakdown
-3. **Scoring Panel** - 5 criteria sliders: Experience, Skills, Education, Culture Fit, Communication
-4. **Quick Actions** - [Shortlist] [Reject] [Request More Info]
-5. **Batch Actions** - Select multiple, bulk email templates
+1. **Career Planning** - Target role, timeline, motivation
+2. **Skills Gap Analysis** - Current vs. required skills assessment
+3. **Development Actions** - Training, mentoring, stretch assignments
+4. **Progress Tracking** - Milestone achievements, skill improvements
+5. **Promotion Request** - Justification, business case, approval workflow
 
 **UX Principles:**
-- Color-coded match percentage (green >80%, yellow 50-80%, red <50%)
-- One-click standard rejection with personalization
-- Compare view for top 3 candidates
-- Blind review option (hide names/photos)
+- Visual career path mapping
+- Skill gap visualization
+- Progress milestone tracking
+- Clear promotion criteria
 
 ---
 
-### Flow 8: Timesheet Entry (Employee)
+### Flow 19: Internal Transfer Request (Employee)
+
+```
+Career Dashboard → Click "Request Transfer" → Select Target Role 
+→ Complete Justification → Current Manager Approval → Target Manager Review → HR Processing
+```
+
+**Key Screens:**
+1. **Transfer Request** - Current position, target role, reason for move
+2. **Skills Match** - Current skills vs. target role requirements
+3. **Impact Analysis** - Team impact, business justification
+4. **Approval Workflow** - Current manager → Target manager → HR → CEO
+5. **Transition Plan** - Handover timeline, knowledge transfer schedule
+
+**UX Principles:**
+- Skills compatibility scoring
+- Impact visualization for both teams
+- Clear approval timeline
+- Structured transition planning
+
+---
+
+### Flow 16: Timesheet Entry (Employee)
 
 ```
 Time & Leave → Click "Timesheet" → Select Week → Add Daily Hours 
@@ -197,7 +321,7 @@ Time & Leave → Click "Timesheet" → Select Week → Add Daily Hours
 
 ---
 
-### Flow 9: Clock In/Out with Geo-Tracking (Employee)
+### Flow 17: Clock In/Out with Geo-Tracking (Employee)
 
 ```
 Dashboard → Click "Clock In" → Confirm Location → Working... 
@@ -219,7 +343,7 @@ Dashboard → Click "Clock In" → Confirm Location → Working...
 
 ---
 
-### Flow 10: OKR Creation & Alignment (Manager + Employee)
+### Flow 11: OKR Creation & Alignment (Manager + Employee)
 
 ```
 Performance → OKRs → Click "New OKR" → Define Objective 
@@ -241,7 +365,7 @@ Performance → OKRs → Click "New OKR" → Define Objective
 
 ---
 
-### Flow 11: Training Request & Approval (Employee + Manager)
+### Flow 12: Training Request & Development (Employee + Manager)
 
 ```
 Learning → My Training → "Request Training" → Search/Select Course 
@@ -263,7 +387,7 @@ Learning → My Training → "Request Training" → Search/Select Course
 
 ---
 
-### Flow 12: Employee Recognition Nomination (All Employees)
+### Flow 13: Employee Recognition & Awards (All Employees)
 
 ```
 Employee Relations → Recognition → "Nominate Colleague" → Select Employee 
@@ -285,7 +409,7 @@ Employee Relations → Recognition → "Nominate Colleague" → Select Employee
 
 ---
 
-### Flow 13: Pulse Survey Participation (Employee)
+### Flow 14: Employee Surveys & Feedback (All Employees)
 
 ```
 Notification → "New Pulse Survey" → Answer Questions (1-5 scale) 
@@ -307,7 +431,7 @@ Notification → "New Pulse Survey" → Answer Questions (1-5 scale)
 
 ---
 
-### Flow 14: Resignation & Exit Process (Employee + HR)
+### Flow 15: Resignation & Exit Process (Employee + HR)
 
 ```
 Employee: Profile → "Initiate Resignation" → Select Last Day → Give Reason 
@@ -332,7 +456,51 @@ HR: Receive Notice → Initiate Offboarding → Assign Tasks
 
 ---
 
-### Flow 15: Employee Profile Management (Employee + HR)
+### Flow 7: New Hire Onboarding (HR)
+
+```
+Hiring Approved → Create Onboarding Checklist → Assign Tasks 
+→ Monitor Progress → Complete Verification → Activate Employee
+```
+
+**Key Screens:**
+1. **Onboarding Trigger** - Auto-create from hiring approval
+2. **Checklist Builder** - HR, IT, Admin, Team task categories
+3. **Task Assignment** - Auto-assign based on role/department
+4. **Progress Dashboard** - Real-time status across all departments
+5. **Completion Verification** - Final checklists and employee activation
+
+**UX Principles:**
+- Pre-fill from hiring data (reduce typing)
+- Progress bars for visual tracking
+- Automated task assignment based on role
+- Red alerts for overdue tasks
+
+---
+
+### Flow 8: Probation Management (Supervisor + HR)
+
+```
+New Hire Start → Create 60-Day KPI Plan → Day 30 Check 
+→ Day 55 Review → Probation Evaluation → Confirm/Extend/Terminate
+```
+
+**Key Screens:**
+1. **KPI Plan Creation** - Goal setting with metrics and timelines
+2. **Progress Tracking** - Regular check-ins and milestone tracking
+3. **Evaluation Form** - Performance assessment against KPIs
+4. **Decision Workflow** - Confirmation, extension, or termination
+5. **Documentation** - Complete probation file with signatures
+
+**UX Principles:**
+- Goal templates by role
+- Automated reminders for check-ins
+- Performance visualization
+- Clear decision pathways
+
+---
+
+### Flow 9: Employee Profile Management (HR + Employee)
 
 ```
 My Profile → Edit Section → Update Info → Upload Documents 
@@ -751,24 +919,329 @@ Active filters: [Team: Engineering ✕] [Status: Active ✕] [Clear All]
 
 | Flow | Sub-System | Steps | Avg. Time | Key UX Priority |
 |------|------------|-------|-----------|-----------------|
-| Leave Request | 4. Attendance/Leave | 4 | 2 min | Speed, clarity |
-| Approve Request | 4. Attendance/Leave | 2 | 30 sec | One-click action |
-| Timesheet Entry | 4. Attendance/Leave | 5 | 5 min | Efficiency, copy-paste |
-| Clock In/Out | 4. Attendance/Leave | 2 | 10 sec | One-tap, offline |
-| New Hire Onboarding | 2. Onboarding | 5 | 15 min | Pre-fill, guidance |
-| Recruitment Pipeline | 1. Recruitment | 6 | Varies | Visual tracking |
-| Job Posting Creation | 1. Recruitment | 6 | 10 min | Templates, auto-save |
-| CV Screening | 1. Recruitment | 4 | 3 min | Color-coding, batch |
-| Performance Review | 5. Performance | 5 | 30 min | Save progress |
-| OKR Creation | 5. Performance | 5 | 15 min | Alignment tree, templates |
-| Training Request | 6. Training | 5 | 5 min | Skill gap link, ROI |
-| Recognition Nomination | 7. Employee Relations | 4 | 5 min | Peer suggestions |
-| Pulse Survey | 7. Employee Relations | 3 | 3 min | Anonymous, mobile |
-| Resignation/Exit | 8. Offboarding | 5 | 10 min | Handover guidance |
-| Profile Management | 3. Employee Records | 4 | 5 min | Progressive completion |
+| **Recruitment Request** | 1. Recruitment & Hiring | 5 | 10 min | Budget validation, approval workflow |
+| **Job Posting Creation** | 1. Recruitment & Hiring | 6 | 15 min | Templates, multi-platform preview |
+| **Job Application** | 1. Recruitment & Hiring | 5 | 8 min | Progressive disclosure, mobile optimization |
+| **CV Screening & Interview Scheduling** | 1. Recruitment & Hiring | 5 | 20 min | AI scoring, calendar integration |
+| **Hiring Decision & Offer** | 1. Recruitment & Hiring | 5 | 30 min | Candidate comparison, budget check |
+| **Leave Request** | 4. Attendance & Leave | 4 | 2 min | Speed, clarity |
+| **Leave Approval** | 4. Attendance & Leave | 2 | 30 sec | One-click action |
+| **New Hire Onboarding** | 2. Onboarding & Probation | 5 | 15 min | Pre-fill, guidance |
+| **Probation Management** | 2. Onboarding & Probation | 5 | 45 min | Goal templates, reminders |
+| **Employee Profile Management** | 3. Employee Records | 4 | 5 min | Progressive completion |
+| **Performance Review** | 5. Performance & Career | 5 | 30 min | Save progress, goal linkage |
+| **OKR Creation & Alignment** | 5. Performance & Career | 5 | 15 min | Alignment tree, templates |
+| **Career Development & Promotion** | 5. Performance & Career | 5 | 20 min | Career path mapping, skill gap analysis |
+| **Internal Transfer Request** | 5. Performance & Career | 5 | 15 min | Skills matching, impact analysis |
+| **Salary Adjustment & Compensation** | 5. Performance & Career | 5 | 25 min | Market data, budget impact |
+| **Training Request & Development** | 6. Training & Development | 5 | 5 min | Skill gap link, ROI |
+| **Employee Recognition & Awards** | 7. Employee Relations | 4 | 5 min | Peer suggestions, public recognition |
+| **Employee Surveys & Feedback** | 7. Employee Relations | 3 | 3 min | Anonymous, mobile |
+| **Resignation & Exit Process** | 8. Exit & Offboarding | 5 | 10 min | Handover guidance, compliance |
+| **Timesheet Entry** | 4. Attendance & Leave | 5 | 5 min | Efficiency, copy-paste |
+| **Clock In/Out with Geo-Tracking** | 4. Attendance & Leave | 2 | 10 sec | One-tap, offline |
+| **Overtime Request & Approval** | 4. Attendance & Leave | 5 | 8 min | Budget validation, project impact |
+
+### Additional Supporting Flows (Not Primary)
+| **Asset & Access Provisioning** | 2. Onboarding & Probation | 4 | 20 min | Auto-assignment, tracking |
+| **Policy Acknowledgement** | 2. Onboarding & Probation | 3 | 5 min | Mandatory completion, records |
+| **Contract Management** | 3. Employee Records | 3 | 10 min | Expiry alerts, auto-sync |
+| **Document Updates** | 3. Employee Records | 3 | 5 min | Version control, notifications |
+| **Incident Reporting** | 7. Employee Relations | 4 | 15 min | Safety, documentation, compliance |
+| **Disciplinary Action** | 7. Employee Relations | 3 | 20 min | Documentation, approval chain |
+| **Conflict Resolution** | 7. Employee Relations | 4 | 30 min | Mediation, documentation |
+| **Exit Interview & Offboarding** | 8. Exit & Offboarding | 6 | 45 min | Comprehensive checklist, compliance |
+| **Final Pay & Clearance** | 8. Exit & Offboarding | 4 | 20 min | Calculations, approvals, documentation |
+| **Compliance Checklist** | 8. Exit & Offboarding | 5 | 15 min | Legal compliance, audit trail |
 
 ---
 
-*Document Version: 1.0*  
-*Created: February 2026*  
+## 13. BLIH Core Integration & Cross-Module Workflows
+
+### 13.1 Core System Architecture Integration
+
+**BLIH Core serves as the central nervous system** that connects all modules including HR. The HR module leverages Core's unified infrastructure for seamless user experience and data consistency.
+
+#### Core Services Utilized by HR Module:
+
+| Core Service | HR Module Usage | User Benefit |
+|---------------|----------------|--------------|
+| **Authentication (Keycloak)** | Single sign-on, role-based access | One login for all modules |
+| **Notification Engine** | Email, in-app, SMS alerts | Real-time updates across modules |
+| **File Storage** | Document management, resumes, contracts | Centralized document repository |
+| **Search & Indexing** | Employee directory, candidate search | Universal search capability |
+| **Workflow Engine** | Approval chains, automated processes | Consistent approval patterns |
+| **Analytics & Reporting** | HR metrics, dashboards | Unified business intelligence |
+| **Calendar Integration** | Interview scheduling, leave management | Cross-module calendar sync |
+| **Mobile Framework** | Responsive HR interfaces | Consistent mobile experience |
+
+---
+
+### 13.2 Cross-Module User Workflows
+
+#### Workflow A: Employee Onboarding (HR + Projects + Finance)
+
+```
+HR: Hiring Decision Approved
+     ↓ [Core Event: hr.employee.hired]
+Core: Triggers automated workflows
+     ↓
+┌─────────────────────────────────────────────────────────────┐
+│                     NOTIFICATIONS                             │
+│ • Finance: "New hire - prepare payroll setup"              │
+│ • IT: "Create accounts and assign equipment"               │
+│ • Projects: "Add to team project allocations"              │
+│ • Manager: "Complete onboarding checklist"                 │
+└─────────────────────────────────────────────────────────────┘
+     ↓
+HR: Onboarding Checklist Initiated
+     ↓
+Projects: Auto-add to relevant project teams
+     ↓
+Finance: Payroll setup and benefits enrollment
+     ↓
+IT: Account provisioning and equipment assignment
+     ↓
+Core: Unified dashboard shows onboarding progress
+```
+
+**User Experience Impact:**
+- **New Employee:** Single portal for all onboarding tasks
+- **HR Manager:** Real-time visibility into cross-department progress
+- **IT/Finance:** Automated notifications and task assignments
+- **Project Manager:** Immediate team member access
+
+#### Workflow B: Performance Review Integration (HR + Projects + Brain)
+
+```
+HR: Performance Review Period Opens
+     ↓ [Core Event: hr.review.period.started]
+Core: Gathers data from connected modules
+     ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  DATA AGGREGATION                           │
+│ • Projects: Task completion rates, time tracking          │
+│ • CRM: Deal contributions, client feedback               │
+│ • Brain: Training completed, skills acquired              │
+│ • Finance: Billable hours, revenue contribution          │
+└─────────────────────────────────────────────────────────────┘
+     ↓
+HR: Performance Review Forms with Pre-populated Data
+     ↓
+Employee & Manager: Complete Reviews with Full Context
+     ↓
+Core: Updates skill profiles and triggers development plans
+```
+
+#### Workflow C: Leave Management (HR + Projects + Finance)
+
+```
+Employee: Submits Leave Request
+     ↓
+HR: Leave Approval Workflow
+     ↓ [Core Event: hr.leave.approved]
+Core: Updates all connected systems
+     ↓
+┌─────────────────────────────────────────────────────────────┐
+│               SYSTEM UPDATES                                │
+│ • Projects: Update resource availability                  │
+│ • Finance: Adjust payroll calculations                     │
+│ • Calendar: Block time in all calendars                  │
+│ • Team Dashboards: Show team member availability           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 13.3 Unified User Experience Patterns
+
+#### Core Navigation Integration
+
+**HR Module follows Core navigation patterns:**
+
+```
+┌────────────────────────────────────────────────────────────┐
+│  [BLIH Logo]  [HR Module ▼]      [🔍 Search]  [🔔]  [👤]  │
+├────────────────────────────────────────────────────────────┤
+│ ☰ Menu │                    HR Dashboard                   │
+│────────│                                                    │
+│ 🏠 Home│ ┌──────────────────────────────────────────────┐   │
+│ 👥 HR  │ │              HR Module Home                  │   │
+│ 🤝 CRM │ │                                            │   │
+│ 📊 Proj│ │ 👋 Welcome, Sarah (HR Manager)               │   │
+│ 💰 Fin │ │                                            │   │
+│ 🧠Brain│ │ 📊 Quick Stats                              │   │
+│────────│ │ • 150 Active Employees                       │   │
+│ ⚙️ Set │ │ • 8 Open Positions                          │   │
+│ ❓ Help│ │ • 12 Pending Approvals                       │   │
+│ 🚪 Exit│ │ • 3 Reviews Due This Week                    │   │
+│        │ │                                            │   │
+│        │ │ 🚀 Quick Actions                            │   │
+│        │ │ [📝 Post Job] [👥 Add Employee] [📊 Report] │   │
+│        │ └──────────────────────────────────────────────┘   │
+└────────┴────────────────────────────────────────────────────┘
+```
+
+#### Universal Search Integration
+
+**HR data searchable through Core's universal search:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 🔍 Search: "Abebe"                                [✕]    │
+│ ─────────────────────────────────────────────────────────── │
+│                                                              │
+│ 📄 EMPLOYEES                                                │
+│ ┌────────────────────────────────────────────────────┐    │
+│ │ 👤 Abebe Tesfaye                                   │    │
+│ │    Senior Software Developer • Engineering         │    │
+│ │    abebe.t@blih.com • +251911234567               │    │
+│ │    [View Profile] [Send Message]                 │    │
+│ └────────────────────────────────────────────────────┘    │
+│                                                              │
+│ 📋 DOCUMENTS                                                │
+│ ┌────────────────────────────────────────────────────┐    │
+│ │ 📄 Abebe_Tesfaye_Resume.pdf                      │    │
+│ │    Uploaded: Feb 1, 2026 • HR: Recruitment       │    │
+│ │    [View] [Download]                             │    │
+│ └────────────────────────────────────────────────────┘    │
+│                                                              │
+│ 📅 ACTIVITY                                                 │
+│ ┌────────────────────────────────────────────────────┐    │
+│ │ ✅ Performance Review Completed - Abebe Tesfaye   │    │
+│ │    Feb 5, 2026 • HR: Performance Management     │    │
+│ │    [View Details]                                 │    │
+│ └────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 13.4 Core Authentication & Security Integration
+
+#### Unified Identity Management
+
+**HR leverages Core's Keycloak integration:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                BLIH AUTHENTICATION                             │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  Email Address                                     │    │
+│  │  [sarah.hr@blih.com_______________________]       │    │
+│  │                                                   │    │
+│  │  Password                                        │    │
+│  │  [•••••••••••••••••••]                    [👁] │    │
+│  │                                                   │    │
+│  │  ☐ Remember me for 30 days                      │    │
+│  │                                                   │    │
+│  │  [           Login           ]                   │    │
+│  └────────────────────────────────────────────────────┘    │
+│                                                              │
+│  🔐 Secured by Keycloak • Single Sign-On Enabled        │
+└─────────────────────────────────────────────────────────────┘
+
+↓ Successful Login
+
+┌─────────────────────────────────────────────────────────────┐
+│                    MODULE ACCESS                             │
+│                                                              │
+│  Welcome, Sarah! Select your workspace:                     │
+│                                                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ ☑ HR Team   │  │ ☐ CRM       │  │ ☐ Projects  │         │
+│  │   👥        │  │   🤝        │  │    📊       │         │
+│  │ Full Access │  │ Read Only  │  │ Read Only  │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│                                                              │
+│  ┌─────────────┐  ┌─────────────┐                         │
+│  │ ☑ Finance   │  │ ☑ Brain    │                         │
+│  │   💰        │  │   🧠        │                         │
+│  │ Full Access │  │ Full Access │                         │
+│  └─────────────┘  └─────────────┘                         │
+│                                                              │
+│                    [Continue to HR Dashboard →]              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Role-Based Access Control
+
+**HR permissions managed through Core's RBAC system:**
+
+| HR Role | Core Permissions | Module Access |
+|---------|------------------|---------------|
+| **HR Manager** | hr.admin, finance.read, projects.read | HR: Full, Finance: Read, Projects: Read |
+| **HR Specialist** | hr.manage, hr.reports | HR: Full, Other: Limited |
+| **Team Lead** | hr.team.read, hr.team.approve | HR: Team Only, Projects: Full |
+| **Employee** | hr.self.read, hr.self.write | HR: Self Only |
+
+---
+
+### 13.5 Mobile & Accessibility Integration
+
+#### Core Mobile Framework
+
+**HR module inherits Core's mobile optimizations:**
+
+```
+┌─────────────────────────────────┐
+│ ☰  BLIH HR         🔔  👤   │
+├─────────────────────────────────┤
+│                               │
+│   📊 HR Dashboard             │
+│                               │
+│   Quick Actions               │
+│   ┌─────────────────────┐     │
+│   │ 👤 Approve Leave   │     │
+│   │ (3 pending)        │     │
+│   └─────────────────────┘     │
+│   ┌─────────────────────┐     │
+│   │ 📝 Post Job       │     │
+│   │ [Create New]       │     │
+│   └─────────────────────┘     │
+│                               │
+│   Recent Activity             │
+│   ┌─────────────────────┐     │
+│   │ ✅ New hire onboard │     │
+│   │ completed: Abebe    │     │
+│   └─────────────────────┘     │
+│                               │
+├─────────────────────────────────┤
+│ Home  HR  More                 │
+└─────────────────────────────────┘
+```
+
+#### Accessibility Features
+
+**HR module follows Core's WCAG 2.1 AA compliance:**
+
+- ✅ **Screen reader support** for all HR forms and dashboards
+- ✅ **Keyboard navigation** throughout HR workflows
+- ✅ **High contrast mode** for HR data visualization
+- ✅ **Voice commands** for common HR actions
+- ✅ **Ethiopian calendar support** for leave and performance dates
+- ✅ **Multi-language support** (English, Amharic, Oromo)
+
+---
+
+### 13.6 Integration Benefits Summary
+
+| Aspect | Core Integration Benefit | HR Module Enhancement |
+|---------|------------------------|----------------------|
+| **User Experience** | Consistent UI/UX across modules | Seamless navigation, familiar patterns |
+| **Data Consistency** | Single source of truth | Real-time data sync across HR processes |
+| **Security** | Centralized authentication | Enterprise-grade security for HR data |
+| **Mobile Access** | Responsive framework | Full HR functionality on mobile devices |
+| **Notifications** | Unified notification system | Timely alerts for all HR events |
+| **Search** | Universal search capability | Find any HR data instantly |
+| **Reporting** | Cross-module analytics | Comprehensive HR insights |
+| **Workflow** | Standardized approval engine | Consistent approval patterns |
+
+---
+
+*Document Version: 2.0*  
+*Updated: February 2026*  
+*Based on: MODULE_HR_COMPLETE.md (50 forms, 8 sub-systems)*  
+*Integrated with: BLIH Core USER_FLOWS.md*  
 *For: BLIH HR Module Implementation*
