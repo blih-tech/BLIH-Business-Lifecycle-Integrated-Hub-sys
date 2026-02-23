@@ -1,6 +1,7 @@
 # BLIH System Architecture
 
 ## Table of Contents
+
 1. [Executive Overview](#executive-overview)
 2. [Architectural Principles](#architectural-principles)
 3. [System Layers](#system-layers)
@@ -16,8 +17,19 @@
 
 ## Executive Overview
 
+### February 2026 Implementation Update
+
+- Authentication is centralized in Keycloak with one realm (`blih`) and one SSO session per user.
+- Gateway/BFF-first verification is supported with trusted principal headers (`x-principal-*`) protected by `x-internal-auth` shared secret.
+- Authorization is RBAC + data scope (`global`, `organization`, `department`, `self`).
+- Core DB is the canonical RBAC policy store; Keycloak is a projection/sync target.
+- Cross-module integration remains event-only on `blih.events` with immutable, versioned envelopes.
+- Event metadata now requires `metadata.schema` in addition to `metadata.version`.
+
 ### Architecture Style
+
 **Modular Event-Driven Microservices** with:
+
 - **Frontend**: Next.js 16 App Router with Server Components
 - **Backend**: NestJS modular monolith with microservices capabilities
 - **Data Layer**: Polyglot persistence (MongoDB + PostgreSQL + Qdrant)
@@ -25,15 +37,17 @@
 - **AI**: Local LLM with RAG pattern
 
 ### Key Characteristics
-| Characteristic | Implementation |
-|---------------|----------------|
-| **Modularity** | Self-contained business modules with clear boundaries |
-| **Event-Driven** | Async communication via RabbitMQ pub/sub |
-| **Single Tenant** | Company context enforced throughout (`company_id: "BLIH"`) |
-| **Compliance-First** | Audit logging, RBAC, data lineage built-in |
-| **Air-Gap Ready** | All services run on-premises, no external dependencies |
+
+| Characteristic       | Implementation                                             |
+| -------------------- | ---------------------------------------------------------- |
+| **Modularity**       | Self-contained business modules with clear boundaries      |
+| **Event-Driven**     | Async communication via RabbitMQ pub/sub                   |
+| **Single Tenant**    | Company context enforced throughout (`company_id: "BLIH"`) |
+| **Compliance-First** | Audit logging, RBAC, data lineage built-in                 |
+| **Air-Gap Ready**    | All services run on-premises, no external dependencies     |
 
 ### System Boundaries
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         BLIH SYSTEM                                      │
@@ -67,7 +81,9 @@
 ## Architectural Principles
 
 ### 1. Modular Autonomy
+
 Each module is self-contained with:
+
 - Own database schemas/collections
 - Own API endpoints
 - Own frontend components
@@ -89,13 +105,16 @@ Module Boundary:
 │  └─────────────────────┘           │
 │                                    │
 │  Events: hr.employee.hired         │
+
 │  Events: hr.employee.updated       │
 │                                    │
 └─────────────────────────────────────┘
 ```
 
 ### 2. Event-Driven Integration
+
 Modules communicate via events, not direct API calls:
+
 ```
 ┌─────────┐    Event: crm.deal.won     ┌──────────┐
 │   CRM   │ ────────────────────────▶ │ Projects │
@@ -110,8 +129,12 @@ Modules communicate via events, not direct API calls:
 └──────────┘
 ```
 
+**Domain modules** (HR, CRM, Finance, Projects, Brain, **Chatbot**) MUST NOT call other modules’ APIs. All cross-module communication is via the `blih.events` exchange. The **Chatbot** module (conversation, RAG, responses) is a domain module: it consumes and publishes only via `blih.events` (e.g. `chatbot.query.received`, `chatbot.response.sent`, or events from Brain for knowledge); it does not call HR, CRM, Finance, or Brain APIs directly.
+
 ### 3. Compliance-First Design
+
 Every action is auditable:
+
 ```
 User Action → Permission Check → Business Logic → Audit Log → Response
      │                                                   │
@@ -123,7 +146,9 @@ User Action → Permission Check → Business Logic → Audit Log → Response
 ```
 
 ### 4. Single Company Context
+
 All data filtered by `company_id = "BLIH"`:
+
 ```typescript
 // Applied at database layer
 // Applied at API layer
@@ -170,6 +195,7 @@ All data filtered by `company_id = "BLIH"`:
 ```
 
 **Component Architecture:**
+
 ```
 app/
 ├── (auth)/                    # Route group - no sidebar
@@ -277,6 +303,7 @@ app/
 ```
 
 **Example: HR Domain Service**
+
 ```typescript
 // Domain logic, no framework dependencies
 class EmployeeDomainService {
@@ -286,11 +313,11 @@ class EmployeeDomainService {
     // - Cannot hire if under 18
     // - Generate unique employee ID
   }
-  
+
   calculateOnboardingSteps(role: string): OnboardingStep[] {
     // Role-specific onboarding flow
   }
-  
+
   canTerminate(employee: Employee, reason: TerminationReason): boolean {
     // Check if termination allowed
   }
@@ -553,6 +580,7 @@ class EmployeeDomainService {
 ### Data Flow Patterns
 
 **Pattern 1: Standard CRUD Flow**
+
 ```
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  User   │───▶│   UI    │───▶│   API   │───▶│ Service │───▶│   DB    │
@@ -567,6 +595,7 @@ class EmployeeDomainService {
 ```
 
 **Pattern 2: Event-Driven Flow**
+
 ```
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  Source │───▶│ Service │───▶│  Event  │───▶│  Event  │
@@ -584,6 +613,7 @@ class EmployeeDomainService {
 ```
 
 **Pattern 3: RAG Query Flow**
+
 ```
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  User   │───▶│   API   │───▶│  Hybrid │───▶│  Vector │───▶│  LLM    │
@@ -609,6 +639,8 @@ class EmployeeDomainService {
 
 ### Event Bus Topology
 
+All domain events are published to the topic exchange **`blih.events`** (routing key pattern `{module}.{entity}.{action}`). Per-module queues bind to this exchange for isolation and independent scaling. Each queue uses `system.dlq` as dead-letter target for failed messages after retries.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    RABBITMQ TOPOLOGY                                 │
@@ -620,71 +652,68 @@ class EmployeeDomainService {
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │   │
 │  │  │   direct     │  │   topic      │  │    fanout        │  │   │
 │  │  │              │  │              │  │                  │  │   │
-│  │  │ system.direct│  │ system.topic │  │ system.broadcast │  │   │
-│  │  │ (commands)   │  │ (events)     │  │ (notifications)  │  │   │
+│  │  │ system.direct│  │ blih.events  │  │ system.broadcast │  │   │
+│  │  │ (commands)   │  │ (domain evts)│  │ (notifications)  │  │   │
 │  │  └──────┬───────┘  └──────┬───────┘  └────────┬─────────┘  │   │
 │  │         │                 │                   │            │   │
 │  └─────────┼─────────────────┼───────────────────┼────────────┘   │
 │            │                 │                   │                 │
 │            ▼                 ▼                   ▼                 │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                      QUEUES                                    │   │
+│  │                   PER-MODULE QUEUES                           │   │
 │  │                                                              │   │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │   │
-│  │  │ hr.events    │  │ crm.events   │  │ finance.events   │  │   │
+│  │  │ core.events  │  │ hr.events    │  │ crm.events       │  │   │
 │  │  │              │  │              │  │                  │  │   │
-│  │  │ • employee.  │  │ • lead.      │  │ • invoice.       │  │   │
-│  │  │   hired      │  │   converted  │  │   generated      │  │   │
-│  │  │ • employee.  │  │ • deal.      │  │ • payment.       │  │   │
-│  │  │   updated    │  │   won        │  │   received       │  │   │
-│  │  │ • employee.  │  │ • deal.      │  │ • payroll.       │  │   │
-│  │  │   terminated │  │   lost       │  │   processed      │  │   │
-│  │  └──────────────┘  └──────────────┘  └──────────────────┘  │   │
+│  │  │ • core.user.*│  │ • employee.* │  │ • crm.*          │  │   │
+│  │  │ • core.role.*│  │              │  │                  │  │   │
+│  │  │ • system.*   │  └──────────────┘  └──────────────────┘  │   │
+│  │  └──────────────┘                                           │   │
 │  │                                                              │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │   │
-│  │  │projects.events│ │brain.events  │  │notifications    │  │   │
-│  │  │               │  │              │  │                 │  │   │
-│  │  │ • project.    │  │ • policy.    │  │ • email.queue   │  │   │
-│  │  │   created     │  │   published  │  │ • inapp.queue   │  │   │
-│  │  │ • project.    │  │ • decision.  │  │ • sms.queue     │  │   │
-│  │  │   completed   │  │   logged     │  │                 │  │   │
-│  │  │ • task.       │  │ • search.    │  │                 │  │   │
-│  │  │   completed   │  │   query      │  │                 │  │   │
-│  │  └──────────────┘  └──────────────┘  └──────────────────┘  │   │
-│  │                                                              │   │
-│  │  ┌──────────────┐                                            │   │
-│  │  │ dlq.events   │  (Dead Letter Queue)                      │   │
-│  │  │              │  - Failed events after 3 retries            │   │
+│  │  ┌──────────────┐  ┌──────────────────┐  ┌──────────────┐  │   │
+│  │  │finance.events│  │notifications     │  │projects      │  │   │
+│  │  │              │  │.events           │  │.events       │  │   │
+│  │  │ • finance.*  │  │ • hr.employee.   │  │ • projects.* │  │   │
+│  │  │              │  │   hired          │  │              │  │   │
+│  │  └──────────────┘  │ • audit.finding. │  └──────────────┘  │   │
+│  │                    │   critical       │                     │   │
+│  │                    │ • notification.* │  ┌──────────────┐  │   │
+│  │                    └──────────────────┘  │brain.events  │  │   │
+│  │                                          │chatbot.events│  │   │
+│  │  ┌──────────────┐  ┌──────────────────┐  └──────────────┘  │   │
+│  │  │ system.dlq   │  │ system.events    │  (audit.critical)   │   │
+│  │  │ (Dead Letter)│  │                  │                     │   │
+│  │  │ x-retries    │  └──────────────────┘                     │   │
 │  │  └──────────────┘                                            │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                      │
-│  Routing Keys:                                                       │
-│  • hr.employee.hired                                                │
-│  • crm.deal.won                                                     │
-│  • crm.deal.lost                                                    │
-│  • projects.project.created                                         │
-│  • finance.invoice.generated                                        │
+│  Reliability:                                                        │
+│  • Publisher confirms: events await RabbitMQ ack before Outbox update│
+│  • Outbox poller: pending events retried when RabbitMQ unavailable   │
+│  • Retry: nack + republish to same queue with x-retry-count; DLQ     │
+│    after max retries                                                  │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Module Integration Matrix
 
-| Source Event | Subscribers | Action |
-|-------------|-------------|--------|
-| `hr.employee.hired` | Finance, Brain | Setup payroll, log pattern |
-| `crm.deal.won` | Projects, Finance | Create project, generate invoice |
-| `crm.deal.lost` | Brain | Log lesson learned |
-| `projects.project.completed` | Finance | Recognize revenue |
-| `finance.invoice.paid` | CRM | Update deal status |
-| `brain.policy.published` | Notifications | Notify relevant users |
+| Source Event                 | Subscribers       | Action                           |
+| ---------------------------- | ----------------- | -------------------------------- |
+| `hr.employee.hired`          | Finance, Brain    | Setup payroll, log pattern       |
+| `crm.deal.won`               | Projects, Finance | Create project, generate invoice |
+| `crm.deal.lost`              | Brain             | Log lesson learned               |
+| `projects.project.completed` | Finance           | Recognize revenue                |
+| `finance.invoice.paid`       | CRM               | Update deal status               |
+| `brain.policy.published`     | Notifications     | Notify relevant users            |
 
 ### API Integration Patterns
 
 **Synchronous (Internal):**
+
 ```typescript
 // Gateway pattern - aggregating from multiple modules
-@Controller('dashboard')
+@Controller("dashboard")
 class DashboardGateway {
   constructor(
     private hrService: HrGatewayService,
@@ -692,7 +721,7 @@ class DashboardGateway {
     private financeService: FinanceGatewayService,
   ) {}
 
-  @Get('stats')
+  @Get("stats")
   async getDashboardStats() {
     // Parallel fetching
     const [hr, crm, finance] = await Promise.all([
@@ -706,19 +735,22 @@ class DashboardGateway {
 ```
 
 **Asynchronous (Event-Driven):**
+
 ```typescript
 // Publishing event
 @Injectable()
 class HrService {
   async hireEmployee(dto: CreateEmployeeDto) {
     const employee = await this.employeeRepo.create(dto);
-    
+
     // Publish event
-    this.eventBus.publish(new EmployeeHiredEvent({
-      employeeId: employee.id,
-      companyId: 'BLIH',
-    }));
-    
+    this.eventBus.publish(
+      new EmployeeHiredEvent({
+        employeeId: employee.id,
+        companyId: "BLIH",
+      }),
+    );
+
     return employee;
   }
 }
@@ -726,7 +758,7 @@ class HrService {
 // Subscribing to event
 @Injectable()
 class FinanceSubscriber {
-  @OnEvent('hr.employee.hired')
+  @OnEvent("hr.employee.hired")
   async handleEmployeeHired(event: EmployeeHiredEvent) {
     await this.payrollService.setupPayroll(event.employeeId);
   }
@@ -736,6 +768,8 @@ class FinanceSubscriber {
 ---
 
 ## Security Architecture
+
+For single sign-on, one login page, and department-based authorization scoping, see [AUTH.md](./AUTH.md).
 
 ### Defense in Depth
 
@@ -1041,7 +1075,7 @@ services:
     # Finance + Keycloak depend on this
   qdrant:
     # RAG service depends on this
-  
+
   # Service Mesh (Infrastructure)
   keycloak:
     depends_on: [postgres]
@@ -1053,7 +1087,7 @@ services:
     # Brain + RAG use this
   ollama:
     # RAG service depends on this
-  
+
   # Application Layer
   backend:
     depends_on: [mongodb, postgres, keycloak, rabbitmq, redis]
@@ -1061,7 +1095,7 @@ services:
     depends_on: [qdrant, ollama, mongodb, rabbitmq]
   frontend:
     depends_on: [backend]
-  
+
   # Management
   n8n:
     depends_on: [backend]
@@ -1444,20 +1478,20 @@ services:
 
 ### Performance Targets
 
-| Component | Metric | Target |
-|-----------|--------|--------|
-| **Frontend** | First Contentful Paint | < 1.5s |
-| | Time to Interactive | < 3s |
-| | Lighthouse Score | > 90 |
-| **API** | Response Time (p95) | < 200ms |
-| | Throughput | 1000 req/s |
-| | Error Rate | < 0.1% |
-| **Database** | Query Time | < 50ms |
-| | Connections | < 100 active |
-| | Replication Lag | < 1s |
-| **RAG** | Query Latency | < 2s |
-| | Embedding Speed | < 100ms |
-| | Concurrent Users | 100+ |
+| Component    | Metric                 | Target       |
+| ------------ | ---------------------- | ------------ |
+| **Frontend** | First Contentful Paint | < 1.5s       |
+|              | Time to Interactive    | < 3s         |
+|              | Lighthouse Score       | > 90         |
+| **API**      | Response Time (p95)    | < 200ms      |
+|              | Throughput             | 1000 req/s   |
+|              | Error Rate             | < 0.1%       |
+| **Database** | Query Time             | < 50ms       |
+|              | Connections            | < 100 active |
+|              | Replication Lag        | < 1s         |
+| **RAG**      | Query Latency          | < 2s         |
+|              | Embedding Speed        | < 100ms      |
+|              | Concurrent Users       | 100+         |
 
 ### Bottleneck Mitigation
 
@@ -1527,67 +1561,67 @@ services:
 
 ### Technology Stack Summary
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| Frontend | Next.js | 16.x | React framework |
-| | React | 18.x | UI library |
-| | TypeScript | 5.x | Language |
-| | Tailwind CSS | 3.x | Styling |
-| | shadcn/ui | latest | Components |
-| | TanStack Query | 5.x | Data fetching |
-| Backend | NestJS | 10.x | API framework |
-| | TypeScript | 5.x | Language |
-| | Mongoose | 8.x | MongoDB ODM |
-| | TypeORM | 0.3.x | PostgreSQL ORM |
-| | Passport | latest | Auth middleware |
-| Data | MongoDB | 7.x | Document DB |
-| | PostgreSQL | 16.x | Relational DB |
-| | Qdrant | latest | Vector DB |
-| | Redis | 7.x | Cache |
-| | MinIO | latest | Object storage |
-| Infrastructure | Docker | 24.x | Containerization |
-| | RabbitMQ | 3.12+ | Message broker |
-| | Keycloak | 24.x | IAM |
-| | Ollama | latest | Local LLM |
-| | n8n | latest | Workflow |
-| Testing | Jest | 29.x | Unit tests |
-| | Playwright | 1.x | E2E tests |
-| | k6 | latest | Load tests |
+| Layer          | Technology     | Version | Purpose          |
+| -------------- | -------------- | ------- | ---------------- |
+| Frontend       | Next.js        | 16.x    | React framework  |
+|                | React          | 18.x    | UI library       |
+|                | TypeScript     | 5.x     | Language         |
+|                | Tailwind CSS   | 3.x     | Styling          |
+|                | shadcn/ui      | latest  | Components       |
+|                | TanStack Query | 5.x     | Data fetching    |
+| Backend        | NestJS         | 10.x    | API framework    |
+|                | TypeScript     | 5.x     | Language         |
+|                | Mongoose       | 8.x     | MongoDB ODM      |
+|                | TypeORM        | 0.3.x   | PostgreSQL ORM   |
+|                | Passport       | latest  | Auth middleware  |
+| Data           | MongoDB        | 7.x     | Document DB      |
+|                | PostgreSQL     | 16.x    | Relational DB    |
+|                | Qdrant         | latest  | Vector DB        |
+|                | Redis          | 7.x     | Cache            |
+|                | MinIO          | latest  | Object storage   |
+| Infrastructure | Docker         | 24.x    | Containerization |
+|                | RabbitMQ       | 3.12+   | Message broker   |
+|                | Keycloak       | 24.x    | IAM              |
+|                | Ollama         | latest  | Local LLM        |
+|                | n8n            | latest  | Workflow         |
+| Testing        | Jest           | 29.x    | Unit tests       |
+|                | Playwright     | 1.x     | E2E tests        |
+|                | k6             | latest  | Load tests       |
 
 ### Network Port Allocation
 
-| Service | Port | Protocol | Notes |
-|---------|------|----------|-------|
-| Frontend (Next.js) | 3000 | HTTP | Dev mode |
-| API Gateway | 4000 | HTTP | NestJS |
-| RAG Service | 4001 | HTTP | AI service |
-| MongoDB | 27017 | TCP | Database |
-| PostgreSQL | 5432 | TCP | Database |
-| Qdrant | 6333 | HTTP | Vector DB |
-| Qdrant gRPC | 6334 | gRPC | Vector DB |
-| Redis | 6379 | TCP | Cache |
-| RabbitMQ | 5672 | AMQP | Message broker |
-| RabbitMQ Mgmt | 15672 | HTTP | Web UI |
-| Keycloak | 8080 | HTTP | IAM |
-| MinIO API | 9000 | HTTP | Object storage |
-| MinIO Console | 9001 | HTTP | Web UI |
-| Ollama | 11434 | HTTP | LLM API |
-| n8n | 5678 | HTTP | Workflow |
+| Service            | Port  | Protocol | Notes          |
+| ------------------ | ----- | -------- | -------------- |
+| Frontend (Next.js) | 3000  | HTTP     | Dev mode       |
+| API Gateway        | 4000  | HTTP     | NestJS         |
+| RAG Service        | 4001  | HTTP     | AI service     |
+| MongoDB            | 27017 | TCP      | Database       |
+| PostgreSQL         | 5432  | TCP      | Database       |
+| Qdrant             | 6333  | HTTP     | Vector DB      |
+| Qdrant gRPC        | 6334  | gRPC     | Vector DB      |
+| Redis              | 6379  | TCP      | Cache          |
+| RabbitMQ           | 5672  | AMQP     | Message broker |
+| RabbitMQ Mgmt      | 15672 | HTTP     | Web UI         |
+| Keycloak           | 8080  | HTTP     | IAM            |
+| MinIO API          | 9000  | HTTP     | Object storage |
+| MinIO Console      | 9001  | HTTP     | Web UI         |
+| Ollama             | 11434 | HTTP     | LLM API        |
+| n8n                | 5678  | HTTP     | Workflow       |
 
 ### Error Codes
 
-| Code | Meaning | HTTP Status |
-|------|---------|-------------|
-| `AUTH001` | Invalid credentials | 401 |
-| `AUTH002` | Token expired | 401 |
-| `AUTH003` | Insufficient permissions | 403 |
-| `VALID001` | Validation failed | 400 |
-| `NOTFOUND001` | Resource not found | 404 |
-| `CONFLICT001` | Resource already exists | 409 |
-| `RATE001` | Rate limit exceeded | 429 |
-| `SERVER001` | Internal server error | 500 |
-| `RAG001` | LLM timeout | 504 |
-| `RAG002` | No relevant documents found | 200 (with warning) |
+| Code          | Meaning                     | HTTP Status        |
+| ------------- | --------------------------- | ------------------ |
+| `AUTH001`     | Invalid credentials         | 401                |
+| `AUTH002`     | Token expired               | 401                |
+| `AUTH003`     | Insufficient permissions    | 403                |
+| `VALID001`    | Validation failed           | 400                |
+| `NOTFOUND001` | Resource not found          | 404                |
+| `CONFLICT001` | Resource already exists     | 409                |
+| `RATE001`     | Rate limit exceeded         | 429                |
+| `SERVER001`   | Internal server error       | 500                |
+| `RAG001`      | LLM timeout                 | 504                |
+| `RAG002`      | No relevant documents found | 200 (with warning) |
 
 ### Service Dependencies Graph
 
@@ -1629,5 +1663,5 @@ services:
 
 ---
 
-*Architecture Version: 1.0*  
-*Last Updated: February 2026*
+_Architecture Version: 1.0_  
+_Last Updated: February 2026_

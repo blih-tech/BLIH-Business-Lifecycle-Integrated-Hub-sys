@@ -1,0 +1,336 @@
+{
+  "id": "blih",
+  "realm": "blih",
+  "enabled": true,
+  "displayName": "BLIH System",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "sslRequired": "external",
+  "bruteForceProtected": true,
+  "clients": [
+    {
+      "clientId": "blih-system-frontend",
+      "name": "BLIH System Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/api/auth/callback/keycloak",
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": ["http://localhost:3000"],
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["basic", "roles", "audience-blih-api"]
+    },
+    {
+      "clientId": "blih-system-api",
+      "name": "BLIH System API",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "my-blih-dev-secret-2024",
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["http://localhost:3001/*"],
+      "webOrigins": [],
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["basic", "roles"],
+      "authorizationServicesEnabled": false
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "superadmin",
+        "description": "Full system access",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "hr",
+            "hr_manager",
+            "hr_assistant",
+            "finance",
+            "finance_manager",
+            "finance_accountant",
+            "project_manager",
+            "pm_lead",
+            "pm_member",
+            "crm_manager",
+            "crm_lead",
+            "crm_agent",
+            "brain_operator",
+            "brain_admin",
+            "brain_viewer"
+          ]
+        }
+      },
+      {
+        "name": "hr",
+        "description": "Human Resources",
+        "composite": true,
+        "composites": {
+          "realm": ["hr_manager", "hr_assistant"]
+        }
+      },
+      {
+        "name": "finance",
+        "description": "Finance",
+        "composite": true,
+        "composites": {
+          "realm": ["finance_manager", "finance_accountant"]
+        }
+      },
+      {
+        "name": "project_manager",
+        "description": "Project Management",
+        "composite": true,
+        "composites": {
+          "realm": ["pm_lead", "pm_member"]
+        }
+      },
+      {
+        "name": "crm_manager",
+        "description": "CRM Management",
+        "composite": true,
+        "composites": {
+          "realm": ["crm_lead", "crm_agent"]
+        }
+      },
+      {
+        "name": "brain_operator",
+        "description": "Brain Operator",
+        "composite": true,
+        "composites": {
+          "realm": ["brain_admin", "brain_viewer"]
+        }
+      },
+      {
+        "name": "hr_manager",
+        "description": "HR Manager"
+      },
+      {
+        "name": "hr_assistant",
+        "description": "HR Assistant"
+      },
+      {
+        "name": "finance_manager",
+        "description": "Finance Manager"
+      },
+      {
+        "name": "finance_accountant",
+        "description": "Finance Accountant"
+      },
+      {
+        "name": "pm_lead",
+        "description": "PM Lead"
+      },
+      {
+        "name": "pm_member",
+        "description": "PM Member"
+      },
+      {
+        "name": "crm_lead",
+        "description": "CRM Lead"
+      },
+      {
+        "name": "crm_agent",
+        "description": "CRM Agent"
+      },
+      {
+        "name": "brain_admin",
+        "description": "Brain Admin"
+      },
+      {
+        "name": "brain_viewer",
+        "description": "Brain Viewer"
+      }
+    ]
+  },
+  "clientScopes": [
+    {
+      "name": "basic",
+      "description": "OpenID Connect scope for add all basic claims to the token",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "auth_time",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "AUTH_TIME",
+            "id.token.claim": "true",
+            "introspection.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "auth_time",
+            "jsonType.label": "long"
+          }
+        },
+        {
+          "name": "sub",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-sub-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "roles",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.id.token": "true",
+        "include.in.access.token": "true",
+        "include.in.userinfo": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "multivalued": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "audience-blih-api",
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "blih-system-api",
+            "id.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "authenticationFlows": [],
+  "requiredActions": [],
+  "users": [
+    {
+      "username": "admin1",
+      "email": "admin@example.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["superadmin"],
+      "clientRoles": {}
+    },
+    {
+      "username": "user1",
+      "email": "user1@example.com",
+      "firstName": "Regular",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["hr_manager"],
+      "clientRoles": {}
+    },
+    {
+      "username": "finance1",
+      "email": "finance1@example.com",
+      "firstName": "Finance",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "finance123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["finance_manager"],
+      "clientRoles": {}
+    },
+    {
+      "username": "pm1",
+      "email": "pm1@example.com",
+      "firstName": "Project",
+      "lastName": "Manager",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "pm123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["pm_lead"],
+      "clientRoles": {}
+    },
+    {
+      "username": "crm1",
+      "email": "crm1@example.com",
+      "firstName": "CRM",
+      "lastName": "Lead",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "crm123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["crm_lead"],
+      "clientRoles": {}
+    },
+    {
+      "username": "brain1",
+      "email": "brain1@example.com",
+      "firstName": "Brain",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "brain123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["brain_admin"],
+      "clientRoles": {}
+    }
+  ]
+}

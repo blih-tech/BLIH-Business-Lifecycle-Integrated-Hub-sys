@@ -34,6 +34,21 @@ This document defines the complete business logic layer of the BLIH system. It s
 - System behavior and constraints
 - Integration patterns between modules
 
+### February 2026 Auth/Event Alignment
+
+- Single-company SSO uses one Keycloak realm (`blih`) and one login/session across modules.
+- Gateway/BFF-first token verification is supported via trusted `x-principal-*` headers (guarded by shared secret) for downstream module APIs.
+- Authorization model is RBAC + data scope with role scope levels: `global`, `organization`, `department`, `self`.
+- Core DB is canonical for role/permission policy writes.
+- Core identity events are standardized with `core.*` names while legacy events remain during transition.
+- Event envelope now requires both `metadata.version` and `metadata.schema`.
+
+### Single Realm Implementation
+
+- The system uses one Keycloak realm only (config: `KEYCLOAK_REALM`, default `blih`). No API query or body parameter is used to override realm.
+- Realm resolution is centralized in **RealmContextService** (`getRealmName()`, `getRealmId()`). Event persistence, audit, and event consumers use this service; realm is not passed through event payloads for tenant resolution.
+- Event `metadata.realm` is deprecated: producers omit it, consumers use the configured realm. See [EVENT_CONTRACTS.md](./EVENT_CONTRACTS.md).
+
 ### Core Philosophy
 **Decentralized Logic / Centralized Governance**
 - Business logic resides within domain modules
@@ -84,6 +99,9 @@ Each module operates as a self-contained bounded context:
 | **Projects** | Delivery Management | Project, Task, Resource, Timesheet, Milestone |
 | **Finance** | Financial Operations | Invoice, Payment, Payroll, Expense, Account |
 | **Brain** | Knowledge & AI | Document, Decision, Policy, Lesson Learned, Chat |
+| **Chatbot** | Conversation & RAG | Session, Message, Query, Response |
+
+**Chatbot** is a domain module like HR, CRM, Finance, Brain, and Projects: it MUST NOT call other modules’ APIs; it consumes and publishes only via `blih.events` (e.g. `chatbot.query.received`, `chatbot.response.sent`, or Brain events for knowledge). See [EVENT_CONTRACTS.md](./EVENT_CONTRACTS.md) for event types.
 
 ### 2.2 Event-Driven Communication
 
@@ -1325,10 +1343,10 @@ class CacheService {
 
 This document continues with extensive sections on:
 - **Business Rules by Module** (detailed validation logic for HR, CRM, Projects, Finance, Brain)
-- **Event Schema & Contracts** (complete event specifications)
+- **Event Schema & Contracts:** Envelope format and versioning rules, and a catalog of public event types and versions, are defined in [EVENT_CONTRACTS.md](./EVENT_CONTRACTS.md).
 - **Validation & Business Rules** (comprehensive validation patterns)
 - **Security & Permission Logic** (RBAC implementation details)
-- **Audit & Compliance Logic** (immutable logging patterns)
+- **Audit & Compliance Logic** (immutable logging patterns). Retention is controlled by `AUDIT_RETENTION_DAYS` (default 2555); `CleanupAuditJob` purges older records. State-changing core endpoints use `@Audit()` for consistent logging.
 - **Error Handling & Recovery** (retry logic, circuit breakers)
 - **Configuration Management** (feature flags, environment-specific config)
 - **Performance & Optimization Rules** (caching strategies, query optimization)

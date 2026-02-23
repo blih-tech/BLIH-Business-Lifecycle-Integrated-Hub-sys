@@ -1,0 +1,2 @@
+# Normalize line endings to LF everywhere so Prettier/ESLint stay consistent across Windows and Unix.
+* text=auto

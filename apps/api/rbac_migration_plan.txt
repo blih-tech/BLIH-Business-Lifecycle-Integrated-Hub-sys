@@ -1,0 +1,232 @@
+# Single-Realm Hierarchical RBAC Refactor (Keycloak Roles + DB Fine Permissions)
+
+## Summary
+Implement a hybrid RBAC model where Keycloak provides role identity (`realm_access.roles`) and the backend resolves effective permissions from DB role hierarchy and role-permission mappings.
+
+This plan is aligned to your locked choices:
+- Canonical top role is `superadmin`.
+- Canonical permission format remains 3-part: `module:resource:action`.
+- Full normalized RBAC schema is required, including module/resource/action normalization and user permission overrides.
+- Legacy roles are fully replaced by the new hierarchy, with hard pruning of legacy assignments.
+- Authorization checks migrate to 3-part keys only.
+- Data scopes: manager/lead/admin variants = `ORGANIZATION`, member/assistant/viewer/agent/accountant variants = `DEPARTMENT`.
+- Platform module naming uses `system`, with business domains in separate modules.
+
+## Implementation Plan
+
+### 1. Database and Prisma Schema Refactor
+1. Update `src/core/infrastructure/persistence/prisma.schema.prisma`:
+- Remove `realmId` and `realm` relation from `Role`.
+- Remove `realmId` and `realm` relation from `Permission`.
+- Add `parentRoleId` self-reference on `Role`.
+- Keep `RoleDataScope`, `isSystem`, timestamps on `Role`.
+- Replace denormalized permission structure with normalized RBAC entities:
+- `PermissionModule` (`name` unique).
+- `PermissionResource` (`moduleId + name` unique).
+- `PermissionAction` (`name` unique).
+- `Permission` with `slug` unique and FK references to module/resource/action.
+- Change `RolePermission` to have surrogate `id` PK plus unique `(roleId, permissionId)`.
+- Add `UserPermissionOverride` with unique `(keycloakUserId, permissionId)` and `granted` boolean.
+- Keep all non-RBAC realm-scoped entities (`User`, `Organization`, `Department`, etc.) unchanged.
+
+2. Create a migration SQL file under `src/core/infrastructure/persistence/migrations/<timestamp>_rbac_single_realm_hierarchy_refactor.sql`:
+- Create normalized permission tables and override table.
+- Backfill normalized tables from existing permissions where possible.
+- Add `parentRoleId` to `Role`.
+- Rename `super_admin` -> `superadmin` in DB roles.
+- Hard-prune legacy roles not in target tree and delete their `UserRole` + `RolePermission` rows.
+- Drop obsolete `Role.realmId` and `Permission.realmId` constraints/columns/indexes.
+- Migrate `RolePermission` shape to `id` PK model.
+- Enforce new uniques/indexes and FK constraints.
+
+3. Target role tree persisted in DB:
+- `superadmin`
+- `hr`, `hr_manager`, `hr_assistant`
+- `finance`, `finance_manager`, `finance_accountant`
+- `project_manager`, `pm_lead`, `pm_member`
+- `crm_manager`, `crm_lead`, `crm_agent`
+- `brain_operator`, `brain_admin`, `brain_viewer`
+
+4. Data-scope mapping persisted on roles:
+- `GLOBAL`: `superadmin`
+- `ORGANIZATION`: `hr`, `finance`, `project_manager`, `crm_manager`, `brain_operator`, `hr_manager`, `finance_manager`, `pm_lead`, `crm_lead`, `brain_admin`
+- `DEPARTMENT`: `hr_assistant`, `finance_accountant`, `pm_member`, `crm_agent`, `brain_viewer`
+
+### 2. Seed and Manifest-Driven RBAC Data
+1. Replace ad-hoc seed logic in `src/core/infrastructure/persistence/prisma.seed.ts` with manifest-driven seeding.
+2. Add manifest file `src/core/infrastructure/persistence/seed/rbac.manifest.ts` containing:
+- Modules: `system`, `hr`, `finance`, `projects`, `crm`, `brain`.
+- Expanded permission set:
+- Existing backend operational permissions rewritten to 3-part `system:*:*`.
+- Draft business permissions rewritten to 3-part module-based keys.
+- Role hierarchy and role-permission mappings.
+3. Seed behavior:
+- Idempotent upserts for modules/resources/actions/permissions/roles.
+- Upsert role hierarchy links (`parentRoleId`).
+- Rebuild role-permission mapping from manifest.
+- Keep `superadmin` handled via wildcard behavior in resolver (not by storing thousands of mappings).
+
+### 3. Runtime Authorization Refactor (DB-Resolved Permissions)
+1. Add permission resolution service, e.g. `src/core/rbac/services/resolve-principal-permissions.service.ts`:
+- Input: principal roles from Keycloak token + principal `sub`.
+- Resolve role records by name.
+- Expand inherited descendant roles from DB hierarchy.
+- Resolve effective permissions from `RolePermission`.
+- Apply `UserPermissionOverride` (grant/deny).
+- Inject wildcard `*` when role set includes `superadmin`.
+- Cache by `(realm, sub, role-hash, policyVersion)` TTL.
+
+2. Update `src/shared/guards/keycloak-auth.guard.ts`:
+- Keep token validation and principal enrichment.
+- Replace token-derived permission parsing with DB-resolved permissions.
+- Keep role list from token as-is.
+- Update privileged MFA role list to `superadmin` only.
+
+3. Update `src/core/infrastructure/keycloak/keycloak-mapper.service.ts`:
+- Stop deriving permissions from role string shape.
+- Return empty permissions initially; guard fills resolved permissions.
+
+4. Update wildcard matcher in `src/core/infrastructure/keycloak/utils/role.util.ts`:
+- Full 3-segment matching with `*` support by segment.
+- Support global `*`.
+- Remove current 2-segment shortcut behavior.
+
+### 4. API/DTO/Controller Permission Key Migration to 3-Part
+1. Migrate all `@Roles(...)` permission requirements in controllers to 3-part keys:
+- Example: `user:create` -> `system:user:create`.
+- Example: `audit:view` -> `system:audit:view`.
+2. Update docs/examples/Swagger in:
+- `src/core/rbac/rbac.controller.ts`
+- All controllers currently using 2-part permission strings.
+3. Update validators in RBAC DTOs:
+- `CreateRoleDto.permission` and `CreateScopeDto.scope` regex to strict 3-part key.
+- Remove realm-specific wording for role/permission entities.
+4. Keep `AssignRoleDto`/`RevokeRole` scope handling intact, but no realm dimension on role lookup.
+
+### 5. RBAC Use-Case Updates
+1. `CreateRoleUseCase`:
+- Remove realm upsert and realm-bound role uniqueness.
+- Support setting `parentRoleName` and multiple permissions (or keep single permission for backward compatibility with internal mapping).
+2. `CreateScopeUseCase`:
+- Upsert into normalized module/resource/action/permission tables.
+- Emit `permission.changed` with `slug`.
+3. `AssignRoleUseCase` / `RevokeRoleUseCase` / `EvaluateAccessUseCase`:
+- Fetch roles without `realmId`.
+- Keep organization/department scope validation against user realm entities.
+- Continue publishing events with role and scope context.
+
+### 6. Keycloak Composite Role Alignment
+1. Update `docker/keycloak/realm-export.json`:
+- Canonical top role renamed to `superadmin`.
+- Keep only target hierarchy roles listed above.
+- Parent composites include sub-roles.
+- `superadmin` composite includes all other roles.
+- Remove legacy roles: `admin`, `auditor`, `security_admin`, `department_head`, `employee`, `client`, `user`.
+2. Keep `realm_access.roles` mapper in client scope.
+3. Ensure no fine-grained permission roles are required in Keycloak after backend refactor.
+
+### 7. Operational and Sync Job Alignment
+1. Update `src/core/jobs/sync-roles.job.ts`:
+- Sync only hierarchy roles present in RBAC manifest.
+- Do not reintroduce pruned legacy roles.
+- Resolve `dataScope` from manifest, not name heuristics.
+2. Update constants:
+- `src/shared/constants/system-roles.constant.ts` to new role set.
+- `src/config/data-scope-roles.constant.ts` to new scope map only.
+
+## Important Public API / Interface / Type Changes
+- Permission checks become strictly 3-part for protected endpoints (`module:resource:action`).
+- RBAC DTO validation patterns enforce 3-part keys.
+- Role model is no longer realm-scoped in persistence.
+- Permission model changes from denormalized columns to normalized module/resource/action relationships plus canonical `slug`.
+- `TokenResponseDto.permissions` becomes DB-resolved effective permissions, not token-derived pseudo-permissions.
+
+## Test Cases and Scenarios
+1. Migration integrity:
+- `Role` and `Permission` tables no longer contain `realmId`.
+- Legacy roles and assignments are pruned.
+- New hierarchy and parent links exist.
+2. Permission resolver:
+- `hr_manager` resolves mapped permissions.
+- `hr` resolves union of child-role permissions via hierarchy.
+- `superadmin` resolves wildcard `*`.
+- User overrides deny/grant correctly alter effective permissions.
+3. Guard behavior:
+- Endpoint requiring `system:user:create` passes for resolved permission.
+- Same endpoint fails when permission missing.
+- Wildcard role permission (`system:user:*`) satisfies action checks.
+4. DTO/controller validation:
+- 2-part keys are rejected.
+- 3-part keys are accepted.
+5. Keycloak compatibility:
+- Token with realm roles only still authorizes through DB-resolved permissions.
+6. Regression:
+- `assign-role`, `revoke-role`, `evaluate-access` continue to enforce organization/department scope constraints.
+
+## Rollout Sequence
+1. Apply Prisma schema + migration.
+2. Run `npm run prisma:generate`.
+3. Run `npm run prisma:seed` to load full normalized RBAC graph.
+4. Import updated `docker/keycloak/realm-export.json` into Keycloak realm.
+5. Run test suite and focused RBAC smoke tests.
+6. Verify one real user per sub-role against protected endpoints.
+
+## Assumptions and Defaults
+- Single realm remains in system, but only roles/permissions are de-realmed.
+- Hard prune is intentional: legacy roles and legacy role assignments are removed.
+- `superadmin` is the only privileged MFA-enforced role.
+- Permission key canonical format is strict 3-part and module names follow `system + domains`.
+- Initial seed is expanded to include both draft business permissions and all currently needed backend operational permissions.
+
+
+
+===============================##########################=====================
+Implemented the plan across schema, migration, seed, runtime authorization, APIs, and Keycloak config.
+
+What was implemented
+
+Prisma RBAC refactor in prisma.schema.prisma:
+Removed role/permission realm coupling.
+Added role hierarchy (parentRoleId self-reference).
+Normalized permissions into module/resource/action tables.
+Switched RolePermission to surrogate id + unique (roleId, permissionId).
+Added UserPermissionOverride.
+Added migration: 20260217_rbac_single_realm_hierarchy_refactor.sql:
+Creates normalized RBAC tables.
+Backfills old permission rows.
+Renames super_admin -> superadmin.
+Seeds canonical hierarchy + scope mapping.
+Prunes legacy roles/assignments.
+Drops Role.realmId and Permission.realmId.
+Added manifest-driven RBAC seed:
+rbac.manifest.ts
+prisma.seed.ts now seeds modules/resources/actions/permissions/roles/hierarchy/mappings idempotently.
+Added DB permission resolver:
+resolve-principal-permissions.service.ts
+Expands descendants, applies role-permission mappings, applies user overrides, injects * for superadmin, caches by principal+roles+policy version.
+Guard/mapper/runtime updates:
+keycloak-auth.guard.ts
+keycloak-mapper.service.ts
+role.util.ts
+validate-token.usecase.ts
+3-part permission migration (module:resource:action) in controllers/DTOs:
+Updated Roles(...) requirements in controllers including audit.controller.ts, users.controller.ts, rbac.controller.ts, etc.
+Updated validators in create-role.dto.ts, create-scope.dto.ts, access-evaluation.dto.ts.
+RBAC use-case updates:
+create-role.usecase.ts
+create-scope.usecase.ts
+assign-role.usecase.ts
+revoke-role.usecase.ts
+evaluate-access.usecase.ts
+Keycloak export alignment:
+realm-export.json now uses canonical hierarchy and composites with top role superadmin.
+Sync/constants alignment:
+sync-roles.job.ts
+system-roles.constant.ts
+data-scope-roles.constant.ts
+Validation run
+
+npm run prisma:generate ✅
+npm run typecheck ✅
+npm run lint:check ✅
+npm test -- --runInBand ✅ (3 suites, 6 tests passed)

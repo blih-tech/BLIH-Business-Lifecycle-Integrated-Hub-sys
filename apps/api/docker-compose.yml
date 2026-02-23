@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: blih-core-postgres
+    environment:
+      POSTGRES_DB: blih_core
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: blih-core-rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: blih-core-keycloak
+    command: ['start-dev', '--import-realm']
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: blih-core-mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+  core-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blih-core-app
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/blih_core
+      KEYCLOAK_URL: http://keycloak:8080
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      SMTP_SECURE: false
+      RABBITMQ_ENABLED: true
+      SMTP_ENABLED: true
+    ports:
+      - '5000:5000'
+    depends_on:
+      - postgres
+      - rabbitmq
+      - keycloak
+      - mailhog
+
+volumes:
+  postgres_data:
+  rabbitmq_data:

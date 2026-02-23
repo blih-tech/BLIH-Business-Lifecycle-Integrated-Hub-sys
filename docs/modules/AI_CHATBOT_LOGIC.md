@@ -1,9 +1,11 @@
 # AI Chatbot Logic Specification
 
-**Module:** Brain (AI)  
+**Module:** Brain (AI) / Chatbot  
 **Component:** Chatbot Application Reference  
 **Version:** 1.1  
 **Last Updated:** February 2026
+
+**Integration boundary:** The Chatbot is a domain module. It MUST NOT call HR, CRM, Finance, or Brain APIs directly. All cross-module communication is via the RabbitMQ exchange `blih.events` (publish/subscribe only; see [EVENT_CONTRACTS.md](../core/EVENT_CONTRACTS.md) and [ARCHITECTURE.md](../core/ARCHITECTURE.md)).
 
 ---
 

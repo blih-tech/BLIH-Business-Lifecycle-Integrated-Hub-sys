@@ -1,0 +1,136 @@
+# =============================================================================
+# BLIH System - Centralized Development Database Setup (VPS)
+# =============================================================================
+# This docker-compose file sets up a SHARED development database on VPS:
+# - PostgreSQL with two databases: keycloak and blih-system-dev
+# - Keycloak integrated with the keycloak database
+# - RabbitMQ for message broker
+# - MailHog for email testing
+#
+# IMPORTANT: This is a SHARED environment for all team members.
+# All developers connect to these services on the VPS for development.
+# 
+# Usage:
+#   docker-compose -f docker-compose.local.yml up -d
+#   docker-compose -f docker-compose.local.yml down
+# =============================================================================
+
+version: '3.9'
+
+services:
+  # PostgreSQL Database with two databases
+  postgres:
+    image: postgres:16-alpine
+    container_name: blih-postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_admin_2024
+      # Default database (will create additional databases via init script)
+      POSTGRES_DB: postgres
+    ports:
+      # Exposed on all interfaces so team members can connect remotely
+      # Using non-standard port 5433 to avoid conflicts
+      - '0.0.0.0:5433:5432'
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - blih-network
+
+  # Keycloak with PostgreSQL backend
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: blih-keycloak-local
+    restart: unless-stopped
+    command: ['start-dev', '--import-realm', '--features=preview']
+    environment:
+      # Bootstrap admin credentials
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      
+      # Database configuration (using keycloak database)
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak_pass_2024
+      
+      # HTTP configuration
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      
+      # Realm import
+      BLIH_KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET:-my-blih-dev-secret-2024}
+    ports:
+      # Exposed on all interfaces so team members can access Keycloak admin console
+      # Using non-standard port 9080 to avoid conflicts
+      - '0.0.0.0:9080:8080'
+    volumes:
+      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+      - keycloak_data_local:/opt/keycloak/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - blih-network
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: blih-rabbitmq-local
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: blih_user
+      RABBITMQ_DEFAULT_PASS: blih_pass_2024
+      RABBITMQ_DEFAULT_VHOST: blih
+    ports:
+      # Exposed on all interfaces for team access
+      # Using non-standard ports to avoid conflicts
+      - '0.0.0.0:5673:5672'     # AMQP port
+      - '0.0.0.0:15673:15672'   # Management UI port
+    volumes:
+      - rabbitmq_data_local:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - blih-network
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: blih-mailhog-local
+    restart: unless-stopped
+    ports:
+      # Exposed on all interfaces for team access
+      # Using non-standard ports to avoid conflicts
+      - '0.0.0.0:1026:1025'   # SMTP port
+      - '0.0.0.0:8026:8025'   # Web UI port
+    networks:
+      - blih-network
+
+volumes:
+  postgres_data_local:
+    driver: local
+  keycloak_data_local:
+    driver: local
+  rabbitmq_data_local:
+    driver: local
+
+networks:
+  blih-network:
+    driver: bridge
