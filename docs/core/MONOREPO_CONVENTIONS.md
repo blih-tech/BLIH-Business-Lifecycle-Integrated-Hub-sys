@@ -27,9 +27,9 @@ This repository uses a root-first governance model. Shared automation and qualit
 
 ## Hook Flow
 
-- `pre-commit`: branch-name validation, lint-staged, monorepo lint, monorepo type-check.
+- `pre-commit`: branch-name validation and lint-staged.
 - `commit-msg`: conventional commit validation with commitlint.
-- `pre-push`: branch protection checks plus `api:verify`.
+- `pre-push`: branch protection checks, monorepo lint, monorepo type-check, and API tests.
 
 ## CI Flow
 
