@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { AuthMeUserDto as AuthMeUserDtoType } from '@repo/types';
 
-export class AuthMeUserDto {
+export class AuthMeUserDto implements AuthMeUserDtoType {
   @ApiProperty({
     description: 'Internal user id for the authenticated subject.',
     example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',

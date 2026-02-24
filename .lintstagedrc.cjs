@@ -8,5 +8,8 @@ module.exports = {
   'packages/types/**/*.{ts,tsx,js,jsx,mjs,cjs}': [
     'eslint --config packages/types/eslint.config.mjs --ignore-pattern packages/types/eslint.config.mjs --max-warnings=0 --fix --no-warn-ignored',
   ],
+  'packages/types/**/*.{ts,tsx,js,jsx,mjs,cjs}': [
+    'eslint --config packages/types/eslint.config.mjs --ignore-pattern packages/types/eslint.config.mjs --max-warnings=0 --fix --no-warn-ignored',
+  ],
   '*.{json,md,yml,yaml}': ['prettier --write'],
 };

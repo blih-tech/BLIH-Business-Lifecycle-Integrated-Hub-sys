@@ -1,0 +1,53 @@
+services:
+  keycloak:
+    image: ${KEYCLOAK_IMAGE:?KEYCLOAK_IMAGE is required}
+    container_name: blih-keycloak
+    restart: unless-stopped
+    command: ['start', '--http-enabled=true', '--import-realm']
+    env_file:
+      - .env.production
+    ports:
+      - '${KEYCLOAK_PORT:-8080}:8080'
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget -q -O /dev/null http://127.0.0.1:8080/realms/${KEYCLOAK_HEALTH_REALM:-master} || exit 1',
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 90s
+
+  api:
+    image: ${API_IMAGE:?API_IMAGE is required}
+    container_name: blih-api
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      NODE_ENV: production
+      API_HOST: 0.0.0.0
+      RABBITMQ_ENABLED: 'false'
+      KEYCLOAK_URL: ${KEYCLOAK_INTERNAL_URL:-http://keycloak:8080}
+      KEYCLOAK_JWKS_URL: ${KEYCLOAK_INTERNAL_JWKS_URL:-http://keycloak:8080/realms/blih/protocol/openid-connect/certs}
+    ports:
+      - '${API_PORT:-5000}:5000'
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget -q -O /dev/null http://127.0.0.1:5000/${API_HEALTH_PATH:-api/v1/health} || exit 1',
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 40s
+
+volumes:
+  keycloak_data:

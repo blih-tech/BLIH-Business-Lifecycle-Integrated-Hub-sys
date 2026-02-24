@@ -1,7 +1,8 @@
 import { IsIn, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { TokenRequestDto as TokenRequestDtoType } from '@repo/types';
 
-export class TokenRequestDto {
+export class TokenRequestDto implements TokenRequestDtoType {
   @ApiProperty({
     description: 'JWT token to validate/introspect/exchange/revoke/refresh.',
     example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
