@@ -1,6 +1,25 @@
 {
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@/features/*": [
+        "./src/features/*"
+      ],
+      "@/shared/*": [
+        "./src/shared/*"
+      ],
+      "@/providers/*": [
+        "./src/providers/*"
+      ],
+      "@/styles/*": [
+        "./src/styles/*"
+      ]
+    },
     "plugins": [
       {
         "name": "next"
