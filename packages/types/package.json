@@ -1,28 +1,65 @@
 {
-  "name": "@repo/types",
+  "name": "@blih/types",
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
   "exports": {
-    ".": "./src/index.ts",
-    "./shared": "./src/shared/index.ts",
-    "./shared/*": "./src/shared/*.ts",
-    "./auth": "./src/auth/index.ts",
-    "./auth/*": "./src/auth/*.ts",
-    "./users": "./src/users/index.ts",
-    "./users/*": "./src/users/*.ts",
-    "./audit": "./src/audit/index.ts",
-    "./audit/*": "./src/audit/*.ts",
-    "./system-config": "./src/system-config/index.ts",
-    "./system-config/*": "./src/system-config/*.ts",
-    "./rbac": "./src/rbac/index.ts",
-    "./rbac/*": "./src/rbac/*.ts",
-    "./notifications": "./src/notifications/index.ts",
-    "./notifications/*": "./src/notifications/*.ts"
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./shared": {
+      "types": "./dist/shared/index.d.ts"
+    },
+    "./shared/*": {
+      "types": "./dist/shared/*.d.ts"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts"
+    },
+    "./auth/*": {
+      "types": "./dist/auth/*.d.ts"
+    },
+    "./users": {
+      "types": "./dist/users/index.d.ts"
+    },
+    "./users/*": {
+      "types": "./dist/users/*.d.ts"
+    },
+    "./audit": {
+      "types": "./dist/audit/index.d.ts"
+    },
+    "./audit/*": {
+      "types": "./dist/audit/*.d.ts"
+    },
+    "./system-config": {
+      "types": "./dist/system-config/index.d.ts"
+    },
+    "./system-config/*": {
+      "types": "./dist/system-config/*.d.ts"
+    },
+    "./rbac": {
+      "types": "./dist/rbac/index.d.ts"
+    },
+    "./rbac/*": {
+      "types": "./dist/rbac/*.d.ts"
+    },
+    "./notifications": {
+      "types": "./dist/notifications/index.d.ts"
+    },
+    "./notifications/*": {
+      "types": "./dist/notifications/*.d.ts"
+    }
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@repo/eslint-config": "file:../eslint-config",
