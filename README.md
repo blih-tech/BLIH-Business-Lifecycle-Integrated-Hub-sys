@@ -7,8 +7,9 @@ This Turborepo starter is maintained by the Turborepo core team.
 - Backend app location: `apps/api`
 - Root governance workflow: `.github/workflows/governance.yml`
 - Root hook/commit conventions: `.husky/`, `commitlint.config.cjs`, `.lintstagedrc.cjs`
-- API Docker files: `apps/api/Dockerfile`, `apps/api/docker-compose.yml`, `apps/api/docker-compose.local.yml`
+- API Docker files: `apps/api/Dockerfile`, `apps/api/docker-compose.yml`
 - Monorepo conventions document: `docs/core/MONOREPO_CONVENTIONS.md`
+- Git workflow and PR guidelines: `docs/core/GIT_WORKFLOW.md`
 
 ## Using this example
 
