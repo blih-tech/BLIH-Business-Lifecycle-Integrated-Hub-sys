@@ -2,21 +2,11 @@
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/features/*": [
-        "./src/features/*"
-      ],
-      "@/shared/*": [
-        "./src/shared/*"
-      ],
-      "@/providers/*": [
-        "./src/providers/*"
-      ],
-      "@/styles/*": [
-        "./src/styles/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/providers/*": ["./src/providers/*"],
+      "@/styles/*": ["./src/styles/*"]
     },
     "plugins": [
       {
@@ -31,7 +21,5 @@
     "next.config.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
