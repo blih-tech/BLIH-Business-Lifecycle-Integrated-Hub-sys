@@ -5,38 +5,45 @@ Your local development database environment has been configured successfully.
 ## 📦 What Was Created
 
 ### 1. Docker Compose Configuration
-- **File**: `docker-compose.local.yml`
-- **Services**: PostgreSQL, Keycloak, RabbitMQ, MailHog
+
+- **File**: `docker-compose.yml`
+- **Services**: PostgreSQL, Keycloak, MailHog, API
 - **Databases**: `keycloak` and `blih-system-dev`
 
 ### 2. Database Initialization Scripts
+
 - **Directory**: `docker/init-scripts/`
 - **Script**: `01-init-databases.sql`
 - **Creates**: Both databases with dedicated users and permissions
 
 ### 3. Environment Configuration
+
 - **File**: `.env.local`
-- **Configured**: All connection strings with non-standard ports
+- **Configured**: Connection strings aligned to Docker service hostnames
 - **Ready**: Can be copied to `.env` for use
 
 ### 4. Management Scripts
+
 - **Script**: `scripts/db-local.sh` (main management tool)
 - **Script**: `scripts/check-ports.sh` (port availability checker)
 - **Added**: npm scripts for easy database management
 
 ### 5. Documentation
-- **Guide**: `docker/DATABASE_SETUP.md` (comprehensive setup guide)
-- **Guide**: `docker/QUICKSTART.md` (quick start instructions)
-- **Guide**: `docker/README.md` (Docker configuration overview)
+
+- **Guide**: `START_HERE.md` (quick start)
+- **Guide**: `TEAM_QUICKSTART.md` (team setup)
+- **Guide**: `README.md` (backend overview)
 
 ## 🚀 Getting Started (3 Steps)
 
 ### Step 1: Check Ports
+
 ```bash
 npm run db:check-ports
 ```
 
 ### Step 2: Start Services
+
 ```bash
 npm run db:start
 # or
@@ -44,6 +51,7 @@ npm run db:start
 ```
 
 ### Step 3: Verify Setup
+
 ```bash
 npm run db:status
 # or
@@ -55,21 +63,23 @@ That's it! Your databases are ready.
 ## 🔌 Connection Details
 
 ### Main Application Database (blih-system-dev)
+
 ```bash
 Host: localhost
-Port: 5433
+Port: 5432
 Database: blih-system-dev
 User: blih_dev_user
 Password: blih_dev_pass_2024
 
 # Connection string (already in .env.local):
-postgresql://blih_dev_user:blih_dev_pass_2024@localhost:5433/blih-system-dev
+postgresql://blih_dev_user:blih_dev_pass_2024@localhost:5432/blih-system-dev
 ```
 
 ### Keycloak Database
+
 ```bash
 Host: localhost
-Port: 5433
+Port: 5432
 Database: keycloak
 User: keycloak_user
 Password: keycloak_pass_2024
@@ -79,16 +89,16 @@ Password: keycloak_pass_2024
 
 ## 🎯 Service Access Points
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Keycloak Admin | http://localhost:9080 | admin / admin |
-| RabbitMQ Management | http://localhost:15673 | blih_user / blih_pass_2024 |
-| MailHog Web UI | http://localhost:8026 | (no auth) |
+| Service          | URL                               | Credentials          |
+| ---------------- | --------------------------------- | -------------------- |
+| Keycloak Admin   | http://localhost:8080             | admin / admin        |
+| MailHog Web UI   | http://localhost:8025             | (no auth)            |
 | API Swagger Docs | http://localhost:5000/api/v1/docs | (after starting app) |
 
 ## 🛠️ Common Commands
 
 ### Database Management (via npm)
+
 ```bash
 npm run db:start          # Start all services
 npm run db:stop           # Stop all services
@@ -101,6 +111,7 @@ npm run db:psql           # Connect to blih-system-dev database
 ```
 
 ### Database Management (via script)
+
 ```bash
 ./scripts/db-local.sh start           # Start all services
 ./scripts/db-local.sh stop            # Stop all services
@@ -114,6 +125,7 @@ npm run db:psql           # Connect to blih-system-dev database
 ```
 
 ### Application Development
+
 ```bash
 npm install              # Install dependencies
 npm run start:dev        # Start NestJS in development mode
@@ -125,14 +137,12 @@ npm run prisma:generate  # Generate Prisma client
 
 All ports are configured to avoid conflicts with commonly used services:
 
-| Service | Standard Port | Our Port | Reason |
-|---------|--------------|----------|---------|
-| PostgreSQL | 5432 | **5433** | Avoid conflicts with other PostgreSQL instances |
-| Keycloak | 8080 | **9080** | Avoid conflicts with common dev servers |
-| RabbitMQ AMQP | 5672 | **5673** | Avoid conflicts with other RabbitMQ instances |
-| RabbitMQ Mgmt | 15672 | **15673** | Avoid conflicts with other RabbitMQ instances |
-| MailHog SMTP | 1025 | **1026** | Avoid conflicts with MailHog instances |
-| MailHog Web | 8025 | **8026** | Avoid conflicts with MailHog instances |
+| Service      | Standard Port | Our Port | Reason                                          |
+| ------------ | ------------- | -------- | ----------------------------------------------- |
+| PostgreSQL   | 5432          | **5432** | Avoid conflicts with other PostgreSQL instances |
+| Keycloak     | 8080          | **8080** | Avoid conflicts with common dev servers         |
+| MailHog SMTP | 1025          | **1025** | Avoid conflicts with MailHog instances          |
+| MailHog Web  | 8025          | **8025** | Avoid conflicts with MailHog instances          |
 
 ## 🏗️ Architecture
 
@@ -151,7 +161,7 @@ All ports are configured to avoid conflicts with commonly used services:
     │                                             │
     ▼                                             ▼
 ┌─────────────────────────────┐      ┌──────────────────────┐
-│    PostgreSQL (Port 5433)   │      │  Keycloak (8081)     │
+│    PostgreSQL (Port 5432)   │      │  Keycloak (8081)     │
 │  ┌───────────────────────┐  │      │  Authentication &    │
 │  │ Database: keycloak    │◄─┼──────┤  Authorization       │
 │  │ Owner: keycloak_user  │  │      └──────────────────────┘
@@ -167,8 +177,6 @@ All ports are configured to avoid conflicts with commonly used services:
     │                             │
     ▼                             ▼
 ┌─────────────────┐    ┌──────────────────┐
-│    RabbitMQ     │    │     MailHog      │
-│  5673 / 15673   │    │   1026 / 8026    │
 │  Message Broker │    │  Email Testing   │
 └─────────────────┘    └──────────────────┘
 ```
@@ -176,13 +184,15 @@ All ports are configured to avoid conflicts with commonly used services:
 ## 📚 Database Credentials Reference
 
 ### PostgreSQL Admin Access
+
 ```bash
 User: postgres
 Password: postgres_admin_2024
-Port: 5433
+Port: 5432
 ```
 
 ### Keycloak Database
+
 ```bash
 Database: keycloak
 User: keycloak_user
@@ -192,6 +202,7 @@ Managed by: Keycloak service
 ```
 
 ### BLIH System Database
+
 ```bash
 Database: blih-system-dev
 User: blih_dev_user
@@ -200,13 +211,10 @@ Purpose: Main application data
 Managed by: Your NestJS application
 ```
 
-### RabbitMQ
 ```bash
 User: blih_user
 Password: blih_pass_2024
 VHost: blih
-AMQP Port: 5673
-Management Port: 15673
 ```
 
 ## ✅ Verification Checklist
@@ -232,7 +240,7 @@ npm run db:psql
 # Exit with: \q
 
 # 6. Access Keycloak Admin Console
-# Open: http://localhost:9080
+# Open: http://localhost:8080
 # Login: admin / admin
 
 # 7. Start your application
@@ -286,24 +294,27 @@ npm run start:dev
 
 ## 📖 Documentation
 
-- **Quick Start**: [docker/QUICKSTART.md](docker/QUICKSTART.md)
-- **Detailed Setup**: [docker/DATABASE_SETUP.md](docker/DATABASE_SETUP.md)
-- **Docker Info**: [docker/README.md](docker/README.md)
+- **Quick Start**: [START_HERE.md](START_HERE.md)
+- **Detailed Setup**: [SETUP_COMPLETE.md](SETUP_COMPLETE.md)
+- **Docker Info**: [README.md](README.md)
 - **Main README**: [README.md](README.md)
 
 ## 🌟 Key Features
 
 ### ✓ Two Isolated Databases
+
 - Separate databases for Keycloak and your application
 - Independent users with appropriate permissions
 - No data leakage between services
 
 ### ✓ Non-Standard Ports
+
 - All ports configured to avoid common conflicts
-- Easy to change in docker-compose.local.yml
+- Easy to change in docker-compose.yml
 - Documented in all configuration files
 
 ### ✓ Cloud-like Architecture
+
 - Container-based services
 - Network isolation
 - Persistent storage via Docker volumes
@@ -311,6 +322,7 @@ npm run start:dev
 - Ready for cloud deployment
 
 ### ✓ Developer-Friendly
+
 - Simple npm commands
 - Comprehensive bash scripts
 - Detailed documentation
@@ -324,6 +336,7 @@ npm run start:dev
 **Never use these passwords in production!**
 
 For production:
+
 - Use strong, randomly generated passwords
 - Store credentials in a secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.)
 - Enable SSL/TLS for all database connections
@@ -344,11 +357,10 @@ You now have a complete local development database setup with:
 
 ✅ PostgreSQL with two databases (keycloak and blih-system-dev)  
 ✅ Keycloak authentication server with database persistence  
-✅ RabbitMQ message broker  
 ✅ MailHog email testing  
 ✅ Non-standard ports to avoid conflicts  
 ✅ Easy management via npm scripts and bash tools  
 ✅ Comprehensive documentation  
-✅ Cloud-like architecture  
+✅ Cloud-like architecture
 
 **You're ready to start developing!** 🚀

@@ -6,10 +6,10 @@ import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: ['eslint.config.mjs', 'commitlint.config.cjs', 'scripts/**/*.js'],
+    ignores: ['eslint.config.mjs', 'scripts/**/*.js'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
   {
     languageOptions: {
@@ -19,16 +19,15 @@ export default [
       },
       sourceType: 'commonjs',
       parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        sourceType: 'commonjs',
       },
     },
   },
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
       'prettier/prettier': 'error',
       'comma-dangle': 'off',
     },

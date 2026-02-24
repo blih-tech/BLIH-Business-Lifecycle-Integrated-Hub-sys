@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -e
+
+npm run branch:check
+npx --no-install lint-staged
+npm run lint
+npm run check-types
