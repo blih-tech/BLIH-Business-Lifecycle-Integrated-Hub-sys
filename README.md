@@ -2,6 +2,15 @@
 
 This Turborepo starter is maintained by the Turborepo core team.
 
+## BLIH Monorepo Notes
+
+- Backend app location: `apps/api`
+- Root governance workflow: `.github/workflows/governance.yml`
+- Root hook/commit conventions: `.husky/`, `commitlint.config.cjs`, `.lintstagedrc.cjs`
+- API Docker files: `apps/api/Dockerfile`, `apps/api/docker-compose.yml`
+- Monorepo conventions document: `docs/core/MONOREPO_CONVENTIONS.md`
+- Git workflow and PR guidelines: `docs/core/GIT_WORKFLOW.md`
+
 ## Using this example
 
 Run the following command:

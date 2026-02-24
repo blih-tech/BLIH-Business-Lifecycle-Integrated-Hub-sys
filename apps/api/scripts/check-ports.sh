@@ -14,12 +14,11 @@ NC='\033[0m' # No Color
 
 # Ports to check
 declare -A PORTS=(
-    ["5433"]="PostgreSQL"
-    ["9080"]="Keycloak"
-    ["5673"]="RabbitMQ AMQP"
-    ["15673"]="RabbitMQ Management"
-    ["1026"]="MailHog SMTP"
-    ["8026"]="MailHog Web UI"
+    ["5432"]="PostgreSQL"
+    ["8080"]="Keycloak"
+    ["1025"]="MailHog SMTP"
+    ["8025"]="MailHog Web UI"
+    ["5000"]="API"
 )
 
 print_info() {
@@ -92,7 +91,7 @@ main() {
     else
         print_error "Some ports are in use. Please stop the conflicting services or modify the port configuration."
         echo ""
-        print_info "To modify ports, edit: docker-compose.local.yml"
+        print_info "To modify ports, edit: docker-compose.yml"
         exit 1
     fi
 }

@@ -15,7 +15,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/infrastructure/persistence/prisma.schema.prisma ./src/infrastructure/persistence/prisma.schema.prisma
+COPY --from=builder /app/src/platform/prisma/schema.prisma ./src/platform/prisma/schema.prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 EXPOSE 5000

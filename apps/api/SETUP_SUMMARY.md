@@ -7,28 +7,33 @@ You now have a **centralized development database environment on VPS** for team 
 ## 📦 Files Created
 
 ### Docker Configuration
-- ✅ `docker-compose.local.yml` - Main Docker Compose file with all services
+
+- ✅ `docker-compose.yml` - Main Docker Compose file with all services
 - ✅ `docker/init-scripts/01-init-databases.sql` - Creates both databases
 - ✅ `docker/init-scripts/02-configure-remote-access.sql` - Remote access setup
 
 ### Environment Files
+
 - ✅ `.env.local` - VPS server environment (localhost connections)
 - ✅ `.env.team.template` - Template for team members (remote connections)
 
 ### Management Scripts
+
 - ✅ `scripts/db-local.sh` - Main database management tool
 - ✅ `scripts/check-ports.sh` - Port availability checker
 - ✅ `scripts/get-vps-info.sh` - Generate team connection info
 
 ### Documentation
-- ✅ `VPS_SETUP_GUIDE.md` - Complete VPS setup guide
-- ✅ `docker/TEAM_SETUP.md` - Guide for team members
-- ✅ `docker/DATABASE_SETUP.md` - Detailed database documentation
-- ✅ `docker/QUICKSTART.md` - Quick start instructions
-- ✅ `docker/README.md` - Docker configuration overview
+
+- VPS_SETUP_GUIDE.md - Complete VPS setup guide
+- START_HERE.md - Quick start
+- TEAM_QUICKSTART.md - Team setup
+- README.md - Backend overview
 
 ### Package.json Scripts
+
 Added npm commands for easy database management:
+
 - `npm run db:start`
 - `npm run db:stop`
 - `npm run db:status`
@@ -41,6 +46,7 @@ Added npm commands for easy database management:
 ### Two Separate Databases
 
 #### 1. keycloak
+
 - **Purpose**: Keycloak authentication data
 - **User**: `keycloak_user`
 - **Password**: `keycloak_pass_2024`
@@ -48,6 +54,7 @@ Added npm commands for easy database management:
 - **Access**: Via Keycloak Admin API only
 
 #### 2. blih-system-dev
+
 - **Purpose**: Main application data
 - **User**: `blih_dev_user`
 - **Password**: `blih_dev_pass_2024`
@@ -55,22 +62,21 @@ Added npm commands for easy database management:
 - **Access**: Direct access by application
 
 ### PostgreSQL Admin
+
 - **User**: `postgres`
 - **Password**: `postgres_admin_2024`
-- **Port**: `5433` (exposed to 0.0.0.0 for team access)
+- **Port**: `5432` (exposed to 0.0.0.0 for team access)
 
 ## 🌐 Services & Ports
 
 All services are exposed on `0.0.0.0` so team members can connect remotely:
 
-| Service | Port | Access | Credentials |
-|---------|------|--------|-------------|
-| PostgreSQL | 5433 | Team + Apps | See databases above |
-| Keycloak Admin | 9080 | Team | admin / admin |
-| RabbitMQ AMQP | 5673 | Apps | blih_user / blih_pass_2024 |
-| RabbitMQ Mgmt | 15673 | Team | blih_user / blih_pass_2024 |
-| MailHog SMTP | 1026 | Apps | (no auth) |
-| MailHog Web UI | 8026 | Team | (no auth) |
+| Service        | Port | Access      | Credentials         |
+| -------------- | ---- | ----------- | ------------------- |
+| PostgreSQL     | 5432 | Team + Apps | See databases above |
+| Keycloak Admin | 8080 | Team        | admin / admin       |
+| MailHog SMTP   | 1025 | Apps        | (no auth)           |
+| MailHog Web UI | 8025 | Team        | (no auth)           |
 
 ✅ **All ports are available and ready to use!**
 
@@ -105,16 +111,14 @@ sleep 60
 # Allow team access (choose one approach)
 
 # Approach A: Allow from anywhere (easier, less secure)
-sudo ufw allow 5433/tcp
-sudo ufw allow 9080/tcp
-sudo ufw allow 5673/tcp
-sudo ufw allow 15673/tcp
-sudo ufw allow 8026/tcp
+sudo ufw allow 5432/tcp
+sudo ufw allow 8080/tcp
+sudo ufw allow 8025/tcp
 sudo ufw enable
 
 # Approach B: Restrict to team IPs (recommended)
-sudo ufw allow from <TEAM_MEMBER_IP> to any port 5433
-sudo ufw allow from <TEAM_MEMBER_IP> to any port 9080
+sudo ufw allow from <TEAM_MEMBER_IP> to any port 5432
+sudo ufw allow from <TEAM_MEMBER_IP> to any port 8080
 # ... repeat for other ports and team members
 sudo ufw enable
 ```
@@ -129,15 +133,17 @@ sudo ufw enable
 #### Share Info with Team
 
 Send team members:
+
 1. Output from `./scripts/get-vps-info.sh`
-2. The file: `docker/TEAM_SETUP.md`
+2. The file: `TEAM_QUICKSTART.md`
 3. The file: `.env.team.template`
 
 ### Path 2: Team Member Setup
 
-Team members should follow the guide: `docker/TEAM_SETUP.md`
+Team members should follow the guide: `TEAM_QUICKSTART.md`
 
 Quick summary:
+
 1. Clone repository
 2. Create `.env` from `.env.team.template`
 3. Replace `<VPS_HOST>` with actual VPS IP
@@ -150,8 +156,8 @@ Quick summary:
 
 ```bash
 # The VPS can use localhost since services run locally
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@localhost:5433/blih-system-dev
-KEYCLOAK_URL=http://localhost:9080
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@localhost:5432/blih-system-dev
+KEYCLOAK_URL=http://localhost:8080
 ```
 
 This is already configured in `.env.local`.
@@ -161,12 +167,12 @@ This is already configured in `.env.local`.
 ```bash
 # Team members must use VPS IP/hostname
 # Example if VPS IP is 192.168.1.100:
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@192.168.1.100:5433/blih-system-dev
-KEYCLOAK_URL=http://192.168.1.100:9080
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@192.168.1.100:5432/blih-system-dev
+KEYCLOAK_URL=http://192.168.1.100:8080
 
 # Example if VPS has domain dev.blih.com:
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@dev.blih.com:5433/blih-system-dev
-KEYCLOAK_URL=http://dev.blih.com:9080
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@dev.blih.com:5432/blih-system-dev
+KEYCLOAK_URL=http://dev.blih.com:8080
 ```
 
 This is configured in `.env.team.template`.
@@ -178,21 +184,20 @@ This is configured in `.env.team.template`.
 │              VPS Server (Centralized)                    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  PostgreSQL (Port 5433)                        │    │
+│  │  PostgreSQL (Port 5432)                        │    │
 │  │  ├─ Database: keycloak                         │    │
 │  │  └─ Database: blih-system-dev                  │    │
 │  └────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  Keycloak (Port 9080)                          │    │
+│  │  Keycloak (Port 8080)                          │    │
 │  └────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  RabbitMQ (5673/15673)                         │    │
 │  └────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  MailHog (1026/8026)                           │    │
+│  │  MailHog (1025/8025)                           │    │
 │  └────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────┘
                       ▲  ▲  ▲
@@ -203,7 +208,7 @@ This is configured in `.env.team.template`.
     │ Dev 1   │      │ Dev 2  │     │ Dev 3  │
     │ (Local) │      │(Local) │     │(Local) │
     └─────────┘      └────────┘     └────────┘
-    
+
     Each developer runs code locally
     All connect to shared VPS database
     Collaborative development environment
@@ -278,7 +283,7 @@ Consider setting up monitoring tools:
 
 ### For Team Members (AFTER VPS SETUP)
 
-1. Follow `docker/TEAM_SETUP.md`
+1. Follow `TEAM_QUICKSTART.md`
 2. Configure `.env` file
 3. Test connection
 4. Start developing
@@ -294,9 +299,9 @@ Consider setting up monitoring tools:
 ## 📞 Getting Help
 
 - **VPS Setup Issues**: See `VPS_SETUP_GUIDE.md`
-- **Team Setup Issues**: See `docker/TEAM_SETUP.md`
-- **Database Questions**: See `docker/DATABASE_SETUP.md`
-- **Quick Reference**: See `docker/QUICKSTART.md`
+- **Team Setup Issues**: See `TEAM_QUICKSTART.md`
+- **Database Questions**: See `SETUP_COMPLETE.md`
+- **Quick Reference**: See `START_HERE.md`
 
 ## 🎊 Success!
 

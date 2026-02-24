@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-base-to-string */
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { KeycloakAdminService } from '../../platform/keycloak/keycloak-admin.service';

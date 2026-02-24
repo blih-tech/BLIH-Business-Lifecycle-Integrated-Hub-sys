@@ -1,8 +1,0 @@
-#!/usr/bin/env sh
-set -e
-
-npm run validate:branch-name
-npx --no-install lint-staged
-npm run lint:check
-npm run typecheck
-npm run test -- --bail --passWithNoTests

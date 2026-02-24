@@ -14,9 +14,9 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Project root directory
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-COMPOSE_FILE="$PROJECT_ROOT/docker-compose.local.yml"
+# API root
+API_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+COMPOSE_FILE="$API_ROOT/docker-compose.yml"
 
 # Print colored message
 print_info() {
@@ -47,7 +47,7 @@ check_docker() {
 start() {
     print_info "Starting BLIH System local database services..."
     check_docker
-    docker-compose -f "$COMPOSE_FILE" up -d
+    docker compose -f "$COMPOSE_FILE" up -d
     print_success "Services started successfully!"
     echo ""
     status
@@ -57,7 +57,7 @@ start() {
 stop() {
     print_info "Stopping BLIH System local database services..."
     check_docker
-    docker-compose -f "$COMPOSE_FILE" down
+    docker compose -f "$COMPOSE_FILE" down
     print_success "Services stopped successfully!"
 }
 
@@ -73,25 +73,21 @@ restart() {
 status() {
     check_docker
     print_info "Service Status:"
-    docker-compose -f "$COMPOSE_FILE" ps
+    docker compose -f "$COMPOSE_FILE" ps
     echo ""
     print_info "Connection Information:"
     echo ""
     echo "  PostgreSQL:"
     echo "    Host: localhost"
-    echo "    Port: 5433"
+    echo "    Port: 5432"
     echo "    Databases: keycloak, blih-system-dev"
     echo "    Admin User: postgres / postgres_admin_2024"
     echo ""
-    echo "  Keycloak Admin Console: http://localhost:9080"
+    echo "  Keycloak Admin Console: http://localhost:8080"
     echo "    Username: admin"
     echo "    Password: admin"
     echo ""
-    echo "  RabbitMQ Management: http://localhost:15673"
-    echo "    Username: blih_user"
-    echo "    Password: blih_pass_2024"
-    echo ""
-    echo "  MailHog Web UI: http://localhost:8026"
+    echo "  MailHog Web UI: http://localhost:8025"
     echo ""
 }
 
@@ -99,9 +95,9 @@ status() {
 logs() {
     check_docker
     if [ -n "$1" ]; then
-        docker-compose -f "$COMPOSE_FILE" logs -f "$1"
+        docker compose -f "$COMPOSE_FILE" logs -f "$1"
     else
-        docker-compose -f "$COMPOSE_FILE" logs -f
+        docker compose -f "$COMPOSE_FILE" logs -f
     fi
 }
 
@@ -110,7 +106,7 @@ psql_connect() {
     check_docker
     local db="${1:-postgres}"
     print_info "Connecting to database: $db"
-    docker exec -it blih-postgres-local psql -U postgres -d "$db"
+    docker exec -it blih-postgres psql -U postgres -d "$db"
 }
 
 # Reset databases (WARNING: destroys all data)
@@ -119,7 +115,7 @@ reset() {
     read -p "Are you sure you want to continue? (yes/no): " confirm
     if [ "$confirm" = "yes" ]; then
         print_info "Stopping services and removing volumes..."
-        docker-compose -f "$COMPOSE_FILE" down -v
+        docker compose -f "$COMPOSE_FILE" down -v
         print_success "All data has been removed."
         print_info "Starting services with fresh databases..."
         start
@@ -135,28 +131,21 @@ health() {
     echo ""
     
     # Check PostgreSQL
-    if docker exec blih-postgres-local pg_isready -U postgres > /dev/null 2>&1; then
+    if docker exec blih-postgres pg_isready -U postgres > /dev/null 2>&1; then
         print_success "PostgreSQL: Healthy"
     else
         print_error "PostgreSQL: Unhealthy"
     fi
     
     # Check Keycloak
-    if curl -s -o /dev/null -w "%{http_code}" http://localhost:9080 | grep -q "200\|303"; then
+    if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 | grep -q "200\|303"; then
         print_success "Keycloak: Healthy"
     else
         print_error "Keycloak: Unhealthy (may still be starting up)"
     fi
     
-    # Check RabbitMQ
-    if curl -s -o /dev/null -w "%{http_code}" http://localhost:15673 | grep -q "200"; then
-        print_success "RabbitMQ: Healthy"
-    else
-        print_error "RabbitMQ: Unhealthy"
-    fi
-    
     # Check MailHog
-    if curl -s -o /dev/null -w "%{http_code}" http://localhost:8026 | grep -q "200"; then
+    if curl -s -o /dev/null -w "%{http_code}" http://localhost:8025 | grep -q "200"; then
         print_success "MailHog: Healthy"
     else
         print_error "MailHog: Unhealthy"
@@ -169,13 +158,13 @@ backup() {
     check_docker
     local db="${1:-blih-system-dev}"
     local timestamp=$(date +%Y%m%d_%H%M%S)
-    local backup_dir="$PROJECT_ROOT/backups"
+    local backup_dir="$API_ROOT/backups"
     local backup_file="$backup_dir/${db}_${timestamp}.sql"
     
     mkdir -p "$backup_dir"
     
     print_info "Backing up database: $db"
-    docker exec blih-postgres-local pg_dump -U postgres "$db" > "$backup_file"
+    docker exec blih-postgres pg_dump -U postgres "$db" > "$backup_file"
     print_success "Backup saved to: $backup_file"
 }
 
@@ -201,7 +190,7 @@ restore() {
     read -p "Continue? (yes/no): " confirm
     if [ "$confirm" = "yes" ]; then
         print_info "Restoring database: $db_name"
-        docker exec -i blih-postgres-local psql -U postgres "$db_name" < "$backup_file"
+        docker exec -i blih-postgres psql -U postgres "$db_name" < "$backup_file"
         print_success "Database restored successfully!"
     else
         print_info "Restore cancelled."
