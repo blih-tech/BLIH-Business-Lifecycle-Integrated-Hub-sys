@@ -1,5 +1,5 @@
 /**
- * Conventional Commits enforcement for blih-system-backend.
+ * Conventional Commits enforcement for the BLIH monorepo.
  * Format: type(scope?): subject
  * Optional: body and footer (e.g. BREAKING CHANGE:, Fixes #123).
  *
