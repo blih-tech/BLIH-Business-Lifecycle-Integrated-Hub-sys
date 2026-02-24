@@ -59,8 +59,8 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: apps/api/Dockerfile
     container_name: blih-api
     env_file:
       - .env.example
