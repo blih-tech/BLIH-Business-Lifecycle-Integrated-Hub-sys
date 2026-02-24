@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -e
+
+node apps/api/scripts/git/validate-pre-push.js "$@"
+npm run api:verify
