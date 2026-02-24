@@ -5,6 +5,15 @@
       "@/*": [
         "./src/*"
       ],
+      "@/shared/components/*": [
+        "./src/shared/components/*"
+      ],
+      "@/shared/lib/*": [
+        "./src/shared/lib/*"
+      ],
+      "@/shared/hooks/*": [
+        "./src/shared/hooks/*"
+      ],
       "@/features/*": [
         "./src/features/*"
       ],
