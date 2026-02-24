@@ -1,68 +1,90 @@
 services:
   postgres:
-    image: postgres:16
-    container_name: blih-core-postgres
+    image: postgres:16-alpine
+    container_name: blih-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: blih_core
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: postgres_admin_2024
+      POSTGRES_DB: postgres
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  rabbitmq:
-    image: rabbitmq:3.13-management
-    container_name: blih-core-rabbitmq
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
-    container_name: blih-core-keycloak
-    command: ['start-dev', '--import-realm']
+    container_name: blih-keycloak
+    restart: unless-stopped
+    command: ['start-dev', '--import-realm', '--features=preview']
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak_pass_2024
+      KC_HTTP_ENABLED: 'true'
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      BLIH_KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET:-my-blih-dev-secret-2024}
     ports:
       - '8080:8080'
     volumes:
       - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+      - keycloak_data:/opt/keycloak/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1']
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
-    container_name: blih-core-mailhog
+    container_name: blih-mailhog
+    restart: unless-stopped
     ports:
       - '1025:1025'
       - '8025:8025'
 
-  core-app:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: blih-core-app
+    container_name: blih-api
     env_file:
       - .env.example
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/blih_core
+      API_HOST: 0.0.0.0
+      DATABASE_URL: postgresql://blih_dev_user:blih_dev_pass_2024@postgres:5432/blih-system-dev
       KEYCLOAK_URL: http://keycloak:8080
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      KEYCLOAK_JWKS_URL: http://keycloak:8080/realms/blih/protocol/openid-connect/certs
+      JWT_EXPECTED_ISSUER: http://keycloak:8080/realms/blih
+      RABBITMQ_ENABLED: 'false'
+      SMTP_ENABLED: 'true'
       SMTP_HOST: mailhog
       SMTP_PORT: 1025
-      SMTP_SECURE: false
-      RABBITMQ_ENABLED: true
-      SMTP_ENABLED: true
+      SMTP_SECURE: 'false'
     ports:
       - '5000:5000'
     depends_on:
-      - postgres
-      - rabbitmq
-      - keycloak
-      - mailhog
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
 
 volumes:
   postgres_data:
-  rabbitmq_data:
+  keycloak_data:

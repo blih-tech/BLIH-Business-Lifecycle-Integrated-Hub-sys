@@ -6,7 +6,7 @@ This is a **centralized VPS database setup** for the BLIH System. Multiple team 
 
 ## 🏗️ Architecture
 
-- **VPS (This Server)**: Runs databases and services (PostgreSQL, Keycloak, RabbitMQ)
+- **VPS (This Server)**: Runs databases and services (PostgreSQL, Keycloak, MailHog)
 - **Team Members**: Develop code locally, connect to VPS services
 - **One Source of Truth**: All developers share the same data
 
@@ -39,29 +39,28 @@ After running the commands above, send your team members:
 
 1. **Connection info** (output from `npm run vps:info`)
 2. **Setup guide**: `TEAM_QUICKSTART.md` (simple guide)
-3. **Detailed guide**: `docker/TEAM_SETUP.md` (comprehensive guide)
-4. **Environment template**: `.env.team.template`
+3. **Environment template**: `.env.team.template`
 
 ## 📁 Key Files
 
-| File | Purpose | Who Uses It |
-|------|---------|-------------|
-| `docker-compose.local.yml` | Services configuration | VPS Admin |
-| `.env.local` | VPS environment (localhost) | VPS Admin |
-| `.env.team.template` | Team member template | Team Members |
-| `VPS_SETUP_GUIDE.md` | Complete VPS setup guide | VPS Admin |
-| `TEAM_QUICKSTART.md` | Quick start for team | Team Members |
-| `docker/TEAM_SETUP.md` | Detailed team guide | Team Members |
+| File                 | Purpose                     | Who Uses It  |
+| -------------------- | --------------------------- | ------------ |
+| `docker-compose.yml` | Services configuration      | VPS Admin    |
+| `.env.local`         | VPS environment (localhost) | VPS Admin    |
+| `.env.team.template` | Team member template        | Team Members |
+| `VPS_SETUP_GUIDE.md` | Complete VPS setup guide    | VPS Admin    |
+| `TEAM_QUICKSTART.md` | Quick start for team        | Team Members |
 
 ## 📊 Services & Databases
 
 ### Services on VPS
-- **PostgreSQL** (Port 5433) - Database server
-- **Keycloak** (Port 9080) - Authentication server
-- **RabbitMQ** (Ports 5673, 15673) - Message broker
-- **MailHog** (Ports 1026, 8026) - Email testing
+
+- **PostgreSQL** (Port 5432) - Database server
+- **Keycloak** (Port 8080) - Authentication server
+- **MailHog** (Ports 1025, 8025) - Email testing
 
 ### Databases
+
 - **keycloak** - Keycloak authentication data
 - **blih-system-dev** - Main application data
 
@@ -84,15 +83,14 @@ Read documentation in this order:
 1. **START_HERE.md** (this file) - Overview
 2. **SETUP_SUMMARY.md** - What was set up
 3. **VPS_SETUP_GUIDE.md** - Complete admin guide
-4. **docker/DATABASE_SETUP.md** - Database details
+4. **README.md** - Backend overview
 
 ### For Team Members
 
 Share these with your team:
 
 1. **TEAM_QUICKSTART.md** - 5-minute setup
-2. **docker/TEAM_SETUP.md** - Detailed guide
-3. **.env.team.template** - Configuration template
+2. **.env.team.template** - Configuration template
 
 ## ⚙️ Management Commands
 
@@ -166,15 +164,15 @@ npm run db:restart
 
 1. **Check firewall**: `sudo ufw status`
 2. **Check services**: `npm run db:status`
-3. **Test from VPS**: `psql -h localhost -p 5433 -U blih_dev_user -d blih-system-dev`
+3. **Test from VPS**: `psql -h localhost -p 5432 -U blih_dev_user -d blih-system-dev`
 4. **Check their .env file**: Ensure `<VPS_HOST>` was replaced
 
 ### Need More Help?
 
 See the detailed guides:
+
 - **VPS issues**: `VPS_SETUP_GUIDE.md`
-- **Team issues**: `docker/TEAM_SETUP.md`
-- **Database issues**: `docker/DATABASE_SETUP.md`
+- **Team issues**: `TEAM_QUICKSTART.md`
 
 ## ✅ Pre-Flight Checklist
 
@@ -206,7 +204,8 @@ Then share the connection info with your team! 🚀
 ---
 
 **Quick Links**:
+
 - VPS Admin Guide: [VPS_SETUP_GUIDE.md](VPS_SETUP_GUIDE.md)
 - Team Quick Start: [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md)
-- Complete Team Guide: [docker/TEAM_SETUP.md](docker/TEAM_SETUP.md)
+- Team Quick Start: [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md)
 - Setup Summary: [SETUP_SUMMARY.md](SETUP_SUMMARY.md)

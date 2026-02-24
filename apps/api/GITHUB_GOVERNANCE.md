@@ -1,23 +1,22 @@
 # Repository Governance Setup
 
-This repository enforces governance locally (Git hooks) and in CI (GitHub Actions).
+This repository enforces governance from the monorepo root (Git hooks + CI).
 
-## Local Enforcement (Husky)
+## Local Enforcement (Husky at repository root)
 
 ### Installed hooks
 
 - `pre-commit`
   - Validates branch naming (`feature/*`, `fix/*`, `chore/*`, `docs/*`, `refactor/*`, `test/*`, `build/*`, `ci/*`, `perf/*`, `style/*`, `revert/*`, `release/*`, `hotfix/*`, plus protected branches)
   - Runs `lint-staged` (ESLint/Prettier on staged files)
-  - Runs full ESLint validation
-  - Runs TypeScript type-check
-  - Runs Jest tests
+  - Runs monorepo ESLint validation
+  - Runs monorepo TypeScript type-check
 - `commit-msg`
   - Enforces Conventional Commits (see [docs/COMMIT_MESSAGES.md](docs/COMMIT_MESSAGES.md) for full types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`)
 - `pre-push`
   - Rejects direct pushes to `main`, `develop`, and `dev`
   - Rejects invalid branch names
-  - Runs full lint, type-check, and tests before push
+  - Runs API lint, type-check, and tests before push
 
 ### Bootstrap
 
@@ -32,8 +31,8 @@ Workflow: `.github/workflows/governance.yml`
 
 Required checks to configure on protected branches:
 
-- `Governance / commit-and-branch-rules`
-- `Governance / quality-gates`
+- `Monorepo Governance / commit-and-branch-rules`
+- `Monorepo Governance / quality-gates`
 
 The workflow blocks PRs when:
 
@@ -48,7 +47,7 @@ The workflow blocks PRs when:
 Use GitHub CLI (`gh`) to apply protection to target branches.
 
 ```powershell
-pwsh ./scripts/github/apply-branch-protection.ps1 `
+pwsh ./apps/api/scripts/github/apply-branch-protection.ps1 `
   -Owner <github-owner> `
   -Repo <github-repo> `
   -Branches main,develop `
@@ -58,7 +57,7 @@ pwsh ./scripts/github/apply-branch-protection.ps1 `
 For this repository, if you use `dev` instead of `develop`, run:
 
 ```powershell
-pwsh ./scripts/github/apply-branch-protection.ps1 `
+pwsh ./apps/api/scripts/github/apply-branch-protection.ps1 `
   -Owner <github-owner> `
   -Repo <github-repo> `
   -Branches main,dev `

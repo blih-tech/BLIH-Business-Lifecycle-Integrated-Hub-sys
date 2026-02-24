@@ -8,22 +8,23 @@ Your VPS is now configured as a **centralized development database server** for 
 
 All services are **UP and HEALTHY**:
 
-✅ **PostgreSQL** (Port 5433) - Healthy, both databases created  
-✅ **Keycloak** (Port 9080) - Healthy, realm imported successfully  
-✅ **RabbitMQ** (Ports 5673, 15673) - Healthy  
-✅ **MailHog** (Ports 1026, 8026) - Running  
+✅ **PostgreSQL** (Port 5432) - Healthy, both databases created  
+✅ **Keycloak** (Port 8080) - Healthy, realm imported successfully  
+✅ **MailHog** (Ports 1025, 8025) - Running
 
 ## 🗄️ Databases Created
 
 ### 1. keycloak
-- **Owner**: keycloak_user  
-- **Purpose**: Stores Keycloak authentication data  
-- **Status**: ✅ Created and accessible  
+
+- **Owner**: keycloak_user
+- **Purpose**: Stores Keycloak authentication data
+- **Status**: ✅ Created and accessible
 
 ### 2. blih-system-dev
-- **Owner**: blih_dev_user  
-- **Purpose**: Main application database  
-- **Status**: ✅ Created and accessible  
+
+- **Owner**: blih_dev_user
+- **Purpose**: Main application database
+- **Status**: ✅ Created and accessible
 
 ## 🌐 Your VPS Connection Details
 
@@ -32,12 +33,11 @@ All services are **UP and HEALTHY**:
 
 ### Service URLs (Accessible Remotely)
 
-| Service | URL/Connection | Credentials |
-|---------|----------------|-------------|
-| **PostgreSQL** | `89.116.22.36:5433` | blih_dev_user / blih_dev_pass_2024 |
-| **Keycloak Admin** | http://89.116.22.36:9080 | admin / admin |
-| **RabbitMQ Mgmt** | http://89.116.22.36:15673 | blih_user / blih_pass_2024 |
-| **MailHog Web** | http://89.116.22.36:8026 | (no auth) |
+| Service            | URL/Connection           | Credentials                        |
+| ------------------ | ------------------------ | ---------------------------------- |
+| **PostgreSQL**     | `89.116.22.36:5432`      | blih_dev_user / blih_dev_pass_2024 |
+| **Keycloak Admin** | http://89.116.22.36:8080 | admin / admin                      |
+| **MailHog Web**    | http://89.116.22.36:8025 | (no auth)                          |
 
 ## 📋 For Team Members
 
@@ -45,19 +45,17 @@ Share this configuration with your team members. They should add it to their `.e
 
 ```env
 # Database Configuration
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@89.116.22.36:5433/blih-system-dev
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@89.116.22.36:5432/blih-system-dev
 
 # Keycloak Configuration
-KEYCLOAK_URL=http://89.116.22.36:9080
-KEYCLOAK_JWKS_URL=http://89.116.22.36:9080/realms/blih/protocol/openid-connect/certs
-JWT_EXPECTED_ISSUER=http://89.116.22.36:9080/realms/blih
+KEYCLOAK_URL=http://89.116.22.36:8080
+KEYCLOAK_JWKS_URL=http://89.116.22.36:8080/realms/blih/protocol/openid-connect/certs
+JWT_EXPECTED_ISSUER=http://89.116.22.36:8080/realms/blih
 
-# RabbitMQ Configuration
-RABBITMQ_URL=amqp://blih_user:blih_pass_2024@89.116.22.36:5673/blih
 
 # Email Configuration (MailHog)
 SMTP_HOST=89.116.22.36
-SMTP_PORT=1026
+SMTP_PORT=1025
 ```
 
 ## 🔐 Security Setup (IMPORTANT!)
@@ -69,11 +67,9 @@ SMTP_PORT=1026
 #### Option A: Open to Internet (Quick, Less Secure)
 
 ```bash
-sudo ufw allow 5433/tcp   # PostgreSQL
-sudo ufw allow 9080/tcp   # Keycloak
-sudo ufw allow 5673/tcp   # RabbitMQ AMQP
-sudo ufw allow 15673/tcp  # RabbitMQ Management
-sudo ufw allow 8026/tcp   # MailHog Web UI
+sudo ufw allow 5432/tcp   # PostgreSQL
+sudo ufw allow 8080/tcp   # Keycloak
+sudo ufw allow 8025/tcp   # MailHog Web UI
 sudo ufw enable
 sudo ufw status
 ```
@@ -82,14 +78,12 @@ sudo ufw status
 
 ```bash
 # Replace <TEAM_MEMBER_IP> with actual team member IPs
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5433
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 9080
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5673
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 15673
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8026
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5432
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8080
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8025
 
 # Repeat for each team member
-sudo ufw allow from <TEAM_MEMBER_IP_2> to any port 5433
+sudo ufw allow from <TEAM_MEMBER_IP_2> to any port 5432
 # ... etc
 
 sudo ufw enable
@@ -111,7 +105,7 @@ ALTER USER keycloak_user WITH PASSWORD 'your-strong-random-password-2';
 ALTER USER blih_dev_user WITH PASSWORD 'your-strong-random-password-3';
 \q
 
-# Then update docker-compose.local.yml and .env.local with new passwords
+# Then update docker-compose.yml and .env.local with new passwords
 # Restart services: npm run db:restart
 ```
 
@@ -143,9 +137,11 @@ chmod +x /root/backup-blih-databases.sh
 Send the following to your team members:
 
 ### 1. Quick Start Guide
+
 Share the file: **`TEAM_QUICKSTART.md`**
 
 ### 2. Environment Template
+
 Share the file: **`.env.team.template`**
 
 ### 3. Connection Details (Copy-Paste Ready)
@@ -157,23 +153,21 @@ VPS IP: 89.116.22.36
 
 Database (blih-system-dev):
   Host: 89.116.22.36
-  Port: 5433
+  Port: 5432
   Database: blih-system-dev
   Username: blih_dev_user
   Password: blih_dev_pass_2024
 
 Keycloak Admin Console:
-  URL: http://89.116.22.36:9080
+  URL: http://89.116.22.36:8080
   Username: admin
   Password: admin
 
-RabbitMQ Management:
-  URL: http://89.116.22.36:15673
   Username: blih_user
   Password: blih_pass_2024
 
 MailHog (Email Testing):
-  URL: http://89.116.22.36:8026
+  URL: http://89.116.22.36:8025
 
 Quick Setup:
 1. Clone repository
@@ -216,12 +210,11 @@ npm run vps:info           # Re-generate connection info
 npm run db:health
 
 # Detailed status
-docker-compose -f docker-compose.local.yml ps
+docker-compose -f docker-compose.yml ps
 
 # View logs
 docker logs blih-postgres-local --tail 50
 docker logs blih-keycloak-local --tail 50
-docker logs blih-rabbitmq-local --tail 50
 ```
 
 ### Check Database Connections
@@ -230,14 +223,14 @@ docker logs blih-rabbitmq-local --tail 50
 # See who's connected
 docker exec blih-postgres-local psql -U postgres -c "
 SELECT datname, count(*), array_agg(DISTINCT client_addr::text) as ips
-FROM pg_stat_activity 
+FROM pg_stat_activity
 WHERE datname IN ('keycloak', 'blih-system-dev')
 GROUP BY datname;"
 
 # Check database sizes
 docker exec blih-postgres-local psql -U postgres -c "
 SELECT datname, pg_size_pretty(pg_database_size(datname))
-FROM pg_database 
+FROM pg_database
 WHERE datname IN ('keycloak', 'blih-system-dev');"
 ```
 
@@ -266,26 +259,29 @@ WHERE datname IN ('keycloak', 'blih-system-dev');"
 ### Team Member Can't Connect
 
 1. **Check firewall**:
+
    ```bash
    sudo ufw status
    ```
 
 2. **Test from VPS**:
+
    ```bash
-   psql -h localhost -p 5433 -U blih_dev_user -d blih-system-dev
+   psql -h localhost -p 5432 -U blih_dev_user -d blih-system-dev
    # Should work
    ```
 
 3. **Test external access** (from another machine):
+
    ```bash
-   telnet 89.116.22.36 5433
+   telnet 89.116.22.36 5432
    # Should connect
    ```
 
 4. **Check if port is listening**:
    ```bash
-   netstat -tuln | grep 5433
-   # Should show 0.0.0.0:5433
+   netstat -tuln | grep 5432
+   # Should show 0.0.0.0:5432
    ```
 
 ### Services Not Starting
@@ -321,9 +317,9 @@ WHERE state = 'active' AND query_start < now() - interval '1 minute';"
 - **SETUP_SUMMARY.md** - What was set up
 - **VPS_SETUP_GUIDE.md** - Complete VPS admin guide
 - **TEAM_QUICKSTART.md** - 5-minute setup for team members
-- **docker/TEAM_SETUP.md** - Detailed team member guide
-- **docker/DATABASE_SETUP.md** - Database documentation
-- **docker/QUICKSTART.md** - Quick start guide
+- **TEAM_QUICKSTART.md** - Detailed team member guide
+- **SETUP_COMPLETE.md** - Database documentation
+- **START_HERE.md** - Quick start guide
 
 ## ✅ Pre-Production Checklist
 
@@ -346,24 +342,23 @@ Before announcing to team:
 │          VPS: 89.116.22.36 (srv854806.hstgr.cloud)      │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  PostgreSQL (Port 5433)           ✅ HEALTHY   │    │
+│  │  PostgreSQL (Port 5432)           ✅ HEALTHY   │    │
 │  │  ├─ keycloak           [keycloak_user]         │    │
 │  │  └─ blih-system-dev    [blih_dev_user]         │    │
 │  └────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  Keycloak (Port 9080)             ✅ HEALTHY   │    │
+│  │  Keycloak (Port 8080)             ✅ HEALTHY   │    │
 │  │  • Realm 'blih' imported                       │    │
 │  │  • Admin console accessible                    │    │
 │  └────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  RabbitMQ (5673/15673)            ✅ HEALTHY   │    │
 │  │  • Management UI accessible                    │    │
 │  └────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────────────────────────────────────┐    │
-│  │  MailHog (1026/8026)              ✅ RUNNING   │    │
+│  │  MailHog (1025/8025)              ✅ RUNNING   │    │
 │  │  • Web UI accessible                           │    │
 │  └────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────┘
@@ -375,7 +370,7 @@ Before announcing to team:
     │ Dev 1   │      │ Dev 2  │     │ Dev 3  │
     │ Laptop  │      │ Laptop │     │ Laptop │
     └─────────┘      └────────┘     └────────┘
-    
+
     Team members run code locally
     All connect to shared VPS database
 ```
@@ -392,12 +387,12 @@ Your VPS is fully configured and ready for team development!
 
 ### Access URLs (test these):
 
-- Keycloak: http://89.116.22.36:9080
-- RabbitMQ: http://89.116.22.36:15673
-- MailHog: http://89.116.22.36:8026
+- Keycloak: http://89.116.22.36:8080
+- MailHog: http://89.116.22.36:8025
 
 **🚀 Ready for team collaboration!**
 
 For questions, see the comprehensive guides:
+
 - VPS Admin: `VPS_SETUP_GUIDE.md`
-- Team Members: `docker/TEAM_SETUP.md`
+- Team Members: `TEAM_QUICKSTART.md`

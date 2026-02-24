@@ -36,7 +36,7 @@ src/
 ├── platform/           # Infrastructure and cross-cutting concerns
 │   ├── prisma/          # Database ORM and migrations
 │   ├── keycloak/        # Identity provider integration
-│   ├── messaging/       # Message broker integration (RabbitMQ)
+│   ├── messaging/       # Message broker integration (optional)
 │   ├── realm/           # Realm context management
 │   └── platform.module.ts
 ├── shared/              # Shared utilities and common code
@@ -55,7 +55,6 @@ src/
 - **Framework**: NestJS 11 (Node.js 22+, TypeScript 5.7+)
 - **Database**: PostgreSQL 16 with Prisma ORM 6.19+
 - **Identity Provider**: Keycloak 26.0 with OpenID Connect
-- **Message Broker**: RabbitMQ 3.13 with AMQP protocol
 - **Email Service**: MailHog (dev), SMTP (production)
 - **API Documentation**: Swagger/OpenAPI 3.0 with NestJS Swagger
 - **Testing**: Jest for unit, integration, and E2E tests
@@ -112,19 +111,18 @@ nano .env.local
 
 ```bash
 # Start all infrastructure services
-docker-compose up -d
+docker compose -f docker-compose.yml up -d
 
 # Verify services are running
-docker-compose ps
+docker compose -f docker-compose.yml ps
 
 # Wait for services (30-60 seconds)
-docker-compose logs -f postgres
+docker compose -f docker-compose.yml logs -f postgres
 ```
 
 **Services Started:**
 
-- **PostgreSQL**: `localhost:5432` (postgres/postgres)
-- **RabbitMQ**: `localhost:5672` (guest/guest)
+- **PostgreSQL**: `localhost:5432` (blih_dev_user/blih_dev_pass_2024)
 - **Keycloak**: `localhost:8080` (admin/admin)
 - **MailHog**: `localhost:8025` (email testing)
 
@@ -159,14 +157,13 @@ npm run start:prod
 
 Once running, verify these endpoints:
 
-| Service                 | URL                                   | Credentials |
-| ----------------------- | ------------------------------------- | ----------- |
-| **API Base**            | `http://localhost:5000`               | -           |
-| **Swagger Docs**        | `http://localhost:5000/api/docs`      | -           |
-| **Health Check**        | `http://localhost:5000/api/v1/health` | -           |
-| **Keycloak Admin**      | `http://localhost:8080`               | admin/admin |
-| **RabbitMQ Management** | `http://localhost:15672`              | guest/guest |
-| **MailHog**             | `http://localhost:8025`               | -           |
+| Service            | URL                                   | Credentials |
+| ------------------ | ------------------------------------- | ----------- |
+| **API Base**       | `http://localhost:5000`               | -           |
+| **Swagger Docs**   | `http://localhost:5000/api/docs`      | -           |
+| **Health Check**   | `http://localhost:5000/api/v1/health` | -           |
+| **Keycloak Admin** | `http://localhost:8080`               | admin/admin |
+| **MailHog**        | `http://localhost:8025`               | -           |
 
 ## 🔧 Configuration System
 
@@ -182,11 +179,11 @@ API_PREFIX=api/v1
 SKIP_DATABASE_CONNECT=false
 
 // Database (1 variable)
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/blih_core
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@postgres:5432/blih-system-dev
 
 // Keycloak Authentication (9 variables)
 KEYCLOAK_ENABLED=true
-KEYCLOAK_URL=http://localhost:8080
+KEYCLOAK_URL=http://keycloak:8080
 KEYCLOAK_REALM=blih
 KEYCLOAK_CLIENT_ID=blih-system-api
 KEYCLOAK_CLIENT_SECRET=
@@ -202,9 +199,9 @@ AUTH_POLICY_VERSION=1.0
 JWT_EXPECTED_AUDIENCE=blih-system-api
 JWT_EXPECTED_ISSUER=
 
-// Message Broker (7 variables)
+// Messaging (optional, disabled by default)
 RABBITMQ_ENABLED=false
-RABBITMQ_URL=amqp://guest:guest@localhost:5672
+RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
 RABBITMQ_EXCHANGE=blih.events
 RABBITMQ_DLQ=system.dlq
 EVENT_CONTRACT_VERSION=1.0
@@ -368,7 +365,7 @@ Granular role-based access control with:
 
 ### Event-Driven Architecture
 
-The system publishes domain events to RabbitMQ for loose coupling:
+The system can publish domain events to a message broker when messaging is enabled:
 
 ```json
 {
@@ -397,13 +394,6 @@ The system publishes domain events to RabbitMQ for loose coupling:
 - **Organization Events**: `organization.created`, `organization.updated`
 - **Audit Events**: `audit.log.created`, `audit.export.completed`
 - **Notification Events**: `notification.sent`, `notification.failed`
-
-### Queue Topology
-
-- **Exchange**: `blih.events` (topic exchange)
-- **Core Queue**: `core.events` for system events
-- **Dead Letter Queue**: `core.dlq` for failed messages
-- **Retry Policy**: 3 attempts with exponential backoff
 
 ## 🧪 Testing Strategy
 
@@ -492,7 +482,7 @@ Comprehensive health monitoring at `/api/v1/health`:
 
 - **Application Health**: Service status and uptime
 - **Database Connectivity**: PostgreSQL connection status
-- **External Services**: Keycloak, RabbitMQ connectivity
+- **External Services**: Keycloak connectivity
 - **Memory Usage**: Application memory metrics
 - **Disk Space**: Available disk space monitoring
 
@@ -509,7 +499,7 @@ Comprehensive health monitoring at `/api/v1/health`:
 - **Application Metrics**: Request counts, response times
 - **Database Metrics**: Query performance, connection pool status
 - **Authentication Metrics**: Login success/failure rates
-- **Message Queue Metrics**: Queue depth, processing rates
+- **Messaging Metrics**: Queue depth, processing rates (if enabled)
 
 ## 🚀 Deployment
 
@@ -670,7 +660,7 @@ The project follows semantic versioning:
 
 ```bash
 # Check PostgreSQL status
-docker-compose logs postgres
+docker compose -f docker-compose.yml logs postgres
 
 # Reset database (development only)
 npx prisma migrate reset
@@ -680,23 +670,11 @@ npx prisma migrate reset
 
 ```bash
 # Check Keycloak logs
-docker-compose logs keycloak
+docker compose -f docker-compose.yml logs keycloak
 
 # Re-import realm
-docker-compose down keycloak
-docker-compose up -d keycloak
-```
-
-**RabbitMQ Issues:**
-
-```bash
-# Check RabbitMQ status
-docker-compose logs rabbitmq
-
-# Reset RabbitMQ
-docker-compose down rabbitmq
-docker volume rm blih-system-backend_rabbitmq_data
-docker-compose up -d rabbitmq
+docker compose -f docker-compose.yml down keycloak
+docker compose -f docker-compose.yml up -d keycloak
 ```
 
 ### Debug Mode

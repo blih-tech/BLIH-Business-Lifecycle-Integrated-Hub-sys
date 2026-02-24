@@ -6,9 +6,8 @@ This guide is for setting up a **centralized development database** on a VPS ser
 
 ### Architecture Model
 
-- **VPS Server**: Hosts shared databases and services (PostgreSQL, Keycloak, RabbitMQ, MailHog)
 - **Team Members**: Develop code locally on their laptops, connect to VPS services
-- **Benefits**: 
+- **Benefits**:
   - One source of truth for data
   - No database setup needed on developer machines
   - Consistent development environment
@@ -54,23 +53,19 @@ Copy the output and share it with your team members securely.
 
 ```bash
 # Option A: Allow from anywhere (less secure, easier for development)
-sudo ufw allow 5433/tcp   # PostgreSQL
-sudo ufw allow 9080/tcp   # Keycloak
-sudo ufw allow 5673/tcp   # RabbitMQ AMQP
-sudo ufw allow 15673/tcp  # RabbitMQ Management
-sudo ufw allow 8026/tcp   # MailHog Web UI
+sudo ufw allow 5432/tcp   # PostgreSQL
+sudo ufw allow 8080/tcp   # Keycloak
+sudo ufw allow 8025/tcp   # MailHog Web UI
 sudo ufw enable
 
 # Option B: Restrict to specific team member IPs (more secure)
 # Replace <TEAM_MEMBER_IP> with actual IPs
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5433
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 9080
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5673
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 15673
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8026
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5432
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8080
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8025
 
 # Repeat for other team members
-sudo ufw allow from <TEAM_MEMBER_IP_2> to any port 5433
+sudo ufw allow from <TEAM_MEMBER_IP_2> to any port 5432
 # ... etc
 ```
 
@@ -86,37 +81,36 @@ VPS_HOST="<your-vps-ip>"
 ping $VPS_HOST
 
 # Test PostgreSQL port
-telnet $VPS_HOST 5433
+telnet $VPS_HOST 5432
 # or
-nc -zv $VPS_HOST 5433
+nc -zv $VPS_HOST 5432
 
 # Test database connection
-psql -h $VPS_HOST -p 5433 -U blih_dev_user -d blih-system-dev
+psql -h $VPS_HOST -p 5432 -U blih_dev_user -d blih-system-dev
 # Password: blih_dev_pass_2024
 
 # Test Keycloak
-curl http://$VPS_HOST:9080
+curl http://$VPS_HOST:8080
 ```
 
 ## 📦 What Gets Deployed on VPS
 
 ### Services Running on VPS
 
-1. **PostgreSQL** (Port 5433)
+1. **PostgreSQL** (Port 5432)
    - Database: `keycloak` - for Keycloak data
    - Database: `blih-system-dev` - for application data
    - Persistent storage via Docker volumes
 
-2. **Keycloak** (Port 9080)
+2. **Keycloak** (Port 8080)
    - Authentication and authorization server
    - Admin console for user/role management
    - Connected to `keycloak` database
 
-3. **RabbitMQ** (Ports 5673, 15673)
    - Message broker for event-driven architecture
    - Management UI for monitoring queues
 
-4. **MailHog** (Ports 1026, 8026)
+3. **MailHog** (Ports 1025, 8025)
    - Email testing service
    - Web UI to view sent emails
 
@@ -143,10 +137,10 @@ ALTER USER keycloak_user WITH PASSWORD 'your-strong-random-password-2';
 ALTER USER blih_dev_user WITH PASSWORD 'your-strong-random-password-3';
 \q
 
-# Update docker-compose.local.yml with new passwords
+# Update docker-compose.yml with new passwords
 # Update .env.local with new passwords
 # Then restart services
-docker-compose -f docker-compose.local.yml restart postgres
+docker-compose -f docker-compose.yml restart postgres
 ```
 
 #### 2. Setup VPN (Recommended)
@@ -158,6 +152,7 @@ Instead of exposing ports to the internet, use a VPN:
 - **Tailscale** (easiest, mesh VPN)
 
 With VPN:
+
 - Only team members with VPN access can reach services
 - Firewall can be restricted to VPN network
 - More secure than exposing ports to internet
@@ -177,11 +172,9 @@ sudo ufw default allow outgoing
 sudo ufw allow 22/tcp
 
 # Allow only from team member IPs
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5433
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 9080
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5673
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 15673
-sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8026
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 5432
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8080
+sudo ufw allow from <TEAM_MEMBER_IP_1> to any port 8025
 
 # Repeat for each team member
 # ...
@@ -214,7 +207,7 @@ Update PostgreSQL to require SSL:
 
 ```bash
 # Generate SSL certificates for PostgreSQL
-# Update docker-compose.local.yml to mount certificates
+# Update docker-compose.yml to mount certificates
 # Configure PostgreSQL to require SSL connections
 ```
 
@@ -234,8 +227,8 @@ docker system df
 
 # Check PostgreSQL connections
 docker exec blih-postgres-local psql -U postgres -c "
-SELECT datname, count(*) as connections 
-FROM pg_stat_activity 
+SELECT datname, count(*) as connections
+FROM pg_stat_activity
 WHERE datname IN ('keycloak', 'blih-system-dev')
 GROUP BY datname;"
 ```
@@ -315,16 +308,16 @@ echo ""
 
 echo "=== Database Sizes ==="
 docker exec blih-postgres-local psql -U postgres -c "
-SELECT datname, pg_size_pretty(pg_database_size(datname)) 
-FROM pg_database 
+SELECT datname, pg_size_pretty(pg_database_size(datname))
+FROM pg_database
 WHERE datname IN ('keycloak', 'blih-system-dev');"
 echo ""
 
 echo "=== Active Connections ==="
 docker exec blih-postgres-local psql -U postgres -c "
-SELECT datname, count(*) 
-FROM pg_stat_activity 
-WHERE datname IN ('keycloak', 'blih-system-dev') 
+SELECT datname, count(*)
+FROM pg_stat_activity
+WHERE datname IN ('keycloak', 'blih-system-dev')
 GROUP BY datname;"
 echo ""
 
@@ -345,7 +338,7 @@ chmod +x /root/monitor-blih-resources.sh
 ### Send to New Team Members
 
 1. **VPS connection details** (from `./scripts/get-vps-info.sh`)
-2. **Team setup guide**: `docker/TEAM_SETUP.md`
+2. **Team setup guide**: `TEAM_QUICKSTART.md`
 3. **Environment template**: `.env.team.template`
 
 ### New Team Member Checklist
@@ -387,13 +380,14 @@ host    all             all             127.0.0.1/32            trust
 host    all             all             ::1/128                 trust
 EOF
 
-# Update docker-compose.local.yml to mount this file
+# Update docker-compose.yml to mount this file
 # Then restart PostgreSQL
 ```
 
 ## 📈 Scaling Considerations
 
 ### Current Setup (Development)
+
 - Single PostgreSQL instance
 - No connection pooling beyond application
 - No replication
@@ -402,6 +396,7 @@ EOF
 ### When to Upgrade
 
 Consider upgrading when:
+
 - More than 10 active developers
 - Database size exceeds 10GB
 - Frequent performance issues
@@ -419,12 +414,13 @@ Consider upgrading when:
 
 ### Backup Strategy
 
-1. **Automated Daily Backups**: 
+1. **Automated Daily Backups**:
    - Runs at 2 AM daily
    - Keeps 30 days of backups
    - Compressed SQL dumps
 
 2. **Manual Backup Before Major Changes**:
+
    ```bash
    ./scripts/db-local.sh backup blih-system-dev
    ./scripts/db-local.sh backup keycloak
@@ -473,6 +469,7 @@ Consider upgrading when:
 ### Important Announcements
 
 Notify team when:
+
 - Running database migrations
 - Restarting services
 - Performing backups/restores
@@ -517,7 +514,7 @@ Notify team when:
 ```bash
 # Check Docker
 docker ps -a
-docker-compose -f docker-compose.local.yml ps
+docker-compose -f docker-compose.yml ps
 
 # Check logs
 ./scripts/db-local.sh logs
@@ -550,29 +547,32 @@ docker exec blih-postgres-local psql -U postgres -c "SELECT pg_terminate_backend
 #### Team Member Cannot Connect
 
 1. **Check firewall**:
+
    ```bash
    sudo ufw status
    ```
 
 2. **Verify services are running**:
+
    ```bash
    ./scripts/db-local.sh status
    ```
 
 3. **Check if port is accessible from outside**:
+
    ```bash
    # On VPS
-   netstat -tuln | grep 5433
+   netstat -tuln | grep 5432
    ```
 
 4. **Test from VPS localhost**:
    ```bash
-   psql -h localhost -p 5433 -U blih_dev_user -d blih-system-dev
+   psql -h localhost -p 5432 -U blih_dev_user -d blih-system-dev
    ```
 
 ### Team Member Troubleshooting
 
-See [docker/TEAM_SETUP.md](docker/TEAM_SETUP.md) for team member troubleshooting guide.
+See [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md) for team member troubleshooting guide.
 
 ## 📊 Database Management
 
@@ -583,17 +583,20 @@ See [docker/TEAM_SETUP.md](docker/TEAM_SETUP.md) for team member troubleshooting
 The migration coordinator should:
 
 1. **Announce migration**:
+
    ```
    @team Running migration: Add users table
    Please save your work and stop dev servers for 2 minutes
    ```
 
 2. **Run migration**:
+
    ```bash
    npm run prisma:migrate:dev
    ```
 
 3. **Commit migration files**:
+
    ```bash
    git add src/prisma/migrations/
    git commit -m "feat: add users table migration"
@@ -636,19 +639,17 @@ Replace `<VPS_HOST>` with actual VPS IP or hostname.
 
 ```env
 # Main application database
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@<VPS_HOST>:5433/blih-system-dev
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@<VPS_HOST>:5432/blih-system-dev
 
 # Keycloak
-KEYCLOAK_URL=http://<VPS_HOST>:9080
-KEYCLOAK_JWKS_URL=http://<VPS_HOST>:9080/realms/blih/protocol/openid-connect/certs
-JWT_EXPECTED_ISSUER=http://<VPS_HOST>:9080/realms/blih
+KEYCLOAK_URL=http://<VPS_HOST>:8080
+KEYCLOAK_JWKS_URL=http://<VPS_HOST>:8080/realms/blih/protocol/openid-connect/certs
+JWT_EXPECTED_ISSUER=http://<VPS_HOST>:8080/realms/blih
 
-# RabbitMQ
-RABBITMQ_URL=amqp://blih_user:blih_pass_2024@<VPS_HOST>:5673/blih
 
 # Email
 SMTP_HOST=<VPS_HOST>
-SMTP_PORT=1026
+SMTP_PORT=1025
 ```
 
 ### For Database Clients
@@ -657,7 +658,7 @@ SMTP_PORT=1026
 
 ```
 Host: <VPS_HOST>
-Port: 5433
+Port: 5432
 Database: blih-system-dev
 Username: blih_dev_user
 Password: blih_dev_pass_2024
@@ -671,7 +672,7 @@ SSL Mode: prefer (or disable for development)
 If you have 10+ developers, add PgBouncer:
 
 ```yaml
-# Add to docker-compose.local.yml
+# Add to docker-compose.yml
 pgbouncer:
   image: pgbouncer/pgbouncer:latest
   container_name: blih-pgbouncer
@@ -691,13 +692,13 @@ pgbouncer:
   networks:
     - blih-network
 
-# Team members then connect to port 6432 instead of 5433
+# Team members then connect to port 6432 instead of 5432
 ```
 
 ### Enable Read Replicas (For Heavy Read Load)
 
 ```yaml
-# Add to docker-compose.local.yml
+# Add to docker-compose.yml
 postgres-replica:
   image: postgres:16-alpine
   container_name: blih-postgres-replica
@@ -724,16 +725,19 @@ postgres-replica:
 ## 📋 Maintenance Schedule
 
 ### Daily
+
 - Automated backup at 2 AM
 - Resource monitoring
 
 ### Weekly
+
 - Review backup logs
 - Check disk usage
 - Review slow query logs
 - Update team on any issues
 
 ### Monthly
+
 - Docker image updates (coordinate with team)
 - OS security updates
 - Review and update firewall rules
@@ -741,6 +745,7 @@ postgres-replica:
 - Test backup restoration
 
 ### Quarterly
+
 - Change database passwords
 - Review security configuration
 - Performance tuning
@@ -774,9 +779,9 @@ postgres-replica:
 
 ## 📚 Additional Documentation
 
-- **For Team Members**: [docker/TEAM_SETUP.md](docker/TEAM_SETUP.md)
-- **Database Details**: [docker/DATABASE_SETUP.md](docker/DATABASE_SETUP.md)
-- **Quick Start**: [docker/QUICKSTART.md](docker/QUICKSTART.md)
+- **For Team Members**: [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md)
+- **Database Details**: [SETUP_COMPLETE.md](SETUP_COMPLETE.md)
+- **Quick Start**: [START_HERE.md](START_HERE.md)
 - **Main README**: [README.md](README.md)
 
 ## 🎉 You're All Set!

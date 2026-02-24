@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-set -e
-
-node scripts/git/validate-pre-push.js "$@"
-npm run lint:check
-npm run typecheck
-npm run test -- --ci --passWithNoTests

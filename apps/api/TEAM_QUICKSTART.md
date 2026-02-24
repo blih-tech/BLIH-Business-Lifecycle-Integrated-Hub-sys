@@ -9,6 +9,7 @@ You're joining a team that uses a **shared VPS database** for development. This 
 ### 1. Get VPS Connection Info
 
 Ask your team lead for:
+
 - VPS hostname or IP address (example: `192.168.1.100` or `dev.blih.com`)
 - Confirm you have network access to the VPS
 
@@ -35,12 +36,13 @@ code .env
 **Find and replace** all instances of `<VPS_HOST>` with your actual VPS hostname/IP.
 
 Example:
+
 ```env
 # Before
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@<VPS_HOST>:5433/blih-system-dev
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@<VPS_HOST>:5432/blih-system-dev
 
 # After (if VPS IP is 192.168.1.100)
-DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@192.168.1.100:5433/blih-system-dev
+DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@192.168.1.100:5432/blih-system-dev
 ```
 
 ### 4. Test Connection
@@ -48,11 +50,11 @@ DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@192.168.1.100:5433/bl
 ```bash
 # Test if you can reach the VPS database
 # Replace <VPS_HOST> with your VPS IP
-psql -h <VPS_HOST> -p 5433 -U blih_dev_user -d blih-system-dev
+psql -h <VPS_HOST> -p 5432 -U blih_dev_user -d blih-system-dev
 # Password when prompted: blih_dev_pass_2024
 
 # If psql is not installed, test with telnet:
-telnet <VPS_HOST> 5433
+telnet <VPS_HOST> 5432
 ```
 
 ### 5. Generate Prisma Client
@@ -72,10 +74,10 @@ Your application will start on `http://localhost:5000` and connect to the VPS da
 ### 7. Verify Setup
 
 Open in browser:
+
 - Your API: http://localhost:5000/api/v1/docs (Swagger)
-- Keycloak: http://\<VPS_HOST\>:9080 (Admin console)
-- RabbitMQ: http://\<VPS_HOST\>:15673 (Management)
-- MailHog: http://\<VPS_HOST\>:8026 (Email testing)
+- Keycloak: http://\<VPS_HOST\>:8080 (Admin console)
+- MailHog: http://\<VPS_HOST\>:8025 (Email testing)
 
 ## 🎯 Connection Details
 
@@ -85,7 +87,7 @@ Replace `<VPS_HOST>` with your actual VPS hostname/IP.
 
 ```
 Host: <VPS_HOST>
-Port: 5433
+Port: 5432
 Database: blih-system-dev
 Username: blih_dev_user
 Password: blih_dev_pass_2024
@@ -94,17 +96,15 @@ Password: blih_dev_pass_2024
 ### Keycloak Admin
 
 ```
-URL: http://<VPS_HOST>:9080
+URL: http://<VPS_HOST>:8080
 Username: admin
 Password: admin
 ```
 
-### RabbitMQ Management
+### MailHog
 
 ```
-URL: http://<VPS_HOST>:15673
-Username: blih_user
-Password: blih_pass_2024
+URL: http://<VPS_HOST>:8025
 ```
 
 ## 📝 Daily Workflow
@@ -165,7 +165,7 @@ npm run prisma:generate
 npx prisma studio --schema src/prisma/schema.prisma
 
 # Connect to database with psql
-psql -h <VPS_HOST> -p 5433 -U blih_dev_user -d blih-system-dev
+psql -h <VPS_HOST> -p 5432 -U blih_dev_user -d blih-system-dev
 ```
 
 ## 🐛 Troubleshooting
@@ -175,7 +175,7 @@ psql -h <VPS_HOST> -p 5433 -U blih_dev_user -d blih-system-dev
 ```bash
 # Test connectivity
 ping <VPS_HOST>
-telnet <VPS_HOST> 5433
+telnet <VPS_HOST> 5432
 
 # If fails:
 # 1. Check VPN connection (if using VPN)
@@ -220,13 +220,13 @@ npm run start:dev
 
 ### Common Issues
 
-| Problem | Solution |
-|---------|----------|
-| Can't connect to VPS | Check network, VPN, firewall |
-| Wrong password | Verify .env file, ask team lead |
-| Migration conflicts | Pull latest, regenerate Prisma client |
-| Port already in use | Change PORT in .env to different value |
-| Slow database queries | Report to admin, check VPS resources |
+| Problem               | Solution                               |
+| --------------------- | -------------------------------------- |
+| Can't connect to VPS  | Check network, VPN, firewall           |
+| Wrong password        | Verify .env file, ask team lead        |
+| Migration conflicts   | Pull latest, regenerate Prisma client  |
+| Port already in use   | Change PORT in .env to different value |
+| Slow database queries | Report to admin, check VPS resources   |
 
 ### Contact
 
@@ -245,12 +245,11 @@ npm run start:dev
 - [ ] Prisma client generated
 - [ ] Dev server starts successfully
 - [ ] Can access Swagger at http://localhost:5000/api/v1/docs
-- [ ] Can access Keycloak admin console at http://\<VPS_HOST\>:9080
+- [ ] Can access Keycloak admin console at http://\<VPS_HOST\>:8080
 
 ## 🎓 Additional Resources
 
-- **Full Team Guide**: `docker/TEAM_SETUP.md`
-- **Database Details**: `docker/DATABASE_SETUP.md`
+- **Main README**: `README.md`
 - **Main README**: `README.md`
 
 ## 🎉 You're Ready!
@@ -271,7 +270,7 @@ npm run lint              # Check code style
 git status                # Check your changes
 
 # Database access
-psql -h <VPS_HOST> -p 5433 -U blih_dev_user -d blih-system-dev
+psql -h <VPS_HOST> -p 5432 -U blih_dev_user -d blih-system-dev
 ```
 
-**Questions?** Ask in the team chat or read the full documentation in `docker/TEAM_SETUP.md`.
+**Questions?** Ask in the team chat or read the main `README.md`.

@@ -323,7 +323,6 @@ export class KeycloakTokenService {
 
       // Verify signature and issuer only; jose requires 'aud' when audience is passed, but
       // Keycloak may issue tokens with azp and no aud, so we validate audience/azp after.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const verification = await jwtVerify(normalizedToken, jwks as any, {
         issuer,
       });
