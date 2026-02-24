@@ -1,0 +1,10 @@
+.git
+.github
+.husky
+.turbo
+**/node_modules
+**/.next
+**/dist
+**/coverage
+**/.DS_Store
+**/*.log
