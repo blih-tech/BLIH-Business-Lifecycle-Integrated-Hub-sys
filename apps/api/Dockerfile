@@ -26,7 +26,7 @@ COPY --from=builder /workspace/apps/api/src/platform/prisma/schema.prisma ./apps
 
 WORKDIR /workspace/apps/api
 EXPOSE 5000
-CMD ["node", "dist/main"]
+CMD ["node", "dist/apps/api/src/main"]
 
 FROM builder AS migrator
 WORKDIR /workspace/apps/api
