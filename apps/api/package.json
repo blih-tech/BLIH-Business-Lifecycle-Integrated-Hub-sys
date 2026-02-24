@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "dev": "nest start --watch",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -46,6 +47,7 @@
     "vps:backup": "./scripts/db-local.sh backup blih-system-dev && ./scripts/db-local.sh backup keycloak"
   },
   "dependencies": {
+    "@blih/types": "^0.0.0",
     "@keycloak/keycloak-admin-client": "^26.4.2",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
@@ -59,7 +61,6 @@
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/websockets": "^11.1.13",
     "@prisma/client": "^6.19.2",
-    "@blih/types": "file:../../packages/types",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^0.10.9",
     "class-transformer": "^0.5.1",

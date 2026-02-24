@@ -7,7 +7,7 @@ COPY apps/web/package*.json apps/web/
 COPY packages/types/package*.json packages/types/
 COPY packages/typescript-config/package*.json packages/typescript-config/
 COPY packages/eslint-config/package*.json packages/eslint-config/
-RUN npm ci --workspaces --include-workspace-root
+RUN npm ci --workspaces --include-workspace-root --include=dev --ignore-scripts
 
 FROM node:22-alpine AS builder
 WORKDIR /workspace
@@ -27,7 +27,7 @@ COPY apps/web/package*.json apps/web/
 COPY packages/types/package*.json packages/types/
 COPY packages/typescript-config/package*.json packages/typescript-config/
 COPY packages/eslint-config/package*.json packages/eslint-config/
-RUN npm ci --omit=dev --workspaces --include-workspace-root
+RUN npm ci --omit=dev --workspaces --include-workspace-root --ignore-scripts
 
 FROM node:22-alpine AS runtime
 WORKDIR /workspace
