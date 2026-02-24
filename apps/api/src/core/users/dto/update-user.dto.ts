@@ -1,7 +1,8 @@
 import { IsEmail, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import type { UpdateUserDto as UpdateUserDtoType } from '@repo/types';
 
-export class UpdateUserDto {
+export class UpdateUserDto implements UpdateUserDtoType {
   @ApiPropertyOptional({
     description: 'Updated email address.',
     example: 'jane.updated@blih.local',

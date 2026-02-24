@@ -1,7 +1,8 @@
 import { IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import type { SystemConfigDto as SystemConfigDtoType } from '@repo/types';
 
-export class SystemConfigDto {
+export class SystemConfigDto implements SystemConfigDtoType {
   @ApiProperty({
     description: 'Configuration key.',
     example: 'auth.session',

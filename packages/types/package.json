@@ -1,0 +1,33 @@
+{
+  "name": "@repo/types",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./shared": "./src/shared/index.ts",
+    "./shared/*": "./src/shared/*.ts",
+    "./auth": "./src/auth/index.ts",
+    "./auth/*": "./src/auth/*.ts",
+    "./users": "./src/users/index.ts",
+    "./users/*": "./src/users/*.ts",
+    "./audit": "./src/audit/index.ts",
+    "./audit/*": "./src/audit/*.ts",
+    "./system-config": "./src/system-config/index.ts",
+    "./system-config/*": "./src/system-config/*.ts",
+    "./rbac": "./src/rbac/index.ts",
+    "./rbac/*": "./src/rbac/*.ts",
+    "./notifications": "./src/notifications/index.ts",
+    "./notifications/*": "./src/notifications/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "eslint": "^9.39.1",
+    "typescript": "5.9.2"
+  }
+}
