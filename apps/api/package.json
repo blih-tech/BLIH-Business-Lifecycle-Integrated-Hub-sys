@@ -7,16 +7,16 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "prepare": "husky",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "eslint \"{src,test}/**/*.ts\" --max-warnings=0",
+    "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "validate:rbac-catalog": "node scripts/rbac/validate-permission-constants.js",
-    "lint:check": "npm run validate:rbac-catalog && eslint \"{src,apps,libs,test}/**/*.ts\" --max-warnings=0",
-    "typecheck": "tsc --noEmit",
+    "lint:check": "npm run validate:rbac-catalog && npm run lint",
+    "typecheck": "npm run prisma:generate && tsc --noEmit",
     "test": "jest",
     "test:integration": "jest --config ./test/jest-integration.json",
     "test:watch": "jest --watch",
@@ -36,11 +36,11 @@
     "db:start": "docker-compose -f docker-compose.local.yml up -d",
     "db:stop": "docker-compose -f docker-compose.local.yml down",
     "db:restart": "npm run db:stop && npm run db:start",
-    "db:status": "docker-compose -f docker-compose.local.yml ps",
-    "db:logs": "docker-compose -f docker-compose.local.yml logs -f",
-    "db:reset": "docker-compose -f docker-compose.local.yml down -v && docker-compose -f docker-compose.local.yml up -d",
+    "db:status": "docker compose -f docker-compose.yml ps",
+    "db:logs": "docker compose -f docker-compose.yml logs -f",
+    "db:reset": "docker compose -f docker-compose.yml down -v && docker compose -f docker-compose.yml up -d",
     "db:check-ports": "./scripts/check-ports.sh",
-    "db:psql": "docker exec -it blih-postgres-local psql -U postgres -d blih-system-dev",
+    "db:psql": "docker exec -it blih-postgres psql -U postgres -d blih-system-dev",
     "db:health": "./scripts/db-local.sh health",
     "vps:info": "./scripts/get-vps-info.sh",
     "vps:backup": "./scripts/db-local.sh backup blih-system-dev && ./scripts/db-local.sh backup keycloak"
@@ -74,8 +74,6 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",
@@ -90,9 +88,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
-    "husky": "^9.1.7",
     "jest": "^30.0.0",
-    "lint-staged": "^16.2.7",
     "prettier": "^3.4.2",
     "prisma": "^6.19.2",
     "source-map-support": "^0.5.21",
@@ -103,14 +99,6 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
-      "eslint --max-warnings=0 --fix --no-warn-ignored"
-    ],
-    "*.{json,md,yml,yaml}": [
-      "prettier --write"
-    ]
   },
   "jest": {
     "moduleFileExtensions": [

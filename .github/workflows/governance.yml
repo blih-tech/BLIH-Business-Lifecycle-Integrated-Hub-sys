@@ -1,4 +1,4 @@
-name: Governance
+name: Monorepo Governance
 
 on:
   pull_request:
@@ -12,6 +12,11 @@ on:
       - reopened
       - ready_for_review
       - edited
+  push:
+    branches:
+      - main
+      - develop
+      - dev
 
 permissions:
   contents: read
@@ -19,6 +24,7 @@ permissions:
 
 jobs:
   commit-and-branch-rules:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,7 +42,7 @@ jobs:
         run: npm ci
 
       - name: Validate branch naming
-        run: node scripts/git/validate-branch-name.js "${{ github.head_ref }}"
+        run: node apps/api/scripts/git/validate-branch-name.js "${{ github.head_ref }}"
 
       - name: Validate conventional commits
         run: |
@@ -60,11 +66,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: ESLint
-        run: npm run lint:check
+      - name: Lint monorepo
+        run: npm run lint
 
-      - name: TypeScript type-check
-        run: npm run typecheck
+      - name: Type-check monorepo
+        run: npm run check-types
 
-      - name: Tests
-        run: npm run test -- --ci --passWithNoTests
+      - name: Run API quality gates
+        run: npm run api:verify
