@@ -29,7 +29,7 @@ export class HealthController {
   @ApiOperation({
     summary: 'Health check',
     description:
-      'Returns health state of core dependencies (database, keycloak, rabbitmq, smtp). Public endpoint.',
+      'Returns health state of core dependencies (database, keycloak, smtp). Public endpoint.',
   })
   @ApiOkResponse({
     description: 'Health check result.',
@@ -39,7 +39,6 @@ export class HealthController {
         checks: {
           database: { status: 'up' },
           keycloak: { status: 'up' },
-          rabbitmq: { status: 'up', mode: 'disabled' },
           smtp: { status: 'up', mode: 'disabled' },
         },
         timestamp: '2026-02-15T12:00:00.000Z',
@@ -61,7 +60,6 @@ export class HealthController {
     const checks = {
       database: await this.databaseCheck(),
       keycloak: await this.keycloakCheck(),
-      rabbitmq: this.rabbitCheck(),
       smtp: this.smtpCheck(),
     };
 
@@ -96,14 +94,6 @@ export class HealthController {
     } catch (error) {
       return { status: 'down' as const, error: this.getMessage(error) };
     }
-  }
-
-  private rabbitCheck() {
-    const enabled =
-      this.configService.get<string>('RABBITMQ_ENABLED', 'false') === 'true';
-    return enabled
-      ? { status: 'up' as const }
-      : { status: 'up' as const, mode: 'disabled' };
   }
 
   private smtpCheck() {

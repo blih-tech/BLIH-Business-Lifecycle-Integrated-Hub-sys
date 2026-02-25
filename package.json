@@ -8,6 +8,9 @@
     "dev:api": "turbo run dev --filter=blih-system-backend",
     "start:api": "npm run start --workspace blih-system-backend",
     "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:ci": "turbo run test -- --ci --passWithNoTests",
+    "verify": "npm run lint && npm run check-types && npm run test:ci",
     "lint:api": "npm run lint:check --workspace blih-system-backend",
     "check-types": "turbo run check-types",
     "typecheck:api": "npm run typecheck --workspace blih-system-backend",
@@ -23,7 +26,12 @@
     "docker:api:infra:status": "docker compose -f apps/api/docker-compose.yml ps",
     "docker:api:infra:logs": "docker compose -f apps/api/docker-compose.yml logs -f",
     "docker:api:infra:reset": "docker compose -f apps/api/docker-compose.yml down -v && docker compose -f apps/api/docker-compose.yml up -d",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,yml,yaml}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,yml,yaml}\"",
+    "clean": "npm run clean:node_modules && npm run clean:cache",
+    "clean:node_modules": "rimraf node_modules apps/*/node_modules packages/*/node_modules",
+    "clean:cache": "rimraf .turbo && npm cache clean --force",
+    "install:clean": "npm run clean && npm install --workspaces --include-workspace-root",
+    "validate:lockfile": "npm ls --workspaces --depth=0"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
@@ -31,6 +39,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
+    "rimraf": "^6.0.1",
     "turbo": "^2.8.10",
     "typescript": "5.9.2"
   },

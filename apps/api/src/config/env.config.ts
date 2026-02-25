@@ -12,6 +12,9 @@ export const envValidationSchema = Joi.object({
     .uri({ scheme: ['postgres', 'postgresql'] })
     .default('postgresql://postgres:postgres@localhost:5432/blih_core'),
   SKIP_DATABASE_CONNECT: Joi.boolean().default(false),
+  DATABASE_POOL_SIZE: Joi.number().integer().min(1).default(10),
+  DATABASE_TIMEOUT_MS: Joi.number().integer().min(1).default(5000),
+  DATABASE_IDLE_TIMEOUT_MS: Joi.number().integer().min(1).default(300000),
 
   KEYCLOAK_ENABLED: Joi.boolean().default(true),
   KEYCLOAK_URL: Joi.string().uri().default('http://localhost:8080'),
@@ -25,16 +28,6 @@ export const envValidationSchema = Joi.object({
   INTERNAL_AUTH_SHARED_SECRET: Joi.string().allow('').default(''),
   ENFORCE_MFA_FOR_PRIVILEGED: Joi.boolean().default(false),
   AUTH_POLICY_VERSION: Joi.string().default('1.0'),
-
-  RABBITMQ_ENABLED: Joi.boolean().default(false),
-  RABBITMQ_URL: Joi.string()
-    .uri({ scheme: ['amqp', 'amqps'] })
-    .default('amqp://guest:guest@localhost:5672'),
-  RABBITMQ_EXCHANGE: Joi.string().default('blih.events'),
-  RABBITMQ_DLQ: Joi.string().default('system.dlq'),
-  EVENT_CONTRACT_VERSION: Joi.string().default('1.0'),
-  EVENT_SCHEMA_PREFIX: Joi.string().default('blih.event'),
-  EVENT_SUPPORTED_MAJOR_VERSION: Joi.string().default('1'),
 
   SMTP_ENABLED: Joi.boolean().default(false),
   SMTP_HOST: Joi.string().default('localhost'),
@@ -65,6 +58,9 @@ export type EnvValues = {
   API_PREFIX: string;
   DATABASE_URL: string;
   SKIP_DATABASE_CONNECT: boolean;
+  DATABASE_POOL_SIZE: number;
+  DATABASE_TIMEOUT_MS: number;
+  DATABASE_IDLE_TIMEOUT_MS: number;
   KEYCLOAK_ENABLED: boolean;
   KEYCLOAK_URL: string;
   KEYCLOAK_REALM: string;
@@ -77,13 +73,6 @@ export type EnvValues = {
   INTERNAL_AUTH_SHARED_SECRET: string;
   ENFORCE_MFA_FOR_PRIVILEGED: boolean;
   AUTH_POLICY_VERSION: string;
-  RABBITMQ_ENABLED: boolean;
-  RABBITMQ_URL: string;
-  RABBITMQ_EXCHANGE: string;
-  RABBITMQ_DLQ: string;
-  EVENT_CONTRACT_VERSION: string;
-  EVENT_SCHEMA_PREFIX: string;
-  EVENT_SUPPORTED_MAJOR_VERSION: string;
   SMTP_ENABLED: boolean;
   SMTP_HOST: string;
   SMTP_PORT: number;
@@ -110,6 +99,9 @@ const readRawEnv = () => ({
   API_PREFIX: process.env.API_PREFIX,
   DATABASE_URL: process.env.DATABASE_URL,
   SKIP_DATABASE_CONNECT: process.env.SKIP_DATABASE_CONNECT,
+  DATABASE_POOL_SIZE: process.env.DATABASE_POOL_SIZE,
+  DATABASE_TIMEOUT_MS: process.env.DATABASE_TIMEOUT_MS,
+  DATABASE_IDLE_TIMEOUT_MS: process.env.DATABASE_IDLE_TIMEOUT_MS,
   KEYCLOAK_ENABLED: process.env.KEYCLOAK_ENABLED,
   KEYCLOAK_URL: process.env.KEYCLOAK_URL,
   KEYCLOAK_REALM: process.env.KEYCLOAK_REALM,
@@ -122,13 +114,6 @@ const readRawEnv = () => ({
   INTERNAL_AUTH_SHARED_SECRET: process.env.INTERNAL_AUTH_SHARED_SECRET,
   ENFORCE_MFA_FOR_PRIVILEGED: process.env.ENFORCE_MFA_FOR_PRIVILEGED,
   AUTH_POLICY_VERSION: process.env.AUTH_POLICY_VERSION,
-  RABBITMQ_ENABLED: process.env.RABBITMQ_ENABLED,
-  RABBITMQ_URL: process.env.RABBITMQ_URL,
-  RABBITMQ_EXCHANGE: process.env.RABBITMQ_EXCHANGE,
-  RABBITMQ_DLQ: process.env.RABBITMQ_DLQ,
-  EVENT_CONTRACT_VERSION: process.env.EVENT_CONTRACT_VERSION,
-  EVENT_SCHEMA_PREFIX: process.env.EVENT_SCHEMA_PREFIX,
-  EVENT_SUPPORTED_MAJOR_VERSION: process.env.EVENT_SUPPORTED_MAJOR_VERSION,
   SMTP_ENABLED: process.env.SMTP_ENABLED,
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_PORT: process.env.SMTP_PORT,

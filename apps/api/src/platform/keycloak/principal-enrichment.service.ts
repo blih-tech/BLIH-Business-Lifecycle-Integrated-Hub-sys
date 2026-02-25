@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UserStatus } from '@prisma/client';
+import { UserStatus } from '../prisma/prisma-client';
 import { PrismaService } from '../prisma/prisma.service';
 import { KeycloakAdminService } from './keycloak-admin.service';
 import { KeycloakProfileClaims } from './keycloak.types';

@@ -27,12 +27,14 @@
 ### 1.1 Hardware Requirements
 
 #### Minimum (Development/Testing)
+
 - **CPU:** 4 cores
 - **RAM:** 8 GB
 - **Storage:** 50 GB SSD
 - **Network:** 100 Mbps
 
 #### Recommended (Production VPS)
+
 - **CPU:** 8 cores (CPU-only, no GPU required)
 - **RAM:** 16 GB
 - **Storage:** 100 GB SSD
@@ -144,14 +146,6 @@ POSTGRES_USER=blih_user
 POSTGRES_PASSWORD=CHANGE_ME_STRONG_PASSWORD_HERE
 DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
 
-# MongoDB (Document Store)
-MONGODB_HOST=mongodb
-MONGODB_PORT=27017
-MONGODB_DB=blih_prod
-MONGODB_USER=blih_user
-MONGODB_PASSWORD=CHANGE_ME_STRONG_PASSWORD_HERE
-MONGODB_URL=mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DB}?authSource=admin
-
 # Redis (Cache & Sessions)
 REDIS_HOST=redis
 REDIS_PORT=6379
@@ -183,17 +177,6 @@ ENCRYPTION_KEY=CHANGE_ME_32_BYTE_HEX_STRING
 ENCRYPTION_ALGORITHM=aes-256-gcm
 
 # ========================================
-# Message Queue
-# ========================================
-
-# RabbitMQ (Event Bus)
-RABBITMQ_HOST=rabbitmq
-RABBITMQ_PORT=5672
-RABBITMQ_USER=blih_user
-RABBITMQ_PASSWORD=CHANGE_ME_STRONG_PASSWORD_HERE
-RABBITMQ_VHOST=/blih
-RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/${RABBITMQ_VHOST}
-
 # ========================================
 # AI Services
 # ========================================
@@ -302,7 +285,7 @@ services:
     container_name: blih-frontend
     restart: unless-stopped
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - NODE_ENV=production
     env_file:
@@ -312,7 +295,7 @@ services:
     networks:
       - blih-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -327,7 +310,7 @@ services:
     container_name: blih-api
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
     env_file:
@@ -335,18 +318,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      mongodb:
-        condition: service_healthy
       redis:
-        condition: service_healthy
-      rabbitmq:
         condition: service_healthy
     networks:
       - blih-network
     volumes:
       - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -369,33 +348,9 @@ services:
     networks:
       - blih-network
     ports:
-      - "5432:5432"
+      - '5432:5432'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # ========================================
-  # MongoDB - Document Database
-  # ========================================
-  mongodb:
-    image: mongo:7.0
-    container_name: blih-mongodb
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGODB_DB}
-    volumes:
-      - mongodb_data:/data/db
-      - ./database/mongodb/init:/docker-entrypoint-initdb.d
-    networks:
-      - blih-network
-    ports:
-      - "27017:27017"
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -413,35 +368,11 @@ services:
     networks:
       - blih-network
     ports:
-      - "6379:6379"
+      - '6379:6379'
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
       interval: 10s
       timeout: 5s
-      retries: 5
-
-  # ========================================
-  # RabbitMQ - Message Queue
-  # ========================================
-  rabbitmq:
-    image: rabbitmq:3.12-management-alpine
-    container_name: blih-rabbitmq
-    restart: unless-stopped
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
-      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - blih-network
-    ports:
-      - "5672:5672"
-      - "15672:15672"  # Management UI
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 30s
-      timeout: 10s
       retries: 5
 
   # ========================================
@@ -458,9 +389,9 @@ services:
     networks:
       - blih-network
     ports:
-      - "6333:6333"
+      - '6333:6333'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:6333/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -477,12 +408,12 @@ services:
     networks:
       - blih-network
     ports:
-      - "11434:11434"
+      - '11434:11434'
     environment:
-      - OLLAMA_NUM_THREADS=4  # Adjust based on CPU cores
+      - OLLAMA_NUM_THREADS=4 # Adjust based on CPU cores
       - OLLAMA_MAX_LOADED_MODELS=1
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:11434/api/tags']
       interval: 60s
       timeout: 30s
       retries: 3
@@ -510,9 +441,9 @@ services:
     networks:
       - blih-network
     ports:
-      - "8080:8080"
+      - '8080:8080'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -533,10 +464,10 @@ services:
     networks:
       - blih-network
     ports:
-      - "9000:9000"
-      - "9001:9001"  # Console UI
+      - '9000:9000'
+      - '9001:9001' # Console UI
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -549,8 +480,8 @@ services:
     container_name: blih-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -561,7 +492,7 @@ services:
     networks:
       - blih-network
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
+      test: ['CMD', 'nginx', '-t']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -572,11 +503,7 @@ services:
 volumes:
   postgres_data:
     driver: local
-  mongodb_data:
-    driver: local
   redis_data:
-    driver: local
-  rabbitmq_data:
     driver: local
   qdrant_data:
     driver: local
@@ -664,6 +591,7 @@ exit
 ```
 
 **CPU Optimization Tips:**
+
 - Use smaller models (3B or 7B parameters)
 - Limit concurrent requests
 - Set `OLLAMA_NUM_THREADS` to match your CPU cores
@@ -699,36 +627,6 @@ EOF
 
 # Run migrations
 docker-compose exec api npm run migration:run
-```
-
-### 5.2 MongoDB Initialization
-
-```bash
-# Create MongoDB initialization script
-cat > database/mongodb/init/01-init.js << 'EOF'
-// Switch to BLIH database
-db = db.getSiblingDB('blih_prod');
-
-// Create collections with validation
-db.createCollection('employees', {
-  validator: {
-    $jsonSchema: {
-      required: ['company_id', 'email'],
-      properties: {
-        company_id: { bsonType: 'string', enum: ['BLIH'] },
-        email: { bsonType: 'string' }
-      }
-    }
-  }
-});
-
-// Create indexes
-db.employees.createIndex({ email: 1 }, { unique: true });
-db.employees.createIndex({ company_id: 1 });
-db.employees.createIndex({ status: 1 });
-
-print('MongoDB initialization complete!');
-EOF
 ```
 
 ---
@@ -984,22 +882,22 @@ jobs:
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
             cd /opt/blih
-            
+
             # Pull latest code
             git pull origin main
-            
+
             # Pull latest images
             docker-compose pull
-            
+
             # Restart services with zero-downtime
             docker-compose up -d --no-deps --build
-            
+
             # Clean up old images
             docker image prune -f
-            
+
             # Run database migrations
             docker-compose exec -T api npm run migration:run
-            
+
             # Health check
             sleep 10
             curl -f http://localhost:3000/api/health || exit 1
@@ -1025,7 +923,7 @@ stages:
 
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_CERTDIR: '/certs'
 
 # ========================================
 # Test Stage
@@ -1111,6 +1009,7 @@ deploy-production:
 ### 8.3 Setup CI/CD Secrets
 
 **GitHub Secrets:**
+
 ```bash
 # Navigate to GitHub repository
 # Settings > Secrets and variables > Actions > New repository secret
@@ -1124,6 +1023,7 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
 ```
 
 **GitLab CI/CD Variables:**
+
 ```bash
 # Navigate to GitLab project
 # Settings > CI/CD > Variables > Add variable
@@ -1149,8 +1049,7 @@ curl http://localhost:3000/api/health
   "status": "ok",
   "info": {
     "database": { "status": "up" },
-    "redis": { "status": "up" },
-    "rabbitmq": { "status": "up" }
+    "redis": { "status": "up" }
   },
   "timestamp": "2026-02-10T13:30:00Z"
 }
@@ -1181,13 +1080,13 @@ docker inspect blih-api --format='{{json .State.Health}}' | jq
 
 # BLIH Health Monitoring Script
 
-SERVICES=("frontend" "api" "postgres" "mongodb" "redis" "rabbitmq" "qdrant" "ollama")
+SERVICES=("frontend" "api" "postgres" "redis" "qdrant" "ollama")
 WEBHOOK_URL="${SLACK_WEBHOOK}"
 
 check_service() {
     local service=$1
     local status=$(docker inspect blih-$service --format='{{.State.Health.Status}}' 2>/dev/null || echo "not_found")
-    
+
     if [ "$status" != "healthy" ] && [ "$status" != "not_found" ]; then
         echo "⚠️ Service $service is $status"
         notify_slack "⚠️ BLIH Alert: Service $service is $status"
@@ -1210,6 +1109,7 @@ echo "✅ Health check complete"
 ```
 
 **Add to crontab:**
+
 ```bash
 # Run every 5 minutes
 */5 * * * * /opt/blih/scripts/monitor.sh >> /var/log/blih-monitor.log 2>&1
@@ -1261,6 +1161,7 @@ echo "✅ Backup complete - $DATE"
 ```
 
 **Schedule daily backups:**
+
 ```bash
 # Add to crontab
 crontab -e
@@ -1289,6 +1190,7 @@ docker exec blih-mongodb mongorestore /tmp/mongodump_YYYYMMDD_HHMMSS
 ### 11.1 Common Issues
 
 **Service Won't Start:**
+
 ```bash
 # Check logs
 docker-compose logs service-name
@@ -1301,6 +1203,7 @@ docker-compose restart service-name
 ```
 
 **Database Connection Issues:**
+
 ```bash
 # Test PostgreSQL connection
 docker exec -it blih-postgres psql -U blih_user -d blih_prod
@@ -1313,6 +1216,7 @@ docker network inspect blih-network
 ```
 
 **Out of Disk Space:**
+
 ```bash
 # Check disk usage
 df -h
@@ -1325,6 +1229,7 @@ find /var/log -type f -name "*.log" -mtime +30 -delete
 ```
 
 **Performance Issues (CPU):**
+
 ```bash
 # Check container resource usage
 docker stats
@@ -1345,6 +1250,7 @@ services:
 ## Quick Reference
 
 ### Essential Commands
+
 ```bash
 # Start all services
 docker-compose up -d
@@ -1373,5 +1279,5 @@ curl http://localhost:3000/api/health
 
 ---
 
-*Last Updated: February 2026*  
-*For support: devops@yourcompany.com*
+_Last Updated: February 2026_  
+_For support: devops@yourcompany.com_

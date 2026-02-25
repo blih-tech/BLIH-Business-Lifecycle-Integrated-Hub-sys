@@ -291,8 +291,8 @@ curl -X POST http://localhost:5000/api/v1/auth/exchange \
 
 ### Prisma Configuration
 
-- **Schema**: `src/platform/prisma/schema.prisma`
-- **Migrations**: `src/platform/prisma/migrations/`
+- **Schema**: `prisma/schema.prisma`
+- **Migrations**: `prisma/migrations/`
 - **Seed**: `src/platform/prisma/prisma.seed.ts`
 - **Client**: Auto-generated Prisma Client
 
