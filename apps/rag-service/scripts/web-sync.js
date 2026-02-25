@@ -1,6 +1,9 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 
+console.log("Clearing data...")
+await axios.post('http://localhost:3005/rag/clear');
+
 async function syncBetterDocs() {
     const browser = await puppeteer.launch({ 
         headless: false, 

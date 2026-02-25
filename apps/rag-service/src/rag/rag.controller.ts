@@ -6,12 +6,14 @@ export class RagController {
   constructor(private readonly ragService: RagService) {}
 
   @Post('ingest-text')
-  async ingest(@Body() body: { text: string; source: string }) {
-    return this.ragService.ingest(body.text, body.source);
+  async ingestText(@Body() data: { text: string; source: string }) {
+    console.log(`Received document from source: ${data.source}`);
+    return await this.ragService.ingest(data.text, data.source);
   }
 
   @Post('ask')
-  async askQuestion(@Body('question') question: string) {
+  async ask(@Body('question') question: string) {
+    console.log(`Received question: ${question}`);
     return await this.ragService.askQuestion(question);
   }
 
@@ -21,6 +23,8 @@ export class RagController {
   }
 
   @Post('clear')
-  async clearCollection() {
+  async clear() {
     return await this.ragService.clearCollection();
-  }}
+  }
+}
+

@@ -17,37 +17,13 @@ export class RagService {
       baseUrl: process.env.OLLAMA_BASE_URL,
       model: 'llama3.2',
       numPredict: 1024,
-  
       temperature: 0.3,
     });
 
     this.embeddings = new OllamaEmbeddings({
       baseUrl: process.env.OLLAMA_BASE_URL,
       model: 'nomic-embed-text',
-    }); 
-  }
-
-  async processPDF(fileBuffer: Buffer) {
-    const blob = new Blob([new Uint8Array(fileBuffer)], { type: 'application/pdf' });
-    const loader = new WebPDFLoader(blob);
-    const docs = await loader.load();
-    const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
-    const splitDocs = await splitter.splitDocuments(docs);
-
-    await QdrantVectorStore.fromDocuments(splitDocs, this.embeddings, {
-      url: this.qdrantUrl,
-      collectionName: 'company_knowledge',
     });
-    return { message: `Successfully processed ${splitDocs.length} chunks.` };
-  }
-
-
-  status() {
-    return {
-      status: 'AI Service is online',
-      model: 'llama3',
-      collection: this.collectionName,
-    };
   }
 
   async clearCollection() {
@@ -90,6 +66,29 @@ export class RagService {
     return { message: `Successfully ingested ${splitDocs.length} chunks.` };
   }
 
+  async processPDF(fileBuffer: Buffer) {
+    const blob = new Blob([new Uint8Array(fileBuffer)], {
+      type: 'application/pdf',
+    });
+
+    const loader = new WebPDFLoader(blob);
+    const docs = await loader.load();
+
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 800,
+      chunkOverlap: 150,
+    });
+
+    const splitDocs = await splitter.splitDocuments(docs);
+
+    await QdrantVectorStore.fromDocuments(splitDocs, this.embeddings, {
+      url: this.qdrantUrl,
+      collectionName: this.collectionName,
+    });
+
+    return { message: `Successfully processed ${splitDocs.length} chunks.` };
+  }
+
   async askQuestion(question: string) {
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
       this.embeddings,
@@ -101,21 +100,22 @@ export class RagService {
 
     const relevantDocs = await vectorStore.similaritySearch(question, 3);
 
-    console.log(
-      'Context Found:',
-      relevantDocs.map((d) => d.pageContent),
-    );
-
     const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
 
     const prompt = `Use the context to answer the question thoroughly.
-    Context: ${context}
-    Question: ${question}`;
+Context: ${context}
+Question: ${question}`;
 
     const result = await this.llm.invoke(prompt);
 
     return { answer: result.content };
-
   }
-  
+
+  status() {
+    return {
+      status: 'AI Service is online',
+      model: 'llama3',
+      collection: this.collectionName,
+    };
+  }
 }

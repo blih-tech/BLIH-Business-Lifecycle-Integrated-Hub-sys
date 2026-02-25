@@ -7,9 +7,9 @@ import { RagModule } from './rag/rag.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, 
+      isGlobal: true,
     }),
-    RagModule
+    RagModule,
   ],
   controllers: [AppController],
   providers: [AppService],
