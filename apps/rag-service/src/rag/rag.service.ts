@@ -31,7 +31,6 @@ export class RagService {
       await fetch(`${this.qdrantUrl}/collections/${this.collectionName}`, {
         method: 'DELETE',
       });
-
       console.log('Database cleared for fresh sync.');
       return { message: 'Collection deleted successfully' };
     } catch {
@@ -43,6 +42,8 @@ export class RagService {
   }
 
   async ingest(text: string, source: string) {
+
+    console.log(`Ingesting text from: ${source}`);
     const doc = new Document({
       pageContent: text,
       metadata: {
@@ -89,27 +90,52 @@ export class RagService {
     return { message: `Successfully processed ${splitDocs.length} chunks.` };
   }
 
-  async askQuestion(question: string) {
-    const vectorStore = await QdrantVectorStore.fromExistingCollection(
-      this.embeddings,
-      {
-        url: this.qdrantUrl,
-        collectionName: this.collectionName,
-      },
-    );
+  async askQuestion(
+  question: string,
+  history: { role: string; content: string }[] = [],
+) {
+  const vectorStore = await QdrantVectorStore.fromExistingCollection(
+    this.embeddings,
+    {
+      url: this.qdrantUrl,
+      collectionName: this.collectionName,
+    },
+  );
 
-    const relevantDocs = await vectorStore.similaritySearch(question, 3);
+  const relevantDocs = await vectorStore.similaritySearch(question, 3);
 
-    const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
+  const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
 
-    const prompt = `Use the context to answer the question thoroughly.
-Context: ${context}
-Question: ${question}`;
+  const chatHistoryString = history
+    .map((msg) =>
+      `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`,
+    )
+    .join('\n');
 
-    const result = await this.llm.invoke(prompt);
+  console.log(
+    'Documents found:',
+    relevantDocs.map((d) => d.pageContent),
+  );
 
-    return { answer: result.content };
-  }
+      const prompt = `
+    You are a helpful assistant for BLIH.
+    Use the chat history and the provided context to answer the human's next question.
+
+    Chat History:
+    ${chatHistoryString}
+
+    Context from Documents:
+    ${context}
+
+    Human's Question:
+    ${question}
+
+    Answer:
+    `;
+
+      const response = await this.llm.invoke(prompt);
+      return { answer: response.content };
+    }
 
   status() {
     return {
