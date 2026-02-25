@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { PermissionResponseDto as PermissionResponseDtoType } from '@repo/types';
 
-export class PermissionResponseDto {
+export class PermissionResponseDto implements PermissionResponseDtoType {
   @ApiProperty({ example: '8b76752b-df18-45bc-af74-1ea9a0db2e40' })
   id!: string;
 

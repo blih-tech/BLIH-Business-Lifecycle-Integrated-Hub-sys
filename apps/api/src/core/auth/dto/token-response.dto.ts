@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { TokenResponseDto as TokenResponseDtoType } from '@repo/types';
 
-export class TokenResponseDto {
+export class TokenResponseDto implements TokenResponseDtoType {
   @ApiProperty({
     description: 'Whether token/session context is currently valid.',
     example: true,

@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { RoleResponseDto as RoleResponseDtoType } from '@repo/types';
 
-export class RoleResponseDto {
+export class RoleResponseDto implements RoleResponseDtoType {
   @ApiProperty({ example: '57e883d0-d0c0-4187-a232-50fa729f6876' })
   id!: string;
 

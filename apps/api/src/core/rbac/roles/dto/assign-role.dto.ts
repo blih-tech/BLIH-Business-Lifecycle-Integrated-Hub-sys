@@ -1,7 +1,8 @@
 import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { AssignRoleDto as AssignRoleDtoType } from '@repo/types';
 
-export class AssignRoleDto {
+export class AssignRoleDto implements AssignRoleDtoType {
   @ApiProperty({
     description: 'Target user id or Keycloak id.',
     example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',

@@ -8,8 +8,9 @@ import {
   Min,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import type { AuditQueryDto as AuditQueryDtoType } from '@repo/types';
 
-export class AuditQueryDto {
+export class AuditQueryDto implements AuditQueryDtoType {
   @ApiPropertyOptional({
     description: 'Filter by action key.',
     example: 'user.update',
