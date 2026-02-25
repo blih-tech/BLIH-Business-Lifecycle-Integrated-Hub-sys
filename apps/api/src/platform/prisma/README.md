@@ -1,15 +1,16 @@
-# Prisma: Schema, Migrations & Seed
+# Prisma Runtime & Seed
 
-This folder is the single source for database schema, migrations, and seed data. It is aligned with the application’s models and RBAC logic.
+This folder contains Prisma runtime wiring and seed logic used by the application.
+Schema and migrations are stored at the API root in `prisma/`.
 
 ## Structure
 
-| Path                    | Purpose                                                                                                           |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `schema.prisma`         | Canonical schema (models, enums, relations). Generate client with `npm run prisma:generate`.                      |
-| `migrations/`           | Ordered SQL migrations. Apply with `npm run prisma:migrate:dev` or `prisma:migrate:deploy`.                       |
-| `prisma.seed.ts`        | Seed script run after `prisma migrate reset` or via `npm run prisma:seed`.                                        |
-| `seed/rbac.manifest.ts` | RBAC resource/module/role definitions. Permission slugs come from `core/rbac/constants/permissions.constants.ts`. |
+| Path                            | Purpose                                                                                                           |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `../../../prisma/schema.prisma` | Canonical schema (models, enums, relations). Generate client with `npm run prisma:generate`.                      |
+| `../../../prisma/migrations/`   | Ordered SQL migrations. Apply with `npm run prisma:migrate:dev` or `prisma:migrate:deploy`.                       |
+| `prisma.seed.ts`                | Seed script run after `prisma migrate reset` or via `npm run prisma:seed`.                                        |
+| `seed/rbac.manifest.ts`         | RBAC resource/module/role definitions. Permission slugs come from `core/rbac/constants/permissions.constants.ts`. |
 
 ## Alignment with application
 

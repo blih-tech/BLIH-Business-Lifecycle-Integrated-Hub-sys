@@ -1,6 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
+import { createPrismaPgAdapter } from '../../platform/prisma/prisma.adapter';
+import { PrismaClient } from '../../platform/prisma/prisma-client';
 
-const prisma = new PrismaClient();
+const { adapter, pool } = createPrismaPgAdapter();
+const prisma = new PrismaClient({ adapter });
 
 const expandRoleIds = (
   rootRoleIds: string[],
@@ -138,4 +141,7 @@ main()
     console.error(error);
     process.exitCode = 1;
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+    await pool.end();
+  });

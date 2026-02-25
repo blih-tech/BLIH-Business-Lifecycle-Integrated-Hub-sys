@@ -36,7 +36,7 @@ ENV NODE_ENV=production
 COPY --from=prod-deps /workspace/node_modules ./node_modules
 COPY --from=builder /workspace/apps/api/package*.json ./apps/api/
 COPY --from=builder /workspace/apps/api/dist ./apps/api/dist
-COPY --from=builder /workspace/apps/api/src/platform/prisma/schema.prisma ./apps/api/src/platform/prisma/schema.prisma
+COPY --from=builder /workspace/apps/api/prisma/schema.prisma ./apps/api/prisma/schema.prisma
 
 WORKDIR /workspace/apps/api
 EXPOSE 5000

@@ -41,7 +41,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci --workspaces --include-workspace-root
+        run: |
+          # Use npm install instead of ci for better compatibility
+          # and to avoid Windows file permission issues
+          npm install --workspaces --include-workspace-root
 
       - name: Lint API
         run: npm run lint:check --workspace blih-system-backend

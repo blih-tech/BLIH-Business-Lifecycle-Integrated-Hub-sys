@@ -4,7 +4,9 @@
  * Source of truth for RBAC catalog and roles: ./seed/rbac.manifest.ts.
  * Permission slugs must be 2-part (resource:action) to match schema and app.
  */
-import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
+import { createPrismaPgAdapter } from './prisma.adapter';
+import { PrismaClient } from './prisma-client';
 import {
   SystemPermissionPermissions,
   SystemResourcePermissions,
@@ -16,7 +18,8 @@ import {
   RBAC_ROLES,
 } from './seed/rbac.manifest';
 
-const prisma = new PrismaClient();
+const { adapter, pool } = createPrismaPgAdapter();
+const prisma = new PrismaClient({ adapter });
 
 const PERMISSION_PATTERN = /^[a-z0-9_]+:[a-z0-9_*-]+$/;
 
@@ -500,4 +503,7 @@ main()
     console.error(error);
     process.exitCode = 1;
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+    await pool.end();
+  });
