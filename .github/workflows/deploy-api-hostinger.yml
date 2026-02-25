@@ -44,7 +44,7 @@ jobs:
         run: |
           # Use npm install instead of ci for better compatibility
           # and to avoid Windows file permission issues
-          npm install --workspaces --include-workspace-root
+          npm install --workspaces --include-workspace-root --include=optional
 
       - name: Lint monorepo
         run: npm run lint
