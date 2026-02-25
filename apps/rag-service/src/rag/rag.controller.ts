@@ -23,5 +23,4 @@ export class RagController {
   @Post('clear')
   async clearCollection() {
     return await this.ragService.clearCollection();
-  }
-}
+  }}

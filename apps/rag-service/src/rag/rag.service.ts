@@ -3,6 +3,7 @@ import { ChatOllama, OllamaEmbeddings } from '@langchain/ollama';
 import { QdrantVectorStore } from '@langchain/qdrant';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
+import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
 @Injectable()
 export class RagService {
@@ -16,13 +17,31 @@ export class RagService {
       baseUrl: process.env.OLLAMA_BASE_URL,
       model: 'llama3.2',
       numPredict: 1024,
+  
+      temperature: 0.3,
     });
 
     this.embeddings = new OllamaEmbeddings({
       baseUrl: process.env.OLLAMA_BASE_URL,
       model: 'nomic-embed-text',
-    });
+    }); 
   }
+
+  async processPDF(fileBuffer: Buffer) {
+    const blob = new Blob([new Uint8Array(fileBuffer)], { type: 'application/pdf' });
+    const loader = new WebPDFLoader(blob);
+    const docs = await loader.load();
+    const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
+    const splitDocs = await splitter.splitDocuments(docs);
+
+    await QdrantVectorStore.fromDocuments(splitDocs, this.embeddings, {
+      url: this.qdrantUrl,
+      collectionName: 'company_knowledge',
+    });
+    return { message: `Successfully processed ${splitDocs.length} chunks.` };
+  }
+
+
   status() {
     return {
       status: 'AI Service is online',
@@ -96,5 +115,7 @@ export class RagService {
     const result = await this.llm.invoke(prompt);
 
     return { answer: result.content };
+
   }
+  
 }
