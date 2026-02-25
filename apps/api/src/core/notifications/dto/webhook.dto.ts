@@ -1,7 +1,8 @@
 import { IsObject, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import type { WebhookDto as WebhookDtoType } from '@repo/types';
 
-export class WebhookDto {
+export class WebhookDto implements WebhookDtoType {
   @ApiProperty({
     description: 'Destination webhook URL.',
     example: 'https://hooks.example.com/core-events',

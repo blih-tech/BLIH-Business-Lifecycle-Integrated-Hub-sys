@@ -1,9 +1,10 @@
 import { IsArray, IsOptional, IsString, Matches } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { AccessEvaluationDto as AccessEvaluationDtoType } from '@repo/types';
 
 const PERMISSION_KEY_PATTERN = '^[a-z0-9_]+:[a-z0-9_*-]+$';
 
-export class AccessEvaluationDto {
+export class AccessEvaluationDto implements AccessEvaluationDtoType {
   @ApiProperty({
     description: 'Target user id or keycloak id for permission evaluation.',
     example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',

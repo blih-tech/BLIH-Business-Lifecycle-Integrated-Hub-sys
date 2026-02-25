@@ -1,9 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsIn, IsOptional, IsString, Matches } from 'class-validator';
+import type { UpdateRoleDto as UpdateRoleDtoType } from '@repo/types';
 
 const PERMISSION_KEY_PATTERN = '^[a-z0-9_]+:[a-z0-9_*-]+$';
 
-export class UpdateRoleDto {
+export class UpdateRoleDto implements UpdateRoleDtoType {
   @ApiPropertyOptional({
     description: 'Updated human-readable role label.',
     example: 'Finance Approver',

@@ -92,11 +92,11 @@ The application uses a sophisticated environment configuration system with Joi v
 
 ```bash
 # Copy environment templates
-cp .env.example .env.local
+cp .env.example .env
 cp .env.local.template .env.local.detailed
 
 # Edit configuration (required)
-nano .env.local
+nano .env
 ```
 
 **Critical Configuration Steps:**
@@ -120,10 +120,12 @@ docker compose -f docker-compose.yml ps
 docker compose -f docker-compose.yml logs -f postgres
 ```
 
+`docker-compose.yml` reads runtime values from `.env`; never commit real secrets.
+
 **Services Started:**
 
-- **PostgreSQL**: `localhost:5432` (blih_dev_user/blih_dev_pass_2024)
-- **Keycloak**: `localhost:8080` (admin/admin)
+- **PostgreSQL**: `localhost:5432` (credentials from `.env`)
+- **Keycloak**: `localhost:8080` (admin credentials from `.env`)
 - **MailHog**: `localhost:8025` (email testing)
 
 ### 4️⃣ Database Setup

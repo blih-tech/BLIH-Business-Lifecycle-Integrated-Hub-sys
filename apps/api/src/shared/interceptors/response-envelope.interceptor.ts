@@ -76,17 +76,18 @@ export class ResponseEnvelopeInterceptor implements NestInterceptor {
         }
 
         if (isPaginatedResult(data)) {
+          const paginated = data as PaginatedResult<unknown>;
           return buildSuccessEnvelope(
-            data.items,
+            paginated.items,
             requestId,
             DEFAULT_SUCCESS_MESSAGE,
             {
-              page: data.pagination.page,
-              limit: data.pagination.limit,
-              total: data.pagination.total,
-              totalPages: data.pagination.totalPages,
-              hasNextPage: data.pagination.hasNextPage,
-              hasPreviousPage: data.pagination.hasPreviousPage,
+              page: paginated.pagination.page,
+              limit: paginated.pagination.limit,
+              total: paginated.pagination.total,
+              totalPages: paginated.pagination.totalPages,
+              hasNextPage: paginated.pagination.hasNextPage,
+              hasPreviousPage: paginated.pagination.hasPreviousPage,
             },
           );
         }
