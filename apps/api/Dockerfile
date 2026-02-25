@@ -1,22 +1,48 @@
-FROM node:22-alpine AS builder
-WORKDIR /app
+FROM node:22-alpine AS deps
+WORKDIR /workspace
 
 COPY package*.json ./
-RUN npm ci
+COPY apps/api/package*.json apps/api/
+COPY apps/web/package*.json apps/web/
+COPY packages/types/package*.json packages/types/
+COPY packages/typescript-config/package*.json packages/typescript-config/
+COPY packages/eslint-config/package*.json packages/eslint-config/
+RUN npm ci --workspaces --include-workspace-root --include=dev --ignore-scripts
 
+FROM node:22-alpine AS builder
+WORKDIR /workspace
+
+COPY --from=deps /workspace/node_modules ./node_modules
 COPY . .
-RUN npm run prisma:generate
-RUN npm run build
+RUN npm run build --workspace @blih/types
+RUN npm run prisma:generate --workspace blih-system-backend
+RUN npm run build --workspace blih-system-backend
+
+FROM node:22-alpine AS prod-deps
+WORKDIR /workspace
+
+COPY package*.json ./
+COPY apps/api/package*.json apps/api/
+COPY apps/web/package*.json apps/web/
+COPY packages/types/package*.json packages/types/
+COPY packages/typescript-config/package*.json packages/typescript-config/
+COPY packages/eslint-config/package*.json packages/eslint-config/
+RUN npm ci --omit=dev --workspaces --include-workspace-root --ignore-scripts
 
 FROM node:22-alpine AS runtime
-WORKDIR /app
+WORKDIR /workspace
+ENV NODE_ENV=production
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+COPY --from=prod-deps /workspace/node_modules ./node_modules
+COPY --from=builder /workspace/apps/api/package*.json ./apps/api/
+COPY --from=builder /workspace/apps/api/dist ./apps/api/dist
+COPY --from=builder /workspace/apps/api/src/platform/prisma/schema.prisma ./apps/api/src/platform/prisma/schema.prisma
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/platform/prisma/schema.prisma ./src/platform/prisma/schema.prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-
+WORKDIR /workspace/apps/api
 EXPOSE 5000
 CMD ["node", "dist/main"]
+
+FROM builder AS migrator
+WORKDIR /workspace/apps/api
+ENV NODE_ENV=production
+CMD ["npm", "run", "prisma:migrate:deploy"]

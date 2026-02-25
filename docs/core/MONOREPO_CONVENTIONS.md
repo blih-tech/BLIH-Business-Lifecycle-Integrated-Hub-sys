@@ -37,3 +37,8 @@ Workflow: `.github/workflows/governance.yml`
 
 - PR governance: branch naming + conventional commit range checks.
 - Quality gates: install, lint monorepo, type-check monorepo, run API verification.
+
+Deployment Workflows:
+
+- Frontend deployment to Vercel: `.github/workflows/deploy-web-vercel.yml`
+- Backend deployment to Hostinger: `.github/workflows/deploy-api-hostinger.yml`
