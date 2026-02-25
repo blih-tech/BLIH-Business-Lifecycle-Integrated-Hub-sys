@@ -21,22 +21,24 @@ This repository uses a root-first governance model. Shared automation and qualit
 
 - `npm run lint` runs lint across workspaces with Turborepo.
 - `npm run check-types` runs type checks across workspaces.
+- `npm run test:ci` runs workspace tests in CI mode.
+- `npm run verify` runs monorepo lint, type-check, and tests.
 - `npm run api:verify` runs API lint/typecheck/tests (CI-grade).
 - `npm run docker:api:infra:up` starts shared API dependencies.
 - `npm run docker:api:up` starts full API stack with app container.
 
 ## Hook Flow
 
-- `pre-commit`: branch-name validation and lint-staged.
+- `pre-commit`: branch-name validation, lint-staged, then `npm run verify`.
 - `commit-msg`: conventional commit validation with commitlint.
-- `pre-push`: branch protection checks, monorepo lint, monorepo type-check, and API tests.
+- `pre-push`: branch protection checks and `npm run verify`.
 
 ## CI Flow
 
 Workflow: `.github/workflows/governance.yml`
 
 - PR governance: branch naming + conventional commit range checks.
-- Quality gates: install, lint monorepo, type-check monorepo, run API verification.
+- Quality gates: install, lint monorepo, type-check monorepo, test monorepo.
 
 Deployment Workflows:
 

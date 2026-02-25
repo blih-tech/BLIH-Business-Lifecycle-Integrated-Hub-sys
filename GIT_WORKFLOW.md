@@ -122,6 +122,7 @@ Pre-commit:
 
 - Branch name validation
 - Lint and format staged files
+- Runs `npm run verify` (monorepo lint, type-check, and tests)
 
 Commit message:
 
@@ -130,9 +131,7 @@ Commit message:
 Pre-push:
 
 - Prevents direct push to protected branches
-- Runs `npm run lint`
-- Runs `npm run check-types`
-- Runs `npm run test --workspace blih-system-backend -- --ci --passWithNoTests`
+- Runs `npm run verify` (monorepo lint, type-check, and tests)
 
 Useful local checks:
 

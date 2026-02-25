@@ -76,5 +76,5 @@ jobs:
       - name: Type-check monorepo
         run: npm run check-types
 
-      - name: Run API quality gates
-        run: npm run api:verify
+      - name: Test monorepo
+        run: npm run test:ci

@@ -2,7 +2,4 @@
 set -e
 
 node apps/api/scripts/git/validate-pre-push.js "$@"
-npm run lint
-npm run check-types
-npm run prisma:generate --workspace blih-system-backend
-npm run test --workspace blih-system-backend -- --ci --passWithNoTests
+npm run verify

@@ -46,14 +46,14 @@ jobs:
           # and to avoid Windows file permission issues
           npm install --workspaces --include-workspace-root
 
-      - name: Lint API
-        run: npm run lint:check --workspace blih-system-backend
+      - name: Lint monorepo
+        run: npm run lint
 
-      - name: Type-check API
-        run: npm run typecheck --workspace blih-system-backend
+      - name: Type-check monorepo
+        run: npm run check-types
 
-      - name: Test API
-        run: npm run test --workspace blih-system-backend -- --ci --passWithNoTests
+      - name: Test monorepo
+        run: npm run test:ci
 
   build-images:
     needs: verify

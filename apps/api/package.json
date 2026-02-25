@@ -17,6 +17,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --fix",
     "validate:rbac-catalog": "node scripts/rbac/validate-permission-constants.js",
     "lint:check": "npm run validate:rbac-catalog && npm run lint",
+    "check-types": "npm run typecheck",
     "typecheck": "npm run prisma:generate && tsc --noEmit",
     "test": "jest",
     "test:integration": "jest --config ./test/jest-integration.json",

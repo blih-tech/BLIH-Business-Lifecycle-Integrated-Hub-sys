@@ -4,3 +4,4 @@ set -e
 
 npm run branch:check
 npx --no-install lint-staged
+npm run verify
