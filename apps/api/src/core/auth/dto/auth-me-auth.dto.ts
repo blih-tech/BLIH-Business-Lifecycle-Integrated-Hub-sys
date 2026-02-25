@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { AuthMeAuthDto as AuthMeAuthDtoType } from '@repo/types';
 
-export class AuthMeAuthDto {
+export class AuthMeAuthDto implements AuthMeAuthDtoType {
   @ApiProperty({
     description: 'Authenticated subject identifier from access token.',
     example: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',

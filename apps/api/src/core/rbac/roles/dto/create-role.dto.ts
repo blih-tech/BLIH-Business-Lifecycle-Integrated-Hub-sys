@@ -1,9 +1,10 @@
 import { IsArray, IsIn, IsOptional, IsString, Matches } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { CreateRoleDto as CreateRoleDtoType } from '@repo/types';
 
 const PERMISSION_KEY_PATTERN = '^[a-z0-9_]+:[a-z0-9_*-]+$';
 
-export class CreateRoleDto {
+export class CreateRoleDto implements CreateRoleDtoType {
   @ApiProperty({
     description: 'Machine-readable role name.',
     example: 'finance.approver',

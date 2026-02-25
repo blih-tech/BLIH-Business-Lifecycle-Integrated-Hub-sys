@@ -26,8 +26,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@repo/eslint-config": "file:../../packages/eslint-config",
+    "@repo/typescript-config": "file:../../packages/typescript-config",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",

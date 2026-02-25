@@ -8,8 +8,9 @@ import {
   Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { AuditRecordDto as AuditRecordDtoType } from '@repo/types';
 
-export class AuditRecordDto {
+export class AuditRecordDto implements AuditRecordDtoType {
   @ApiProperty({
     description: 'Action key representing audited activity.',
     example: 'user.update',

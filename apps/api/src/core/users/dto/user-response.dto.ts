@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { UserResponseDto as UserResponseDtoType } from '@repo/types';
 
-export class UserResponseDto {
+export class UserResponseDto implements UserResponseDtoType {
   @ApiProperty({
     description: 'Internal UUID of the user record.',
     example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',

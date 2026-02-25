@@ -13,7 +13,7 @@ Your local development database environment has been configured successfully.
 ### 2. Database Initialization Scripts
 
 - **Directory**: `docker/init-scripts/`
-- **Script**: `01-init-databases.sql`
+- **Script**: `01-init-databases.sh`
 - **Creates**: Both databases with dedicated users and permissions
 
 ### 3. Environment Configuration

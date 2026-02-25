@@ -9,8 +9,9 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import type { ListRolesQueryDto as ListRolesQueryDtoType } from '@repo/types';
 
-export class ListRolesQueryDto {
+export class ListRolesQueryDto implements ListRolesQueryDtoType {
   @ApiPropertyOptional({
     description: 'Page number (1-based).',
     example: 1,
