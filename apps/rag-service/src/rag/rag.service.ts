@@ -42,7 +42,6 @@ export class RagService {
   }
 
   async ingest(text: string, source: string) {
-
     console.log(`Ingesting text from: ${source}`);
     const doc = new Document({
       pageContent: text,
@@ -91,33 +90,34 @@ export class RagService {
   }
 
   async askQuestion(
-  question: string,
-  history: { role: string; content: string }[] = [],
-) {
-  const vectorStore = await QdrantVectorStore.fromExistingCollection(
-    this.embeddings,
-    {
-      url: this.qdrantUrl,
-      collectionName: this.collectionName,
-    },
-  );
+    question: string,
+    history: { role: string; content: string }[] = [],
+  ) {
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(
+      this.embeddings,
+      {
+        url: this.qdrantUrl,
+        collectionName: this.collectionName,
+      },
+    );
 
-  const relevantDocs = await vectorStore.similaritySearch(question, 3);
+    const relevantDocs = await vectorStore.similaritySearch(question, 3);
 
-  const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
+    const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
 
-  const chatHistoryString = history
-    .map((msg) =>
-      `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`,
-    )
-    .join('\n');
+    const chatHistoryString = history
+      .map(
+        (msg) =>
+          `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`,
+      )
+      .join('\n');
 
-  console.log(
-    'Documents found:',
-    relevantDocs.map((d) => d.pageContent),
-  );
+    console.log(
+      'Documents found:',
+      relevantDocs.map((d) => d.pageContent),
+    );
 
-      const prompt = `
+    const prompt = `
     You are a helpful assistant for BLIH.
     Use the chat history and the provided context to answer the human's next question.
 
@@ -133,9 +133,9 @@ export class RagService {
     Answer:
     `;
 
-      const response = await this.llm.invoke(prompt);
-      return { answer: response.content };
-    }
+    const response = await this.llm.invoke(prompt);
+    return { answer: response.content };
+  }
 
   status() {
     return {

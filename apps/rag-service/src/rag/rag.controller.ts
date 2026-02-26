@@ -13,11 +13,16 @@ export class RagController {
 
   @Post('ask')
   async ask(
-    @Body() body: { 
-    question: string;
-    history?: {role: string, content: string}[] 
-  }) {
-    return await this.ragService.askQuestion(body.question, body.history || []);
+    @Body()
+    body: {
+      question: string;
+      history?: { role: string; content: string }[];
+    },
+  ) {
+    return await this.ragService.askQuestion(
+      body.question,
+      body.history || [],
+    );
   }
 
   @Get('status')
@@ -29,6 +34,4 @@ export class RagController {
   async clear() {
     return await this.ragService.clearCollection();
   }
-
 }
-
