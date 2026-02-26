@@ -1,7 +1,6 @@
 import { Button } from "@/shared/components/ui/button";
 import { AuthCard } from "@/features/auth";
 import { ChevronRight, ShieldCheck, Mail, Lock } from "lucide-react";
-import Link from "next/link";
 
 export default function SignInPage() {
   return (
@@ -28,20 +27,9 @@ export default function SignInPage() {
       footer={
         <div className="flex flex-col gap-5">
           <div className="h-px w-full bg-border/50" />
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-medium">
-            <Link 
-              className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group" 
-              href="/auth/signup"
-            >
-              No account? <span className="text-primary hover:underline">Sign up</span>
-            </Link>
-            <Link 
-              className="text-muted-foreground hover:text-primary transition-colors text-xs" 
-              href="/auth/forgot"
-            >
-              Forgot credentials?
-            </Link>
-          </div>
+          <p className="text-xs text-muted-foreground text-center">
+            Access is managed by your organization&apos;s identity provider.
+          </p>
         </div>
       }
     >
