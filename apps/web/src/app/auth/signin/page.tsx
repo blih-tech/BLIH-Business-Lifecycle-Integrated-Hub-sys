@@ -1,32 +1,69 @@
 import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { AuthCard } from "@/features/auth";
+import { ChevronRight, ShieldCheck, Mail, Lock } from "lucide-react";
+import Link from "next/link";
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="mx-auto flex min-h-screen w-full max-w-lg items-center justify-center p-6">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Sign in to BLIH</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Use your organization account to continue.
+    <AuthCard 
+      title="Welcome Back" 
+      description="Access your secure organization portal"
+      sideContent={
+        <div className="flex flex-col gap-6">
+          <div className="h-12 w-12 rounded-2xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center border border-primary/20 shadow-inner">
+            <Lock className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex flex-col gap-4">
+            <h2 className="text-xl font-bold tracking-tight">Enterprise Gateway</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+              Seamlessly connect to your business ecosystem with our secure identity management system.
             </p>
-            <Button className="w-full" asChild>
-              <a href="/api/auth/login?prompt=login">Continue with BLIH</a>
-            </Button>
-            <div className="flex items-center justify-between text-sm">
-              <a className="text-primary underline-offset-4 hover:underline" href="/auth/signup">
-                Create account
-              </a>
-              <a className="text-primary underline-offset-4 hover:underline" href="/auth/forgot">
-                Forgot password
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-      </main>
-    </div>
+          </div>
+          <div className="flex items-center gap-2.5 text-xs font-bold text-primary uppercase tracking-widest">
+            <ShieldCheck className="h-4 w-4" />
+            SSO Protected
+          </div>
+        </div>
+      }
+      footer={
+        <div className="flex flex-col gap-5">
+          <div className="h-px w-full bg-border/50" />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-medium">
+            <Link 
+              className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group" 
+              href="/auth/signup"
+            >
+              No account? <span className="text-primary hover:underline">Sign up</span>
+            </Link>
+            <Link 
+              className="text-muted-foreground hover:text-primary transition-colors text-xs" 
+              href="/auth/forgot"
+            >
+              Forgot credentials?
+            </Link>
+          </div>
+        </div>
+      }
+    >
+      <div className="flex flex-col gap-6">
+        <Button 
+          className="w-full h-12 text-base font-bold shadow-xl shadow-primary/15 hover:shadow-primary/25 active:scale-[0.98] transition-all rounded-2xl group/btn" 
+          asChild 
+          size="lg"
+        >
+          <a href="/api/auth/login?prompt=login">
+            <span className="flex items-center justify-center gap-3">
+              <Mail className="h-5 w-5" />
+              Continue with BLIH
+              <ChevronRight className="h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
+            </span>
+          </a>
+        </Button>
+        
+        <p className="text-[10px] text-center text-muted-foreground/50 uppercase tracking-[0.2em] font-bold">
+          Bank-grade encryption active
+        </p>
+      </div>
+    </AuthCard>
   );
 }
