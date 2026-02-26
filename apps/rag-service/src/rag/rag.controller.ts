@@ -19,10 +19,7 @@ export class RagController {
       history?: { role: string; content: string }[];
     },
   ) {
-    return await this.ragService.askQuestion(
-      body.question,
-      body.history || [],
-    );
+    return await this.ragService.askQuestion(body.question, body.history || []);
   }
 
   @Get('status')
