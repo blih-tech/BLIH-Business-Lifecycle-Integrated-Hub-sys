@@ -12,7 +12,9 @@ function decodeJwtPayload(token: string): TokenPayload | null {
   const parts = token.split(".");
   if (parts.length !== 3) return null;
   try {
-    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payloadPart = parts[1];
+    if (!payloadPart) return null;
+    const payload = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
     const padded = payload.padEnd(payload.length + ((4 - (payload.length % 4)) % 4), "=");
     const json = Buffer.from(padded, "base64").toString("utf8");
     return JSON.parse(json) as TokenPayload;
