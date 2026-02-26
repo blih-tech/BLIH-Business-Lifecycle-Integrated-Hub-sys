@@ -27,9 +27,6 @@ export class ListRolesUseCase {
             ],
           }
         : {}),
-      ...(query.dataScope
-        ? { dataScope: query.dataScope.toUpperCase() as never }
-        : {}),
       ...(query.isSystem !== undefined ? { isSystem: query.isSystem } : {}),
     };
 
@@ -41,9 +38,6 @@ export class ListRolesUseCase {
         take: limit,
         orderBy: { name: 'asc' },
         include: {
-          parentRole: {
-            select: { name: true },
-          },
           permissions: {
             include: {
               permission: {
@@ -64,9 +58,8 @@ export class ListRolesUseCase {
         name: role.name,
         displayName: role.displayName,
         description: role.description,
-        dataScope: role.dataScope.toLowerCase(),
         isSystem: role.isSystem,
-        parentRoleName: role.parentRole?.name ?? null,
+        parentRoleId: role.parentRoleId,
         permissions: role.permissions
           .map((item) => item.permission.slug)
           .sort((left, right) => left.localeCompare(right)),

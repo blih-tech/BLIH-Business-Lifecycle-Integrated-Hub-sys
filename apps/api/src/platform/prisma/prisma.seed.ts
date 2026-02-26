@@ -1,8 +1,11 @@
 /**
- * Prisma seed: realm, org, RBAC catalog (modules/resources/permissions/roles),
- * role–permission links, User.permissions snapshot, ModuleConfig, SystemConfig.
- * Source of truth for RBAC catalog and roles: ./seed/rbac.manifest.ts.
- * Permission slugs must be 2-part (resource:action) to match schema and app.
+ * Prisma seed: RBAC resource/action/permission catalog, role metadata/hierarchy,
+ * ModuleConfig, and other core bootstrap data.
+ *
+ * RBAC notes:
+ * - No PermissionModule layer.
+ * - No role default permission links.
+ * - No persisted User.permissions snapshot rebuild.
  */
 import 'dotenv/config';
 import { createPrismaPgAdapter } from './prisma.adapter';
@@ -12,7 +15,6 @@ import {
   SystemResourcePermissions,
 } from '../../core/rbac/constants/permissions.constants';
 import {
-  RBAC_MODULES,
   RBAC_PERMISSIONS,
   RBAC_RESOURCE_CATALOG,
   RBAC_ROLES,
@@ -32,35 +34,38 @@ const parsePermissionSlug = (slug: string) => {
   return { resource, action, slug: normalized };
 };
 
-const ensureCatalog = async () => {
-  for (const moduleName of RBAC_MODULES) {
-    await prisma.permissionModule.upsert({
-      where: { name: moduleName },
-      update: {},
-      create: {
-        name: moduleName,
-      },
-    });
+const canonicalResourceNames = [
+  ...new Set(RBAC_RESOURCE_CATALOG.map((entry) => entry.name)),
+];
+const canonicalPermissionSlugs = [...new Set(RBAC_PERMISSIONS)];
+const canonicalActionNames = [
+  ...new Set(RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).action)),
+];
+
+const ensureCatalogConsistency = () => {
+  const resourceNameSet = new Set(canonicalResourceNames);
+
+  const unknownResourceNames = [
+    ...new Set(
+      RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).resource),
+    ),
+  ].filter((resourceName) => !resourceNameSet.has(resourceName));
+
+  if (unknownResourceNames.length > 0) {
+    throw new Error(
+      `Permissions reference unknown resources: ${unknownResourceNames.join(', ')}`,
+    );
   }
+};
 
-  const modules = await prisma.permissionModule.findMany({
-    select: { id: true, name: true },
-  });
-  const moduleIdByName = new Map(
-    modules.map((entry) => [entry.name, entry.id]),
-  );
-
+const ensureResources = async () => {
   for (const resource of RBAC_RESOURCE_CATALOG) {
-    const moduleId = moduleIdByName.get(resource.module);
-    if (!moduleId) {
-      throw new Error(`Missing module for resource ${resource.name}`);
-    }
-
     await prisma.permissionResource.upsert({
       where: { name: resource.name },
-      update: {},
+      update: {
+        description: resource.description,
+      },
       create: {
-        moduleId,
         name: resource.name,
         description: resource.description,
       },
@@ -68,88 +73,57 @@ const ensureCatalog = async () => {
   }
 
   const resources = await prisma.permissionResource.findMany({
-    select: { id: true, name: true, moduleId: true },
+    select: { id: true, name: true },
   });
 
-  return new Map(
-    resources.map((entry) => [
-      entry.name,
-      {
-        id: entry.id,
-        moduleId: entry.moduleId,
+  return new Map(resources.map((entry) => [entry.name, entry.id]));
+};
+
+const ensureActions = async () => {
+  for (const actionName of canonicalActionNames) {
+    await prisma.permissionAction.upsert({
+      where: { name: actionName },
+      update: {},
+      create: {
+        name: actionName,
       },
-    ]),
-  );
+    });
+  }
+
+  const actions = await prisma.permissionAction.findMany({
+    select: { id: true, name: true },
+  });
+
+  return new Map(actions.map((entry) => [entry.name, entry.id]));
 };
 
 const upsertPermission = async (
   slug: string,
-  resourceMap: Map<string, { id: string; moduleId: string }>,
+  resourceIdByName: Map<string, string>,
+  actionIdByName: Map<string, string>,
 ) => {
   const parsed = parsePermissionSlug(slug);
-  const resource = resourceMap.get(parsed.resource);
-  if (!resource) {
+  const resourceId = resourceIdByName.get(parsed.resource);
+  const actionId = actionIdByName.get(parsed.action);
+
+  if (!resourceId) {
     throw new Error(`Unknown resource in permission slug: ${slug}`);
   }
-
-  const actionRecord = await prisma.permissionAction.upsert({
-    where: { name: parsed.action },
-    update: {},
-    create: {
-      name: parsed.action,
-    },
-  });
+  if (!actionId) {
+    throw new Error(`Unknown action in permission slug: ${slug}`);
+  }
 
   return prisma.permission.upsert({
     where: { slug: parsed.slug },
-    update: {},
+    update: {
+      description: null,
+    },
     create: {
-      moduleId: resource.moduleId,
-      resourceId: resource.id,
-      actionId: actionRecord.id,
+      resourceId,
+      actionId,
       slug: parsed.slug,
     },
   });
-};
-
-const DEFAULT_ACTION_NAMES = [
-  ...new Set(RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).action)),
-];
-
-const canonicalModuleNames = [...new Set(RBAC_MODULES)];
-const canonicalResourceNames = [
-  ...new Set(RBAC_RESOURCE_CATALOG.map((entry) => entry.name)),
-];
-const canonicalPermissionSlugs = [...new Set(RBAC_PERMISSIONS)];
-
-const ensureCatalogConsistency = () => {
-  const moduleSet = new Set<string>(canonicalModuleNames);
-  const resourceModuleByName = new Map<string, string>();
-
-  for (const resource of RBAC_RESOURCE_CATALOG) {
-    if (!moduleSet.has(resource.module)) {
-      throw new Error(
-        `Resource ${resource.name} references unknown module ${resource.module}`,
-      );
-    }
-    if (resourceModuleByName.has(resource.name)) {
-      throw new Error(
-        `Duplicate permission resource in catalog: ${resource.name}`,
-      );
-    }
-    resourceModuleByName.set(resource.name, resource.module);
-  }
-
-  const unknownResourceNames = [
-    ...new Set(
-      RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).resource),
-    ),
-  ].filter((resourceName) => !resourceModuleByName.has(resourceName));
-  if (unknownResourceNames.length > 0) {
-    throw new Error(
-      `Permissions reference unknown resources: ${unknownResourceNames.join(', ')}`,
-    );
-  }
 };
 
 const pruneUnknownCatalogRows = async () => {
@@ -164,7 +138,7 @@ const pruneUnknownCatalogRows = async () => {
   await prisma.permissionAction.deleteMany({
     where: {
       name: {
-        notIn: DEFAULT_ACTION_NAMES,
+        notIn: canonicalActionNames,
       },
     },
   });
@@ -176,201 +150,58 @@ const pruneUnknownCatalogRows = async () => {
       },
     },
   });
-
-  await prisma.permissionModule.deleteMany({
-    where: {
-      name: {
-        notIn: canonicalModuleNames,
-      },
-    },
-  });
 };
 
 const assertCatalogPruned = async () => {
-  const [
-    unknownModuleCount,
-    unknownResourceCount,
-    unknownActionCount,
-    unknownPermissionCount,
-  ] = await Promise.all([
-    prisma.permissionModule.count({
-      where: {
-        name: {
-          notIn: canonicalModuleNames,
+  const [unknownResourceCount, unknownActionCount, unknownPermissionCount] =
+    await Promise.all([
+      prisma.permissionResource.count({
+        where: {
+          name: {
+            notIn: canonicalResourceNames,
+          },
         },
-      },
-    }),
-    prisma.permissionResource.count({
-      where: {
-        name: {
-          notIn: canonicalResourceNames,
+      }),
+      prisma.permissionAction.count({
+        where: {
+          name: {
+            notIn: canonicalActionNames,
+          },
         },
-      },
-    }),
-    prisma.permissionAction.count({
-      where: {
-        name: {
-          notIn: DEFAULT_ACTION_NAMES,
+      }),
+      prisma.permission.count({
+        where: {
+          slug: {
+            notIn: canonicalPermissionSlugs,
+          },
         },
-      },
-    }),
-    prisma.permission.count({
-      where: {
-        slug: {
-          notIn: canonicalPermissionSlugs,
-        },
-      },
-    }),
-  ]);
+      }),
+    ]);
 
   if (
-    unknownModuleCount > 0 ||
     unknownResourceCount > 0 ||
     unknownActionCount > 0 ||
     unknownPermissionCount > 0
   ) {
     throw new Error(
-      `RBAC catalog drift detected after seed: modules=${unknownModuleCount}, resources=${unknownResourceCount}, actions=${unknownActionCount}, permissions=${unknownPermissionCount}`,
+      `RBAC catalog drift detected after seed: resources=${unknownResourceCount}, actions=${unknownActionCount}, permissions=${unknownPermissionCount}`,
     );
-  }
-};
-
-const expandRoleIds = (
-  rootRoleIds: string[],
-  childrenByParentId: Map<string, string[]>,
-) => {
-  const visited = new Set<string>();
-  const queue = [...rootRoleIds];
-
-  while (queue.length > 0) {
-    const roleId = queue.shift();
-    if (!roleId || visited.has(roleId)) {
-      continue;
-    }
-
-    visited.add(roleId);
-    const children = childrenByParentId.get(roleId) ?? [];
-    for (const child of children) {
-      queue.push(child);
-    }
-  }
-
-  return visited;
-};
-
-const rebuildAllUserPermissions = async () => {
-  const now = new Date();
-  const roles = await prisma.role.findMany({
-    select: {
-      id: true,
-      name: true,
-      parentRoleId: true,
-    },
-  });
-
-  const roleNameById = new Map(roles.map((role) => [role.id, role.name]));
-  const childrenByParentId = new Map<string, string[]>();
-
-  for (const role of roles) {
-    if (!role.parentRoleId) {
-      continue;
-    }
-
-    const existing = childrenByParentId.get(role.parentRoleId) ?? [];
-    existing.push(role.id);
-    childrenByParentId.set(role.parentRoleId, existing);
-  }
-
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      keycloakId: true,
-    },
-  });
-
-  for (const user of users) {
-    const roleAssignments = await prisma.userRole.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
-      },
-      select: {
-        roleId: true,
-      },
-    });
-
-    const expandedRoleIds = expandRoleIds(
-      roleAssignments.map((assignment) => assignment.roleId),
-      childrenByParentId,
-    );
-
-    const hasSuperadmin = [...expandedRoleIds].some(
-      (roleId) => roleNameById.get(roleId)?.toLowerCase() === 'superadmin',
-    );
-
-    const permissions = new Set<string>();
-    if (!hasSuperadmin && expandedRoleIds.size > 0) {
-      const rolePermissions = await prisma.rolePermission.findMany({
-        where: {
-          roleId: {
-            in: [...expandedRoleIds],
-          },
-        },
-        include: {
-          permission: {
-            select: {
-              slug: true,
-            },
-          },
-        },
-      });
-
-      for (const rolePermission of rolePermissions) {
-        permissions.add(rolePermission.permission.slug.toLowerCase());
-      }
-    }
-
-    const overrides = await prisma.userPermissionOverride.findMany({
-      where: {
-        keycloakUserId: user.keycloakId,
-      },
-      include: {
-        permission: {
-          select: {
-            slug: true,
-          },
-        },
-      },
-    });
-
-    for (const override of overrides) {
-      const overridePermission = override.permission.slug.toLowerCase();
-      if (override.granted) {
-        permissions.add(overridePermission);
-      } else {
-        permissions.delete(overridePermission);
-      }
-    }
-
-    const snapshot = hasSuperadmin ? ['*'] : [...permissions].sort();
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        permissions: snapshot,
-      },
-    });
   }
 };
 
 async function main(): Promise<void> {
   ensureCatalogConsistency();
 
-  const resourceMap = await ensureCatalog();
+  const resourceIdByName = await ensureResources();
+  const actionIdByName = await ensureActions();
 
   const permissionsBySlug = new Map<string, { id: string }>();
   for (const slug of RBAC_PERMISSIONS) {
-    const permission = await upsertPermission(slug, resourceMap);
+    const permission = await upsertPermission(
+      slug,
+      resourceIdByName,
+      actionIdByName,
+    );
     permissionsBySlug.set(permission.slug, { id: permission.id });
   }
 
@@ -406,14 +237,12 @@ async function main(): Promise<void> {
       update: {
         displayName: role.displayName,
         description: role.description,
-        dataScope: role.dataScope,
         isSystem: role.isSystem,
       },
       create: {
         name: role.name,
         displayName: role.displayName,
         description: role.description,
-        dataScope: role.dataScope,
         isSystem: role.isSystem,
       },
       select: {
@@ -450,43 +279,6 @@ async function main(): Promise<void> {
       },
     });
   }
-
-  const seededRoleIds = [...rolesByName.values()].map((entry) => entry.id);
-  await prisma.rolePermission.deleteMany({
-    where: {
-      roleId: { in: seededRoleIds },
-    },
-  });
-
-  const rolePermissionRows: { roleId: string; permissionId: string }[] = [];
-  for (const role of RBAC_ROLES) {
-    const roleRecord = rolesByName.get(role.name);
-    if (!roleRecord) {
-      continue;
-    }
-
-    for (const slug of role.permissions) {
-      const permission = permissionsBySlug.get(slug);
-      if (!permission) {
-        throw new Error(
-          `Missing permission mapping for role ${role.name}: ${slug}`,
-        );
-      }
-      rolePermissionRows.push({
-        roleId: roleRecord.id,
-        permissionId: permission.id,
-      });
-    }
-  }
-
-  if (rolePermissionRows.length > 0) {
-    await prisma.rolePermission.createMany({
-      data: rolePermissionRows,
-      skipDuplicates: true,
-    });
-  }
-
-  await rebuildAllUserPermissions();
 
   await prisma.moduleConfig.upsert({
     where: { module: 'core' },

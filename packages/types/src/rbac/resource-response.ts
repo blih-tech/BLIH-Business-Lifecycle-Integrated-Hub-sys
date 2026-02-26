@@ -1,7 +1,14 @@
+export interface CreateResourceDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateResourceDto {
+  description?: string;
+}
+
 export interface ResourceResponseDto {
   id: string;
-  moduleId: string;
-  module: string;
   name: string;
   description?: string | null;
   createdAt: Date;

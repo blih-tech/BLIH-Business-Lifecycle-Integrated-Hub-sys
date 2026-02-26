@@ -26,32 +26,27 @@ enum NotificationStatus {
   FAILED
 }
 
-enum RoleDataScope {
-  GLOBAL
-  SELF
-}
-
 enum AuditResult {
   SUCCESS
   FAILURE
 }
 
 model User {
-  id                String      @id @default(uuid()) @db.Uuid
-  keycloakId        String      @unique
-  username          String      @unique
-  email             String      @unique
-  firstName         String
-  lastName          String
-  phone             String?
-  status            UserStatus  @default(ACTIVE)
-  position          String?
-  lastLoginAt       DateTime?
-  metadata          Json?
-  permissions       String[]    @default([])
-  createdAt         DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  roles             UserRole[]
+  id                  String                   @id @default(uuid()) @db.Uuid
+  keycloakId          String                   @unique
+  username            String                   @unique
+  email               String                   @unique
+  firstName           String
+  lastName            String
+  phone               String?
+  status              UserStatus               @default(ACTIVE)
+  position            String?
+  lastLoginAt         DateTime?
+  metadata            Json?
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  roles               UserRole[]
+  permissionOverrides UserPermissionOverride[]
 
   @@index([status])
 }
@@ -64,7 +59,6 @@ model Role {
   parentRoleId String?          @db.Uuid
   parentRole   Role?            @relation("RoleHierarchy", fields: [parentRoleId], references: [id], onDelete: SetNull)
   childRoles   Role[]           @relation("RoleHierarchy")
-  dataScope    RoleDataScope    @default(GLOBAL)
   isSystem     Boolean          @default(false)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
@@ -72,31 +66,16 @@ model Role {
   permissions  RolePermission[]
 
   @@unique([name])
-  @@index([dataScope])
   @@index([parentRoleId])
 }
 
-model PermissionModule {
-  id          String               @id @default(uuid()) @db.Uuid
-  name        String               @unique
-  description String?
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  resources   PermissionResource[]
-  permissions Permission[]
-}
-
 model PermissionResource {
-  id          String           @id @default(uuid()) @db.Uuid
-  moduleId    String           @db.Uuid
-  module      PermissionModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  name        String           @unique
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @unique
   description String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   permissions Permission[]
-
-  @@index([moduleId])
 }
 
 model PermissionAction {
@@ -109,21 +88,20 @@ model PermissionAction {
 }
 
 model Permission {
-  id          String                   @id @default(uuid()) @db.Uuid
-  moduleId    String                   @db.Uuid
-  resourceId  String                   @db.Uuid
-  actionId    String                   @db.Uuid
-  module      PermissionModule         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  resource    PermissionResource       @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  action      PermissionAction         @relation(fields: [actionId], references: [id], onDelete: Cascade)
-  slug        String                   @unique
+  id          String                 @id @default(uuid()) @db.Uuid
+  resourceId  String                 @db.Uuid
+  actionId    String                 @db.Uuid
+  resource    PermissionResource     @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  action      PermissionAction       @relation(fields: [actionId], references: [id], onDelete: Cascade)
+  slug        String                 @unique
   description String?
-  createdAt   DateTime                 @default(now())
+  createdAt   DateTime               @default(now())
   roleLinks   RolePermission[]
   overrides   UserPermissionOverride[]
 
   @@unique([resourceId, actionId])
-  @@index([resourceId, actionId])
+  @@index([resourceId])
+  @@index([actionId])
 }
 
 model UserRole {
@@ -155,17 +133,18 @@ model RolePermission {
 }
 
 model UserPermissionOverride {
-  id             String      @id @default(uuid()) @db.Uuid
-  keycloakUserId String
-  permissionId   String      @db.Uuid
-  granted        Boolean     @default(true)
-  reason         String?
-  grantedBy      String?
-  createdAt      DateTime    @default(now())
-  permission     Permission  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  id           String     @id @default(uuid()) @db.Uuid
+  userId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  granted      Boolean    @default(true)
+  reason       String?
+  grantedBy    String?
+  createdAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
-  @@unique([keycloakUserId, permissionId])
-  @@index([keycloakUserId])
+  @@unique([userId, permissionId])
+  @@index([userId])
   @@index([permissionId])
 }
 

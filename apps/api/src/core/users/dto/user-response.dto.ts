@@ -58,7 +58,8 @@ export class UserResponseDto implements UserResponseDtoType {
   position?: string;
 
   @ApiProperty({
-    description: 'Persisted effective permission keys for this user.',
+    description:
+      'Dynamically resolved effective permission keys for this user.',
     type: [String],
     example: ['user:view', 'invoice:create'],
   })

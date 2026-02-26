@@ -1,8 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsIn, IsOptional, IsString, Matches } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 import type { UpdateRoleDto as UpdateRoleDtoType } from '@repo/types';
-
-const PERMISSION_KEY_PATTERN = '^[a-z0-9_]+:[a-z0-9_*-]+$';
 
 export class UpdateRoleDto implements UpdateRoleDtoType {
   @ApiPropertyOptional({
@@ -23,34 +21,11 @@ export class UpdateRoleDto implements UpdateRoleDtoType {
 
   @ApiPropertyOptional({
     description:
-      'Updated set of permission slugs. Empty array clears bindings.',
-    type: [String],
-    example: ['invoice:approve', 'expense:view'],
+      'Optional parent role id. Use null to remove parent relationship.',
+    example: '57e883d0-d0c0-4187-a232-50fa729f6876',
+    nullable: true,
   })
   @IsOptional()
-  @IsArray()
-  @Matches(new RegExp(PERMISSION_KEY_PATTERN), {
-    each: true,
-    message: 'Each permission key must be resource:action (2-part only)',
-  })
-  permissions?: string[];
-
-  @ApiPropertyOptional({
-    description:
-      'Optional parent role name. Set empty string to remove parent relationship.',
-    example: 'finance',
-  })
-  @IsOptional()
-  @IsString()
-  parentRoleName?: string;
-
-  @ApiPropertyOptional({
-    description: 'Updated role data scope.',
-    enum: ['global', 'organization', 'department', 'self'],
-    example: 'organization',
-  })
-  @IsOptional()
-  @IsString()
-  @IsIn(['global', 'organization', 'department', 'self'])
-  dataScope?: 'global' | 'organization' | 'department' | 'self';
+  @IsUUID()
+  parentRoleId?: string | null;
 }

@@ -36,7 +36,7 @@ describe('KeycloakAuthGuard', () => {
   };
 
   const userPermissionSnapshot = {
-    getPersistedPermissions: jest.fn(),
+    getEffectivePermissionsByKeycloakId: jest.fn(),
   };
 
   const tokenService = {
@@ -55,7 +55,9 @@ describe('KeycloakAuthGuard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     principalEnrichment.getContext.mockResolvedValue({});
-    userPermissionSnapshot.getPersistedPermissions.mockResolvedValue([]);
+    userPermissionSnapshot.getEffectivePermissionsByKeycloakId.mockResolvedValue(
+      [],
+    );
     tokenService.getUserInfo.mockResolvedValue({});
   });
 

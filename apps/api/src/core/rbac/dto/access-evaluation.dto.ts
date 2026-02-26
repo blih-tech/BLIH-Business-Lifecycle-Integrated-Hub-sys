@@ -1,5 +1,5 @@
-import { IsArray, IsOptional, IsString, Matches } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsString, Matches } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import type { AccessEvaluationDto as AccessEvaluationDtoType } from '@repo/types';
 
 const PERMISSION_KEY_PATTERN = '^[a-z0-9_]+:[a-z0-9_*-]+$';
@@ -24,12 +24,4 @@ export class AccessEvaluationDto implements AccessEvaluationDtoType {
     message: 'Each required permission must be resource:action (2-part only)',
   })
   requiredPermissions!: string[];
-
-  @ApiPropertyOptional({
-    description: 'Resource owner user id used for SELF scoped role evaluation.',
-    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
-  })
-  @IsOptional()
-  @IsString()
-  ownerUserId?: string;
 }

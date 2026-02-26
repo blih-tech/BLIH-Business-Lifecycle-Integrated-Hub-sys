@@ -29,7 +29,6 @@ export class RevokeRoleUseCase {
       select: {
         id: true,
         name: true,
-        dataScope: true,
       },
     });
 
@@ -66,8 +65,12 @@ export class RevokeRoleUseCase {
       });
     }
 
-    await this.userPermissionSnapshot.recomputeForUser(user.id);
+    await this.userPermissionSnapshot.invalidateUser(user.id);
+    const permissions =
+      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
+        user.id,
+      );
 
-    return { success: true };
+    return { success: true, permissions };
   }
 }
