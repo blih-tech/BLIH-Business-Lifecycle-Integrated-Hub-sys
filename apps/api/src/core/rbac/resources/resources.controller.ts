@@ -1,4 +1,13 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -10,8 +19,13 @@ import { ApiDefaultErrors, ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { SystemResourcePermissions } from '../constants/permissions.constants';
+import { CreateResourceDto } from './dto/create-resource.dto';
+import { UpdateResourceDto } from './dto/update-resource.dto';
+import { CreateResourceUseCase } from './usecases/create-resource.usecase';
+import { DeleteResourceUseCase } from './usecases/delete-resource.usecase';
 import { GetResourceUseCase } from './usecases/get-resource.usecase';
 import { ListResourcesUseCase } from './usecases/list-resources.usecase';
+import { UpdateResourceUseCase } from './usecases/update-resource.usecase';
 
 @ApiTags('RBAC')
 @Controller('rbac')
@@ -20,7 +34,16 @@ export class ResourcesController {
   constructor(
     private readonly listResourcesUseCase: ListResourcesUseCase,
     private readonly getResourceUseCase: GetResourceUseCase,
+    private readonly createResourceUseCase: CreateResourceUseCase,
+    private readonly updateResourceUseCase: UpdateResourceUseCase,
+    private readonly deleteResourceUseCase: DeleteResourceUseCase,
   ) {}
+
+  @Post('resources')
+  @Roles(SystemResourcePermissions.CREATE)
+  createResource(@Body() dto: CreateResourceDto) {
+    return this.createResourceUseCase.execute(dto);
+  }
 
   @Get('resources')
   @Roles(SystemResourcePermissions.VIEW)
@@ -70,5 +93,20 @@ export class ResourcesController {
   })
   getResource(@Param('resourceId') resourceId: string) {
     return this.getResourceUseCase.execute(resourceId);
+  }
+
+  @Put('resources/:resourceId')
+  @Roles(SystemResourcePermissions.UPDATE)
+  updateResource(
+    @Param('resourceId') resourceId: string,
+    @Body() dto: UpdateResourceDto,
+  ) {
+    return this.updateResourceUseCase.execute(resourceId, dto);
+  }
+
+  @Delete('resources/:resourceId')
+  @Roles(SystemResourcePermissions.DELETE)
+  deleteResource(@Param('resourceId') resourceId: string) {
+    return this.deleteResourceUseCase.execute(resourceId);
   }
 }

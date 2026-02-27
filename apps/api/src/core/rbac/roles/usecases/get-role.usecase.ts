@@ -11,9 +11,6 @@ export class GetRoleUseCase {
     const role = await this.prisma.role.findUnique({
       where: { name: normalizedRoleName },
       include: {
-        parentRole: {
-          select: { name: true },
-        },
         permissions: {
           include: {
             permission: {
@@ -36,9 +33,8 @@ export class GetRoleUseCase {
       name: role.name,
       displayName: role.displayName,
       description: role.description,
-      dataScope: role.dataScope.toLowerCase(),
       isSystem: role.isSystem,
-      parentRoleName: role.parentRole?.name ?? null,
+      parentRoleId: role.parentRoleId,
       permissions: role.permissions
         .map((item) => item.permission.slug)
         .sort((left, right) => left.localeCompare(right)),

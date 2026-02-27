@@ -1,88 +1,86 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 
-interface UserPermissionSnapshotRecord {
-  userId: string;
-  keycloakUserId: string;
+interface PermissionCacheEntry {
+  expiresAt: number;
   permissions: string[];
 }
 
 @Injectable()
 export class UserPermissionSnapshotService {
+  private readonly ttlMs = 5 * 60 * 1000;
+  private readonly cache = new Map<string, PermissionCacheEntry>();
+
   constructor(private readonly prisma: PrismaService) {}
 
   async getPersistedPermissions(keycloakUserId: string): Promise<string[]> {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        keycloakId: keycloakUserId,
-      },
-      select: {
-        permissions: true,
-      },
-    });
-
-    return (user?.permissions ?? [])
-      .map((permission) => permission.trim().toLowerCase())
-      .filter(Boolean);
+    return this.getEffectivePermissionsByKeycloakId(keycloakUserId);
   }
 
-  async recomputeForUser(userId: string): Promise<string[]> {
-    const snapshot = await this.computeAndPersist(userId);
-    return snapshot.permissions;
+  async getEffectivePermissionsByUserId(userId: string): Promise<string[]> {
+    const now = Date.now();
+    const cached = this.cache.get(userId);
+    if (cached && cached.expiresAt > now) {
+      return [...cached.permissions];
+    }
+
+    const permissions = await this.resolveEffectivePermissionsByUserId(userId);
+    this.cache.set(userId, {
+      expiresAt: now + this.ttlMs,
+      permissions,
+    });
+
+    return [...permissions];
   }
 
-  async recomputeForKeycloakId(keycloakUserId: string): Promise<string[]> {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        keycloakId: keycloakUserId,
-      },
-      select: {
-        id: true,
-      },
+  async getEffectivePermissionsByKeycloakId(
+    keycloakUserId: string,
+  ): Promise<string[]> {
+    const user = await this.prisma.user.findUnique({
+      where: { keycloakId: keycloakUserId },
+      select: { id: true },
     });
+
     if (!user) {
       return [];
     }
 
-    const snapshot = await this.computeAndPersist(user.id);
-    return snapshot.permissions;
+    return this.getEffectivePermissionsByUserId(user.id);
   }
 
-  async recomputeAllUsers(): Promise<void> {
-    const users = await this.prisma.user.findMany({
-      select: {
-        id: true,
-      },
-    });
-
-    for (const user of users) {
-      await this.computeAndPersist(user.id);
-    }
+  async invalidateUser(userId: string): Promise<void> {
+    this.cache.delete(userId);
   }
 
-  private async computeAndPersist(
+  async invalidateAll(): Promise<void> {
+    this.cache.clear();
+  }
+
+  private async resolveEffectivePermissionsByUserId(
     userId: string,
-  ): Promise<UserPermissionSnapshotRecord> {
+  ): Promise<string[]> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
-        keycloakId: true,
+        permissions: true,
       },
     });
 
     if (!user) {
-      return {
-        userId,
-        keycloakUserId: '',
-        permissions: [],
-      };
+      return [];
     }
+
+    const selectedPermissions = new Set(
+      (user.permissions ?? [])
+        .map((permission) => permission.trim().toLowerCase())
+        .filter(Boolean),
+    );
 
     const now = new Date();
     const roleAssignments = await this.prisma.userRole.findMany({
       where: {
-        userId: user.id,
+        userId,
         OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
       },
       select: {
@@ -90,10 +88,13 @@ export class UserPermissionSnapshotService {
       },
     });
 
-    const assignedRoleIds = roleAssignments.map(
-      (assignment) => assignment.roleId,
+    const expandedRoleIds = await this.expandRoleDescendants(
+      roleAssignments.map((assignment) => assignment.roleId),
     );
-    const expandedRoleIds = await this.expandRoleDescendants(assignedRoleIds);
+
+    if (expandedRoleIds.size === 0) {
+      return [];
+    }
 
     const expandedRoles = await this.prisma.role.findMany({
       where: {
@@ -111,34 +112,17 @@ export class UserPermissionSnapshotService {
       (role) => role.name.toLowerCase() === 'superadmin',
     );
 
-    const permissions = new Set<string>();
-
-    if (!hasSuperadmin && expandedRoleIds.size > 0) {
-      const rolePermissions = await this.prisma.rolePermission.findMany({
-        where: {
-          roleId: {
-            in: [...expandedRoleIds],
-          },
-        },
-        include: {
-          permission: {
-            select: {
-              slug: true,
-            },
-          },
-        },
-      });
-
-      for (const rolePermission of rolePermissions) {
-        permissions.add(rolePermission.permission.slug.toLowerCase());
-      }
+    if (hasSuperadmin) {
+      return ['*'];
     }
 
-    const overrides = await this.prisma.userPermissionOverride.findMany({
+    const rolePermissions = await this.prisma.rolePermission.findMany({
       where: {
-        keycloakUserId: user.keycloakId,
+        roleId: {
+          in: [...expandedRoleIds],
+        },
       },
-      include: {
+      select: {
         permission: {
           select: {
             slug: true,
@@ -147,29 +131,15 @@ export class UserPermissionSnapshotService {
       },
     });
 
-    for (const override of overrides) {
-      const slug = override.permission.slug.toLowerCase();
-      if (override.granted) {
-        permissions.add(slug);
-      } else {
-        permissions.delete(slug);
-      }
-    }
+    const allowedByRoles = new Set(
+      rolePermissions.map((rolePermission) =>
+        rolePermission.permission.slug.toLowerCase(),
+      ),
+    );
 
-    const snapshot = hasSuperadmin ? ['*'] : [...permissions].sort();
-
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: {
-        permissions: snapshot,
-      },
-    });
-
-    return {
-      userId: user.id,
-      keycloakUserId: user.keycloakId,
-      permissions: snapshot,
-    };
+    return [...selectedPermissions]
+      .filter((permission) => allowedByRoles.has(permission))
+      .sort((left, right) => left.localeCompare(right));
   }
 
   private async expandRoleDescendants(roleIds: string[]): Promise<Set<string>> {

@@ -26,13 +26,17 @@ import { SystemRolePermissions } from '../constants/permissions.constants';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { ListRolesQueryDto } from './dto/list-roles-query.dto';
+import { RolePermissionAssignmentDto } from './dto/role-permission-assignment.dto';
 import { RoleResponseDto } from './dto/role-response.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { AddRolePermissionsUseCase } from './usecases/add-role-permissions.usecase';
 import { AssignRoleUseCase } from './usecases/assign-role.usecase';
 import { CreateRoleUseCase } from './usecases/create-role.usecase';
 import { DeleteRoleUseCase } from './usecases/delete-role.usecase';
 import { GetRoleUseCase } from './usecases/get-role.usecase';
 import { ListRolesUseCase } from './usecases/list-roles.usecase';
+import { RemoveRolePermissionsUseCase } from './usecases/remove-role-permissions.usecase';
+import { ReplaceRolePermissionsUseCase } from './usecases/replace-role-permissions.usecase';
 import { RevokeRoleUseCase } from './usecases/revoke-role.usecase';
 import { UpdateRoleUseCase } from './usecases/update-role.usecase';
 
@@ -46,6 +50,9 @@ export class RolesController {
     private readonly getRoleUseCase: GetRoleUseCase,
     private readonly updateRoleUseCase: UpdateRoleUseCase,
     private readonly deleteRoleUseCase: DeleteRoleUseCase,
+    private readonly addRolePermissionsUseCase: AddRolePermissionsUseCase,
+    private readonly removeRolePermissionsUseCase: RemoveRolePermissionsUseCase,
+    private readonly replaceRolePermissionsUseCase: ReplaceRolePermissionsUseCase,
     private readonly assignRoleUseCase: AssignRoleUseCase,
     private readonly revokeRoleUseCase: RevokeRoleUseCase,
   ) {}
@@ -71,8 +78,7 @@ export class RolesController {
           name: 'finance.approver',
           displayName: 'Finance Approver',
           description: 'Can approve invoices in assigned organization.',
-          permission: 'invoice:approve',
-          dataScope: 'organization',
+          parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
         },
       },
     },
@@ -110,11 +116,6 @@ export class RolesController {
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 20 })
   @ApiQuery({ name: 'search', required: false, example: 'finance' })
-  @ApiQuery({
-    name: 'dataScope',
-    required: false,
-    enum: ['global', 'organization', 'department', 'self'],
-  })
   @ApiQuery({ name: 'isSystem', required: false, example: false })
   @ApiOkResponse({
     description: 'Paginated role list.',
@@ -126,9 +127,8 @@ export class RolesController {
             name: 'finance.approver',
             displayName: 'Finance Approver',
             description: 'Approves finance documents.',
-            dataScope: 'organization',
             isSystem: false,
-            parentRoleName: 'finance',
+            parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
             permissions: ['invoice:approve'],
             assignmentCount: 4,
             createdAt: '2026-02-21T18:00:00.000Z',
@@ -214,6 +214,42 @@ export class RolesController {
   })
   updateRole(@Param('roleName') roleName: string, @Body() dto: UpdateRoleDto) {
     return this.updateRoleUseCase.execute(roleName, dto);
+  }
+
+  @Post('roles/:roleId/permissions')
+  @Roles(SystemRolePermissions.UPDATE)
+  @Audit('role.permission.add', 'system.rbac')
+  @ApiOperation({ summary: 'Add role permissions' })
+  addRolePermissions(
+    @Param('roleId') roleId: string,
+    @Body() dto: RolePermissionAssignmentDto,
+  ) {
+    return this.addRolePermissionsUseCase.execute(roleId, dto.permissionIds);
+  }
+
+  @Delete('roles/:roleId/permissions')
+  @Roles(SystemRolePermissions.UPDATE)
+  @Audit('role.permission.remove', 'system.rbac')
+  @ApiOperation({ summary: 'Remove role permissions' })
+  removeRolePermissions(
+    @Param('roleId') roleId: string,
+    @Body() dto: RolePermissionAssignmentDto,
+  ) {
+    return this.removeRolePermissionsUseCase.execute(roleId, dto.permissionIds);
+  }
+
+  @Put('roles/:roleId/permissions')
+  @Roles(SystemRolePermissions.UPDATE)
+  @Audit('role.permission.replace', 'system.rbac')
+  @ApiOperation({ summary: 'Replace role permissions' })
+  replaceRolePermissions(
+    @Param('roleId') roleId: string,
+    @Body() dto: RolePermissionAssignmentDto,
+  ) {
+    return this.replaceRolePermissionsUseCase.execute(
+      roleId,
+      dto.permissionIds,
+    );
   }
 
   @Delete('roles/:roleName')

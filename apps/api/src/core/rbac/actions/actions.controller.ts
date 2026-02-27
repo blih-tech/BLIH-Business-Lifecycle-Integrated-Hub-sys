@@ -1,4 +1,13 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiOkResponse,
@@ -10,8 +19,13 @@ import { ApiDefaultErrors, ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { SystemPermissionPermissions } from '../constants/permissions.constants';
+import { CreateActionDto } from './dto/create-action.dto';
+import { UpdateActionDto } from './dto/update-action.dto';
+import { CreateActionUseCase } from './usecases/create-action.usecase';
+import { DeleteActionUseCase } from './usecases/delete-action.usecase';
 import { GetActionUseCase } from './usecases/get-action.usecase';
 import { ListActionsUseCase } from './usecases/list-actions.usecase';
+import { UpdateActionUseCase } from './usecases/update-action.usecase';
 
 @ApiTags('RBAC')
 @Controller('rbac')
@@ -20,7 +34,16 @@ export class ActionsController {
   constructor(
     private readonly listActionsUseCase: ListActionsUseCase,
     private readonly getActionUseCase: GetActionUseCase,
+    private readonly createActionUseCase: CreateActionUseCase,
+    private readonly updateActionUseCase: UpdateActionUseCase,
+    private readonly deleteActionUseCase: DeleteActionUseCase,
   ) {}
+
+  @Post('actions')
+  @Roles(SystemPermissionPermissions.CREATE)
+  createAction(@Body() dto: CreateActionDto) {
+    return this.createActionUseCase.execute(dto);
+  }
 
   @Get('actions')
   @Roles(SystemPermissionPermissions.VIEW)
@@ -70,5 +93,20 @@ export class ActionsController {
   })
   getAction(@Param('actionId') actionId: string) {
     return this.getActionUseCase.execute(actionId);
+  }
+
+  @Put('actions/:actionId')
+  @Roles(SystemPermissionPermissions.UPDATE)
+  updateAction(
+    @Param('actionId') actionId: string,
+    @Body() dto: UpdateActionDto,
+  ) {
+    return this.updateActionUseCase.execute(actionId, dto);
+  }
+
+  @Delete('actions/:actionId')
+  @Roles(SystemPermissionPermissions.DELETE)
+  deleteAction(@Param('actionId') actionId: string) {
+    return this.deleteActionUseCase.execute(actionId);
   }
 }

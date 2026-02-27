@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const fs = require('node:fs');
-const path = require('node:path');
-const ts = require('typescript');
+import fs from 'node:fs';
+import path from 'node:path';
+import ts from 'typescript';
 
 const projectRoot = process.cwd();
 const srcRoot = path.join(projectRoot, 'src');
@@ -12,13 +12,6 @@ const constantsPath = path.join(
   'rbac',
   'constants',
   'permissions.constants.ts',
-);
-const manifestPath = path.join(
-  srcRoot,
-  'platform',
-  'prisma',
-  'seed',
-  'rbac.manifest.ts',
 );
 
 const isPermissionLiteral = (value) => /^[a-z0-9_]+:[a-z0-9_*-]+$/.test(value);
@@ -233,49 +226,6 @@ for (const filePath of allTsFiles(srcRoot)) {
 
   visit(sourceFile);
 }
-
-const manifestSource = readSourceFile(manifestPath);
-const manifestImportMap =
-  getNamedImportsForPermissionsConstants(manifestSource);
-
-const visitManifest = (node) => {
-  if (
-    ts.isPropertyAssignment(node) &&
-    ts.isIdentifier(node.name) &&
-    node.name.text === 'permissions' &&
-    ts.isArrayLiteralExpression(node.initializer)
-  ) {
-    for (const element of node.initializer.elements) {
-      const resolved = resolvePermissionExpr(
-        element,
-        manifestImportMap,
-        permissionObjectMap,
-      );
-      if (resolved.kind === 'raw') {
-        if (!allPermissionSlugs.has(resolved.value)) {
-          errors.push(
-            `${formatLocation(manifestSource, element)} role manifest permission ${resolved.value} is not in AllPermissionSlugs.`,
-          );
-        }
-        continue;
-      }
-      if (resolved.kind !== 'resolved') {
-        errors.push(
-          `${formatLocation(manifestSource, element)} unresolved role manifest permission reference ${resolved.value}.`,
-        );
-        continue;
-      }
-      if (!allPermissionSlugs.has(resolved.value)) {
-        errors.push(
-          `${formatLocation(manifestSource, element)} role manifest permission ${resolved.value} is not in AllPermissionSlugs.`,
-        );
-      }
-    }
-  }
-  ts.forEachChild(node, visitManifest);
-};
-
-visitManifest(manifestSource);
 
 if (errors.length > 0) {
   console.error('RBAC permission constant validation failed:\n');
