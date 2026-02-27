@@ -1,4 +1,4 @@
-import type { JobRequestItem, RequestsStatItem } from "@/features/hr/requests/types";
+import type { JobRequestItem, RequestsStatItem } from "@/features/hr/recruitment/requests/types";
 
 export const jobRequests: JobRequestItem[] = [
   {

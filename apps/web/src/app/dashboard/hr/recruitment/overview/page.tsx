@@ -1,4 +1,4 @@
-import { RecruitmentOverviewContent } from "@/features/hr/overview";
+import { RecruitmentOverviewContent } from "@/features/hr/recruitment/overview";
 import { isAuthorizedForDashboard } from "@/shared/auth/role-routing";
 import { getSession } from "@/shared/auth/session";
 import { redirect } from "next/navigation";

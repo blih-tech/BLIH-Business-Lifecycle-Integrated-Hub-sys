@@ -1,4 +1,4 @@
-import type { ActivityStatusTone, RecentActivityItem } from "@/features/hr/overview/types";
+import type { ActivityStatusTone, RecentActivityItem } from "@/features/hr/recruitment/overview/types";
 import { cn } from "@/shared/lib/utils";
 
 type RecentActivitiesProps = {

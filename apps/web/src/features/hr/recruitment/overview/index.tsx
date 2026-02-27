@@ -2,15 +2,15 @@ import {
   pendingActions,
   recentActivities,
   recruitmentStats,
-} from "@/features/hr/overview/mock-data";
+} from "@/features/hr/recruitment/overview/mock-data";
 import {
   PendingActions,
   RecentActivities,
   StatsGrid,
-} from "@/features/hr/overview/components";
+} from "@/features/hr/recruitment/overview/components";
 
-export * from "@/features/hr/overview/components";
-export * from "@/features/hr/overview/types";
+export * from "@/features/hr/recruitment/overview/components";
+export * from "@/features/hr/recruitment/overview/types";
 
 export function RecruitmentOverviewContent() {
   return (

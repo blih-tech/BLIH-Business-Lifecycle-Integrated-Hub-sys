@@ -2,7 +2,8 @@ import type {
   JobRequestDepartment,
   JobRequestItem,
   JobRequestPriority,
-} from "@/features/hr/requests/types";
+} from "@/features/hr/recruitment/requests/types";
+import { Button } from "@/shared/components/ui/button";
 
 type JobRequestCardProps = {
   item: JobRequestItem;
@@ -56,18 +57,21 @@ export function JobRequestCard({ item }: JobRequestCardProps) {
       </div>
 
       <div className="mt-3 flex items-center justify-end gap-2">
-        <button
+        <Button
           type="button"
-          className="inline-flex h-7 cursor-pointer items-center justify-center rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground"
+          size="sm"
+          className="h-7 cursor-pointer text-xs"
         >
           {item.primaryActionLabel}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="inline-flex h-7 cursor-pointer items-center justify-center rounded-md border border-border bg-white px-4 text-xs font-medium text-foreground"
+          variant="outline"
+          size="sm"
+          className="h-7 cursor-pointer text-xs"
         >
           {item.secondaryActionLabel}
-        </button>
+        </Button>
       </div>
     </article>
   );

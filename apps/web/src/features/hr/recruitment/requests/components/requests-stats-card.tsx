@@ -1,6 +1,6 @@
 import { BriefcaseBusiness, CircleCheckBig, Clock3 } from "lucide-react";
 
-import type { RequestsStatItem } from "@/features/hr/requests/types";
+import type { RequestsStatItem } from "@/features/hr/recruitment/requests/types";
 
 type RequestsStatsCardProps = {
   item: RequestsStatItem;

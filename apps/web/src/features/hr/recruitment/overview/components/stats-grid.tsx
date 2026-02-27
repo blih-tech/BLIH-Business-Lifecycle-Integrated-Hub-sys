@@ -1,5 +1,5 @@
-import { StatsCard } from "@/features/hr/overview/components/stats-card";
-import type { RecruitmentStatItem } from "@/features/hr/overview/types";
+import { StatsCard } from "@/features/hr/recruitment/overview/components/stats-card";
+import type { RecruitmentStatItem } from "@/features/hr/recruitment/overview/types";
 
 type StatsGridProps = {
   items: RecruitmentStatItem[];

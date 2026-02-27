@@ -1,4 +1,4 @@
-import type { RecruitmentStatItem } from "@/features/hr/overview/types";
+import type { RecruitmentStatItem } from "@/features/hr/recruitment/overview/types";
 import { cn } from "@/shared/lib/utils";
 
 type StatsCardProps = RecruitmentStatItem;

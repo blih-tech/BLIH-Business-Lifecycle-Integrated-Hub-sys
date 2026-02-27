@@ -1,4 +1,4 @@
-import type { PendingActionItem } from "@/features/hr/overview/types";
+import type { PendingActionItem } from "@/features/hr/recruitment/overview/types";
 
 type PendingActionsProps = {
   items: PendingActionItem[];

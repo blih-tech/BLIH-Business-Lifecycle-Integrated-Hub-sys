@@ -2,7 +2,7 @@ import type {
   PendingActionItem,
   RecentActivityItem,
   RecruitmentStatItem,
-} from "@/features/hr/overview/types";
+} from "@/features/hr/recruitment/overview/types";
 
 export const recruitmentStats: RecruitmentStatItem[] = [
   { id: "pending-requests", label: "Pending Requests", value: "12" },

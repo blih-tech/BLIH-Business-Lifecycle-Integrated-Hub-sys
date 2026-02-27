@@ -2,15 +2,15 @@ import {
   emptyRequestsMessage,
   jobRequests,
   requestStats,
-} from "@/features/hr/requests/mock-data";
+} from "@/features/hr/recruitment/requests/mock-data";
 import {
   EmptyRequestsState,
   JobRequestCard,
   RequestsStatsCard,
-} from "@/features/hr/requests/components";
+} from "@/features/hr/recruitment/requests/components";
 
-export * from "@/features/hr/requests/components";
-export * from "@/features/hr/requests/types";
+export * from "@/features/hr/recruitment/requests/components";
+export * from "@/features/hr/recruitment/requests/types";
 
 export function RecruitmentRequestsContent() {
   return (
@@ -32,7 +32,9 @@ export function RecruitmentRequestsContent() {
         ))}
       </section>
 
-      <EmptyRequestsState message={emptyRequestsMessage} />
+      {jobRequests.length === 0 ? (
+        <EmptyRequestsState message={emptyRequestsMessage} />
+      ) : null}
     </main>
   );
 }
