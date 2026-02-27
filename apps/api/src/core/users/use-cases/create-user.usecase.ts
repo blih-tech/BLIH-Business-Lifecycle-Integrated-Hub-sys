@@ -2,10 +2,12 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { env } from '../../../config/env.config';
 import { KeycloakAdminService } from '../../../platform/keycloak/keycloak-admin.service';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { UserPermissionSnapshotService } from '../../rbac/user-permission-snapshot.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
@@ -13,9 +15,22 @@ export class CreateUserUseCase {
   constructor(
     private readonly keycloakAdmin: KeycloakAdminService,
     private readonly prisma: PrismaService,
+    private readonly userPermissionSnapshot: UserPermissionSnapshotService,
   ) {}
 
   async execute(dto: CreateUserDto) {
+    const department = await this.prisma.department.findUnique({
+      where: {
+        id: dto.departmentId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!department) {
+      throw new NotFoundException('Department not found');
+    }
+
     const realmName = env.KEYCLOAK_REALM;
     const username = dto.username.trim();
     let keycloakId: string;
@@ -40,10 +55,20 @@ export class CreateUserUseCase {
         firstName: dto.firstName,
         lastName: dto.lastName,
         phone: dto.phone,
+        departmentId: department.id,
+        permissions: [],
       },
     });
 
-    return user;
+    const permissions =
+      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
+        user.id,
+      );
+
+    return {
+      ...user,
+      permissions,
+    };
   }
 
   private rethrowCreateUserError(error: unknown): never {

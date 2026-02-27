@@ -42,7 +42,7 @@ export class TokenResponseDto implements TokenResponseDtoType {
 
   @ApiProperty({
     description:
-      'Resolved permission keys (2-part resource:action only, from User.permissions cache).',
+      'Resolved permission keys (2-part resource:action only, dynamically evaluated).',
     type: [String],
     example: ['user:view', 'user:update'],
   })

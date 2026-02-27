@@ -8,6 +8,14 @@ export const UserPermissions = {
   ASSIGN_ROLE: 'user:assign-role',
 } as const;
 
+export const DepartmentPermissions = {
+  VIEW: 'department:view',
+  CREATE: 'department:create',
+  UPDATE: 'department:update',
+  DELETE: 'department:delete',
+  ALL: 'department:*',
+} as const;
+
 export const SystemRolePermissions = {
   VIEW: 'system_role:view',
   CREATE: 'system_role:create',
@@ -146,6 +154,7 @@ export const BrainConfigPermissions = {
 
 export const PermissionGroups = {
   user: UserPermissions,
+  department: DepartmentPermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
   hr_payroll: HrPayrollPermissions,

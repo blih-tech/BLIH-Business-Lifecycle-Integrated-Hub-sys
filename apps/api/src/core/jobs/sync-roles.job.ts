@@ -54,14 +54,12 @@ export class SyncRolesJob {
         update: {
           displayName: manifestRole.displayName,
           description: manifestRole.description,
-          dataScope: manifestRole.dataScope,
           isSystem: manifestRole.isSystem,
         },
         create: {
           name,
           displayName: manifestRole.displayName,
           description: manifestRole.description,
-          dataScope: manifestRole.dataScope,
           isSystem: manifestRole.isSystem,
         },
       });
@@ -103,6 +101,6 @@ export class SyncRolesJob {
       `Synced ${keycloakRoleNames.size} canonical roles from Keycloak`,
     );
 
-    await this.userPermissionSnapshot.recomputeAllUsers();
+    this.userPermissionSnapshot.invalidateAll();
   }
 }

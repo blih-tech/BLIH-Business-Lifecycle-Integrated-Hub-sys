@@ -4,4 +4,5 @@ export interface UpdateUserDto {
   lastName?: string;
   phone?: string;
   position?: string;
+  departmentId?: string;
 }

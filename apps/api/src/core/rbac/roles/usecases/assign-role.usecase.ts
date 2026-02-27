@@ -33,7 +33,6 @@ export class AssignRoleUseCase {
       select: {
         id: true,
         name: true,
-        dataScope: true,
       },
     });
 
@@ -74,8 +73,20 @@ export class AssignRoleUseCase {
           },
         });
 
-    await this.userPermissionSnapshot.recomputeForUser(user.id);
+    await this.userPermissionSnapshot.invalidateUser(user.id);
+    const permissions =
+      dto.permissions == null
+        ? await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
+            user.id,
+          )
+        : await this.userPermissionSnapshot.setUserPermissionsByUserId(
+            user.id,
+            dto.permissions,
+          );
 
-    return assignment;
+    return {
+      ...assignment,
+      permissions,
+    };
   }
 }

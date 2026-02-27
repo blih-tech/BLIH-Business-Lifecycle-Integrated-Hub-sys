@@ -1,40 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 
-interface UserPermissionSnapshotRecord {
-  userId: string;
-  keycloakUserId: string;
-  permissions: string[];
+interface PermissionCacheEntry {
+  effectivePermissions: string[];
+  availablePermissions: string[];
+  isSuperadmin: boolean;
+  expiresAt: number;
 }
 
 @Injectable()
 export class UserPermissionSnapshotService {
+  private readonly cacheTtlMs = 60_000;
+  private readonly cache = new Map<string, PermissionCacheEntry>();
+
   constructor(private readonly prisma: PrismaService) {}
 
-  async getPersistedPermissions(keycloakUserId: string): Promise<string[]> {
+  async getEffectivePermissionsByUserId(userId: string): Promise<string[]> {
+    const normalizedUserId = userId.trim();
+    if (!normalizedUserId) {
+      return [];
+    }
+
+    const cached = this.readCached(normalizedUserId);
+    if (cached) {
+      return [...cached.effectivePermissions];
+    }
+
     const user = await this.prisma.user.findFirst({
       where: {
-        keycloakId: keycloakUserId,
-      },
-      select: {
-        permissions: true,
-      },
-    });
-
-    return (user?.permissions ?? [])
-      .map((permission) => permission.trim().toLowerCase())
-      .filter(Boolean);
-  }
-
-  async recomputeForUser(userId: string): Promise<string[]> {
-    const snapshot = await this.computeAndPersist(userId);
-    return snapshot.permissions;
-  }
-
-  async recomputeForKeycloakId(keycloakUserId: string): Promise<string[]> {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        keycloakId: keycloakUserId,
+        id: normalizedUserId,
       },
       select: {
         id: true,
@@ -44,45 +42,273 @@ export class UserPermissionSnapshotService {
       return [];
     }
 
-    const snapshot = await this.computeAndPersist(user.id);
-    return snapshot.permissions;
+    const snapshot = await this.computePermissionSnapshot(user.id);
+    this.writeCache(user.id, snapshot);
+    return [...snapshot.effectivePermissions];
   }
 
-  async recomputeAllUsers(): Promise<void> {
-    const users = await this.prisma.user.findMany({
+  async getEffectivePermissionsByKeycloakId(
+    keycloakUserId: string,
+  ): Promise<string[]> {
+    const normalizedKeycloakId = keycloakUserId.trim();
+    if (!normalizedKeycloakId) {
+      return [];
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        keycloakId: normalizedKeycloakId,
+      },
       select: {
         id: true,
       },
     });
+    if (!user) {
+      return [];
+    }
 
-    for (const user of users) {
-      await this.computeAndPersist(user.id);
+    const cached = this.readCached(user.id);
+    if (cached) {
+      return [...cached.effectivePermissions];
+    }
+
+    const snapshot = await this.computePermissionSnapshot(user.id);
+    this.writeCache(user.id, snapshot);
+    return [...snapshot.effectivePermissions];
+  }
+
+  async getAvailablePermissionsByUserId(userId: string): Promise<string[]> {
+    const normalizedUserId = userId.trim();
+    if (!normalizedUserId) {
+      return [];
+    }
+
+    const cached = this.readCached(normalizedUserId);
+    if (cached) {
+      return [...cached.availablePermissions];
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: normalizedUserId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!user) {
+      return [];
+    }
+
+    const snapshot = await this.computePermissionSnapshot(user.id);
+    this.writeCache(user.id, snapshot);
+    return [...snapshot.availablePermissions];
+  }
+
+  async getAvailablePermissionsByKeycloakId(
+    keycloakUserId: string,
+  ): Promise<string[]> {
+    const normalizedKeycloakId = keycloakUserId.trim();
+    if (!normalizedKeycloakId) {
+      return [];
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        keycloakId: normalizedKeycloakId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!user) {
+      return [];
+    }
+
+    return this.getAvailablePermissionsByUserId(user.id);
+  }
+
+  async setUserPermissionsByUserId(
+    userId: string,
+    permissions: string[],
+  ): Promise<string[]> {
+    const normalizedUserId = userId.trim();
+    if (!normalizedUserId) {
+      throw new BadRequestException('userId is required');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: normalizedUserId },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const normalizedPermissions = this.normalizePermissionInput(permissions);
+    const available = await this.computeAvailablePermissionsForUser(user.id);
+
+    const nextPermissions = available.isSuperadmin
+      ? this.normalizeSuperadminPermissions(normalizedPermissions)
+      : this.assertAssignablePermissions(
+          normalizedPermissions,
+          available.permissionSet,
+        );
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { permissions: nextPermissions },
+    });
+
+    this.cache.delete(user.id);
+    return available.isSuperadmin ? ['*'] : nextPermissions;
+  }
+
+  async setUserPermissionsByKeycloakId(
+    keycloakUserId: string,
+    permissions: string[],
+  ): Promise<string[]> {
+    const normalizedKeycloakId = keycloakUserId.trim();
+    if (!normalizedKeycloakId) {
+      throw new BadRequestException('keycloakUserId is required');
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { keycloakId: normalizedKeycloakId },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.setUserPermissionsByUserId(user.id, permissions);
+  }
+
+  async reconcileUserPermissionsByUserId(userId: string): Promise<string[]> {
+    const normalizedUserId = userId.trim();
+    if (!normalizedUserId) {
+      return [];
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: normalizedUserId },
+      select: { id: true, permissions: true },
+    });
+    if (!user) {
+      return [];
+    }
+
+    const available = await this.computeAvailablePermissionsForUser(user.id);
+
+    if (available.isSuperadmin) {
+      const superadminPermissions = ['*'];
+      if (
+        !this.arePermissionArraysEqual(user.permissions, superadminPermissions)
+      ) {
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { permissions: superadminPermissions },
+        });
+      }
+      this.cache.delete(user.id);
+      return superadminPermissions;
+    }
+
+    const normalizedStored = this.normalizePermissionInput(user.permissions);
+    const reconciled = normalizedStored.filter((permission) =>
+      available.permissionSet.has(permission),
+    );
+
+    if (!this.arePermissionArraysEqual(normalizedStored, reconciled)) {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { permissions: reconciled },
+      });
+    }
+
+    this.cache.delete(user.id);
+    return reconciled;
+  }
+
+  async invalidateUser(userIdOrKeycloakId: string): Promise<void> {
+    const normalized = userIdOrKeycloakId.trim();
+    if (!normalized) {
+      return;
+    }
+
+    if (this.cache.has(normalized)) {
+      this.cache.delete(normalized);
+      return;
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ id: normalized }, { keycloakId: normalized }],
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (user) {
+      this.cache.delete(user.id);
     }
   }
 
-  private async computeAndPersist(
-    userId: string,
-  ): Promise<UserPermissionSnapshotRecord> {
+  invalidateAll(): void {
+    this.cache.clear();
+  }
+
+  private async computePermissionSnapshot(userId: string): Promise<{
+    effectivePermissions: string[];
+    availablePermissions: string[];
+    isSuperadmin: boolean;
+  }> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
-        keycloakId: true,
+        permissions: true,
       },
     });
-
     if (!user) {
       return {
-        userId,
-        keycloakUserId: '',
-        permissions: [],
+        effectivePermissions: [],
+        availablePermissions: [],
+        isSuperadmin: false,
       };
     }
 
+    const available = await this.computeAvailablePermissionsForUser(user.id);
+    if (available.isSuperadmin) {
+      return {
+        effectivePermissions: ['*'],
+        availablePermissions: ['*'],
+        isSuperadmin: true,
+      };
+    }
+
+    const normalizedStored = this.normalizePermissionInput(user.permissions);
+    const effectivePermissions = normalizedStored.filter((permission) =>
+      available.permissionSet.has(permission),
+    );
+
+    return {
+      effectivePermissions,
+      availablePermissions: [...available.permissionSet].sort((left, right) =>
+        left.localeCompare(right),
+      ),
+      isSuperadmin: false,
+    };
+  }
+
+  private async computeAvailablePermissionsForUser(userId: string): Promise<{
+    permissionSet: Set<string>;
+    isSuperadmin: boolean;
+  }> {
     const now = new Date();
     const roleAssignments = await this.prisma.userRole.findMany({
       where: {
-        userId: user.id,
+        userId,
         OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
       },
       select: {
@@ -95,25 +321,33 @@ export class UserPermissionSnapshotService {
     );
     const expandedRoleIds = await this.expandRoleDescendants(assignedRoleIds);
 
-    const expandedRoles = await this.prisma.role.findMany({
-      where: {
-        id: {
-          in: [...expandedRoleIds],
+    let hasSuperadmin = false;
+    if (expandedRoleIds.size > 0) {
+      const expandedRoles = await this.prisma.role.findMany({
+        where: {
+          id: {
+            in: [...expandedRoleIds],
+          },
         },
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
+        select: {
+          name: true,
+        },
+      });
+      hasSuperadmin = expandedRoles.some(
+        (role) => role.name.toLowerCase() === 'superadmin',
+      );
+    }
 
-    const hasSuperadmin = expandedRoles.some(
-      (role) => role.name.toLowerCase() === 'superadmin',
-    );
+    if (hasSuperadmin) {
+      return {
+        permissionSet: new Set<string>(),
+        isSuperadmin: true,
+      };
+    }
 
-    const permissions = new Set<string>();
+    const permissionSet = new Set<string>();
 
-    if (!hasSuperadmin && expandedRoleIds.size > 0) {
+    if (expandedRoleIds.size > 0) {
       const rolePermissions = await this.prisma.rolePermission.findMany({
         where: {
           roleId: {
@@ -130,45 +364,13 @@ export class UserPermissionSnapshotService {
       });
 
       for (const rolePermission of rolePermissions) {
-        permissions.add(rolePermission.permission.slug.toLowerCase());
+        permissionSet.add(rolePermission.permission.slug.toLowerCase());
       }
     }
-
-    const overrides = await this.prisma.userPermissionOverride.findMany({
-      where: {
-        keycloakUserId: user.keycloakId,
-      },
-      include: {
-        permission: {
-          select: {
-            slug: true,
-          },
-        },
-      },
-    });
-
-    for (const override of overrides) {
-      const slug = override.permission.slug.toLowerCase();
-      if (override.granted) {
-        permissions.add(slug);
-      } else {
-        permissions.delete(slug);
-      }
-    }
-
-    const snapshot = hasSuperadmin ? ['*'] : [...permissions].sort();
-
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: {
-        permissions: snapshot,
-      },
-    });
 
     return {
-      userId: user.id,
-      keycloakUserId: user.keycloakId,
-      permissions: snapshot,
+      permissionSet,
+      isSuperadmin: false,
     };
   }
 
@@ -209,5 +411,94 @@ export class UserPermissionSnapshotService {
     }
 
     return visited;
+  }
+
+  private readCached(userId: string): PermissionCacheEntry | null {
+    const cached = this.cache.get(userId);
+    if (!cached) {
+      return null;
+    }
+
+    if (Date.now() >= cached.expiresAt) {
+      this.cache.delete(userId);
+      return null;
+    }
+
+    return {
+      effectivePermissions: [...cached.effectivePermissions],
+      availablePermissions: [...cached.availablePermissions],
+      isSuperadmin: cached.isSuperadmin,
+      expiresAt: cached.expiresAt,
+    };
+  }
+
+  private writeCache(
+    userId: string,
+    snapshot: {
+      effectivePermissions: string[];
+      availablePermissions: string[];
+      isSuperadmin: boolean;
+    },
+  ): void {
+    this.cache.set(userId, {
+      effectivePermissions: [...snapshot.effectivePermissions],
+      availablePermissions: [...snapshot.availablePermissions],
+      isSuperadmin: snapshot.isSuperadmin,
+      expiresAt: Date.now() + this.cacheTtlMs,
+    });
+  }
+
+  private normalizePermissionInput(permissions: string[]): string[] {
+    return [
+      ...new Set(
+        permissions
+          .map((permission) => permission.trim().toLowerCase())
+          .filter(Boolean),
+      ),
+    ].sort((left, right) => left.localeCompare(right));
+  }
+
+  private normalizeSuperadminPermissions(permissions: string[]): string[] {
+    if (
+      permissions.length === 0 ||
+      this.arePermissionArraysEqual(permissions, ['*'])
+    ) {
+      return ['*'];
+    }
+
+    throw new BadRequestException(
+      'Superadmin users can only persist ["*"] as permissions',
+    );
+  }
+
+  private assertAssignablePermissions(
+    permissions: string[],
+    availablePermissions: Set<string>,
+  ): string[] {
+    const invalid = permissions.filter(
+      (permission) => !availablePermissions.has(permission),
+    );
+
+    if (invalid.length > 0) {
+      throw new BadRequestException(
+        `Requested permissions are not assignable from current user roles: ${invalid.join(', ')}`,
+      );
+    }
+
+    return permissions;
+  }
+
+  private arePermissionArraysEqual(left: string[], right: string[]): boolean {
+    if (left.length !== right.length) {
+      return false;
+    }
+
+    for (let index = 0; index < left.length; index += 1) {
+      if (left[index] !== right[index]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

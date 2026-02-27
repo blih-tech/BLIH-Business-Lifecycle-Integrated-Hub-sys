@@ -2,36 +2,21 @@ import { BadRequestException } from '@nestjs/common';
 import { CreateRoleUseCase } from './create-role.usecase';
 
 describe('CreateRoleUseCase', () => {
-  it('rejects unknown permission keys with 400', async () => {
+  it('rejects unknown parent role id with 400', async () => {
     const keycloakAdmin = {
       createRole: jest.fn().mockResolvedValue(undefined),
     };
     const prisma = {
       role: {
-        findUnique: jest.fn().mockResolvedValue(null),
-        upsert: jest
+        findUnique: jest
           .fn()
-          .mockResolvedValue({ id: 'role-1', name: 'finance.approver' }),
-      },
-      permission: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([{ id: 'perm-1', slug: 'invoice:view' }]),
+          .mockResolvedValueOnce(null)
+          .mockResolvedValueOnce(null),
         upsert: jest.fn(),
-      },
-      permissionAction: {
-        upsert: jest.fn(),
-      },
-      permissionResource: {
-        findUnique: jest.fn(),
-      },
-      rolePermission: {
-        deleteMany: jest.fn(),
-        createMany: jest.fn(),
       },
     };
     const userPermissionSnapshot = {
-      recomputeAllUsers: jest.fn(),
+      invalidateAll: jest.fn(),
     };
 
     const useCase = new CreateRoleUseCase(
@@ -45,22 +30,12 @@ describe('CreateRoleUseCase', () => {
         name: 'finance.approver',
         displayName: 'Finance Approver',
         description: 'Approves finance actions',
-        permissions: ['invoice:view', 'invoice:approve'],
+        parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
       }),
     ).rejects.toThrow(BadRequestException);
-
-    expect(prisma.permission.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { slug: { in: ['invoice:view', 'invoice:approve'] } },
-      }),
-    );
-    expect(prisma.rolePermission.deleteMany).not.toHaveBeenCalled();
-    expect(prisma.permission.upsert).not.toHaveBeenCalled();
-    expect(prisma.permissionAction.upsert).not.toHaveBeenCalled();
-    expect(prisma.permissionResource.findUnique).not.toHaveBeenCalled();
   });
 
-  it('binds only existing permissions and never upserts permission catalog rows', async () => {
+  it('creates role metadata and invalidates permission cache', async () => {
     const keycloakAdmin = {
       createRole: jest.fn().mockResolvedValue(undefined),
     };
@@ -71,26 +46,9 @@ describe('CreateRoleUseCase', () => {
           .fn()
           .mockResolvedValue({ id: 'role-1', name: 'finance.approver' }),
       },
-      permission: {
-        findMany: jest.fn().mockResolvedValue([
-          { id: 'perm-1', slug: 'invoice:view' },
-          { id: 'perm-2', slug: 'invoice:approve' },
-        ]),
-        upsert: jest.fn(),
-      },
-      permissionAction: {
-        upsert: jest.fn(),
-      },
-      permissionResource: {
-        findUnique: jest.fn(),
-      },
-      rolePermission: {
-        deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
-        createMany: jest.fn().mockResolvedValue({ count: 2 }),
-      },
     };
     const userPermissionSnapshot = {
-      recomputeAllUsers: jest.fn().mockResolvedValue(undefined),
+      invalidateAll: jest.fn(),
     };
 
     const useCase = new CreateRoleUseCase(
@@ -103,22 +61,9 @@ describe('CreateRoleUseCase', () => {
       name: 'finance.approver',
       displayName: 'Finance Approver',
       description: 'Approves finance actions',
-      permissions: ['invoice:view', 'invoice:approve'],
     });
 
-    expect(prisma.rolePermission.deleteMany).toHaveBeenCalledWith({
-      where: { roleId: 'role-1' },
-    });
-    expect(prisma.rolePermission.createMany).toHaveBeenCalledWith({
-      data: [
-        { roleId: 'role-1', permissionId: 'perm-1' },
-        { roleId: 'role-1', permissionId: 'perm-2' },
-      ],
-      skipDuplicates: true,
-    });
-    expect(userPermissionSnapshot.recomputeAllUsers).toHaveBeenCalledTimes(1);
-    expect(prisma.permission.upsert).not.toHaveBeenCalled();
-    expect(prisma.permissionAction.upsert).not.toHaveBeenCalled();
-    expect(prisma.permissionResource.findUnique).not.toHaveBeenCalled();
+    expect(prisma.role.upsert).toHaveBeenCalled();
+    expect(userPermissionSnapshot.invalidateAll).toHaveBeenCalledTimes(1);
   });
 });

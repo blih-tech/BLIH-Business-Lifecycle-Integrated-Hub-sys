@@ -14,9 +14,14 @@ export class CreateRoleUseCase {
   ) {}
 
   async execute(dto: CreateRoleDto) {
+    const normalizedRoleName = dto.name.trim().toLowerCase();
     const realmName = env.KEYCLOAK_REALM;
     try {
-      await this.keycloakAdmin.createRole(realmName, dto.name, dto.description);
+      await this.keycloakAdmin.createRole(
+        realmName,
+        normalizedRoleName,
+        dto.description,
+      );
     } catch (error: unknown) {
       const statusCode = (error as { response?: { status?: number } }).response
         ?.status;
@@ -25,108 +30,73 @@ export class CreateRoleUseCase {
       }
     }
 
-    const dataScope = this.toRoleDataScope(dto.dataScope);
+    const existingRole = await this.prisma.role.findUnique({
+      where: { name: normalizedRoleName },
+      select: { id: true },
+    });
 
     const parentRole =
-      dto.parentRoleName?.trim() && dto.parentRoleName.trim().length > 0
+      dto.parentRoleId?.trim() && dto.parentRoleId.trim().length > 0
         ? await this.prisma.role.findUnique({
-            where: { name: dto.parentRoleName.trim() },
+            where: { id: dto.parentRoleId.trim() },
             select: { id: true },
           })
         : null;
-    if (dto.parentRoleName && !parentRole) {
+    if (dto.parentRoleId && !parentRole) {
       throw new BadRequestException(
-        `Parent role not found: ${dto.parentRoleName}`,
+        `Parent role not found: ${dto.parentRoleId}`,
       );
+    }
+    if (existingRole && parentRole?.id === existingRole.id) {
+      throw new BadRequestException('Role cannot be parent of itself');
+    }
+    if (existingRole && parentRole) {
+      await this.assertNoCycle(existingRole.id, parentRole.id);
     }
 
     const role = await this.prisma.role.upsert({
       where: {
-        name: dto.name,
+        name: normalizedRoleName,
       },
       update: {
         displayName: dto.displayName,
         description: dto.description,
-        dataScope,
         parentRoleId: parentRole?.id ?? null,
       },
       create: {
-        name: dto.name,
+        name: normalizedRoleName,
         displayName: dto.displayName,
         description: dto.description,
-        dataScope,
         parentRoleId: parentRole?.id ?? null,
       },
     });
 
-    const permissionKeys = [
-      ...(dto.permissions ?? []),
-      ...(dto.permission ? [dto.permission] : []),
-    ]
-      .map((permission) => permission.trim().toLowerCase())
-      .filter(Boolean);
-
-    if (permissionKeys.length > 0) {
-      const uniquePermissionKeys = [...new Set(permissionKeys)];
-      const persistedPermissions = await this.prisma.permission.findMany({
-        where: {
-          slug: {
-            in: uniquePermissionKeys,
-          },
-        },
-        select: {
-          id: true,
-          slug: true,
-        },
-      });
-      const permissionBySlug = new Map(
-        persistedPermissions.map((permission) => [
-          permission.slug,
-          permission.id,
-        ]),
-      );
-      const unknownPermissionKeys = uniquePermissionKeys.filter(
-        (permissionKey) => !permissionBySlug.has(permissionKey),
-      );
-
-      if (unknownPermissionKeys.length > 0) {
-        throw new BadRequestException(
-          `Unknown permission key(s): ${unknownPermissionKeys.join(', ')}`,
-        );
-      }
-
-      await this.prisma.rolePermission.deleteMany({
-        where: {
-          roleId: role.id,
-        },
-      });
-
-      const permissionRows: { roleId: string; permissionId: string }[] = [];
-      for (const permissionKey of uniquePermissionKeys) {
-        const permissionId = permissionBySlug.get(permissionKey);
-        if (!permissionId) {
-          continue;
-        }
-        permissionRows.push({
-          roleId: role.id,
-          permissionId,
-        });
-      }
-
-      if (permissionRows.length > 0) {
-        await this.prisma.rolePermission.createMany({
-          data: permissionRows,
-          skipDuplicates: true,
-        });
-      }
-    }
-
-    await this.userPermissionSnapshot.recomputeAllUsers();
+    this.userPermissionSnapshot.invalidateAll();
 
     return role;
   }
 
-  private toRoleDataScope(scope?: CreateRoleDto['dataScope']) {
-    return scope === 'self' ? ('SELF' as const) : ('GLOBAL' as const);
+  private async assertNoCycle(
+    roleId: string,
+    parentRoleId: string,
+  ): Promise<void> {
+    const visited = new Set<string>();
+    let cursor: string | null = parentRoleId;
+
+    while (cursor) {
+      if (cursor === roleId) {
+        throw new BadRequestException('Role hierarchy cycle detected');
+      }
+      if (visited.has(cursor)) {
+        break;
+      }
+      visited.add(cursor);
+
+      const node = await this.prisma.role.findUnique({
+        where: { id: cursor },
+        select: { parentRoleId: true },
+      });
+      cursor = node?.parentRoleId ?? null;
+    }
   }
 }

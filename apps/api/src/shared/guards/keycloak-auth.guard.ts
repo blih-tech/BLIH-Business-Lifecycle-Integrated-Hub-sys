@@ -122,7 +122,9 @@ export class KeycloakAuthGuard implements CanActivate {
       profileClaims,
     );
     const permissions =
-      await this.userPermissionSnapshot.getPersistedPermissions(principal.sub);
+      await this.userPermissionSnapshot.getEffectivePermissionsByKeycloakId(
+        principal.sub,
+      );
 
     return {
       ...principal,
