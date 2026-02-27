@@ -22,6 +22,7 @@ type SidebarItem = {
   badge?: string;
   active?: boolean;
   activeTone?: 'primary' | 'inverse';
+  onClick?: () => void;
 };
 
 type SidebarUser = {
@@ -111,6 +112,7 @@ export function AppSidebar({
                   >
                     <Link
                       href={item.href}
+                      onClick={item.onClick}
                       className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center"
                     >
                       <span
