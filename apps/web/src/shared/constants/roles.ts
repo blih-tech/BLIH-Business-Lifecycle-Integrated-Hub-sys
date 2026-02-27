@@ -18,3 +18,12 @@ export const ROLES = {
 } as const;
 
 export type Role = (typeof ROLES)[keyof typeof ROLES];
+
+export const ROLE_PRIORITY: Role[] = [
+  ROLES.SUPERADMIN,
+  ROLES.HR,
+  ROLES.FINANCE,
+  ROLES.PROJECT_MANAGER,
+  ROLES.CRM_MANAGER,
+  ROLES.BRAIN_OPERATOR,
+];
