@@ -119,14 +119,14 @@ export function HrSidebarShell({
 
       <div
         className={cn(
-          'hidden md:block shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-out',
+          'hidden md:block sticky top-0 h-svh shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-out',
           subnavOpen ? 'w-[304px] opacity-100' : 'w-0 opacity-0',
         )}
       >
         {activeSubItems.length > 0 ? (
           <aside
             className={cn(
-              'flex h-full w-[304px] flex-col border-r border-[#e5e7eb] bg-[#f9fafb] transition-transform duration-300 ease-out',
+              'flex h-svh w-[304px] flex-col border-r border-[#e5e7eb] bg-[#f9fafb] transition-transform duration-300 ease-out',
               subnavOpen ? 'translate-x-0' : '-translate-x-2',
             )}
           >
@@ -138,7 +138,7 @@ export function HrSidebarShell({
                 HR Portal
               </p>
             </div>
-            <nav className="flex-1 bg-[#f8f8f8] px-6 py-4">
+            <nav className="min-h-0 flex-1 overflow-y-auto bg-[#f8f8f8] px-6 py-4">
               <div className="mb-3">
                 <SearchInput
                   placeholder="Search..."
