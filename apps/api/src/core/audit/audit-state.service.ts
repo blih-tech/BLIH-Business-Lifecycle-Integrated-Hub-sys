@@ -35,7 +35,7 @@ export class AuditStateService {
             lastName: true,
             phone: true,
             status: true,
-            position: true,
+            departmentId: true,
             createdAt: true,
             updatedAt: true,
           },

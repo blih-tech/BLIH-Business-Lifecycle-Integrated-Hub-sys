@@ -36,6 +36,30 @@ enum AuditResult {
   FAILURE
 }
 
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+  TEMPORARY
+}
+
+enum PayFrequency {
+  MONTHLY
+  BIWEEKLY
+  WEEKLY
+  ANNUAL
+}
+
+enum LifecycleStatus {
+  ONBOARDING
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+  RESIGNED
+  RETIRED
+}
+
 model User {
   id                String      @id @default(uuid()) @db.Uuid
   keycloakId        String      @unique
@@ -45,15 +69,119 @@ model User {
   lastName          String
   phone             String?
   status            UserStatus  @default(ACTIVE)
-  position          String?
+  departmentId      String?     @db.Uuid
+  department        Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   lastLoginAt       DateTime?
   metadata          Json?
   permissions       String[]    @default([])
+  profile           UserProfile?
+  employment        UserEmployment?
+  compensation      UserCompensation?
+  compensationHistory UserCompensationHistory[]
+  lifecycle         UserLifecycle?
   createdAt         DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
   roles             UserRole[]
 
   @@index([status])
+  @@index([departmentId])
+}
+
+model Department {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+}
+
+model UserProfile {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @unique @db.Uuid
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dateOfBirth           DateTime?
+  gender                String?
+  nationality           String?
+  maritalStatus         String?
+  avatarUrl             String?
+  addressLine1          String?
+  addressLine2          String?
+  city                  String?
+  state                 String?
+  country               String?
+  postalCode            String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model UserEmployment {
+  id                     String            @id @default(uuid()) @db.Uuid
+  userId                 String            @unique @db.Uuid
+  user                   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeCode           String?           @unique
+  jobTitle               String?
+  employmentType         EmploymentType    @default(FULL_TIME)
+  managerEmploymentId    String?           @db.Uuid
+  managerEmployment      UserEmployment?   @relation("EmploymentManagerRelation", fields: [managerEmploymentId], references: [id], onDelete: SetNull)
+  subordinateEmployments UserEmployment[]  @relation("EmploymentManagerRelation")
+  hiredAt                DateTime?
+  probationEndAt         DateTime?
+  confirmedAt            DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  @@index([managerEmploymentId])
+}
+
+model UserCompensation {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @unique @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  baseSalary    Decimal?     @db.Decimal(15, 2)
+  currency      String?
+  payFrequency  PayFrequency @default(MONTHLY)
+  bonusEligible Boolean      @default(false)
+  bonusRate     Decimal?     @db.Decimal(5, 2)
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model UserCompensationHistory {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  baseSalary    Decimal?     @db.Decimal(15, 2)
+  currency      String?
+  payFrequency  PayFrequency @default(MONTHLY)
+  bonusEligible Boolean      @default(false)
+  bonusRate     Decimal?     @db.Decimal(5, 2)
+  validFrom     DateTime
+  validTo       DateTime?
+  changeReason  String?
+  changedBy     String?
+  createdAt     DateTime     @default(now())
+
+  @@index([userId])
+  @@index([userId, validFrom])
+}
+
+model UserLifecycle {
+  id                   String          @id @default(uuid()) @db.Uuid
+  userId               String          @unique @db.Uuid
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status               LifecycleStatus @default(ONBOARDING)
+  onboardedAt          DateTime?
+  suspendedAt          DateTime?
+  terminatedAt         DateTime?
+  terminationReason    String?
+  offboardingCompleted Boolean         @default(false)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 }
 
 model Role {

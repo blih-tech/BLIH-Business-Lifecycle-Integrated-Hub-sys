@@ -302,7 +302,6 @@ export class AuthController {
           firstName: 'Admin',
           lastName: 'User',
           status: 'ACTIVE',
-          position: 'System Administrator',
           phone: '+12025550199',
           departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
           organizationId: '28ac5ccf-af0c-4e14-b34e-8cd37cb392f8',
@@ -331,7 +330,7 @@ export class AuthController {
         lastName: principal.lastName,
         phone: principal.phone,
         status: principal.status,
-        position: principal.position,
+        departmentId: principal.departmentId ?? null,
       },
       auth: {
         sub: principal.sub,

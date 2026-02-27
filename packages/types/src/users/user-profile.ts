@@ -1,0 +1,147 @@
+export type EmploymentType =
+  | 'FULL_TIME'
+  | 'PART_TIME'
+  | 'CONTRACT'
+  | 'INTERN'
+  | 'TEMPORARY';
+
+export type PayFrequency = 'MONTHLY' | 'BIWEEKLY' | 'WEEKLY' | 'ANNUAL';
+
+export type LifecycleStatus =
+  | 'ONBOARDING'
+  | 'ACTIVE'
+  | 'SUSPENDED'
+  | 'TERMINATED'
+  | 'RESIGNED'
+  | 'RETIRED';
+
+export interface UpdateUserProfileDto {
+  dateOfBirth?: string;
+  gender?: string;
+  nationality?: string;
+  maritalStatus?: string;
+  avatarUrl?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+}
+
+export interface UserProfileResponseDto {
+  userId: string;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+  nationality?: string | null;
+  maritalStatus?: string | null;
+  avatarUrl?: string | null;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  postalCode?: string | null;
+  emergencyContactName?: string | null;
+  emergencyContactPhone?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUserEmploymentDto {
+  employeeCode?: string;
+  jobTitle?: string;
+  employmentType?: EmploymentType;
+  managerEmploymentId?: string | null;
+  hiredAt?: string;
+  probationEndAt?: string;
+  confirmedAt?: string;
+}
+
+export interface UserEmploymentResponseDto {
+  userId: string;
+  employeeCode?: string | null;
+  jobTitle?: string | null;
+  employmentType: EmploymentType;
+  managerEmploymentId?: string | null;
+  hiredAt?: string | null;
+  probationEndAt?: string | null;
+  confirmedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUserCompensationDto {
+  baseSalary?: string;
+  currency?: string;
+  payFrequency?: PayFrequency;
+  bonusEligible?: boolean;
+  bonusRate?: string;
+  effectiveFrom?: string;
+  effectiveTo?: string;
+  changeReason?: string;
+  changedBy?: string;
+}
+
+export interface UserCompensationResponseDto {
+  userId: string;
+  baseSalary?: string | null;
+  currency?: string | null;
+  payFrequency: PayFrequency;
+  bonusEligible: boolean;
+  bonusRate?: string | null;
+  effectiveFrom?: string | null;
+  effectiveTo?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCompensationHistoryDto {
+  baseSalary?: string;
+  currency?: string;
+  payFrequency?: PayFrequency;
+  bonusEligible?: boolean;
+  bonusRate?: string;
+  validFrom: string;
+  validTo?: string;
+  changeReason?: string;
+  changedBy?: string;
+}
+
+export interface UserCompensationHistoryResponseDto {
+  id: string;
+  userId: string;
+  baseSalary?: string | null;
+  currency?: string | null;
+  payFrequency: PayFrequency;
+  bonusEligible: boolean;
+  bonusRate?: string | null;
+  validFrom: string;
+  validTo?: string | null;
+  changeReason?: string | null;
+  changedBy?: string | null;
+  createdAt: string;
+}
+
+export interface UpdateUserLifecycleDto {
+  status?: LifecycleStatus;
+  onboardedAt?: string;
+  suspendedAt?: string;
+  terminatedAt?: string;
+  terminationReason?: string;
+  offboardingCompleted?: boolean;
+}
+
+export interface UserLifecycleResponseDto {
+  userId: string;
+  status: LifecycleStatus;
+  onboardedAt?: string | null;
+  suspendedAt?: string | null;
+  terminatedAt?: string | null;
+  terminationReason?: string | null;
+  offboardingCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

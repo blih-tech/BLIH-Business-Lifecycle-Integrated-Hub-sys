@@ -50,6 +50,7 @@ lerna-debug.log*
 backups/
 *.sql
 *.sql.gz
+!prisma/migrations/20260227170000_add_user_profile_domain/migration.sql
 
 # Runtime data
 pids

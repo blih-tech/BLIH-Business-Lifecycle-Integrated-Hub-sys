@@ -14,7 +14,7 @@ export interface PrincipalContext {
   lastName?: string;
   phone?: string;
   status?: string;
-  position?: string;
+  departmentId?: string | null;
 }
 
 /**
@@ -66,7 +66,7 @@ export class PrincipalEnrichmentService {
           lastName: true,
           phone: true,
           status: true,
-          position: true,
+          departmentId: true,
         },
       });
 
@@ -95,7 +95,7 @@ export class PrincipalEnrichmentService {
             lastName: true,
             phone: true,
             status: true,
-            position: true,
+            departmentId: true,
           },
         });
         user = created;
@@ -147,7 +147,7 @@ export class PrincipalEnrichmentService {
               lastName: true,
               phone: true,
               status: true,
-              position: true,
+              departmentId: true,
             },
           });
         }
@@ -162,7 +162,7 @@ export class PrincipalEnrichmentService {
         lastName: user.lastName || normalizedClaims.lastName || undefined,
         phone: user.phone ?? undefined,
         status: user.status ?? undefined,
-        position: user.position ?? undefined,
+        departmentId: user.departmentId ?? null,
       };
 
       if (

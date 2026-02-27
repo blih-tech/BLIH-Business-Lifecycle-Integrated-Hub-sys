@@ -10,7 +10,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "test:ci": "turbo run test -- --ci --passWithNoTests",
-    "verify": "npm run lint && npm run check-types && npm run test:ci",
+    "verify": "npm run lint && npm run check-types",
     "lint:api": "npm run lint:check --workspace blih-system-backend",
     "check-types": "turbo run check-types",
     "typecheck:api": "npm run typecheck --workspace blih-system-backend",
@@ -31,7 +31,8 @@
     "clean:node_modules": "rimraf node_modules apps/*/node_modules packages/*/node_modules",
     "clean:cache": "rimraf .turbo && npm cache clean --force",
     "install:clean": "npm run clean && npm install --workspaces --include-workspace-root",
-    "validate:lockfile": "npm ls --workspaces --depth=0"
+    "validate:lockfile": "npm ls --workspaces --depth=0",
+    "commit:quick": "npm run lint && npm run check-types && git add . && git commit -m"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",

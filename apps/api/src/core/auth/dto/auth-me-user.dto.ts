@@ -52,8 +52,9 @@ export class AuthMeUserDto implements AuthMeUserDtoType {
   status?: string;
 
   @ApiPropertyOptional({
-    description: 'Position/job title.',
-    example: 'System Administrator',
+    description: 'User department id.',
+    example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+    nullable: true,
   })
-  position?: string;
+  departmentId?: string | null;
 }

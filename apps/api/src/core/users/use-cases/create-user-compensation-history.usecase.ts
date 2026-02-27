@@ -1,0 +1,85 @@
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { CreateCompensationHistoryDto } from '../dto/create-compensation-history.dto';
+
+@Injectable()
+export class CreateUserCompensationHistoryUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async execute(userIdOrKeycloakId: string, dto: CreateCompensationHistoryDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+      },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const validFrom = new Date(dto.validFrom);
+    const validTo = dto.validTo ? new Date(dto.validTo) : null;
+    if (validTo && validFrom.getTime() >= validTo.getTime()) {
+      throw new BadRequestException('validFrom must be before validTo');
+    }
+
+    await this.assertNoOverlap(user.id, validFrom, validTo);
+
+    const entry = await this.prisma.userCompensationHistory.create({
+      data: {
+        userId: user.id,
+        baseSalary: dto.baseSalary,
+        currency: dto.currency,
+        payFrequency: dto.payFrequency,
+        bonusEligible: dto.bonusEligible ?? false,
+        bonusRate: dto.bonusRate,
+        validFrom,
+        validTo,
+        changeReason: dto.changeReason,
+        changedBy: dto.changedBy,
+      },
+    });
+
+    return {
+      ...entry,
+      baseSalary: entry.baseSalary?.toString() ?? null,
+      bonusRate: entry.bonusRate?.toString() ?? null,
+      validFrom: entry.validFrom.toISOString(),
+      validTo: entry.validTo?.toISOString() ?? null,
+      createdAt: entry.createdAt.toISOString(),
+    };
+  }
+
+  private async assertNoOverlap(
+    userId: string,
+    validFrom: Date,
+    validTo: Date | null,
+  ): Promise<void> {
+    const overlap = await this.prisma.userCompensationHistory.findFirst({
+      where: {
+        userId,
+        validFrom: {
+          lte: validTo ?? new Date('9999-12-31T23:59:59.999Z'),
+        },
+        OR: [
+          { validTo: null },
+          {
+            validTo: {
+              gte: validFrom,
+            },
+          },
+        ],
+      },
+      select: { id: true },
+    });
+    if (overlap) {
+      throw new BadRequestException(
+        'Compensation history range overlaps an existing record',
+      );
+    }
+  }
+}

@@ -7,7 +7,7 @@ export interface AuthMeUserDto {
   lastName?: string;
   phone?: string;
   status?: string;
-  position?: string;
+  departmentId?: string | null;
 }
 
 export interface AuthMeAuthDto {

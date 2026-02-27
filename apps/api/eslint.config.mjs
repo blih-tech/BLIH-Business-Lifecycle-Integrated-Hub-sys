@@ -10,6 +10,7 @@ export default [
       'eslint.config.mjs',
       'scripts/**/*.js',
       'src/platform/prisma/generated/**',
+      'src/shared/demo-hr-types/**',
     ],
   },
   eslint.configs.recommended,

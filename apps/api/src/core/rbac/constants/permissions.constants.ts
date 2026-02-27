@@ -8,6 +8,28 @@ export const UserPermissions = {
   ASSIGN_ROLE: 'user:assign-role',
 } as const;
 
+export const UserProfilePermissions = {
+  VIEW: 'user_profile:view',
+  UPDATE: 'user_profile:update',
+} as const;
+
+export const UserEmploymentPermissions = {
+  VIEW: 'user_employment:view',
+  UPDATE: 'user_employment:update',
+} as const;
+
+export const UserCompensationPermissions = {
+  VIEW: 'user_compensation:view',
+  UPDATE: 'user_compensation:update',
+  HISTORY_VIEW: 'user_compensation_history:view',
+  HISTORY_CREATE: 'user_compensation_history:create',
+} as const;
+
+export const UserLifecyclePermissions = {
+  VIEW: 'user_lifecycle:view',
+  UPDATE: 'user_lifecycle:update',
+} as const;
+
 export const SystemRolePermissions = {
   VIEW: 'system_role:view',
   CREATE: 'system_role:create',
@@ -146,6 +168,10 @@ export const BrainConfigPermissions = {
 
 export const PermissionGroups = {
   user: UserPermissions,
+  user_profile: UserProfilePermissions,
+  user_employment: UserEmploymentPermissions,
+  user_compensation: UserCompensationPermissions,
+  user_lifecycle: UserLifecyclePermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
   hr_payroll: HrPayrollPermissions,

@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   Matches,
+  IsUUID,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import type { CreateUserDto as CreateUserDtoType } from '@repo/types';
@@ -50,4 +51,12 @@ export class CreateUserDto implements CreateUserDtoType {
   @IsOptional()
   @IsString()
   phone?: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional department id.',
+    example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+  })
+  @IsOptional()
+  @IsUUID()
+  departmentId?: string;
 }
