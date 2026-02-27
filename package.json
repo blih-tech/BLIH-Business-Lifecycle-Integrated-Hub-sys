@@ -11,6 +11,7 @@
     "test": "turbo run test",
     "test:ci": "turbo run test -- --ci --passWithNoTests",
     "verify": "npm run lint && npm run check-types",
+    "verify:full": "npm run lint && npm run check-types && npm run test:ci",
     "lint:api": "npm run lint:check --workspace blih-system-backend",
     "check-types": "turbo run check-types",
     "typecheck:api": "npm run typecheck --workspace blih-system-backend",
