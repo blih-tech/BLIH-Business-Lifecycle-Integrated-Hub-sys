@@ -56,7 +56,7 @@ export function AppSidebar({
   return (
     <Sidebar
       collapsible="icon"
-      className="left-0 h-full min-h-full w-[280px] border-none bg-transparent text-sidebar-foreground"
+      className="left-0 h-full min-h-full border-none bg-transparent text-sidebar-foreground [--sidebar-width:280px] [--sidebar-width-icon:64px]"
     >
       <div className="absolute inset-0">
         <img
@@ -67,12 +67,12 @@ export function AppSidebar({
         <div className="absolute inset-0 bg-[color:var(--sidebar)]/70" />
       </div>
 
-      <SidebarHeader className="relative border-b border-sidebar-border px-4 py-3">
-        <div className="flex items-center gap-3 pl-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-[10px] bg-white/10">
+      <SidebarHeader className="relative border-b border-sidebar-border px-4 py-3 group-data-[collapsible=icon]:px-2">
+        <div className="flex items-center gap-3 pl-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-white/10">
             {logo}
           </div>
-          <div className="flex flex-col leading-tight">
+          <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
             <p className="text-[14px] font-semibold tracking-[-0.16px]">
               {title}
             </p>
@@ -83,14 +83,16 @@ export function AppSidebar({
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="relative px-3 py-2.5">
+      <SidebarContent className="relative px-3 py-2.5 group-data-[collapsible=icon]:px-1.5">
         <SidebarGroup>
           <SidebarGroupContent className="space-y-3">
-            <SearchInput
-              placeholder={searchPlaceholder}
-              icon={searchIcon}
-              onChange={onSearchChange}
-            />
+            <div className="group-data-[collapsible=icon]:hidden">
+              <SearchInput
+                placeholder={searchPlaceholder}
+                icon={searchIcon}
+                onChange={onSearchChange}
+              />
+            </div>
 
             <SidebarMenu>
               {items.map((item) => (
@@ -99,7 +101,7 @@ export function AppSidebar({
                     asChild
                     tooltip={item.label}
                     className={[
-                      'h-7 rounded-[6px] px-1.5 text-white',
+                      'h-7 rounded-[6px] px-1.5 text-white group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0',
                       item.active
                         ? item.activeTone === 'inverse'
                           ? 'border border-sidebar-foreground hover:border-sidebar-foreground/90 hover:bg-white/10'
@@ -109,7 +111,7 @@ export function AppSidebar({
                   >
                     <Link
                       href={item.href}
-                      className="flex items-center gap-2.5"
+                      className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center"
                     >
                       <span
                         className={[
@@ -123,7 +125,7 @@ export function AppSidebar({
                       >
                         {item.icon}
                       </span>
-                      <span className="text-[12px] font-semibold tracking-[-0.1px]">
+                      <span className="text-[12px] font-semibold tracking-[-0.1px] group-data-[collapsible=icon]:hidden">
                         {item.label}
                       </span>
                     </Link>
@@ -149,13 +151,13 @@ export function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="relative border-t border-sidebar-border px-3 py-3">
+      <SidebarFooter className="relative border-t border-sidebar-border px-3 py-3 group-data-[collapsible=icon]:px-1.5">
         {user ? (
-          <div className="flex items-center gap-2.5 pl-2">
+          <div className="flex items-center gap-2.5 pl-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
             <div className="flex size-[28px] items-center justify-center rounded-full bg-white text-[10px] text-primary">
               {user.initials}
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <p className="text-[12px] font-semibold tracking-[-0.08px] text-white">
                 {user.name}
               </p>
