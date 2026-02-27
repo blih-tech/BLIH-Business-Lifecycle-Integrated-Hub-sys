@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 import {
   Sidebar,
@@ -11,8 +11,8 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/shared/components/ui/sidebar";
-import { SearchInput } from "@/shared/components/SearchInput";
+} from '@/shared/components/ui/sidebar';
+import { SearchInput } from '@/shared/components/SearchInput';
 
 type SidebarItem = {
   id: string;
@@ -21,7 +21,7 @@ type SidebarItem = {
   icon: React.ReactNode;
   badge?: string;
   active?: boolean;
-  activeTone?: "primary" | "inverse";
+  activeTone?: 'primary' | 'inverse';
 };
 
 type SidebarUser = {
@@ -39,7 +39,7 @@ type SidebarProps = {
   searchIcon?: React.ReactNode;
   onSearchChange?: (value: string) => void;
   items: SidebarItem[];
-  user: SidebarUser;
+  user?: SidebarUser;
 };
 
 export function AppSidebar({
@@ -47,7 +47,7 @@ export function AppSidebar({
   subtitle,
   logo,
   backgroundImage,
-  searchPlaceholder = "Search...",
+  searchPlaceholder = 'Search...',
   searchIcon,
   onSearchChange,
   items,
@@ -56,15 +56,19 @@ export function AppSidebar({
   return (
     <Sidebar
       collapsible="icon"
-      className="left-0 h-svh min-h-svh w-[280px] border-none bg-transparent text-sidebar-foreground"
+      className="left-0 h-full min-h-full w-[280px] border-none bg-transparent text-sidebar-foreground"
     >
       <div className="absolute inset-0">
-        <img alt="" className="absolute size-full object-cover" src={backgroundImage} />
+        <img
+          alt=""
+          className="absolute size-full object-cover"
+          src={backgroundImage}
+        />
         <div className="absolute inset-0 bg-[color:var(--sidebar)]/70" />
       </div>
 
-      <SidebarHeader className="relative border-b border-sidebar-border px-4 py-2.5">
-        <div className="flex items-center gap-3">
+      <SidebarHeader className="relative border-b border-sidebar-border px-4 py-3">
+        <div className="flex items-center gap-3 pl-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-[10px] bg-white/10">
             {logo}
           </div>
@@ -95,24 +99,27 @@ export function AppSidebar({
                     asChild
                     tooltip={item.label}
                     className={[
-                      "h-7 rounded-[6px] px-1.5 text-white",
+                      'h-7 rounded-[6px] px-1.5 text-white',
                       item.active
-                        ? item.activeTone === "inverse"
-                          ? "border border-sidebar-foreground hover:border-sidebar-foreground/90 hover:bg-white/10"
-                          : "bg-white text-primary hover:bg-white hover:text-primary"
-                        : "hover:bg-white/10 text-sidebar-foreground",
-                    ].join(" ")}
+                        ? item.activeTone === 'inverse'
+                          ? 'border border-sidebar-foreground hover:border-sidebar-foreground/90 hover:bg-white/10'
+                          : 'bg-white text-primary hover:bg-white hover:text-primary'
+                        : 'hover:bg-white/10 text-sidebar-foreground',
+                    ].join(' ')}
                   >
-                    <Link href={item.href} className="flex items-center gap-2.5">
+                    <Link
+                      href={item.href}
+                      className="flex items-center gap-2.5"
+                    >
                       <span
                         className={[
-                          "flex h-7 w-7 items-center justify-center rounded-[6px]",
+                          'flex h-7 w-7 items-center justify-center rounded-[6px]',
                           item.active
-                            ? item.activeTone === "inverse"
-                              ? "text-white"
-                              : "text-primary"
-                            : "text-white",
-                        ].join(" ")}
+                            ? item.activeTone === 'inverse'
+                              ? 'text-white'
+                              : 'text-primary'
+                            : 'text-white',
+                        ].join(' ')}
                       >
                         {item.icon}
                       </span>
@@ -124,13 +131,13 @@ export function AppSidebar({
                   {item.badge ? (
                     <SidebarMenuBadge
                       className={[
-                        "right-2 top-1.5 h-3 w-3 rounded-full text-[8px]",
-                        item.active && item.activeTone !== "inverse"
-                          ? "bg-primary text-primary-foreground"
-                          : item.active && item.activeTone === "inverse"
-                            ? "bg-white text-primary"
-                            : "bg-white/20 text-white",
-                      ].join(" ")}
+                        'right-2 top-1.5 h-3 w-3 rounded-full text-[8px]',
+                        item.active && item.activeTone !== 'inverse'
+                          ? 'bg-primary text-primary-foreground'
+                          : item.active && item.activeTone === 'inverse'
+                            ? 'bg-white text-primary'
+                            : 'bg-white/20 text-white',
+                      ].join(' ')}
                     >
                       {item.badge}
                     </SidebarMenuBadge>
@@ -142,18 +149,20 @@ export function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="relative border-t border-sidebar-border px-3 py-2">
-        <div className="flex items-center gap-2.5">
-          <div className="flex size-[28px] items-center justify-center rounded-full bg-white text-[10px] text-primary">
-            {user.initials}
+      <SidebarFooter className="relative border-t border-sidebar-border px-3 py-3">
+        {user ? (
+          <div className="flex items-center gap-2.5 pl-2">
+            <div className="flex size-[28px] items-center justify-center rounded-full bg-white text-[10px] text-primary">
+              {user.initials}
+            </div>
+            <div className="flex flex-col">
+              <p className="text-[12px] font-semibold tracking-[-0.08px] text-white">
+                {user.name}
+              </p>
+              <p className="text-[9px] text-white">{user.email}</p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="text-[12px] font-semibold tracking-[-0.08px] text-white">
-              {user.name}
-            </p>
-            <p className="text-[9px] text-white">{user.email}</p>
-          </div>
-        </div>
+        ) : null}
       </SidebarFooter>
     </Sidebar>
   );
