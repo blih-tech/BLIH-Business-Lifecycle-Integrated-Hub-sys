@@ -88,7 +88,7 @@ export class UserPermissionSnapshotService {
       },
     });
 
-    const expandedRoleIds = await this.expandRoleDescendants(
+    const expandedRoleIds = await this.expandRoleAncestors(
       roleAssignments.map((assignment) => assignment.roleId),
     );
 
@@ -142,7 +142,7 @@ export class UserPermissionSnapshotService {
       .sort((left, right) => left.localeCompare(right));
   }
 
-  private async expandRoleDescendants(roleIds: string[]): Promise<Set<string>> {
+  private async expandRoleAncestors(roleIds: string[]): Promise<Set<string>> {
     const allRoles = await this.prisma.role.findMany({
       select: {
         id: true,
@@ -150,16 +150,9 @@ export class UserPermissionSnapshotService {
       },
     });
 
-    const childrenByParentId = new Map<string, string[]>();
-
+    const parentByRoleId = new Map<string, string | null>();
     for (const role of allRoles) {
-      if (!role.parentRoleId) {
-        continue;
-      }
-
-      const existingChildren = childrenByParentId.get(role.parentRoleId) ?? [];
-      existingChildren.push(role.id);
-      childrenByParentId.set(role.parentRoleId, existingChildren);
+      parentByRoleId.set(role.id, role.parentRoleId);
     }
 
     const visited = new Set<string>();
@@ -172,9 +165,9 @@ export class UserPermissionSnapshotService {
       }
 
       visited.add(roleId);
-      const children = childrenByParentId.get(roleId) ?? [];
-      for (const child of children) {
-        queue.push(child);
+      const parentRoleId = parentByRoleId.get(roleId);
+      if (parentRoleId) {
+        queue.push(parentRoleId);
       }
     }
 

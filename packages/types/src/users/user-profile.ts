@@ -15,17 +15,26 @@ export type LifecycleStatus =
   | 'RESIGNED'
   | 'RETIRED';
 
+export type Gender = 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+
+export type MaritalStatus =
+  | 'SINGLE'
+  | 'MARRIED'
+  | 'DIVORCED'
+  | 'WIDOWED'
+  | 'SEPARATED';
+
 export interface UpdateUserProfileDto {
   dateOfBirth?: string;
-  gender?: string;
-  nationality?: string;
-  maritalStatus?: string;
+  gender?: Gender;
+  nationalityId?: string | null;
+  maritalStatus?: MaritalStatus;
   avatarUrl?: string;
   addressLine1?: string;
   addressLine2?: string;
   city?: string;
   state?: string;
-  country?: string;
+  countryId?: string | null;
   postalCode?: string;
   emergencyContactName?: string;
   emergencyContactPhone?: string;
@@ -34,14 +43,16 @@ export interface UpdateUserProfileDto {
 export interface UserProfileResponseDto {
   userId: string;
   dateOfBirth?: string | null;
-  gender?: string | null;
+  gender?: Gender | null;
+  nationalityId?: string | null;
   nationality?: string | null;
-  maritalStatus?: string | null;
+  maritalStatus?: MaritalStatus | null;
   avatarUrl?: string | null;
   addressLine1?: string | null;
   addressLine2?: string | null;
   city?: string | null;
   state?: string | null;
+  countryId?: string | null;
   country?: string | null;
   postalCode?: string | null;
   emergencyContactName?: string | null;
@@ -82,7 +93,7 @@ export interface UpdateUserCompensationDto {
   effectiveFrom?: string;
   effectiveTo?: string;
   changeReason?: string;
-  changedBy?: string;
+  changedById?: string;
 }
 
 export interface UserCompensationResponseDto {
@@ -107,7 +118,7 @@ export interface CreateCompensationHistoryDto {
   validFrom: string;
   validTo?: string;
   changeReason?: string;
-  changedBy?: string;
+  changedById?: string;
 }
 
 export interface UserCompensationHistoryResponseDto {
@@ -121,7 +132,7 @@ export interface UserCompensationHistoryResponseDto {
   validFrom: string;
   validTo?: string | null;
   changeReason?: string | null;
-  changedBy?: string | null;
+  changedById?: string | null;
   createdAt: string;
 }
 

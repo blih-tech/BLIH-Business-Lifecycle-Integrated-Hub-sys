@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Gender, MaritalStatus } from '../../../platform/prisma/prisma-client';
 import type { UserProfileResponseDto as UserProfileResponseDtoType } from '@repo/types';
 
 export class UserProfileResponseDto implements UserProfileResponseDtoType {
@@ -8,14 +9,17 @@ export class UserProfileResponseDto implements UserProfileResponseDtoType {
   @ApiPropertyOptional({ nullable: true })
   dateOfBirth?: string | null;
 
+  @ApiPropertyOptional({ nullable: true, enum: Gender })
+  gender?: Gender | null;
+
   @ApiPropertyOptional({ nullable: true })
-  gender?: string | null;
+  nationalityId?: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   nationality?: string | null;
 
-  @ApiPropertyOptional({ nullable: true })
-  maritalStatus?: string | null;
+  @ApiPropertyOptional({ nullable: true, enum: MaritalStatus })
+  maritalStatus?: MaritalStatus | null;
 
   @ApiPropertyOptional({ nullable: true })
   avatarUrl?: string | null;
@@ -31,6 +35,9 @@ export class UserProfileResponseDto implements UserProfileResponseDtoType {
 
   @ApiPropertyOptional({ nullable: true })
   state?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  countryId?: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   country?: string | null;

@@ -34,7 +34,7 @@ export class UserCompensationHistoryResponseDto implements UserCompensationHisto
   changeReason?: string | null;
 
   @ApiPropertyOptional({ nullable: true })
-  changedBy?: string | null;
+  changedById?: string | null;
 
   @ApiProperty()
   createdAt!: string;

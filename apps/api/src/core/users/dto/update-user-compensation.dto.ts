@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 import { PayFrequency } from '../../../platform/prisma/prisma-client';
 import type { UpdateUserCompensationDto as UpdateUserCompensationDtoType } from '@repo/types';
@@ -52,6 +53,6 @@ export class UpdateUserCompensationDto implements UpdateUserCompensationDtoType 
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  changedBy?: string;
+  @IsUUID()
+  changedById?: string;
 }

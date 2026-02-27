@@ -18,6 +18,14 @@ export class GetUserProfileUseCase {
 
     const profile = await this.prisma.userProfile.findUnique({
       where: { userId: user.id },
+      include: {
+        nationality: {
+          select: { name: true },
+        },
+        country: {
+          select: { name: true },
+        },
+      },
     });
 
     if (!profile) {
@@ -26,6 +34,8 @@ export class GetUserProfileUseCase {
 
     return {
       ...profile,
+      nationality: profile.nationality?.name ?? null,
+      country: profile.country?.name ?? null,
       dateOfBirth: profile.dateOfBirth?.toISOString() ?? null,
       createdAt: profile.createdAt.toISOString(),
       updatedAt: profile.updatedAt.toISOString(),

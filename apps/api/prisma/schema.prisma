@@ -55,6 +55,21 @@ enum LifecycleStatus {
   RETIRED
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+  SEPARATED
+}
+
 model User {
   id                String      @id @default(uuid()) @db.Uuid
   keycloakId        String      @unique
@@ -73,6 +88,7 @@ model User {
   employment        UserEmployment?
   compensation      UserCompensation?
   compensationHistory UserCompensationHistory[]
+  compensationChanges UserCompensationHistory[] @relation("CompensationChangedBy")
   lifecycle         UserLifecycle?
   createdAt         DateTime    @default(now())
   updatedAt          DateTime                  @updatedAt
@@ -91,25 +107,43 @@ model Department {
   users       User[]
 }
 
+model CountryReference {
+  id                    String        @id @default(uuid()) @db.Uuid
+  code                  String?       @unique @db.VarChar(3)
+  name                  String        @unique
+  isActive              Boolean       @default(true)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  nationalityProfiles   UserProfile[] @relation("ProfileNationality")
+  residenceProfiles     UserProfile[] @relation("ProfileResidenceCountry")
+
+  @@index([isActive])
+}
+
 model UserProfile {
   id                    String   @id @default(uuid()) @db.Uuid
   userId                String   @unique @db.Uuid
   user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   dateOfBirth           DateTime?
-  gender                String?
-  nationality           String?
-  maritalStatus         String?
+  gender                Gender?
+  nationalityId         String?  @db.Uuid
+  nationality           CountryReference? @relation("ProfileNationality", fields: [nationalityId], references: [id], onDelete: SetNull)
+  maritalStatus         MaritalStatus?
   avatarUrl             String?
   addressLine1          String?
   addressLine2          String?
   city                  String?
   state                 String?
-  country               String?
+  countryId             String?  @db.Uuid
+  country               CountryReference? @relation("ProfileResidenceCountry", fields: [countryId], references: [id], onDelete: SetNull)
   postalCode            String?
   emergencyContactName  String?
   emergencyContactPhone String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+
+  @@index([nationalityId])
+  @@index([countryId])
 }
 
 model UserEmployment {
@@ -158,11 +192,14 @@ model UserCompensationHistory {
   validFrom     DateTime
   validTo       DateTime?
   changeReason  String?
-  changedBy     String?
+  changedById    String?      @db.Uuid
+  changedBy      User?        @relation("CompensationChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
   createdAt     DateTime     @default(now())
 
   @@index([userId])
   @@index([userId, validFrom])
+  @@index([userId, validTo])
+  @@index([changedById])
 }
 
 model UserLifecycle {

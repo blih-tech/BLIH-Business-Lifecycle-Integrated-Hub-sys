@@ -34,6 +34,18 @@ export class UpdateUserCompensationUseCase {
       throw new BadRequestException('effectiveFrom must be before effectiveTo');
     }
 
+    if (dto.changedById) {
+      const changedByUser = await this.prisma.user.findUnique({
+        where: { id: dto.changedById },
+        select: { id: true },
+      });
+      if (!changedByUser) {
+        throw new BadRequestException(
+          'changedById must reference an existing user',
+        );
+      }
+    }
+
     const compensation = await this.prisma.userCompensation.upsert({
       where: { userId: user.id },
       update: {
@@ -76,7 +88,7 @@ export class UpdateUserCompensationUseCase {
         validFrom: historyFrom,
         validTo: historyTo,
         changeReason: dto.changeReason,
-        changedBy: dto.changedBy,
+        changedById: dto.changedById,
       },
     });
 

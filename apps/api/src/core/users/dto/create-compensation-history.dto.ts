@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 import { PayFrequency } from '../../../platform/prisma/prisma-client';
 import type { CreateCompensationHistoryDto as CreateCompensationHistoryDtoType } from '@repo/types';
@@ -51,6 +52,6 @@ export class CreateCompensationHistoryDto implements CreateCompensationHistoryDt
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  changedBy?: string;
+  @IsUUID()
+  changedById?: string;
 }

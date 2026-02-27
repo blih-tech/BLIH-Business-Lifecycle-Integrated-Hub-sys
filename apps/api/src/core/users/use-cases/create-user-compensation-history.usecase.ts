@@ -27,6 +27,18 @@ export class CreateUserCompensationHistoryUseCase {
       throw new BadRequestException('validFrom must be before validTo');
     }
 
+    if (dto.changedById) {
+      const changedByUser = await this.prisma.user.findUnique({
+        where: { id: dto.changedById },
+        select: { id: true },
+      });
+      if (!changedByUser) {
+        throw new BadRequestException(
+          'changedById must reference an existing user',
+        );
+      }
+    }
+
     await this.assertNoOverlap(user.id, validFrom, validTo);
 
     const entry = await this.prisma.userCompensationHistory.create({
@@ -40,7 +52,7 @@ export class CreateUserCompensationHistoryUseCase {
         validFrom,
         validTo,
         changeReason: dto.changeReason,
-        changedBy: dto.changedBy,
+        changedById: dto.changedById,
       },
     });
 

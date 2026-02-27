@@ -1,5 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString, IsUrl } from 'class-validator';
+import { Gender, MaritalStatus } from '../../../platform/prisma/prisma-client';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+} from 'class-validator';
 import type { UpdateUserProfileDto as UpdateUserProfileDtoType } from '@repo/types';
 
 export class UpdateUserProfileDto implements UpdateUserProfileDtoType {
@@ -8,20 +16,20 @@ export class UpdateUserProfileDto implements UpdateUserProfileDtoType {
   @IsDateString()
   dateOfBirth?: string;
 
-  @ApiPropertyOptional({ example: 'Female' })
+  @ApiPropertyOptional({ enum: Gender })
   @IsOptional()
-  @IsString()
-  gender?: string;
+  @IsEnum(Gender)
+  gender?: Gender;
 
-  @ApiPropertyOptional({ example: 'Ethiopian' })
+  @ApiPropertyOptional({ example: '8b76752b-df18-45bc-af74-1ea9a0db2e40' })
   @IsOptional()
-  @IsString()
-  nationality?: string;
+  @IsUUID()
+  nationalityId?: string | null;
 
-  @ApiPropertyOptional({ example: 'Married' })
+  @ApiPropertyOptional({ enum: MaritalStatus })
   @IsOptional()
-  @IsString()
-  maritalStatus?: string;
+  @IsEnum(MaritalStatus)
+  maritalStatus?: MaritalStatus;
 
   @ApiPropertyOptional({ example: 'https://cdn.example.com/avatar.png' })
   @IsOptional()
@@ -48,10 +56,10 @@ export class UpdateUserProfileDto implements UpdateUserProfileDtoType {
   @IsString()
   state?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: '8b76752b-df18-45bc-af74-1ea9a0db2e40' })
   @IsOptional()
-  @IsString()
-  country?: string;
+  @IsUUID()
+  countryId?: string | null;
 
   @ApiPropertyOptional()
   @IsOptional()
