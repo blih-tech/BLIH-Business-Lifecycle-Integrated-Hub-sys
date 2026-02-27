@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
 } from '@/shared/components/ui/sidebar';
 import { SearchInput } from '@/shared/components/SearchInput';
+import Image from 'next/image';
 
 type SidebarItem = {
   id: string;
@@ -60,8 +61,10 @@ export function AppSidebar({
       className="left-0 h-full min-h-full border-none bg-transparent text-sidebar-foreground [--sidebar-width:280px] [--sidebar-width-icon:64px]"
     >
       <div className="absolute inset-0">
-        <img
+        <Image
           alt=""
+          fill
+          sizes="280px"
           className="absolute size-full object-cover"
           src={backgroundImage}
         />
