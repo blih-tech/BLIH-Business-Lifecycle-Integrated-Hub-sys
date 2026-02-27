@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "node init && turbo run build",
+    "dev": "node init && turbo run dev",
     "dev:api": "turbo run dev --filter=blih-system-backend",
     "dev:rag": "turbo run dev --filter=rag-service",
     "start:api": "npm run start --workspace blih-system-backend",
