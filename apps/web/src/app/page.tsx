@@ -1,6 +1,7 @@
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { ROLES } from "@/shared/constants/roles";
 import { cookies, headers } from "next/headers";
 
 type SessionResponse = {
@@ -27,8 +28,8 @@ async function getSession(): Promise<SessionResponse> {
 
 export default async function Home() {
   const session = await getSession();
-  const isSuperAdmin = session.roles.includes("superadmin");
-  const isHrManager = session.roles.includes("hr_manager");
+  const isSuperAdmin = session.roles.includes(ROLES.SUPERADMIN);
+  const isHrManager = session.roles.includes(ROLES.HR_MANAGER);
 
   return (
     <div className="min-h-screen bg-background text-foreground">

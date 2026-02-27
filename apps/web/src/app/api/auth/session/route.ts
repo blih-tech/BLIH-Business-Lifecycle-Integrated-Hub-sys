@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { ROLES, type Role } from "@/shared/constants/roles";
 
 type TokenPayload = {
   realm_access?: { roles?: string[] };
@@ -40,10 +41,14 @@ export async function GET() {
     (payload as unknown as { username?: string }).username ??
     null;
   const email = payload.email ?? null;
+  const roleValues = new Set<string>(Object.values(ROLES));
+  const roles = (payload.realm_access?.roles ?? []).filter((role): role is Role =>
+    roleValues.has(role),
+  );
 
   return NextResponse.json({
     authenticated: true,
-    roles: payload.realm_access?.roles ?? [],
+    roles,
     username,
     email,
     exp: payload.exp ?? null,
