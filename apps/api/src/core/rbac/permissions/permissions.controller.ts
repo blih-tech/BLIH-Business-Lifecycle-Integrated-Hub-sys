@@ -138,7 +138,7 @@ export class PermissionsController {
   @ApiOperation({
     summary: 'Delete permission',
     description:
-      'Deletes permission and cascades dependent RolePermission/UserPermissionOverride records.',
+      'Deletes permission and cascades dependent RolePermission records.',
   })
   @ApiParam({
     name: 'permissionId',

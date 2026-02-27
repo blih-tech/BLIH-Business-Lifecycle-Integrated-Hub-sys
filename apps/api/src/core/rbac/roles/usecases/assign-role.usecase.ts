@@ -75,9 +75,14 @@ export class AssignRoleUseCase {
 
     await this.userPermissionSnapshot.invalidateUser(user.id);
     const permissions =
-      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
-        user.id,
-      );
+      dto.permissions == null
+        ? await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
+            user.id,
+          )
+        : await this.userPermissionSnapshot.setUserPermissionsByUserId(
+            user.id,
+            dto.permissions,
+          );
 
     return {
       ...assignment,

@@ -17,7 +17,7 @@ Schema and migrations are stored at the API root in `prisma/`.
 - **Permission slugs**: 2-part `resource:action` format (for example `user:view`, `system_role:create`).
 - **Permission model**: `Permission = PermissionResource + PermissionAction`, unique by `(resourceId, actionId)` and by `slug`.
 - **Role hierarchy**: Role parent/child is modeled with `parentRoleId`; manifest uses `parentRoleName` only for seed-time linking.
-- **No persisted user snapshot**: effective permissions are resolved dynamically (`UserRole -> RolePermission -> Permission` plus `UserPermissionOverride`) and cached in memory.
+- **Persisted user permission selection**: `User.permissions` stores user-selected slugs, validated against active role-linked permissions (`UserRole -> RolePermission -> Permission`) and combined with in-memory effective-permission caching.
 - **No module layer in RBAC**: permission catalogs do not use `PermissionModule`.
 
 ## Running

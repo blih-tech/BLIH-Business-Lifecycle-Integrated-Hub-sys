@@ -65,9 +65,8 @@ export class RevokeRoleUseCase {
       });
     }
 
-    await this.userPermissionSnapshot.invalidateUser(user.id);
     const permissions =
-      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
+      await this.userPermissionSnapshot.reconcileUserPermissionsByUserId(
         user.id,
       );
 

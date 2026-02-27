@@ -16,6 +16,7 @@ export interface AssignRoleDto {
   roleName: string;
   assignedBy?: string;
   expiresAt?: string;
+  permissions?: string[];
 }
 
 export interface AssignRolePermissionsDto {

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,12 +26,15 @@ import { RbacGuard } from '../../shared/guards/rbac.guard';
 import { UserPermissions } from '../rbac/constants/permissions.constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SetUserPermissionsDto } from './dto/set-user-permissions.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { CreateUserUseCase } from './use-cases/create-user.usecase';
 import { DisableUserUseCase } from './use-cases/disable-user.usecase';
+import { ListAvailableUserPermissionsUseCase } from './use-cases/list-available-user-permissions.usecase';
 import { ListUsersUseCase } from './use-cases/list-users.usecase';
 import { ResetPasswordUseCase } from './use-cases/reset-password.usecase';
+import { SetUserPermissionsUseCase } from './use-cases/set-user-permissions.usecase';
 import { UpdateUserUseCase } from './use-cases/update-user.usecase';
 
 @ApiTags('Users')
@@ -43,6 +47,8 @@ export class UsersController {
     private readonly disableUserUseCase: DisableUserUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
     private readonly listUsersUseCase: ListUsersUseCase,
+    private readonly setUserPermissionsUseCase: SetUserPermissionsUseCase,
+    private readonly listAvailableUserPermissionsUseCase: ListAvailableUserPermissionsUseCase,
   ) {}
 
   @Post()
@@ -68,6 +74,7 @@ export class UsersController {
           firstName: 'Jane',
           lastName: 'Doe',
           phone: '+12025550199',
+          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
         },
       },
     },
@@ -85,8 +92,8 @@ export class UsersController {
         phone: '+12025550199',
         status: 'ACTIVE',
         position: null,
-        departmentId: null,
-        permissions: ['user:view'],
+        departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+        permissions: [],
         createdAt: '2026-02-15T08:52:24.144Z',
         updatedAt: '2026-02-15T08:52:24.144Z',
       },
@@ -173,6 +180,71 @@ export class UsersController {
   })
   updateUser(@Param('userId') userId: string, @Body() dto: UpdateUserDto) {
     return this.updateUserUseCase.execute(userId, dto);
+  }
+
+  @Get(':userId/permissions/available')
+  @Roles(UserPermissions.ASSIGN_ROLE)
+  @ApiProtected({
+    path: '/api/v1/users/:userId/permissions/available',
+    roles: ['user:assign-role'],
+  })
+  @ApiOperation({
+    summary: 'List available permissions for user',
+    description:
+      'Returns permissions assignable to a user based on active assigned roles and role hierarchy.',
+  })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak user id.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
+  @ApiOkResponse({
+    description: 'Assignable permissions for user.',
+    schema: {
+      example: {
+        userId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+        permissions: ['invoice:view', 'invoice:approve'],
+      },
+    },
+  })
+  getAvailablePermissions(@Param('userId') userId: string) {
+    return this.listAvailableUserPermissionsUseCase.execute(userId);
+  }
+
+  @Put(':userId/permissions')
+  @Roles(UserPermissions.ASSIGN_ROLE)
+  @Audit('user.permissions.update', 'system.user')
+  @ApiProtected({
+    path: '/api/v1/users/:userId/permissions',
+    roles: ['user:assign-role'],
+  })
+  @ApiOperation({
+    summary: 'Replace user permissions',
+    description:
+      'Replaces stored user permissions. Every permission must be assignable from the user active roles.',
+  })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak user id.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
+  @ApiBody({
+    type: SetUserPermissionsDto,
+  })
+  @ApiOkResponse({
+    description: 'User permissions updated.',
+    schema: {
+      example: {
+        userId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+        permissions: ['invoice:view'],
+      },
+    },
+  })
+  setUserPermissions(
+    @Param('userId') userId: string,
+    @Body() dto: SetUserPermissionsDto,
+  ) {
+    return this.setUserPermissionsUseCase.execute(userId, dto.permissions);
   }
 
   @Delete(':userId')

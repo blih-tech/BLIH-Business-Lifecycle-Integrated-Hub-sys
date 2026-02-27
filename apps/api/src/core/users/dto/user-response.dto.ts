@@ -57,6 +57,13 @@ export class UserResponseDto implements UserResponseDtoType {
   })
   position?: string;
 
+  @ApiPropertyOptional({
+    description: 'Department id associated with the user.',
+    example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+    nullable: true,
+  })
+  departmentId?: string | null;
+
   @ApiProperty({
     description:
       'Dynamically resolved effective permission keys for this user.',

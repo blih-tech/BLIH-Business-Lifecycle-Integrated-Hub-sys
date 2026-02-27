@@ -8,6 +8,7 @@ export interface UserResponseDto {
   phone?: string;
   status: string;
   position?: string;
+  departmentId?: string | null;
   permissions: string[];
   createdAt: string;
   updatedAt: string;

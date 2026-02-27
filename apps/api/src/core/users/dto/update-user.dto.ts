@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import type { UpdateUserDto as UpdateUserDtoType } from '@repo/types';
 
@@ -42,4 +42,13 @@ export class UpdateUserDto implements UpdateUserDtoType {
   @IsOptional()
   @IsString()
   position?: string;
+
+  @ApiPropertyOptional({
+    description: 'Updated department id.',
+    format: 'uuid',
+    example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+  })
+  @IsOptional()
+  @IsUUID()
+  departmentId?: string;
 }

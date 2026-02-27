@@ -1,4 +1,10 @@
-import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import type { AssignRoleDto as AssignRoleDtoType } from '@repo/types';
 
@@ -35,4 +41,15 @@ export class AssignRoleDto implements AssignRoleDtoType {
   @IsOptional()
   @IsDateString()
   expiresAt?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Optional selected permissions for the user. Must be assignable from currently assigned roles.',
+    type: [String],
+    example: ['invoice:view', 'invoice:approve'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  permissions?: string[];
 }

@@ -5,7 +5,7 @@
  * RBAC notes:
  * - No PermissionModule layer.
  * - No role default permission links.
- * - No persisted User.permissions snapshot rebuild.
+ * - User.permissions is managed by APIs (no seed-time user permission writes).
  */
 import 'dotenv/config';
 import { createPrismaPgAdapter } from './prisma.adapter';

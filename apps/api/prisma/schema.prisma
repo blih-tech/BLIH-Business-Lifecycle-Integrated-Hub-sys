@@ -32,23 +32,26 @@ enum AuditResult {
 }
 
 model User {
-  id                  String                   @id @default(uuid()) @db.Uuid
-  keycloakId          String                   @unique
-  username            String                   @unique
-  email               String                   @unique
-  firstName           String
-  lastName            String
-  phone               String?
-  status              UserStatus               @default(ACTIVE)
-  position            String?
-  lastLoginAt         DateTime?
-  metadata            Json?
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
-  roles               UserRole[]
-  permissionOverrides UserPermissionOverride[]
+  id           String      @id @default(uuid()) @db.Uuid
+  keycloakId   String      @unique
+  username     String      @unique
+  email        String      @unique
+  firstName    String
+  lastName     String
+  phone        String?
+  status       UserStatus  @default(ACTIVE)
+  position     String?
+  departmentId String?     @db.Uuid
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  permissions  String[]    @default([])
+  lastLoginAt  DateTime?
+  metadata     Json?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  roles        UserRole[]
 
   @@index([status])
+  @@index([departmentId])
 }
 
 model Role {
@@ -67,6 +70,15 @@ model Role {
 
   @@unique([name])
   @@index([parentRoleId])
+}
+
+model Department {
+  id          String @id @default(uuid()) @db.Uuid
+  name        String @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
 }
 
 model PermissionResource {
@@ -97,7 +109,6 @@ model Permission {
   description String?
   createdAt   DateTime               @default(now())
   roleLinks   RolePermission[]
-  overrides   UserPermissionOverride[]
 
   @@unique([resourceId, actionId])
   @@index([resourceId])
@@ -129,22 +140,6 @@ model RolePermission {
 
   @@unique([roleId, permissionId])
   @@index([roleId])
-  @@index([permissionId])
-}
-
-model UserPermissionOverride {
-  id           String     @id @default(uuid()) @db.Uuid
-  userId       String     @db.Uuid
-  permissionId String     @db.Uuid
-  granted      Boolean    @default(true)
-  reason       String?
-  grantedBy    String?
-  createdAt    DateTime   @default(now())
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, permissionId])
-  @@index([userId])
   @@index([permissionId])
 }
 
