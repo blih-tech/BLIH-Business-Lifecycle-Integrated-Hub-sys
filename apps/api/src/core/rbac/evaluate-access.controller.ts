@@ -19,7 +19,7 @@ export class EvaluateAccessController {
   @ApiOperation({
     summary: 'Evaluate access',
     description:
-      'Evaluates whether a user has all requested permissions from dynamic effective RBAC resolution.',
+      'Evaluates whether a user has all requested permissions from persisted user permission snapshots.',
   })
   @ApiBody({
     type: AccessEvaluationDto,

@@ -14,14 +14,9 @@ export class CreateRoleUseCase {
   ) {}
 
   async execute(dto: CreateRoleDto) {
-    const normalizedRoleName = dto.name.trim().toLowerCase();
     const realmName = env.KEYCLOAK_REALM;
     try {
-      await this.keycloakAdmin.createRole(
-        realmName,
-        normalizedRoleName,
-        dto.description,
-      );
+      await this.keycloakAdmin.createRole(realmName, dto.name, dto.description);
     } catch (error: unknown) {
       const statusCode = (error as { response?: { status?: number } }).response
         ?.status;
@@ -30,73 +25,37 @@ export class CreateRoleUseCase {
       }
     }
 
-    const existingRole = await this.prisma.role.findUnique({
-      where: { name: normalizedRoleName },
-      select: { id: true },
-    });
-
-    const parentRole =
-      dto.parentRoleId?.trim() && dto.parentRoleId.trim().length > 0
-        ? await this.prisma.role.findUnique({
-            where: { id: dto.parentRoleId.trim() },
-            select: { id: true },
-          })
-        : null;
-    if (dto.parentRoleId && !parentRole) {
-      throw new BadRequestException(
-        `Parent role not found: ${dto.parentRoleId}`,
-      );
-    }
-    if (existingRole && parentRole?.id === existingRole.id) {
-      throw new BadRequestException('Role cannot be parent of itself');
-    }
-    if (existingRole && parentRole) {
-      await this.assertNoCycle(existingRole.id, parentRole.id);
+    if (dto.parentRoleId) {
+      const parentRole = await this.prisma.role.findUnique({
+        where: { id: dto.parentRoleId },
+        select: { id: true },
+      });
+      if (!parentRole) {
+        throw new BadRequestException(
+          `Parent role not found: ${dto.parentRoleId}`,
+        );
+      }
     }
 
     const role = await this.prisma.role.upsert({
       where: {
-        name: normalizedRoleName,
+        name: dto.name,
       },
       update: {
         displayName: dto.displayName,
         description: dto.description,
-        parentRoleId: parentRole?.id ?? null,
+        parentRoleId: dto.parentRoleId ?? null,
       },
       create: {
-        name: normalizedRoleName,
+        name: dto.name,
         displayName: dto.displayName,
         description: dto.description,
-        parentRoleId: parentRole?.id ?? null,
+        parentRoleId: dto.parentRoleId ?? null,
       },
     });
 
-    this.userPermissionSnapshot.invalidateAll();
+    await this.userPermissionSnapshot.invalidateAll();
 
     return role;
-  }
-
-  private async assertNoCycle(
-    roleId: string,
-    parentRoleId: string,
-  ): Promise<void> {
-    const visited = new Set<string>();
-    let cursor: string | null = parentRoleId;
-
-    while (cursor) {
-      if (cursor === roleId) {
-        throw new BadRequestException('Role hierarchy cycle detected');
-      }
-      if (visited.has(cursor)) {
-        break;
-      }
-      visited.add(cursor);
-
-      const node = await this.prisma.role.findUnique({
-        where: { id: cursor },
-        select: { parentRoleId: true },
-      });
-      cursor = node?.parentRoleId ?? null;
-    }
   }
 }

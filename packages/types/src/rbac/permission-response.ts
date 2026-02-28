@@ -1,13 +1,3 @@
-export interface CreatePermissionDto {
-  resourceId: string;
-  actionId: string;
-  description?: string;
-}
-
-export interface UpdatePermissionDto {
-  description?: string;
-}
-
 export interface PermissionResponseDto {
   id: string;
   slug: string;
@@ -17,4 +7,14 @@ export interface PermissionResponseDto {
   action: string;
   description?: string | null;
   createdAt: Date;
+}
+
+export interface CreatePermissionDto {
+  resourceId: string;
+  actionId: string;
+  description?: string;
+}
+
+export interface UpdatePermissionDto {
+  description?: string | null;
 }

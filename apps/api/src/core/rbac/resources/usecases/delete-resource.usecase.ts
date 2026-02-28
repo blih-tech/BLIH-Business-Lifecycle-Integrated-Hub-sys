@@ -1,29 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import { UserPermissionSnapshotService } from '../../user-permission-snapshot.service';
 
 @Injectable()
 export class DeleteResourceUseCase {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly userPermissionSnapshot: UserPermissionSnapshotService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async execute(resourceId: string) {
-    const resource = await this.prisma.permissionResource.findUnique({
+    const existing = await this.prisma.permissionResource.findUnique({
       where: { id: resourceId },
-      select: { id: true, name: true },
+      select: { id: true },
     });
-    if (!resource) {
+
+    if (!existing) {
       throw new NotFoundException('Permission resource not found');
     }
 
     await this.prisma.permissionResource.delete({
-      where: { id: resource.id },
+      where: { id: resourceId },
     });
 
-    this.userPermissionSnapshot.invalidateAll();
-
-    return { success: true, deletedResource: resource.name };
+    return { success: true };
   }
 }

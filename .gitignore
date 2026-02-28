@@ -41,4 +41,5 @@ yarn-error.log*
 # Husky internals
 .husky/_
 
-
+# Demo HR Types (ignore from Git)
+apps/api/src/shared/demo-hr-types/

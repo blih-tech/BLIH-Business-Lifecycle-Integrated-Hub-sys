@@ -10,20 +10,20 @@ export class DeletePermissionUseCase {
   ) {}
 
   async execute(permissionId: string) {
-    const permission = await this.prisma.permission.findUnique({
+    const existing = await this.prisma.permission.findUnique({
       where: { id: permissionId },
-      select: { id: true, slug: true },
+      select: { id: true },
     });
-    if (!permission) {
+
+    if (!existing) {
       throw new NotFoundException('Permission not found');
     }
 
     await this.prisma.permission.delete({
-      where: { id: permission.id },
+      where: { id: permissionId },
     });
 
-    this.userPermissionSnapshot.invalidateAll();
-
-    return { success: true, deletedPermission: permission.slug };
+    await this.userPermissionSnapshot.invalidateAll();
+    return { success: true };
   }
 }

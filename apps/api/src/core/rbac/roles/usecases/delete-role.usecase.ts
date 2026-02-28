@@ -60,7 +60,7 @@ export class DeleteRoleUseCase {
       where: { id: role.id },
     });
 
-    this.userPermissionSnapshot.invalidateAll();
+    await this.userPermissionSnapshot.invalidateAll();
 
     return { success: true, deletedRole: role.name };
   }

@@ -4,10 +4,10 @@ import type { UpdateResourceDto as UpdateResourceDtoType } from '@repo/types';
 
 export class UpdateResourceDto implements UpdateResourceDtoType {
   @ApiPropertyOptional({
-    description: 'Updated resource description.',
-    example: 'Invoice management and approvals',
+    example: 'Updated resource description.',
+    nullable: true,
   })
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 }

@@ -47,15 +47,6 @@ describe('RBAC Controllers', () => {
       expect(getRoles(RolesController, 'deleteRole')).toEqual([
         SystemRolePermissions.DELETE,
       ]);
-      expect(getRoles(RolesController, 'addRolePermissions')).toEqual([
-        SystemRolePermissions.UPDATE,
-      ]);
-      expect(getRoles(RolesController, 'removeRolePermissions')).toEqual([
-        SystemRolePermissions.UPDATE,
-      ]);
-      expect(getRoles(RolesController, 'replaceRolePermissions')).toEqual([
-        SystemRolePermissions.UPDATE,
-      ]);
     });
   });
 
@@ -66,15 +57,6 @@ describe('RBAC Controllers', () => {
       ]);
       expect(getRoles(ResourcesController, 'getResource')).toEqual([
         SystemResourcePermissions.VIEW,
-      ]);
-      expect(getRoles(ResourcesController, 'createResource')).toEqual([
-        SystemResourcePermissions.CREATE,
-      ]);
-      expect(getRoles(ResourcesController, 'updateResource')).toEqual([
-        SystemResourcePermissions.UPDATE,
-      ]);
-      expect(getRoles(ResourcesController, 'deleteResource')).toEqual([
-        SystemResourcePermissions.DELETE,
       ]);
     });
   });
@@ -87,15 +69,6 @@ describe('RBAC Controllers', () => {
       expect(getRoles(ActionsController, 'getAction')).toEqual([
         SystemPermissionPermissions.VIEW,
       ]);
-      expect(getRoles(ActionsController, 'createAction')).toEqual([
-        SystemPermissionPermissions.CREATE,
-      ]);
-      expect(getRoles(ActionsController, 'updateAction')).toEqual([
-        SystemPermissionPermissions.UPDATE,
-      ]);
-      expect(getRoles(ActionsController, 'deleteAction')).toEqual([
-        SystemPermissionPermissions.DELETE,
-      ]);
     });
   });
 
@@ -107,15 +80,23 @@ describe('RBAC Controllers', () => {
       expect(getRoles(PermissionsController, 'getPermission')).toEqual([
         SystemPermissionPermissions.VIEW,
       ]);
-      expect(getRoles(PermissionsController, 'createPermission')).toEqual([
-        SystemPermissionPermissions.CREATE,
-      ]);
-      expect(getRoles(PermissionsController, 'updatePermission')).toEqual([
-        SystemPermissionPermissions.UPDATE,
-      ]);
-      expect(getRoles(PermissionsController, 'deletePermission')).toEqual([
-        SystemPermissionPermissions.DELETE,
-      ]);
     });
+  });
+
+  it('does not expose removed catalog mutation handlers', () => {
+    const rolesProto = RolesController.prototype;
+    expect('createResource' in rolesProto).toBe(false);
+    expect('updateResource' in rolesProto).toBe(false);
+    expect('deleteResource' in rolesProto).toBe(false);
+
+    const actionsProto = ActionsController.prototype;
+    expect('createAction' in actionsProto).toBe(false);
+    expect('updateAction' in actionsProto).toBe(false);
+    expect('deleteAction' in actionsProto).toBe(false);
+
+    const permissionsProto = PermissionsController.prototype;
+    expect('createPermission' in permissionsProto).toBe(false);
+    expect('updatePermission' in permissionsProto).toBe(false);
+    expect('deletePermission' in permissionsProto).toBe(false);
   });
 });

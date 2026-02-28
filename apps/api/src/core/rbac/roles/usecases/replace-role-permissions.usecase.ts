@@ -14,70 +14,46 @@ export class ReplaceRolePermissionsUseCase {
   ) {}
 
   async execute(roleId: string, permissionIds: string[]) {
-    const normalizedRoleId = roleId.trim();
-    const normalizedPermissionIds = [
-      ...new Set(
-        permissionIds
-          .map((permissionId) => permissionId.trim())
-          .filter(Boolean),
-      ),
-    ];
+    const dedupedPermissionIds = [...new Set(permissionIds)];
 
     const role = await this.prisma.role.findUnique({
-      where: { id: normalizedRoleId },
+      where: { id: roleId },
       select: { id: true },
     });
     if (!role) {
       throw new NotFoundException('Role not found');
     }
 
-    const permissions = await this.prisma.permission.findMany({
-      where: {
-        id: { in: normalizedPermissionIds },
-      },
-      select: {
-        id: true,
-      },
-    });
-    const existingPermissionIds = new Set(
-      permissions.map((permission) => permission.id),
-    );
-    const missingPermissionIds = normalizedPermissionIds.filter(
-      (permissionId) => !existingPermissionIds.has(permissionId),
-    );
-    if (missingPermissionIds.length > 0) {
-      throw new BadRequestException(
-        `Unknown permission id(s): ${missingPermissionIds.join(', ')}`,
-      );
+    if (dedupedPermissionIds.length > 0) {
+      const existingPermissions = await this.prisma.permission.findMany({
+        where: {
+          id: { in: dedupedPermissionIds },
+        },
+        select: { id: true },
+      });
+
+      if (existingPermissions.length !== dedupedPermissionIds.length) {
+        throw new BadRequestException('One or more permission ids are invalid');
+      }
     }
 
-    const affectedCount = await this.prisma.$transaction(async (tx) => {
+    await this.prisma.$transaction(async (tx) => {
       await tx.rolePermission.deleteMany({
-        where: {
-          roleId: role.id,
-        },
+        where: { roleId },
       });
 
-      if (normalizedPermissionIds.length === 0) {
-        return 0;
+      if (dedupedPermissionIds.length > 0) {
+        await tx.rolePermission.createMany({
+          data: dedupedPermissionIds.map((permissionId) => ({
+            roleId,
+            permissionId,
+          })),
+          skipDuplicates: true,
+        });
       }
-
-      const created = await tx.rolePermission.createMany({
-        data: normalizedPermissionIds.map((permissionId) => ({
-          roleId: role.id,
-          permissionId,
-        })),
-        skipDuplicates: true,
-      });
-      return created.count;
     });
 
-    this.userPermissionSnapshot.invalidateAll();
-
-    return {
-      success: true,
-      roleId: role.id,
-      affectedCount,
-    };
+    await this.userPermissionSnapshot.invalidateAll();
+    return { success: true, roleId };
   }
 }

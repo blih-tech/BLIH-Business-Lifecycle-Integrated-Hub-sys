@@ -7,7 +7,6 @@ import {
 import { env } from '../../../config/env.config';
 import { KeycloakAdminService } from '../../../platform/keycloak/keycloak-admin.service';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
-import { UserPermissionSnapshotService } from '../../rbac/user-permission-snapshot.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
@@ -15,20 +14,17 @@ export class CreateUserUseCase {
   constructor(
     private readonly keycloakAdmin: KeycloakAdminService,
     private readonly prisma: PrismaService,
-    private readonly userPermissionSnapshot: UserPermissionSnapshotService,
   ) {}
 
   async execute(dto: CreateUserDto) {
-    const department = await this.prisma.department.findUnique({
-      where: {
-        id: dto.departmentId,
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!department) {
-      throw new NotFoundException('Department not found');
+    if (dto.departmentId) {
+      const department = await this.prisma.department.findUnique({
+        where: { id: dto.departmentId },
+        select: { id: true },
+      });
+      if (!department) {
+        throw new NotFoundException('Department not found');
+      }
     }
 
     const realmName = env.KEYCLOAK_REALM;
@@ -55,20 +51,22 @@ export class CreateUserUseCase {
         firstName: dto.firstName,
         lastName: dto.lastName,
         phone: dto.phone,
-        departmentId: department.id,
-        permissions: [],
+        departmentId: dto.departmentId,
       },
     });
 
-    const permissions =
-      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
-        user.id,
-      );
+    await this.prisma.userLifecycle.upsert({
+      where: {
+        userId: user.id,
+      },
+      update: {},
+      create: {
+        userId: user.id,
+        status: 'ONBOARDING',
+      },
+    });
 
-    return {
-      ...user,
-      permissions,
-    };
+    return user;
   }
 
   private rethrowCreateUserError(error: unknown): never {

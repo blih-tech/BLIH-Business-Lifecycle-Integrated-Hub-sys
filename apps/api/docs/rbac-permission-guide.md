@@ -52,13 +52,13 @@ superadmin
 
 ### 1.2 Permission Format (Strict 2-Part Only)
 
-Permissions use a **strict 2-part** format only: `resource:action`. No 3-part keys (e.g. `module:resource:action`) are supported; the system uses a single global resource namespace.
+Permissions use a **strict 2-part** format only: `resource:action`. No 3-part keys (e.g. `module:resource:action`) are supported; the system uses a single global resource namespace and module is metadata on the permission record.
 
 - **Exact:** `user:view`, `invoice:approve`
 - **Wildcard action:** `user:*`, `invoice:*`
 - **Global wildcard:** `*` (e.g. superadmin)
 
-Resource names are globally unique and catalog-driven (see seed manifest). Effective permissions are resolved dynamically from roles + role-permissions + user overrides with in-memory caching in the application layer.
+Resource names are globally unique and catalog-driven (see seed manifest). User permissions are stored in `User.permissions` as a **read cache** for fast authorization; the source of truth remains roles + role-permissions + user overrides, and a snapshot service keeps the cache updated.
 
 ```
 # User Management
@@ -492,7 +492,7 @@ export class UserPermissionOverride {
   id: string;
 
   @Column({ name: 'keycloak_user_id', length: 255 })
-  userId: string;
+  keycloakUserId: string;
 
   @ManyToOne(() => Permission, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'permission_id' })
@@ -547,7 +547,7 @@ export class PermissionsService {
    */
   async getUserPermissions(
     keycloakRoles: string[],
-    userId: string,
+    keycloakUserId: string,
   ): Promise<string[]> {
     // 1. Get permissions from all roles (including inherited via hierarchy)
     const allRoleNames = await this.resolveRoleHierarchy(keycloakRoles);
@@ -560,7 +560,7 @@ export class PermissionsService {
 
     // 3. Get user-specific overrides
     const overrides = await this.overrideRepo.find({
-      where: { userId },
+      where: { keycloakUserId },
       relations: ['permission'],
     });
 

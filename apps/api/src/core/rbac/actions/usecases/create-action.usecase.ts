@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { CreateActionDto } from '../dto/create-action.dto';
 
@@ -9,19 +9,15 @@ export class CreateActionUseCase {
   async execute(dto: CreateActionDto) {
     const normalizedName = dto.name.trim().toLowerCase();
 
-    const existing = await this.prisma.permissionAction.findUnique({
-      where: { name: normalizedName },
-      select: { id: true },
-    });
-    if (existing) {
-      throw new ConflictException(`Action already exists: ${normalizedName}`);
+    try {
+      return await this.prisma.permissionAction.create({
+        data: {
+          name: normalizedName,
+          description: dto.description,
+        },
+      });
+    } catch {
+      throw new BadRequestException('Action name already exists');
     }
-
-    return this.prisma.permissionAction.create({
-      data: {
-        name: normalizedName,
-        description: dto.description,
-      },
-    });
   }
 }

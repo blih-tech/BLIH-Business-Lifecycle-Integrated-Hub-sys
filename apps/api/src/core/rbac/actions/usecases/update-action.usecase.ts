@@ -7,20 +7,19 @@ export class UpdateActionUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(actionId: string, dto: UpdateActionDto) {
-    const action = await this.prisma.permissionAction.findUnique({
+    const existing = await this.prisma.permissionAction.findUnique({
       where: { id: actionId },
       select: { id: true },
     });
-    if (!action) {
+
+    if (!existing) {
       throw new NotFoundException('Permission action not found');
     }
 
     return this.prisma.permissionAction.update({
-      where: { id: action.id },
+      where: { id: actionId },
       data: {
-        ...(dto.description !== undefined
-          ? { description: dto.description }
-          : {}),
+        description: dto.description,
       },
     });
   }

@@ -21,8 +21,8 @@ export class UpdateRoleDto implements UpdateRoleDtoType {
 
   @ApiPropertyOptional({
     description:
-      'Optional parent role id. Use null to remove parent relationship.',
-    example: '57e883d0-d0c0-4187-a232-50fa729f6876',
+      'Optional parent role id. Set null to remove the parent relationship.',
+    example: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
     nullable: true,
   })
   @IsOptional()

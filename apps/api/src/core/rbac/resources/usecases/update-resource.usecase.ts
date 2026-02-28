@@ -7,20 +7,19 @@ export class UpdateResourceUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(resourceId: string, dto: UpdateResourceDto) {
-    const resource = await this.prisma.permissionResource.findUnique({
+    const existing = await this.prisma.permissionResource.findUnique({
       where: { id: resourceId },
       select: { id: true },
     });
-    if (!resource) {
+
+    if (!existing) {
       throw new NotFoundException('Permission resource not found');
     }
 
     return this.prisma.permissionResource.update({
-      where: { id: resource.id },
+      where: { id: resourceId },
       data: {
-        ...(dto.description !== undefined
-          ? { description: dto.description }
-          : {}),
+        description: dto.description,
       },
     });
   }

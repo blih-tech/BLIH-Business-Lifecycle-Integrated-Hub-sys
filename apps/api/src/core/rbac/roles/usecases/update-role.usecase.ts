@@ -46,15 +46,14 @@ export class UpdateRoleUseCase {
 
     let parentRoleId: string | null | undefined;
     if (dto.parentRoleId !== undefined) {
-      const normalizedParentRoleId = dto.parentRoleId?.trim();
-      if (!normalizedParentRoleId) {
+      if (dto.parentRoleId === null) {
         parentRoleId = null;
       } else {
-        if (normalizedParentRoleId === role.id) {
+        if (dto.parentRoleId === role.id) {
           throw new BadRequestException('Role cannot be parent of itself');
         }
         const parentRole = await this.prisma.role.findUnique({
-          where: { id: normalizedParentRoleId },
+          where: { id: dto.parentRoleId },
           select: { id: true },
         });
         if (!parentRole) {
@@ -79,13 +78,6 @@ export class UpdateRoleUseCase {
         ...(parentRoleId !== undefined ? { parentRoleId } : {}),
       },
       include: {
-        permissions: {
-          include: {
-            permission: {
-              select: { slug: true },
-            },
-          },
-        },
         _count: {
           select: { users: true },
         },
@@ -98,7 +90,10 @@ export class UpdateRoleUseCase {
       description: updated.description ?? undefined,
     });
 
-    this.userPermissionSnapshot.invalidateAll();
+    await this.userPermissionSnapshot.invalidateAll();
+    const effectivePermissions = await this.resolveRoleEffectivePermissions(
+      updated.id,
+    );
 
     return {
       id: updated.id,
@@ -107,9 +102,7 @@ export class UpdateRoleUseCase {
       description: updated.description,
       isSystem: updated.isSystem,
       parentRoleId: updated.parentRoleId,
-      permissions: updated.permissions
-        .map((item) => item.permission.slug)
-        .sort((left, right) => left.localeCompare(right)),
+      permissions: effectivePermissions,
       assignmentCount: updated._count.users,
       createdAt: updated.createdAt,
       updatedAt: updated.updatedAt,
@@ -132,11 +125,43 @@ export class UpdateRoleUseCase {
       }
       visited.add(cursor);
 
+      const node: { parentRoleId: string | null } | null =
+        await this.prisma.role.findUnique({
+          where: { id: cursor },
+          select: { parentRoleId: true },
+        });
+      cursor = node?.parentRoleId ?? null;
+    }
+  }
+
+  private async resolveRoleEffectivePermissions(
+    roleId: string,
+  ): Promise<string[]> {
+    const roleIds = new Set<string>();
+    let cursor: string | null = roleId;
+
+    while (cursor && !roleIds.has(cursor)) {
+      roleIds.add(cursor);
       const node = await this.prisma.role.findUnique({
         where: { id: cursor },
         select: { parentRoleId: true },
       });
       cursor = node?.parentRoleId ?? null;
     }
+
+    const rolePermissions = await this.prisma.rolePermission.findMany({
+      where: {
+        roleId: { in: [...roleIds] },
+      },
+      select: {
+        permission: {
+          select: { slug: true },
+        },
+      },
+    });
+
+    return [
+      ...new Set(rolePermissions.map((item) => item.permission.slug)),
+    ].sort((left, right) => left.localeCompare(right));
   }
 }

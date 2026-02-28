@@ -13,19 +13,73 @@ export interface RbacResourceCatalogEntry {
   description: string;
 }
 
-export const RBAC_PERMISSIONS = [...AllPermissionSlugs];
-
-const resourceNames = [
-  ...new Set(
-    RBAC_PERMISSIONS.map((slug) => slug.split(':')[0]).filter(Boolean),
-  ),
+export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
+  { name: 'user', description: 'HR user account ownership' },
+  { name: 'employee', description: 'Employee records' },
+  { name: 'leave', description: 'Leave management' },
+  { name: 'attendance', description: 'Attendance tracking' },
+  { name: 'hr_payroll', description: 'HR payroll operations' },
+  { name: 'onboarding', description: 'Onboarding workflows' },
+  { name: 'probation', description: 'Probation workflows' },
+  { name: 'hr_report', description: 'HR reports' },
+  { name: 'invoice', description: 'Invoice management' },
+  { name: 'payment', description: 'Payment tracking' },
+  { name: 'budget', description: 'Budget management' },
+  { name: 'expense', description: 'Expense management' },
+  { name: 'purchase', description: 'Purchase orders' },
+  { name: 'vendor', description: 'Vendor management' },
+  { name: 'finance_payroll', description: 'Finance payroll operations' },
+  { name: 'salary', description: 'Salary adjustments' },
+  { name: 'finance_report', description: 'Financial reporting' },
+  { name: 'audit', description: 'Finance audit logs' },
+  { name: 'project', description: 'Project management' },
+  { name: 'milestone', description: 'Milestone tracking' },
+  { name: 'task', description: 'Task management' },
+  { name: 'deliverable', description: 'Deliverable approvals' },
+  { name: 'change_request', description: 'Change requests' },
+  { name: 'issue', description: 'Issue tracking' },
+  { name: 'risk', description: 'Risk logging' },
+  { name: 'project_report', description: 'Project reports' },
+  { name: 'lead', description: 'Lead management' },
+  { name: 'interaction', description: 'Interaction logging' },
+  { name: 'deal', description: 'Deal management' },
+  { name: 'crm_client', description: 'Client records' },
+  { name: 'pipeline', description: 'Pipeline management' },
+  { name: 'crm_report', description: 'CRM reports' },
+  { name: 'company_okr', description: 'Company-level OKRs' },
+  { name: 'dept_okr', description: 'Department OKRs' },
+  { name: 'personal_okr', description: 'Personal OKRs' },
+  { name: 'checkin', description: 'OKR check-ins' },
+  { name: 'review', description: 'Performance reviews' },
+  { name: 'compensation', description: 'Compensation recommendations' },
+  { name: 'okr_report', description: 'OKR reports' },
+  { name: 'article', description: 'Knowledge articles' },
+  { name: 'sop', description: 'Standard operating procedures' },
+  { name: 'training', description: 'Training management' },
+  { name: 'ai_prompt', description: 'AI prompt management' },
+  { name: 'knowledge', description: 'Knowledge base feedback' },
+  { name: 'brain_analytics', description: 'Brain analytics' },
+  { name: 'brain_config', description: 'Brain module settings' },
+  { name: 'system_config', description: 'Platform configuration' },
+  { name: 'system_log', description: 'Platform logs' },
+  { name: 'integration', description: 'System integrations' },
+  { name: 'system_audit', description: 'System audit trail' },
+  { name: 'system_role', description: 'RBAC role management' },
+  { name: 'system_permission', description: 'RBAC permission management' },
+  { name: 'system_resource', description: 'RBAC resource catalog management' },
+  { name: 'system_realm', description: 'Realm management' },
+  { name: 'system_notification', description: 'Notification management' },
+  { name: 'user_profile', description: 'User personal profile records' },
+  { name: 'user_employment', description: 'User employment records' },
+  { name: 'user_compensation', description: 'User compensation records' },
+  {
+    name: 'user_compensation_history',
+    description: 'User compensation history records',
+  },
+  { name: 'user_lifecycle', description: 'User lifecycle records' },
 ];
 
-export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] =
-  resourceNames.map((name) => ({
-    name,
-    description: `${name.replace(/_/g, ' ')} permissions`,
-  }));
+export const RBAC_PERMISSIONS = [...AllPermissionSlugs];
 
 export const RBAC_ROLES: RbacRoleManifestEntry[] = [
   {

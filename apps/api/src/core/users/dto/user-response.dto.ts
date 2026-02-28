@@ -52,21 +52,14 @@ export class UserResponseDto implements UserResponseDtoType {
   status!: string;
 
   @ApiPropertyOptional({
-    description: 'User job position.',
-    example: 'Finance Analyst',
-  })
-  position?: string;
-
-  @ApiPropertyOptional({
-    description: 'Department id associated with the user.',
+    description: 'Department id for the user.',
     example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
     nullable: true,
   })
   departmentId?: string | null;
 
   @ApiProperty({
-    description:
-      'Dynamically resolved effective permission keys for this user.',
+    description: 'Persisted effective permission keys for this user.',
     type: [String],
     example: ['user:view', 'invoice:create'],
   })

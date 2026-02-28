@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -40,6 +39,12 @@ export class ResourcesController {
     private readonly deleteResourceUseCase: DeleteResourceUseCase,
   ) {}
 
+  @Post('resources')
+  @Roles(SystemResourcePermissions.CREATE)
+  createResource(@Body() dto: CreateResourceDto) {
+    return this.createResourceUseCase.execute(dto);
+  }
+
   @Get('resources')
   @Roles(SystemResourcePermissions.VIEW)
   @ApiProtected({
@@ -48,7 +53,7 @@ export class ResourcesController {
   })
   @ApiOperation({
     summary: 'List resources',
-    description: 'Lists RBAC permission resources.',
+    description: 'Lists seeded RBAC permission resources.',
   })
   @ApiOkResponse({
     description: 'Permission resources.',
@@ -70,7 +75,7 @@ export class ResourcesController {
   })
   @ApiOperation({
     summary: 'Get resource',
-    description: 'Returns a single RBAC resource by id.',
+    description: 'Returns a single seeded RBAC resource by id.',
   })
   @ApiParam({
     name: 'resourceId',
@@ -90,38 +95,8 @@ export class ResourcesController {
     return this.getResourceUseCase.execute(resourceId);
   }
 
-  @Post('resources')
-  @Roles(SystemResourcePermissions.CREATE)
-  @ApiProtected({
-    path: '/api/v1/rbac/resources',
-    roles: [SystemResourcePermissions.CREATE],
-  })
-  @ApiOperation({
-    summary: 'Create resource',
-    description: 'Creates a new resource. Resource name is immutable.',
-  })
-  @ApiBody({ type: CreateResourceDto })
-  createResource(@Body() dto: CreateResourceDto) {
-    return this.createResourceUseCase.execute(dto);
-  }
-
   @Put('resources/:resourceId')
   @Roles(SystemResourcePermissions.UPDATE)
-  @ApiProtected({
-    path: '/api/v1/rbac/resources/:resourceId',
-    roles: [SystemResourcePermissions.UPDATE],
-  })
-  @ApiOperation({
-    summary: 'Update resource',
-    description:
-      'Updates resource description only. Resource name is immutable.',
-  })
-  @ApiParam({
-    name: 'resourceId',
-    description: 'Resource id.',
-    example: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
-  })
-  @ApiBody({ type: UpdateResourceDto })
   updateResource(
     @Param('resourceId') resourceId: string,
     @Body() dto: UpdateResourceDto,
@@ -131,19 +106,6 @@ export class ResourcesController {
 
   @Delete('resources/:resourceId')
   @Roles(SystemResourcePermissions.DELETE)
-  @ApiProtected({
-    path: '/api/v1/rbac/resources/:resourceId',
-    roles: [SystemResourcePermissions.DELETE],
-  })
-  @ApiOperation({
-    summary: 'Delete resource',
-    description: 'Deletes a resource and cascades linked permissions.',
-  })
-  @ApiParam({
-    name: 'resourceId',
-    description: 'Resource id.',
-    example: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
-  })
   deleteResource(@Param('resourceId') resourceId: string) {
     return this.deleteResourceUseCase.execute(resourceId);
   }

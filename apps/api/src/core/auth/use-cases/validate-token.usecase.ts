@@ -17,9 +17,7 @@ export class ValidateTokenUseCase {
     const payload = await this.tokenService.validateAccessToken(token, realm);
     const principal = this.mapper.toPrincipal(payload, realm);
     const permissions =
-      await this.userPermissionSnapshot.getEffectivePermissionsByKeycloakId(
-        principal.sub,
-      );
+      await this.userPermissionSnapshot.getPersistedPermissions(principal.sub);
 
     return {
       active: true,

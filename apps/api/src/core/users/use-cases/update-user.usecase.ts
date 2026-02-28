@@ -3,7 +3,6 @@ import { env } from '../../../config/env.config';
 import { KeycloakAdminService } from '../../../platform/keycloak/keycloak-admin.service';
 import { PrincipalEnrichmentService } from '../../../platform/keycloak/principal-enrichment.service';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
-import { UserPermissionSnapshotService } from '../../rbac/user-permission-snapshot.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class UpdateUserUseCase {
     private readonly keycloakAdmin: KeycloakAdminService,
     private readonly prisma: PrismaService,
     private readonly principalEnrichment: PrincipalEnrichmentService,
-    private readonly userPermissionSnapshot: UserPermissionSnapshotService,
   ) {}
 
   async execute(userId: string, dto: UpdateUserDto) {
@@ -29,12 +27,8 @@ export class UpdateUserUseCase {
 
     if (dto.departmentId) {
       const department = await this.prisma.department.findUnique({
-        where: {
-          id: dto.departmentId,
-        },
-        select: {
-          id: true,
-        },
+        where: { id: dto.departmentId },
+        select: { id: true },
       });
       if (!department) {
         throw new NotFoundException('Department not found');
@@ -54,21 +48,12 @@ export class UpdateUserUseCase {
         firstName: dto.firstName,
         lastName: dto.lastName,
         phone: dto.phone,
-        position: dto.position,
         departmentId: dto.departmentId,
       },
     });
 
     this.principalEnrichment.invalidateContext(updated.keycloakId);
-    await this.userPermissionSnapshot.invalidateUser(updated.id);
-    const permissions =
-      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(
-        updated.id,
-      );
 
-    return {
-      ...updated,
-      permissions,
-    };
+    return updated;
   }
 }

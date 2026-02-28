@@ -4,10 +4,10 @@ import type { UpdateActionDto as UpdateActionDtoType } from '@repo/types';
 
 export class UpdateActionDto implements UpdateActionDtoType {
   @ApiPropertyOptional({
-    description: 'Updated action description.',
-    example: 'Approval operation for records',
+    example: 'Updated action description.',
+    nullable: true,
   })
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 }

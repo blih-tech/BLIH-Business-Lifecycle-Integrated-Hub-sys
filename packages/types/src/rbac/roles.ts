@@ -16,11 +16,6 @@ export interface AssignRoleDto {
   roleName: string;
   assignedBy?: string;
   expiresAt?: string;
-  permissions?: string[];
-}
-
-export interface AssignRolePermissionsDto {
-  permissionIds: string[];
 }
 
 export interface RoleResponseDto {
@@ -41,4 +36,8 @@ export interface ListRolesQueryDto {
   limit?: number;
   search?: string;
   isSystem?: boolean;
+}
+
+export interface RolePermissionAssignmentDto {
+  permissionIds: string[];
 }

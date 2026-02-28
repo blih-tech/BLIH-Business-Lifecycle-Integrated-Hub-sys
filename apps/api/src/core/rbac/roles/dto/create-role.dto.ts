@@ -27,7 +27,7 @@ export class CreateRoleDto implements CreateRoleDtoType {
 
   @ApiPropertyOptional({
     description: 'Optional parent role id for hierarchical role inheritance.',
-    example: '57e883d0-d0c0-4187-a232-50fa729f6876',
+    example: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
   })
   @IsOptional()
   @IsUUID()

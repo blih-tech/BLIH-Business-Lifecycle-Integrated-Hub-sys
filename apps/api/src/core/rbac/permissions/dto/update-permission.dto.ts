@@ -4,10 +4,10 @@ import type { UpdatePermissionDto as UpdatePermissionDtoType } from '@repo/types
 
 export class UpdatePermissionDto implements UpdatePermissionDtoType {
   @ApiPropertyOptional({
-    description: 'Updated permission description.',
-    example: 'Approve invoice records in finance.',
+    example: 'Updated permission description.',
+    nullable: true,
   })
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 }

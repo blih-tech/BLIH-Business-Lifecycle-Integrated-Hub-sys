@@ -101,6 +101,6 @@ export class SyncRolesJob {
       `Synced ${keycloakRoleNames.size} canonical roles from Keycloak`,
     );
 
-    this.userPermissionSnapshot.invalidateAll();
+    await this.userPermissionSnapshot.invalidateAll();
   }
 }

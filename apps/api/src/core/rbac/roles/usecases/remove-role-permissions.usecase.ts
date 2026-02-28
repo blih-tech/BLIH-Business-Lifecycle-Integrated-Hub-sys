@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { UserPermissionSnapshotService } from '../../user-permission-snapshot.service';
 
@@ -14,61 +10,26 @@ export class RemoveRolePermissionsUseCase {
   ) {}
 
   async execute(roleId: string, permissionIds: string[]) {
-    const normalizedRoleId = roleId.trim();
-    const normalizedPermissionIds = [
-      ...new Set(
-        permissionIds
-          .map((permissionId) => permissionId.trim())
-          .filter(Boolean),
-      ),
-    ];
-
     const role = await this.prisma.role.findUnique({
-      where: { id: normalizedRoleId },
+      where: { id: roleId },
       select: { id: true },
     });
     if (!role) {
       throw new NotFoundException('Role not found');
     }
 
-    const permissions = await this.prisma.permission.findMany({
-      where: {
-        id: { in: normalizedPermissionIds },
-      },
-      select: {
-        id: true,
-      },
-    });
-    const existingPermissionIds = new Set(
-      permissions.map((permission) => permission.id),
-    );
-    const missingPermissionIds = normalizedPermissionIds.filter(
-      (permissionId) => !existingPermissionIds.has(permissionId),
-    );
-    if (missingPermissionIds.length > 0) {
-      throw new BadRequestException(
-        `Unknown permission id(s): ${missingPermissionIds.join(', ')}`,
-      );
-    }
+    const dedupedPermissionIds = [...new Set(permissionIds)];
 
-    const affectedCount = await this.prisma.$transaction(async (tx) => {
-      const deleted = await tx.rolePermission.deleteMany({
+    if (dedupedPermissionIds.length > 0) {
+      await this.prisma.rolePermission.deleteMany({
         where: {
-          roleId: role.id,
-          permissionId: {
-            in: normalizedPermissionIds,
-          },
+          roleId,
+          permissionId: { in: dedupedPermissionIds },
         },
       });
-      return deleted.count;
-    });
+    }
 
-    this.userPermissionSnapshot.invalidateAll();
-
-    return {
-      success: true,
-      roleId: role.id,
-      affectedCount,
-    };
+    await this.userPermissionSnapshot.invalidateAll();
+    return { success: true, roleId };
   }
 }

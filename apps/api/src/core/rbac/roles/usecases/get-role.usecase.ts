@@ -11,13 +11,6 @@ export class GetRoleUseCase {
     const role = await this.prisma.role.findUnique({
       where: { name: normalizedRoleName },
       include: {
-        permissions: {
-          include: {
-            permission: {
-              select: { slug: true },
-            },
-          },
-        },
         _count: {
           select: { users: true },
         },
@@ -27,6 +20,9 @@ export class GetRoleUseCase {
     if (!role) {
       throw new NotFoundException('Role not found');
     }
+    const effectivePermissions = await this.resolveRoleEffectivePermissions(
+      role.id,
+    );
 
     return {
       id: role.id,
@@ -35,12 +31,48 @@ export class GetRoleUseCase {
       description: role.description,
       isSystem: role.isSystem,
       parentRoleId: role.parentRoleId,
-      permissions: role.permissions
-        .map((item) => item.permission.slug)
-        .sort((left, right) => left.localeCompare(right)),
+      permissions: effectivePermissions,
       assignmentCount: role._count.users,
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,
     };
+  }
+
+  private async resolveRoleEffectivePermissions(
+    roleId: string,
+  ): Promise<string[]> {
+    const roleIds = await this.expandParentRoleIds(roleId);
+    const rolePermissions = await this.prisma.rolePermission.findMany({
+      where: {
+        roleId: {
+          in: [...roleIds],
+        },
+      },
+      select: {
+        permission: {
+          select: { slug: true },
+        },
+      },
+    });
+
+    return [
+      ...new Set(rolePermissions.map((item) => item.permission.slug)),
+    ].sort((left, right) => left.localeCompare(right));
+  }
+
+  private async expandParentRoleIds(roleId: string): Promise<Set<string>> {
+    const visited = new Set<string>();
+    let cursor: string | null = roleId;
+
+    while (cursor && !visited.has(cursor)) {
+      visited.add(cursor);
+      const node = await this.prisma.role.findUnique({
+        where: { id: cursor },
+        select: { parentRoleId: true },
+      });
+      cursor = node?.parentRoleId ?? null;
+    }
+
+    return visited;
   }
 }

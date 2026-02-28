@@ -53,12 +53,6 @@
     },
     "./notifications/*": {
       "types": "./dist/notifications/*.d.ts"
-    },
-    "./departments": {
-      "types": "./dist/departments/index.d.ts"
-    },
-    "./departments/*": {
-      "types": "./dist/departments/*.d.ts"
     }
   },
   "scripts": {

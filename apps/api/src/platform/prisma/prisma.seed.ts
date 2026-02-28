@@ -1,19 +1,9 @@
 /**
- * Prisma seed: RBAC resource/action/permission catalog, role metadata/hierarchy,
- * ModuleConfig, and other core bootstrap data.
- *
- * RBAC notes:
- * - No PermissionModule layer.
- * - No role default permission links.
- * - User.permissions is managed by APIs (no seed-time user permission writes).
+ * Prisma seed: RBAC catalog (resources/actions/permissions), roles (metadata + hierarchy), ModuleConfig.
  */
 import 'dotenv/config';
 import { createPrismaPgAdapter } from './prisma.adapter';
 import { PrismaClient } from './prisma-client';
-import {
-  SystemPermissionPermissions,
-  SystemResourcePermissions,
-} from '../../core/rbac/constants/permissions.constants';
 import {
   RBAC_PERMISSIONS,
   RBAC_RESOURCE_CATALOG,
@@ -34,22 +24,13 @@ const parsePermissionSlug = (slug: string) => {
   return { resource, action, slug: normalized };
 };
 
-const canonicalResourceNames = [
-  ...new Set(RBAC_RESOURCE_CATALOG.map((entry) => entry.name)),
-];
-const canonicalPermissionSlugs = [...new Set(RBAC_PERMISSIONS)];
-const canonicalActionNames = [
-  ...new Set(RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).action)),
-];
-
 const ensureCatalogConsistency = () => {
-  const resourceNameSet = new Set(canonicalResourceNames);
-
+  const resourceSet = new Set(RBAC_RESOURCE_CATALOG.map((entry) => entry.name));
   const unknownResourceNames = [
     ...new Set(
       RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).resource),
     ),
-  ].filter((resourceName) => !resourceNameSet.has(resourceName));
+  ].filter((resourceName) => !resourceSet.has(resourceName));
 
   if (unknownResourceNames.length > 0) {
     throw new Error(
@@ -58,7 +39,7 @@ const ensureCatalogConsistency = () => {
   }
 };
 
-const ensureResources = async () => {
+const ensureCatalog = async () => {
   for (const resource of RBAC_RESOURCE_CATALOG) {
     await prisma.permissionResource.upsert({
       where: { name: resource.name },
@@ -76,160 +57,58 @@ const ensureResources = async () => {
     select: { id: true, name: true },
   });
 
-  return new Map(resources.map((entry) => [entry.name, entry.id]));
+  return new Map(resources.map((entry) => [entry.name, entry.id] as const));
 };
 
-const ensureActions = async () => {
-  for (const actionName of canonicalActionNames) {
+const ensurePermissions = async (resourceIdByName: Map<string, string>) => {
+  const actions = [
+    ...new Set(
+      RBAC_PERMISSIONS.map((slug) => parsePermissionSlug(slug).action),
+    ),
+  ];
+
+  for (const action of actions) {
     await prisma.permissionAction.upsert({
-      where: { name: actionName },
+      where: { name: action },
       update: {},
-      create: {
-        name: actionName,
-      },
+      create: { name: action },
     });
   }
 
-  const actions = await prisma.permissionAction.findMany({
-    select: { id: true, name: true },
-  });
+  const actionIdByName = new Map(
+    (
+      await prisma.permissionAction.findMany({
+        select: { id: true, name: true },
+      })
+    ).map((entry) => [entry.name, entry.id] as const),
+  );
 
-  return new Map(actions.map((entry) => [entry.name, entry.id]));
-};
-
-const upsertPermission = async (
-  slug: string,
-  resourceIdByName: Map<string, string>,
-  actionIdByName: Map<string, string>,
-) => {
-  const parsed = parsePermissionSlug(slug);
-  const resourceId = resourceIdByName.get(parsed.resource);
-  const actionId = actionIdByName.get(parsed.action);
-
-  if (!resourceId) {
-    throw new Error(`Unknown resource in permission slug: ${slug}`);
-  }
-  if (!actionId) {
-    throw new Error(`Unknown action in permission slug: ${slug}`);
-  }
-
-  return prisma.permission.upsert({
-    where: { slug: parsed.slug },
-    update: {
-      description: null,
-    },
-    create: {
-      resourceId,
-      actionId,
-      slug: parsed.slug,
-    },
-  });
-};
-
-const pruneUnknownCatalogRows = async () => {
-  await prisma.permission.deleteMany({
-    where: {
-      slug: {
-        notIn: canonicalPermissionSlugs,
-      },
-    },
-  });
-
-  await prisma.permissionAction.deleteMany({
-    where: {
-      name: {
-        notIn: canonicalActionNames,
-      },
-    },
-  });
-
-  await prisma.permissionResource.deleteMany({
-    where: {
-      name: {
-        notIn: canonicalResourceNames,
-      },
-    },
-  });
-};
-
-const assertCatalogPruned = async () => {
-  const [unknownResourceCount, unknownActionCount, unknownPermissionCount] =
-    await Promise.all([
-      prisma.permissionResource.count({
-        where: {
-          name: {
-            notIn: canonicalResourceNames,
-          },
-        },
-      }),
-      prisma.permissionAction.count({
-        where: {
-          name: {
-            notIn: canonicalActionNames,
-          },
-        },
-      }),
-      prisma.permission.count({
-        where: {
-          slug: {
-            notIn: canonicalPermissionSlugs,
-          },
-        },
-      }),
-    ]);
-
-  if (
-    unknownResourceCount > 0 ||
-    unknownActionCount > 0 ||
-    unknownPermissionCount > 0
-  ) {
-    throw new Error(
-      `RBAC catalog drift detected after seed: resources=${unknownResourceCount}, actions=${unknownActionCount}, permissions=${unknownPermissionCount}`,
-    );
-  }
-};
-
-async function main(): Promise<void> {
-  ensureCatalogConsistency();
-
-  const resourceIdByName = await ensureResources();
-  const actionIdByName = await ensureActions();
-
-  const permissionsBySlug = new Map<string, { id: string }>();
   for (const slug of RBAC_PERMISSIONS) {
-    const permission = await upsertPermission(
-      slug,
-      resourceIdByName,
-      actionIdByName,
-    );
-    permissionsBySlug.set(permission.slug, { id: permission.id });
-  }
+    const parsed = parsePermissionSlug(slug);
+    const resourceId = resourceIdByName.get(parsed.resource);
+    const actionId = actionIdByName.get(parsed.action);
 
-  const requiredBootstrapPermissions = [
-    SystemResourcePermissions.VIEW,
-    SystemResourcePermissions.CREATE,
-    SystemResourcePermissions.UPDATE,
-    SystemResourcePermissions.DELETE,
-    SystemPermissionPermissions.VIEW,
-    SystemPermissionPermissions.UPDATE,
-    SystemPermissionPermissions.DELETE,
-  ];
-
-  for (const permissionSlug of requiredBootstrapPermissions) {
-    if (!permissionsBySlug.has(permissionSlug)) {
-      throw new Error(
-        `Missing required bootstrap permission after seed: ${permissionSlug}`,
-      );
+    if (!resourceId || !actionId) {
+      throw new Error(`Missing resource/action mapping for ${slug}`);
     }
+
+    await prisma.permission.upsert({
+      where: { slug: parsed.slug },
+      update: {
+        resourceId,
+        actionId,
+      },
+      create: {
+        resourceId,
+        actionId,
+        slug: parsed.slug,
+      },
+    });
   }
+};
 
-  await pruneUnknownCatalogRows();
-  await assertCatalogPruned();
-
-  const rolesByName = new Map<
-    string,
-    { id: string; parentRoleName?: string }
-  >();
+const ensureRoles = async () => {
+  const roleIdByName = new Map<string, string>();
 
   for (const role of RBAC_ROLES) {
     const record = await prisma.role.upsert({
@@ -250,35 +129,27 @@ async function main(): Promise<void> {
       },
     });
 
-    rolesByName.set(role.name, {
-      id: record.id,
-      parentRoleName: role.parentRoleName,
-    });
+    roleIdByName.set(role.name, record.id);
   }
 
   for (const role of RBAC_ROLES) {
-    if (!role.parentRoleName) {
-      await prisma.role.update({
-        where: { name: role.name },
-        data: { parentRoleId: null },
-      });
-      continue;
-    }
-
-    const parentRole = rolesByName.get(role.parentRoleName);
-    if (!parentRole) {
-      throw new Error(
-        `Missing parent role for ${role.name}: ${role.parentRoleName}`,
-      );
-    }
+    const parentRoleId = role.parentRoleName
+      ? (roleIdByName.get(role.parentRoleName) ?? null)
+      : null;
 
     await prisma.role.update({
       where: { name: role.name },
-      data: {
-        parentRoleId: parentRole.id,
-      },
+      data: { parentRoleId },
     });
   }
+};
+
+async function main(): Promise<void> {
+  ensureCatalogConsistency();
+
+  const resourceIdByName = await ensureCatalog();
+  await ensurePermissions(resourceIdByName);
+  await ensureRoles();
 
   await prisma.moduleConfig.upsert({
     where: { module: 'core' },

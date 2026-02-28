@@ -52,11 +52,11 @@ export class CreateUserDto implements CreateUserDtoType {
   @IsString()
   phone?: string;
 
-  @ApiProperty({
-    description: 'Department id for this user.',
-    format: 'uuid',
+  @ApiPropertyOptional({
+    description: 'Optional department id.',
     example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
   })
+  @IsOptional()
   @IsUUID()
-  departmentId!: string;
+  departmentId?: string;
 }

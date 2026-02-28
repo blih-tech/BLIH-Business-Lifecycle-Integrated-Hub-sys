@@ -2,16 +2,13 @@ import { BadRequestException } from '@nestjs/common';
 import { CreateRoleUseCase } from './create-role.usecase';
 
 describe('CreateRoleUseCase', () => {
-  it('rejects unknown parent role id with 400', async () => {
+  it('rejects when parent role id does not exist', async () => {
     const keycloakAdmin = {
       createRole: jest.fn().mockResolvedValue(undefined),
     };
     const prisma = {
       role: {
-        findUnique: jest
-          .fn()
-          .mockResolvedValueOnce(null)
-          .mockResolvedValueOnce(null),
+        findUnique: jest.fn().mockResolvedValue(null),
         upsert: jest.fn(),
       },
     };
@@ -29,26 +26,27 @@ describe('CreateRoleUseCase', () => {
       useCase.execute({
         name: 'finance.approver',
         displayName: 'Finance Approver',
-        description: 'Approves finance actions',
-        parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
+        parentRoleId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
       }),
     ).rejects.toThrow(BadRequestException);
+
+    expect(prisma.role.upsert).not.toHaveBeenCalled();
   });
 
-  it('creates role metadata and invalidates permission cache', async () => {
+  it('creates role and invalidates cache', async () => {
     const keycloakAdmin = {
       createRole: jest.fn().mockResolvedValue(undefined),
     };
     const prisma = {
       role: {
-        findUnique: jest.fn().mockResolvedValue(null),
+        findUnique: jest.fn().mockResolvedValue({ id: 'parent-role' }),
         upsert: jest
           .fn()
           .mockResolvedValue({ id: 'role-1', name: 'finance.approver' }),
       },
     };
     const userPermissionSnapshot = {
-      invalidateAll: jest.fn(),
+      invalidateAll: jest.fn().mockResolvedValue(undefined),
     };
 
     const useCase = new CreateRoleUseCase(
@@ -61,6 +59,7 @@ describe('CreateRoleUseCase', () => {
       name: 'finance.approver',
       displayName: 'Finance Approver',
       description: 'Approves finance actions',
+      parentRoleId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
     });
 
     expect(prisma.role.upsert).toHaveBeenCalled();

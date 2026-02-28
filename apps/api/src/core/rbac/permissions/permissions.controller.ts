@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -40,6 +39,12 @@ export class PermissionsController {
     private readonly deletePermissionUseCase: DeletePermissionUseCase,
   ) {}
 
+  @Post('permissions')
+  @Roles(SystemPermissionPermissions.CREATE)
+  createPermission(@Body() dto: CreatePermissionDto) {
+    return this.createPermissionUseCase.execute(dto);
+  }
+
   @Get('permissions')
   @Roles(SystemPermissionPermissions.VIEW)
   @ApiProtected({
@@ -48,7 +53,7 @@ export class PermissionsController {
   })
   @ApiOperation({
     summary: 'List permissions',
-    description: 'Lists RBAC permissions (`resource:action`).',
+    description: 'Lists seeded RBAC permissions (`resource:action`).',
   })
   @ApiOkResponse({
     description: 'Permissions.',
@@ -70,7 +75,7 @@ export class PermissionsController {
   })
   @ApiOperation({
     summary: 'Get permission',
-    description: 'Returns a single permission by id.',
+    description: 'Returns a single seeded permission by id.',
   })
   @ApiParam({
     name: 'permissionId',
@@ -90,38 +95,8 @@ export class PermissionsController {
     return this.getPermissionUseCase.execute(permissionId);
   }
 
-  @Post('permissions')
-  @Roles(SystemPermissionPermissions.CREATE)
-  @ApiProtected({
-    path: '/api/v1/rbac/permissions',
-    roles: [SystemPermissionPermissions.CREATE],
-  })
-  @ApiOperation({
-    summary: 'Create permission',
-    description:
-      'Creates permission from resourceId + actionId. Slug is generated as resource:action and is immutable.',
-  })
-  @ApiBody({ type: CreatePermissionDto })
-  createPermission(@Body() dto: CreatePermissionDto) {
-    return this.createPermissionUseCase.execute(dto);
-  }
-
   @Put('permissions/:permissionId')
   @Roles(SystemPermissionPermissions.UPDATE)
-  @ApiProtected({
-    path: '/api/v1/rbac/permissions/:permissionId',
-    roles: [SystemPermissionPermissions.UPDATE],
-  })
-  @ApiOperation({
-    summary: 'Update permission',
-    description: 'Updates permission description only. Slug is immutable.',
-  })
-  @ApiParam({
-    name: 'permissionId',
-    description: 'Permission id.',
-    example: '298bad72-4cce-491a-bb04-58dc9ac36b61',
-  })
-  @ApiBody({ type: UpdatePermissionDto })
   updatePermission(
     @Param('permissionId') permissionId: string,
     @Body() dto: UpdatePermissionDto,
@@ -131,20 +106,6 @@ export class PermissionsController {
 
   @Delete('permissions/:permissionId')
   @Roles(SystemPermissionPermissions.DELETE)
-  @ApiProtected({
-    path: '/api/v1/rbac/permissions/:permissionId',
-    roles: [SystemPermissionPermissions.DELETE],
-  })
-  @ApiOperation({
-    summary: 'Delete permission',
-    description:
-      'Deletes permission and cascades dependent RolePermission records.',
-  })
-  @ApiParam({
-    name: 'permissionId',
-    description: 'Permission id.',
-    example: '298bad72-4cce-491a-bb04-58dc9ac36b61',
-  })
   deletePermission(@Param('permissionId') permissionId: string) {
     return this.deletePermissionUseCase.execute(permissionId);
   }

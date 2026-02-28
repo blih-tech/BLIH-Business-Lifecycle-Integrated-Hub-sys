@@ -50,7 +50,7 @@ lerna-debug.log*
 backups/
 *.sql
 *.sql.gz
-!prisma/migrations/20260227120000_rbac_user_permissions_department/migration.sql
+!prisma/migrations/20260227170000_add_user_profile_domain/migration.sql
 
 # Runtime data
 pids
@@ -65,5 +65,3 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /src/platform/prisma/generated/
-
-/src/shared/demo-hr-types/

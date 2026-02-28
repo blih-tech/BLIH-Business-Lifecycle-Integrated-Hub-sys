@@ -36,16 +36,7 @@ export class UpdateUserDto implements UpdateUserDtoType {
   phone?: string;
 
   @ApiPropertyOptional({
-    description: 'Updated job position/title.',
-    example: 'Finance Manager',
-  })
-  @IsOptional()
-  @IsString()
-  position?: string;
-
-  @ApiPropertyOptional({
     description: 'Updated department id.',
-    format: 'uuid',
     example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
   })
   @IsOptional()

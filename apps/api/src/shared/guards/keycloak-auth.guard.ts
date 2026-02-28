@@ -122,9 +122,7 @@ export class KeycloakAuthGuard implements CanActivate {
       profileClaims,
     );
     const permissions =
-      await this.userPermissionSnapshot.getEffectivePermissionsByKeycloakId(
-        principal.sub,
-      );
+      await this.userPermissionSnapshot.getPersistedPermissions(principal.sub);
 
     return {
       ...principal,
@@ -142,7 +140,7 @@ export class KeycloakAuthGuard implements CanActivate {
       lastName: contextData.lastName || profileClaims.lastName,
       phone: contextData.phone,
       status: contextData.status ?? 'ACTIVE',
-      position: contextData.position,
+      departmentId: contextData.departmentId ?? null,
     };
   }
 

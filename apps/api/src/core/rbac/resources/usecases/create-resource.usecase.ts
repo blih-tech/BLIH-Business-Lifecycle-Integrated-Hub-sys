@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { CreateResourceDto } from '../dto/create-resource.dto';
 
@@ -9,19 +9,15 @@ export class CreateResourceUseCase {
   async execute(dto: CreateResourceDto) {
     const normalizedName = dto.name.trim().toLowerCase();
 
-    const existing = await this.prisma.permissionResource.findUnique({
-      where: { name: normalizedName },
-      select: { id: true },
-    });
-    if (existing) {
-      throw new ConflictException(`Resource already exists: ${normalizedName}`);
+    try {
+      return await this.prisma.permissionResource.create({
+        data: {
+          name: normalizedName,
+          description: dto.description,
+        },
+      });
+    } catch {
+      throw new BadRequestException('Resource name already exists');
     }
-
-    return this.prisma.permissionResource.create({
-      data: {
-        name: normalizedName,
-        description: dto.description,
-      },
-    });
   }
 }
