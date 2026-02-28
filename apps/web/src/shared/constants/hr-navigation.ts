@@ -39,10 +39,10 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     badge: '3',
     subItems: [
       { id: 'onboarding-overview', label: 'Overview', href: '/dashboard/hr/onboarding/overview', badge: '3' },
-      { id: 'new-hires', label: 'New Hires', href: '/dashboard/hr/onboarding/new-hires' },
-      { id: 'probation-tracker', label: 'Probation Tracker', href: '/dashboard/hr/onboarding/probation-tracker' },
-      { id: 'mentorship', label: 'Mentorship', href: '/dashboard/hr/onboarding/mentorship' },
-      { id: 'documents', label: 'Documents', href: '/dashboard/hr/onboarding/documents' },
+      { id: 'onboarding-progress', label: 'Progress', href: '/dashboard/hr/onboarding/progress' },
+      { id: 'onboarding-contract', label: 'Contract', href: '/dashboard/hr/onboarding/contract' },
+      { id: 'onboarding-probation', label: 'Probation', href: '/dashboard/hr/onboarding/probation' },
+      { id: 'onboarding-checklists', label: 'Checklists', href: '/dashboard/hr/onboarding/checklists' },
     ],
   },
   {
