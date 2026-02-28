@@ -11,7 +11,7 @@ const ICONS = {
 
 export function OnboardingChecklistsContent() {
   return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-6 px-4 py-5 md:px-5 md:py-6">
+    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
       <section className="grid gap-4 md:grid-cols-3">
         {checklistSummaryStats.map((stat) => (
           <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
@@ -19,10 +19,10 @@ export function OnboardingChecklistsContent() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold tracking-[-0.3125px] text-black">Onboarding Checklists</h2>
+        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Onboarding Checklists</h2>
         <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">Create and manage reusable onboarding checklists</p>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2">
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
           {checklistTemplates.map((checklist) => (
             <ChecklistCard key={checklist.id} checklist={checklist} />
           ))}

@@ -9,9 +9,9 @@ type ChecklistCardProps = {
 
 export function ChecklistCard({ checklist }: ChecklistCardProps) {
   return (
-    <article className="rounded-[12px] border border-[#e5e5e5] bg-white p-6">
+    <article className="rounded-[12px] border border-[#e5e5e5] bg-white p-5">
       <div className="space-y-1">
-        <h3 className="text-2xl font-normal tracking-[-0.4395px] text-black">{checklist.title}</h3>
+        <h3 className="text-lg font-medium tracking-[-0.3125px] text-black">{checklist.title}</h3>
         <span className="inline-flex rounded-[4px] bg-[rgba(30,102,247,0.1)] px-1 py-0.5 text-xs font-semibold uppercase text-primary">
           {checklist.department}
         </span>
@@ -52,7 +52,7 @@ export function ChecklistCard({ checklist }: ChecklistCardProps) {
         </ul>
       </div>
 
-      <div className="mt-4 flex items-center gap-4">
+      <div className="mt-3.5 flex items-center gap-3">
         <Button type="button" className="h-8 rounded-[6px] px-4 text-sm font-medium tracking-[-0.1504px]">
           Use This Checklist
         </Button>

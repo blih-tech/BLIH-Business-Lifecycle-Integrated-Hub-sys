@@ -3,7 +3,7 @@ import { OnboardingCard, ProgressStatCard } from "@/features/hr/onboarding/progr
 
 export function OnboardingProgressContent() {
   return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-6 px-4 py-5 md:px-5 md:py-6">
+    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
       <section className="grid gap-4 md:grid-cols-3">
         {progressSummaryStats.map((stat) => (
           <ProgressStatCard key={stat.id} stat={stat} />

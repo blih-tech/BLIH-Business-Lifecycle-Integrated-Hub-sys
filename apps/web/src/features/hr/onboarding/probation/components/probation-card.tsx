@@ -16,7 +16,7 @@ export function ProbationCard({ employee, defaultExpanded = false }: ProbationCa
 
   return (
     <article className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white">
-      <div className="space-y-4 px-6 py-5">
+      <div className="space-y-3.5 px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#1e66f7] text-base font-semibold tracking-[-0.3125px] text-white">
@@ -77,7 +77,7 @@ export function ProbationCard({ employee, defaultExpanded = false }: ProbationCa
           isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        <div className="min-h-0 overflow-hidden border-t border-[#e5e5e5] px-6 py-4">
+        <div className="min-h-0 overflow-hidden border-t border-[#e5e5e5] px-5 py-3.5">
           <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
             <section>
               <h3 className="text-base font-semibold tracking-[-0.3125px] text-black">Reviews</h3>

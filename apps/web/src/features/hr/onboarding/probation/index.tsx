@@ -12,7 +12,7 @@ const ICONS = {
 
 export function OnboardingProbationContent() {
   return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-6 px-4 py-5 md:px-5 md:py-6">
+    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
       <section className="grid gap-4 md:grid-cols-3">
         {probationSummaryStats.map((stat) => (
           <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
@@ -20,10 +20,10 @@ export function OnboardingProbationContent() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold tracking-[-0.3125px] text-black">Performance and Probation</h2>
+        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Performance and Probation</h2>
         <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">KPI tracking, reviews, and results of employees on probation.</p>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-4 space-y-3">
           {probationEmployees.map((employee, index) => (
             <ProbationCard key={employee.id} employee={employee} defaultExpanded={index === 0} />
           ))}

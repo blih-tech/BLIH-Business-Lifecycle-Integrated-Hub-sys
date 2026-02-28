@@ -12,7 +12,7 @@ const ICONS = {
 
 export function OnboardingContractContent() {
   return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-6 px-4 py-5 md:px-5 md:py-6">
+    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
       <section className="grid gap-4 md:grid-cols-3">
         {contractSummaryStats.map((stat) => (
           <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
@@ -20,10 +20,10 @@ export function OnboardingContractContent() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold tracking-[-0.3125px] text-black">Employment Contracts</h2>
+        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Employment Contracts</h2>
         <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">Details of signed employment contracts and offers.</p>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-4 space-y-3">
           {employmentContracts.map((contract, index) => (
             <ContractCard key={contract.id} contract={contract} defaultExpanded={index === 0} />
           ))}

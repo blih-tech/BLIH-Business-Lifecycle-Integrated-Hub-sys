@@ -16,7 +16,7 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
 
   return (
     <article className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white">
-      <div className="px-6 py-5">
+      <div className="px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#1e66f7] text-base font-semibold tracking-[-0.3125px] text-white">
@@ -53,7 +53,7 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
           isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        <div className="min-h-0 overflow-hidden border-t border-[#e5e5e5] px-6 py-4">
+        <div className="min-h-0 overflow-hidden border-t border-[#e5e5e5] px-5 py-3.5">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.48fr)]">
             <section>
               <div className="flex h-11 items-center gap-2 rounded-[8px] bg-[rgba(30,102,247,0.1)] px-3">
