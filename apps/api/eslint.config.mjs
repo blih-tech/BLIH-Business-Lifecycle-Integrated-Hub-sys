@@ -24,6 +24,8 @@ export default [
       },
       sourceType: 'commonjs',
       parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
         sourceType: 'commonjs',
       },
     },

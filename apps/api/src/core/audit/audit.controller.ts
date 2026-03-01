@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { Audit } from '../../shared/decorators/audit.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
@@ -97,6 +98,7 @@ export class AuditController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Audit record created successfully')
   async create(@Body() dto: AuditRecordDto) {
     return this.recordAuditUseCase.execute(dto);
   }
@@ -110,7 +112,7 @@ export class AuditController {
   @ApiOperation({
     summary: 'Query audit logs',
     description:
-      'Retrieves audit logs filtered by optional query parameters. Requires role `system_audit:view`.',
+      'Retrieves audit log entries filtered by the provided query parameters.',
   })
   @ApiQuery({ name: 'action', required: false, example: 'user.update' })
   @ApiQuery({ name: 'module', required: false, example: 'system.user' })
@@ -171,6 +173,7 @@ export class AuditController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Audit logs retrieved successfully')
   async query(@Query() dto: AuditQueryDto) {
     return this.queryAuditUseCase.execute(dto);
   }
@@ -184,7 +187,7 @@ export class AuditController {
   @ApiOperation({
     summary: 'Export audit logs',
     description:
-      'Exports filtered audit logs in CSV content format. Requires role `system_audit:export`.',
+      'Exports filtered audit log entries as CSV content plus total row count metadata.',
   })
   @ApiQuery({ name: 'action', required: false, example: 'user.update' })
   @ApiQuery({ name: 'module', required: false, example: 'system.user' })
@@ -233,6 +236,7 @@ export class AuditController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Audit logs exported successfully')
   export(@Query() dto: AuditQueryDto) {
     return this.exportAuditUseCase.execute(dto);
   }

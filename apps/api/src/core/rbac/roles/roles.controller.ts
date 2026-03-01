@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
+import { ResponseMessage } from '../../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
@@ -67,7 +68,7 @@ export class RolesController {
   @ApiOperation({
     summary: 'Create role',
     description:
-      'Creates or updates a role in Keycloak and local persistence, and optionally binds permissions. Requires permission `system_role:create`.',
+      'Creates a role in Keycloak and upserts its metadata in local persistence. If the role already exists in Keycloak, the local metadata is synchronized.',
   })
   @ApiBody({
     type: CreateRoleDto,
@@ -84,20 +85,27 @@ export class RolesController {
     },
   })
   @ApiOkResponse({
-    description: 'Role created/updated successfully.',
+    description: 'Role created or synchronized successfully.',
+    schema: {
+      example: {
+        id: '57e883d0-d0c0-4187-a232-50fa729f6876',
+        name: 'finance.approver',
+        displayName: 'Finance Approver',
+        description: 'Can approve invoices in assigned organization.',
+        isSystem: false,
+        parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
+        createdAt: '2026-02-21T18:00:00.000Z',
+        updatedAt: '2026-02-21T18:00:00.000Z',
+      },
+    },
   })
   @ApiDefaultErrors({
     path: '/api/v1/rbac/roles',
-    badRequest: {
-      message: [
-        'permission must match /^[a-z0-9_]+:[a-z0-9_*-]+$/ regular expression',
-      ],
-      error: 'Bad Request',
-      statusCode: 400,
-    },
+    badRequest: 'Parent role not found or the request payload is invalid',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Role created successfully')
   createRole(@Body() dto: CreateRoleDto) {
     return this.createRoleUseCase.execute(dto);
   }
@@ -111,14 +119,14 @@ export class RolesController {
   @ApiOperation({
     summary: 'List roles',
     description:
-      'Lists roles with optional pagination and filters. Requires permission `system_role:view`.',
+      'Lists roles with optional pagination, search, and system-role filtering.',
   })
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 20 })
   @ApiQuery({ name: 'search', required: false, example: 'finance' })
   @ApiQuery({ name: 'isSystem', required: false, example: false })
   @ApiOkResponse({
-    description: 'Paginated role list.',
+    description: 'Role list with pagination metadata.',
     schema: {
       example: {
         items: [
@@ -146,6 +154,7 @@ export class RolesController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Roles retrieved successfully')
   listRoles(@Query() query: ListRolesQueryDto) {
     return this.listRolesUseCase.execute(query);
   }
@@ -175,6 +184,7 @@ export class RolesController {
     forbidden: 'Required roles are missing',
     notFound: 'Role not found',
   })
+  @ResponseMessage('Role retrieved successfully')
   getRole(@Param('roleName') roleName: string) {
     return this.getRoleUseCase.execute(roleName);
   }
@@ -188,8 +198,7 @@ export class RolesController {
   })
   @ApiOperation({
     summary: 'Update role',
-    description:
-      'Updates mutable role fields and permission bindings. System roles are read-only.',
+    description: 'Updates mutable role metadata. System roles are read-only.',
   })
   @ApiParam({
     name: 'roleName',
@@ -200,8 +209,19 @@ export class RolesController {
     type: UpdateRoleDto,
   })
   @ApiOkResponse({
-    description: 'Updated role.',
-    type: RoleResponseDto,
+    description: 'Updated role metadata.',
+    schema: {
+      example: {
+        id: '57e883d0-d0c0-4187-a232-50fa729f6876',
+        name: 'finance.approver',
+        displayName: 'Finance Approver',
+        description: 'Approves finance documents.',
+        isSystem: false,
+        parentRoleId: null,
+        createdAt: '2026-02-21T18:00:00.000Z',
+        updatedAt: '2026-02-21T19:00:00.000Z',
+      },
+    },
   })
   @ApiDefaultErrors({
     path: '/api/v1/rbac/roles/finance.approver',
@@ -212,6 +232,7 @@ export class RolesController {
     forbidden: 'System roles are read-only',
     notFound: 'Role not found',
   })
+  @ResponseMessage('Role updated successfully')
   updateRole(@Param('roleName') roleName: string, @Body() dto: UpdateRoleDto) {
     return this.updateRoleUseCase.execute(roleName, dto);
   }
@@ -220,6 +241,16 @@ export class RolesController {
   @Roles(SystemRolePermissions.UPDATE)
   @Audit('role.permission.add', 'system.rbac')
   @ApiOperation({ summary: 'Add role permissions' })
+  @ApiOkResponse({
+    description: 'Role permissions added successfully.',
+    schema: {
+      example: {
+        success: true,
+        roleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
+      },
+    },
+  })
+  @ResponseMessage('Role permissions added successfully')
   addRolePermissions(
     @Param('roleId') roleId: string,
     @Body() dto: RolePermissionAssignmentDto,
@@ -231,6 +262,16 @@ export class RolesController {
   @Roles(SystemRolePermissions.UPDATE)
   @Audit('role.permission.remove', 'system.rbac')
   @ApiOperation({ summary: 'Remove role permissions' })
+  @ApiOkResponse({
+    description: 'Requested permissions removed from the role.',
+    schema: {
+      example: {
+        success: true,
+        roleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
+      },
+    },
+  })
+  @ResponseMessage('Role permissions removed successfully')
   removeRolePermissions(
     @Param('roleId') roleId: string,
     @Body() dto: RolePermissionAssignmentDto,
@@ -242,6 +283,16 @@ export class RolesController {
   @Roles(SystemRolePermissions.UPDATE)
   @Audit('role.permission.replace', 'system.rbac')
   @ApiOperation({ summary: 'Replace role permissions' })
+  @ApiOkResponse({
+    description: 'Role permissions replaced successfully.',
+    schema: {
+      example: {
+        success: true,
+        roleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
+      },
+    },
+  })
+  @ResponseMessage('Role permissions replaced successfully')
   replaceRolePermissions(
     @Param('roleId') roleId: string,
     @Body() dto: RolePermissionAssignmentDto,
@@ -284,6 +335,7 @@ export class RolesController {
       message: 'Cannot delete role with active assignments',
     },
   })
+  @ResponseMessage('Role deleted successfully')
   deleteRole(@Param('roleName') roleName: string) {
     return this.deleteRoleUseCase.execute(roleName);
   }
@@ -298,23 +350,44 @@ export class RolesController {
   @ApiOperation({
     summary: 'Assign role',
     description:
-      'Assigns a role to a user with optional organization/department scope and expiration. Requires permission `system_role:assign`.',
+      'Assigns a role to a user and optionally records assignment metadata such as assignee and expiration.',
   })
   @ApiBody({
     type: AssignRoleDto,
+    examples: {
+      assignRole: {
+        summary: 'Assign role payload',
+        value: {
+          userId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+          roleName: 'finance.approver',
+          assignedBy: '40b5c2fb-7a2f-4af2-ac03-fad1bb3fe061',
+          expiresAt: '2026-12-31T23:59:59.000Z',
+        },
+      },
+    },
   })
   @ApiOkResponse({
     description: 'Role assignment persisted successfully.',
+    schema: {
+      example: {
+        id: '487cd033-4744-4fc7-bd7c-1f31aa0df74b',
+        userId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+        roleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
+        assignedBy: '40b5c2fb-7a2f-4af2-ac03-fad1bb3fe061',
+        expiresAt: '2026-12-31T23:59:59.000Z',
+        createdAt: '2026-02-21T19:15:00.000Z',
+        updatedAt: '2026-02-21T19:15:00.000Z',
+      },
+    },
   })
   @ApiDefaultErrors({
     path: '/api/v1/rbac/roles/assign',
-    badRequest: {
-      message: 'organizationId is required for organization-scoped roles',
-    },
+    badRequest: 'Invalid expiresAt value',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
     notFound: 'User or role not found',
   })
+  @ResponseMessage('Role assigned successfully')
   assignRole(@Body() dto: AssignRoleDto) {
     return this.assignRoleUseCase.execute(dto);
   }
@@ -329,10 +402,19 @@ export class RolesController {
   @ApiOperation({
     summary: 'Revoke role',
     description:
-      'Revokes a scoped role assignment from a user. Requires permission `system_role:revoke`.',
+      'Revokes a role assignment from a user and removes the Keycloak realm role when no assignments remain.',
   })
   @ApiBody({
     type: AssignRoleDto,
+    examples: {
+      revokeRole: {
+        summary: 'Revoke role payload',
+        value: {
+          userId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+          roleName: 'finance.approver',
+        },
+      },
+    },
   })
   @ApiOkResponse({
     description: 'Role assignment revoked successfully.',
@@ -344,13 +426,11 @@ export class RolesController {
   })
   @ApiDefaultErrors({
     path: '/api/v1/rbac/roles/revoke',
-    badRequest: {
-      message: 'organizationId is required for organization-scoped revocation',
-    },
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
-    notFound: 'Scoped role assignment not found',
+    notFound: 'User or role not found, or the role assignment does not exist',
   })
+  @ResponseMessage('Role revoked successfully')
   revokeRole(@Body() dto: AssignRoleDto) {
     return this.revokeRoleUseCase.execute(dto);
   }

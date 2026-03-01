@@ -305,6 +305,50 @@ describe('enforceUnifiedSchemas', () => {
     expect(usersList?.data).toEqual([{ id: 'user-1' }]);
   });
 
+  it('uses route-specific response messages when the operation declares one', () => {
+    const doc = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/users': {
+          post: {
+            'x-response-message': 'User created successfully',
+            responses: {
+              '201': {
+                description: 'created',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: { id: { type: 'string' } },
+                      example: { id: 'user-1' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    } as OpenAPIObject;
+
+    enforceUnifiedSchemas(doc);
+
+    const json = getJsonMedia(doc, '/api/v1/users', 'post', '201') as
+      | { example?: { message?: string }; schema?: Record<string, unknown> }
+      | undefined;
+    const schema = json?.schema as
+      | { properties?: { message?: { example?: string } } }
+      | undefined;
+
+    expect(json?.example?.message).toBe('User created successfully');
+    expect(schema?.properties?.message?.example).toBe(
+      'User created successfully',
+    );
+  });
+
   it('adds status-specific error examples when only ApiErrorResponseDto ref is present', () => {
     const doc: OpenAPIObject = {
       openapi: '3.0.0',

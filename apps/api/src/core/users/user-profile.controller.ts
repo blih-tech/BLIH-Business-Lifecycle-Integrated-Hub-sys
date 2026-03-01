@@ -15,6 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../../shared/decorators/roles.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
@@ -69,8 +70,19 @@ export class UserProfileController {
     roles: [UserProfilePermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get user profile' })
-  @ApiParam({ name: 'userId', description: 'Internal user id or keycloak id' })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak subject identifier.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
   @ApiOkResponse({ type: UserProfileResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/profile',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User profile retrieved successfully')
   getProfile(@Param('userId') userId: string) {
     return this.getUserProfileUseCase.execute(userId);
   }
@@ -82,9 +94,20 @@ export class UserProfileController {
     roles: [UserProfilePermissions.UPDATE],
   })
   @ApiOperation({ summary: 'Upsert user profile' })
-  @ApiParam({ name: 'userId', description: 'Internal user id or keycloak id' })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak subject identifier.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
   @ApiBody({ type: UpdateUserProfileDto })
   @ApiOkResponse({ type: UserProfileResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/profile',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User profile updated successfully')
   updateProfile(
     @Param('userId') userId: string,
     @Body() dto: UpdateUserProfileDto,
@@ -99,7 +122,19 @@ export class UserProfileController {
     roles: [UserEmploymentPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get user employment' })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak subject identifier.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
   @ApiOkResponse({ type: UserEmploymentResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/employment',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User employment retrieved successfully')
   getEmployment(@Param('userId') userId: string) {
     return this.getUserEmploymentUseCase.execute(userId);
   }
@@ -113,6 +148,13 @@ export class UserProfileController {
   @ApiOperation({ summary: 'Upsert user employment' })
   @ApiBody({ type: UpdateUserEmploymentDto })
   @ApiOkResponse({ type: UserEmploymentResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/employment',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User employment updated successfully')
   updateEmployment(
     @Param('userId') userId: string,
     @Body() dto: UpdateUserEmploymentDto,
@@ -127,7 +169,19 @@ export class UserProfileController {
     roles: [UserCompensationPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get user compensation' })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak subject identifier.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
   @ApiOkResponse({ type: UserCompensationResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/compensation',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User compensation retrieved successfully')
   getCompensation(@Param('userId') userId: string) {
     return this.getUserCompensationUseCase.execute(userId);
   }
@@ -143,6 +197,13 @@ export class UserProfileController {
   })
   @ApiBody({ type: UpdateUserCompensationDto })
   @ApiOkResponse({ type: UserCompensationResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/compensation',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User compensation updated successfully')
   updateCompensation(
     @Param('userId') userId: string,
     @Body() dto: UpdateUserCompensationDto,
@@ -157,7 +218,19 @@ export class UserProfileController {
     roles: [UserCompensationPermissions.HISTORY_VIEW],
   })
   @ApiOperation({ summary: 'List user compensation history' })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak subject identifier.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
   @ApiOkResponse({ type: UserCompensationHistoryResponseDto, isArray: true })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/compensation/history',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User compensation history retrieved successfully')
   listCompensationHistory(@Param('userId') userId: string) {
     return this.listUserCompensationHistoryUseCase.execute(userId);
   }
@@ -171,6 +244,13 @@ export class UserProfileController {
   @ApiOperation({ summary: 'Create compensation history entry' })
   @ApiBody({ type: CreateCompensationHistoryDto })
   @ApiOkResponse({ type: UserCompensationHistoryResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/compensation/history',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User compensation history entry created successfully')
   createCompensationHistory(
     @Param('userId') userId: string,
     @Body() dto: CreateCompensationHistoryDto,
@@ -185,7 +265,19 @@ export class UserProfileController {
     roles: [UserLifecyclePermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get user lifecycle' })
+  @ApiParam({
+    name: 'userId',
+    description: 'Internal user id or Keycloak subject identifier.',
+    example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+  })
   @ApiOkResponse({ type: UserLifecycleResponseDto })
+  @ApiDefaultErrors({
+    path: '/api/v1/users/:userId/lifecycle',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+    notFound: 'User not found',
+  })
+  @ResponseMessage('User lifecycle retrieved successfully')
   getLifecycle(@Param('userId') userId: string) {
     return this.getUserLifecycleUseCase.execute(userId);
   }
@@ -204,6 +296,7 @@ export class UserProfileController {
     badRequest:
       'terminatedAt is required when setting lifecycle status TERMINATED',
   })
+  @ResponseMessage('User lifecycle updated successfully')
   updateLifecycle(
     @Param('userId') userId: string,
     @Body() dto: UpdateUserLifecycleDto,
