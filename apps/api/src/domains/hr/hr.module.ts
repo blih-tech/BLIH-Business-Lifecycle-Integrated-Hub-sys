@@ -16,6 +16,14 @@ import { GetJobDescriptionUseCase } from './job-descriptions/use-cases/get-job-d
 import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create-job-description.usecase';
 import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
 import { DocumentExpiryJob } from './jobs/document-expiry.job';
+import { RecruitmentRequestsController } from './recruitment/recruitment-requests.controller';
+import { ListRecruitmentRequestsUseCase } from './recruitment/use-cases/list-recruitment-requests.usecase';
+import { GetRecruitmentRequestUseCase } from './recruitment/use-cases/get-recruitment-request.usecase';
+import { CreateRecruitmentRequestUseCase } from './recruitment/use-cases/create-recruitment-request.usecase';
+import { UpdateRecruitmentRequestUseCase } from './recruitment/use-cases/update-recruitment-request.usecase';
+import { SubmitRecruitmentRequestUseCase } from './recruitment/use-cases/submit-recruitment-request.usecase';
+import { ApproveRecruitmentRequestUseCase } from './recruitment/use-cases/approve-recruitment-request.usecase';
+import { CreateJobPostingFromRequestUseCase } from './recruitment/use-cases/create-job-posting-from-request.usecase';
 
 @Module({
   controllers: [
@@ -23,6 +31,7 @@ import { DocumentExpiryJob } from './jobs/document-expiry.job';
     EmployeeDocumentsController,
     EmployeeContractsController,
     JobDescriptionsController,
+    RecruitmentRequestsController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -38,6 +47,13 @@ import { DocumentExpiryJob } from './jobs/document-expiry.job';
     CreateJobDescriptionUseCase,
     UpdateJobDescriptionUseCase,
     DocumentExpiryJob,
+    ListRecruitmentRequestsUseCase,
+    GetRecruitmentRequestUseCase,
+    CreateRecruitmentRequestUseCase,
+    UpdateRecruitmentRequestUseCase,
+    SubmitRecruitmentRequestUseCase,
+    ApproveRecruitmentRequestUseCase,
+    CreateJobPostingFromRequestUseCase,
   ],
 })
 export class HrModule {}

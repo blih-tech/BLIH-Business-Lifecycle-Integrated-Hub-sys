@@ -1,0 +1,48 @@
+export type JobPostingStatus =
+  | 'DRAFT'
+  | 'PENDING_APPROVAL'
+  | 'APPROVED'
+  | 'PUBLISHED'
+  | 'FILLED'
+  | 'EXPIRED'
+  | 'CANCELLED';
+
+export interface CreateJobPostingDto {
+  recruitmentRequestId: string;
+  position?: Record<string, unknown> | null;
+  description?: Record<string, unknown> | null;
+  prerequisites?: Record<string, unknown> | null;
+  kpis?: unknown[] | null;
+  platforms?: string[];
+}
+
+export interface UpdateJobPostingDto {
+  position?: Record<string, unknown> | null;
+  description?: Record<string, unknown> | null;
+  prerequisites?: Record<string, unknown> | null;
+  kpis?: unknown[] | null;
+  platforms?: string[];
+  status?: JobPostingStatus;
+  postedAt?: string | null;
+  expiresAt?: string | null;
+  closedAt?: string | null;
+}
+
+export interface JobPostingResponseDto {
+  id: string;
+  postingId: string;
+  recruitmentRequestId: string;
+  position: unknown;
+  description: unknown;
+  prerequisites: unknown;
+  kpis: unknown;
+  platforms: string[];
+  status: JobPostingStatus;
+  postedAt: string | null;
+  expiresAt: string | null;
+  closedAt: string | null;
+  approvedBy: unknown;
+  createdAt: string;
+  updatedAt: string;
+  candidatesCount?: number;
+}

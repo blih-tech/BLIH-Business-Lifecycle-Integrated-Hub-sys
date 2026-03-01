@@ -7,3 +7,4 @@ export * from './audit/index.js';
 export * from './system-config/index.js';
 export * from './rbac/index.js';
 export * from './notifications/index.js';
+export * from './recruitment/index.js';

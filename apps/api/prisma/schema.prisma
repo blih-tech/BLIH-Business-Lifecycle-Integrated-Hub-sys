@@ -96,6 +96,76 @@ enum ContractStatus {
   RENEWED
 }
 
+// Recruitment (HR Implementation Plan 02)
+enum RecruitmentRequestStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum RecruitmentRequestType {
+  NEW
+  REPLACEMENT
+}
+
+enum JobPostingStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  PUBLISHED
+  FILLED
+  EXPIRED
+  CANCELLED
+}
+
+enum CandidateStatus {
+  NEW
+  SCREENING
+  SHORTLISTED
+  INTERVIEW_STAGE
+  OFFER_PENDING
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+enum CandidateSource {
+  COMPANY_SITE
+  LINKEDIN
+  TELEGRAM
+  REFERRAL
+  AGENCY
+}
+
+enum ScreeningRecommendation {
+  SELECT
+  PAUSE
+  DECLINE
+}
+
+enum InterviewType {
+  HR_SCREENING
+  TECHNICAL
+  BEHAVIORAL
+  PANEL
+  FINAL
+}
+
+enum EndorsementLevel {
+  STRONG_YES
+  YES
+  UNCERTAIN
+  NO
+}
+
+enum HiringDecisionOutcome {
+  OFFER_APPROVED
+  OFFER_DECLINED
+  SUSPENDED
+}
+
 model User {
   id                  String                    @id @default(uuid()) @db.Uuid
   keycloakId          String                    @unique
@@ -121,32 +191,39 @@ model User {
   employeeDocuments   EmployeeDocument[]
   verifiedDocuments   EmployeeDocument[]        @relation("EmployeeDocumentVerifiedBy")
   contracts           Contract[]
+  submittedRecruitmentRequests RecruitmentRequest[]   @relation("RecruitmentRequestSubmittedBy")
+  referredCandidates  Candidate[]               @relation("CandidateReferral")
+  screeningDecisions  CvScreening[]            @relation("CvScreeningScreenedBy")
+  compiledInterviewFeedback InterviewFeedback[] @relation("InterviewFeedbackCompiledBy")
+  submittedHiringDecisions HiringDecision[]    @relation("HiringDecisionSubmittedBy")
 
   @@index([status])
 }
 
 model Department {
-  id                String                  @id @default(uuid()) @db.Uuid
-  name              String                  @unique
-  description       String?
-  createdAt         DateTime                @default(now())
-  updatedAt         DateTime                @updatedAt
-  positions         Position[]
-  employmentHistory UserEmploymentHistory[]
+  id                   String                @id @default(uuid()) @db.Uuid
+  name                 String                @unique
+  description          String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  positions            Position[]
+  employmentHistory    UserEmploymentHistory[]
+  recruitmentRequests  RecruitmentRequest[]
 }
 
 model Position {
-  id                String                  @id @default(uuid()) @db.Uuid
-  title             String
-  description       String?
-  departmentId      String                  @db.Uuid
-  department        Department              @relation(fields: [departmentId], references: [id])
-  employments       UserEmployment[]
-  jobDescriptions   JobDescription[]
-  employmentHistory UserEmploymentHistory[]
-  isActive          Boolean                 @default(true)
-  createdAt         DateTime                @default(now())
-  updatedAt         DateTime                @updatedAt
+  id                   String                  @id @default(uuid()) @db.Uuid
+  title                String
+  description          String?
+  departmentId         String                  @db.Uuid
+  department           Department              @relation(fields: [departmentId], references: [id])
+  employments          UserEmployment[]
+  jobDescriptions      JobDescription[]
+  employmentHistory    UserEmploymentHistory[]
+  recruitmentRequests  RecruitmentRequest[]
+  isActive             Boolean                 @default(true)
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
 
   @@unique([departmentId, title])
   @@index([departmentId])
@@ -553,4 +630,173 @@ model JobDescription {
 
   @@index([positionId])
   @@index([title])
+}
+
+// Recruitment (HR Plan 02)
+model RecruitmentRequest {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  requestId            String                   @unique @map("request_id") @db.VarChar(32)
+  departmentId         String                   @map("department_id") @db.Uuid
+  department           Department               @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  positionId           String?                  @map("position_id") @db.Uuid
+  position             Position?                @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  type                 RecruitmentRequestType   @default(NEW)
+  replacementUserId    String?                  @map("replacement_user_id") @db.Uuid
+  rationale            Json?                    @db.JsonB
+  staffing             Json?                    @db.JsonB
+  schedule             Json?                    @db.JsonB
+  submittedById        String                  @map("submitted_by_id") @db.Uuid
+  submittedBy          User                    @relation("RecruitmentRequestSubmittedBy", fields: [submittedById], references: [id], onDelete: Restrict)
+  submittedAt          DateTime?               @map("submitted_at")
+  approvals            Json?                   @db.JsonB
+  status               RecruitmentRequestStatus @default(DRAFT)
+  linkedJobPostingId   String?                 @unique @map("linked_job_posting_id") @db.Uuid
+  linkedJobPosting     JobPosting?              @relation("RequestLinkedPosting", fields: [linkedJobPostingId], references: [id], onDelete: SetNull)
+  linkedUserId         String?                 @map("linked_user_id") @db.Uuid
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  jobPostings          JobPosting[]            @relation("RequestCreatedPostings")
+  hiringDecisions      HiringDecision[]
+
+  @@index([departmentId])
+  @@index([status])
+  @@index([submittedById])
+  @@index([submittedAt])
+}
+
+model JobPosting {
+  id                    String            @id @default(uuid()) @db.Uuid
+  postingId             String            @unique @map("posting_id") @db.VarChar(32)
+  recruitmentRequestId  String            @map("recruitment_request_id") @db.Uuid
+  recruitmentRequest    RecruitmentRequest @relation("RequestCreatedPostings", fields: [recruitmentRequestId], references: [id], onDelete: Restrict)
+  position              Json?             @db.JsonB
+  description           Json?             @db.JsonB
+  prerequisites         Json?             @db.JsonB
+  kpis                  Json?             @db.JsonB
+  platforms             String[]          @default([])
+  status                JobPostingStatus  @default(DRAFT)
+  postedAt              DateTime?        @map("posted_at")
+  expiresAt             DateTime?         @map("expires_at")
+  closedAt              DateTime?        @map("closed_at")
+  approvedBy            Json?             @map("approved_by") @db.JsonB
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  candidates            Candidate[]
+  cvScreenings          CvScreening[]
+  hiringDecisions       HiringDecision[]
+  linkedFromRequest     RecruitmentRequest? @relation("RequestLinkedPosting")
+
+  @@index([recruitmentRequestId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model Candidate {
+  id                   String          @id @default(uuid()) @db.Uuid
+  candidateId          String          @unique @map("candidate_id") @db.VarChar(32)
+  jobPostingId         String          @map("job_posting_id") @db.Uuid
+  jobPosting           JobPosting      @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  source               CandidateSource @default(COMPANY_SITE)
+  referralUserId       String?         @map("referral_user_id") @db.Uuid
+  referralUser         User?           @relation("CandidateReferral", fields: [referralUserId], references: [id], onDelete: SetNull)
+  personalInfo         Json?           @map("personal_info") @db.JsonB
+  career               Json?           @db.JsonB
+  applicationResponses Json?           @map("application_responses") @db.JsonB
+  status               CandidateStatus @default(NEW)
+  pipeline             Json?          @db.JsonB
+  rejection            Json?          @db.JsonB
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  cvScreenings         CvScreening[]
+  interviewFeedback    InterviewFeedback[]
+  hiringDecisions      HiringDecision[]
+
+  @@index([jobPostingId])
+  @@index([status])
+  @@index([referralUserId])
+}
+
+model CvScreening {
+  id               String                  @id @default(uuid()) @db.Uuid
+  candidateId      String                 @map("candidate_id") @db.Uuid
+  candidate        Candidate              @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobPostingId     String                 @map("job_posting_id") @db.Uuid
+  jobPosting       JobPosting             @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  assessments      Json?                  @db.JsonB
+  aggregateRating  Decimal?               @map("aggregate_rating") @db.Decimal(5, 2)
+  recommendation   ScreeningRecommendation?
+  nextPhase        String?                @map("next_phase") @db.VarChar(32)
+  screenedById     String                 @map("screened_by_id") @db.Uuid
+  screenedBy       User                   @relation("CvScreeningScreenedBy", fields: [screenedById], references: [id], onDelete: Restrict)
+  screenedAt       DateTime               @map("screened_at")
+  approvedById     String?                @map("approved_by_id") @db.Uuid
+  approvedAt       DateTime?             @map("approved_at")
+  interviewScheduled Boolean              @default(false) @map("interview_scheduled")
+  rejectionSent    Boolean                @default(false) @map("rejection_sent")
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@index([candidateId])
+  @@index([jobPostingId])
+  @@index([screenedById])
+}
+
+model InterviewFeedback {
+  id           String            @id @default(uuid()) @db.Uuid
+  candidateId   String            @map("candidate_id") @db.Uuid
+  candidate    Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  interviewRound Int             @map("interview_round")
+  interviewType InterviewType    @map("interview_type")
+  scheduledAt  DateTime?         @map("scheduled_at")
+  completedAt DateTime?         @map("completed_at")
+  interviewers Json?            @db.JsonB
+  ratings      Json?            @db.JsonB
+  totalRating  Decimal?         @map("total_rating") @db.Decimal(5, 2)
+  endorsement  EndorsementLevel?
+  remarks      String?           @db.Text
+  nextAction   String?           @map("next_action") @db.VarChar(32)
+  compiledById String           @map("compiled_by_id") @db.Uuid
+  compiledBy   User             @relation("InterviewFeedbackCompiledBy", fields: [compiledById], references: [id], onDelete: Restrict)
+  compiledAt   DateTime         @map("compiled_at")
+  ranking      Int?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([candidateId])
+  @@index([compiledById])
+}
+
+model HiringDecision {
+  id                 String                 @id @default(uuid()) @db.Uuid
+  decisionId         String                 @unique @map("decision_id") @db.VarChar(32)
+  candidateId        String                 @map("candidate_id") @db.Uuid
+  candidate          Candidate              @relation(fields: [candidateId], references: [id], onDelete: Restrict)
+  recruitmentRequestId String               @map("recruitment_request_id") @db.Uuid
+  recruitmentRequest RecruitmentRequest     @relation(fields: [recruitmentRequestId], references: [id], onDelete: Restrict)
+  jobPostingId       String                 @map("job_posting_id") @db.Uuid
+  jobPosting         JobPosting             @relation(fields: [jobPostingId], references: [id], onDelete: Restrict)
+  candidateSummary   Json?                  @map("candidate_summary") @db.JsonB
+  offer              Json?                  @db.JsonB
+  selectionReasoning String?                @map("selection_reasoning") @db.Text
+  keyAssets          Json?                  @map("key_assets") @db.JsonB
+  attachments        Json?                  @db.JsonB
+  submittedById      String                 @map("submitted_by_id") @db.Uuid
+  submittedBy        User                   @relation("HiringDecisionSubmittedBy", fields: [submittedById], references: [id], onDelete: Restrict)
+  submittedAt        DateTime?               @map("submitted_at")
+  approvals          Json?                  @db.JsonB
+  finalDecision      HiringDecisionOutcome? @map("final_decision")
+  offerDocumentUrl   String?                 @map("offer_document_url")
+  candidateNotifiedAt DateTime?             @map("candidate_notified_at")
+  offerAccepted      Boolean                @default(false) @map("offer_accepted")
+  acceptedAt         DateTime?              @map("accepted_at")
+  employeeId         String?                @map("employee_id") @db.Uuid
+  onboardingId       String?                @map("onboarding_id") @db.Uuid
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  @@index([candidateId])
+  @@index([recruitmentRequestId])
+  @@index([jobPostingId])
+  @@index([submittedById])
+  @@index([finalDecision])
 }
