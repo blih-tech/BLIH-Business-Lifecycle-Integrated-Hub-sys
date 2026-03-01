@@ -10,7 +10,16 @@ export class UserEmploymentResponseDto implements UserEmploymentResponseDtoType 
   employeeCode?: string | null;
 
   @ApiPropertyOptional({ nullable: true })
-  jobTitle?: string | null;
+  departmentId?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  departmentName?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  positionId?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  positionTitle?: string | null;
 
   @ApiProperty({ enum: EmploymentType })
   employmentType!: EmploymentType;

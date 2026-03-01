@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Audit } from '../../shared/decorators/audit.decorator';
 import { Public } from '../../shared/decorators/public.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { TokenRequestDto } from './dto/token-request.dto';
@@ -31,7 +32,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Validate access token',
     description:
-      'Validates a JWT access token and returns mapped principal scopes, roles, and permissions. Public endpoint.',
+      'Validates an access token and returns the resolved principal identity, scopes, roles, and persisted permissions.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -68,6 +69,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Token validated successfully')
   validate(@Body() dto: TokenRequestDto) {
     return this.validateTokenUseCase.execute(dto.token, env.KEYCLOAK_REALM);
   }
@@ -77,7 +79,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Introspect token',
     description:
-      'Performs OAuth token introspection against Keycloak and returns normalized activity/subject metadata. Public endpoint.',
+      'Performs Keycloak token introspection and returns normalized token activity and subject metadata.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -98,7 +100,7 @@ export class AuthController {
         active: true,
         policyVersion: '2026.1',
         sub: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
-        email: 'admin@blih.local',
+        email: 'admin1',
         scopes: ['openid', 'profile', 'email'],
         roles: [],
         permissions: [],
@@ -114,6 +116,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Token introspected successfully')
   introspect(@Body() dto: TokenRequestDto) {
     return this.introspectTokenUseCase.execute(dto.token, env.KEYCLOAK_REALM);
   }
@@ -123,7 +126,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Exchange token',
     description:
-      'Exchanges an existing token (and optional requested subject) for a new access/refresh pair. Public endpoint for trusted clients.',
+      'Exchanges an existing token, and optionally impersonates a requested subject, to issue a new access and refresh token pair.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -161,6 +164,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Token exchanged successfully')
   exchange(@Body() dto: TokenRequestDto) {
     return this.exchangeTokenUseCase.execute(
       dto.token,
@@ -174,7 +178,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Refresh token',
     description:
-      'Refreshes an access token using a refresh token and returns the new token pair. Public endpoint for trusted clients.',
+      'Refreshes an access token using a refresh token and returns a new access and refresh token pair.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -211,6 +215,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired refresh token',
   })
+  @ResponseMessage('Token refreshed successfully')
   async refresh(@Body() dto: TokenRequestDto) {
     const refreshed = await this.tokenService.refreshToken(
       dto.token,
@@ -233,7 +238,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Revoke session token',
     description:
-      'Revokes an access or refresh token and publishes session revocation events. Public endpoint for trusted clients.',
+      'Revokes an access or refresh token and returns the subject and session metadata when introspection succeeds.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -270,6 +275,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Session revoked successfully')
   revokeSession(@Body() dto: TokenRequestDto) {
     return this.revokeSessionUseCase.execute(
       dto.token,
@@ -287,7 +293,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Get authenticated user',
     description:
-      'Returns the authenticated user profile and access context. Requires bearer authentication.',
+      'Returns the authenticated user profile and resolved access context for the current bearer token.',
   })
   @ApiOkResponse({
     description: 'Authenticated user and auth context.',
@@ -312,6 +318,7 @@ export class AuthController {
       },
     },
   })
+  @ResponseMessage('Authenticated user retrieved successfully')
   me(@Req() request: { user: AuthPrincipal }): AuthMeResponseDto {
     const principal = request.user;
 

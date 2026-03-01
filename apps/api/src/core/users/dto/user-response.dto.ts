@@ -52,7 +52,7 @@ export class UserResponseDto implements UserResponseDtoType {
   status!: string;
 
   @ApiPropertyOptional({
-    description: 'Department id for the user.',
+    description: 'Department id derived from the user employment position.',
     example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
     nullable: true,
   })

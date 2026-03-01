@@ -19,6 +19,7 @@ import {
 import { Audit } from '../../shared/decorators/audit.decorator';
 import { AuditState } from '../../shared/decorators/audit-state.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
@@ -55,7 +56,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Create user',
     description:
-      'Creates a new user in Keycloak and local persistence. Requires role `user:create`.',
+      'Creates a new user in Keycloak, persists the local user record, and initializes lifecycle state.',
   })
   @ApiBody({
     type: CreateUserDto,
@@ -68,7 +69,6 @@ export class UsersController {
           firstName: 'Jane',
           lastName: 'Doe',
           phone: '+12025550199',
-          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
         },
       },
     },
@@ -80,13 +80,14 @@ export class UsersController {
       example: {
         id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
         keycloakId: 'ae3fdb37-c555-4b17-b320-d5f8b435f667',
+        username: 'jane.doe',
         email: 'jane.doe@blih.local',
         firstName: 'Jane',
         lastName: 'Doe',
         phone: '+12025550199',
         status: 'ACTIVE',
-        departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-        permissions: ['user:view'],
+        departmentId: null,
+        permissions: [],
         createdAt: '2026-02-15T08:52:24.144Z',
         updatedAt: '2026-02-15T08:52:24.144Z',
       },
@@ -105,6 +106,7 @@ export class UsersController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('User created successfully')
   createUser(@Body() dto: CreateUserDto) {
     return this.createUserUseCase.execute(dto);
   }
@@ -120,7 +122,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Update user',
     description:
-      'Updates a user profile in Keycloak and local persistence. Requires role `user:update`.',
+      'Updates a user in Keycloak and local persistence using the internal user id or Keycloak id.',
   })
   @ApiParam({
     name: 'userId',
@@ -135,7 +137,6 @@ export class UsersController {
         value: {
           firstName: 'Janet',
           phone: '+12025550000',
-          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
         },
       },
     },
@@ -147,13 +148,14 @@ export class UsersController {
       example: {
         id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
         keycloakId: 'ae3fdb37-c555-4b17-b320-d5f8b435f667',
+        username: 'jane.doe',
         email: 'jane.doe@blih.local',
         firstName: 'Janet',
         lastName: 'Doe',
         phone: '+12025550000',
         status: 'ACTIVE',
-        departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-        permissions: ['user:view'],
+        departmentId: null,
+        permissions: [],
         createdAt: '2026-02-15T08:52:24.144Z',
         updatedAt: '2026-02-15T09:12:24.144Z',
       },
@@ -170,6 +172,7 @@ export class UsersController {
     forbidden: 'Required roles are missing',
     notFound: 'User not found',
   })
+  @ResponseMessage('User updated successfully')
   updateUser(@Param('userId') userId: string, @Body() dto: UpdateUserDto) {
     return this.updateUserUseCase.execute(userId, dto);
   }
@@ -185,7 +188,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Disable user',
     description:
-      'Disables a user account in Keycloak and marks the local user status as DISABLED. Requires role `user:disable`.',
+      'Disables a user in Keycloak and marks the local user status as `DISABLED`.',
   })
   @ApiParam({
     name: 'userId',
@@ -199,13 +202,14 @@ export class UsersController {
       example: {
         id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
         keycloakId: 'ae3fdb37-c555-4b17-b320-d5f8b435f667',
+        username: 'jane.doe',
         email: 'jane.doe@blih.local',
         firstName: 'Jane',
         lastName: 'Doe',
         phone: '+12025550199',
         status: 'DISABLED',
-        departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-        permissions: ['user:view'],
+        departmentId: null,
+        permissions: [],
         createdAt: '2026-02-15T08:52:24.144Z',
         updatedAt: '2026-02-15T09:52:24.144Z',
       },
@@ -217,6 +221,7 @@ export class UsersController {
     forbidden: 'Required roles are missing',
     notFound: 'User not found',
   })
+  @ResponseMessage('User disabled successfully')
   disableUser(@Param('userId') userId: string) {
     return this.disableUserUseCase.execute(userId);
   }
@@ -268,6 +273,7 @@ export class UsersController {
     forbidden: 'Required roles are missing',
     notFound: 'User not found',
   })
+  @ResponseMessage('Password reset successfully')
   resetPassword(
     @Param('userId') userId: string,
     @Body() payload: ResetPasswordDto,
@@ -284,7 +290,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'List users',
     description:
-      'Returns users in the configured realm sorted by most recent creation date. Requires role `user:view`.',
+      'Returns local user records sorted by most recent creation date.',
   })
   @ApiOkResponse({
     description: 'User list for the configured realm.',
@@ -295,13 +301,14 @@ export class UsersController {
         {
           id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
           keycloakId: 'ae3fdb37-c555-4b17-b320-d5f8b435f667',
+          username: 'jane.doe',
           email: 'jane.doe@blih.local',
           firstName: 'Jane',
           lastName: 'Doe',
           phone: '+12025550199',
           status: 'ACTIVE',
-          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-          permissions: ['user:view'],
+          departmentId: null,
+          permissions: [],
           createdAt: '2026-02-15T08:52:24.144Z',
           updatedAt: '2026-02-15T09:12:24.144Z',
         },
@@ -313,6 +320,7 @@ export class UsersController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Users retrieved successfully')
   listUsers() {
     return this.listUsersUseCase.execute();
   }
