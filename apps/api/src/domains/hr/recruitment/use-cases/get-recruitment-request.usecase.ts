@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { mapRecruitmentApprovalStep } from '../recruitment-approval.mapper';
 
 @Injectable()
 export class GetRecruitmentRequestUseCase {
@@ -11,6 +12,17 @@ export class GetRecruitmentRequestUseCase {
       include: {
         department: { select: { name: true } },
         position: { select: { id: true, title: true } },
+        approvalSteps: {
+          orderBy: { level: 'asc' },
+          select: {
+            level: true,
+            role: true,
+            approverId: true,
+            decision: true,
+            comments: true,
+            decidedAt: true,
+          },
+        },
         submittedBy: {
           select: { id: true, email: true, firstName: true, lastName: true },
         },
@@ -26,6 +38,14 @@ export class GetRecruitmentRequestUseCase {
         firstName: string;
         lastName: string;
       };
+      approvalSteps: Array<{
+        level: number;
+        role: string;
+        approverId: string;
+        decision: 'PENDING' | 'APPROVED' | 'REJECTED';
+        comments: string | null;
+        decidedAt: Date;
+      }>;
     };
     return {
       id: withRels.id,
@@ -42,7 +62,7 @@ export class GetRecruitmentRequestUseCase {
       submittedById: withRels.submittedById,
       submittedByEmail: withRels.submittedBy.email,
       submittedAt: withRels.submittedAt?.toISOString() ?? null,
-      approvals: withRels.approvals,
+      approvals: withRels.approvalSteps.map(mapRecruitmentApprovalStep),
       status: withRels.status,
       linkedJobPostingId: withRels.linkedJobPostingId ?? null,
       linkedUserId: withRels.linkedUserId ?? null,

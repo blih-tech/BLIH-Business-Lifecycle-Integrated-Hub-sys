@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { mapRecruitmentApprovalStep } from '../recruitment-approval.mapper';
 import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()
@@ -10,7 +11,7 @@ export class ApproveRecruitmentRequestUseCase {
     id: string,
     body: {
       role: string;
-      decision: 'APPROVE' | 'REJECT';
+      decision: 'APPROVED' | 'REJECTED';
       comments?: string | null;
     },
     approverId: string,
@@ -38,7 +39,7 @@ export class ApproveRecruitmentRequestUseCase {
       type: existing.type,
       replacementUserId: existing.replacementUserId,
       requirePosition: true,
-      enforceHeadcount: body.decision === 'APPROVE',
+      enforceHeadcount: body.decision === 'APPROVED',
     });
 
     const approvals = await this.prisma.recruitmentApproval.findMany({
@@ -54,24 +55,23 @@ export class ApproveRecruitmentRequestUseCase {
       },
     });
 
-    const step = {
-      level: approvals.length + 1,
-      role: body.role,
-      approverId,
-      status: body.decision === 'APPROVE' ? 'APPROVED' : 'REJECTED',
-      decision: body.decision,
-      comments: body.comments ?? null,
-      actedAt: new Date().toISOString(),
-    };
-    const newApprovals = [...approvals, step];
-    const newStatus = body.decision === 'REJECT' ? 'REJECTED' : 'APPROVED';
     const level = approvals.length + 1;
     const decidedAt = new Date();
+    const step = {
+      level,
+      role: body.role,
+      approverId,
+      decision: body.decision,
+      comments: body.comments ?? null,
+      decidedAt: decidedAt.toISOString(),
+    };
+    const newApprovals = [...approvals.map(mapRecruitmentApprovalStep), step];
+    const newStatus = body.decision === 'REJECTED' ? 'REJECTED' : 'APPROVED';
 
     const [r] = await this.prisma.$transaction([
       this.prisma.recruitmentRequest.update({
         where: { id },
-        data: { status: newStatus, approvals: newApprovals as object },
+        data: { status: newStatus },
         include: {
           department: { select: { name: true } },
           submittedBy: { select: { email: true } },
@@ -94,7 +94,7 @@ export class ApproveRecruitmentRequestUseCase {
       id: r.id,
       requestId: r.requestId,
       status: r.status,
-      approvals: r.approvals,
+      approvals: newApprovals,
     };
   }
 }

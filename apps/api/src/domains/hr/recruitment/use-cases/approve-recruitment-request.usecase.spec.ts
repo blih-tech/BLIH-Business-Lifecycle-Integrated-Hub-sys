@@ -16,26 +16,6 @@ describe('ApproveRecruitmentRequestUseCase', () => {
           id: 'request-1',
           requestId: 'REQ-2026-001',
           status: 'APPROVED',
-          approvals: [
-            {
-              level: 1,
-              role: 'Finance',
-              approverId: 'approver-1',
-              status: 'APPROVED',
-              decision: 'APPROVE',
-              comments: null,
-              actedAt: '2026-03-01T00:00:00.000Z',
-            },
-            {
-              level: 2,
-              role: 'HR',
-              approverId: 'approver-2',
-              status: 'APPROVED',
-              decision: 'APPROVE',
-              comments: 'Looks good',
-              actedAt: '2026-03-01T01:00:00.000Z',
-            },
-          ],
         }),
       },
       recruitmentApproval: {
@@ -44,7 +24,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
             level: 1,
             role: 'Finance',
             approverId: 'approver-1',
-            decision: 'APPROVE',
+            decision: 'APPROVED',
             comments: null,
             decidedAt: new Date('2026-03-01T00:00:00.000Z'),
           },
@@ -83,7 +63,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
         'request-1',
         {
           role: 'HR',
-          decision: 'APPROVE',
+          decision: 'APPROVED',
           comments: 'Looks good',
         },
         'approver-2',
@@ -99,7 +79,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
         approverId: 'approver-2',
         level: 2,
         role: 'HR',
-        decision: 'APPROVE',
+        decision: 'APPROVED',
       }),
     });
   });

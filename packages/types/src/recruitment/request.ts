@@ -6,6 +6,7 @@ export type RecruitmentRequestStatus =
   | 'COMPLETED';
 
 export type RecruitmentRequestType = 'NEW' | 'REPLACEMENT';
+export type ApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export interface CreateRecruitmentRequestDto {
   departmentId: string;
@@ -30,10 +31,9 @@ export interface ApprovalStepDto {
   level: number;
   role: string;
   approverId?: string | null;
-  status: string;
-  decision?: string | null;
+  decision: ApprovalDecision;
   comments?: string | null;
-  actedAt?: string | null;
+  decidedAt?: string | null;
 }
 
 export interface RecruitmentRequestResponseDto {
@@ -52,7 +52,7 @@ export interface RecruitmentRequestResponseDto {
   submittedById: string;
   submittedByEmail?: string | null;
   submittedAt: string | null;
-  approvals: unknown;
+  approvals: ApprovalStepDto[];
   linkedJobPostingId: string | null;
   linkedUserId: string | null;
   createdAt: string;

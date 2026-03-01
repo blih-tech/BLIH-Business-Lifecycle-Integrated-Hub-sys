@@ -138,7 +138,7 @@ export class RecruitmentRequestsController {
     @Body()
     body: {
       role: string;
-      decision: 'APPROVE' | 'REJECT';
+      decision: 'APPROVED' | 'REJECTED';
       comments?: string | null;
     },
     @Req() req: Request & { user?: AuthPrincipal },

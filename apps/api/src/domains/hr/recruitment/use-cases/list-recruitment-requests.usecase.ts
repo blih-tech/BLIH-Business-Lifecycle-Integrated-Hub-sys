@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { mapRecruitmentApprovalStep } from '../recruitment-approval.mapper';
 @Injectable()
 export class ListRecruitmentRequestsUseCase {
   constructor(private readonly prisma: PrismaService) {}
@@ -18,6 +19,17 @@ export class ListRecruitmentRequestsUseCase {
       include: {
         department: { select: { name: true } },
         position: { select: { title: true } },
+        approvalSteps: {
+          orderBy: { level: 'asc' },
+          select: {
+            level: true,
+            role: true,
+            approverId: true,
+            decision: true,
+            comments: true,
+            decidedAt: true,
+          },
+        },
         submittedBy: { select: { email: true } },
       },
     });
@@ -27,6 +39,14 @@ export class ListRecruitmentRequestsUseCase {
         department: { name: string };
         position: { title: string } | null;
         submittedBy: { email: string };
+        approvalSteps: Array<{
+          level: number;
+          role: string;
+          approverId: string;
+          decision: 'PENDING' | 'APPROVED' | 'REJECTED';
+          comments: string | null;
+          decidedAt: Date;
+        }>;
       };
       return {
         id: withRels.id,
@@ -40,6 +60,7 @@ export class ListRecruitmentRequestsUseCase {
         submittedById: withRels.submittedById,
         submittedByEmail: withRels.submittedBy.email,
         submittedAt: withRels.submittedAt?.toISOString() ?? null,
+        approvals: withRels.approvalSteps.map(mapRecruitmentApprovalStep),
         linkedJobPostingId: withRels.linkedJobPostingId ?? null,
         createdAt: withRels.createdAt.toISOString(),
         updatedAt: withRels.updatedAt.toISOString(),

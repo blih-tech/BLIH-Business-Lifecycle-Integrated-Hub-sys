@@ -17,6 +17,7 @@ import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create
 import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
 import { DocumentExpiryJob } from './jobs/document-expiry.job';
 import { RecruitmentRequestsController } from './recruitment/recruitment-requests.controller';
+import { HiringDecisionsController } from './recruitment/hiring-decisions.controller';
 import { ListRecruitmentRequestsUseCase } from './recruitment/use-cases/list-recruitment-requests.usecase';
 import { GetRecruitmentRequestUseCase } from './recruitment/use-cases/get-recruitment-request.usecase';
 import { CreateRecruitmentRequestUseCase } from './recruitment/use-cases/create-recruitment-request.usecase';
@@ -24,6 +25,10 @@ import { UpdateRecruitmentRequestUseCase } from './recruitment/use-cases/update-
 import { SubmitRecruitmentRequestUseCase } from './recruitment/use-cases/submit-recruitment-request.usecase';
 import { ApproveRecruitmentRequestUseCase } from './recruitment/use-cases/approve-recruitment-request.usecase';
 import { CreateJobPostingFromRequestUseCase } from './recruitment/use-cases/create-job-posting-from-request.usecase';
+import { CreateHiringDecisionUseCase } from './recruitment/use-cases/create-hiring-decision.usecase';
+import { GetHiringDecisionUseCase } from './recruitment/use-cases/get-hiring-decision.usecase';
+import { FinalizeHiringDecisionUseCase } from './recruitment/use-cases/finalize-hiring-decision.usecase';
+import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-offer.usecase';
 
 @Module({
   controllers: [
@@ -32,6 +37,7 @@ import { CreateJobPostingFromRequestUseCase } from './recruitment/use-cases/crea
     EmployeeContractsController,
     JobDescriptionsController,
     RecruitmentRequestsController,
+    HiringDecisionsController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -54,6 +60,10 @@ import { CreateJobPostingFromRequestUseCase } from './recruitment/use-cases/crea
     SubmitRecruitmentRequestUseCase,
     ApproveRecruitmentRequestUseCase,
     CreateJobPostingFromRequestUseCase,
+    CreateHiringDecisionUseCase,
+    GetHiringDecisionUseCase,
+    FinalizeHiringDecisionUseCase,
+    AcceptHiringOfferUseCase,
   ],
 })
 export class HrModule {}
