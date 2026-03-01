@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/platform/prisma/generated"
+  provider     = "prisma-client"
+  output       = "../src/platform/prisma/generated"
   moduleFormat = "cjs"
 }
 
@@ -70,63 +70,109 @@ enum MaritalStatus {
   SEPARATED
 }
 
+enum DocumentType {
+  CONTRACT
+  ID
+  CERTIFICATE
+  MEDICAL
+  RESUME
+  POLICY_ACK
+  QUALIFICATION
+  OTHER
+}
+
+enum ContractType {
+  INITIAL
+  RENEWAL
+  AMENDMENT
+  ADDENDUM
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  RENEWED
+}
+
 model User {
-  id                String      @id @default(uuid()) @db.Uuid
-  keycloakId        String      @unique
-  username          String      @unique
-  email             String      @unique
-  firstName         String
-  lastName          String
-  phone             String?
-  status            UserStatus  @default(ACTIVE)
-  departmentId      String?     @db.Uuid
-  department        Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  lastLoginAt       DateTime?
-  metadata          Json?
-  permissions       String[]    @default([])
-  profile           UserProfile?
-  employment        UserEmployment?
-  compensation      UserCompensation?
+  id                  String                    @id @default(uuid()) @db.Uuid
+  keycloakId          String                    @unique
+  username            String                    @unique
+  email               String                    @unique
+  firstName           String
+  lastName            String
+  phone               String?
+  status              UserStatus                @default(ACTIVE)
+  lastLoginAt         DateTime?
+  metadata            Json?
+  permissions         String[]                  @default([])
+  profile             UserProfile?
+  employment          UserEmployment?
+  compensation        UserCompensation?
   compensationHistory UserCompensationHistory[]
+  employmentChanges   UserEmploymentHistory[]   @relation("EmploymentChangedBy")
   compensationChanges UserCompensationHistory[] @relation("CompensationChangedBy")
-  lifecycle         UserLifecycle?
-  createdAt         DateTime    @default(now())
-  updatedAt          DateTime                  @updatedAt
-  roles             UserRole[]
+  lifecycle           UserLifecycle?
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  roles               UserRole[]
+  employeeDocuments   EmployeeDocument[]
+  verifiedDocuments   EmployeeDocument[]        @relation("EmployeeDocumentVerifiedBy")
+  contracts           Contract[]
 
   @@index([status])
-  @@index([departmentId])
 }
 
 model Department {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  users       User[]
+  id                String                  @id @default(uuid()) @db.Uuid
+  name              String                  @unique
+  description       String?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  positions         Position[]
+  employmentHistory UserEmploymentHistory[]
+}
+
+model Position {
+  id                String                  @id @default(uuid()) @db.Uuid
+  title             String
+  description       String?
+  departmentId      String                  @db.Uuid
+  department        Department              @relation(fields: [departmentId], references: [id])
+  employments       UserEmployment[]
+  jobDescriptions   JobDescription[]
+  employmentHistory UserEmploymentHistory[]
+  isActive          Boolean                 @default(true)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  @@unique([departmentId, title])
+  @@index([departmentId])
+  @@index([isActive])
 }
 
 model CountryReference {
-  id                    String        @id @default(uuid()) @db.Uuid
-  code                  String?       @unique @db.VarChar(3)
-  name                  String        @unique
-  isActive              Boolean       @default(true)
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
-  nationalityProfiles   UserProfile[] @relation("ProfileNationality")
-  residenceProfiles     UserProfile[] @relation("ProfileResidenceCountry")
+  id                  String        @id @default(uuid()) @db.Uuid
+  code                String?       @unique @db.VarChar(3)
+  name                String        @unique
+  isActive            Boolean       @default(true)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  nationalityProfiles UserProfile[] @relation("ProfileNationality")
+  residenceProfiles   UserProfile[] @relation("ProfileResidenceCountry")
 
   @@index([isActive])
 }
 
 model UserProfile {
-  id                    String   @id @default(uuid()) @db.Uuid
-  userId                String   @unique @db.Uuid
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                    String            @id @default(uuid()) @db.Uuid
+  userId                String            @unique @db.Uuid
+  user                  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   dateOfBirth           DateTime?
   gender                Gender?
-  nationalityId         String?  @db.Uuid
+  nationalityId         String?           @db.Uuid
   nationality           CountryReference? @relation("ProfileNationality", fields: [nationalityId], references: [id], onDelete: SetNull)
   maritalStatus         MaritalStatus?
   avatarUrl             String?
@@ -134,35 +180,67 @@ model UserProfile {
   addressLine2          String?
   city                  String?
   state                 String?
-  countryId             String?  @db.Uuid
+  countryId             String?           @db.Uuid
   country               CountryReference? @relation("ProfileResidenceCountry", fields: [countryId], references: [id], onDelete: SetNull)
   postalCode            String?
   emergencyContactName  String?
   emergencyContactPhone String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
 
   @@index([nationalityId])
   @@index([countryId])
 }
 
 model UserEmployment {
-  id                     String            @id @default(uuid()) @db.Uuid
-  userId                 String            @unique @db.Uuid
-  user                   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  employeeCode           String?           @unique
-  jobTitle               String?
-  employmentType         EmploymentType    @default(FULL_TIME)
-  managerEmploymentId    String?           @db.Uuid
-  managerEmployment      UserEmployment?   @relation("EmploymentManagerRelation", fields: [managerEmploymentId], references: [id], onDelete: SetNull)
-  subordinateEmployments UserEmployment[]  @relation("EmploymentManagerRelation")
+  id                     String                  @id @default(uuid()) @db.Uuid
+  userId                 String                  @unique @db.Uuid
+  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeCode           String?                 @unique
+  positionId             String?                 @db.Uuid
+  position               Position?               @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  employmentType         EmploymentType          @default(FULL_TIME)
+  managerEmploymentId    String?                 @db.Uuid
+  managerEmployment      UserEmployment?         @relation("EmploymentManagerRelation", fields: [managerEmploymentId], references: [id], onDelete: SetNull)
+  subordinateEmployments UserEmployment[]        @relation("EmploymentManagerRelation")
+  history                UserEmploymentHistory[] @relation("EmploymentHistory")
+  managedHistoryEntries  UserEmploymentHistory[] @relation("EmploymentHistoryManagerRelation")
   hiredAt                DateTime?
   probationEndAt         DateTime?
   confirmedAt            DateTime?
-  createdAt              DateTime          @default(now())
-  updatedAt              DateTime          @updatedAt
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
 
+  @@index([positionId])
   @@index([managerEmploymentId])
+}
+
+model UserEmploymentHistory {
+  id                  String          @id @default(uuid()) @db.Uuid
+  userEmploymentId    String          @db.Uuid
+  userEmployment      UserEmployment  @relation("EmploymentHistory", fields: [userEmploymentId], references: [id], onDelete: Cascade)
+  employeeCode        String?
+  departmentId        String?         @db.Uuid
+  department          Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  positionId          String?         @db.Uuid
+  position            Position?       @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  employmentType      EmploymentType  @default(FULL_TIME)
+  managerEmploymentId String?         @db.Uuid
+  managerEmployment   UserEmployment? @relation("EmploymentHistoryManagerRelation", fields: [managerEmploymentId], references: [id], onDelete: SetNull)
+  effectiveFrom       DateTime        @default(now())
+  effectiveTo         DateTime?
+  changeReason        String?
+  changedById         String?         @db.Uuid
+  changedBy           User?           @relation("EmploymentChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+  createdAt           DateTime        @default(now())
+
+  @@index([userEmploymentId])
+  @@index([departmentId])
+  @@index([positionId])
+  @@index([managerEmploymentId])
+  @@index([changedById])
+  @@index([effectiveFrom])
+  @@index([userEmploymentId, effectiveFrom])
 }
 
 model UserCompensation {
@@ -192,8 +270,8 @@ model UserCompensationHistory {
   validFrom     DateTime
   validTo       DateTime?
   changeReason  String?
-  changedById    String?      @db.Uuid
-  changedBy      User?        @relation("CompensationChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+  changedById   String?      @db.Uuid
+  changedBy     User?        @relation("CompensationChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
   createdAt     DateTime     @default(now())
 
   @@index([userId])
@@ -269,14 +347,14 @@ model Permission {
 }
 
 model UserRole {
-  id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @db.Uuid
-  roleId         String   @db.Uuid
-  assignedBy     String?  @db.Uuid
-  assignedAt     DateTime @default(now())
-  expiresAt      DateTime?
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role           Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  roleId     String    @db.Uuid
+  assignedBy String?   @db.Uuid
+  assignedAt DateTime  @default(now())
+  expiresAt  DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roleId])
   @@index([roleId])
@@ -284,12 +362,12 @@ model UserRole {
 }
 
 model RolePermission {
-  id            String      @id @default(uuid()) @db.Uuid
-  roleId        String      @db.Uuid
-  permissionId  String      @db.Uuid
-  createdAt     DateTime    @default(now())
-  role          Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission    Permission  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  id           String     @id @default(uuid()) @db.Uuid
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  createdAt    DateTime   @default(now())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId])
   @@index([roleId])
@@ -297,7 +375,7 @@ model RolePermission {
 }
 
 model AuditLog {
-  id            String    @id @default(uuid()) @db.Uuid
+  id            String      @id @default(uuid()) @db.Uuid
   action        String
   module        String
   resource      String
@@ -314,7 +392,7 @@ model AuditLog {
   before        Json?
   after         Json?
   metadata      Json?
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime    @default(now())
 
   @@index([createdAt])
   @@index([result, createdAt])
@@ -323,85 +401,156 @@ model AuditLog {
 }
 
 model AuditExport {
-  id             String    @id @default(uuid()) @db.Uuid
-  requestedBy    String
-  format         String
-  filters        Json?
-  status         String
-  filePath       String?
-  createdAt      DateTime  @default(now())
-  completedAt    DateTime?
+  id          String    @id @default(uuid()) @db.Uuid
+  requestedBy String
+  format      String
+  filters     Json?
+  status      String
+  filePath    String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
 
   @@index([createdAt])
 }
 
 model Notification {
-  id          String      @id @default(uuid()) @db.Uuid
-  userId      String?
-  type        String
-  priority    String
-  title       String
-  body        String
-  payload     Json?
-  readAt      DateTime?
-  createdAt   DateTime    @default(now())
-  deliveries  NotificationDelivery[]
+  id         String                 @id @default(uuid()) @db.Uuid
+  userId     String?
+  type       String
+  priority   String
+  title      String
+  body       String
+  payload    Json?
+  readAt     DateTime?
+  createdAt  DateTime               @default(now())
+  deliveries NotificationDelivery[]
 
   @@index([userId, createdAt])
 }
 
 model NotificationDelivery {
-  id              String              @id @default(uuid()) @db.Uuid
-  notificationId  String              @db.Uuid
-  notification    Notification        @relation(fields: [notificationId], references: [id], onDelete: Cascade)
-  channel         NotificationChannel
-  status          NotificationStatus  @default(PENDING)
-  recipient       String
-  response        Json?
-  errorMessage    String?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  id             String              @id @default(uuid()) @db.Uuid
+  notificationId String              @db.Uuid
+  notification   Notification        @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  channel        NotificationChannel
+  status         NotificationStatus  @default(PENDING)
+  recipient      String
+  response       Json?
+  errorMessage   String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 
   @@index([status, createdAt])
   @@index([notificationId])
 }
 
 model WebhookEndpoint {
-  id          String    @id @default(uuid()) @db.Uuid
-  name        String
-  url         String
-  secret      String?
-  enabled     Boolean   @default(true)
-  events      String[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  url       String
+  secret    String?
+  enabled   Boolean  @default(true)
+  events    String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([enabled])
 }
 
 model SystemConfig {
-  id         String    @id @default(uuid()) @db.Uuid
-  key        String    @unique
-  value      Json
-  updatedBy  String?
-  updatedAt  DateTime  @updatedAt
+  id        String   @id @default(uuid()) @db.Uuid
+  key       String   @unique
+  value     Json
+  updatedBy String?
+  updatedAt DateTime @updatedAt
 }
 
 model ModuleConfig {
-  id          String    @id @default(uuid()) @db.Uuid
-  module      String    @unique
-  enabled     Boolean   @default(true)
-  licenseKey  String?
-  settings    Json?
-  updatedAt   DateTime  @updatedAt
+  id         String   @id @default(uuid()) @db.Uuid
+  module     String   @unique
+  enabled    Boolean  @default(true)
+  licenseKey String?
+  settings   Json?
+  updatedAt  DateTime @updatedAt
 }
 
 model SecurityPolicy {
-  id                  String    @id @default(uuid()) @db.Uuid
-  requireMfa          Boolean   @default(true)
-  maxConcurrentSessions Int     @default(3)
-  sessionTimeoutMinutes Int     @default(480)
-  passwordMinLength   Int       @default(12)
-  lockoutThreshold    Int       @default(5)
-  updatedAt           DateTime  @updatedAt
+  id                    String   @id @default(uuid()) @db.Uuid
+  requireMfa            Boolean  @default(true)
+  maxConcurrentSessions Int      @default(3)
+  sessionTimeoutMinutes Int      @default(480)
+  passwordMinLength     Int      @default(12)
+  lockoutThreshold      Int      @default(5)
+  updatedAt             DateTime @updatedAt
+}
+
+model EmployeeDocument {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          DocumentType
+  typeOther     String?      @map("type_other")
+  fileUrl       String       @map("file_url")
+  fileName      String?      @map("file_name")
+  fileSizeBytes Int?         @map("file_size_bytes")
+  mimeType      String?      @map("mime_type")
+  issueDate     DateTime?    @map("issue_date") @db.Date
+  expiryDate    DateTime?    @map("expiry_date") @db.Date
+  isMandatory   Boolean      @default(false) @map("is_mandatory")
+  verified      Boolean      @default(false)
+  verifiedById  String?      @map("verified_by_id") @db.Uuid
+  verifiedBy    User?        @relation("EmployeeDocumentVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt    DateTime?    @map("verified_at")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([userId, type])
+  @@index([expiryDate])
+  @@index([verifiedById])
+}
+
+model Contract {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @map("user_id") @db.Uuid
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contractType    ContractType   @map("contract_type")
+  sequenceNumber  Int            @map("sequence_number")
+  startDate       DateTime       @map("start_date") @db.Date
+  endDate         DateTime?      @map("end_date") @db.Date
+  trialApplies    Boolean        @default(false) @map("trial_applies")
+  trialEndDate    DateTime?      @map("trial_end_date") @db.Date
+  trialConfirmed  Boolean        @default(false) @map("trial_confirmed")
+  documentUrl     String?        @map("document_url")
+  status          ContractStatus @default(DRAFT)
+  syncedToFinance Boolean        @default(false) @map("synced_to_finance")
+  syncedAt        DateTime?      @map("synced_at")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([userId, sequenceNumber])
+  @@index([status])
+  @@index([endDate])
+}
+
+model JobDescription {
+  id            String    @id @default(uuid()) @db.Uuid
+  positionId    String?   @map("position_id") @db.Uuid
+  position      Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  title         String
+  level         String?
+  code          String?   @unique
+  summary       String?   @db.Text
+  duties        Json?
+  skills        Json?
+  kpis          Json?
+  documentUrl   String?   @map("document_url")
+  version       Int       @default(1)
+  effectiveFrom DateTime? @map("effective_from") @db.Date
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([positionId])
+  @@index([title])
 }

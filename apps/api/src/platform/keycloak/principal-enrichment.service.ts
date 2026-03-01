@@ -66,7 +66,15 @@ export class PrincipalEnrichmentService {
           lastName: true,
           phone: true,
           status: true,
-          departmentId: true,
+          employment: {
+            select: {
+              position: {
+                select: {
+                  departmentId: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -95,7 +103,15 @@ export class PrincipalEnrichmentService {
             lastName: true,
             phone: true,
             status: true,
-            departmentId: true,
+            employment: {
+              select: {
+                position: {
+                  select: {
+                    departmentId: true,
+                  },
+                },
+              },
+            },
           },
         });
         user = created;
@@ -147,7 +163,15 @@ export class PrincipalEnrichmentService {
               lastName: true,
               phone: true,
               status: true,
-              departmentId: true,
+              employment: {
+                select: {
+                  position: {
+                    select: {
+                      departmentId: true,
+                    },
+                  },
+                },
+              },
             },
           });
         }
@@ -162,7 +186,7 @@ export class PrincipalEnrichmentService {
         lastName: user.lastName || normalizedClaims.lastName || undefined,
         phone: user.phone ?? undefined,
         status: user.status ?? undefined,
-        departmentId: user.departmentId ?? null,
+        departmentId: user.employment?.position?.departmentId ?? null,
       };
 
       if (

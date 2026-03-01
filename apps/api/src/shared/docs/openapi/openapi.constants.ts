@@ -21,6 +21,10 @@ export const SWAGGER_TAGS: ReadonlyArray<{
     description: 'User lifecycle management and credential operations.',
   },
   {
+    name: 'Positions',
+    description: 'Position catalog CRUD for organizational job titles.',
+  },
+  {
     name: 'RBAC',
     description:
       'Role and permission management (2-part resource:action only), scoped assignment, and access evaluation.',
