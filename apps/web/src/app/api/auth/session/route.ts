@@ -26,6 +26,18 @@ function decodeJwtPayload(token: string): TokenPayload | null {
 
 export async function GET() {
   const cookieJar = await cookies();
+  const isDemoMode = process.env.DEMO_MODE === "true";
+  const hasDemoSession = cookieJar.get("demo_session")?.value === "1";
+  if (isDemoMode && hasDemoSession) {
+    return NextResponse.json({
+      authenticated: true,
+      roles: [ROLES.HR],
+      username: "Demo User",
+      email: "demo.hr@blih.local",
+      exp: null,
+    });
+  }
+
   const token = cookieJar.get("kc_access")?.value;
   if (!token) {
     return NextResponse.json({ authenticated: false, roles: [] });

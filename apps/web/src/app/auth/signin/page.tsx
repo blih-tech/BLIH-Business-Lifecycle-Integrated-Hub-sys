@@ -3,6 +3,8 @@ import { AuthCard } from "@/features/auth";
 import { ChevronRight, ShieldCheck, Mail, Lock } from "lucide-react";
 
 export default function SignInPage() {
+  const isDemoMode = process.env.DEMO_MODE === "true";
+
   return (
     <AuthCard 
       title="Welcome Back" 
@@ -34,6 +36,17 @@ export default function SignInPage() {
       }
     >
       <div className="flex flex-col gap-6">
+        {isDemoMode ? (
+          <Button
+            variant="outline"
+            className="w-full h-12 text-base font-semibold rounded-2xl border-[#e5e5e5]"
+            asChild
+            size="lg"
+          >
+            <a href="/api/auth/demo-login">Continue as Demo User</a>
+          </Button>
+        ) : null}
+
         <Button 
           className="w-full h-12 text-base font-bold shadow-xl shadow-primary/15 hover:shadow-primary/25 active:scale-[0.98] transition-all rounded-2xl group/btn" 
           asChild 

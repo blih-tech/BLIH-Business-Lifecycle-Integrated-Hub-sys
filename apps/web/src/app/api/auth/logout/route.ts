@@ -33,6 +33,7 @@ export async function GET(request: Request) {
   cookieJar.delete("kc_state");
   cookieJar.delete("kc_verifier");
   cookieJar.delete("kc_nonce");
+  cookieJar.delete("demo_session");
 
   const redirectParam =
     new URL(request.url).searchParams.get("redirect") ?? "/auth/signin";
