@@ -17,7 +17,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --fix",
     "validate:rbac-catalog": "node scripts/rbac/validate-permission-constants.mjs",
     "lint:check": "npm run validate:rbac-catalog && npm run lint",
-    "check-types": "npm run typecheck",
+    "check-types": "npm run prisma:generate && npm run typecheck",
     "typecheck": "tsc --noEmit",
     "typecheck:full": "npm run prisma:generate && tsc --noEmit",
     "test": "jest",
