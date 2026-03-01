@@ -3,7 +3,7 @@
 set -e
 
 npm run branch:check
-npx --no-install lint-staged
+npx --no-install lint-staged --no-stash --no-hide-partially-staged
 
 STASH_NAME="pre-commit-verify-$(date +%s)"
 STASH_CREATED=0
@@ -25,7 +25,7 @@ restore_stash() {
 
 trap restore_stash EXIT INT TERM
 
-npm run verify
+node apps/api/scripts/git/run-affected-workspace-checks.js --mode pre-commit
 
 trap - EXIT INT TERM
 restore_stash

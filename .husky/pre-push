@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 set -e
 
-node apps/api/scripts/git/validate-pre-push.js "$@"
+REFS_FILE="$(mktemp)"
+cat > "$REFS_FILE"
+
+node apps/api/scripts/git/validate-pre-push.js "$@" < "$REFS_FILE"
 
 STASH_NAME="pre-push-verify-$(date +%s)"
 STASH_CREATED=0
@@ -19,11 +22,13 @@ restore_stash() {
       exit 1
     }
   fi
+
+  rm -f "$REFS_FILE"
 }
 
 trap restore_stash EXIT INT TERM
 
-npm run verify
+node apps/api/scripts/git/run-affected-workspace-checks.js --mode pre-push --refs-file "$REFS_FILE"
 
 trap - EXIT INT TERM
 restore_stash

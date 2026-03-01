@@ -9,14 +9,13 @@ This repository enforces governance from the monorepo root (Git hooks + CI).
 - `pre-commit`
   - Validates branch naming (`feature/*`, `fix/*`, `chore/*`, `docs/*`, `refactor/*`, `test/*`, `build/*`, `ci/*`, `perf/*`, `style/*`, `revert/*`, `release/*`, `hotfix/*`, plus protected branches)
   - Runs `lint-staged` (ESLint/Prettier on staged files)
-  - Runs monorepo ESLint validation
-  - Runs monorepo TypeScript type-check
+  - Runs ESLint and TypeScript checks only for the staged workspaces affected by the commit
 - `commit-msg`
   - Enforces Conventional Commits (see [docs/COMMIT_MESSAGES.md](docs/COMMIT_MESSAGES.md) for full types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`)
 - `pre-push`
   - Rejects direct pushes to `main`, `develop`, and `dev`
   - Rejects invalid branch names
-  - Runs API lint, type-check, and tests before push
+  - Runs scoped workspace verification only for the packages affected by the push
 
 ### Bootstrap
 
@@ -38,9 +37,9 @@ The workflow blocks PRs when:
 
 - branch naming is invalid (must be `<prefix>/<name>` with a conventional prefix)
 - commit messages are not conventional
-- ESLint fails
-- TypeScript type-check fails
-- tests fail
+- scoped ESLint verification fails for an affected workspace
+- scoped TypeScript type-check fails for an affected workspace
+- scoped backend tests fail when backend-related code changes
 
 ## Branch Protection Automation
 
