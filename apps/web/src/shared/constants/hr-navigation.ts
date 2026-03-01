@@ -52,10 +52,11 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     icon: 'user-square',
     subItems: [
       { id: 'people-overview', label: 'Overview', href: '/dashboard/hr/people/overview' },
+      { id: 'people-create', label: 'Create', href: '/dashboard/hr/people/create' },
+      { id: 'people-organogram', label: 'Organogram', href: '/dashboard/hr/people/organogram' },
       { id: 'directory', label: 'Directory', href: '/dashboard/hr/people/directory' },
-      { id: 'org-chart', label: 'Org Chart', href: '/dashboard/hr/people/org-chart' },
-      { id: 'employee-records', label: 'Employee Records', href: '/dashboard/hr/people/employee-records' },
-      { id: 'contracts', label: 'Contracts', href: '/dashboard/hr/people/contracts' },
+      { id: 'people-events', label: 'Events', href: '/dashboard/hr/people/events' },
+      { id: 'people-archive', label: 'Archive', href: '/dashboard/hr/people/archive' },
     ],
   },
   {
