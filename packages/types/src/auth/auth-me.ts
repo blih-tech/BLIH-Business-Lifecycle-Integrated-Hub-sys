@@ -19,7 +19,4 @@ export interface AuthMeAuthDto {
   clientId?: string;
 }
 
-export interface AuthMeResponseDto {
-  user: AuthMeUserDto;
-  auth: AuthMeAuthDto;
-}
+export interface AuthMeResponseDto extends AuthMeUserDto, AuthMeAuthDto {}
