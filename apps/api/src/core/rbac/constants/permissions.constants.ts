@@ -30,6 +30,14 @@ export const UserLifecyclePermissions = {
   UPDATE: 'user_lifecycle:update',
 } as const;
 
+export const PositionPermissions = {
+  VIEW: 'position:view',
+  CREATE: 'position:create',
+  UPDATE: 'position:update',
+  DELETE: 'position:delete',
+  ALL: 'position:*',
+} as const;
+
 export const SystemRolePermissions = {
   VIEW: 'system_role:view',
   CREATE: 'system_role:create',
@@ -172,6 +180,7 @@ export const PermissionGroups = {
   user_employment: UserEmploymentPermissions,
   user_compensation: UserCompensationPermissions,
   user_lifecycle: UserLifecyclePermissions,
+  position: PositionPermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
   hr_payroll: HrPayrollPermissions,

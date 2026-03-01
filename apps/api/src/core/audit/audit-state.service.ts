@@ -3,7 +3,7 @@ import { PrismaService } from '../../platform/prisma/prisma.service';
 
 /**
  * Loads current entity state for pre-audit "before" snapshot.
- * Supports core entities: user, realm, role.
+ * Supports core entities: user, realm, role, position.
  * Domain modules can extend by registering custom loaders if needed.
  */
 @Injectable()
@@ -35,18 +35,51 @@ export class AuditStateService {
             lastName: true,
             phone: true,
             status: true,
-            departmentId: true,
+            employment: {
+              select: {
+                positionId: true,
+                position: {
+                  select: {
+                    departmentId: true,
+                  },
+                },
+              },
+            },
             createdAt: true,
             updatedAt: true,
           },
         });
-        return row ? (row as unknown as Record<string, unknown>) : null;
+        return row
+          ? ({
+              ...row,
+              departmentId: row.employment?.position?.departmentId ?? null,
+              positionId: row.employment?.positionId ?? null,
+            } as unknown as Record<string, unknown>)
+          : null;
       }
       if (normalized.includes('role') || normalized.includes('rbac')) {
         const row = await this.prisma.role.findUnique({
           where: { id },
         });
         return row ? (row as unknown as Record<string, unknown>) : null;
+      }
+      if (normalized.includes('position')) {
+        const row = await this.prisma.position.findUnique({
+          where: { id },
+          include: {
+            department: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        });
+        return row
+          ? ({
+              ...row,
+              departmentName: row.department?.name ?? null,
+            } as unknown as Record<string, unknown>)
+          : null;
       }
     } catch {
       return null;

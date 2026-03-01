@@ -25,16 +25,6 @@ export class UpdateUserUseCase {
       throw new NotFoundException('User not found');
     }
 
-    if (dto.departmentId) {
-      const department = await this.prisma.department.findUnique({
-        where: { id: dto.departmentId },
-        select: { id: true },
-      });
-      if (!department) {
-        throw new NotFoundException('Department not found');
-      }
-    }
-
     await this.keycloakAdmin.updateUser(realmName, user.keycloakId, {
       email: dto.email ?? user.email,
       firstName: dto.firstName ?? user.firstName,
@@ -48,7 +38,6 @@ export class UpdateUserUseCase {
         firstName: dto.firstName,
         lastName: dto.lastName,
         phone: dto.phone,
-        departmentId: dto.departmentId,
       },
     });
 

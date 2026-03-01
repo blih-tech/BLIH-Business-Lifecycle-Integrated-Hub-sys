@@ -6,8 +6,36 @@ export class ListUsersUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute() {
-    return this.prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+    return this.prisma.user
+      .findMany({
+        include: {
+          employment: {
+            select: {
+              position: {
+                select: {
+                  departmentId: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      })
+      .then((users) =>
+        users.map((user) => ({
+          id: user.id,
+          keycloakId: user.keycloakId,
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone,
+          status: user.status,
+          departmentId: user.employment?.position?.departmentId ?? null,
+          permissions: user.permissions,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })),
+      );
   }
 }

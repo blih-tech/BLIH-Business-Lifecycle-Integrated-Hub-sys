@@ -63,18 +63,23 @@ export interface UserProfileResponseDto {
 
 export interface UpdateUserEmploymentDto {
   employeeCode?: string;
-  jobTitle?: string;
+  positionId?: string | null;
   employmentType?: EmploymentType;
   managerEmploymentId?: string | null;
   hiredAt?: string;
   probationEndAt?: string;
   confirmedAt?: string;
+  changeReason?: string;
+  changedById?: string | null;
 }
 
 export interface UserEmploymentResponseDto {
   userId: string;
   employeeCode?: string | null;
-  jobTitle?: string | null;
+  departmentId?: string | null;
+  departmentName?: string | null;
+  positionId?: string | null;
+  positionTitle?: string | null;
   employmentType: EmploymentType;
   managerEmploymentId?: string | null;
   hiredAt?: string | null;

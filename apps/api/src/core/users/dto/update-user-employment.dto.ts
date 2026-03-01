@@ -15,10 +15,13 @@ export class UpdateUserEmploymentDto implements UpdateUserEmploymentDtoType {
   @IsString()
   employeeCode?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    description: 'Position id. Use null to clear position.',
+    nullable: true,
+  })
   @IsOptional()
-  @IsString()
-  jobTitle?: string;
+  @IsUUID()
+  positionId?: string | null;
 
   @ApiPropertyOptional({ enum: EmploymentType })
   @IsOptional()
@@ -47,4 +50,17 @@ export class UpdateUserEmploymentDto implements UpdateUserEmploymentDtoType {
   @IsOptional()
   @IsDateString()
   confirmedAt?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  changeReason?: string;
+
+  @ApiPropertyOptional({
+    description: 'User id of the actor making the employment change.',
+    nullable: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  changedById?: string | null;
 }
