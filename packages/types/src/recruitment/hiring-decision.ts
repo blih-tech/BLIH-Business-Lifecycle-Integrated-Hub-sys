@@ -12,6 +12,8 @@ export interface OfferDto {
   workType?: string;
 }
 
+/** When finalDecision is OFFER_APPROVED, offer must be non-null (enforce in service layer). */
+
 export interface ApprovalDto {
   level: number;
   role: string;
@@ -60,6 +62,7 @@ export interface HiringDecisionResponseDto {
   candidateNotifiedAt: string | null;
   offerAccepted: boolean;
   acceptedAt: string | null;
+  offerExpiresAt: string | null;
   employeeId: string | null;
   onboardingId: string | null;
   createdAt: string;

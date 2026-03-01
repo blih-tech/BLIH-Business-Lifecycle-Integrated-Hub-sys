@@ -26,7 +26,7 @@ export class CreateJobPostingFromRequestUseCase {
     });
     const postingId = `POST-${year}-${String(count + 1).padStart(3, '0')}`;
 
-    const positionPayload =
+    const positionSnapshot =
       dto.position ??
       (request.position
         ? {
@@ -41,7 +41,8 @@ export class CreateJobPostingFromRequestUseCase {
       data: {
         postingId,
         recruitmentRequestId: requestId,
-        position: (positionPayload ?? undefined) as object | undefined,
+        positionId: request.positionId ?? undefined,
+        positionSnapshot: (positionSnapshot ?? undefined) as object | undefined,
         description: (dto.description ?? undefined) as object | undefined,
         prerequisites: (dto.prerequisites ?? undefined) as object | undefined,
         kpis: (dto.kpis ?? undefined) as object | undefined,
@@ -50,6 +51,7 @@ export class CreateJobPostingFromRequestUseCase {
       },
       include: {
         recruitmentRequest: { select: { requestId: true } },
+        position: { select: { id: true, title: true } },
       },
     });
 
@@ -58,21 +60,26 @@ export class CreateJobPostingFromRequestUseCase {
       data: { linkedJobPostingId: posting.id },
     });
 
+    const withPos = posting as typeof posting & {
+      position: { id: string; title: string } | null;
+    };
     return {
-      id: posting.id,
-      postingId: posting.postingId,
-      recruitmentRequestId: posting.recruitmentRequestId,
-      position: posting.position,
-      description: posting.description,
-      prerequisites: posting.prerequisites,
-      kpis: posting.kpis,
-      platforms: posting.platforms,
-      status: posting.status,
-      postedAt: posting.postedAt?.toISOString() ?? null,
-      expiresAt: posting.expiresAt?.toISOString() ?? null,
-      closedAt: posting.closedAt?.toISOString() ?? null,
-      createdAt: posting.createdAt.toISOString(),
-      updatedAt: posting.updatedAt.toISOString(),
+      id: withPos.id,
+      postingId: withPos.postingId,
+      recruitmentRequestId: withPos.recruitmentRequestId,
+      positionId: withPos.positionId ?? null,
+      positionTitle: withPos.position?.title ?? null,
+      positionSnapshot: withPos.positionSnapshot,
+      description: withPos.description,
+      prerequisites: withPos.prerequisites,
+      kpis: withPos.kpis,
+      platforms: withPos.platforms,
+      status: withPos.status,
+      postedAt: withPos.postedAt?.toISOString() ?? null,
+      expiresAt: withPos.expiresAt?.toISOString() ?? null,
+      closedAt: withPos.closedAt?.toISOString() ?? null,
+      createdAt: withPos.createdAt.toISOString(),
+      updatedAt: withPos.updatedAt.toISOString(),
     };
   }
 }

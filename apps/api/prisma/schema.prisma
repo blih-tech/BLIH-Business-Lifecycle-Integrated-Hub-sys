@@ -196,6 +196,10 @@ model User {
   screeningDecisions  CvScreening[]            @relation("CvScreeningScreenedBy")
   compiledInterviewFeedback InterviewFeedback[] @relation("InterviewFeedbackCompiledBy")
   submittedHiringDecisions HiringDecision[]    @relation("HiringDecisionSubmittedBy")
+  replacementRequests     RecruitmentRequest[] @relation("RecruitmentRequestReplacementFor")
+  hiringDecisionsAsEmployee HiringDecision[]   @relation("HiringDecisionEmployee")
+  givenRecruitmentApprovals RecruitmentApproval[] @relation("RecruitmentApprovalApprover")
+  onboardings               Onboarding[]         @relation("OnboardingUser")
 
   @@index([status])
 }
@@ -204,11 +208,16 @@ model Department {
   id                   String                @id @default(uuid()) @db.Uuid
   name                 String                @unique
   description          String?
+  parentId             String?               @map("parent_id") @db.Uuid
+  parent               Department?           @relation("DepartmentHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children             Department[]          @relation("DepartmentHierarchy")
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   positions            Position[]
   employmentHistory    UserEmploymentHistory[]
   recruitmentRequests  RecruitmentRequest[]
+
+  @@index([parentId])
 }
 
 model Position {
@@ -217,10 +226,12 @@ model Position {
   description          String?
   departmentId         String                  @db.Uuid
   department           Department              @relation(fields: [departmentId], references: [id])
+  headcountLimit       Int?                    @map("headcount_limit")
   employments          UserEmployment[]
   jobDescriptions      JobDescription[]
   employmentHistory    UserEmploymentHistory[]
   recruitmentRequests  RecruitmentRequest[]
+  jobPostings          JobPosting[]
   isActive             Boolean                 @default(true)
   createdAt            DateTime                @default(now())
   updatedAt            DateTime                @updatedAt
@@ -605,8 +616,8 @@ model Contract {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
+  @@unique([userId, sequenceNumber])
   @@index([userId])
-  @@index([userId, sequenceNumber])
   @@index([status])
   @@index([endDate])
 }
@@ -642,6 +653,7 @@ model RecruitmentRequest {
   position             Position?                @relation(fields: [positionId], references: [id], onDelete: SetNull)
   type                 RecruitmentRequestType   @default(NEW)
   replacementUserId    String?                  @map("replacement_user_id") @db.Uuid
+  replacementUser      User?                    @relation("RecruitmentRequestReplacementFor", fields: [replacementUserId], references: [id], onDelete: SetNull)
   rationale            Json?                    @db.JsonB
   staffing             Json?                    @db.JsonB
   schedule             Json?                    @db.JsonB
@@ -649,8 +661,9 @@ model RecruitmentRequest {
   submittedBy          User                    @relation("RecruitmentRequestSubmittedBy", fields: [submittedById], references: [id], onDelete: Restrict)
   submittedAt          DateTime?               @map("submitted_at")
   approvals            Json?                   @db.JsonB
+  approvalSteps        RecruitmentApproval[]   @relation("RecruitmentRequestApprovals")
   status               RecruitmentRequestStatus @default(DRAFT)
-  linkedJobPostingId   String?                 @unique @map("linked_job_posting_id") @db.Uuid
+  linkedJobPostingId   String?                 @map("linked_job_posting_id") @db.Uuid
   linkedJobPosting     JobPosting?              @relation("RequestLinkedPosting", fields: [linkedJobPostingId], references: [id], onDelete: SetNull)
   linkedUserId         String?                 @map("linked_user_id") @db.Uuid
   createdAt            DateTime                @default(now())
@@ -669,7 +682,9 @@ model JobPosting {
   postingId             String            @unique @map("posting_id") @db.VarChar(32)
   recruitmentRequestId  String            @map("recruitment_request_id") @db.Uuid
   recruitmentRequest    RecruitmentRequest @relation("RequestCreatedPostings", fields: [recruitmentRequestId], references: [id], onDelete: Restrict)
-  position              Json?             @db.JsonB
+  positionId            String?           @map("position_id") @db.Uuid
+  position              Position?         @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  positionSnapshot      Json?             @map("position_snapshot") @db.JsonB
   description           Json?             @db.JsonB
   prerequisites         Json?             @db.JsonB
   kpis                  Json?             @db.JsonB
@@ -684,9 +699,10 @@ model JobPosting {
   candidates            Candidate[]
   cvScreenings          CvScreening[]
   hiringDecisions       HiringDecision[]
-  linkedFromRequest     RecruitmentRequest? @relation("RequestLinkedPosting")
+  linkedFromRequests    RecruitmentRequest[] @relation("RequestLinkedPosting")
 
   @@index([recruitmentRequestId])
+  @@index([positionId])
   @@index([status])
   @@index([expiresAt])
 }
@@ -699,6 +715,10 @@ model Candidate {
   source               CandidateSource @default(COMPANY_SITE)
   referralUserId       String?         @map("referral_user_id") @db.Uuid
   referralUser         User?           @relation("CandidateReferral", fields: [referralUserId], references: [id], onDelete: SetNull)
+  email                String?         @db.VarChar(255)
+  phone                String?         @db.VarChar(64)
+  firstName            String?         @map("first_name") @db.VarChar(120)
+  lastName             String?         @map("last_name") @db.VarChar(120)
   personalInfo         Json?           @map("personal_info") @db.JsonB
   career               Json?           @db.JsonB
   applicationResponses Json?           @map("application_responses") @db.JsonB
@@ -711,6 +731,7 @@ model Candidate {
   interviewFeedback    InterviewFeedback[]
   hiringDecisions      HiringDecision[]
 
+  @@unique([jobPostingId, email])
   @@index([jobPostingId])
   @@index([status])
   @@index([referralUserId])
@@ -736,6 +757,7 @@ model CvScreening {
   createdAt        DateTime               @default(now())
   updatedAt        DateTime              @updatedAt
 
+  @@unique([candidateId, jobPostingId])
   @@index([candidateId])
   @@index([jobPostingId])
   @@index([screenedById])
@@ -762,6 +784,7 @@ model InterviewFeedback {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
+  @@unique([candidateId, interviewRound])
   @@index([candidateId])
   @@index([compiledById])
 }
@@ -789,8 +812,11 @@ model HiringDecision {
   candidateNotifiedAt DateTime?             @map("candidate_notified_at")
   offerAccepted      Boolean                @default(false) @map("offer_accepted")
   acceptedAt         DateTime?              @map("accepted_at")
+  offerExpiresAt     DateTime?              @map("offer_expires_at")
   employeeId         String?                @map("employee_id") @db.Uuid
+  employee           User?                   @relation("HiringDecisionEmployee", fields: [employeeId], references: [id], onDelete: SetNull)
   onboardingId       String?                @map("onboarding_id") @db.Uuid
+  onboarding         Onboarding?            @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
 
@@ -799,4 +825,36 @@ model HiringDecision {
   @@index([jobPostingId])
   @@index([submittedById])
   @@index([finalDecision])
+}
+
+model Onboarding {
+  id              String          @id @default(uuid()) @db.Uuid
+  userId          String          @map("user_id") @db.Uuid
+  user            User            @relation("OnboardingUser", fields: [userId], references: [id], onDelete: Cascade)
+  status          String          @default("PENDING") @db.VarChar(32)
+  startedAt       DateTime?       @map("started_at")
+  completedAt     DateTime?       @map("completed_at")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  hiringDecisions HiringDecision[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model RecruitmentApproval {
+  id                    String              @id @default(uuid()) @db.Uuid
+  recruitmentRequestId  String              @map("recruitment_request_id") @db.Uuid
+  recruitmentRequest    RecruitmentRequest  @relation("RecruitmentRequestApprovals", fields: [recruitmentRequestId], references: [id], onDelete: Cascade)
+  approverId            String              @map("approver_id") @db.Uuid
+  approver              User                @relation("RecruitmentApprovalApprover", fields: [approverId], references: [id], onDelete: Restrict)
+  level                 Int
+  role                  String              @db.VarChar(64)
+  decision              String              @db.VarChar(32)
+  comments              String?             @db.Text
+  decidedAt             DateTime            @map("decided_at")
+  createdAt             DateTime            @default(now())
+
+  @@index([recruitmentRequestId])
+  @@index([approverId])
 }

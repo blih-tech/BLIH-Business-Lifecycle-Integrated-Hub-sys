@@ -19,6 +19,10 @@ export interface CreateCandidateDto {
   jobPostingId: string;
   source?: CandidateSource;
   referralUserId?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   personalInfo?: Record<string, unknown> | null;
   career?: Record<string, unknown> | null;
   applicationResponses?: Record<string, unknown> | null;
@@ -27,6 +31,10 @@ export interface CreateCandidateDto {
 export interface UpdateCandidateDto {
   source?: CandidateSource;
   referralUserId?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   personalInfo?: Record<string, unknown> | null;
   career?: Record<string, unknown> | null;
   applicationResponses?: Record<string, unknown> | null;
@@ -47,6 +55,10 @@ export interface CandidateResponseDto {
   jobPostingTitle?: string | null;
   source: CandidateSource;
   referralUserId: string | null;
+  email: string | null;
+  phone: string | null;
+  firstName: string | null;
+  lastName: string | null;
   personalInfo: unknown;
   career: unknown;
   applicationResponses: unknown;

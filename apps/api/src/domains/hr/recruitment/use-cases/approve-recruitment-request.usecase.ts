@@ -36,15 +36,30 @@ export class ApproveRecruitmentRequestUseCase {
     };
     const newApprovals = [...approvals, step];
     const newStatus = body.decision === 'REJECT' ? 'REJECTED' : 'APPROVED';
+    const level = approvals.length + 1;
+    const decidedAt = new Date();
 
-    const r = await this.prisma.recruitmentRequest.update({
-      where: { id },
-      data: { status: newStatus, approvals: newApprovals as object },
-      include: {
-        department: { select: { name: true } },
-        submittedBy: { select: { email: true } },
-      },
-    });
+    const [r] = await this.prisma.$transaction([
+      this.prisma.recruitmentRequest.update({
+        where: { id },
+        data: { status: newStatus, approvals: newApprovals as object },
+        include: {
+          department: { select: { name: true } },
+          submittedBy: { select: { email: true } },
+        },
+      }),
+      this.prisma.recruitmentApproval.create({
+        data: {
+          recruitmentRequestId: id,
+          approverId,
+          level,
+          role: body.role,
+          decision: body.decision,
+          comments: body.comments ?? undefined,
+          decidedAt,
+        },
+      }),
+    ]);
 
     return {
       id: r.id,

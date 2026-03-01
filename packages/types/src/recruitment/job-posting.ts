@@ -9,6 +9,7 @@ export type JobPostingStatus =
 
 export interface CreateJobPostingDto {
   recruitmentRequestId: string;
+  positionId?: string | null;
   position?: Record<string, unknown> | null;
   description?: Record<string, unknown> | null;
   prerequisites?: Record<string, unknown> | null;
@@ -17,7 +18,8 @@ export interface CreateJobPostingDto {
 }
 
 export interface UpdateJobPostingDto {
-  position?: Record<string, unknown> | null;
+  positionId?: string | null;
+  positionSnapshot?: Record<string, unknown> | null;
   description?: Record<string, unknown> | null;
   prerequisites?: Record<string, unknown> | null;
   kpis?: unknown[] | null;
@@ -32,7 +34,9 @@ export interface JobPostingResponseDto {
   id: string;
   postingId: string;
   recruitmentRequestId: string;
-  position: unknown;
+  positionId: string | null;
+  positionTitle?: string | null;
+  positionSnapshot: unknown;
   description: unknown;
   prerequisites: unknown;
   kpis: unknown;
