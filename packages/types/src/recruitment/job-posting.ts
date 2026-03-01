@@ -10,7 +10,7 @@ export type JobPostingStatus =
 export interface CreateJobPostingDto {
   recruitmentRequestId: string;
   positionId?: string | null;
-  position?: Record<string, unknown> | null;
+  positionSnapshot?: Record<string, unknown> | null;
   description?: Record<string, unknown> | null;
   prerequisites?: Record<string, unknown> | null;
   kpis?: unknown[] | null;

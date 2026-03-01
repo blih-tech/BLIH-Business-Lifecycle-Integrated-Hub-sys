@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()
 export class ApproveRecruitmentRequestUseCase {
@@ -16,7 +17,14 @@ export class ApproveRecruitmentRequestUseCase {
   ) {
     const existing = await this.prisma.recruitmentRequest.findUnique({
       where: { id },
-      select: { id: true, status: true, approvals: true },
+      select: {
+        id: true,
+        status: true,
+        departmentId: true,
+        positionId: true,
+        type: true,
+        replacementUserId: true,
+      },
     });
     if (!existing) throw new NotFoundException('Recruitment request not found');
     if (existing.status !== 'PENDING')
@@ -24,7 +32,28 @@ export class ApproveRecruitmentRequestUseCase {
         'Only pending requests can be approved/rejected',
       );
 
-    const approvals = (existing.approvals as unknown[]) ?? [];
+    await validateRecruitmentRequestInput(this.prisma, {
+      departmentId: existing.departmentId,
+      positionId: existing.positionId,
+      type: existing.type,
+      replacementUserId: existing.replacementUserId,
+      requirePosition: true,
+      enforceHeadcount: body.decision === 'APPROVE',
+    });
+
+    const approvals = await this.prisma.recruitmentApproval.findMany({
+      where: { recruitmentRequestId: id },
+      orderBy: { level: 'asc' },
+      select: {
+        level: true,
+        role: true,
+        approverId: true,
+        decision: true,
+        comments: true,
+        decidedAt: true,
+      },
+    });
+
     const step = {
       level: approvals.length + 1,
       role: body.role,

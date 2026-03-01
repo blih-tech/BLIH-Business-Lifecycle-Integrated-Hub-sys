@@ -1,24 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { CreateRecruitmentRequestDto } from '@blih/types';
+import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()
 export class CreateRecruitmentRequestUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateRecruitmentRequestDto, submittedById: string) {
-    const dept = await this.prisma.department.findUnique({
-      where: { id: dto.departmentId },
-      select: { id: true },
+    await validateRecruitmentRequestInput(this.prisma, {
+      departmentId: dto.departmentId,
+      positionId: dto.positionId,
+      type: dto.type,
+      replacementUserId: dto.replacementUserId,
+      enforceHeadcount: Boolean(dto.positionId),
     });
-    if (!dept) throw new NotFoundException('Department not found');
-    if (dto.positionId) {
-      const pos = await this.prisma.position.findUnique({
-        where: { id: dto.positionId },
-        select: { id: true },
-      });
-      if (!pos) throw new NotFoundException('Position not found');
-    }
+
     const year = new Date().getFullYear();
     const count = await this.prisma.recruitmentRequest.count({
       where: { requestId: { startsWith: `REQ-${year}-` } },

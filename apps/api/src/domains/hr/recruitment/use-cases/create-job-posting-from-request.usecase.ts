@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { CreateJobPostingDto } from '@blih/types';
+import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()
 export class CreateJobPostingFromRequestUseCase {
@@ -19,6 +24,20 @@ export class CreateJobPostingFromRequestUseCase {
       throw new NotFoundException(
         'Only approved requests can create job postings',
       );
+    if (request.linkedJobPostingId) {
+      throw new BadRequestException(
+        'This recruitment request already has a linked job posting',
+      );
+    }
+
+    await validateRecruitmentRequestInput(this.prisma, {
+      departmentId: request.departmentId,
+      positionId: request.positionId,
+      type: request.type,
+      replacementUserId: request.replacementUserId,
+      requirePosition: true,
+      enforceHeadcount: true,
+    });
 
     const year = new Date().getFullYear();
     const count = await this.prisma.jobPosting.count({
@@ -27,7 +46,7 @@ export class CreateJobPostingFromRequestUseCase {
     const postingId = `POST-${year}-${String(count + 1).padStart(3, '0')}`;
 
     const positionSnapshot =
-      dto.position ??
+      dto.positionSnapshot ??
       (request.position
         ? {
             job_name: request.position.title,

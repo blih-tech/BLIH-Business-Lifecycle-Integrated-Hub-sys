@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { UpdateRecruitmentRequestDto } from '@blih/types';
+import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()
 export class UpdateRecruitmentRequestUseCase {
@@ -9,11 +10,36 @@ export class UpdateRecruitmentRequestUseCase {
   async execute(id: string, dto: UpdateRecruitmentRequestDto) {
     const existing = await this.prisma.recruitmentRequest.findUnique({
       where: { id },
-      select: { id: true, status: true },
+      select: {
+        id: true,
+        status: true,
+        departmentId: true,
+        positionId: true,
+        type: true,
+        replacementUserId: true,
+      },
     });
     if (!existing) throw new NotFoundException('Recruitment request not found');
     if (existing.status !== 'DRAFT')
       throw new NotFoundException('Only draft requests can be updated');
+
+    const departmentId = existing.departmentId;
+    const positionId =
+      dto.positionId === undefined ? existing.positionId : dto.positionId;
+    const type = dto.type ?? existing.type;
+    const replacementUserId =
+      dto.replacementUserId === undefined
+        ? existing.replacementUserId
+        : dto.replacementUserId;
+
+    await validateRecruitmentRequestInput(this.prisma, {
+      departmentId,
+      positionId,
+      type,
+      replacementUserId,
+      enforceHeadcount: Boolean(positionId),
+    });
+
     const data: Record<string, unknown> = {};
     if (dto.positionId !== undefined) data.positionId = dto.positionId;
     if (dto.type !== undefined) data.type = dto.type;

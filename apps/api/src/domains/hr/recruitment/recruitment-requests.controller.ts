@@ -170,7 +170,7 @@ export class RecruitmentRequestsController {
     @Param('id') id: string,
     @Body()
     body: {
-      position?: Record<string, unknown>;
+      positionSnapshot?: Record<string, unknown>;
       description?: Record<string, unknown>;
       prerequisites?: Record<string, unknown>;
       kpis?: unknown[];
