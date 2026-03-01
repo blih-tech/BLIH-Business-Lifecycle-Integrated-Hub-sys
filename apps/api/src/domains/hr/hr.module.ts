@@ -29,6 +29,12 @@ import { CreateHiringDecisionUseCase } from './recruitment/use-cases/create-hiri
 import { GetHiringDecisionUseCase } from './recruitment/use-cases/get-hiring-decision.usecase';
 import { FinalizeHiringDecisionUseCase } from './recruitment/use-cases/finalize-hiring-decision.usecase';
 import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-offer.usecase';
+import { OnboardingController } from './onboarding/onboarding.controller';
+import { CreateOnboardingChecklistUseCase } from './onboarding/use-cases/create-onboarding-checklist.usecase';
+import { GetOnboardingChecklistUseCase } from './onboarding/use-cases/get-onboarding-checklist.usecase';
+import { ListOnboardingChecklistsUseCase } from './onboarding/use-cases/list-onboarding-checklists.usecase';
+import { UpdateOnboardingChecklistUseCase } from './onboarding/use-cases/update-onboarding-checklist.usecase';
+import { UpdateOnboardingTaskUseCase } from './onboarding/use-cases/update-onboarding-task.usecase';
 
 @Module({
   controllers: [
@@ -38,6 +44,7 @@ import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-
     JobDescriptionsController,
     RecruitmentRequestsController,
     HiringDecisionsController,
+    OnboardingController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -64,6 +71,11 @@ import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-
     GetHiringDecisionUseCase,
     FinalizeHiringDecisionUseCase,
     AcceptHiringOfferUseCase,
+    CreateOnboardingChecklistUseCase,
+    ListOnboardingChecklistsUseCase,
+    GetOnboardingChecklistUseCase,
+    UpdateOnboardingChecklistUseCase,
+    UpdateOnboardingTaskUseCase,
   ],
 })
 export class HrModule {}

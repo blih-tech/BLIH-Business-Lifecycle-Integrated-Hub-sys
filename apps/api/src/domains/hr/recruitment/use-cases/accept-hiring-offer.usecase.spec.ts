@@ -72,7 +72,13 @@ describe('AcceptHiringOfferUseCase', () => {
       $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
     };
 
-    const useCase = new AcceptHiringOfferUseCase(prisma as never);
+    const createOnboardingChecklistUseCase = {
+      execute: jest.fn().mockResolvedValue(undefined),
+    };
+    const useCase = new AcceptHiringOfferUseCase(
+      prisma as never,
+      createOnboardingChecklistUseCase as never,
+    );
 
     await expect(
       useCase.execute('decision-1', {

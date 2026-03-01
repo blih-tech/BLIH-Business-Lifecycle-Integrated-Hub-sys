@@ -6,11 +6,15 @@ import {
 } from '@nestjs/common';
 import type { AcceptOfferDto } from '@blih/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { CreateOnboardingChecklistUseCase } from '../../onboarding/use-cases/create-onboarding-checklist.usecase';
 import { mapHiringDecisionResponse } from '../hiring-decision.mapper';
 
 @Injectable()
 export class AcceptHiringOfferUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly createOnboardingChecklistUseCase: CreateOnboardingChecklistUseCase,
+  ) {}
 
   async execute(id: string, dto: AcceptOfferDto) {
     if (!dto.accepted) {
@@ -150,6 +154,19 @@ export class AcceptHiringOfferUseCase {
         },
       });
     });
+
+    // Create onboarding checklist from template when offer is accepted
+    try {
+      await this.createOnboardingChecklistUseCase.execute({
+        userId: dto.employeeId,
+        onboardingId: updated.onboardingId ?? undefined,
+        hiringDecisionId: id,
+        joinDate: acceptedAt.toISOString().slice(0, 10),
+        generateTasksFromTemplate: true,
+      });
+    } catch {
+      // Non-fatal: checklist can be created manually later
+    }
 
     return mapHiringDecisionResponse(updated);
   }

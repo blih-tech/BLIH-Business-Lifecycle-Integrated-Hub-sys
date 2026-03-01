@@ -205,6 +205,13 @@ export const HiringDecisionPermissions = {
   ALL: 'hiring_decision:*',
 } as const;
 
+export const OnboardingChecklistPermissions = {
+  VIEW: 'onboarding_checklist:view',
+  CREATE: 'onboarding_checklist:create',
+  UPDATE: 'onboarding_checklist:update',
+  ALL: 'onboarding_checklist:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
   user_profile: UserProfilePermissions,
@@ -228,6 +235,7 @@ export const PermissionGroups = {
   job_posting: JobPostingPermissions,
   candidate: CandidatePermissions,
   hiring_decision: HiringDecisionPermissions,
+  onboarding_checklist: OnboardingChecklistPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,
