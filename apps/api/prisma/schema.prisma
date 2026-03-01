@@ -226,50 +226,64 @@ enum ApprovalDecision {
   REJECTED
 }
 
+enum AssetProvisioningStatus {
+  PENDING
+  APPROVED
+  PROVISIONED
+  REJECTED
+  COMPLETED
+}
+
+enum ProbationFinalDecision {
+  CONFIRM
+  EXTEND
+  TERMINATE
+}
+
 model User {
-  id                           String                    @id @default(uuid()) @db.Uuid
-  keycloakId                   String                    @unique
-  username                     String                    @unique
-  email                        String                    @unique
-  firstName                    String
-  lastName                     String
-  phone                        String?
-  status                       UserStatus                @default(ACTIVE)
-  lastLoginAt                  DateTime?
-  metadata                     Json?
-  permissions                  String[]                  @default([])
-  profile                      UserProfile?
-  employment                   UserEmployment?
-  compensation                 UserCompensation?
-  compensationHistory          UserCompensationHistory[]
-  employmentChanges            UserEmploymentHistory[]   @relation("EmploymentChangedBy")
-  compensationChanges          UserCompensationHistory[] @relation("CompensationChangedBy")
-  lifecycle                    UserLifecycle?
-  createdAt                    DateTime                  @default(now())
-  updatedAt                    DateTime                  @updatedAt
-  roles                        UserRole[]
-  employeeDocuments            EmployeeDocument[]
-  verifiedDocuments            EmployeeDocument[]        @relation("EmployeeDocumentVerifiedBy")
-  contracts                    Contract[]
-  submittedRecruitmentRequests RecruitmentRequest[]      @relation("RecruitmentRequestSubmittedBy")
-  referredCandidates           Candidate[]               @relation("CandidateReferral")
-  screeningDecisions           CvScreening[]             @relation("CvScreeningScreenedBy")
-  compiledInterviewFeedback    InterviewFeedback[]       @relation("InterviewFeedbackCompiledBy")
-  submittedHiringDecisions     HiringDecision[]          @relation("HiringDecisionSubmittedBy")
-  replacementRequests          RecruitmentRequest[]      @relation("RecruitmentRequestReplacementFor")
-  hiringDecisionsAsEmployee    HiringDecision[]          @relation("HiringDecisionEmployee")
-  givenRecruitmentApprovals    RecruitmentApproval[]     @relation("RecruitmentApprovalApprover")
-  onboardings                  Onboarding[]              @relation("OnboardingUser")
-  onboardingChecklists        OnboardingChecklist[]     @relation("OnboardingChecklistUser")
-  checklistsOverseen         OnboardingChecklist[]     @relation("OnboardingChecklistOverseer")
-  assignedOnboardingTasks    OnboardingTask[]          @relation("OnboardingTaskAssignee")
-  completedOnboardingTasks   OnboardingTask[]          @relation("OnboardingTaskCompletedBy")
-  assetProvisionings           AssetProvisioning[]
-  policyAcknowledgements       PolicyAcknowledgement[]
-  policyAcknowledgementsVerified PolicyAcknowledgement[] @relation("PolicyAcknowledgementVerifiedBy")
-  probationKpiPlans            ProbationKpiPlan[]        @relation("ProbationKpiPlanUser")
-  probationEvaluations         ProbationEvaluation[]     @relation("ProbationEvaluationUser")
-  probationConfirmations      ProbationConfirmation[]
+  id                             String                    @id @default(uuid()) @db.Uuid
+  keycloakId                     String                    @unique
+  username                       String                    @unique
+  email                          String                    @unique
+  firstName                      String
+  lastName                       String
+  phone                          String?
+  status                         UserStatus                @default(ACTIVE)
+  lastLoginAt                    DateTime?
+  metadata                       Json?
+  permissions                    String[]                  @default([])
+  profile                        UserProfile?
+  employment                     UserEmployment?
+  compensation                   UserCompensation?
+  compensationHistory            UserCompensationHistory[]
+  employmentChanges              UserEmploymentHistory[]   @relation("EmploymentChangedBy")
+  compensationChanges            UserCompensationHistory[] @relation("CompensationChangedBy")
+  lifecycle                      UserLifecycle?
+  createdAt                      DateTime                  @default(now())
+  updatedAt                      DateTime                  @updatedAt
+  roles                          UserRole[]
+  employeeDocuments              EmployeeDocument[]
+  verifiedDocuments              EmployeeDocument[]        @relation("EmployeeDocumentVerifiedBy")
+  contracts                      Contract[]
+  submittedRecruitmentRequests   RecruitmentRequest[]      @relation("RecruitmentRequestSubmittedBy")
+  referredCandidates             Candidate[]               @relation("CandidateReferral")
+  screeningDecisions             CvScreening[]             @relation("CvScreeningScreenedBy")
+  compiledInterviewFeedback      InterviewFeedback[]       @relation("InterviewFeedbackCompiledBy")
+  submittedHiringDecisions       HiringDecision[]          @relation("HiringDecisionSubmittedBy")
+  replacementRequests            RecruitmentRequest[]      @relation("RecruitmentRequestReplacementFor")
+  hiringDecisionsAsEmployee      HiringDecision[]          @relation("HiringDecisionEmployee")
+  givenRecruitmentApprovals      RecruitmentApproval[]     @relation("RecruitmentApprovalApprover")
+  onboardings                    Onboarding[]              @relation("OnboardingUser")
+  onboardingChecklists           OnboardingChecklist[]     @relation("OnboardingChecklistUser")
+  checklistsOverseen             OnboardingChecklist[]     @relation("OnboardingChecklistOverseer")
+  assignedOnboardingTasks        OnboardingTask[]          @relation("OnboardingTaskAssignee")
+  completedOnboardingTasks       OnboardingTask[]          @relation("OnboardingTaskCompletedBy")
+  assetProvisionings             AssetProvisioning[]
+  policyAcknowledgements         PolicyAcknowledgement[]
+  policyAcknowledgementsVerified PolicyAcknowledgement[]   @relation("PolicyAcknowledgementVerifiedBy")
+  probationKpiPlans              ProbationKpiPlan[]        @relation("ProbationKpiPlanUser")
+  probationEvaluations           ProbationEvaluation[]     @relation("ProbationEvaluationUser")
+  probationConfirmations         ProbationConfirmation[]
 
   @@index([status])
 }
@@ -762,7 +776,6 @@ model JobPosting {
   postedAt             DateTime?            @map("posted_at")
   expiresAt            DateTime?            @map("expires_at")
   closedAt             DateTime?            @map("closed_at")
-  approvedBy           Json?                @map("approved_by") @db.JsonB
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
   candidates           Candidate[]
@@ -875,7 +888,6 @@ model HiringDecision {
   submittedById        String                 @map("submitted_by_id") @db.Uuid
   submittedBy          User                   @relation("HiringDecisionSubmittedBy", fields: [submittedById], references: [id], onDelete: Restrict)
   submittedAt          DateTime?              @map("submitted_at")
-  approvals            Json?                  @db.JsonB
   finalDecision        HiringDecisionOutcome? @map("final_decision")
   offerDocumentUrl     String?                @map("offer_document_url")
   candidateNotifiedAt  DateTime?              @map("candidate_notified_at")
@@ -884,7 +896,7 @@ model HiringDecision {
   offerExpiresAt       DateTime?              @map("offer_expires_at")
   employeeId           String?                @map("employee_id") @db.Uuid
   employee             User?                  @relation("HiringDecisionEmployee", fields: [employeeId], references: [id], onDelete: SetNull)
-  onboardingId         String?                @map("onboarding_id") @db.Uuid
+  onboardingId         String?                @unique @map("onboarding_id") @db.Uuid
   onboarding           Onboarding?            @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
   onboardingChecklists OnboardingChecklist[]
   createdAt            DateTime               @default(now())
@@ -898,41 +910,41 @@ model HiringDecision {
 }
 
 model Onboarding {
-  id              String           @id @default(uuid()) @db.Uuid
-  userId          String           @map("user_id") @db.Uuid
-  user            User             @relation("OnboardingUser", fields: [userId], references: [id], onDelete: Cascade)
-  status          OnboardingStatus @default(PENDING)
-  startedAt       DateTime?        @map("started_at")
-  completedAt     DateTime?        @map("completed_at")
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  hiringDecisions HiringDecision[]
-  checklists      OnboardingChecklist[]
+  id             String                @id @default(uuid()) @db.Uuid
+  userId         String                @map("user_id") @db.Uuid
+  user           User                  @relation("OnboardingUser", fields: [userId], references: [id], onDelete: Cascade)
+  status         OnboardingStatus      @default(PENDING)
+  startedAt      DateTime?             @map("started_at")
+  completedAt    DateTime?             @map("completed_at")
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  hiringDecision HiringDecision?
+  checklists     OnboardingChecklist[]
 
   @@index([userId])
   @@index([status])
 }
 
 model OnboardingChecklist {
-  id                  String                   @id @default(uuid()) @db.Uuid
-  userId              String                   @map("user_id") @db.Uuid
-  user                User                     @relation("OnboardingChecklistUser", fields: [userId], references: [id], onDelete: Cascade)
-  onboardingId        String?                  @map("onboarding_id") @db.Uuid
-  onboarding          Onboarding?              @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
-  hiringDecisionId    String?                  @map("hiring_decision_id") @db.Uuid
-  hiringDecision      HiringDecision?          @relation(fields: [hiringDecisionId], references: [id], onDelete: SetNull)
-  joinDate            DateTime                 @map("join_date") @db.Date
-  overseerId          String?                  @map("overseer_id") @db.Uuid
-  overseer            User?                    @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
-  totalItems          Int                      @default(0) @map("total_items")
-  completedItems      Int                      @default(0) @map("completed_items")
-  status              OnboardingChecklistStatus @default(NOT_STARTED)
-  teamLeadVerifiedAt  DateTime?                @map("team_lead_verified_at")
-  ceoSignOffRequired  Boolean                  @default(false) @map("ceo_sign_off_required")
-  ceoSignOffAt        DateTime?                @map("ceo_sign_off_at")
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
-  tasks               OnboardingTask[]
+  id                 String                    @id @default(uuid()) @db.Uuid
+  userId             String                    @map("user_id") @db.Uuid
+  user               User                      @relation("OnboardingChecklistUser", fields: [userId], references: [id], onDelete: Cascade)
+  onboardingId       String?                   @map("onboarding_id") @db.Uuid
+  onboarding         Onboarding?               @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
+  hiringDecisionId   String?                   @map("hiring_decision_id") @db.Uuid
+  hiringDecision     HiringDecision?           @relation(fields: [hiringDecisionId], references: [id], onDelete: SetNull)
+  joinDate           DateTime                  @map("join_date") @db.Date
+  overseerId         String?                   @map("overseer_id") @db.Uuid
+  overseer           User?                     @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
+  totalItems         Int                       @default(0) @map("total_items")
+  completedItems     Int                       @default(0) @map("completed_items")
+  status             OnboardingChecklistStatus @default(NOT_STARTED)
+  teamLeadVerifiedAt DateTime?                 @map("team_lead_verified_at")
+  ceoSignOffRequired Boolean                   @default(false) @map("ceo_sign_off_required")
+  ceoSignOffAt       DateTime?                 @map("ceo_sign_off_at")
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  tasks              OnboardingTask[]
 
   @@index([userId])
   @@index([onboardingId])
@@ -941,21 +953,21 @@ model OnboardingChecklist {
 }
 
 model OnboardingTask {
-  id            String                 @id @default(uuid()) @db.Uuid
-  checklistId   String                 @map("checklist_id") @db.Uuid
-  checklist     OnboardingChecklist    @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  id            String                   @id @default(uuid()) @db.Uuid
+  checklistId   String                   @map("checklist_id") @db.Uuid
+  checklist     OnboardingChecklist      @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   department    OnboardingTaskDepartment
   title         String
-  description   String?                @db.Text
-  dueDate       DateTime?              @map("due_date") @db.Date
-  assignedToId  String?                @map("assigned_to_id") @db.Uuid
-  assignedTo    User?                 @relation("OnboardingTaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  status        OnboardingTaskStatus   @default(PENDING)
-  completedAt   DateTime?              @map("completed_at")
-  completedById String?                @map("completed_by_id") @db.Uuid
-  completedBy   User?                  @relation("OnboardingTaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
+  description   String?                  @db.Text
+  dueDate       DateTime?                @map("due_date") @db.Date
+  assignedToId  String?                  @map("assigned_to_id") @db.Uuid
+  assignedTo    User?                    @relation("OnboardingTaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  status        OnboardingTaskStatus     @default(PENDING)
+  completedAt   DateTime?                @map("completed_at")
+  completedById String?                  @map("completed_by_id") @db.Uuid
+  completedBy   User?                    @relation("OnboardingTaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
 
   @@index([checklistId])
   @@index([assignedToId])
@@ -963,104 +975,104 @@ model OnboardingTask {
 }
 
 model AssetProvisioning {
-  id                    String    @id @default(uuid()) @db.Uuid
-  userId                String    @map("user_id") @db.Uuid
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  equipment             Json?     @db.JsonB
-  platformPermissions   Json?     @map("platform_permissions") @db.JsonB
-  itSupervisorApprovedAt DateTime? @map("it_supervisor_approved_at")
-  adminApprovedAt      DateTime?  @map("admin_approved_at")
-  financeApprovalRequired Boolean @default(false) @map("finance_approval_required")
-  status                String    @default("PENDING")
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id                      String                  @id @default(uuid()) @db.Uuid
+  userId                  String                  @map("user_id") @db.Uuid
+  user                    User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  equipment               Json?                   @db.JsonB
+  platformPermissions     Json?                   @map("platform_permissions") @db.JsonB
+  itSupervisorApprovedAt  DateTime?               @map("it_supervisor_approved_at")
+  adminApprovedAt         DateTime?               @map("admin_approved_at")
+  financeApprovalRequired Boolean                 @default(false) @map("finance_approval_required")
+  status                  AssetProvisioningStatus @default(PENDING)
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
 
   @@index([userId])
 }
 
 model PolicyAcknowledgement {
-  id                   String    @id @default(uuid()) @db.Uuid
-  userId               String    @map("user_id") @db.Uuid
-  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  policies             Json?     @db.JsonB
-  allAcknowledged      Boolean   @default(false) @map("all_acknowledged")
-  confirmedAt          DateTime? @map("confirmed_at")
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  policies              Json?     @db.JsonB
+  allAcknowledged       Boolean   @default(false) @map("all_acknowledged")
+  confirmedAt           DateTime? @map("confirmed_at")
   systemAccessGrantedAt DateTime? @map("system_access_granted_at")
-  verifiedById         String?   @map("verified_by_id") @db.Uuid
-  verifiedBy           User?     @relation("PolicyAcknowledgementVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
-  verifiedAt           DateTime?  @map("verified_at")
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  verifiedById          String?   @map("verified_by_id") @db.Uuid
+  verifiedBy            User?     @relation("PolicyAcknowledgementVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt            DateTime? @map("verified_at")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@index([userId])
   @@index([verifiedById])
 }
 
 model ProbationKpiPlan {
-  id                  String              @id @default(uuid()) @db.Uuid
-  userId              String              @map("user_id") @db.Uuid
-  user                User                @relation("ProbationKpiPlanUser", fields: [userId], references: [id], onDelete: Cascade)
-  supervisorId        String?             @map("supervisor_id") @db.Uuid
-  probationStart      DateTime            @map("probation_start") @db.Date
-  probationEnd        DateTime            @map("probation_end") @db.Date
-  goals               Json?               @db.JsonB
-  development         Json?              @db.JsonB
-  employeeEndorsedAt  DateTime?           @map("employee_endorsed_at")
-  supervisorEndorsedAt DateTime?          @map("supervisor_endorsed_at")
-  hrEndorsedAt        DateTime?           @map("hr_endorsed_at")
-  status              ProbationPlanStatus @default(DRAFT)
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
-  evaluations         ProbationEvaluation[]
+  id                   String                @id @default(uuid()) @db.Uuid
+  userId               String                @map("user_id") @db.Uuid
+  user                 User                  @relation("ProbationKpiPlanUser", fields: [userId], references: [id], onDelete: Cascade)
+  supervisorId         String?               @map("supervisor_id") @db.Uuid
+  probationStart       DateTime              @map("probation_start") @db.Date
+  probationEnd         DateTime              @map("probation_end") @db.Date
+  goals                Json?                 @db.JsonB
+  development          Json?                 @db.JsonB
+  employeeEndorsedAt   DateTime?             @map("employee_endorsed_at")
+  supervisorEndorsedAt DateTime?             @map("supervisor_endorsed_at")
+  hrEndorsedAt         DateTime?             @map("hr_endorsed_at")
+  status               ProbationPlanStatus   @default(DRAFT)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  evaluations          ProbationEvaluation[]
 
   @@index([userId])
   @@index([status])
 }
 
 model ProbationEvaluation {
-  id                    String                   @id @default(uuid()) @db.Uuid
-  kpiPlanId             String                   @map("kpi_plan_id") @db.Uuid
-  kpiPlan               ProbationKpiPlan         @relation(fields: [kpiPlanId], references: [id], onDelete: Cascade)
-  userId                String                   @map("user_id") @db.Uuid
-  user                  User                     @relation("ProbationEvaluationUser", fields: [userId], references: [id], onDelete: Cascade)
-  evaluationRound       ProbationEvaluationRound @map("evaluation_round")
-  evaluationDate        DateTime                 @map("evaluation_date") @db.Date
-  goalReviews           Json?                    @map("goal_reviews") @db.JsonB
-  conduct               Json?                    @db.JsonB
-  averageRating         Decimal?                 @map("average_rating") @db.Decimal(5, 2)
+  id                       String                   @id @default(uuid()) @db.Uuid
+  kpiPlanId                String                   @map("kpi_plan_id") @db.Uuid
+  kpiPlan                  ProbationKpiPlan         @relation(fields: [kpiPlanId], references: [id], onDelete: Cascade)
+  userId                   String                   @map("user_id") @db.Uuid
+  user                     User                     @relation("ProbationEvaluationUser", fields: [userId], references: [id], onDelete: Cascade)
+  evaluationRound          ProbationEvaluationRound @map("evaluation_round")
+  evaluationDate           DateTime                 @map("evaluation_date") @db.Date
+  goalReviews              Json?                    @map("goal_reviews") @db.JsonB
+  conduct                  Json?                    @db.JsonB
+  averageRating            Decimal?                 @map("average_rating") @db.Decimal(5, 2)
   supervisorRecommendation ProbationRecommendation? @map("supervisor_recommendation")
-  hrRemarks             String?                  @map("hr_remarks") @db.Text
-  hrVerdict             ProbationRecommendation? @map("hr_verdict")
-  employeeAcknowledgedAt DateTime?               @map("employee_acknowledged_at")
-  supervisorApprovedAt  DateTime?                @map("supervisor_approved_at")
-  hrApprovedAt          DateTime?                @map("hr_approved_at")
-  ceoApprovedAt         DateTime?                @map("ceo_approved_at")
-  finalDecision         String?                  @map("final_decision")
-  extensionDays         Int?                     @map("extension_days")
-  newEndDate            DateTime?                @map("new_end_date") @db.Date
-  employeeStatusUpdatedAt DateTime?               @map("employee_status_updated_at")
-  createdAt             DateTime                 @default(now())
-  updatedAt             DateTime                 @updatedAt
+  hrRemarks                String?                  @map("hr_remarks") @db.Text
+  hrVerdict                ProbationRecommendation? @map("hr_verdict")
+  employeeAcknowledgedAt   DateTime?                @map("employee_acknowledged_at")
+  supervisorApprovedAt     DateTime?                @map("supervisor_approved_at")
+  hrApprovedAt             DateTime?                @map("hr_approved_at")
+  ceoApprovedAt            DateTime?                @map("ceo_approved_at")
+  finalDecision            ProbationFinalDecision?  @map("final_decision")
+  extensionDays            Int?                     @map("extension_days")
+  newEndDate               DateTime?                @map("new_end_date") @db.Date
+  employeeStatusUpdatedAt  DateTime?                @map("employee_status_updated_at")
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
 
   @@index([kpiPlanId])
   @@index([userId])
 }
 
 model ProbationConfirmation {
-  id                    String    @id @default(uuid()) @db.Uuid
-  userId                String    @map("user_id") @db.Uuid
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reviewSummary         Json?     @map("review_summary") @db.JsonB
-  verdict               ProbationConfirmationVerdict
-  extension             Json?     @db.JsonB
-  termination           Json?     @db.JsonB
-  confirmation          Json?     @db.JsonB
-  hrCheckedAt           DateTime? @map("hr_checked_at")
-  ceoSignOffAt          DateTime? @map("ceo_sign_off_at")
-  employeeNotifiedAt    DateTime? @map("employee_notified_at")
-  archivedInEmployeeFile Boolean  @default(false) @map("archived_in_employee_file")
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id                     String                       @id @default(uuid()) @db.Uuid
+  userId                 String                       @map("user_id") @db.Uuid
+  user                   User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewSummary          Json?                        @map("review_summary") @db.JsonB
+  verdict                ProbationConfirmationVerdict
+  extension              Json?                        @db.JsonB
+  termination            Json?                        @db.JsonB
+  confirmation           Json?                        @db.JsonB
+  hrCheckedAt            DateTime?                    @map("hr_checked_at")
+  ceoSignOffAt           DateTime?                    @map("ceo_sign_off_at")
+  employeeNotifiedAt     DateTime?                    @map("employee_notified_at")
+  archivedInEmployeeFile Boolean                      @default(false) @map("archived_in_employee_file")
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
 
   @@index([userId])
 }

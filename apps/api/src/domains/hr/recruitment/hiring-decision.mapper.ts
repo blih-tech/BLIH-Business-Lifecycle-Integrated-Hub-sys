@@ -14,7 +14,6 @@ type HiringDecisionRow = {
     email: string;
   } | null;
   submittedAt: Date | null;
-  approvals: unknown;
   finalDecision: 'OFFER_APPROVED' | 'OFFER_DECLINED' | 'SUSPENDED' | null;
   offerDocumentUrl: string | null;
   candidateNotifiedAt: Date | null;
@@ -45,7 +44,6 @@ export function mapHiringDecisionResponse(row: HiringDecisionRow) {
     submittedById: row.submittedById,
     submittedByEmail: row.submittedBy?.email ?? null,
     submittedAt: row.submittedAt?.toISOString() ?? null,
-    approvals: Array.isArray(row.approvals) ? row.approvals : [],
     finalDecision: row.finalDecision,
     offerDocumentUrl: row.offerDocumentUrl,
     candidateNotifiedAt: row.candidateNotifiedAt?.toISOString() ?? null,

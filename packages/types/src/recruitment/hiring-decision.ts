@@ -69,7 +69,6 @@ export interface HiringDecisionResponseDto {
   submittedById: string;
   submittedByEmail?: string | null;
   submittedAt: string | null;
-  approvals: ApprovalDto[];
   finalDecision: HiringDecisionOutcome | null;
   offerDocumentUrl: string | null;
   candidateNotifiedAt: string | null;

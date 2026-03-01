@@ -4,17 +4,13 @@ export type ProbationPlanStatus =
   | 'COMPLETED'
   | 'CANCELLED';
 
-export type ProbationEvaluationRound =
-  | 'DAY_30'
-  | 'DAY_55'
-  | 'DAY_60_FINAL';
+export type ProbationEvaluationRound = 'DAY_30' | 'DAY_55' | 'DAY_60_FINAL';
 
 export type ProbationRecommendation = 'CONFIRM' | 'EXTEND' | 'TERMINATE';
 
-export type ProbationConfirmationVerdict =
-  | 'CONFIRM'
-  | 'EXTEND'
-  | 'TERMINATE';
+export type ProbationFinalDecision = 'CONFIRM' | 'EXTEND' | 'TERMINATE';
+
+export type ProbationConfirmationVerdict = 'CONFIRM' | 'EXTEND' | 'TERMINATE';
 
 export interface ProbationGoalDto {
   goalId?: string;
@@ -96,7 +92,7 @@ export interface UpdateProbationEvaluationDto {
   supervisorApprovedAt?: string | null;
   hrApprovedAt?: string | null;
   ceoApprovedAt?: string | null;
-  finalDecision?: string | null;
+  finalDecision?: ProbationFinalDecision | null;
   extensionDays?: number | null;
   newEndDate?: string | null;
   employeeStatusUpdatedAt?: string | null;
@@ -118,7 +114,7 @@ export interface ProbationEvaluationResponseDto {
   supervisorApprovedAt: string | null;
   hrApprovedAt: string | null;
   ceoApprovedAt: string | null;
-  finalDecision: string | null;
+  finalDecision: ProbationFinalDecision | null;
   extensionDays: number | null;
   newEndDate: string | null;
   employeeStatusUpdatedAt: string | null;

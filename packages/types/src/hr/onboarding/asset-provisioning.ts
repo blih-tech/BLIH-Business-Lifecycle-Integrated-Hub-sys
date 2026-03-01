@@ -1,3 +1,10 @@
+export type AssetProvisioningStatus =
+  | 'PENDING'
+  | 'APPROVED'
+  | 'PROVISIONED'
+  | 'REJECTED'
+  | 'COMPLETED';
+
 export interface AssetProvisioningEquipmentItem {
   item?: string;
   assetId?: string;
@@ -19,7 +26,7 @@ export interface UpdateAssetProvisioningDto {
   itSupervisorApprovedAt?: string | null;
   adminApprovedAt?: string | null;
   financeApprovalRequired?: boolean;
-  status?: string;
+  status?: AssetProvisioningStatus;
 }
 
 export interface AssetProvisioningResponseDto {
@@ -30,7 +37,7 @@ export interface AssetProvisioningResponseDto {
   itSupervisorApprovedAt: string | null;
   adminApprovedAt: string | null;
   financeApprovalRequired: boolean;
-  status: string;
+  status: AssetProvisioningStatus;
   createdAt: string;
   updatedAt: string;
 }

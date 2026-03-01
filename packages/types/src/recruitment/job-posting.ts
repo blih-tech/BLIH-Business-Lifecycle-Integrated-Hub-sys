@@ -45,7 +45,6 @@ export interface JobPostingResponseDto {
   postedAt: string | null;
   expiresAt: string | null;
   closedAt: string | null;
-  approvedBy: unknown;
   createdAt: string;
   updatedAt: string;
   candidatesCount?: number;
