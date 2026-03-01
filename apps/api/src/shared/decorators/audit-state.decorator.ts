@@ -5,6 +5,7 @@ export type AuditEntityType =
   | 'user'
   | 'realm'
   | 'department'
+  | 'position'
   | 'organization'
   | 'role';
 export interface AuditStateMetadata {
