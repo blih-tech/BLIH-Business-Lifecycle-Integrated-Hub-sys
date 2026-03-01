@@ -57,7 +57,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsc -p tsconfig.json --watch",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc -p tsconfig.json --noEmit"
   },
