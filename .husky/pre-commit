@@ -3,7 +3,7 @@
 set -e
 
 npm run branch:check
-npx --no-install lint-staged --no-stash --no-hide-partially-staged
+npx --no-install lint-staged
 
 STASH_NAME="pre-commit-verify-$(date +%s)"
 STASH_CREATED=0
