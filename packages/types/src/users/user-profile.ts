@@ -11,6 +11,7 @@ export type LifecycleStatus =
   | 'ONBOARDING'
   | 'ACTIVE'
   | 'SUSPENDED'
+  | 'ON_LEAVE'
   | 'TERMINATED'
   | 'RESIGNED'
   | 'RETIRED';

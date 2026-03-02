@@ -50,6 +50,7 @@ enum LifecycleStatus {
   ONBOARDING
   ACTIVE
   SUSPENDED
+  ON_LEAVE
   TERMINATED
   RESIGNED
   RETIRED
@@ -226,6 +227,38 @@ enum ApprovalDecision {
   REJECTED
 }
 
+// Attendance & Leave (HR Implementation Plan 04)
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  BEREAVEMENT
+  UNPAID
+  STUDY
+  EMERGENCY
+  COMPASSIONATE
+}
+
+enum LeaveRequestStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EARLY_DEPARTURE
+  ON_LEAVE
+  HALF_DAY
+  REMOTE
+  BUSINESS_TRIP
+}
+
 enum AssetProvisioningStatus {
   PENDING
   APPROVED
@@ -284,6 +317,9 @@ model User {
   probationKpiPlans              ProbationKpiPlan[]        @relation("ProbationKpiPlanUser")
   probationEvaluations           ProbationEvaluation[]     @relation("ProbationEvaluationUser")
   probationConfirmations         ProbationConfirmation[]
+  leaveRequests                  LeaveRequest[]            @relation("LeaveRequestEmployee")
+  leaveRequestsApproved          LeaveRequest[]            @relation("LeaveRequestApprover")
+  attendanceLogs                 AttendanceLog[]
 
   @@index([status])
 }
@@ -1075,6 +1111,57 @@ model ProbationConfirmation {
   updatedAt              DateTime                     @updatedAt
 
   @@index([userId])
+}
+
+model LeaveRequest {
+  id                  String              @id @default(uuid()) @db.Uuid
+  requestId           String              @unique @map("request_id") @db.VarChar(32)
+  userId              String              @map("user_id") @db.Uuid
+  user                User                @relation("LeaveRequestEmployee", fields: [userId], references: [id], onDelete: Cascade)
+  leaveType           LeaveType           @map("leave_type")
+  startDate           DateTime            @map("start_date") @db.Date
+  endDate             DateTime            @map("end_date") @db.Date
+  daysRequested       Decimal             @map("days_requested") @db.Decimal(5, 2)
+  reason              String?             @db.Text
+  description         String?             @db.Text
+  contactDuringLeave  Json?               @map("contact_during_leave") @db.JsonB
+  handoverDelegateId  String?             @map("handover_delegate_id") @db.Uuid
+  handoverNotes       String?             @map("handover_notes") @db.Text
+  balanceSnapshot     Json?               @map("balance_snapshot") @db.JsonB
+  submittedAt         DateTime?          @map("submitted_at")
+  approvals           Json?              @db.JsonB
+  status              LeaveRequestStatus  @default(DRAFT)
+  approvedById        String?             @map("approved_by_id") @db.Uuid
+  approvedBy          User?               @relation("LeaveRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt          DateTime?          @map("approved_at")
+  rejectionReason     String?            @map("rejection_reason") @db.Text
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([startDate, endDate])
+}
+
+model AttendanceLog {
+  id           String           @id @default(uuid()) @db.Uuid
+  userId       String           @map("user_id") @db.Uuid
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime         @db.Date
+  checkInAt    DateTime?        @map("check_in_at")
+  checkOutAt   DateTime?        @map("check_out_at")
+  totalMinutes Int?             @map("total_minutes")
+  status       AttendanceStatus @default(PRESENT)
+  checkInMethod String?         @map("check_in_method") @db.VarChar(32)
+  checkOutMethod String?        @map("check_out_method") @db.VarChar(32)
+  notes        String?          @db.Text
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+  @@index([status])
 }
 
 model RecruitmentApproval {

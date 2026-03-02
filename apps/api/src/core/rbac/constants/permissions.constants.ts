@@ -103,6 +103,13 @@ export const LeavePermissions = {
   ALL: 'leave:*',
 } as const;
 
+export const AttendancePermissions = {
+  VIEW: 'attendance:view',
+  CREATE: 'attendance:create',
+  UPDATE: 'attendance:update',
+  ALL: 'attendance:*',
+} as const;
+
 export const HrPayrollPermissions = {
   VIEW: 'hr_payroll:view',
   PROCESS: 'hr_payroll:process',
@@ -221,6 +228,7 @@ export const PermissionGroups = {
   position: PositionPermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
+  attendance: AttendancePermissions,
   hr_payroll: HrPayrollPermissions,
   invoice: InvoicePermissions,
   expense: ExpensePermissions,

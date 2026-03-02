@@ -35,6 +35,18 @@ import { GetOnboardingChecklistUseCase } from './onboarding/use-cases/get-onboar
 import { ListOnboardingChecklistsUseCase } from './onboarding/use-cases/list-onboarding-checklists.usecase';
 import { UpdateOnboardingChecklistUseCase } from './onboarding/use-cases/update-onboarding-checklist.usecase';
 import { UpdateOnboardingTaskUseCase } from './onboarding/use-cases/update-onboarding-task.usecase';
+import { LeaveController } from './leave/leave.controller';
+import { CreateLeaveRequestUseCase } from './leave/use-cases/create-leave-request.usecase';
+import { ListLeaveRequestsUseCase } from './leave/use-cases/list-leave-requests.usecase';
+import { GetLeaveRequestUseCase } from './leave/use-cases/get-leave-request.usecase';
+import { SubmitLeaveRequestUseCase } from './leave/use-cases/submit-leave-request.usecase';
+import { ApproveLeaveRequestUseCase } from './leave/use-cases/approve-leave-request.usecase';
+import { RejectLeaveRequestUseCase } from './leave/use-cases/reject-leave-request.usecase';
+import { GetLeaveBalanceUseCase } from './leave/use-cases/get-leave-balance.usecase';
+import { AttendanceController } from './attendance/attendance.controller';
+import { UpsertAttendanceLogUseCase } from './attendance/use-cases/upsert-attendance-log.usecase';
+import { ListAttendanceLogsUseCase } from './attendance/use-cases/list-attendance-logs.usecase';
+import { GetAttendanceLogUseCase } from './attendance/use-cases/get-attendance-log.usecase';
 
 @Module({
   controllers: [
@@ -45,6 +57,8 @@ import { UpdateOnboardingTaskUseCase } from './onboarding/use-cases/update-onboa
     RecruitmentRequestsController,
     HiringDecisionsController,
     OnboardingController,
+    LeaveController,
+    AttendanceController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -76,6 +90,16 @@ import { UpdateOnboardingTaskUseCase } from './onboarding/use-cases/update-onboa
     GetOnboardingChecklistUseCase,
     UpdateOnboardingChecklistUseCase,
     UpdateOnboardingTaskUseCase,
+    CreateLeaveRequestUseCase,
+    ListLeaveRequestsUseCase,
+    GetLeaveRequestUseCase,
+    SubmitLeaveRequestUseCase,
+    ApproveLeaveRequestUseCase,
+    RejectLeaveRequestUseCase,
+    GetLeaveBalanceUseCase,
+    UpsertAttendanceLogUseCase,
+    ListAttendanceLogsUseCase,
+    GetAttendanceLogUseCase,
   ],
 })
 export class HrModule {}
