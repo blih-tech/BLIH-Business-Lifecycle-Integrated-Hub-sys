@@ -286,6 +286,15 @@ export const RelationsPermissions = {
   ALL: 'relations:*',
 } as const;
 
+export const OffboardingPermissions = {
+  VIEW: 'offboarding:view',
+  CREATE: 'offboarding:create',
+  UPDATE: 'offboarding:update',
+  APPROVE: 'offboarding:approve',
+  COMPLETE: 'offboarding:complete',
+  ALL: 'offboarding:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
   user_profile: UserProfilePermissions,
@@ -318,6 +327,7 @@ export const PermissionGroups = {
   promotion_proposal: PromotionProposalPermissions,
   training: TrainingPermissions,
   relations: RelationsPermissions,
+  offboarding: OffboardingPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,

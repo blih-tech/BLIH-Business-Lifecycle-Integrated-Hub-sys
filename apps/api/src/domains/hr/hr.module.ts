@@ -110,6 +110,24 @@ import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap
 import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
 import { CertificationExpiryJob } from './jobs/certification-expiry.job';
 import { RelationsController } from './relations/relations.controller';
+import { OffboardingController } from './offboarding/offboarding.controller';
+import { CreateResignationUseCase } from './offboarding/use-cases/create-resignation.usecase';
+import { ListResignationsUseCase } from './offboarding/use-cases/list-resignations.usecase';
+import { GetResignationUseCase } from './offboarding/use-cases/get-resignation.usecase';
+import { UpdateResignationUseCase } from './offboarding/use-cases/update-resignation.usecase';
+import { GenerateOffboardingChecklistUseCase } from './offboarding/use-cases/generate-offboarding-checklist.usecase';
+import { GetOffboardingChecklistUseCase } from './offboarding/use-cases/get-offboarding-checklist.usecase';
+import { CompleteOffboardingTaskUseCase } from './offboarding/use-cases/complete-offboarding-task.usecase';
+import { CreateExitInterviewUseCase } from './offboarding/use-cases/create-exit-interview.usecase';
+import { ListExitInterviewsUseCase } from './offboarding/use-cases/list-exit-interviews.usecase';
+import { CreateFinalSettlementUseCase } from './offboarding/use-cases/create-final-settlement.usecase';
+import { GetFinalSettlementUseCase } from './offboarding/use-cases/get-final-settlement.usecase';
+import { UpdateFinalSettlementUseCase } from './offboarding/use-cases/update-final-settlement.usecase';
+import { CreateAssetReturnUseCase } from './offboarding/use-cases/create-asset-return.usecase';
+import { UpdateAssetReturnUseCase } from './offboarding/use-cases/update-asset-return.usecase';
+import { CreateComplianceChecklistUseCase } from './offboarding/use-cases/create-compliance-checklist.usecase';
+import { UpdateComplianceChecklistUseCase } from './offboarding/use-cases/update-compliance-checklist.usecase';
+import { CompleteOffboardingUseCase } from './offboarding/use-cases/complete-offboarding.usecase';
 import { CreateIncidentReportUseCase } from './relations/use-cases/create-incident-report.usecase';
 import { ListIncidentReportsUseCase } from './relations/use-cases/list-incident-reports.usecase';
 import { GetIncidentReportUseCase } from './relations/use-cases/get-incident-report.usecase';
@@ -153,6 +171,7 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     PromotionProposalsController,
     TrainingController,
     RelationsController,
+    OffboardingController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -276,6 +295,23 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     ListMediationsUseCase,
     GetMediationUseCase,
     UpdateMediationUseCase,
+    CreateResignationUseCase,
+    ListResignationsUseCase,
+    GetResignationUseCase,
+    UpdateResignationUseCase,
+    GenerateOffboardingChecklistUseCase,
+    GetOffboardingChecklistUseCase,
+    CompleteOffboardingTaskUseCase,
+    CreateExitInterviewUseCase,
+    ListExitInterviewsUseCase,
+    CreateFinalSettlementUseCase,
+    GetFinalSettlementUseCase,
+    UpdateFinalSettlementUseCase,
+    CreateAssetReturnUseCase,
+    UpdateAssetReturnUseCase,
+    CreateComplianceChecklistUseCase,
+    UpdateComplianceChecklistUseCase,
+    CompleteOffboardingUseCase,
   ],
 })
 export class HrModule {}
