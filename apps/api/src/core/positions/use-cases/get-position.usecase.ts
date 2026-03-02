@@ -15,6 +15,13 @@ export class GetPositionUseCase {
             name: true,
           },
         },
+        grade: {
+          select: {
+            code: true,
+            name: true,
+            level: true,
+          },
+        },
       },
     });
 

@@ -6,7 +6,6 @@ export type AuditEntityType =
   | 'realm'
   | 'department'
   | 'position'
-  | 'organization'
   | 'role';
 export interface AuditStateMetadata {
   /** Where to read resource id from, e.g. 'params.id' or 'params.userId' */

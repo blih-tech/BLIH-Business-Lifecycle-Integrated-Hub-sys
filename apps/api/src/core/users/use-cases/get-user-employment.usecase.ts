@@ -22,6 +22,14 @@ export class GetUserEmploymentUseCase {
         position: {
           select: {
             title: true,
+            gradeId: true,
+            grade: {
+              select: {
+                code: true,
+                name: true,
+                level: true,
+              },
+            },
             departmentId: true,
             department: {
               select: {
@@ -43,6 +51,10 @@ export class GetUserEmploymentUseCase {
       departmentName: employment.position?.department?.name ?? null,
       positionId: employment.positionId,
       positionTitle: employment.position?.title ?? null,
+      jobGradeId: employment.position?.gradeId ?? null,
+      jobGradeCode: employment.position?.grade?.code ?? null,
+      jobGradeName: employment.position?.grade?.name ?? null,
+      jobGradeLevel: employment.position?.grade?.level ?? null,
       employmentType: employment.employmentType,
       managerEmploymentId: employment.managerEmploymentId,
       hiredAt: employment.hiredAt?.toISOString() ?? null,

@@ -27,6 +27,10 @@ export class UpdatePositionUseCase {
       dto.departmentId !== undefined
         ? await this.resolveDepartmentId(dto.departmentId)
         : undefined;
+    const gradeId =
+      dto.gradeId !== undefined
+        ? await this.resolveGradeId(dto.gradeId)
+        : undefined;
 
     try {
       const position = await this.prisma.position.update({
@@ -37,12 +41,20 @@ export class UpdatePositionUseCase {
             ? { description: dto.description }
             : {}),
           ...(dto.departmentId !== undefined ? { departmentId } : {}),
+          ...(dto.gradeId !== undefined ? { gradeId } : {}),
           ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
         },
         include: {
           department: {
             select: {
               name: true,
+            },
+          },
+          grade: {
+            select: {
+              code: true,
+              name: true,
+              level: true,
             },
           },
         },
@@ -68,7 +80,7 @@ export class UpdatePositionUseCase {
   }
 
   private async resolveDepartmentId(
-    departmentId: string | undefined,
+    departmentId: string | null | undefined,
   ): Promise<string> {
     const normalized = departmentId?.trim();
     if (!normalized) {
@@ -84,5 +96,24 @@ export class UpdatePositionUseCase {
     }
 
     return department.id;
+  }
+
+  private async resolveGradeId(
+    gradeId: string | null | undefined,
+  ): Promise<string | null> {
+    const normalized = gradeId?.trim();
+    if (!normalized) {
+      return null;
+    }
+
+    const grade = await this.prisma.jobGrade.findUnique({
+      where: { id: normalized },
+      select: { id: true },
+    });
+    if (!grade) {
+      throw new NotFoundException('Job grade not found');
+    }
+
+    return grade.id;
   }
 }

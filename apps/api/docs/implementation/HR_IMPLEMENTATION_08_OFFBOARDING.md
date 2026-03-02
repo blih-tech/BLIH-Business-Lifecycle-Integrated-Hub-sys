@@ -1,8 +1,8 @@
 # HR Implementation Plan 8: Offboarding Subsystem
 
 **Version:** 1.0  
-**Last Updated:** February 2026  
-**Status:** Ready for implementation  
+**Last Updated:** March 2026  
+**Status:** Implemented  
 **Implementation order:** 7 (after Employee Records, Leave, Approval; depends on lifecycle)
 
 ---
@@ -205,8 +205,16 @@ enum TerminationType {
 
 ## 10. Acceptance Criteria
 
-- [ ] Resignation submission with notice validation (notice period, critical projects, leave balance).
-- [ ] Offboarding checklist auto-generated from matrix with department tasks and due dates.
-- [ ] Final settlement calculated (salary, leave encashment, deductions); breakdown document.
-- [ ] Exit interview, asset return, and compliance checklist recorded.
-- [ ] Complete offboarding sets lifecycle and offboardingCompleted; triggers notifications and access revocation.
+- [x] Resignation submission with notice validation (notice period, critical projects, leave balance).
+- [x] Offboarding checklist auto-generated from matrix with department tasks and due dates.
+- [x] Final settlement calculated (salary, leave encashment, deductions); breakdown document.
+- [x] Exit interview, asset return, and compliance checklist recorded.
+- [x] Complete offboarding sets lifecycle and offboardingCompleted; triggers notifications and access revocation.
+
+---
+
+## 11. Implementation Summary
+
+- **Base path:** `/api/v1/hr/offboarding`. Schema: offboarding enums and models; run `prisma:migrate:dev` from apps/api.
+- **Types:** `packages/types/src/hr/offboarding/`. **Domain:** `apps/api/src/domains/hr/offboarding/` (notice validation, task matrix, settlement utils, mapper, use cases, OffboardingController).
+- **RBAC:** `OffboardingPermissions` (VIEW, CREATE, UPDATE, APPROVE, COMPLETE).

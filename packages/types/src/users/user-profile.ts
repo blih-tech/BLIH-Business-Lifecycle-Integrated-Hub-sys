@@ -7,6 +7,12 @@ export type EmploymentType =
 
 export type PayFrequency = 'MONTHLY' | 'BIWEEKLY' | 'WEEKLY' | 'ANNUAL';
 
+export type CompensationComponentType =
+  | 'ALLOWANCE'
+  | 'BONUS'
+  | 'DEDUCTION'
+  | 'BENEFIT';
+
 export type LifecycleStatus =
   | 'ONBOARDING'
   | 'ACTIVE'
@@ -81,6 +87,10 @@ export interface UserEmploymentResponseDto {
   departmentName?: string | null;
   positionId?: string | null;
   positionTitle?: string | null;
+  jobGradeId?: string | null;
+  jobGradeCode?: string | null;
+  jobGradeName?: string | null;
+  jobGradeLevel?: number | null;
   employmentType: EmploymentType;
   managerEmploymentId?: string | null;
   hiredAt?: string | null;
@@ -111,6 +121,7 @@ export interface UserCompensationResponseDto {
   bonusRate?: string | null;
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
+  components?: CompensationComponentResponseDto[];
   createdAt: string;
   updatedAt: string;
 }
@@ -140,6 +151,37 @@ export interface UserCompensationHistoryResponseDto {
   changeReason?: string | null;
   changedById?: string | null;
   createdAt: string;
+}
+
+export interface CreateCompensationComponentDto {
+  name: string;
+  type: CompensationComponentType;
+  amount: string;
+  isRecurring: boolean;
+  effectiveFrom: string;
+  effectiveTo?: string | null;
+}
+
+export interface UpdateCompensationComponentDto {
+  name?: string;
+  type?: CompensationComponentType;
+  amount?: string;
+  isRecurring?: boolean;
+  effectiveFrom?: string;
+  effectiveTo?: string | null;
+}
+
+export interface CompensationComponentResponseDto {
+  id: string;
+  userId: string;
+  name: string;
+  type: CompensationComponentType;
+  amount: string;
+  isRecurring: boolean;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UpdateUserLifecycleDto {

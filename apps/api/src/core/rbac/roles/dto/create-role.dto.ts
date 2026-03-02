@@ -19,7 +19,7 @@ export class CreateRoleDto implements CreateRoleDtoType {
 
   @ApiPropertyOptional({
     description: 'Role description used in governance UI.',
-    example: 'Can approve finance documents inside scoped organization.',
+    example: 'Can approve finance documents for the assigned scope.',
   })
   @IsOptional()
   @IsString()

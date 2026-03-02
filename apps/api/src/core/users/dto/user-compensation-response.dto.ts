@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PayFrequency } from '../../../platform/prisma/prisma-client';
 import type { UserCompensationResponseDto as UserCompensationResponseDtoType } from '@repo/types';
+import { CompensationComponentResponseDto } from './compensation-component-response.dto';
 
 export class UserCompensationResponseDto implements UserCompensationResponseDtoType {
   @ApiProperty()
@@ -26,6 +27,12 @@ export class UserCompensationResponseDto implements UserCompensationResponseDtoT
 
   @ApiPropertyOptional({ nullable: true })
   effectiveTo?: string | null;
+
+  @ApiPropertyOptional({
+    type: CompensationComponentResponseDto,
+    isArray: true,
+  })
+  components?: CompensationComponentResponseDto[];
 
   @ApiProperty()
   createdAt!: string;

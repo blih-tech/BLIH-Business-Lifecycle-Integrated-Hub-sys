@@ -29,6 +29,15 @@ export class CreatePositionDto implements CreatePositionDtoType {
   departmentId!: string;
 
   @ApiPropertyOptional({
+    example: 'd9fdb6de-2c7b-47e6-9c58-080829f5bd10',
+    description: 'Optional job grade id assigned to the position.',
+    nullable: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  gradeId?: string | null;
+
+  @ApiPropertyOptional({
     example: true,
     default: true,
   })

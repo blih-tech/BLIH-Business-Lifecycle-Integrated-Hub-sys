@@ -78,7 +78,7 @@ export class RolesController {
         value: {
           name: 'finance.approver',
           displayName: 'Finance Approver',
-          description: 'Can approve invoices in assigned organization.',
+          description: 'Can approve invoices for the assigned scope.',
           parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
         },
       },
@@ -91,7 +91,7 @@ export class RolesController {
         id: '57e883d0-d0c0-4187-a232-50fa729f6876',
         name: 'finance.approver',
         displayName: 'Finance Approver',
-        description: 'Can approve invoices in assigned organization.',
+        description: 'Can approve invoices for the assigned scope.',
         isSystem: false,
         parentRoleId: '57e883d0-d0c0-4187-a232-50fa729f6876',
         createdAt: '2026-02-21T18:00:00.000Z',

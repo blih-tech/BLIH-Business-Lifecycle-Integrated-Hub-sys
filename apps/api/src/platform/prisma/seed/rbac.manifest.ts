@@ -73,11 +73,14 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
   { name: 'user_employment', description: 'User employment records' },
   { name: 'user_compensation', description: 'User compensation records' },
   { name: 'position', description: 'Position catalog management' },
+  { name: 'job_grade', description: 'Job grade catalog management' },
   {
     name: 'user_compensation_history',
     description: 'User compensation history records',
   },
   { name: 'user_lifecycle', description: 'User lifecycle records' },
+  { name: 'succession_plan', description: 'Succession planning records' },
+  { name: 'promotion_proposal', description: 'Promotion workflow proposals' },
 ];
 
 export const RBAC_PERMISSIONS = [...AllPermissionSlugs];

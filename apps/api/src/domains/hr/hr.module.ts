@@ -58,6 +58,101 @@ import { ListUserWorkSchedulesUseCase } from './attendance/use-cases/list-user-w
 import { ListWorkSchedulesUseCase } from './attendance/use-cases/list-work-schedules.usecase';
 import { HrUserLifecycleService } from './hr-user-lifecycle.service';
 import { LeaveBalanceService } from './leave/leave-balance.service';
+import { PerformanceController } from './performance/performance.controller';
+import { ListReviewPeriodsUseCase } from './performance/use-cases/list-review-periods.usecase';
+import { EnsureReviewPeriodUseCase } from './performance/use-cases/ensure-review-period.usecase';
+import { CreatePerformanceReviewUseCase } from './performance/use-cases/create-performance-review.usecase';
+import { ListPerformanceReviewsUseCase } from './performance/use-cases/list-performance-reviews.usecase';
+import { GetPerformanceReviewUseCase } from './performance/use-cases/get-performance-review.usecase';
+import { UpdateSelfAssessmentUseCase } from './performance/use-cases/update-self-assessment.usecase';
+import { UpdateManagerReviewUseCase } from './performance/use-cases/update-manager-review.usecase';
+import { CompletePerformanceReviewUseCase } from './performance/use-cases/complete-performance-review.usecase';
+import { GetAnnualSummaryUseCase } from './performance/use-cases/get-annual-summary.usecase';
+import { ListPerformanceCalibrationsUseCase } from './performance/use-cases/list-performance-calibrations.usecase';
+import { ListPerformanceReviewFeedbackUseCase } from './performance/use-cases/list-performance-review-feedback.usecase';
+import { UpsertPerformanceCalibrationUseCase } from './performance/use-cases/upsert-performance-calibration.usecase';
+import { UpsertPerformanceReviewFeedbackUseCase } from './performance/use-cases/upsert-performance-review-feedback.usecase';
+import { OkrController } from './okr/okr.controller';
+import { CreateOkrUseCase } from './okr/use-cases/create-okr.usecase';
+import { ListOkrsUseCase } from './okr/use-cases/list-okrs.usecase';
+import { GetOkrUseCase } from './okr/use-cases/get-okr.usecase';
+import { UpdateOkrUseCase } from './okr/use-cases/update-okr.usecase';
+import { UpdateKeyResultUseCase } from './okr/use-cases/update-key-result.usecase';
+import { GetOkrProgressUseCase } from './okr/use-cases/get-okr-progress.usecase';
+import { ListKeyResultUpdatesUseCase } from './okr/use-cases/list-key-result-updates.usecase';
+import { ReweightKeyResultsUseCase } from './okr/use-cases/reweight-key-results.usecase';
+import { PromotionProposalsController } from './talent/promotion-proposals.controller';
+import { SuccessionPlansController } from './talent/succession-plans.controller';
+import { CreatePromotionProposalUseCase } from './talent/use-cases/create-promotion-proposal.usecase';
+import { CreateSuccessionPlanUseCase } from './talent/use-cases/create-succession-plan.usecase';
+import { GetPromotionProposalUseCase } from './talent/use-cases/get-promotion-proposal.usecase';
+import { ListPromotionProposalsUseCase } from './talent/use-cases/list-promotion-proposals.usecase';
+import { ListSuccessionPlansUseCase } from './talent/use-cases/list-succession-plans.usecase';
+import { ReviewPromotionProposalUseCase } from './talent/use-cases/review-promotion-proposal.usecase';
+import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-succession-plan.usecase';
+import { TrainingController } from './training/training.controller';
+import { ListSkillsUseCase } from './training/use-cases/list-skills.usecase';
+import { CreateSkillUseCase } from './training/use-cases/create-skill.usecase';
+import { GetEmployeeSkillsUseCase } from './training/use-cases/get-employee-skills.usecase';
+import { UpsertEmployeeSkillsUseCase } from './training/use-cases/upsert-employee-skills.usecase';
+import { GetTrainingBudgetUseCase } from './training/use-cases/get-training-budget.usecase';
+import { CreateTrainingRequestUseCase } from './training/use-cases/create-training-request.usecase';
+import { ListTrainingRequestsUseCase } from './training/use-cases/list-training-requests.usecase';
+import { GetTrainingRequestUseCase } from './training/use-cases/get-training-request.usecase';
+import { ApproveTrainingRequestUseCase } from './training/use-cases/approve-training-request.usecase';
+import { CreateTrainingCompletionUseCase } from './training/use-cases/create-training-completion.usecase';
+import { ListTrainingCompletionsUseCase } from './training/use-cases/list-training-completions.usecase';
+import { GetTrainingCompletionUseCase } from './training/use-cases/get-training-completion.usecase';
+import { UpdateTrainingCompletionUseCase } from './training/use-cases/update-training-completion.usecase';
+import { CreateSkillGapAssessmentUseCase } from './training/use-cases/create-skill-gap-assessment.usecase';
+import { ListSkillGapAssessmentsUseCase } from './training/use-cases/list-skill-gap-assessments.usecase';
+import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap-assessment.usecase';
+import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
+import { CertificationExpiryJob } from './jobs/certification-expiry.job';
+import { RelationsController } from './relations/relations.controller';
+import { OffboardingController } from './offboarding/offboarding.controller';
+import { CreateResignationUseCase } from './offboarding/use-cases/create-resignation.usecase';
+import { ListResignationsUseCase } from './offboarding/use-cases/list-resignations.usecase';
+import { GetResignationUseCase } from './offboarding/use-cases/get-resignation.usecase';
+import { UpdateResignationUseCase } from './offboarding/use-cases/update-resignation.usecase';
+import { GenerateOffboardingChecklistUseCase } from './offboarding/use-cases/generate-offboarding-checklist.usecase';
+import { GetOffboardingChecklistUseCase } from './offboarding/use-cases/get-offboarding-checklist.usecase';
+import { CompleteOffboardingTaskUseCase } from './offboarding/use-cases/complete-offboarding-task.usecase';
+import { CreateExitInterviewUseCase } from './offboarding/use-cases/create-exit-interview.usecase';
+import { ListExitInterviewsUseCase } from './offboarding/use-cases/list-exit-interviews.usecase';
+import { CreateFinalSettlementUseCase } from './offboarding/use-cases/create-final-settlement.usecase';
+import { GetFinalSettlementUseCase } from './offboarding/use-cases/get-final-settlement.usecase';
+import { UpdateFinalSettlementUseCase } from './offboarding/use-cases/update-final-settlement.usecase';
+import { CreateAssetReturnUseCase } from './offboarding/use-cases/create-asset-return.usecase';
+import { UpdateAssetReturnUseCase } from './offboarding/use-cases/update-asset-return.usecase';
+import { CreateComplianceChecklistUseCase } from './offboarding/use-cases/create-compliance-checklist.usecase';
+import { UpdateComplianceChecklistUseCase } from './offboarding/use-cases/update-compliance-checklist.usecase';
+import { CompleteOffboardingUseCase } from './offboarding/use-cases/complete-offboarding.usecase';
+import { CreateIncidentReportUseCase } from './relations/use-cases/create-incident-report.usecase';
+import { ListIncidentReportsUseCase } from './relations/use-cases/list-incident-reports.usecase';
+import { GetIncidentReportUseCase } from './relations/use-cases/get-incident-report.usecase';
+import { UpdateIncidentReportUseCase } from './relations/use-cases/update-incident-report.usecase';
+import { CreateDisciplinaryActionUseCase } from './relations/use-cases/create-disciplinary-action.usecase';
+import { ListDisciplinaryActionsUseCase } from './relations/use-cases/list-disciplinary-actions.usecase';
+import { GetDisciplinaryActionUseCase } from './relations/use-cases/get-disciplinary-action.usecase';
+import { CreateGrievanceUseCase } from './relations/use-cases/create-grievance.usecase';
+import { ListGrievancesUseCase } from './relations/use-cases/list-grievances.usecase';
+import { GetGrievanceUseCase } from './relations/use-cases/get-grievance.usecase';
+import { UpdateGrievanceUseCase } from './relations/use-cases/update-grievance.usecase';
+import { CreateRecognitionUseCase } from './relations/use-cases/create-recognition.usecase';
+import { ListRecognitionsUseCase } from './relations/use-cases/list-recognitions.usecase';
+import { GetRecognitionUseCase } from './relations/use-cases/get-recognition.usecase';
+import { ApproveRecognitionUseCase } from './relations/use-cases/approve-recognition.usecase';
+import { CreateSurveyUseCase } from './relations/use-cases/create-survey.usecase';
+import { ListSurveysUseCase } from './relations/use-cases/list-surveys.usecase';
+import { GetSurveyUseCase } from './relations/use-cases/get-survey.usecase';
+import { UpdateSurveyUseCase } from './relations/use-cases/update-survey.usecase';
+import { SubmitSurveyResponseUseCase } from './relations/use-cases/submit-survey-response.usecase';
+import { GetSurveyResultsUseCase } from './relations/use-cases/get-survey-results.usecase';
+import { CreateMediationUseCase } from './relations/use-cases/create-mediation.usecase';
+import { ListMediationsUseCase } from './relations/use-cases/list-mediations.usecase';
+import { GetMediationUseCase } from './relations/use-cases/get-mediation.usecase';
+import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.usecase';
 
 @Module({
   controllers: [
@@ -70,6 +165,13 @@ import { LeaveBalanceService } from './leave/leave-balance.service';
     OnboardingController,
     LeaveController,
     AttendanceController,
+    PerformanceController,
+    OkrController,
+    SuccessionPlansController,
+    PromotionProposalsController,
+    TrainingController,
+    RelationsController,
+    OffboardingController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -86,6 +188,7 @@ import { LeaveBalanceService } from './leave/leave-balance.service';
     UpdateJobDescriptionUseCase,
     DocumentExpiryJob,
     AttendanceReconciliationJob,
+    CertificationExpiryJob,
     ListRecruitmentRequestsUseCase,
     GetRecruitmentRequestUseCase,
     CreateRecruitmentRequestUseCase,
@@ -122,6 +225,93 @@ import { LeaveBalanceService } from './leave/leave-balance.service';
     UpsertAttendanceLogUseCase,
     ListAttendanceLogsUseCase,
     GetAttendanceLogUseCase,
+    ListReviewPeriodsUseCase,
+    EnsureReviewPeriodUseCase,
+    CreatePerformanceReviewUseCase,
+    ListPerformanceReviewsUseCase,
+    GetPerformanceReviewUseCase,
+    UpdateSelfAssessmentUseCase,
+    UpdateManagerReviewUseCase,
+    CompletePerformanceReviewUseCase,
+    GetAnnualSummaryUseCase,
+    ListPerformanceReviewFeedbackUseCase,
+    UpsertPerformanceReviewFeedbackUseCase,
+    ListPerformanceCalibrationsUseCase,
+    UpsertPerformanceCalibrationUseCase,
+    CreateOkrUseCase,
+    ListOkrsUseCase,
+    GetOkrUseCase,
+    UpdateOkrUseCase,
+    UpdateKeyResultUseCase,
+    GetOkrProgressUseCase,
+    ListKeyResultUpdatesUseCase,
+    ReweightKeyResultsUseCase,
+    CreateSuccessionPlanUseCase,
+    ListSuccessionPlansUseCase,
+    UpdateSuccessionPlanUseCase,
+    CreatePromotionProposalUseCase,
+    ListPromotionProposalsUseCase,
+    GetPromotionProposalUseCase,
+    ReviewPromotionProposalUseCase,
+    ListSkillsUseCase,
+    CreateSkillUseCase,
+    GetEmployeeSkillsUseCase,
+    UpsertEmployeeSkillsUseCase,
+    GetTrainingBudgetUseCase,
+    CreateTrainingRequestUseCase,
+    ListTrainingRequestsUseCase,
+    GetTrainingRequestUseCase,
+    ApproveTrainingRequestUseCase,
+    CreateTrainingCompletionUseCase,
+    ListTrainingCompletionsUseCase,
+    GetTrainingCompletionUseCase,
+    UpdateTrainingCompletionUseCase,
+    CreateSkillGapAssessmentUseCase,
+    ListSkillGapAssessmentsUseCase,
+    GetSkillGapAssessmentUseCase,
+    GetIndividualSkillGapUseCase,
+    CreateIncidentReportUseCase,
+    ListIncidentReportsUseCase,
+    GetIncidentReportUseCase,
+    UpdateIncidentReportUseCase,
+    CreateDisciplinaryActionUseCase,
+    ListDisciplinaryActionsUseCase,
+    GetDisciplinaryActionUseCase,
+    CreateGrievanceUseCase,
+    ListGrievancesUseCase,
+    GetGrievanceUseCase,
+    UpdateGrievanceUseCase,
+    CreateRecognitionUseCase,
+    ListRecognitionsUseCase,
+    GetRecognitionUseCase,
+    ApproveRecognitionUseCase,
+    CreateSurveyUseCase,
+    ListSurveysUseCase,
+    GetSurveyUseCase,
+    UpdateSurveyUseCase,
+    SubmitSurveyResponseUseCase,
+    GetSurveyResultsUseCase,
+    CreateMediationUseCase,
+    ListMediationsUseCase,
+    GetMediationUseCase,
+    UpdateMediationUseCase,
+    CreateResignationUseCase,
+    ListResignationsUseCase,
+    GetResignationUseCase,
+    UpdateResignationUseCase,
+    GenerateOffboardingChecklistUseCase,
+    GetOffboardingChecklistUseCase,
+    CompleteOffboardingTaskUseCase,
+    CreateExitInterviewUseCase,
+    ListExitInterviewsUseCase,
+    CreateFinalSettlementUseCase,
+    GetFinalSettlementUseCase,
+    UpdateFinalSettlementUseCase,
+    CreateAssetReturnUseCase,
+    UpdateAssetReturnUseCase,
+    CreateComplianceChecklistUseCase,
+    UpdateComplianceChecklistUseCase,
+    CompleteOffboardingUseCase,
   ],
 })
 export class HrModule {}

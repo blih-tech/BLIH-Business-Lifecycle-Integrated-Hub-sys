@@ -14,6 +14,13 @@ export class ListPositionsUseCase {
             name: true,
           },
         },
+        grade: {
+          select: {
+            code: true,
+            name: true,
+            level: true,
+          },
+        },
       },
       orderBy: [{ title: 'asc' }],
     });

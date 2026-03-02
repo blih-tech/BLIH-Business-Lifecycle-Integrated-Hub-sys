@@ -29,7 +29,16 @@ export class UpdatePositionDto implements UpdatePositionDtoType {
   })
   @IsOptional()
   @IsUUID()
-  departmentId?: string;
+  departmentId?: string | null;
+
+  @ApiPropertyOptional({
+    example: 'd9fdb6de-2c7b-47e6-9c58-080829f5bd10',
+    description: 'Job grade id assigned to the position. Use null to clear it.',
+    nullable: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  gradeId?: string | null;
 
   @ApiPropertyOptional({ example: false })
   @IsOptional()

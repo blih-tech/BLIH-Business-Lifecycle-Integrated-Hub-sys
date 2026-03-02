@@ -23,6 +23,8 @@ export const UserCompensationPermissions = {
   UPDATE: 'user_compensation:update',
   HISTORY_VIEW: 'user_compensation_history:view',
   HISTORY_CREATE: 'user_compensation_history:create',
+  COMPONENT_VIEW: 'user_compensation:view_components',
+  COMPONENT_MANAGE: 'user_compensation:manage_components',
 } as const;
 
 export const UserLifecyclePermissions = {
@@ -36,6 +38,14 @@ export const PositionPermissions = {
   UPDATE: 'position:update',
   DELETE: 'position:delete',
   ALL: 'position:*',
+} as const;
+
+export const JobGradePermissions = {
+  VIEW: 'job_grade:view',
+  CREATE: 'job_grade:create',
+  UPDATE: 'job_grade:update',
+  DELETE: 'job_grade:delete',
+  ALL: 'job_grade:*',
 } as const;
 
 export const SystemRolePermissions = {
@@ -219,6 +229,72 @@ export const OnboardingChecklistPermissions = {
   ALL: 'onboarding_checklist:*',
 } as const;
 
+export const PerformancePermissions = {
+  VIEW: 'performance:view',
+  CREATE: 'performance:create',
+  UPDATE_SELF: 'performance:update_self',
+  UPDATE_MANAGER: 'performance:update_manager',
+  UPDATE_FEEDBACK: 'performance:update_feedback',
+  COMPLETE: 'performance:complete',
+  VIEW_SUMMARY: 'performance:view_summary',
+  MANAGE_PERIODS: 'performance:manage_periods',
+  CALIBRATE: 'performance:calibrate',
+  ALL: 'performance:*',
+} as const;
+
+export const OkrPermissions = {
+  VIEW: 'okr:view',
+  CREATE: 'okr:create',
+  UPDATE: 'okr:update',
+  UPDATE_KEY_RESULT: 'okr:update_key_result',
+  VIEW_CHECKINS: 'okr:view_checkins',
+  REWEIGHT: 'okr:reweight',
+  ALL: 'okr:*',
+} as const;
+
+export const SuccessionPlanPermissions = {
+  VIEW: 'succession_plan:view',
+  CREATE: 'succession_plan:create',
+  UPDATE: 'succession_plan:update',
+  ALL: 'succession_plan:*',
+} as const;
+
+export const PromotionProposalPermissions = {
+  VIEW: 'promotion_proposal:view',
+  CREATE: 'promotion_proposal:create',
+  REVIEW: 'promotion_proposal:review',
+  ALL: 'promotion_proposal:*',
+} as const;
+
+export const TrainingPermissions = {
+  VIEW: 'training:view',
+  CREATE: 'training:create',
+  APPROVE: 'training:approve',
+  MANAGE_SKILLS: 'training:manage_skills',
+  MANAGE_BUDGET: 'training:manage_budget',
+  SKILL_GAP: 'training:skill_gap',
+  ALL: 'training:*',
+} as const;
+
+export const RelationsPermissions = {
+  VIEW: 'relations:view',
+  CREATE: 'relations:create',
+  UPDATE: 'relations:update',
+  APPROVE: 'relations:approve',
+  RESPOND: 'relations:respond',
+  RESULTS: 'relations:results',
+  ALL: 'relations:*',
+} as const;
+
+export const OffboardingPermissions = {
+  VIEW: 'offboarding:view',
+  CREATE: 'offboarding:create',
+  UPDATE: 'offboarding:update',
+  APPROVE: 'offboarding:approve',
+  COMPLETE: 'offboarding:complete',
+  ALL: 'offboarding:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
   user_profile: UserProfilePermissions,
@@ -226,6 +302,7 @@ export const PermissionGroups = {
   user_compensation: UserCompensationPermissions,
   user_lifecycle: UserLifecyclePermissions,
   position: PositionPermissions,
+  job_grade: JobGradePermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
   attendance: AttendancePermissions,
@@ -244,6 +321,13 @@ export const PermissionGroups = {
   candidate: CandidatePermissions,
   hiring_decision: HiringDecisionPermissions,
   onboarding_checklist: OnboardingChecklistPermissions,
+  performance: PerformancePermissions,
+  okr: OkrPermissions,
+  succession_plan: SuccessionPlanPermissions,
+  promotion_proposal: PromotionProposalPermissions,
+  training: TrainingPermissions,
+  relations: RelationsPermissions,
+  offboarding: OffboardingPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,
