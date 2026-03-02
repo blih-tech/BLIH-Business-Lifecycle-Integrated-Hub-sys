@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { AssignUserWorkScheduleDto } from '@blih/types';
+import type { AssignUserWorkScheduleDto } from '@repo/types';
 import { HrUserLifecycleService } from '../../hr-user-lifecycle.service';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapUserWorkScheduleResponse } from '../attendance-config.mapper';

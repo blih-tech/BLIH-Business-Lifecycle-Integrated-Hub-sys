@@ -48,8 +48,8 @@ jobs:
 
       - name: Verify shared types
         run: |
-          npm run lint --workspace @blih/types
-          npm run check-types --workspace @blih/types
+          npm run lint --workspace @repo/types
+          npm run check-types --workspace @repo/types
 
       - name: Verify backend
         run: |

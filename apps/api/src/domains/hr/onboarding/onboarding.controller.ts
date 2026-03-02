@@ -12,7 +12,7 @@ import type {
   CreateOnboardingChecklistDto,
   UpdateOnboardingChecklistDto,
   UpdateOnboardingTaskDto,
-} from '@blih/types';
+} from '@repo/types';
 import {
   ApiBody,
   ApiOkResponse,

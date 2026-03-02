@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import type { HiringDecisionOutcome } from '@blih/types';
+import type { HiringDecisionOutcome } from '@repo/types';
 
 /**
  * Enforce: when finalDecision is OFFER_APPROVED, offer must be non-null and non-empty.

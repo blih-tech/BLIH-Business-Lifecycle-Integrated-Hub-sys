@@ -12,7 +12,7 @@ import type {
   AcceptOfferDto,
   CreateHiringDecisionDto,
   FinalizeHiringDecisionDto,
-} from '@blih/types';
+} from '@repo/types';
 import {
   ApiBody,
   ApiOkResponse,

@@ -37,7 +37,7 @@ BLIH System Monorepo
 │   ├── CSS Modules
 │   └── App Router
 ├── Shared Packages
-│   ├── @blih/types (Type definitions)
+│   ├── @repo/types (Type definitions)
 │   ├── @repo/eslint-config (ESLint configs)
 │   └── @repo/typescript-config (TS configs)
 └── Infrastructure
@@ -233,10 +233,10 @@ The project uses Turborepo for efficient build orchestration:
 
    ```
    web (frontend)
-   └── @blih/types
+   └── @repo/types
 
    api (backend)
-   └── @blih/types
+   └── @repo/types
 
    @repo/eslint-config
    @repo/typescript-config

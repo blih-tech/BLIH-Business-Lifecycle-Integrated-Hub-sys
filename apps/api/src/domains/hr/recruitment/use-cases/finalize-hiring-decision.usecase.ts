@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { FinalizeHiringDecisionDto } from '@blih/types';
+import type { FinalizeHiringDecisionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapHiringDecisionResponse } from '../hiring-decision.mapper';
 import { validateHiringDecisionOffer } from '../validate-hiring-decision';

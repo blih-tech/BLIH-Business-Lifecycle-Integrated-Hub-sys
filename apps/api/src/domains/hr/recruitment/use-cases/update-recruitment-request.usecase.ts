@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { UpdateRecruitmentRequestDto } from '@blih/types';
+import type { UpdateRecruitmentRequestDto } from '@repo/types';
 import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()

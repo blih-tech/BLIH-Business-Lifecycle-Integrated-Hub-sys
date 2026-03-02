@@ -206,8 +206,8 @@ function runNpm(args) {
 
 function runChecks(scopes) {
   if (scopes.types) {
-    runNpm(['run', 'lint', '--workspace', '@blih/types']);
-    runNpm(['run', 'check-types', '--workspace', '@blih/types']);
+    runNpm(['run', 'lint', '--workspace', '@repo/types']);
+    runNpm(['run', 'check-types', '--workspace', '@repo/types']);
   }
 
   if (scopes.web) {

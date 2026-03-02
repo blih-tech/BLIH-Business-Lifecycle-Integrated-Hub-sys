@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
 } from '@nestjs/common';
-import type { CreateHolidayDto } from '@blih/types';
+import type { CreateHolidayDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapHolidayResponse } from '../attendance-config.mapper';
 import { normalizeDateOnly } from '../attendance-date.util';
