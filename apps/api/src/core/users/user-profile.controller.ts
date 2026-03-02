@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -26,7 +27,10 @@ import {
   UserProfilePermissions,
 } from '../rbac/constants/permissions.constants';
 import { CreateCompensationHistoryDto } from './dto/create-compensation-history.dto';
+import { CreateCompensationComponentDto } from './dto/create-compensation-component.dto';
+import { CompensationComponentResponseDto } from './dto/compensation-component-response.dto';
 import { UpdateUserCompensationDto } from './dto/update-user-compensation.dto';
+import { UpdateCompensationComponentDto } from './dto/update-compensation-component.dto';
 import { UpdateUserEmploymentDto } from './dto/update-user-employment.dto';
 import { UpdateUserLifecycleDto } from './dto/update-user-lifecycle.dto';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
@@ -36,11 +40,15 @@ import { UserEmploymentResponseDto } from './dto/user-employment-response.dto';
 import { UserLifecycleResponseDto } from './dto/user-lifecycle-response.dto';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { CreateUserCompensationHistoryUseCase } from './use-cases/create-user-compensation-history.usecase';
+import { CreateCompensationComponentUseCase } from './use-cases/create-compensation-component.usecase';
+import { DeleteCompensationComponentUseCase } from './use-cases/delete-compensation-component.usecase';
 import { GetUserCompensationUseCase } from './use-cases/get-user-compensation.usecase';
 import { GetUserEmploymentUseCase } from './use-cases/get-user-employment.usecase';
 import { GetUserLifecycleUseCase } from './use-cases/get-user-lifecycle.usecase';
 import { GetUserProfileUseCase } from './use-cases/get-user-profile.usecase';
+import { ListCompensationComponentsUseCase } from './use-cases/list-compensation-components.usecase';
 import { ListUserCompensationHistoryUseCase } from './use-cases/list-user-compensation-history.usecase';
+import { UpdateCompensationComponentUseCase } from './use-cases/update-compensation-component.usecase';
 import { UpdateUserCompensationUseCase } from './use-cases/update-user-compensation.usecase';
 import { UpdateUserEmploymentUseCase } from './use-cases/update-user-employment.usecase';
 import { UpdateUserLifecycleUseCase } from './use-cases/update-user-lifecycle.usecase';
@@ -57,6 +65,10 @@ export class UserProfileController {
     private readonly updateUserEmploymentUseCase: UpdateUserEmploymentUseCase,
     private readonly getUserCompensationUseCase: GetUserCompensationUseCase,
     private readonly updateUserCompensationUseCase: UpdateUserCompensationUseCase,
+    private readonly listCompensationComponentsUseCase: ListCompensationComponentsUseCase,
+    private readonly createCompensationComponentUseCase: CreateCompensationComponentUseCase,
+    private readonly updateCompensationComponentUseCase: UpdateCompensationComponentUseCase,
+    private readonly deleteCompensationComponentUseCase: DeleteCompensationComponentUseCase,
     private readonly listUserCompensationHistoryUseCase: ListUserCompensationHistoryUseCase,
     private readonly createUserCompensationHistoryUseCase: CreateUserCompensationHistoryUseCase,
     private readonly getUserLifecycleUseCase: GetUserLifecycleUseCase,
@@ -209,6 +221,82 @@ export class UserProfileController {
     @Body() dto: UpdateUserCompensationDto,
   ) {
     return this.updateUserCompensationUseCase.execute(userId, dto);
+  }
+
+  @Get('compensation/components')
+  @Roles(UserCompensationPermissions.COMPONENT_VIEW)
+  @ApiProtected({
+    path: '/api/v1/users/:userId/compensation/components',
+    roles: [UserCompensationPermissions.COMPONENT_VIEW],
+  })
+  @ApiOperation({ summary: 'List compensation components' })
+  @ApiOkResponse({ type: CompensationComponentResponseDto, isArray: true })
+  @ResponseMessage('Compensation components retrieved successfully')
+  listCompensationComponents(@Param('userId') userId: string) {
+    return this.listCompensationComponentsUseCase.execute(userId);
+  }
+
+  @Post('compensation/components')
+  @Roles(UserCompensationPermissions.COMPONENT_MANAGE)
+  @ApiProtected({
+    path: '/api/v1/users/:userId/compensation/components',
+    roles: [UserCompensationPermissions.COMPONENT_MANAGE],
+  })
+  @ApiOperation({ summary: 'Create compensation component' })
+  @ApiBody({ type: CreateCompensationComponentDto })
+  @ApiOkResponse({ type: CompensationComponentResponseDto })
+  @ResponseMessage('Compensation component created successfully')
+  createCompensationComponent(
+    @Param('userId') userId: string,
+    @Body() dto: CreateCompensationComponentDto,
+  ) {
+    return this.createCompensationComponentUseCase.execute(userId, dto);
+  }
+
+  @Put('compensation/components/:componentId')
+  @Roles(UserCompensationPermissions.COMPONENT_MANAGE)
+  @ApiProtected({
+    path: '/api/v1/users/:userId/compensation/components/:componentId',
+    roles: [UserCompensationPermissions.COMPONENT_MANAGE],
+  })
+  @ApiOperation({ summary: 'Update compensation component' })
+  @ApiParam({ name: 'componentId' })
+  @ApiBody({ type: UpdateCompensationComponentDto })
+  @ApiOkResponse({ type: CompensationComponentResponseDto })
+  @ResponseMessage('Compensation component updated successfully')
+  updateCompensationComponent(
+    @Param('userId') userId: string,
+    @Param('componentId') componentId: string,
+    @Body() dto: UpdateCompensationComponentDto,
+  ) {
+    return this.updateCompensationComponentUseCase.execute(
+      userId,
+      componentId,
+      dto,
+    );
+  }
+
+  @Delete('compensation/components/:componentId')
+  @Roles(UserCompensationPermissions.COMPONENT_MANAGE)
+  @ApiProtected({
+    path: '/api/v1/users/:userId/compensation/components/:componentId',
+    roles: [UserCompensationPermissions.COMPONENT_MANAGE],
+  })
+  @ApiOperation({ summary: 'Delete compensation component' })
+  @ApiParam({ name: 'componentId' })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        success: true,
+      },
+    },
+  })
+  @ResponseMessage('Compensation component deleted successfully')
+  deleteCompensationComponent(
+    @Param('userId') userId: string,
+    @Param('componentId') componentId: string,
+  ) {
+    return this.deleteCompensationComponentUseCase.execute(userId, componentId);
   }
 
   @Get('compensation/history')

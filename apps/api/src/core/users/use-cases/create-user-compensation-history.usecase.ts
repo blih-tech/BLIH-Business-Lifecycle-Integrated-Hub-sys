@@ -39,6 +39,8 @@ export class CreateUserCompensationHistoryUseCase {
       }
     }
 
+    await this.assertSalaryWithinGradeBand(user.id, dto.baseSalary ?? null);
+
     await this.assertNoOverlap(user.id, validFrom, validTo);
 
     const entry = await this.prisma.userCompensationHistory.create({
@@ -91,6 +93,46 @@ export class CreateUserCompensationHistoryUseCase {
     if (overlap) {
       throw new BadRequestException(
         'Compensation history range overlaps an existing record',
+      );
+    }
+  }
+
+  private async assertSalaryWithinGradeBand(
+    userId: string,
+    baseSalary: string | null,
+  ): Promise<void> {
+    if (!baseSalary) {
+      return;
+    }
+
+    const employment = await this.prisma.userEmployment.findUnique({
+      where: { userId },
+      select: {
+        position: {
+          select: {
+            grade: {
+              select: {
+                code: true,
+                minSalary: true,
+                maxSalary: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const grade = employment?.position?.grade;
+    if (!grade) {
+      return;
+    }
+
+    const salary = Number(baseSalary);
+    const min = grade.minSalary != null ? Number(grade.minSalary) : null;
+    const max = grade.maxSalary != null ? Number(grade.maxSalary) : null;
+    if ((min != null && salary < min) || (max != null && salary > max)) {
+      throw new BadRequestException(
+        `baseSalary must fall within the salary band for grade ${grade.code}`,
       );
     }
   }

@@ -19,6 +19,7 @@ export class CreatePositionUseCase {
     }
 
     const departmentId = await this.resolveDepartmentId(dto.departmentId);
+    const gradeId = await this.resolveGradeId(dto.gradeId);
 
     try {
       const position = await this.prisma.position.create({
@@ -26,12 +27,20 @@ export class CreatePositionUseCase {
           title,
           description: dto.description,
           departmentId,
+          gradeId,
           isActive: dto.isActive ?? true,
         },
         include: {
           department: {
             select: {
               name: true,
+            },
+          },
+          grade: {
+            select: {
+              code: true,
+              name: true,
+              level: true,
             },
           },
         },
@@ -60,5 +69,24 @@ export class CreatePositionUseCase {
     }
 
     return department.id;
+  }
+
+  private async resolveGradeId(
+    gradeId: string | null | undefined,
+  ): Promise<string | null> {
+    const normalized = gradeId?.trim();
+    if (!normalized) {
+      return null;
+    }
+
+    const grade = await this.prisma.jobGrade.findUnique({
+      where: { id: normalized },
+      select: { id: true },
+    });
+    if (!grade) {
+      throw new NotFoundException('Job grade not found');
+    }
+
+    return grade.id;
   }
 }

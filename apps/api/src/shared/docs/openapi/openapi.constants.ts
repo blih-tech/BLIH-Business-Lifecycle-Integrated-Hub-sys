@@ -22,7 +22,7 @@ export const SWAGGER_TAGS: ReadonlyArray<{
   },
   {
     name: 'Positions',
-    description: 'Position catalog CRUD for organizational job titles.',
+    description: 'Position catalog CRUD for reusable job titles.',
   },
   {
     name: 'RBAC',
@@ -32,10 +32,6 @@ export const SWAGGER_TAGS: ReadonlyArray<{
   {
     name: 'Realms',
     description: 'Multi-tenant realm provisioning and governance.',
-  },
-  {
-    name: 'Organization',
-    description: 'Organization profile and department hierarchy management.',
   },
   {
     name: 'System Config',

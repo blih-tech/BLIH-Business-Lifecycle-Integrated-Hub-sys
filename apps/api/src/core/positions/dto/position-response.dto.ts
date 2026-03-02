@@ -24,6 +24,21 @@ export class PositionResponseDto implements PositionResponseDtoType {
   })
   departmentName!: string;
 
+  @ApiPropertyOptional({
+    example: 'd9fdb6de-2c7b-47e6-9c58-080829f5bd10',
+    nullable: true,
+  })
+  gradeId!: string | null;
+
+  @ApiPropertyOptional({ example: 'G7', nullable: true })
+  gradeCode!: string | null;
+
+  @ApiPropertyOptional({ example: 'Senior Manager', nullable: true })
+  gradeName!: string | null;
+
+  @ApiPropertyOptional({ example: 7, nullable: true })
+  gradeLevel!: number | null;
+
   @ApiProperty({ example: true })
   isActive!: boolean;
 

@@ -1,8 +1,8 @@
 # HR Implementation Plan 5: Performance & OKR Subsystem
 
 **Version:** 1.0  
-**Last Updated:** February 2026  
-**Status:** Ready for implementation  
+**Last Updated:** March 2026  
+**Status:** Implemented  
 **Implementation order:** 6
 
 ---
@@ -63,6 +63,25 @@
 
 **Acceptance criteria:**
 
-- [ ] Review periods and reviews with self/manager and final rating/category.
-- [ ] OKRs with key results and progress; annual summary and raise recommendation.
+- [x] Review periods and reviews with self/manager and final rating/category.
+- [x] OKRs with key results and progress; annual summary and raise recommendation.
 - [ ] Notifications for review due and overdue.
+
+---
+
+## 7. Implementation Summary
+
+**Done:**
+
+- **Schema:** `ReviewPeriodConfig`, `PerformanceReview`, `Okr`, `KeyResult` in Prisma; enums as in §2.
+- **Types:** `@repo/types` — `packages/types/src/hr/performance/` (review-period, DTOs), `packages/types/src/hr/okr/` (okr.ts).
+- **Performance:** `apps/api/src/domains/hr/performance/` — review period utils, rating utils, rating extract, mapper; use cases: list/ensure periods, create/list/get review, update self/manager, complete review, annual summary. Controller: `hr/performance` (periods, reviews, self, manager, complete, summary).
+- **OKR:** `apps/api/src/domains/hr/okr/` — progress utils (HR_LOGIC §6.3), mapper; use cases: create/list/get/update OKR, update key result (recomputes KR + OKR progress), get progress. Controller: `hr/okrs`.
+- **RBAC:** `PerformancePermissions`, `OkrPermissions` in `permissions.constants.ts`; routes protected.
+- **HR module:** `PerformanceController`, `OkrController` and all use cases registered in `hr.module.ts`.
+
+**Migration:** Run when DB is ready:
+
+```bash
+npx prisma migrate dev --name performance_okr_subsystem --schema apps/api/prisma/schema.prisma
+```

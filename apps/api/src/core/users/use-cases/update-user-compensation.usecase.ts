@@ -3,8 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { mapCompensationComponent } from '../compensation-component.mapper';
 import { UpdateUserCompensationDto } from '../dto/update-user-compensation.dto';
+
+const FAR_FUTURE = new Date('9999-12-31T23:59:59.999Z');
 
 @Injectable()
 export class UpdateUserCompensationUseCase {
@@ -21,16 +25,25 @@ export class UpdateUserCompensationUseCase {
       throw new NotFoundException('User not found');
     }
 
-    const effectiveFrom =
-      dto.effectiveFrom !== undefined ? new Date(dto.effectiveFrom) : undefined;
-    const effectiveTo =
-      dto.effectiveTo !== undefined ? new Date(dto.effectiveTo) : undefined;
+    const currentCompensation = await this.prisma.userCompensation.findUnique({
+      where: { userId: user.id },
+      select: {
+        baseSalary: true,
+        currency: true,
+        payFrequency: true,
+        bonusEligible: true,
+        bonusRate: true,
+        effectiveFrom: true,
+        effectiveTo: true,
+      },
+    });
 
-    if (
-      effectiveFrom &&
-      effectiveTo &&
-      effectiveFrom.getTime() >= effectiveTo.getTime()
-    ) {
+    const effectiveFrom = dto.effectiveFrom
+      ? new Date(dto.effectiveFrom)
+      : (currentCompensation?.effectiveFrom ?? new Date());
+    const effectiveTo = dto.effectiveTo ? new Date(dto.effectiveTo) : null;
+
+    if (effectiveTo && effectiveFrom.getTime() >= effectiveTo.getTime()) {
       throw new BadRequestException('effectiveFrom must be before effectiveTo');
     }
 
@@ -46,50 +59,65 @@ export class UpdateUserCompensationUseCase {
       }
     }
 
-    const compensation = await this.prisma.userCompensation.upsert({
-      where: { userId: user.id },
-      update: {
-        ...(dto.baseSalary !== undefined ? { baseSalary: dto.baseSalary } : {}),
-        ...(dto.currency !== undefined ? { currency: dto.currency } : {}),
-        ...(dto.payFrequency !== undefined
-          ? { payFrequency: dto.payFrequency }
-          : {}),
-        ...(dto.bonusEligible !== undefined
-          ? { bonusEligible: dto.bonusEligible }
-          : {}),
-        ...(dto.bonusRate !== undefined ? { bonusRate: dto.bonusRate } : {}),
-        ...(effectiveFrom !== undefined ? { effectiveFrom } : {}),
-        ...(effectiveTo !== undefined ? { effectiveTo } : {}),
-      },
-      create: {
-        userId: user.id,
-        baseSalary: dto.baseSalary,
-        currency: dto.currency,
-        payFrequency: dto.payFrequency,
-        bonusEligible: dto.bonusEligible ?? false,
-        bonusRate: dto.bonusRate,
-        effectiveFrom,
-        effectiveTo,
-      },
+    await this.assertSalaryWithinGradeBand(
+      user.id,
+      dto.baseSalary ?? currentCompensation?.baseSalary?.toString() ?? null,
+    );
+
+    const compensation = await this.prisma.$transaction(async (tx) => {
+      await this.closeOverlappingOpenEntries(tx, user.id, effectiveFrom);
+      await this.assertNoOverlap(tx, user.id, effectiveFrom, effectiveTo);
+
+      const saved = await tx.userCompensation.upsert({
+        where: { userId: user.id },
+        update: {
+          ...(dto.baseSalary !== undefined
+            ? { baseSalary: dto.baseSalary }
+            : {}),
+          ...(dto.currency !== undefined ? { currency: dto.currency } : {}),
+          ...(dto.payFrequency !== undefined
+            ? { payFrequency: dto.payFrequency }
+            : {}),
+          ...(dto.bonusEligible !== undefined
+            ? { bonusEligible: dto.bonusEligible }
+            : {}),
+          ...(dto.bonusRate !== undefined ? { bonusRate: dto.bonusRate } : {}),
+          effectiveFrom,
+          effectiveTo,
+        },
+        create: {
+          userId: user.id,
+          baseSalary: dto.baseSalary,
+          currency: dto.currency,
+          payFrequency: dto.payFrequency,
+          bonusEligible: dto.bonusEligible ?? false,
+          bonusRate: dto.bonusRate,
+          effectiveFrom,
+          effectiveTo,
+        },
+      });
+
+      await tx.userCompensationHistory.create({
+        data: {
+          userId: user.id,
+          baseSalary: saved.baseSalary,
+          currency: saved.currency,
+          payFrequency: saved.payFrequency,
+          bonusEligible: saved.bonusEligible,
+          bonusRate: saved.bonusRate,
+          validFrom: effectiveFrom,
+          validTo: effectiveTo,
+          changeReason: dto.changeReason,
+          changedById: dto.changedById,
+        },
+      });
+
+      return saved;
     });
 
-    const historyFrom = compensation.effectiveFrom ?? new Date();
-    const historyTo = compensation.effectiveTo ?? null;
-    await this.assertNoOverlap(user.id, historyFrom, historyTo);
-
-    await this.prisma.userCompensationHistory.create({
-      data: {
-        userId: user.id,
-        baseSalary: compensation.baseSalary,
-        currency: compensation.currency,
-        payFrequency: compensation.payFrequency,
-        bonusEligible: compensation.bonusEligible,
-        bonusRate: compensation.bonusRate,
-        validFrom: historyFrom,
-        validTo: historyTo,
-        changeReason: dto.changeReason,
-        changedById: dto.changedById,
-      },
+    const components = await this.prisma.compensationComponent.findMany({
+      where: { userId: user.id },
+      orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }],
     });
 
     return {
@@ -98,30 +126,82 @@ export class UpdateUserCompensationUseCase {
       bonusRate: compensation.bonusRate?.toString() ?? null,
       effectiveFrom: compensation.effectiveFrom?.toISOString() ?? null,
       effectiveTo: compensation.effectiveTo?.toISOString() ?? null,
+      components: components.map(mapCompensationComponent),
       createdAt: compensation.createdAt.toISOString(),
       updatedAt: compensation.updatedAt.toISOString(),
     };
   }
 
+  private async assertSalaryWithinGradeBand(
+    userId: string,
+    baseSalary: string | null,
+  ): Promise<void> {
+    if (!baseSalary) {
+      return;
+    }
+
+    const employment = await this.prisma.userEmployment.findUnique({
+      where: { userId },
+      select: {
+        position: {
+          select: {
+            grade: {
+              select: {
+                code: true,
+                minSalary: true,
+                maxSalary: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const grade = employment?.position?.grade;
+    if (!grade) {
+      return;
+    }
+
+    const salary = Number(baseSalary);
+    const min = grade.minSalary != null ? Number(grade.minSalary) : null;
+    const max = grade.maxSalary != null ? Number(grade.maxSalary) : null;
+    if ((min != null && salary < min) || (max != null && salary > max)) {
+      throw new BadRequestException(
+        `baseSalary must fall within the salary band for grade ${grade.code}`,
+      );
+    }
+  }
+
+  private async closeOverlappingOpenEntries(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    effectiveFrom: Date,
+  ): Promise<void> {
+    await tx.userCompensationHistory.updateMany({
+      where: {
+        userId,
+        validFrom: { lt: effectiveFrom },
+        OR: [{ validTo: null }, { validTo: { gte: effectiveFrom } }],
+      },
+      data: {
+        validTo: new Date(effectiveFrom.getTime() - 1000),
+      },
+    });
+  }
+
   private async assertNoOverlap(
+    tx: Prisma.TransactionClient,
     userId: string,
     validFrom: Date,
     validTo: Date | null,
   ): Promise<void> {
-    const overlap = await this.prisma.userCompensationHistory.findFirst({
+    const overlap = await tx.userCompensationHistory.findFirst({
       where: {
         userId,
         validFrom: {
-          lte: validTo ?? new Date('9999-12-31T23:59:59.999Z'),
+          lte: validTo ?? FAR_FUTURE,
         },
-        OR: [
-          { validTo: null },
-          {
-            validTo: {
-              gte: validFrom,
-            },
-          },
-        ],
+        OR: [{ validTo: null }, { validTo: { gte: validFrom } }],
       },
       select: { id: true },
     });

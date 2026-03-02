@@ -58,6 +58,38 @@ import { ListUserWorkSchedulesUseCase } from './attendance/use-cases/list-user-w
 import { ListWorkSchedulesUseCase } from './attendance/use-cases/list-work-schedules.usecase';
 import { HrUserLifecycleService } from './hr-user-lifecycle.service';
 import { LeaveBalanceService } from './leave/leave-balance.service';
+import { PerformanceController } from './performance/performance.controller';
+import { ListReviewPeriodsUseCase } from './performance/use-cases/list-review-periods.usecase';
+import { EnsureReviewPeriodUseCase } from './performance/use-cases/ensure-review-period.usecase';
+import { CreatePerformanceReviewUseCase } from './performance/use-cases/create-performance-review.usecase';
+import { ListPerformanceReviewsUseCase } from './performance/use-cases/list-performance-reviews.usecase';
+import { GetPerformanceReviewUseCase } from './performance/use-cases/get-performance-review.usecase';
+import { UpdateSelfAssessmentUseCase } from './performance/use-cases/update-self-assessment.usecase';
+import { UpdateManagerReviewUseCase } from './performance/use-cases/update-manager-review.usecase';
+import { CompletePerformanceReviewUseCase } from './performance/use-cases/complete-performance-review.usecase';
+import { GetAnnualSummaryUseCase } from './performance/use-cases/get-annual-summary.usecase';
+import { ListPerformanceCalibrationsUseCase } from './performance/use-cases/list-performance-calibrations.usecase';
+import { ListPerformanceReviewFeedbackUseCase } from './performance/use-cases/list-performance-review-feedback.usecase';
+import { UpsertPerformanceCalibrationUseCase } from './performance/use-cases/upsert-performance-calibration.usecase';
+import { UpsertPerformanceReviewFeedbackUseCase } from './performance/use-cases/upsert-performance-review-feedback.usecase';
+import { OkrController } from './okr/okr.controller';
+import { CreateOkrUseCase } from './okr/use-cases/create-okr.usecase';
+import { ListOkrsUseCase } from './okr/use-cases/list-okrs.usecase';
+import { GetOkrUseCase } from './okr/use-cases/get-okr.usecase';
+import { UpdateOkrUseCase } from './okr/use-cases/update-okr.usecase';
+import { UpdateKeyResultUseCase } from './okr/use-cases/update-key-result.usecase';
+import { GetOkrProgressUseCase } from './okr/use-cases/get-okr-progress.usecase';
+import { ListKeyResultUpdatesUseCase } from './okr/use-cases/list-key-result-updates.usecase';
+import { ReweightKeyResultsUseCase } from './okr/use-cases/reweight-key-results.usecase';
+import { PromotionProposalsController } from './talent/promotion-proposals.controller';
+import { SuccessionPlansController } from './talent/succession-plans.controller';
+import { CreatePromotionProposalUseCase } from './talent/use-cases/create-promotion-proposal.usecase';
+import { CreateSuccessionPlanUseCase } from './talent/use-cases/create-succession-plan.usecase';
+import { GetPromotionProposalUseCase } from './talent/use-cases/get-promotion-proposal.usecase';
+import { ListPromotionProposalsUseCase } from './talent/use-cases/list-promotion-proposals.usecase';
+import { ListSuccessionPlansUseCase } from './talent/use-cases/list-succession-plans.usecase';
+import { ReviewPromotionProposalUseCase } from './talent/use-cases/review-promotion-proposal.usecase';
+import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-succession-plan.usecase';
 
 @Module({
   controllers: [
@@ -70,6 +102,10 @@ import { LeaveBalanceService } from './leave/leave-balance.service';
     OnboardingController,
     LeaveController,
     AttendanceController,
+    PerformanceController,
+    OkrController,
+    SuccessionPlansController,
+    PromotionProposalsController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -122,6 +158,34 @@ import { LeaveBalanceService } from './leave/leave-balance.service';
     UpsertAttendanceLogUseCase,
     ListAttendanceLogsUseCase,
     GetAttendanceLogUseCase,
+    ListReviewPeriodsUseCase,
+    EnsureReviewPeriodUseCase,
+    CreatePerformanceReviewUseCase,
+    ListPerformanceReviewsUseCase,
+    GetPerformanceReviewUseCase,
+    UpdateSelfAssessmentUseCase,
+    UpdateManagerReviewUseCase,
+    CompletePerformanceReviewUseCase,
+    GetAnnualSummaryUseCase,
+    ListPerformanceReviewFeedbackUseCase,
+    UpsertPerformanceReviewFeedbackUseCase,
+    ListPerformanceCalibrationsUseCase,
+    UpsertPerformanceCalibrationUseCase,
+    CreateOkrUseCase,
+    ListOkrsUseCase,
+    GetOkrUseCase,
+    UpdateOkrUseCase,
+    UpdateKeyResultUseCase,
+    GetOkrProgressUseCase,
+    ListKeyResultUpdatesUseCase,
+    ReweightKeyResultsUseCase,
+    CreateSuccessionPlanUseCase,
+    ListSuccessionPlansUseCase,
+    UpdateSuccessionPlanUseCase,
+    CreatePromotionProposalUseCase,
+    ListPromotionProposalsUseCase,
+    GetPromotionProposalUseCase,
+    ReviewPromotionProposalUseCase,
   ],
 })
 export class HrModule {}
