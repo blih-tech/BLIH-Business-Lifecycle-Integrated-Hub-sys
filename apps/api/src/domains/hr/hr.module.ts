@@ -90,6 +90,25 @@ import { ListPromotionProposalsUseCase } from './talent/use-cases/list-promotion
 import { ListSuccessionPlansUseCase } from './talent/use-cases/list-succession-plans.usecase';
 import { ReviewPromotionProposalUseCase } from './talent/use-cases/review-promotion-proposal.usecase';
 import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-succession-plan.usecase';
+import { TrainingController } from './training/training.controller';
+import { ListSkillsUseCase } from './training/use-cases/list-skills.usecase';
+import { CreateSkillUseCase } from './training/use-cases/create-skill.usecase';
+import { GetEmployeeSkillsUseCase } from './training/use-cases/get-employee-skills.usecase';
+import { UpsertEmployeeSkillsUseCase } from './training/use-cases/upsert-employee-skills.usecase';
+import { GetTrainingBudgetUseCase } from './training/use-cases/get-training-budget.usecase';
+import { CreateTrainingRequestUseCase } from './training/use-cases/create-training-request.usecase';
+import { ListTrainingRequestsUseCase } from './training/use-cases/list-training-requests.usecase';
+import { GetTrainingRequestUseCase } from './training/use-cases/get-training-request.usecase';
+import { ApproveTrainingRequestUseCase } from './training/use-cases/approve-training-request.usecase';
+import { CreateTrainingCompletionUseCase } from './training/use-cases/create-training-completion.usecase';
+import { ListTrainingCompletionsUseCase } from './training/use-cases/list-training-completions.usecase';
+import { GetTrainingCompletionUseCase } from './training/use-cases/get-training-completion.usecase';
+import { UpdateTrainingCompletionUseCase } from './training/use-cases/update-training-completion.usecase';
+import { CreateSkillGapAssessmentUseCase } from './training/use-cases/create-skill-gap-assessment.usecase';
+import { ListSkillGapAssessmentsUseCase } from './training/use-cases/list-skill-gap-assessments.usecase';
+import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap-assessment.usecase';
+import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
+import { CertificationExpiryJob } from './jobs/certification-expiry.job';
 
 @Module({
   controllers: [
@@ -106,6 +125,7 @@ import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-successio
     OkrController,
     SuccessionPlansController,
     PromotionProposalsController,
+    TrainingController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -122,6 +142,7 @@ import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-successio
     UpdateJobDescriptionUseCase,
     DocumentExpiryJob,
     AttendanceReconciliationJob,
+    CertificationExpiryJob,
     ListRecruitmentRequestsUseCase,
     GetRecruitmentRequestUseCase,
     CreateRecruitmentRequestUseCase,
@@ -186,6 +207,23 @@ import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-successio
     ListPromotionProposalsUseCase,
     GetPromotionProposalUseCase,
     ReviewPromotionProposalUseCase,
+    ListSkillsUseCase,
+    CreateSkillUseCase,
+    GetEmployeeSkillsUseCase,
+    UpsertEmployeeSkillsUseCase,
+    GetTrainingBudgetUseCase,
+    CreateTrainingRequestUseCase,
+    ListTrainingRequestsUseCase,
+    GetTrainingRequestUseCase,
+    ApproveTrainingRequestUseCase,
+    CreateTrainingCompletionUseCase,
+    ListTrainingCompletionsUseCase,
+    GetTrainingCompletionUseCase,
+    UpdateTrainingCompletionUseCase,
+    CreateSkillGapAssessmentUseCase,
+    ListSkillGapAssessmentsUseCase,
+    GetSkillGapAssessmentUseCase,
+    GetIndividualSkillGapUseCase,
   ],
 })
 export class HrModule {}

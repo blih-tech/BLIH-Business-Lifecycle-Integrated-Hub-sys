@@ -266,6 +266,16 @@ export const PromotionProposalPermissions = {
   ALL: 'promotion_proposal:*',
 } as const;
 
+export const TrainingPermissions = {
+  VIEW: 'training:view',
+  CREATE: 'training:create',
+  APPROVE: 'training:approve',
+  MANAGE_SKILLS: 'training:manage_skills',
+  MANAGE_BUDGET: 'training:manage_budget',
+  SKILL_GAP: 'training:skill_gap',
+  ALL: 'training:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
   user_profile: UserProfilePermissions,
@@ -296,6 +306,7 @@ export const PermissionGroups = {
   okr: OkrPermissions,
   succession_plan: SuccessionPlanPermissions,
   promotion_proposal: PromotionProposalPermissions,
+  training: TrainingPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,

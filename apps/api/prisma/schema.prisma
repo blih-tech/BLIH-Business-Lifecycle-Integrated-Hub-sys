@@ -372,6 +372,47 @@ enum ProbationFinalDecision {
   TERMINATE
 }
 
+// Training (HR Implementation Plan 06)
+enum TrainingRequestStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum TrainingType {
+  SKILL
+  COMPLIANCE
+  LEADERSHIP
+  OTHER
+}
+
+enum CompletionStatus {
+  COMPLETED
+  PARTIAL
+  DROPPED
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum SkillSource {
+  SELF
+  MANAGER
+  ASSESSMENT
+  TRAINING
+}
+
+enum CostPayer {
+  COMPANY
+  SELF
+}
+
 model User {
   id                               String                      @id @default(uuid()) @db.Uuid
   keycloakId                       String                      @unique
@@ -433,6 +474,11 @@ model User {
   promotionProposals               PromotionProposal[]         @relation("PromotionProposalUser")
   proposedPromotions               PromotionProposal[]         @relation("PromotionProposalProposedBy")
   approvedPromotions               PromotionProposal[]         @relation("PromotionProposalApprovedBy")
+  trainingRequests                 TrainingRequest[]          @relation("TrainingRequestRequester")
+  trainingCompletions              TrainingCompletion[]
+  employeeSkills                   EmployeeSkill[]
+  approvedTrainingRequests         TrainingRequest[]          @relation("TrainingRequestApprover")
+  skillGapAssessmentsCreated      SkillGapAssessment[]        @relation("SkillGapAssessmentAssessor")
 
   @@index([status])
 }
@@ -451,6 +497,9 @@ model Department {
   recruitmentRequests     RecruitmentRequest[]
   okrs                    Okr[]
   performanceCalibrations PerformanceCalibration[]
+  trainingBudgets         TrainingBudget[]
+  trainingRequests        TrainingRequest[]
+  skillGapAssessments     SkillGapAssessment[]
 
   @@index([parentId])
 }
@@ -1637,4 +1686,130 @@ model PromotionProposal {
   @@index([proposedById])
   @@index([approvedById])
   @@index([status])
+}
+
+// Training (HR Implementation Plan 06)
+model Skill {
+  id                      String            @id @default(uuid()) @db.Uuid
+  name                    String            @unique @db.VarChar(255)
+  category                String?           @db.VarChar(128)
+  description             String?          @db.Text
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  employeeSkills         EmployeeSkill[]
+  trainingRequestsLinked  TrainingRequest[]
+
+  @@index([category])
+}
+
+model EmployeeSkill {
+  id         String      @id @default(uuid()) @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId    String      @map("skill_id") @db.Uuid
+  skill      Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  level      SkillLevel
+  attestedAt DateTime?   @map("attested_at")
+  source     SkillSource @default(SELF)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+}
+
+model TrainingBudget {
+  id             String   @id @default(uuid()) @db.Uuid
+  departmentId   String   @map("department_id") @db.Uuid
+  department     Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  year           Int
+  totalBudget    Decimal  @map("total_budget") @db.Decimal(15, 2)
+  usedYtd        Decimal  @default(0) @map("used_ytd") @db.Decimal(15, 2)
+  perPersonAmount Decimal? @map("per_person_amount") @db.Decimal(15, 2)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([departmentId, year])
+  @@index([departmentId])
+  @@index([year])
+}
+
+model TrainingRequest {
+  id              String                @id @default(uuid()) @db.Uuid
+  userId          String                @map("user_id") @db.Uuid
+  user            User                  @relation("TrainingRequestRequester", fields: [userId], references: [id], onDelete: Cascade)
+  departmentId    String                @map("department_id") @db.Uuid
+  department      Department            @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  trainingType    TrainingType          @map("training_type")
+  title           String                @db.VarChar(512)
+  provider        String?               @db.VarChar(256)
+  startDate       DateTime?             @map("start_date") @db.Date
+  endDate         DateTime?             @map("end_date") @db.Date
+  durationHours   Int?                  @map("duration_hours")
+  justification   String?               @db.Text
+  skillGapLinkId  String?               @map("skill_gap_link_id") @db.Uuid
+  skillGapLink    Skill?                @relation(fields: [skillGapLinkId], references: [id], onDelete: SetNull)
+  cost            Decimal?              @db.Decimal(15, 2)
+  costPayer       CostPayer?            @map("cost_payer")
+  status          TrainingRequestStatus @default(DRAFT)
+  submittedAt     DateTime?             @map("submitted_at")
+  approvedById    String?               @map("approved_by_id") @db.Uuid
+  approvedBy      User?                 @relation("TrainingRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt      DateTime?             @map("approved_at")
+  rejectionReason String?               @map("rejection_reason") @db.Text
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  completions     TrainingCompletion[]
+
+  @@index([userId])
+  @@index([departmentId])
+  @@index([status])
+  @@index([submittedAt])
+}
+
+model TrainingCompletion {
+  id                 String           @id @default(uuid()) @db.Uuid
+  userId             String           @map("user_id") @db.Uuid
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainingRequestId  String?          @map("training_request_id") @db.Uuid
+  trainingRequest    TrainingRequest? @relation(fields: [trainingRequestId], references: [id], onDelete: SetNull)
+  title              String           @db.VarChar(512)
+  provider           String?          @db.VarChar(256)
+  startDate          DateTime?        @map("start_date") @db.Date
+  endDate            DateTime?        @map("end_date") @db.Date
+  completionStatus   CompletionStatus  @map("completion_status")
+  scoreOrGrade       String?          @map("score_or_grade") @db.VarChar(64)
+  certificateNumber  String?          @map("certificate_number") @db.VarChar(128)
+  certificateUrl    String?          @map("certificate_url") @db.VarChar(1024)
+  expiryDate         DateTime?        @map("expiry_date") @db.Date
+  skillsAcquired     Json?            @map("skills_acquired") @db.JsonB
+  attestedAt         DateTime?        @map("attested_at")
+  syncedToProfile    Boolean          @default(false) @map("synced_to_profile")
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([trainingRequestId])
+  @@index([expiryDate])
+}
+
+model SkillGapAssessment {
+  id                     String   @id @default(uuid()) @db.Uuid
+  departmentId           String   @map("department_id") @db.Uuid
+  department             Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  assessedById            String   @map("assessed_by_id") @db.Uuid
+  assessedBy              User     @relation("SkillGapAssessmentAssessor", fields: [assessedById], references: [id], onDelete: Restrict)
+  assessedAt              DateTime @map("assessed_at")
+  requiredSkills         Json     @map("required_skills") @db.JsonB
+  currentState           Json     @map("current_state") @db.JsonB
+  criticalGapsSummary    String?  @map("critical_gaps_summary") @db.Text
+  trainingRecommendations Json?   @map("training_recommendations") @db.JsonB
+  hireRecommendations    Json?    @map("hire_recommendations") @db.JsonB
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([departmentId])
+  @@index([assessedById])
+  @@index([assessedAt])
 }

@@ -1,8 +1,8 @@
 # HR Implementation Plan 6: Training Subsystem
 
 **Version:** 1.0  
-**Last Updated:** February 2026  
-**Status:** Ready for implementation  
+**Last Updated:** March 2026  
+**Status:** Implemented  
 **Implementation order:** 7 (after Performance; lighter dependency)
 
 ---
@@ -200,7 +200,30 @@ enum SkillLevel {
 
 ## 10. Acceptance Criteria
 
-- [ ] Skills and employee skills CRUD; training budget by team with utilization logic.
-- [ ] Training request with approval and budget check; completion with certification and expiry.
-- [ ] Skill gap assessment with required vs current and training/hire recommendations.
-- [ ] Certification expiry notifications; completions synced to profile/skills.
+- [x] Skills and employee skills CRUD; training budget by team with utilization logic.
+- [x] Training request with approval and budget check; completion with certification and expiry.
+- [x] Skill gap assessment with required vs current and training/hire recommendations.
+- [x] Certification expiry notifications; completions synced to profile/skills.
+
+---
+
+## 11. Implementation Summary
+
+**Done:**
+
+- **Schema:** Enums `TrainingRequestStatus`, `TrainingType`, `CompletionStatus`, `SkillLevel`, `SkillSource`, `CostPayer`. Models: `Skill`, `EmployeeSkill`, `TrainingBudget`, `TrainingRequest`, `TrainingCompletion`, `SkillGapAssessment`. Relations on `User` and `Department`.
+- **Types:** `packages/types/src/hr/training/` — skill, employee-skill, budget, request, completion, skill-gap DTOs.
+- **Skills:** List (filter by category), Create; Get employee skills, Upsert employee skills (by userId).
+- **Budget:** GET `hr/training/budget?departmentId=&year=` — compute or return budget (HR_LOGIC §7.1: base 10k ETB/head, utilization &lt;50% ×0.8, &gt;90% ×1.1); on approval deduct cost from department year budget.
+- **Requests:** Create (draft or submit), List (userId, status), Get, Approve (with budget check; approver from auth).
+- **Completions:** Create, List (userId), Get, PATCH (certificate, expiry, skillsAcquired, syncedToProfile).
+- **Skill gap:** Create assessment (requiredSkills, currentState, recommendations), List by department, Get; GET individual gap `employees/:userId/skill-gap?targetPositionId=` (vs JobDescription skills or all skills).
+- **Certification expiry job:** `CertificationExpiryJob` — daily cron, notifications for completions with expiry in 30 days.
+- **RBAC:** `TrainingPermissions` (VIEW, CREATE, APPROVE, MANAGE_SKILLS, MANAGE_BUDGET, SKILL_GAP). Routes protected.
+- **HR module:** `TrainingController`, all use cases, `CertificationExpiryJob` registered.
+
+**Migration:** When DB is ready, run:
+
+```bash
+cd apps/api && npx prisma migrate dev --name training_subsystem --schema prisma/schema.prisma
+```
