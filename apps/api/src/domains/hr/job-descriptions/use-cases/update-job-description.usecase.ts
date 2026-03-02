@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { UpdateJobDescriptionDto } from '@blih/types';
+import type { UpdateJobDescriptionDto } from '@repo/types';
 
 @Injectable()
 export class UpdateJobDescriptionUseCase {

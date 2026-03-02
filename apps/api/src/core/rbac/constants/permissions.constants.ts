@@ -103,6 +103,13 @@ export const LeavePermissions = {
   ALL: 'leave:*',
 } as const;
 
+export const AttendancePermissions = {
+  VIEW: 'attendance:view',
+  CREATE: 'attendance:create',
+  UPDATE: 'attendance:update',
+  ALL: 'attendance:*',
+} as const;
+
 export const HrPayrollPermissions = {
   VIEW: 'hr_payroll:view',
   PROCESS: 'hr_payroll:process',
@@ -174,6 +181,44 @@ export const BrainConfigPermissions = {
   ALL: 'brain_config:*',
 } as const;
 
+export const RecruitmentRequestPermissions = {
+  VIEW: 'recruitment_request:view',
+  CREATE: 'recruitment_request:create',
+  UPDATE: 'recruitment_request:update',
+  APPROVE: 'recruitment_request:approve',
+  ALL: 'recruitment_request:*',
+} as const;
+
+export const JobPostingPermissions = {
+  VIEW: 'job_posting:view',
+  CREATE: 'job_posting:create',
+  UPDATE: 'job_posting:update',
+  PUBLISH: 'job_posting:publish',
+  ALL: 'job_posting:*',
+} as const;
+
+export const CandidatePermissions = {
+  VIEW: 'candidate:view',
+  CREATE: 'candidate:create',
+  UPDATE: 'candidate:update',
+  SCREEN: 'candidate:screen',
+  ALL: 'candidate:*',
+} as const;
+
+export const HiringDecisionPermissions = {
+  VIEW: 'hiring_decision:view',
+  CREATE: 'hiring_decision:create',
+  APPROVE: 'hiring_decision:approve',
+  ALL: 'hiring_decision:*',
+} as const;
+
+export const OnboardingChecklistPermissions = {
+  VIEW: 'onboarding_checklist:view',
+  CREATE: 'onboarding_checklist:create',
+  UPDATE: 'onboarding_checklist:update',
+  ALL: 'onboarding_checklist:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
   user_profile: UserProfilePermissions,
@@ -183,6 +228,7 @@ export const PermissionGroups = {
   position: PositionPermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
+  attendance: AttendancePermissions,
   hr_payroll: HrPayrollPermissions,
   invoice: InvoicePermissions,
   expense: ExpensePermissions,
@@ -193,6 +239,11 @@ export const PermissionGroups = {
   deal: DealPermissions,
   pipeline: PipelinePermissions,
   brain_config: BrainConfigPermissions,
+  recruitment_request: RecruitmentRequestPermissions,
+  job_posting: JobPostingPermissions,
+  candidate: CandidatePermissions,
+  hiring_decision: HiringDecisionPermissions,
+  onboarding_checklist: OnboardingChecklistPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,
