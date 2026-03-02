@@ -259,6 +259,16 @@ enum AttendanceStatus {
   BUSINESS_TRIP
 }
 
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
 enum AssetProvisioningStatus {
   PENDING
   APPROVED
@@ -318,8 +328,12 @@ model User {
   probationEvaluations           ProbationEvaluation[]     @relation("ProbationEvaluationUser")
   probationConfirmations         ProbationConfirmation[]
   leaveRequests                  LeaveRequest[]            @relation("LeaveRequestEmployee")
+  delegatedLeaveHandovers        LeaveRequest[]            @relation("LeaveRequestHandoverDelegate")
   leaveRequestsApproved          LeaveRequest[]            @relation("LeaveRequestApprover")
+  leaveApprovals                 LeaveApproval[]           @relation("LeaveApprovalApprover")
+  leaveBalances                  LeaveBalance[]
   attendanceLogs                 AttendanceLog[]
+  workScheduleAssignments        UserWorkSchedule[]
 
   @@index([status])
 }
@@ -370,6 +384,7 @@ model CountryReference {
   updatedAt           DateTime      @updatedAt
   nationalityProfiles UserProfile[] @relation("ProfileNationality")
   residenceProfiles   UserProfile[] @relation("ProfileResidenceCountry")
+  holidays            Holiday[]
 
   @@index([isActive])
 }
@@ -692,6 +707,70 @@ model SecurityPolicy {
   updatedAt             DateTime @updatedAt
 }
 
+model WorkSchedule {
+  id                    String             @id @default(uuid()) @db.Uuid
+  name                  String             @unique
+  description           String?
+  timezone              String?            @db.VarChar(64)
+  isDefault             Boolean            @default(false) @map("is_default")
+  lateThresholdMinutes  Int                @default(15) @map("late_threshold_minutes")
+  standardMinutesPerDay Int                @default(480) @map("standard_minutes_per_day")
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  assignments           UserWorkSchedule[]
+  days                  WorkScheduleDay[]
+
+  @@index([isDefault])
+}
+
+model WorkScheduleDay {
+  id              String       @id @default(uuid()) @db.Uuid
+  scheduleId      String       @map("schedule_id") @db.Uuid
+  schedule        WorkSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  dayOfWeek       DayOfWeek    @map("day_of_week")
+  isWorkingDay    Boolean      @default(true) @map("is_working_day")
+  startMinute     Int?         @map("start_minute")
+  endMinute       Int?         @map("end_minute")
+  expectedMinutes Int?         @map("expected_minutes")
+  remoteAllowed   Boolean      @default(false) @map("remote_allowed")
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@unique([scheduleId, dayOfWeek])
+  @@index([scheduleId])
+}
+
+model UserWorkSchedule {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  scheduleId    String       @map("schedule_id") @db.Uuid
+  effectiveFrom DateTime     @map("effective_from") @db.Date
+  effectiveTo   DateTime?    @map("effective_to") @db.Date
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedule      WorkSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([scheduleId])
+  @@index([userId, effectiveFrom])
+}
+
+model Holiday {
+  id                String            @id @default(uuid()) @db.Uuid
+  name              String
+  date              DateTime          @db.Date
+  countryId         String?           @map("country_id") @db.Uuid
+  country           CountryReference? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  isRecurringAnnual Boolean           @default(false) @map("is_recurring_annual")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([date])
+  @@index([countryId])
+  @@unique([name, date, countryId])
+}
+
 model EmployeeDocument {
   id            String       @id @default(uuid()) @db.Uuid
   userId        String       @map("user_id") @db.Uuid
@@ -943,6 +1022,7 @@ model HiringDecision {
   @@index([jobPostingId])
   @@index([submittedById])
   @@index([finalDecision])
+  @@index([offerAccepted])
 }
 
 model Onboarding {
@@ -1092,6 +1172,7 @@ model ProbationEvaluation {
 
   @@index([kpiPlanId])
   @@index([userId])
+  @@index([evaluationRound])
 }
 
 model ProbationConfirmation {
@@ -1126,40 +1207,86 @@ model LeaveRequest {
   description         String?             @db.Text
   contactDuringLeave  Json?               @map("contact_during_leave") @db.JsonB
   handoverDelegateId  String?             @map("handover_delegate_id") @db.Uuid
+  handoverDelegate    User?               @relation("LeaveRequestHandoverDelegate", fields: [handoverDelegateId], references: [id], onDelete: SetNull)
   handoverNotes       String?             @map("handover_notes") @db.Text
+  startHalfDay        Boolean             @default(false) @map("start_half_day")
+  endHalfDay          Boolean             @default(false) @map("end_half_day")
   balanceSnapshot     Json?               @map("balance_snapshot") @db.JsonB
-  submittedAt         DateTime?          @map("submitted_at")
-  approvals           Json?              @db.JsonB
+  submittedAt         DateTime?           @map("submitted_at")
+  approvalSteps       LeaveApproval[]     @relation("LeaveRequestApprovals")
   status              LeaveRequestStatus  @default(DRAFT)
   approvedById        String?             @map("approved_by_id") @db.Uuid
   approvedBy          User?               @relation("LeaveRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
-  approvedAt          DateTime?          @map("approved_at")
-  rejectionReason     String?            @map("rejection_reason") @db.Text
+  approvedAt          DateTime?           @map("approved_at")
+  rejectionReason     String?             @map("rejection_reason") @db.Text
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
 
   @@index([userId])
   @@index([status])
   @@index([startDate, endDate])
+  @@index([approvedById])
+  @@index([submittedAt])
+}
+
+model LeaveApproval {
+  id             String           @id @default(uuid()) @db.Uuid
+  leaveRequestId String           @map("leave_request_id") @db.Uuid
+  leaveRequest   LeaveRequest     @relation("LeaveRequestApprovals", fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  approverId     String           @map("approver_id") @db.Uuid
+  approver       User             @relation("LeaveApprovalApprover", fields: [approverId], references: [id], onDelete: Restrict)
+  level          Int
+  decision       ApprovalDecision @default(PENDING)
+  comments       String?          @db.Text
+  decidedAt      DateTime?        @map("decided_at")
+  createdAt      DateTime         @default(now())
+
+  @@unique([leaveRequestId, level])
+  @@index([leaveRequestId])
+  @@index([approverId])
+}
+
+model LeaveBalance {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  leaveType   LeaveType @map("leave_type")
+  year        Int
+  totalDays   Decimal   @map("total_days") @db.Decimal(5, 2)
+  usedDays    Decimal   @default(0) @map("used_days") @db.Decimal(5, 2)
+  pendingDays Decimal   @default(0) @map("pending_days") @db.Decimal(5, 2)
+  carriedOver Decimal?  @default(0) @map("carried_over") @db.Decimal(5, 2)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, leaveType, year])
+  @@index([userId])
 }
 
 model AttendanceLog {
-  id           String           @id @default(uuid()) @db.Uuid
-  userId       String           @map("user_id") @db.Uuid
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date         DateTime         @db.Date
-  checkInAt    DateTime?        @map("check_in_at")
-  checkOutAt   DateTime?        @map("check_out_at")
-  totalMinutes Int?             @map("total_minutes")
-  status       AttendanceStatus @default(PRESENT)
-  checkInMethod String?         @map("check_in_method") @db.VarChar(32)
-  checkOutMethod String?        @map("check_out_method") @db.VarChar(32)
-  notes        String?          @db.Text
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id               String           @id @default(uuid()) @db.Uuid
+  userId           String           @map("user_id") @db.Uuid
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             DateTime         @db.Date
+  checkInAt        DateTime?        @map("check_in_at")
+  checkOutAt       DateTime?        @map("check_out_at")
+  totalMinutes     Int?             @map("total_minutes")
+  status           AttendanceStatus @default(PRESENT)
+  isAutoCalculated Boolean          @default(true) @map("is_auto_calculated")
+  overtimeMinutes  Int?             @map("overtime_minutes")
+  overtimeApproved Boolean          @default(false) @map("overtime_approved")
+  checkInMethod    String?          @map("check_in_method") @db.VarChar(32)
+  checkOutMethod   String?          @map("check_out_method") @db.VarChar(32)
+  checkInIp        String?          @map("check_in_ip") @db.VarChar(64)
+  checkInLocation  Json?            @map("check_in_location") @db.JsonB
+  reconciledAt     DateTime?        @map("reconciled_at")
+  notes            String?          @db.Text
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
   @@unique([userId, date])
   @@index([userId])
+  @@index([userId, date])
   @@index([date])
   @@index([status])
 }

@@ -16,12 +16,26 @@ export type LeaveRequestStatus =
   | 'REJECTED'
   | 'CANCELLED';
 
+export type LeaveApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export interface LeaveApprovalResponseDto {
+  id: string;
+  approverId: string;
+  level: number;
+  decision: LeaveApprovalDecision;
+  comments: string | null;
+  decidedAt: string | null;
+  createdAt: string;
+}
+
 export interface CreateLeaveRequestDto {
   userId: string;
   leaveType: LeaveType;
   startDate: string;
   endDate: string;
   daysRequested: number;
+  startHalfDay?: boolean;
+  endHalfDay?: boolean;
   reason?: string | null;
   description?: string | null;
   contactDuringLeave?: Record<string, unknown> | null;
@@ -49,6 +63,8 @@ export interface LeaveRequestResponseDto {
   startDate: string;
   endDate: string;
   daysRequested: number;
+  startHalfDay: boolean;
+  endHalfDay: boolean;
   reason: string | null;
   description: string | null;
   contactDuringLeave: unknown;
@@ -56,7 +72,7 @@ export interface LeaveRequestResponseDto {
   handoverNotes: string | null;
   balanceSnapshot: unknown;
   submittedAt: string | null;
-  approvals: unknown;
+  approvalSteps: LeaveApprovalResponseDto[];
   status: LeaveRequestStatus;
   approvedById: string | null;
   approvedAt: string | null;
@@ -67,7 +83,9 @@ export interface LeaveRequestResponseDto {
 
 export interface LeaveBalanceDto {
   leaveType: LeaveType;
-  entitled: number;
+  year: number;
+  totalDays: number;
+  carriedOver: number;
   used: number;
   pending: number;
   available: number;

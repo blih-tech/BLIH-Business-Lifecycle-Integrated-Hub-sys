@@ -11,9 +11,19 @@ type LeaveRequestRow = {
   contactDuringLeave: unknown;
   handoverDelegateId: string | null;
   handoverNotes: string | null;
+  startHalfDay: boolean;
+  endHalfDay: boolean;
   balanceSnapshot: unknown;
   submittedAt: Date | null;
-  approvals: unknown;
+  approvalSteps?: Array<{
+    id: string;
+    approverId: string;
+    level: number;
+    decision: string;
+    comments: string | null;
+    decidedAt: Date | null;
+    createdAt: Date;
+  }>;
   status: string;
   approvedById: string | null;
   approvedAt: Date | null;
@@ -41,9 +51,19 @@ export function mapLeaveRequestResponse(row: LeaveRequestRow) {
     contactDuringLeave: row.contactDuringLeave,
     handoverDelegateId: row.handoverDelegateId,
     handoverNotes: row.handoverNotes,
+    startHalfDay: row.startHalfDay,
+    endHalfDay: row.endHalfDay,
     balanceSnapshot: row.balanceSnapshot,
     submittedAt: row.submittedAt?.toISOString() ?? null,
-    approvals: row.approvals,
+    approvalSteps: (row.approvalSteps ?? []).map((step) => ({
+      id: step.id,
+      approverId: step.approverId,
+      level: step.level,
+      decision: step.decision,
+      comments: step.comments,
+      decidedAt: step.decidedAt?.toISOString() ?? null,
+      createdAt: step.createdAt.toISOString(),
+    })),
     status: row.status,
     approvedById: row.approvedById,
     approvedAt: row.approvedAt?.toISOString() ?? null,

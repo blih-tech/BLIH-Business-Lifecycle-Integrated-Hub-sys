@@ -7,8 +7,18 @@ export class GetLeaveRequestUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(id: string) {
-    const row = await this.prisma.leaveRequest.findUnique({ where: { id } });
-    if (!row) throw new NotFoundException('Leave request not found');
+    const row = await this.prisma.leaveRequest.findUnique({
+      where: { id },
+      include: {
+        approvalSteps: {
+          orderBy: { level: 'asc' },
+        },
+      },
+    });
+    if (!row) {
+      throw new NotFoundException('Leave request not found');
+    }
+
     return mapLeaveRequestResponse(row);
   }
 }

@@ -16,6 +16,7 @@ import { GetJobDescriptionUseCase } from './job-descriptions/use-cases/get-job-d
 import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create-job-description.usecase';
 import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
 import { DocumentExpiryJob } from './jobs/document-expiry.job';
+import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.job';
 import { RecruitmentRequestsController } from './recruitment/recruitment-requests.controller';
 import { HiringDecisionsController } from './recruitment/hiring-decisions.controller';
 import { ListRecruitmentRequestsUseCase } from './recruitment/use-cases/list-recruitment-requests.usecase';
@@ -44,9 +45,19 @@ import { ApproveLeaveRequestUseCase } from './leave/use-cases/approve-leave-requ
 import { RejectLeaveRequestUseCase } from './leave/use-cases/reject-leave-request.usecase';
 import { GetLeaveBalanceUseCase } from './leave/use-cases/get-leave-balance.usecase';
 import { AttendanceController } from './attendance/attendance.controller';
+import { AttendanceCalendarService } from './attendance/attendance-calendar.service';
+import { AttendanceReconciliationService } from './attendance/attendance-reconciliation.service';
+import { AssignUserWorkScheduleUseCase } from './attendance/use-cases/assign-user-work-schedule.usecase';
+import { CreateHolidayUseCase } from './attendance/use-cases/create-holiday.usecase';
+import { CreateWorkScheduleUseCase } from './attendance/use-cases/create-work-schedule.usecase';
 import { UpsertAttendanceLogUseCase } from './attendance/use-cases/upsert-attendance-log.usecase';
 import { ListAttendanceLogsUseCase } from './attendance/use-cases/list-attendance-logs.usecase';
 import { GetAttendanceLogUseCase } from './attendance/use-cases/get-attendance-log.usecase';
+import { ListHolidaysUseCase } from './attendance/use-cases/list-holidays.usecase';
+import { ListUserWorkSchedulesUseCase } from './attendance/use-cases/list-user-work-schedules.usecase';
+import { ListWorkSchedulesUseCase } from './attendance/use-cases/list-work-schedules.usecase';
+import { HrUserLifecycleService } from './hr-user-lifecycle.service';
+import { LeaveBalanceService } from './leave/leave-balance.service';
 
 @Module({
   controllers: [
@@ -74,6 +85,7 @@ import { GetAttendanceLogUseCase } from './attendance/use-cases/get-attendance-l
     CreateJobDescriptionUseCase,
     UpdateJobDescriptionUseCase,
     DocumentExpiryJob,
+    AttendanceReconciliationJob,
     ListRecruitmentRequestsUseCase,
     GetRecruitmentRequestUseCase,
     CreateRecruitmentRequestUseCase,
@@ -97,6 +109,16 @@ import { GetAttendanceLogUseCase } from './attendance/use-cases/get-attendance-l
     ApproveLeaveRequestUseCase,
     RejectLeaveRequestUseCase,
     GetLeaveBalanceUseCase,
+    LeaveBalanceService,
+    HrUserLifecycleService,
+    AttendanceCalendarService,
+    AttendanceReconciliationService,
+    CreateWorkScheduleUseCase,
+    ListWorkSchedulesUseCase,
+    AssignUserWorkScheduleUseCase,
+    ListUserWorkSchedulesUseCase,
+    CreateHolidayUseCase,
+    ListHolidaysUseCase,
     UpsertAttendanceLogUseCase,
     ListAttendanceLogsUseCase,
     GetAttendanceLogUseCase,

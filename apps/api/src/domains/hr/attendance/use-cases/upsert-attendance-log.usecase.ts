@@ -1,68 +1,179 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import type { CreateOrUpdateAttendanceLogDto } from '@blih/types';
+import { Prisma } from '../../../../platform/prisma/prisma-client';
+import { HrUserLifecycleService } from '../../hr-user-lifecycle.service';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapAttendanceLogResponse } from '../attendance.mapper';
+import { AttendanceReconciliationService } from '../attendance-reconciliation.service';
+import { normalizeDateOnly } from '../attendance-date.util';
 
 @Injectable()
 export class UpsertAttendanceLogUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly lifecycle: HrUserLifecycleService,
+    private readonly reconciliation: AttendanceReconciliationService,
+  ) {}
 
   async execute(dto: CreateOrUpdateAttendanceLogDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: dto.userId },
-      select: { id: true },
-    });
-    if (!user) throw new NotFoundException('User not found');
+    await this.lifecycle.assertAttendanceAllowed(dto.userId);
 
-    const date = new Date(dto.date);
+    const date = normalizeDateOnly(dto.date);
     const existing = await this.prisma.attendanceLog.findUnique({
       where: {
         userId_date: { userId: dto.userId, date },
       },
     });
 
-    const checkInAt = dto.checkInAt ? new Date(dto.checkInAt) : undefined;
-    const checkOutAt = dto.checkOutAt ? new Date(dto.checkOutAt) : undefined;
-    let totalMinutes = dto.totalMinutes ?? null;
+    const checkInAt =
+      dto.checkInAt === undefined
+        ? undefined
+        : dto.checkInAt
+          ? new Date(dto.checkInAt)
+          : null;
+    const checkOutAt =
+      dto.checkOutAt === undefined
+        ? undefined
+        : dto.checkOutAt
+          ? new Date(dto.checkOutAt)
+          : null;
+
+    if (checkInAt && checkOutAt && checkOutAt.getTime() < checkInAt.getTime()) {
+      throw new BadRequestException('checkOutAt must be on or after checkInAt');
+    }
+
+    let totalMinutes =
+      dto.totalMinutes === undefined ? undefined : (dto.totalMinutes ?? null);
     if (checkInAt && checkOutAt && totalMinutes == null) {
-      totalMinutes = Math.round(
-        (checkOutAt.getTime() - checkInAt.getTime()) / 60000,
+      totalMinutes = Math.max(
+        0,
+        Math.round((checkOutAt.getTime() - checkInAt.getTime()) / 60000),
       );
     }
 
-    if (existing) {
-      const updated = await this.prisma.attendanceLog.update({
-        where: { id: existing.id },
-        data: {
-          ...(checkInAt !== undefined && { checkInAt }),
-          ...(checkOutAt !== undefined && { checkOutAt }),
-          ...(totalMinutes != null && { totalMinutes }),
-          ...(dto.status !== undefined && { status: dto.status as never }),
-          ...(dto.checkInMethod !== undefined && {
-            checkInMethod: dto.checkInMethod,
-          }),
-          ...(dto.checkOutMethod !== undefined && {
-            checkOutMethod: dto.checkOutMethod,
-          }),
-          ...(dto.notes !== undefined && { notes: dto.notes }),
-        },
-      });
-      return mapAttendanceLogResponse(updated);
+    const shouldAutoCalculate =
+      dto.recalculateStatus ?? dto.status === undefined;
+
+    const saved = existing
+      ? await this.updateExisting(existing.id, dto, {
+          checkInAt,
+          checkOutAt,
+          totalMinutes,
+          shouldAutoCalculate,
+        })
+      : await this.createNew(dto, date, {
+          checkInAt,
+          checkOutAt,
+          totalMinutes,
+          shouldAutoCalculate,
+        });
+
+    if (!shouldAutoCalculate) {
+      return mapAttendanceLogResponse(saved);
     }
 
-    const created = await this.prisma.attendanceLog.create({
-      data: {
-        userId: dto.userId,
-        date,
-        checkInAt: checkInAt ?? null,
-        checkOutAt: checkOutAt ?? null,
-        totalMinutes,
-        status: (dto.status as never) ?? 'PRESENT',
-        checkInMethod: dto.checkInMethod ?? undefined,
-        checkOutMethod: dto.checkOutMethod ?? undefined,
-        notes: dto.notes ?? undefined,
-      },
+    const reconciled = await this.reconciliation.reconcileDateForUser(
+      dto.userId,
+      date,
+    );
+
+    return mapAttendanceLogResponse(reconciled ?? saved);
+  }
+
+  private updateExisting(
+    id: string,
+    dto: CreateOrUpdateAttendanceLogDto,
+    params: {
+      checkInAt: Date | null | undefined;
+      checkOutAt: Date | null | undefined;
+      totalMinutes: number | null | undefined;
+      shouldAutoCalculate: boolean;
+    },
+  ) {
+    const data: Prisma.AttendanceLogUncheckedUpdateInput = {};
+
+    if (params.checkInAt !== undefined) {
+      data.checkInAt = params.checkInAt;
+    }
+    if (params.checkOutAt !== undefined) {
+      data.checkOutAt = params.checkOutAt;
+    }
+    if (params.totalMinutes !== undefined) {
+      data.totalMinutes = params.totalMinutes;
+    }
+    if (dto.checkInMethod !== undefined) {
+      data.checkInMethod = dto.checkInMethod;
+    }
+    if (dto.checkOutMethod !== undefined) {
+      data.checkOutMethod = dto.checkOutMethod;
+    }
+    if (dto.checkInIp !== undefined) {
+      data.checkInIp = dto.checkInIp;
+    }
+    if (dto.checkInLocation !== undefined) {
+      data.checkInLocation =
+        dto.checkInLocation === null
+          ? Prisma.JsonNull
+          : (dto.checkInLocation as Prisma.InputJsonValue);
+    }
+    if (dto.overtimeApproved !== undefined) {
+      data.overtimeApproved = dto.overtimeApproved ?? false;
+    }
+    if (dto.notes !== undefined) {
+      data.notes = dto.notes;
+    }
+
+    if (params.shouldAutoCalculate) {
+      data.isAutoCalculated = true;
+    } else {
+      data.isAutoCalculated = false;
+      data.status = (dto.status ?? 'PRESENT') as never;
+      data.reconciledAt = new Date();
+    }
+
+    return this.prisma.attendanceLog.update({
+      where: { id },
+      data,
     });
-    return mapAttendanceLogResponse(created);
+  }
+
+  private createNew(
+    dto: CreateOrUpdateAttendanceLogDto,
+    date: Date,
+    params: {
+      checkInAt: Date | null | undefined;
+      checkOutAt: Date | null | undefined;
+      totalMinutes: number | null | undefined;
+      shouldAutoCalculate: boolean;
+    },
+  ) {
+    const data: Prisma.AttendanceLogUncheckedCreateInput = {
+      userId: dto.userId,
+      date,
+      checkInAt: params.checkInAt ?? null,
+      checkOutAt: params.checkOutAt ?? null,
+      totalMinutes: params.totalMinutes ?? null,
+      isAutoCalculated: params.shouldAutoCalculate,
+      status: params.shouldAutoCalculate
+        ? 'PRESENT'
+        : ((dto.status ?? 'PRESENT') as never),
+      checkInMethod: dto.checkInMethod ?? undefined,
+      checkOutMethod: dto.checkOutMethod ?? undefined,
+      checkInIp: dto.checkInIp ?? undefined,
+      overtimeApproved: dto.overtimeApproved ?? false,
+      notes: dto.notes ?? undefined,
+      reconciledAt: params.shouldAutoCalculate ? null : new Date(),
+    };
+
+    if (dto.checkInLocation !== undefined) {
+      data.checkInLocation =
+        dto.checkInLocation === null
+          ? Prisma.JsonNull
+          : (dto.checkInLocation as Prisma.InputJsonValue);
+    }
+
+    return this.prisma.attendanceLog.create({
+      data,
+    });
   }
 }
