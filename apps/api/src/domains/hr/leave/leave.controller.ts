@@ -9,7 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import type { CreateLeaveRequestDto, RejectLeaveRequestDto } from '@blih/types';
+import type { CreateLeaveRequestDto, RejectLeaveRequestDto } from '@repo/types';
 import type { Request } from 'express';
 import {
   ApiBody,

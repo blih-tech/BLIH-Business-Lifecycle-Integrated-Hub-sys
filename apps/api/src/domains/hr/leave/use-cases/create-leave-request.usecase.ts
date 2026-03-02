@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import type { CreateLeaveRequestDto } from '@blih/types';
+import type { CreateLeaveRequestDto } from '@repo/types';
 import { AttendanceCalendarService } from '../../attendance/attendance-calendar.service';
 import { normalizeDateOnly } from '../../attendance/attendance-date.util';
 import { HrUserLifecycleService } from '../../hr-user-lifecycle.service';

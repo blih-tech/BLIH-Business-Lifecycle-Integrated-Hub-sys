@@ -14,7 +14,7 @@ WORKDIR /workspace
 
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY . .
-RUN npm run build --workspace @blih/types
+RUN npm run build --workspace @repo/types
 RUN npm run prisma:generate --workspace blih-system-backend
 RUN npm run build --workspace blih-system-backend
 

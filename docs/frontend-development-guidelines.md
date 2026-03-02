@@ -1073,7 +1073,7 @@ components/
      // Enable experimental features
      experimental: {
        optimizeCss: true,
-       optimizePackageImports: ['@blih/types'],
+       optimizePackageImports: ['@repo/types'],
      },
 
      // Image optimization

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `@blih/types` package provides shared TypeScript type definitions used across the BLIH System monorepo. This package ensures type consistency between the backend API, frontend applications, and any other consumers of the system's data structures.
+The `@repo/types` package provides shared TypeScript type definitions used across the BLIH System monorepo. This package ensures type consistency between the backend API, frontend applications, and any other consumers of the system's data structures.
 
 ## Package Structure
 
@@ -22,19 +22,19 @@ packages/types/src/
 ### Installation
 
 ```bash
-npm install @blih/types
+npm install @repo/types
 ```
 
 ### Importing Types
 
 ```typescript
 // Import specific types
-import { AuthMeResponseDto } from '@blih/types/auth';
-import { UserResponseDto } from '@blih/types/users';
-import { ApiResponse } from '@blih/types/shared';
+import { AuthMeResponseDto } from '@repo/types/auth';
+import { UserResponseDto } from '@repo/types/users';
+import { ApiResponse } from '@repo/types/shared';
 
 // Import all types
-import * as BlihTypes from '@blih/types';
+import * as BlihTypes from '@repo/types';
 ```
 
 ## Shared Types (`shared/`)
@@ -503,7 +503,7 @@ export interface PolicyRule {
 ### API Response Handling
 
 ```typescript
-import { ApiResponse, UserResponseDto } from '@blih/types';
+import { ApiResponse, UserResponseDto } from '@repo/types';
 
 async function fetchUsers(): Promise<ApiResponse<UserResponseDto[]>> {
   const response = await fetch('/api/v1/users');
@@ -522,7 +522,7 @@ if (usersResponse.success) {
 ### Type-Safe API Client
 
 ```typescript
-import { ApiResponse, CreateUserDto, UserResponseDto } from '@blih/types';
+import { ApiResponse, CreateUserDto, UserResponseDto } from '@repo/types';
 
 class BlihApiClient {
   async createUser(
@@ -553,7 +553,7 @@ class BlihApiClient {
 
 ```typescript
 import React from 'react';
-import { UserResponseDto, UserStatus } from '@blih/types/users';
+import { UserResponseDto, UserStatus } from '@repo/types/users';
 
 interface UserListProps {
   users: UserResponseDto[];
@@ -671,10 +671,10 @@ function migrateUser(oldUser: OldUserDto): NewUserDto {
 
 ```typescript
 // Good: Import only what you need
-import { UserResponseDto } from '@blih/types/users';
+import { UserResponseDto } from '@repo/types/users';
 
 // Avoid: Import everything
-import * as Types from '@blih/types';
+import * as Types from '@repo/types';
 ```
 
 ### 2. Use Type Guards
@@ -750,4 +750,4 @@ function validateUserResponse(obj: any): obj is UserResponseDto {
 }
 ```
 
-The `@blih/types` package serves as the single source of truth for all data structures in the BLIH System, ensuring type safety and consistency across the entire ecosystem.
+The `@repo/types` package serves as the single source of truth for all data structures in the BLIH System, ensuring type safety and consistency across the entire ecosystem.

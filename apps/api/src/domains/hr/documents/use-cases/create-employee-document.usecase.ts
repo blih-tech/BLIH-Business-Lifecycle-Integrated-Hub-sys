@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { CreateEmployeeDocumentDto } from '@blih/types';
+import type { CreateEmployeeDocumentDto } from '@repo/types';
 
 @Injectable()
 export class CreateEmployeeDocumentUseCase {

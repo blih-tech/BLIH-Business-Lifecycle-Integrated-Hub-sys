@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { UpdateOnboardingChecklistDto } from '@blih/types';
+import type { UpdateOnboardingChecklistDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapOnboardingChecklistResponse } from '../onboarding.mapper';
 

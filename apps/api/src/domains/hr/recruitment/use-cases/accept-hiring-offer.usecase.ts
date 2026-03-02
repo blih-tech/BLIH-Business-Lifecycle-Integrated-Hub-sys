@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { AcceptOfferDto } from '@blih/types';
+import type { AcceptOfferDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { CreateOnboardingChecklistUseCase } from '../../onboarding/use-cases/create-onboarding-checklist.usecase';
 import { mapHiringDecisionResponse } from '../hiring-decision.mapper';

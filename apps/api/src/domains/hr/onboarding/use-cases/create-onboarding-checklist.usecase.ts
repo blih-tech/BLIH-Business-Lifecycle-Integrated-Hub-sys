@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { CreateOnboardingChecklistDto } from '@blih/types';
+import type { CreateOnboardingChecklistDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import {
   addBusinessDays,

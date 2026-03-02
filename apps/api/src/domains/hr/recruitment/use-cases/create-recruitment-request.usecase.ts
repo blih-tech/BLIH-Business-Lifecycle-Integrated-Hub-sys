@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { CreateRecruitmentRequestDto } from '@blih/types';
+import type { CreateRecruitmentRequestDto } from '@repo/types';
 import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()

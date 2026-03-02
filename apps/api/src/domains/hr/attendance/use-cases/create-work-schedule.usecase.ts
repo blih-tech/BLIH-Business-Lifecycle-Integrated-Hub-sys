@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
 } from '@nestjs/common';
-import type { CreateWorkScheduleDto } from '@blih/types';
+import type { CreateWorkScheduleDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapWorkScheduleResponse } from '../attendance-config.mapper';
 import { normalizeWorkScheduleDays } from '../work-schedule.validation';

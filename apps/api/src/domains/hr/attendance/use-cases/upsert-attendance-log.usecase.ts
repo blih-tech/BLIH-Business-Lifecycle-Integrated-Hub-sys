@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import type { CreateOrUpdateAttendanceLogDto } from '@blih/types';
+import type { CreateOrUpdateAttendanceLogDto } from '@repo/types';
 import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { HrUserLifecycleService } from '../../hr-user-lifecycle.service';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
