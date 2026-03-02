@@ -5,3 +5,4 @@ export * from './performance/index.js';
 export * from './okr/index.js';
 export * from './talent/index.js';
 export * from './training/index.js';
+export * from './relations/index.js';

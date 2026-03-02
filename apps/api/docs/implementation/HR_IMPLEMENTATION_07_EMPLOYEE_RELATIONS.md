@@ -1,8 +1,8 @@
 # HR Implementation Plan 7: Employee Relations Subsystem
 
 **Version:** 1.0  
-**Last Updated:** February 2026  
-**Status:** Ready for implementation  
+**Last Updated:** March 2026  
+**Status:** Implemented  
 **Implementation order:** 8 (after Approval Workflow; can parallel with others)
 
 ---
@@ -217,8 +217,18 @@ enum SurveyStatus {
 
 ## 10. Acceptance Criteria
 
-- [ ] Incident reporting with severity and investigator assignment; investigation and resolution.
-- [ ] Disciplinary actions with escalation matrix and termination approval.
-- [ ] Grievances and recognition with workflows and approvals.
-- [ ] Surveys with anonymous option and aggregated results when closed.
-- [ ] Conflict mediation request and session/agreement recording.
+- [x] Incident reporting with severity and investigator assignment; investigation and resolution.
+- [x] Disciplinary actions with escalation matrix and termination approval.
+- [x] Grievances and recognition with workflows and approvals.
+- [x] Surveys with anonymous option and aggregated results when closed.
+- [x] Conflict mediation request and session/agreement recording.
+
+---
+
+## 11. Implementation Summary
+
+- **Base path:** `/api/v1/hr/relations` (controller: `hr/relations`).
+- **Types:** `packages/types/src/hr/relations/` (incident, disciplinary, grievance, recognition, survey, mediation).
+- **Domain:** `apps/api/src/domains/hr/relations/` — utils (incident SLA, disciplinary matrix), mapper, use cases, RelationsController.
+- **RBAC:** `RelationsPermissions` (VIEW, CREATE, UPDATE, APPROVE, RESPOND, RESULTS) in `permissions.constants.ts`; applied on all relations routes.
+- **Schema:** No migration required; Employee Relations models and enums already present in Prisma schema.

@@ -479,6 +479,32 @@ model User {
   employeeSkills                   EmployeeSkill[]
   approvedTrainingRequests         TrainingRequest[]          @relation("TrainingRequestApprover")
   skillGapAssessmentsCreated      SkillGapAssessment[]        @relation("SkillGapAssessmentAssessor")
+  incidentReportsFiled           IncidentReport[]            @relation("IncidentReportReporter")
+  incidentInvestigations         IncidentReport[]            @relation("IncidentReportInvestigator")
+  disciplinaryActionsSubject     DisciplinaryAction[]         @relation("DisciplinaryActionSubject")
+  disciplinaryActionsApproved    DisciplinaryAction[]         @relation("DisciplinaryActionApprover")
+  grievancesFiled                Grievance[]                 @relation("GrievanceReporter")
+  grievancesAssigned             Grievance[]                 @relation("GrievanceAssignee")
+  recognitionsNominated          Recognition[]               @relation("RecognitionNominator")
+  recognitionsReceived           Recognition[]               @relation("RecognitionNominee")
+  recognitionsApproved           Recognition[]               @relation("RecognitionApprover")
+  surveysCreated                 Survey[]                    @relation("SurveyCreator")
+  surveyResponses                SurveyResponse[]
+  mediationAsRequester           ConflictMediation[]         @relation("MediationRequester")
+  mediationAsOtherParty          ConflictMediation[]         @relation("MediationOtherParty")
+  mediationAsMediator             ConflictMediation[]        @relation("MediationMediator")
+  resignations                   Resignation[]               @relation("ResignationEmployee")
+  resignationsApproved           Resignation[]               @relation("ResignationApprover")
+  offboardingChecklists          OffboardingChecklist[]      @relation("OffboardingChecklistUser")
+  offboardingTasksAssigned       OffboardingTask[]           @relation("OffboardingTaskAssignee")
+  offboardingTasksCompleted      OffboardingTask[]           @relation("OffboardingTaskCompletedBy")
+  exitInterviews                 ExitInterview[]             @relation("ExitInterviewEmployee")
+  exitInterviewsConducted        ExitInterview[]             @relation("ExitInterviewConductedBy")
+  finalSettlements               FinalSettlement[]         @relation("FinalSettlementEmployee")
+  finalSettlementsApproved       FinalSettlement[]           @relation("FinalSettlementApprover")
+  assetReturns                   AssetReturn[]               @relation("AssetReturnEmployee")
+  complianceChecklists           ComplianceChecklist[]       @relation("ComplianceChecklistUser")
+  complianceChecklistsVerified   ComplianceChecklist[]       @relation("ComplianceChecklistVerifiedBy")
 
   @@index([status])
 }
@@ -1812,4 +1838,448 @@ model SkillGapAssessment {
   @@index([departmentId])
   @@index([assessedById])
   @@index([assessedAt])
+}
+
+// Employee Relations (HR Implementation Plan 07)
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentType {
+  SAFETY
+  SECURITY
+  CONFLICT
+  HARASSMENT
+  OTHER
+}
+
+enum IncidentReportStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+}
+
+enum DisciplinaryIncidentType {
+  ATTENDANCE_VIOLATION
+  PERFORMANCE_ISSUE
+  CODE_OF_CONDUCT
+}
+
+enum DisciplinaryActionType {
+  VERBAL_WARNING
+  WRITTEN_WARNING
+  FINAL_WARNING
+  PERFORMANCE_IMPROVEMENT_PLAN
+  SUSPENSION
+  TERMINATION
+}
+
+enum DisciplinaryStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  APPEALED
+}
+
+enum GrievanceStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum RecognitionCategory {
+  EXCELLENCE
+  TEAMWORK
+  INNOVATION
+  SERVICE
+  OTHER
+}
+
+enum RecognitionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SurveyType {
+  SATISFACTION
+  PULSE
+}
+
+enum SurveyStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum MediationStatus {
+  PENDING
+  IN_PROGRESS
+  AGREEMENT_REACHED
+  CLOSED
+}
+
+model IncidentReport {
+  id                  String              @id @default(uuid()) @db.Uuid
+  reportId            String              @unique @map("report_id") @db.VarChar(32)
+  userId              String              @map("user_id") @db.Uuid
+  user                User                @relation("IncidentReportReporter", fields: [userId], references: [id], onDelete: Restrict)
+  incidentType        IncidentType        @map("incident_type")
+  severity            IncidentSeverity
+  description         String              @db.Text
+  location            String?             @db.VarChar(256)
+  occurredAt          DateTime            @map("occurred_at")
+  peopleInvolved      Json?               @map("people_involved") @db.JsonB
+  immediateActions    Json?               @map("immediate_actions") @db.JsonB
+  investigatorId      String?             @map("investigator_id") @db.Uuid
+  investigator        User?               @relation("IncidentReportInvestigator", fields: [investigatorId], references: [id], onDelete: SetNull)
+  slaHours            Int?                @map("sla_hours")
+  investigationDueAt  DateTime?           @map("investigation_due_at")
+  investigationNotes  String?             @map("investigation_notes") @db.Text
+  rootCause           String?             @map("root_cause") @db.Text
+  preventiveActions   Json?               @map("preventive_actions") @db.JsonB
+  status              IncidentReportStatus @default(OPEN)
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@index([severity])
+  @@index([investigatorId])
+}
+
+model DisciplinaryAction {
+  id                  String                   @id @default(uuid()) @db.Uuid
+  userId              String                   @map("user_id") @db.Uuid
+  user                User                     @relation("DisciplinaryActionSubject", fields: [userId], references: [id], onDelete: Restrict)
+  incidentType        DisciplinaryIncidentType  @map("incident_type")
+  actionType          DisciplinaryActionType    @map("action_type")
+  incidentReportId    String?                  @map("incident_report_id") @db.Uuid
+  description         String                   @db.Text
+  effectiveFrom       DateTime                 @map("effective_from") @db.Date
+  expiresAt           DateTime?                @map("expires_at") @db.Date
+  durationDays        Int?                     @map("duration_days")
+  approvedById        String?                  @map("approved_by_id") @db.Uuid
+  approvedBy          User?                    @relation("DisciplinaryActionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  status              DisciplinaryStatus       @default(PENDING)
+  createdAt           DateTime                 @default(now()) @map("created_at")
+  updatedAt           DateTime                 @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([incidentType])
+  @@index([status])
+  @@index([effectiveFrom])
+}
+
+model Grievance {
+  id              String          @id @default(uuid()) @db.Uuid
+  userId          String          @map("user_id") @db.Uuid
+  user            User            @relation("GrievanceReporter", fields: [userId], references: [id], onDelete: Restrict)
+  subject         String         @db.VarChar(512)
+  description     String         @db.Text
+  category        String?        @db.VarChar(128)
+  submittedAt     DateTime       @map("submitted_at")
+  assignedToId    String?        @map("assigned_to_id") @db.Uuid
+  assignedTo      User?          @relation("GrievanceAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  status          GrievanceStatus @default(OPEN)
+  resolutionNotes String?        @map("resolution_notes") @db.Text
+  closedAt        DateTime?      @map("closed_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([assignedToId])
+  @@index([status])
+}
+
+model Recognition {
+  id               String             @id @default(uuid()) @db.Uuid
+  nominatorId      String             @map("nominator_id") @db.Uuid
+  nominator        User               @relation("RecognitionNominator", fields: [nominatorId], references: [id], onDelete: Restrict)
+  nomineeId        String             @map("nominee_id") @db.Uuid
+  nominee          User               @relation("RecognitionNominee", fields: [nomineeId], references: [id], onDelete: Restrict)
+  category         RecognitionCategory
+  description      String             @db.Text
+  impact           String?            @db.Text
+  suggestedAward   String?            @map("suggested_award") @db.VarChar(64)
+  publicRecognition Boolean          @default(true) @map("public_recognition")
+  approvals        Json?              @db.JsonB
+  status           RecognitionStatus  @default(PENDING)
+  approvedById     String?            @map("approved_by_id") @db.Uuid
+  approvedBy       User?              @relation("RecognitionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+
+  @@index([nomineeId])
+  @@index([nominatorId])
+  @@index([status])
+}
+
+model Survey {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String       @db.VarChar(512)
+  description String?      @db.Text
+  type        SurveyType   @default(SATISFACTION)
+  questions   Json         @db.JsonB
+  anonymous   Boolean      @default(false)
+  status      SurveyStatus @default(DRAFT)
+  opensAt     DateTime?    @map("opens_at") @db.Timestamp
+  closesAt    DateTime?    @map("closes_at") @db.Timestamp
+  createdById String       @map("created_by_id") @db.Uuid
+  createdBy   User         @relation("SurveyCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  responses   SurveyResponse[]
+
+  @@index([status])
+  @@index([createdById])
+}
+
+model SurveyResponse {
+  id          String   @id @default(uuid()) @db.Uuid
+  surveyId    String   @map("survey_id") @db.Uuid
+  survey      Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  userId      String?  @map("user_id") @db.Uuid
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  responses   Json     @db.JsonB
+  submittedAt DateTime @map("submitted_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([surveyId])
+  @@index([userId])
+}
+
+model ConflictMediation {
+  id                  String         @id @default(uuid()) @db.Uuid
+  requesterId         String         @map("requester_id") @db.Uuid
+  requester           User           @relation("MediationRequester", fields: [requesterId], references: [id], onDelete: Restrict)
+  otherPartyId        String         @map("other_party_id") @db.Uuid
+  otherParty          User           @relation("MediationOtherParty", fields: [otherPartyId], references: [id], onDelete: Restrict)
+  nature              String         @db.Text
+  duration            String?        @db.VarChar(128)
+  attemptedResolutions String?       @map("attempted_resolutions") @db.Text
+  workImpact          String?        @map("work_impact") @db.Text
+  desiredOutcome      String?        @map("desired_outcome") @db.Text
+  mediatorId          String?        @map("mediator_id") @db.Uuid
+  mediator            User?          @relation("MediationMediator", fields: [mediatorId], references: [id], onDelete: SetNull)
+  sessionDates        Json?          @map("session_dates") @db.JsonB
+  agreementReached    Boolean?       @map("agreement_reached")
+  agreementNotes      String?        @map("agreement_notes") @db.Text
+  status              MediationStatus @default(PENDING)
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+
+  @@index([requesterId])
+  @@index([otherPartyId])
+  @@index([mediatorId])
+  @@index([status])
+}
+
+// --- Offboarding (HR Implementation 08) ---
+enum ResignationStatus {
+  DRAFT
+  SUBMITTED
+  NOTICE_PERIOD
+  HANDOVER
+  EXIT_PENDING
+  COMPLETED
+}
+
+enum OffboardingTaskDepartment {
+  HR
+  IT
+  ADMIN
+  FINANCE
+  MANAGER
+}
+
+enum OffboardingTaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+}
+
+enum OffboardingChecklistStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TerminationType {
+  RESIGNATION
+  END_OF_CONTRACT
+  TERMINATION
+  LAYOFF
+}
+
+enum AssetReturnStatus {
+  PENDING
+  IT_SIGNED
+  ADMIN_SIGNED
+  FINANCE_SIGNED
+  COMPLETED
+}
+
+model Resignation {
+  id                    String            @id @default(uuid()) @db.Uuid
+  userId                String            @map("user_id") @db.Uuid
+  user                  User              @relation("ResignationEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  proposedLastDay       DateTime          @map("proposed_last_day") @db.Date
+  actualLastDay         DateTime?         @map("actual_last_day") @db.Date
+  reason                String?           @db.VarChar(64)
+  reasonNotes           String?           @map("reason_notes") @db.Text
+  submittedAt           DateTime?         @map("submitted_at")
+  approvedById          String?           @map("approved_by_id") @db.Uuid
+  approvedBy            User?             @relation("ResignationApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  status                ResignationStatus  @default(DRAFT)
+  handoverPlan          Json?             @map("handover_plan") @db.JsonB
+  criticalProjectsWarning Json?           @map("critical_projects_warning") @db.JsonB
+  leaveBalanceOptions   Json?             @map("leave_balance_options") @db.JsonB
+  validationResult      Json?             @map("validation_result") @db.JsonB
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+  checklists            OffboardingChecklist[]
+  exitInterviews        ExitInterview[]
+  finalSettlements      FinalSettlement[]
+  complianceChecklists  ComplianceChecklist[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([proposedLastDay])
+}
+
+model OffboardingChecklist {
+  id            String                    @id @default(uuid()) @db.Uuid
+  userId        String                    @map("user_id") @db.Uuid
+  user          User                      @relation("OffboardingChecklistUser", fields: [userId], references: [id], onDelete: Restrict)
+  resignationId String                    @map("resignation_id") @db.Uuid
+  resignation   Resignation               @relation(fields: [resignationId], references: [id], onDelete: Cascade)
+  lastWorkingDay DateTime                 @map("last_working_day") @db.Date
+  status        OffboardingChecklistStatus @default(PENDING)
+  completedAt   DateTime?                 @map("completed_at")
+  createdAt     DateTime                 @default(now()) @map("created_at")
+  updatedAt     DateTime                 @updatedAt @map("updated_at")
+  tasks         OffboardingTask[]
+  assetReturns   AssetReturn[]
+
+  @@index([userId])
+  @@index([resignationId])
+  @@index([status])
+}
+
+model OffboardingTask {
+  id             String                    @id @default(uuid()) @db.Uuid
+  checklistId    String                    @map("checklist_id") @db.Uuid
+  checklist      OffboardingChecklist      @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  department     OffboardingTaskDepartment
+  title          String                    @db.VarChar(512)
+  dueDate        DateTime                  @map("due_date") @db.Date
+  assignedToId   String?                   @map("assigned_to_id") @db.Uuid
+  assignedTo     User?                     @relation("OffboardingTaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  status         OffboardingTaskStatus     @default(PENDING)
+  completedAt    DateTime?                 @map("completed_at")
+  completedById  String?                   @map("completed_by_id") @db.Uuid
+  completedBy    User?                     @relation("OffboardingTaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  mandatory      Boolean                  @default(true)
+
+  @@index([checklistId])
+  @@index([department])
+  @@index([assignedToId])
+  @@index([status])
+}
+
+model ExitInterview {
+  id              String     @id @default(uuid()) @db.Uuid
+  userId          String     @map("user_id") @db.Uuid
+  user            User       @relation("ExitInterviewEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  resignationId   String     @map("resignation_id") @db.Uuid
+  resignation     Resignation @relation(fields: [resignationId], references: [id], onDelete: Cascade)
+  conductedById   String?    @map("conducted_by_id") @db.Uuid
+  conductedBy     User?      @relation("ExitInterviewConductedBy", fields: [conductedById], references: [id], onDelete: SetNull)
+  conductedAt     DateTime?  @map("conducted_at")
+  questions       Json?      @db.JsonB
+  answers         Json?      @db.JsonB
+  wouldRecommend  Boolean?   @map("would_recommend")
+  wouldReturn     Boolean?   @map("would_return")
+  improvementNotes String?   @map("improvement_notes") @db.Text
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([resignationId])
+}
+
+model FinalSettlement {
+  id                   String    @id @default(uuid()) @db.Uuid
+  userId               String    @map("user_id") @db.Uuid
+  user                 User      @relation("FinalSettlementEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  resignationId        String    @map("resignation_id") @db.Uuid
+  resignation          Resignation @relation(fields: [resignationId], references: [id], onDelete: Cascade)
+  lastWorkingDay       DateTime  @map("last_working_day") @db.Date
+  earnings             Json      @db.JsonB
+  deductions           Json      @db.JsonB
+  netPayable           Decimal   @map("net_payable") @db.Decimal(15, 2)
+  breakdownDocumentUrl String?   @map("breakdown_document_url") @db.VarChar(1024)
+  approvedById         String?   @map("approved_by_id") @db.Uuid
+  approvedBy           User?     @relation("FinalSettlementApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  paidAt               DateTime? @map("paid_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([resignationId])
+}
+
+model AssetReturn {
+  id                String            @id @default(uuid()) @db.Uuid
+  userId            String            @map("user_id") @db.Uuid
+  user              User              @relation("AssetReturnEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  checklistId       String            @map("checklist_id") @db.Uuid
+  checklist         OffboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  items             Json?             @db.JsonB
+  depositReturn     Decimal?          @map("deposit_return") @db.Decimal(15, 2)
+  damageDeductions  Decimal?          @map("damage_deductions") @db.Decimal(15, 2)
+  netAmount         Decimal?          @map("net_amount") @db.Decimal(15, 2)
+  itSignOffAt       DateTime?         @map("it_sign_off_at")
+  adminSignOffAt    DateTime?         @map("admin_sign_off_at")
+  financeSignOffAt  DateTime?         @map("finance_sign_off_at")
+  status            AssetReturnStatus @default(PENDING)
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([checklistId])
+  @@index([status])
+}
+
+model ComplianceChecklist {
+  id                      String         @id @default(uuid()) @db.Uuid
+  userId                  String         @map("user_id") @db.Uuid
+  user                    User           @relation("ComplianceChecklistUser", fields: [userId], references: [id], onDelete: Restrict)
+  resignationId           String         @map("resignation_id") @db.Uuid
+  resignation             Resignation    @relation(fields: [resignationId], references: [id], onDelete: Cascade)
+  terminationType         TerminationType @map("termination_type")
+  noticePeriodContractual Int?           @map("notice_period_contractual")
+  noticePeriodActual      Int?           @map("notice_period_actual")
+  payInLieu               Boolean?       @map("pay_in_lieu")
+  finalDues               Json?         @map("final_dues") @db.JsonB
+  terminationLetterSent   Boolean        @default(false) @map("termination_letter_sent")
+  exitInterviewDone       Boolean        @default(false) @map("exit_interview_done")
+  clearanceCertificateDone Boolean       @default(false) @map("clearance_certificate_done")
+  unionNotified           Boolean        @default(false) @map("union_notified")
+  laborOfficeFiled        Boolean        @default(false) @map("labor_office_filed")
+  noPendingClaims         Boolean        @default(false) @map("no_pending_claims")
+  verifiedById            String?        @map("verified_by_id") @db.Uuid
+  verifiedBy              User?          @relation("ComplianceChecklistVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt             DateTime?      @map("verified_at")
+  createdAt               DateTime       @default(now()) @map("created_at")
+  updatedAt               DateTime        @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([resignationId])
 }

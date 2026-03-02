@@ -2,11 +2,15 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const repoRoot = path.resolve(__dirname, '../../../../');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const workspaceRoots = ['apps', 'packages'].map((segment) =>
+  path.join(repoRoot, segment),
+);
 
 function parseArgs(argv) {
   const result = {
@@ -191,10 +195,115 @@ function classifyWorkspaces(files) {
   return scopes;
 }
 
-function runNpm(args) {
+function ensureDirectory(dirPath) {
+  fs.mkdirSync(dirPath, { recursive: true });
+}
+
+function pathExists(targetPath) {
+  try {
+    fs.lstatSync(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function isWithin(parentPath, childPath) {
+  const relativePath = path.relative(parentPath, childPath);
+  return (
+    relativePath.length > 0 &&
+    !relativePath.startsWith('..') &&
+    !path.isAbsolute(relativePath)
+  );
+}
+
+function toGitPrefix(targetPath) {
+  const normalized = targetPath.split(path.sep).join('/');
+  return normalized.endsWith('/') ? normalized : `${normalized}/`;
+}
+
+function resolveSnapshotWorkspaceTarget(snapshotRoot, targetPath) {
+  for (const workspaceRoot of workspaceRoots) {
+    if (targetPath === workspaceRoot || isWithin(workspaceRoot, targetPath)) {
+      return path.join(snapshotRoot, path.relative(repoRoot, targetPath));
+    }
+  }
+
+  return null;
+}
+
+function linkIntoSnapshot(sourcePath, targetPath, kind) {
+  ensureDirectory(path.dirname(targetPath));
+
+  if (pathExists(targetPath)) {
+    return;
+  }
+
+  const symlinkType =
+    kind === 'dir' ? (process.platform === 'win32' ? 'junction' : 'dir') : 'file';
+
+  fs.symlinkSync(sourcePath, targetPath, symlinkType);
+}
+
+function linkNodeModulesEntry(sourcePath, targetPath, snapshotRoot) {
+  const stats = fs.lstatSync(sourcePath);
+
+  if (stats.isSymbolicLink()) {
+    const resolvedTarget = fs.realpathSync(sourcePath);
+    const snapshotTarget = resolveSnapshotWorkspaceTarget(
+      snapshotRoot,
+      resolvedTarget,
+    );
+
+    linkIntoSnapshot(
+      snapshotTarget ?? resolvedTarget,
+      targetPath,
+      fs.statSync(resolvedTarget).isDirectory() ? 'dir' : 'file',
+    );
+    return;
+  }
+
+  if (stats.isDirectory()) {
+    linkIntoSnapshot(sourcePath, targetPath, 'dir');
+    return;
+  }
+
+  linkIntoSnapshot(sourcePath, targetPath, 'file');
+}
+
+function hydrateNodeModules(snapshotRoot) {
+  const sourceNodeModules = path.join(repoRoot, 'node_modules');
+  if (!pathExists(sourceNodeModules)) {
+    return;
+  }
+
+  const snapshotNodeModules = path.join(snapshotRoot, 'node_modules');
+  ensureDirectory(snapshotNodeModules);
+
+  for (const entry of fs.readdirSync(sourceNodeModules, { withFileTypes: true })) {
+    linkNodeModulesEntry(
+      path.join(sourceNodeModules, entry.name),
+      path.join(snapshotNodeModules, entry.name),
+      snapshotRoot,
+    );
+  }
+}
+
+function createIndexSnapshot() {
+  const snapshotRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'blih-pre-commit-'),
+  );
+
+  runGit(['checkout-index', '--all', '--force', `--prefix=${toGitPrefix(snapshotRoot)}`]);
+  hydrateNodeModules(snapshotRoot);
+
+  return snapshotRoot;
+}
+
+function runNpm(args, cwd = repoRoot) {
   console.log(`> ${npmCommand} ${args.join(' ')}`);
   const result = spawnSync(npmCommand, args, {
-    cwd: repoRoot,
+    cwd,
     stdio: 'inherit',
     shell: process.platform === 'win32',
   });
@@ -204,20 +313,20 @@ function runNpm(args) {
   }
 }
 
-function runChecks(scopes) {
+function runChecks(scopes, cwd = repoRoot) {
   if (scopes.types) {
-    runNpm(['run', 'lint', '--workspace', '@repo/types']);
-    runNpm(['run', 'check-types', '--workspace', '@repo/types']);
+    runNpm(['run', 'lint', '--workspace', '@repo/types'], cwd);
+    runNpm(['run', 'check-types', '--workspace', '@repo/types'], cwd);
   }
 
   if (scopes.web) {
-    runNpm(['run', 'lint', '--workspace', 'web']);
-    runNpm(['run', 'check-types', '--workspace', 'web']);
+    runNpm(['run', 'lint', '--workspace', 'web'], cwd);
+    runNpm(['run', 'check-types', '--workspace', 'web'], cwd);
   }
 
   if (scopes.api) {
-    runNpm(['run', 'lint:check', '--workspace', 'blih-system-backend']);
-    runNpm(['run', 'check-types', '--workspace', 'blih-system-backend']);
+    runNpm(['run', 'lint:check', '--workspace', 'blih-system-backend'], cwd);
+    runNpm(['run', 'check-types', '--workspace', 'blih-system-backend'], cwd);
   }
 }
 
@@ -234,7 +343,18 @@ function main() {
     return;
   }
 
-  runChecks(scopes);
+  if (mode !== 'pre-commit') {
+    runChecks(scopes);
+    return;
+  }
+
+  const snapshotRoot = createIndexSnapshot();
+
+  try {
+    runChecks(scopes, snapshotRoot);
+  } finally {
+    fs.rmSync(snapshotRoot, { recursive: true, force: true });
+  }
 }
 
 main();

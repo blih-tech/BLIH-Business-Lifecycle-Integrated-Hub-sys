@@ -276,6 +276,16 @@ export const TrainingPermissions = {
   ALL: 'training:*',
 } as const;
 
+export const RelationsPermissions = {
+  VIEW: 'relations:view',
+  CREATE: 'relations:create',
+  UPDATE: 'relations:update',
+  APPROVE: 'relations:approve',
+  RESPOND: 'relations:respond',
+  RESULTS: 'relations:results',
+  ALL: 'relations:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
   user_profile: UserProfilePermissions,
@@ -307,6 +317,7 @@ export const PermissionGroups = {
   succession_plan: SuccessionPlanPermissions,
   promotion_proposal: PromotionProposalPermissions,
   training: TrainingPermissions,
+  relations: RelationsPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,

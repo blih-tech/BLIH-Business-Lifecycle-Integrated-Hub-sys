@@ -109,6 +109,32 @@ import { ListSkillGapAssessmentsUseCase } from './training/use-cases/list-skill-
 import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap-assessment.usecase';
 import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
 import { CertificationExpiryJob } from './jobs/certification-expiry.job';
+import { RelationsController } from './relations/relations.controller';
+import { CreateIncidentReportUseCase } from './relations/use-cases/create-incident-report.usecase';
+import { ListIncidentReportsUseCase } from './relations/use-cases/list-incident-reports.usecase';
+import { GetIncidentReportUseCase } from './relations/use-cases/get-incident-report.usecase';
+import { UpdateIncidentReportUseCase } from './relations/use-cases/update-incident-report.usecase';
+import { CreateDisciplinaryActionUseCase } from './relations/use-cases/create-disciplinary-action.usecase';
+import { ListDisciplinaryActionsUseCase } from './relations/use-cases/list-disciplinary-actions.usecase';
+import { GetDisciplinaryActionUseCase } from './relations/use-cases/get-disciplinary-action.usecase';
+import { CreateGrievanceUseCase } from './relations/use-cases/create-grievance.usecase';
+import { ListGrievancesUseCase } from './relations/use-cases/list-grievances.usecase';
+import { GetGrievanceUseCase } from './relations/use-cases/get-grievance.usecase';
+import { UpdateGrievanceUseCase } from './relations/use-cases/update-grievance.usecase';
+import { CreateRecognitionUseCase } from './relations/use-cases/create-recognition.usecase';
+import { ListRecognitionsUseCase } from './relations/use-cases/list-recognitions.usecase';
+import { GetRecognitionUseCase } from './relations/use-cases/get-recognition.usecase';
+import { ApproveRecognitionUseCase } from './relations/use-cases/approve-recognition.usecase';
+import { CreateSurveyUseCase } from './relations/use-cases/create-survey.usecase';
+import { ListSurveysUseCase } from './relations/use-cases/list-surveys.usecase';
+import { GetSurveyUseCase } from './relations/use-cases/get-survey.usecase';
+import { UpdateSurveyUseCase } from './relations/use-cases/update-survey.usecase';
+import { SubmitSurveyResponseUseCase } from './relations/use-cases/submit-survey-response.usecase';
+import { GetSurveyResultsUseCase } from './relations/use-cases/get-survey-results.usecase';
+import { CreateMediationUseCase } from './relations/use-cases/create-mediation.usecase';
+import { ListMediationsUseCase } from './relations/use-cases/list-mediations.usecase';
+import { GetMediationUseCase } from './relations/use-cases/get-mediation.usecase';
+import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.usecase';
 
 @Module({
   controllers: [
@@ -126,6 +152,7 @@ import { CertificationExpiryJob } from './jobs/certification-expiry.job';
     SuccessionPlansController,
     PromotionProposalsController,
     TrainingController,
+    RelationsController,
   ],
   providers: [
     ListEmployeesUseCase,
@@ -224,6 +251,31 @@ import { CertificationExpiryJob } from './jobs/certification-expiry.job';
     ListSkillGapAssessmentsUseCase,
     GetSkillGapAssessmentUseCase,
     GetIndividualSkillGapUseCase,
+    CreateIncidentReportUseCase,
+    ListIncidentReportsUseCase,
+    GetIncidentReportUseCase,
+    UpdateIncidentReportUseCase,
+    CreateDisciplinaryActionUseCase,
+    ListDisciplinaryActionsUseCase,
+    GetDisciplinaryActionUseCase,
+    CreateGrievanceUseCase,
+    ListGrievancesUseCase,
+    GetGrievanceUseCase,
+    UpdateGrievanceUseCase,
+    CreateRecognitionUseCase,
+    ListRecognitionsUseCase,
+    GetRecognitionUseCase,
+    ApproveRecognitionUseCase,
+    CreateSurveyUseCase,
+    ListSurveysUseCase,
+    GetSurveyUseCase,
+    UpdateSurveyUseCase,
+    SubmitSurveyResponseUseCase,
+    GetSurveyResultsUseCase,
+    CreateMediationUseCase,
+    ListMediationsUseCase,
+    GetMediationUseCase,
+    UpdateMediationUseCase,
   ],
 })
 export class HrModule {}
