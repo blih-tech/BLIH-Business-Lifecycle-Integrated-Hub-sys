@@ -244,7 +244,7 @@ enum ProbationConfirmationVerdict {
 ### Done
 
 - **Schema (Phase 1):** All onboarding and probation enums and models added to `schema.prisma`: `OnboardingChecklist`, `OnboardingTask`, `AssetProvisioning`, `PolicyAcknowledgement`, `ProbationKpiPlan`, `ProbationEvaluation`, `ProbationConfirmation`. Relations to `User`, `Onboarding`, `HiringDecision`.
-- **Types (Phase 2):** `packages/types/src/hr/onboarding/` — checklist, asset-provisioning, policy-acknowledgement, probation DTOs and enums; exported via `@blih/types`.
+- **Types (Phase 2):** `packages/types/src/hr/onboarding/` — checklist, asset-provisioning, policy-acknowledgement, probation DTOs and enums; exported via `@repo/types`.
 - **Checklist and tasks (Phase 3):**
   - Template: `onboarding-checklist.template.ts` — base tasks (email, workstation, payroll, access card); by employment type (FULL_TIME, CONTRACT); by role (Manager, Engineer) from position title.
   - Use cases: Create (with optional task generation), List, Get, Update checklist; Update task (complete and recalc progress).

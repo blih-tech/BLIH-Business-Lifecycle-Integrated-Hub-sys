@@ -49,7 +49,7 @@
     "vps:backup": "./scripts/db-local.sh backup blih-system-dev && ./scripts/db-local.sh backup keycloak"
   },
   "dependencies": {
-    "@blih/types": "^0.0.0",
+    "@repo/types": "^0.0.0",
     "@keycloak/keycloak-admin-client": "^26.4.2",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",

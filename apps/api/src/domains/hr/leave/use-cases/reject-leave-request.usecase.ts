@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { RejectLeaveRequestDto } from '@blih/types';
+import type { RejectLeaveRequestDto } from '@repo/types';
 import type { Request } from 'express';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { AuthPrincipal } from '../../../../shared/interfaces/auth-principal.interface';

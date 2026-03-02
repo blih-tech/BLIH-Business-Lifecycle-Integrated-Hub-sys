@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { ListEmployeesQueryDto } from '@blih/types';
+import type { ListEmployeesQueryDto } from '@repo/types';
 
 @Injectable()
 export class ListEmployeesUseCase {

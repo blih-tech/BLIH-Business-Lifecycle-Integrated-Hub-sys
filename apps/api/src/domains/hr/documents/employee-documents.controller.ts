@@ -25,7 +25,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import type {
   CreateEmployeeDocumentDto,
   UpdateEmployeeDocumentDto,
-} from '@blih/types';
+} from '@repo/types';
 import { ListEmployeeDocumentsUseCase } from './use-cases/list-employee-documents.usecase';
 import { CreateEmployeeDocumentUseCase } from './use-cases/create-employee-document.usecase';
 import { UpdateEmployeeDocumentUseCase } from './use-cases/update-employee-document.usecase';
