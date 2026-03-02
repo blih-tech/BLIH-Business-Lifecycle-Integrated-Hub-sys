@@ -13,7 +13,7 @@ import type {
   CreateHolidayDto,
   CreateOrUpdateAttendanceLogDto,
   CreateWorkScheduleDto,
-} from '@blih/types';
+} from '@repo/types';
 import {
   ApiBody,
   ApiOkResponse,

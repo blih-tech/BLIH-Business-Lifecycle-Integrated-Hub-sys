@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { CreateJobPostingDto } from '@blih/types';
+import type { CreateJobPostingDto } from '@repo/types';
 import { validateRecruitmentRequestInput } from '../recruitment-request.validation';
 
 @Injectable()

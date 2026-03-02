@@ -41,7 +41,7 @@ npm install
 
 # Or install for specific workspace
 npm install --workspace blih-system-backend
-npm install --workspace @blih/types
+npm install --workspace @repo/types
 ```
 
 ### 3. Environment Configuration

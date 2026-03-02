@@ -27,7 +27,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import type {
   CreateRecruitmentRequestDto,
   UpdateRecruitmentRequestDto,
-} from '@blih/types';
+} from '@repo/types';
 import { ListRecruitmentRequestsUseCase } from './use-cases/list-recruitment-requests.usecase';
 import { GetRecruitmentRequestUseCase } from './use-cases/get-recruitment-request.usecase';
 import { CreateRecruitmentRequestUseCase } from './use-cases/create-recruitment-request.usecase';

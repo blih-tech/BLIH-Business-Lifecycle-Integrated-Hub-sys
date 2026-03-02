@@ -24,7 +24,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import type {
   CreateJobDescriptionDto,
   UpdateJobDescriptionDto,
-} from '@blih/types';
+} from '@repo/types';
 import { ListJobDescriptionsUseCase } from './use-cases/list-job-descriptions.usecase';
 import { GetJobDescriptionUseCase } from './use-cases/get-job-description.usecase';
 import { CreateJobDescriptionUseCase } from './use-cases/create-job-description.usecase';

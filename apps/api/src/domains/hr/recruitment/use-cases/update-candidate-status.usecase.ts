@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { PipelineStatusUpdateDto } from '@blih/types';
+import type { PipelineStatusUpdateDto } from '@repo/types';
 
 @Injectable()
 export class UpdateCandidateStatusUseCase {

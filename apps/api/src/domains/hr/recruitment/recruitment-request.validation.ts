@@ -1,5 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import type { RecruitmentRequestType } from '@blih/types';
+import type { RecruitmentRequestType } from '@repo/types';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 
 const ACTIVE_LIFECYCLE_STATUSES = [

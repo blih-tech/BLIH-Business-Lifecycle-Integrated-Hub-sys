@@ -94,8 +94,8 @@ jobs:
       - name: Lint and type-check shared types
         if: steps.changes.outputs.root == 'true' || steps.changes.outputs.types == 'true' || steps.changes.outputs.shared_configs == 'true'
         run: |
-          npm run lint --workspace @blih/types
-          npm run check-types --workspace @blih/types
+          npm run lint --workspace @repo/types
+          npm run check-types --workspace @repo/types
 
       - name: Lint and type-check web
         if: steps.changes.outputs.root == 'true' || steps.changes.outputs.web == 'true' || steps.changes.outputs.shared_configs == 'true'
