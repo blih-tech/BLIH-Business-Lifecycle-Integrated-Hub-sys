@@ -66,10 +66,13 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     icon: 'layout-grid',
     subItems: [
       { id: 'attendance-overview', label: 'Overview', href: '/dashboard/hr/attendance/overview' },
-      { id: 'timesheets', label: 'Timesheets', href: '/dashboard/hr/attendance/timesheets' },
-      { id: 'leave-requests', label: 'Leave Requests', href: '/dashboard/hr/attendance/leave-requests' },
-      { id: 'calendar', label: 'Calendar', href: '/dashboard/hr/attendance/calendar' },
-      { id: 'policies', label: 'Policies', href: '/dashboard/hr/attendance/policies' },
+      { id: 'check-in', label: 'Check-in', href: '/dashboard/hr/attendance/check-in' },
+      { id: 'attendance-requests', label: 'Requests', href: '/dashboard/hr/attendance/requests' },
+      { id: 'timesheet', label: 'Timesheet', href: '/dashboard/hr/attendance/timesheet' },
+      { id: 'leaves', label: 'Leaves', href: '/dashboard/hr/attendance/leaves' },
+      { id: 'overtime', label: 'Overtime', href: '/dashboard/hr/attendance/overtime' },
+      { id: 'memo-log', label: 'Memo Log', href: '/dashboard/hr/attendance/memo-log' },
+      { id: 'work-from-home', label: 'Work-from-Home', href: '/dashboard/hr/attendance/work-from-home' },
     ],
   },
   {
