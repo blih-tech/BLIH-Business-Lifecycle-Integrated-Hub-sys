@@ -36,10 +36,14 @@ function parseArgs(argv) {
   return result;
 }
 
-function runGit(args, allowEmpty = false) {
+function runGit(args, allowEmpty = false, options = {}) {
   const result = spawnSync('git', args, {
-    cwd: repoRoot,
+    cwd: options.cwd ?? repoRoot,
     encoding: 'utf8',
+    env: {
+      ...process.env,
+      ...(options.env ?? {}),
+    },
   });
 
   if (result.status !== 0) {
@@ -300,6 +304,29 @@ function createIndexSnapshot() {
   return snapshotRoot;
 }
 
+function createTreeSnapshot(treeish, prefix = 'blih-pre-push-') {
+  const snapshotRoot = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  const snapshotIndex = path.join(snapshotRoot, '.git-index');
+  const snapshotEnv = {
+    GIT_INDEX_FILE: snapshotIndex,
+  };
+
+  try {
+    runGit(['read-tree', treeish], false, { env: snapshotEnv });
+    runGit(
+      ['checkout-index', '--all', '--force', `--prefix=${toGitPrefix(snapshotRoot)}`],
+      false,
+      { env: snapshotEnv },
+    );
+  } finally {
+    fs.rmSync(snapshotIndex, { force: true });
+  }
+
+  hydrateNodeModules(snapshotRoot);
+
+  return snapshotRoot;
+}
+
 function runNpm(args, cwd = repoRoot) {
   console.log(`> ${npmCommand} ${args.join(' ')}`);
   const result = spawnSync(npmCommand, args, {
@@ -343,12 +370,8 @@ function main() {
     return;
   }
 
-  if (mode !== 'pre-commit') {
-    runChecks(scopes);
-    return;
-  }
-
-  const snapshotRoot = createIndexSnapshot();
+  const snapshotRoot =
+    mode === 'pre-commit' ? createIndexSnapshot() : createTreeSnapshot('HEAD');
 
   try {
     runChecks(scopes, snapshotRoot);
