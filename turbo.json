@@ -9,7 +9,7 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "env": ["NODE_ENV", "DEMO_MODE"]
+      "env": ["NODE_ENV"]
     },
     "check-types": {
       "dependsOn": ["^check-types", "^build"]
