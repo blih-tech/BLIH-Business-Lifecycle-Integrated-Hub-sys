@@ -22,6 +22,7 @@ import {
   type HrMainNavItem,
 } from '@/shared/constants/hr-navigation';
 import { cn } from '@/shared/lib/utils';
+import { useSidebar } from '@/shared/components/ui/sidebar';
 
 const assets = {
   background:
@@ -87,9 +88,11 @@ export function HrSidebarShell({
   onRequestOpenSubnav,
   user,
 }: HrSidebarShellProps) {
+  const { setOpen } = useSidebar();
   const pathname = usePathname();
-  const activeMain = resolveActiveMain(pathname);
-  const activeSubItems = activeMain.subItems ?? [];
+  const isHrRoot = pathname === '/dashboard/hr';
+  const activeMain = isHrRoot ? null : resolveActiveMain(pathname);
+  const activeSubItems = activeMain?.subItems ?? [];
   const activeSubHref =
     activeSubItems.find((subItem) => pathname.startsWith(subItem.href))?.href ??
     activeSubItems[0]?.href;
@@ -100,9 +103,14 @@ export function HrSidebarShell({
     href: item.href,
     icon: iconFor(item.icon),
     badge: item.badge,
-    active: activeMain.id === item.id,
-    activeTone: activeMain.id === item.id ? ('primary' as const) : undefined,
-    onClick: item.subItems?.length ? onRequestOpenSubnav : undefined,
+    active: activeMain?.id === item.id,
+    activeTone: activeMain?.id === item.id ? ('primary' as const) : undefined,
+    onClick: item.subItems?.length
+      ? () => {
+          onRequestOpenSubnav();
+          setOpen(false);
+        }
+      : undefined,
   }));
 
   return (
@@ -111,7 +119,15 @@ export function HrSidebarShell({
         title="Blih CORE"
         subtitle="HR Portal"
         backgroundImage={assets.background}
-        logo={<Brain className="h-5 w-5" />}
+        logo={(
+          <Link
+            href="/dashboard/hr"
+            aria-label="Go to HR dashboard"
+            className="inline-flex items-center justify-center"
+          >
+            <Brain className="h-5 w-5" />
+          </Link>
+        )}
         searchIcon={<Search className="h-2.5 w-2.5 text-white" />}
         items={items}
         user={user}
@@ -132,7 +148,7 @@ export function HrSidebarShell({
           >
             <div className="flex shrink-0 flex-col justify-center border-b border-[#e5e5e5] px-6 pl-8 h-[56px]">
               <p className="text-[15px] font-semibold leading-5 tracking-[-0.25px] text-black">
-                {activeMain.label}
+                {activeMain?.label}
               </p>
               <p className="text-[12px] font-semibold text-[#1e77f7]">
                 HR Portal

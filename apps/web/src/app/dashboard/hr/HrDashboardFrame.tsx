@@ -1,9 +1,10 @@
 'use client';
 
 import * as React from 'react';
+import { usePathname } from 'next/navigation';
 
 import { AppHeader } from '@/shared/components/AppHeader';
-import { SidebarProvider } from '@/shared/components/ui/sidebar';
+import { SidebarProvider, useSidebar } from '@/shared/components/ui/sidebar';
 import { HrSidebarShell } from '@/app/dashboard/hr/HrSidebarShell';
 
 type HrDashboardFrameProps = {
@@ -15,22 +16,43 @@ type HrDashboardFrameProps = {
   children: React.ReactNode;
 };
 
-export function HrDashboardFrame({ user, children }: HrDashboardFrameProps) {
-  const [subnavOpen, setSubnavOpen] = React.useState(true);
+function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
+  const pathname = usePathname();
+  const isHrRoot = pathname === '/dashboard/hr';
+  const { toggleSidebar } = useSidebar();
+  const [subnavOpen, setSubnavOpen] = React.useState(!isHrRoot);
+
+  React.useEffect(() => {
+    setSubnavOpen(!isHrRoot);
+  }, [isHrRoot]);
+
+  const handleHeaderToggle = React.useCallback(() => {
+    if (isHrRoot) {
+      toggleSidebar();
+      return;
+    }
+    setSubnavOpen((prev) => !prev);
+  }, [isHrRoot, toggleSidebar]);
 
   return (
-    <SidebarProvider defaultOpen={false} className="w-full">
-      <div className="flex min-h-screen w-full bg-background">
-        <HrSidebarShell
-          user={user}
-          subnavOpen={subnavOpen}
-          onRequestOpenSubnav={() => setSubnavOpen(true)}
-        />
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <AppHeader onToggleSubnav={() => setSubnavOpen((prev) => !prev)} />
-          <main className="min-h-0 flex-1 overflow-auto">{children}</main>
-        </div>
+    <div className="flex min-h-screen w-full bg-background">
+      <HrSidebarShell
+        user={user}
+        subnavOpen={subnavOpen}
+        onRequestOpenSubnav={() => setSubnavOpen(true)}
+      />
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <AppHeader onToggleSubnav={handleHeaderToggle} />
+        <main className="min-h-0 flex-1 overflow-auto">{children}</main>
       </div>
+    </div>
+  );
+}
+
+export function HrDashboardFrame({ user, children }: HrDashboardFrameProps) {
+  return (
+    <SidebarProvider defaultOpen={false} className="w-full">
+      <HrDashboardFrameInner user={user}>{children}</HrDashboardFrameInner>
     </SidebarProvider>
   );
 }
