@@ -1,14 +1,22 @@
 #!/usr/bin/env sh
 set -e
 
-echo "🔍 Running pre-push validations..."
+REFS_FILE="$(mktemp)"
+cat > "$REFS_FILE"
 
-# 1️⃣ Type checking (TS/JS)
-echo "• Running type check..."
-npm run type-check
+cleanup() {
+  rm -f "$REFS_FILE"
+}
 
-# 2️⃣ Full lint check
-echo "• Running full lint check..."
+trap cleanup EXIT INT TERM
+
+echo "Running pre-push validations..."
+node validate-pre-push.js "$@" < "$REFS_FILE"
+
+echo "Running type checks..."
+npm run check-types
+
+echo "Running lint..."
 npm run lint
 
-echo "✅ Pre-push checks passed"
+echo "Pre-push checks passed."
