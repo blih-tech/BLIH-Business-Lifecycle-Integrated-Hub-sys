@@ -1,15 +1,14 @@
 #!/usr/bin/env sh
 set -e
 
-REFS_FILE="$(mktemp)"
-cat > "$REFS_FILE"
+echo "🔍 Running pre-push validations..."
 
-cleanup() {
-  rm -f "$REFS_FILE"
-}
+# 1️⃣ Type checking (TS/JS)
+echo "• Running type check..."
+npm run type-check
 
-trap cleanup EXIT INT TERM
+# 2️⃣ Full lint check
+echo "• Running full lint check..."
+npm run lint
 
-node apps/api/scripts/git/validate-pre-push.js "$@" < "$REFS_FILE"
-
-node apps/api/scripts/git/run-affected-workspace-checks.js --mode pre-push --refs-file "$REFS_FILE"
+echo "✅ Pre-push checks passed"

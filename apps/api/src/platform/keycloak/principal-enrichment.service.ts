@@ -66,11 +66,15 @@ export class PrincipalEnrichmentService {
           lastName: true,
           phone: true,
           status: true,
-          employment: {
+          employee: {
             select: {
-              position: {
+              employment: {
                 select: {
-                  departmentId: true,
+                  position: {
+                    select: {
+                      departmentId: true,
+                    },
+                  },
                 },
               },
             },
@@ -103,11 +107,15 @@ export class PrincipalEnrichmentService {
             lastName: true,
             phone: true,
             status: true,
-            employment: {
+            employee: {
               select: {
-                position: {
+                employment: {
                   select: {
-                    departmentId: true,
+                    position: {
+                      select: {
+                        departmentId: true,
+                      },
+                    },
                   },
                 },
               },
@@ -163,11 +171,15 @@ export class PrincipalEnrichmentService {
               lastName: true,
               phone: true,
               status: true,
-              employment: {
+              employee: {
                 select: {
-                  position: {
+                  employment: {
                     select: {
-                      departmentId: true,
+                      position: {
+                        select: {
+                          departmentId: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -176,6 +188,17 @@ export class PrincipalEnrichmentService {
           });
         }
       }
+
+      await this.prisma.employee.upsert({
+        where: {
+          userId: user.id,
+        },
+        update: {},
+        create: {
+          id: user.id,
+          userId: user.id,
+        },
+      });
 
       const context: PrincipalContext = {
         userId: user.id,
@@ -186,7 +209,7 @@ export class PrincipalEnrichmentService {
         lastName: user.lastName || normalizedClaims.lastName || undefined,
         phone: user.phone ?? undefined,
         status: user.status ?? undefined,
-        departmentId: user.employment?.position?.departmentId ?? null,
+        departmentId: user.employee?.employment?.position?.departmentId ?? null,
       };
 
       if (

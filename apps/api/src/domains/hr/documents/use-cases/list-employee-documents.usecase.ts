@@ -1,27 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class ListEmployeeDocumentsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(userIdOrKeycloakId: string) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) throw new NotFoundException('User not found');
+  async execute(employeeIdOrUserIdOrKeycloakId: string) {
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeIdOrUserIdOrKeycloakId,
+    );
 
     const docs = await this.prisma.employeeDocument.findMany({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       orderBy: { createdAt: 'desc' },
     });
 
     return docs.map((d) => ({
       id: d.id,
-      userId: d.userId,
+      employeeId: d.employeeId,
       type: d.type,
       typeOther: d.typeOther ?? null,
       fileUrl: d.fileUrl,

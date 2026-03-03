@@ -10,7 +10,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
           departmentId: 'dept-1',
           positionId: 'position-1',
           type: 'NEW',
-          replacementUserId: null,
+          replacementEmployeeId: null,
         }),
         update: jest.fn().mockResolvedValue({
           id: 'request-1',
@@ -45,8 +45,8 @@ describe('ApproveRecruitmentRequestUseCase', () => {
           isActive: true,
         }),
       },
-      user: {
-        findUnique: jest.fn(),
+      employee: {
+        findFirst: jest.fn(),
       },
       userEmployment: {
         count: jest.fn().mockResolvedValue(1),

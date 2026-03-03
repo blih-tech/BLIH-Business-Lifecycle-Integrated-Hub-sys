@@ -11,7 +11,7 @@ export interface SurveyQuestion {
 export interface SurveyResponseRecordDto {
   id: string;
   surveyId: string;
-  userId: string | null;
+  employeeId: string | null;
   responses: unknown;
   submittedAt: string;
   createdAt: string;
@@ -52,7 +52,7 @@ export interface UpdateSurveyDto {
 }
 
 export interface SubmitSurveyResponseDto {
-  userId?: string | null;
+  employeeId?: string | null;
   responses: unknown;
 }
 

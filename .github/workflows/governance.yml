@@ -23,7 +23,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  commit-and-branch-rules:
+  commit-rules:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -42,9 +42,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ''
         run: npm ci --workspaces=false --ignore-scripts --include=optional
-
-      - name: Validate branch naming
-        run: node apps/api/scripts/git/validate-branch-name.js "${{ github.head_ref }}"
 
       - name: Validate conventional commits
         run: |

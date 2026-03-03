@@ -73,14 +73,14 @@ export class AttendanceController {
     path: '/api/v1/hr/attendance/logs',
     roles: [AttendancePermissions.VIEW],
   })
-  @ApiOperation({ summary: 'List attendance logs by user and date range' })
+  @ApiOperation({ summary: 'List attendance logs by employee and date range' })
   @ApiOkResponse({ description: 'List of attendance logs' })
   listLogs(
-    @Query('userId') userId: string,
+    @Query('employeeId') employeeId: string,
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
   ) {
-    return this.listLogsUseCase.execute({ userId, fromDate, toDate });
+    return this.listLogsUseCase.execute({ employeeId, fromDate, toDate });
   }
 
   @Get('logs/:id')
@@ -127,9 +127,9 @@ export class AttendanceController {
     path: '/api/v1/hr/attendance/schedules/assignments',
     roles: [AttendancePermissions.UPDATE],
   })
-  @ApiOperation({ summary: 'Assign a work schedule to a user' })
+  @ApiOperation({ summary: 'Assign a work schedule to an employee' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created user work schedule assignment' })
+  @ApiOkResponse({ description: 'Created employee work schedule assignment' })
   assignSchedule(@Body() body: AssignUserWorkScheduleDto) {
     return this.assignUserWorkScheduleUseCase.execute(body);
   }
@@ -140,10 +140,10 @@ export class AttendanceController {
     path: '/api/v1/hr/attendance/schedules/assignments',
     roles: [AttendancePermissions.VIEW],
   })
-  @ApiOperation({ summary: 'List work schedule assignments for a user' })
-  @ApiOkResponse({ description: 'User work schedule assignments' })
-  listAssignments(@Query('userId') userId?: string) {
-    return this.listUserWorkSchedulesUseCase.execute(userId);
+  @ApiOperation({ summary: 'List work schedule assignments for an employee' })
+  @ApiOkResponse({ description: 'Employee work schedule assignments' })
+  listAssignments(@Query('employeeId') employeeId?: string) {
+    return this.listUserWorkSchedulesUseCase.execute(employeeId);
   }
 
   @Post('holidays')

@@ -1,25 +1,36 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { UpdateUserProfileDto } from '../dto/update-user-profile.dto';
+import {
+  ensureEmployeeForUser,
+  resolveEmployeeSubjectOrThrow,
+} from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class UpdateUserProfileUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string, dto: UpdateUserProfileDto) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+      'Employee not found',
+    ).catch(async (error) => {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+        },
+        select: { id: true },
+      });
+      if (!user) {
+        throw error;
+      }
+      return ensureEmployeeForUser(this.prisma, user.id);
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     const profile = await this.prisma.userProfile.upsert({
       where: {
-        userId: user.id,
+        employeeId: employee.id,
       },
       update: {
         ...(dto.gender !== undefined ? { gender: dto.gender } : {}),
@@ -51,7 +62,7 @@ export class UpdateUserProfileUseCase {
           : {}),
       },
       create: {
-        userId: user.id,
+        employeeId: employee.id,
         gender: dto.gender,
         maritalStatus: dto.maritalStatus,
         nationalityId: dto.nationalityId,

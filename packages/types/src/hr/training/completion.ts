@@ -7,7 +7,7 @@ export interface SkillsAcquiredItem {
 
 export interface TrainingCompletionResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   trainingRequestId: string | null;
   title: string;
   provider: string | null;
@@ -26,7 +26,7 @@ export interface TrainingCompletionResponseDto {
 }
 
 export interface CreateTrainingCompletionDto {
-  userId: string;
+  employeeId: string;
   trainingRequestId?: string | null;
   title: string;
   provider?: string | null;

@@ -5,7 +5,7 @@ function toIso(date: Date | null | undefined): string | null {
 export const mapSuccessionPlan = (plan: {
   id: string;
   positionId: string;
-  candidateId: string;
+  candidateEmployeeId: string;
   readiness: string;
   riskLevel: string;
   notes: string | null;
@@ -14,7 +14,7 @@ export const mapSuccessionPlan = (plan: {
 }) => ({
   id: plan.id,
   positionId: plan.positionId,
-  candidateId: plan.candidateId,
+  candidateEmployeeId: plan.candidateEmployeeId,
   readiness: plan.readiness,
   riskLevel: plan.riskLevel,
   notes: plan.notes,
@@ -24,7 +24,7 @@ export const mapSuccessionPlan = (plan: {
 
 export const mapPromotionProposal = (proposal: {
   id: string;
-  userId: string;
+  employeeId: string;
   fromPositionId: string | null;
   toPositionId: string | null;
   proposedById: string;
@@ -37,7 +37,7 @@ export const mapPromotionProposal = (proposal: {
   updatedAt: Date;
 }) => ({
   id: proposal.id,
-  userId: proposal.userId,
+  employeeId: proposal.employeeId,
   fromPositionId: proposal.fromPositionId,
   toPositionId: proposal.toPositionId,
   proposedById: proposal.proposedById,

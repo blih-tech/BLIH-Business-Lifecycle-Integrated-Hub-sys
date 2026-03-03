@@ -6,10 +6,10 @@ import { mapPromotionProposal } from '../talent.mapper';
 export class ListPromotionProposalsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string; status?: string }) {
+  async execute(filters: { employeeId?: string; status?: string }) {
     const proposals = await this.prisma.promotionProposal.findMany({
       where: {
-        ...(filters.userId ? { userId: filters.userId } : {}),
+        ...(filters.employeeId ? { employeeId: filters.employeeId } : {}),
         ...(filters.status ? { status: filters.status as never } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],

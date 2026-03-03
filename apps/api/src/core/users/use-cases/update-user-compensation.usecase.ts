@@ -1,12 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { mapCompensationComponent } from '../compensation-component.mapper';
 import { UpdateUserCompensationDto } from '../dto/update-user-compensation.dto';
+import {
+  ensureEmployeeForUser,
+  resolveEmployeeSubjectOrThrow,
+} from '../../../domains/hr/employees/employee-subject.utils';
 
 const FAR_FUTURE = new Date('9999-12-31T23:59:59.999Z');
 
@@ -15,18 +15,25 @@ export class UpdateUserCompensationUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string, dto: UpdateUserCompensationDto) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+      'Employee not found',
+    ).catch(async (error) => {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+        },
+        select: { id: true },
+      });
+      if (!user) {
+        throw error;
+      }
+      return ensureEmployeeForUser(this.prisma, user.id);
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     const currentCompensation = await this.prisma.userCompensation.findUnique({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       select: {
         baseSalary: true,
         currency: true,
@@ -60,16 +67,16 @@ export class UpdateUserCompensationUseCase {
     }
 
     await this.assertSalaryWithinGradeBand(
-      user.id,
+      employee.id,
       dto.baseSalary ?? currentCompensation?.baseSalary?.toString() ?? null,
     );
 
     const compensation = await this.prisma.$transaction(async (tx) => {
-      await this.closeOverlappingOpenEntries(tx, user.id, effectiveFrom);
-      await this.assertNoOverlap(tx, user.id, effectiveFrom, effectiveTo);
+      await this.closeOverlappingOpenEntries(tx, employee.id, effectiveFrom);
+      await this.assertNoOverlap(tx, employee.id, effectiveFrom, effectiveTo);
 
       const saved = await tx.userCompensation.upsert({
-        where: { userId: user.id },
+        where: { employeeId: employee.id },
         update: {
           ...(dto.baseSalary !== undefined
             ? { baseSalary: dto.baseSalary }
@@ -86,7 +93,7 @@ export class UpdateUserCompensationUseCase {
           effectiveTo,
         },
         create: {
-          userId: user.id,
+          employeeId: employee.id,
           baseSalary: dto.baseSalary,
           currency: dto.currency,
           payFrequency: dto.payFrequency,
@@ -99,7 +106,7 @@ export class UpdateUserCompensationUseCase {
 
       await tx.userCompensationHistory.create({
         data: {
-          userId: user.id,
+          employeeId: employee.id,
           baseSalary: saved.baseSalary,
           currency: saved.currency,
           payFrequency: saved.payFrequency,
@@ -116,7 +123,7 @@ export class UpdateUserCompensationUseCase {
     });
 
     const components = await this.prisma.compensationComponent.findMany({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }],
     });
 
@@ -133,7 +140,7 @@ export class UpdateUserCompensationUseCase {
   }
 
   private async assertSalaryWithinGradeBand(
-    userId: string,
+    employeeId: string,
     baseSalary: string | null,
   ): Promise<void> {
     if (!baseSalary) {
@@ -141,7 +148,7 @@ export class UpdateUserCompensationUseCase {
     }
 
     const employment = await this.prisma.userEmployment.findUnique({
-      where: { userId },
+      where: { employeeId },
       select: {
         position: {
           select: {
@@ -174,12 +181,12 @@ export class UpdateUserCompensationUseCase {
 
   private async closeOverlappingOpenEntries(
     tx: Prisma.TransactionClient,
-    userId: string,
+    employeeId: string,
     effectiveFrom: Date,
   ): Promise<void> {
     await tx.userCompensationHistory.updateMany({
       where: {
-        userId,
+        employeeId,
         validFrom: { lt: effectiveFrom },
         OR: [{ validTo: null }, { validTo: { gte: effectiveFrom } }],
       },
@@ -191,13 +198,13 @@ export class UpdateUserCompensationUseCase {
 
   private async assertNoOverlap(
     tx: Prisma.TransactionClient,
-    userId: string,
+    employeeId: string,
     validFrom: Date,
     validTo: Date | null,
   ): Promise<void> {
     const overlap = await tx.userCompensationHistory.findFirst({
       where: {
-        userId,
+        employeeId,
         validFrom: {
           lte: validTo ?? FAR_FUTURE,
         },

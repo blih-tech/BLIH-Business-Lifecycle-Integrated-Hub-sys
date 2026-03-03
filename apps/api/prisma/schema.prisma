@@ -425,88 +425,100 @@ model User {
   lastLoginAt                      DateTime?
   metadata                         Json?
   permissions                      String[]                    @default([])
-  profile                          UserProfile?
-  employment                       UserEmployment?
-  compensation                     UserCompensation?
-  compensationHistory              UserCompensationHistory[]
-  compensationComponents           CompensationComponent[]
+  employee                         Employee?
   employmentChanges                UserEmploymentHistory[]     @relation("EmploymentChangedBy")
   compensationChanges              UserCompensationHistory[]   @relation("CompensationChangedBy")
-  lifecycle                        UserLifecycle?
   createdAt                        DateTime                    @default(now())
   updatedAt                        DateTime                    @updatedAt
   roles                            UserRole[]
-  employeeDocuments                EmployeeDocument[]
   verifiedDocuments                EmployeeDocument[]          @relation("EmployeeDocumentVerifiedBy")
-  contracts                        Contract[]
   submittedRecruitmentRequests     RecruitmentRequest[]        @relation("RecruitmentRequestSubmittedBy")
   referredCandidates               Candidate[]                 @relation("CandidateReferral")
   screeningDecisions               CvScreening[]               @relation("CvScreeningScreenedBy")
   compiledInterviewFeedback        InterviewFeedback[]         @relation("InterviewFeedbackCompiledBy")
   submittedHiringDecisions         HiringDecision[]            @relation("HiringDecisionSubmittedBy")
-  replacementRequests              RecruitmentRequest[]        @relation("RecruitmentRequestReplacementFor")
-  hiringDecisionsAsEmployee        HiringDecision[]            @relation("HiringDecisionEmployee")
   givenRecruitmentApprovals        RecruitmentApproval[]       @relation("RecruitmentApprovalApprover")
-  onboardings                      Onboarding[]                @relation("OnboardingUser")
-  onboardingChecklists             OnboardingChecklist[]       @relation("OnboardingChecklistUser")
   checklistsOverseen               OnboardingChecklist[]       @relation("OnboardingChecklistOverseer")
   assignedOnboardingTasks          OnboardingTask[]            @relation("OnboardingTaskAssignee")
   completedOnboardingTasks         OnboardingTask[]            @relation("OnboardingTaskCompletedBy")
-  assetProvisionings               AssetProvisioning[]
-  policyAcknowledgements           PolicyAcknowledgement[]
   policyAcknowledgementsVerified   PolicyAcknowledgement[]     @relation("PolicyAcknowledgementVerifiedBy")
-  probationKpiPlans                ProbationKpiPlan[]          @relation("ProbationKpiPlanUser")
-  probationEvaluations             ProbationEvaluation[]       @relation("ProbationEvaluationUser")
-  probationConfirmations           ProbationConfirmation[]
-  leaveRequests                    LeaveRequest[]              @relation("LeaveRequestEmployee")
   delegatedLeaveHandovers          LeaveRequest[]              @relation("LeaveRequestHandoverDelegate")
   leaveRequestsApproved            LeaveRequest[]              @relation("LeaveRequestApprover")
   leaveApprovals                   LeaveApproval[]             @relation("LeaveApprovalApprover")
-  leaveBalances                    LeaveBalance[]
-  attendanceLogs                   AttendanceLog[]
-  workScheduleAssignments          UserWorkSchedule[]
-  performanceReviews               PerformanceReview[]
   performanceReviewFeedback        PerformanceReviewFeedback[] @relation("PerformanceReviewFeedbackReviewer")
   finalizedPerformanceCalibrations PerformanceCalibration[]    @relation("PerformanceCalibrationFinalizedBy")
-  okrs                             Okr[]
   keyResultUpdates                 KeyResultUpdate[]           @relation("KeyResultUpdatedBy")
-  successionPlans                  SuccessionPlan[]            @relation("SuccessionCandidate")
-  promotionProposals               PromotionProposal[]         @relation("PromotionProposalUser")
   proposedPromotions               PromotionProposal[]         @relation("PromotionProposalProposedBy")
   approvedPromotions               PromotionProposal[]         @relation("PromotionProposalApprovedBy")
-  trainingRequests                 TrainingRequest[]          @relation("TrainingRequestRequester")
-  trainingCompletions              TrainingCompletion[]
-  employeeSkills                   EmployeeSkill[]
   approvedTrainingRequests         TrainingRequest[]          @relation("TrainingRequestApprover")
-  skillGapAssessmentsCreated      SkillGapAssessment[]        @relation("SkillGapAssessmentAssessor")
-  incidentReportsFiled           IncidentReport[]            @relation("IncidentReportReporter")
-  incidentInvestigations         IncidentReport[]            @relation("IncidentReportInvestigator")
-  disciplinaryActionsSubject     DisciplinaryAction[]         @relation("DisciplinaryActionSubject")
-  disciplinaryActionsApproved    DisciplinaryAction[]         @relation("DisciplinaryActionApprover")
-  grievancesFiled                Grievance[]                 @relation("GrievanceReporter")
-  grievancesAssigned             Grievance[]                 @relation("GrievanceAssignee")
-  recognitionsNominated          Recognition[]               @relation("RecognitionNominator")
-  recognitionsReceived           Recognition[]               @relation("RecognitionNominee")
-  recognitionsApproved           Recognition[]               @relation("RecognitionApprover")
-  surveysCreated                 Survey[]                    @relation("SurveyCreator")
-  surveyResponses                SurveyResponse[]
-  mediationAsRequester           ConflictMediation[]         @relation("MediationRequester")
-  mediationAsOtherParty          ConflictMediation[]         @relation("MediationOtherParty")
+  skillGapAssessmentsCreated       SkillGapAssessment[]        @relation("SkillGapAssessmentAssessor")
+  incidentInvestigations           IncidentReport[]            @relation("IncidentReportInvestigator")
+  disciplinaryActionsApproved      DisciplinaryAction[]         @relation("DisciplinaryActionApprover")
+  grievancesAssigned              Grievance[]                 @relation("GrievanceAssignee")
+  recognitionsNominated           Recognition[]               @relation("RecognitionNominator")
+  recognitionsApproved            Recognition[]               @relation("RecognitionApprover")
+  surveysCreated                  Survey[]                    @relation("SurveyCreator")
   mediationAsMediator             ConflictMediation[]        @relation("MediationMediator")
-  resignations                   Resignation[]               @relation("ResignationEmployee")
-  resignationsApproved           Resignation[]               @relation("ResignationApprover")
-  offboardingChecklists          OffboardingChecklist[]      @relation("OffboardingChecklistUser")
-  offboardingTasksAssigned       OffboardingTask[]           @relation("OffboardingTaskAssignee")
-  offboardingTasksCompleted      OffboardingTask[]           @relation("OffboardingTaskCompletedBy")
-  exitInterviews                 ExitInterview[]             @relation("ExitInterviewEmployee")
-  exitInterviewsConducted        ExitInterview[]             @relation("ExitInterviewConductedBy")
-  finalSettlements               FinalSettlement[]         @relation("FinalSettlementEmployee")
-  finalSettlementsApproved       FinalSettlement[]           @relation("FinalSettlementApprover")
-  assetReturns                   AssetReturn[]               @relation("AssetReturnEmployee")
-  complianceChecklists           ComplianceChecklist[]       @relation("ComplianceChecklistUser")
-  complianceChecklistsVerified   ComplianceChecklist[]       @relation("ComplianceChecklistVerifiedBy")
+  resignationsApproved            Resignation[]               @relation("ResignationApprover")
+  offboardingTasksAssigned        OffboardingTask[]           @relation("OffboardingTaskAssignee")
+  offboardingTasksCompleted       OffboardingTask[]           @relation("OffboardingTaskCompletedBy")
+  exitInterviewsConducted         ExitInterview[]             @relation("ExitInterviewConductedBy")
+  finalSettlementsApproved        FinalSettlement[]           @relation("FinalSettlementApprover")
+  complianceChecklistsVerified    ComplianceChecklist[]       @relation("ComplianceChecklistVerifiedBy")
 
   @@index([status])
+}
+
+model Employee {
+  id                     String                    @id @default(uuid()) @db.Uuid
+  userId                 String?                   @unique @map("user_id") @db.Uuid
+  user                   User?                     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  profile                UserProfile?
+  employment             UserEmployment?
+  compensation           UserCompensation?
+  compensationHistory    UserCompensationHistory[]
+  compensationComponents CompensationComponent[]
+  lifecycle              UserLifecycle?
+  employeeDocuments      EmployeeDocument[]
+  contracts              Contract[]
+  hiringDecisions        HiringDecision[]          @relation("HiringDecisionEmployee")
+  replacementRecruitmentRequests RecruitmentRequest[] @relation("RecruitmentRequestReplacementFor")
+  linkedRecruitmentRequests RecruitmentRequest[]   @relation("RecruitmentRequestLinkedEmployee")
+  onboardings            Onboarding[]
+  onboardingChecklists   OnboardingChecklist[]
+  assetProvisionings     AssetProvisioning[]
+  policyAcknowledgements PolicyAcknowledgement[]
+  probationKpiPlans      ProbationKpiPlan[]
+  probationEvaluations   ProbationEvaluation[]
+  probationConfirmations ProbationConfirmation[]
+  leaveRequests          LeaveRequest[]
+  leaveBalances          LeaveBalance[]
+  attendanceLogs         AttendanceLog[]
+  workScheduleAssignments UserWorkSchedule[]
+  performanceReviews     PerformanceReview[]
+  okrs                   Okr[]
+  successionPlans        SuccessionPlan[]          @relation("SuccessionCandidateEmployee")
+  promotionProposals     PromotionProposal[]       @relation("PromotionProposalEmployee")
+  trainingRequests       TrainingRequest[]
+  trainingCompletions    TrainingCompletion[]
+  employeeSkills         EmployeeSkill[]
+  incidentReportsFiled   IncidentReport[]          @relation("IncidentReportReporter")
+  disciplinaryActionsSubject DisciplinaryAction[]  @relation("DisciplinaryActionSubject")
+  grievancesFiled        Grievance[]               @relation("GrievanceReporter")
+  recognitionsReceived   Recognition[]             @relation("RecognitionNominee")
+  surveyResponses        SurveyResponse[]
+  mediationAsRequester   ConflictMediation[]       @relation("MediationRequester")
+  mediationAsOtherParty  ConflictMediation[]       @relation("MediationOtherParty")
+  resignations           Resignation[]
+  offboardingChecklists  OffboardingChecklist[]
+  exitInterviews         ExitInterview[]
+  finalSettlements       FinalSettlement[]
+  assetReturns           AssetReturn[]
+  complianceChecklists   ComplianceChecklist[]
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+
+  @@index([userId])
 }
 
 model Department {
@@ -587,8 +599,8 @@ model CountryReference {
 
 model UserProfile {
   id                    String            @id @default(uuid()) @db.Uuid
-  userId                String            @unique @db.Uuid
-  user                  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId            String            @unique @map("employee_id") @db.Uuid
+  employee              Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   dateOfBirth           DateTime?
   gender                Gender?
   nationalityId         String?           @db.Uuid
@@ -613,8 +625,8 @@ model UserProfile {
 
 model UserEmployment {
   id                     String                  @id @default(uuid()) @db.Uuid
-  userId                 String                  @unique @db.Uuid
-  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId             String                  @unique @map("employee_id") @db.Uuid
+  employee               Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   employeeCode           String?                 @unique
   positionId             String?                 @db.Uuid
   position               Position?               @relation(fields: [positionId], references: [id], onDelete: SetNull)
@@ -664,8 +676,8 @@ model UserEmploymentHistory {
 
 model UserCompensation {
   id            String       @id @default(uuid()) @db.Uuid
-  userId        String       @unique @db.Uuid
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String       @unique @map("employee_id") @db.Uuid
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   baseSalary    Decimal?     @db.Decimal(15, 2)
   currency      String?
   payFrequency  PayFrequency @default(MONTHLY)
@@ -679,8 +691,8 @@ model UserCompensation {
 
 model UserCompensationHistory {
   id            String       @id @default(uuid()) @db.Uuid
-  userId        String       @db.Uuid
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String       @map("employee_id") @db.Uuid
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   baseSalary    Decimal?     @db.Decimal(15, 2)
   currency      String?
   payFrequency  PayFrequency @default(MONTHLY)
@@ -693,16 +705,16 @@ model UserCompensationHistory {
   changedBy     User?        @relation("CompensationChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
   createdAt     DateTime     @default(now())
 
-  @@index([userId])
-  @@index([userId, validFrom])
-  @@index([userId, validTo])
+  @@index([employeeId])
+  @@index([employeeId, validFrom])
+  @@index([employeeId, validTo])
   @@index([changedById])
 }
 
 model CompensationComponent {
   id            String                    @id @default(uuid()) @db.Uuid
-  userId        String                    @map("user_id") @db.Uuid
-  user          User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String                    @map("employee_id") @db.Uuid
+  employee      Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   name          String
   type          CompensationComponentType
   amount        Decimal                   @db.Decimal(15, 2)
@@ -712,15 +724,15 @@ model CompensationComponent {
   createdAt     DateTime                  @default(now())
   updatedAt     DateTime                  @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([type])
   @@index([effectiveFrom])
 }
 
 model UserLifecycle {
   id                   String          @id @default(uuid()) @db.Uuid
-  userId               String          @unique @db.Uuid
-  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId           String          @unique @map("employee_id") @db.Uuid
+  employee             Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   status               LifecycleStatus @default(ONBOARDING)
   onboardedAt          DateTime?
   suspendedAt          DateTime?
@@ -956,18 +968,18 @@ model WorkScheduleDay {
 
 model UserWorkSchedule {
   id            String       @id @default(uuid()) @db.Uuid
-  userId        String       @map("user_id") @db.Uuid
+  employeeId    String       @map("employee_id") @db.Uuid
   scheduleId    String       @map("schedule_id") @db.Uuid
   effectiveFrom DateTime     @map("effective_from") @db.Date
   effectiveTo   DateTime?    @map("effective_to") @db.Date
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   schedule      WorkSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([scheduleId])
-  @@index([userId, effectiveFrom])
+  @@index([employeeId, effectiveFrom])
 }
 
 model Holiday {
@@ -987,8 +999,8 @@ model Holiday {
 
 model EmployeeDocument {
   id            String       @id @default(uuid()) @db.Uuid
-  userId        String       @map("user_id") @db.Uuid
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String       @map("employee_id") @db.Uuid
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   type          DocumentType
   typeOther     String?      @map("type_other")
   fileUrl       String       @map("file_url")
@@ -1005,16 +1017,16 @@ model EmployeeDocument {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
-  @@index([userId])
-  @@index([userId, type])
+  @@index([employeeId])
+  @@index([employeeId, type])
   @@index([expiryDate])
   @@index([verifiedById])
 }
 
 model Contract {
   id              String         @id @default(uuid()) @db.Uuid
-  userId          String         @map("user_id") @db.Uuid
-  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId      String         @map("employee_id") @db.Uuid
+  employee        Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   contractType    ContractType   @map("contract_type")
   sequenceNumber  Int            @map("sequence_number")
   startDate       DateTime       @map("start_date") @db.Date
@@ -1029,8 +1041,8 @@ model Contract {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  @@unique([userId, sequenceNumber])
-  @@index([userId])
+  @@unique([employeeId, sequenceNumber])
+  @@index([employeeId])
   @@index([status])
   @@index([endDate])
 }
@@ -1065,8 +1077,8 @@ model RecruitmentRequest {
   positionId         String?                  @map("position_id") @db.Uuid
   position           Position?                @relation(fields: [positionId], references: [id], onDelete: SetNull)
   type               RecruitmentRequestType   @default(NEW)
-  replacementUserId  String?                  @map("replacement_user_id") @db.Uuid
-  replacementUser    User?                    @relation("RecruitmentRequestReplacementFor", fields: [replacementUserId], references: [id], onDelete: SetNull)
+  replacementEmployeeId String?               @map("replacement_employee_id") @db.Uuid
+  replacementEmployee Employee?               @relation("RecruitmentRequestReplacementFor", fields: [replacementEmployeeId], references: [id], onDelete: SetNull)
   rationale          Json?                    @db.JsonB
   staffing           Json?                    @db.JsonB
   schedule           Json?                    @db.JsonB
@@ -1077,13 +1089,16 @@ model RecruitmentRequest {
   status             RecruitmentRequestStatus @default(DRAFT)
   linkedJobPostingId String?                  @map("linked_job_posting_id") @db.Uuid
   linkedJobPosting   JobPosting?              @relation("RequestLinkedPosting", fields: [linkedJobPostingId], references: [id], onDelete: SetNull)
-  linkedUserId       String?                  @map("linked_user_id") @db.Uuid
+  linkedEmployeeId   String?                  @map("linked_employee_id") @db.Uuid
+  linkedEmployee     Employee?                @relation("RecruitmentRequestLinkedEmployee", fields: [linkedEmployeeId], references: [id], onDelete: SetNull)
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
   jobPostings        JobPosting[]             @relation("RequestCreatedPostings")
   hiringDecisions    HiringDecision[]
 
   @@index([departmentId])
+  @@index([replacementEmployeeId])
+  @@index([linkedEmployeeId])
   @@index([status])
   @@index([submittedById])
   @@index([submittedAt])
@@ -1224,7 +1239,7 @@ model HiringDecision {
   acceptedAt           DateTime?              @map("accepted_at")
   offerExpiresAt       DateTime?              @map("offer_expires_at")
   employeeId           String?                @map("employee_id") @db.Uuid
-  employee             User?                  @relation("HiringDecisionEmployee", fields: [employeeId], references: [id], onDelete: SetNull)
+  employee             Employee?              @relation("HiringDecisionEmployee", fields: [employeeId], references: [id], onDelete: SetNull)
   onboardingId         String?                @unique @map("onboarding_id") @db.Uuid
   onboarding           Onboarding?            @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
   onboardingChecklists OnboardingChecklist[]
@@ -1241,8 +1256,8 @@ model HiringDecision {
 
 model Onboarding {
   id             String                @id @default(uuid()) @db.Uuid
-  userId         String                @map("user_id") @db.Uuid
-  user           User                  @relation("OnboardingUser", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId     String                @map("employee_id") @db.Uuid
+  employee       Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   status         OnboardingStatus      @default(PENDING)
   startedAt      DateTime?             @map("started_at")
   completedAt    DateTime?             @map("completed_at")
@@ -1251,14 +1266,14 @@ model Onboarding {
   hiringDecision HiringDecision?
   checklists     OnboardingChecklist[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([status])
 }
 
 model OnboardingChecklist {
   id                 String                    @id @default(uuid()) @db.Uuid
-  userId             String                    @map("user_id") @db.Uuid
-  user               User                      @relation("OnboardingChecklistUser", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId         String                    @map("employee_id") @db.Uuid
+  employee           Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   onboardingId       String?                   @map("onboarding_id") @db.Uuid
   onboarding         Onboarding?               @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
   hiringDecisionId   String?                   @map("hiring_decision_id") @db.Uuid
@@ -1276,7 +1291,7 @@ model OnboardingChecklist {
   updatedAt          DateTime                  @updatedAt
   tasks              OnboardingTask[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([onboardingId])
   @@index([hiringDecisionId])
   @@index([status])
@@ -1306,8 +1321,8 @@ model OnboardingTask {
 
 model AssetProvisioning {
   id                      String                  @id @default(uuid()) @db.Uuid
-  userId                  String                  @map("user_id") @db.Uuid
-  user                    User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId              String                  @map("employee_id") @db.Uuid
+  employee                Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   equipment               Json?                   @db.JsonB
   platformPermissions     Json?                   @map("platform_permissions") @db.JsonB
   itSupervisorApprovedAt  DateTime?               @map("it_supervisor_approved_at")
@@ -1317,13 +1332,13 @@ model AssetProvisioning {
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
 }
 
 model PolicyAcknowledgement {
   id                    String    @id @default(uuid()) @db.Uuid
-  userId                String    @map("user_id") @db.Uuid
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId            String    @map("employee_id") @db.Uuid
+  employee              Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   policies              Json?     @db.JsonB
   allAcknowledged       Boolean   @default(false) @map("all_acknowledged")
   confirmedAt           DateTime? @map("confirmed_at")
@@ -1334,14 +1349,14 @@ model PolicyAcknowledgement {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([verifiedById])
 }
 
 model ProbationKpiPlan {
   id                   String                @id @default(uuid()) @db.Uuid
-  userId               String                @map("user_id") @db.Uuid
-  user                 User                  @relation("ProbationKpiPlanUser", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId           String                @map("employee_id") @db.Uuid
+  employee             Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   supervisorId         String?               @map("supervisor_id") @db.Uuid
   probationStart       DateTime              @map("probation_start") @db.Date
   probationEnd         DateTime              @map("probation_end") @db.Date
@@ -1355,7 +1370,7 @@ model ProbationKpiPlan {
   updatedAt            DateTime              @updatedAt
   evaluations          ProbationEvaluation[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([status])
 }
 
@@ -1363,8 +1378,8 @@ model ProbationEvaluation {
   id                       String                   @id @default(uuid()) @db.Uuid
   kpiPlanId                String                   @map("kpi_plan_id") @db.Uuid
   kpiPlan                  ProbationKpiPlan         @relation(fields: [kpiPlanId], references: [id], onDelete: Cascade)
-  userId                   String                   @map("user_id") @db.Uuid
-  user                     User                     @relation("ProbationEvaluationUser", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId               String                   @map("employee_id") @db.Uuid
+  employee                 Employee                 @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   evaluationRound          ProbationEvaluationRound @map("evaluation_round")
   evaluationDate           DateTime                 @map("evaluation_date") @db.Date
   goalReviews              Json?                    @map("goal_reviews") @db.JsonB
@@ -1385,14 +1400,14 @@ model ProbationEvaluation {
   updatedAt                DateTime                 @updatedAt
 
   @@index([kpiPlanId])
-  @@index([userId])
+  @@index([employeeId])
   @@index([evaluationRound])
 }
 
 model ProbationConfirmation {
   id                     String                       @id @default(uuid()) @db.Uuid
-  userId                 String                       @map("user_id") @db.Uuid
-  user                   User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId             String                       @map("employee_id") @db.Uuid
+  employee               Employee                     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   reviewSummary          Json?                        @map("review_summary") @db.JsonB
   verdict                ProbationConfirmationVerdict
   extension              Json?                        @db.JsonB
@@ -1405,14 +1420,14 @@ model ProbationConfirmation {
   createdAt              DateTime                     @default(now())
   updatedAt              DateTime                     @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
 }
 
 model LeaveRequest {
   id                 String             @id @default(uuid()) @db.Uuid
   requestId          String             @unique @map("request_id") @db.VarChar(32)
-  userId             String             @map("user_id") @db.Uuid
-  user               User               @relation("LeaveRequestEmployee", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId         String             @map("employee_id") @db.Uuid
+  employee           Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   leaveType          LeaveType          @map("leave_type")
   startDate          DateTime           @map("start_date") @db.Date
   endDate            DateTime           @map("end_date") @db.Date
@@ -1436,7 +1451,7 @@ model LeaveRequest {
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([status])
   @@index([startDate, endDate])
   @@index([approvedById])
@@ -1462,25 +1477,25 @@ model LeaveApproval {
 
 model LeaveBalance {
   id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @map("user_id") @db.Uuid
+  employeeId  String    @map("employee_id") @db.Uuid
   leaveType   LeaveType @map("leave_type")
   year        Int
   totalDays   Decimal   @map("total_days") @db.Decimal(5, 2)
   usedDays    Decimal   @default(0) @map("used_days") @db.Decimal(5, 2)
   pendingDays Decimal   @default(0) @map("pending_days") @db.Decimal(5, 2)
   carriedOver Decimal?  @default(0) @map("carried_over") @db.Decimal(5, 2)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@unique([userId, leaveType, year])
-  @@index([userId])
+  @@unique([employeeId, leaveType, year])
+  @@index([employeeId])
 }
 
 model AttendanceLog {
   id               String           @id @default(uuid()) @db.Uuid
-  userId           String           @map("user_id") @db.Uuid
-  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId       String           @map("employee_id") @db.Uuid
+  employee         Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   date             DateTime         @db.Date
   checkInAt        DateTime?        @map("check_in_at")
   checkOutAt       DateTime?        @map("check_out_at")
@@ -1498,9 +1513,9 @@ model AttendanceLog {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  @@unique([userId, date])
-  @@index([userId])
-  @@index([userId, date])
+  @@unique([employeeId, date])
+  @@index([employeeId])
+  @@index([employeeId, date])
   @@index([date])
   @@index([status])
 }
@@ -1543,8 +1558,8 @@ model ReviewPeriodConfig {
 
 model PerformanceReview {
   id                  String                      @id @default(uuid()) @db.Uuid
-  userId              String                      @map("user_id") @db.Uuid
-  user                User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId          String                      @map("employee_id") @db.Uuid
+  employee            Employee                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   periodConfigId      String                      @map("period_config_id") @db.Uuid
   periodConfig        ReviewPeriodConfig          @relation(fields: [periodConfigId], references: [id], onDelete: Restrict)
   selfAssessment      Json?                       @map("self_assessment") @db.JsonB
@@ -1559,8 +1574,8 @@ model PerformanceReview {
   updatedAt           DateTime                    @updatedAt
   feedbackEntries     PerformanceReviewFeedback[]
 
-  @@unique([userId, periodConfigId])
-  @@index([userId])
+  @@unique([employeeId, periodConfigId])
+  @@index([employeeId])
   @@index([periodConfigId])
   @@index([status])
 }
@@ -1605,8 +1620,8 @@ model PerformanceCalibration {
 
 model Okr {
   id              String      @id @default(uuid()) @db.Uuid
-  userId          String?     @map("user_id") @db.Uuid
-  user            User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId      String?     @map("employee_id") @db.Uuid
+  employee        Employee?   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   scope           OkrScope    @default(USER)
   departmentId    String?     @map("department_id") @db.Uuid
   department      Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
@@ -1626,7 +1641,7 @@ model Okr {
   updatedAt       DateTime    @updatedAt
   keyResults      KeyResult[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([scope])
   @@index([departmentId])
   @@index([parentOkrId])
@@ -1673,24 +1688,24 @@ model SuccessionPlan {
   id          String              @id @default(uuid()) @db.Uuid
   positionId  String              @map("position_id") @db.Uuid
   position    Position            @relation(fields: [positionId], references: [id], onDelete: Cascade)
-  candidateId String              @map("candidate_id") @db.Uuid
-  candidate   User                @relation("SuccessionCandidate", fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateEmployeeId String      @map("candidate_employee_id") @db.Uuid
+  candidateEmployee   Employee    @relation("SuccessionCandidateEmployee", fields: [candidateEmployeeId], references: [id], onDelete: Cascade)
   readiness   SuccessionReadiness
   riskLevel   SuccessionRiskLevel @map("risk_level")
   notes       String?             @db.Text
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 
-  @@unique([positionId, candidateId])
+  @@unique([positionId, candidateEmployeeId])
   @@index([positionId])
-  @@index([candidateId])
+  @@index([candidateEmployeeId])
   @@index([readiness])
 }
 
 model PromotionProposal {
   id             String                  @id @default(uuid()) @db.Uuid
-  userId         String                  @map("user_id") @db.Uuid
-  user           User                    @relation("PromotionProposalUser", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId     String                  @map("employee_id") @db.Uuid
+  employee       Employee                @relation("PromotionProposalEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
   fromPositionId String?                 @map("from_position_id") @db.Uuid
   fromPosition   Position?               @relation("PromotionProposalFromPosition", fields: [fromPositionId], references: [id], onDelete: SetNull)
   toPositionId   String?                 @map("to_position_id") @db.Uuid
@@ -1706,7 +1721,7 @@ model PromotionProposal {
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([fromPositionId])
   @@index([toPositionId])
   @@index([proposedById])
@@ -1730,8 +1745,8 @@ model Skill {
 
 model EmployeeSkill {
   id         String      @id @default(uuid()) @db.Uuid
-  userId     String      @map("user_id") @db.Uuid
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId String      @map("employee_id") @db.Uuid
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   skillId    String      @map("skill_id") @db.Uuid
   skill      Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
   level      SkillLevel
@@ -1740,8 +1755,8 @@ model EmployeeSkill {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
-  @@unique([userId, skillId])
-  @@index([userId])
+  @@unique([employeeId, skillId])
+  @@index([employeeId])
   @@index([skillId])
 }
 
@@ -1763,8 +1778,8 @@ model TrainingBudget {
 
 model TrainingRequest {
   id              String                @id @default(uuid()) @db.Uuid
-  userId          String                @map("user_id") @db.Uuid
-  user            User                  @relation("TrainingRequestRequester", fields: [userId], references: [id], onDelete: Cascade)
+  employeeId      String                @map("employee_id") @db.Uuid
+  employee        Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   departmentId    String                @map("department_id") @db.Uuid
   department      Department            @relation(fields: [departmentId], references: [id], onDelete: Restrict)
   trainingType    TrainingType          @map("training_type")
@@ -1788,7 +1803,7 @@ model TrainingRequest {
   updatedAt       DateTime             @updatedAt
   completions     TrainingCompletion[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([departmentId])
   @@index([status])
   @@index([submittedAt])
@@ -1796,8 +1811,8 @@ model TrainingRequest {
 
 model TrainingCompletion {
   id                 String           @id @default(uuid()) @db.Uuid
-  userId             String           @map("user_id") @db.Uuid
-  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId         String           @map("employee_id") @db.Uuid
+  employee           Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   trainingRequestId  String?          @map("training_request_id") @db.Uuid
   trainingRequest    TrainingRequest? @relation(fields: [trainingRequestId], references: [id], onDelete: SetNull)
   title              String           @db.VarChar(512)
@@ -1815,7 +1830,7 @@ model TrainingCompletion {
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([trainingRequestId])
   @@index([expiryDate])
 }
@@ -1926,8 +1941,8 @@ enum MediationStatus {
 model IncidentReport {
   id                  String              @id @default(uuid()) @db.Uuid
   reportId            String              @unique @map("report_id") @db.VarChar(32)
-  userId              String              @map("user_id") @db.Uuid
-  user                User                @relation("IncidentReportReporter", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId          String              @map("employee_id") @db.Uuid
+  employee            Employee            @relation("IncidentReportReporter", fields: [employeeId], references: [id], onDelete: Restrict)
   incidentType        IncidentType        @map("incident_type")
   severity            IncidentSeverity
   description         String              @db.Text
@@ -1946,7 +1961,7 @@ model IncidentReport {
   createdAt           DateTime            @default(now()) @map("created_at")
   updatedAt           DateTime            @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([status])
   @@index([severity])
   @@index([investigatorId])
@@ -1954,8 +1969,8 @@ model IncidentReport {
 
 model DisciplinaryAction {
   id                  String                   @id @default(uuid()) @db.Uuid
-  userId              String                   @map("user_id") @db.Uuid
-  user                User                     @relation("DisciplinaryActionSubject", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId          String                   @map("employee_id") @db.Uuid
+  employee            Employee                 @relation("DisciplinaryActionSubject", fields: [employeeId], references: [id], onDelete: Restrict)
   incidentType        DisciplinaryIncidentType  @map("incident_type")
   actionType          DisciplinaryActionType    @map("action_type")
   incidentReportId    String?                  @map("incident_report_id") @db.Uuid
@@ -1969,7 +1984,7 @@ model DisciplinaryAction {
   createdAt           DateTime                 @default(now()) @map("created_at")
   updatedAt           DateTime                 @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([incidentType])
   @@index([status])
   @@index([effectiveFrom])
@@ -1977,8 +1992,8 @@ model DisciplinaryAction {
 
 model Grievance {
   id              String          @id @default(uuid()) @db.Uuid
-  userId          String          @map("user_id") @db.Uuid
-  user            User            @relation("GrievanceReporter", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId      String          @map("employee_id") @db.Uuid
+  employee        Employee        @relation("GrievanceReporter", fields: [employeeId], references: [id], onDelete: Restrict)
   subject         String         @db.VarChar(512)
   description     String         @db.Text
   category        String?        @db.VarChar(128)
@@ -1991,7 +2006,7 @@ model Grievance {
   createdAt       DateTime       @default(now()) @map("created_at")
   updatedAt       DateTime       @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([assignedToId])
   @@index([status])
 }
@@ -2000,8 +2015,8 @@ model Recognition {
   id               String             @id @default(uuid()) @db.Uuid
   nominatorId      String             @map("nominator_id") @db.Uuid
   nominator        User               @relation("RecognitionNominator", fields: [nominatorId], references: [id], onDelete: Restrict)
-  nomineeId        String             @map("nominee_id") @db.Uuid
-  nominee          User               @relation("RecognitionNominee", fields: [nomineeId], references: [id], onDelete: Restrict)
+  nomineeEmployeeId String            @map("nominee_employee_id") @db.Uuid
+  nomineeEmployee  Employee           @relation("RecognitionNominee", fields: [nomineeEmployeeId], references: [id], onDelete: Restrict)
   category         RecognitionCategory
   description      String             @db.Text
   impact           String?            @db.Text
@@ -2014,7 +2029,7 @@ model Recognition {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
 
-  @@index([nomineeId])
+  @@index([nomineeEmployeeId])
   @@index([nominatorId])
   @@index([status])
 }
@@ -2043,22 +2058,22 @@ model SurveyResponse {
   id          String   @id @default(uuid()) @db.Uuid
   surveyId    String   @map("survey_id") @db.Uuid
   survey      Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  userId      String?  @map("user_id") @db.Uuid
-  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  employeeId  String?  @map("employee_id") @db.Uuid
+  employee    Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
   responses   Json     @db.JsonB
   submittedAt DateTime @map("submitted_at")
   createdAt   DateTime @default(now()) @map("created_at")
 
   @@index([surveyId])
-  @@index([userId])
+  @@index([employeeId])
 }
 
 model ConflictMediation {
   id                  String         @id @default(uuid()) @db.Uuid
-  requesterId         String         @map("requester_id") @db.Uuid
-  requester           User           @relation("MediationRequester", fields: [requesterId], references: [id], onDelete: Restrict)
-  otherPartyId        String         @map("other_party_id") @db.Uuid
-  otherParty          User           @relation("MediationOtherParty", fields: [otherPartyId], references: [id], onDelete: Restrict)
+  requesterEmployeeId String         @map("requester_employee_id") @db.Uuid
+  requesterEmployee   Employee       @relation("MediationRequester", fields: [requesterEmployeeId], references: [id], onDelete: Restrict)
+  otherPartyEmployeeId String        @map("other_party_employee_id") @db.Uuid
+  otherPartyEmployee  Employee       @relation("MediationOtherParty", fields: [otherPartyEmployeeId], references: [id], onDelete: Restrict)
   nature              String         @db.Text
   duration            String?        @db.VarChar(128)
   attemptedResolutions String?       @map("attempted_resolutions") @db.Text
@@ -2073,8 +2088,8 @@ model ConflictMediation {
   createdAt           DateTime       @default(now()) @map("created_at")
   updatedAt           DateTime       @updatedAt @map("updated_at")
 
-  @@index([requesterId])
-  @@index([otherPartyId])
+  @@index([requesterEmployeeId])
+  @@index([otherPartyEmployeeId])
   @@index([mediatorId])
   @@index([status])
 }
@@ -2127,8 +2142,8 @@ enum AssetReturnStatus {
 
 model Resignation {
   id                    String            @id @default(uuid()) @db.Uuid
-  userId                String            @map("user_id") @db.Uuid
-  user                  User              @relation("ResignationEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId            String            @map("employee_id") @db.Uuid
+  employee              Employee          @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   proposedLastDay       DateTime          @map("proposed_last_day") @db.Date
   actualLastDay         DateTime?         @map("actual_last_day") @db.Date
   reason                String?           @db.VarChar(64)
@@ -2148,15 +2163,15 @@ model Resignation {
   finalSettlements      FinalSettlement[]
   complianceChecklists  ComplianceChecklist[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([status])
   @@index([proposedLastDay])
 }
 
 model OffboardingChecklist {
   id            String                    @id @default(uuid()) @db.Uuid
-  userId        String                    @map("user_id") @db.Uuid
-  user          User                      @relation("OffboardingChecklistUser", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId    String                    @map("employee_id") @db.Uuid
+  employee      Employee                  @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   resignationId String                    @map("resignation_id") @db.Uuid
   resignation   Resignation               @relation(fields: [resignationId], references: [id], onDelete: Cascade)
   lastWorkingDay DateTime                 @map("last_working_day") @db.Date
@@ -2167,7 +2182,7 @@ model OffboardingChecklist {
   tasks         OffboardingTask[]
   assetReturns   AssetReturn[]
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([resignationId])
   @@index([status])
 }
@@ -2195,8 +2210,8 @@ model OffboardingTask {
 
 model ExitInterview {
   id              String     @id @default(uuid()) @db.Uuid
-  userId          String     @map("user_id") @db.Uuid
-  user            User       @relation("ExitInterviewEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId      String     @map("employee_id") @db.Uuid
+  employee        Employee   @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   resignationId   String     @map("resignation_id") @db.Uuid
   resignation     Resignation @relation(fields: [resignationId], references: [id], onDelete: Cascade)
   conductedById   String?    @map("conducted_by_id") @db.Uuid
@@ -2210,14 +2225,14 @@ model ExitInterview {
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([resignationId])
 }
 
 model FinalSettlement {
   id                   String    @id @default(uuid()) @db.Uuid
-  userId               String    @map("user_id") @db.Uuid
-  user                 User      @relation("FinalSettlementEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId           String    @map("employee_id") @db.Uuid
+  employee             Employee  @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   resignationId        String    @map("resignation_id") @db.Uuid
   resignation          Resignation @relation(fields: [resignationId], references: [id], onDelete: Cascade)
   lastWorkingDay       DateTime  @map("last_working_day") @db.Date
@@ -2231,14 +2246,14 @@ model FinalSettlement {
   createdAt            DateTime  @default(now()) @map("created_at")
   updatedAt            DateTime  @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([resignationId])
 }
 
 model AssetReturn {
   id                String            @id @default(uuid()) @db.Uuid
-  userId            String            @map("user_id") @db.Uuid
-  user              User              @relation("AssetReturnEmployee", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId        String            @map("employee_id") @db.Uuid
+  employee          Employee          @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   checklistId       String            @map("checklist_id") @db.Uuid
   checklist         OffboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   items             Json?             @db.JsonB
@@ -2252,15 +2267,15 @@ model AssetReturn {
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([checklistId])
   @@index([status])
 }
 
 model ComplianceChecklist {
   id                      String         @id @default(uuid()) @db.Uuid
-  userId                  String         @map("user_id") @db.Uuid
-  user                    User           @relation("ComplianceChecklistUser", fields: [userId], references: [id], onDelete: Restrict)
+  employeeId              String         @map("employee_id") @db.Uuid
+  employee                Employee       @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   resignationId           String         @map("resignation_id") @db.Uuid
   resignation             Resignation    @relation(fields: [resignationId], references: [id], onDelete: Cascade)
   terminationType         TerminationType @map("termination_type")
@@ -2280,6 +2295,6 @@ model ComplianceChecklist {
   createdAt               DateTime       @default(now()) @map("created_at")
   updatedAt               DateTime        @updatedAt @map("updated_at")
 
-  @@index([userId])
+  @@index([employeeId])
   @@index([resignationId])
 }

@@ -29,7 +29,7 @@ export interface LeaveApprovalResponseDto {
 }
 
 export interface CreateLeaveRequestDto {
-  userId: string;
+  employeeId: string;
   leaveType: LeaveType;
   startDate: string;
   endDate: string;
@@ -58,7 +58,7 @@ export interface UpdateLeaveRequestDto {
 export interface LeaveRequestResponseDto {
   id: string;
   requestId: string;
-  userId: string;
+  employeeId: string;
   leaveType: LeaveType;
   startDate: string;
   endDate: string;

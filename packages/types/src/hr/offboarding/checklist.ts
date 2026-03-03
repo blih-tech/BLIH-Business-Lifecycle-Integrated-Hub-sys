@@ -17,7 +17,7 @@ export interface OffboardingTaskResponseDto {
 
 export interface OffboardingChecklistResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   lastWorkingDay: string;
   status: OffboardingChecklistStatus;

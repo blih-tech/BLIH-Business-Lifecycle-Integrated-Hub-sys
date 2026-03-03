@@ -10,7 +10,7 @@ describe('CreateJobPostingFromRequestUseCase', () => {
           status: 'APPROVED',
           departmentId: 'dept-1',
           type: 'NEW',
-          replacementUserId: null,
+          replacementEmployeeId: null,
           positionId: 'position-1',
           linkedJobPostingId: 'posting-1',
           position: { title: 'Backend Engineer' },
@@ -23,8 +23,8 @@ describe('CreateJobPostingFromRequestUseCase', () => {
       position: {
         findUnique: jest.fn(),
       },
-      user: {
-        findUnique: jest.fn(),
+      employee: {
+        findFirst: jest.fn(),
       },
       userEmployment: {
         count: jest.fn(),
@@ -55,7 +55,7 @@ describe('CreateJobPostingFromRequestUseCase', () => {
           status: 'APPROVED',
           departmentId: 'dept-1',
           type: 'NEW',
-          replacementUserId: null,
+          replacementEmployeeId: null,
           positionId: 'position-1',
           linkedJobPostingId: null,
           position: { title: 'Backend Engineer' },
@@ -76,8 +76,8 @@ describe('CreateJobPostingFromRequestUseCase', () => {
           isActive: true,
         }),
       },
-      user: {
-        findUnique: jest.fn(),
+      employee: {
+        findFirst: jest.fn(),
       },
       userEmployment: {
         count: jest.fn().mockResolvedValue(1),

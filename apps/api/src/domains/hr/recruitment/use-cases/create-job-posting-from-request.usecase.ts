@@ -34,7 +34,7 @@ export class CreateJobPostingFromRequestUseCase {
       departmentId: request.departmentId,
       positionId: request.positionId,
       type: request.type,
-      replacementUserId: request.replacementUserId,
+      replacementEmployeeId: request.replacementEmployeeId,
       requirePosition: true,
       enforceHeadcount: true,
     });

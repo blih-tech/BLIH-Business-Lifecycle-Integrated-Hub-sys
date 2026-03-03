@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { AnnualPerformanceSummaryDto } from '@repo/types';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class GetAnnualSummaryUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
-    userId: string,
+    employeeId: string,
     year: number,
   ): Promise<AnnualPerformanceSummaryDto> {
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeId,
+    );
     const periods = await this.prisma.reviewPeriodConfig.findMany({
       where: { year },
       select: { id: true },
@@ -17,7 +22,11 @@ export class GetAnnualSummaryUseCase {
     const periodIds = periods.map((p) => p.id);
 
     const reviews = await this.prisma.performanceReview.findMany({
-      where: { userId, periodConfigId: { in: periodIds }, status: 'COMPLETED' },
+      where: {
+        employeeId: employee.id,
+        periodConfigId: { in: periodIds },
+        status: 'COMPLETED',
+      },
       select: {
         finalRating: true,
         category: true,
@@ -61,7 +70,7 @@ export class GetAnnualSummaryUseCase {
     }
 
     const okrs = await this.prisma.okr.findMany({
-      where: { userId, periodYear: year, scope: 'USER' },
+      where: { employeeId: employee.id, periodYear: year, scope: 'USER' },
       select: { overallProgress: true },
     });
     const okrCompletionPercent =
@@ -72,7 +81,7 @@ export class GetAnnualSummaryUseCase {
         : null;
 
     return {
-      userId,
+      employeeId: employee.id,
       year,
       completedReviews: reviews.length,
       averageRating,

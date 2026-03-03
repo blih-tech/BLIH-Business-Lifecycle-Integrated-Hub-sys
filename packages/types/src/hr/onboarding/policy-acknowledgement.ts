@@ -7,7 +7,7 @@ export interface PolicyAcknowledgementItem {
 }
 
 export interface CreatePolicyAcknowledgementDto {
-  userId: string;
+  employeeId: string;
   policies?: PolicyAcknowledgementItem[];
   allAcknowledged?: boolean;
   confirmedAt?: string | null;
@@ -15,7 +15,7 @@ export interface CreatePolicyAcknowledgementDto {
 
 export interface PolicyAcknowledgementResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   policies: unknown;
   allAcknowledged: boolean;
   confirmedAt: string | null;

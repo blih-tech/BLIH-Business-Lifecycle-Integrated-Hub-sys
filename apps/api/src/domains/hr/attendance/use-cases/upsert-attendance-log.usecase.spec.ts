@@ -7,7 +7,7 @@ describe('UpsertAttendanceLogUseCase', () => {
         findUnique: jest.fn().mockResolvedValue(null),
         create: jest.fn().mockResolvedValue({
           id: 'attendance-1',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           date: new Date('2026-03-10T00:00:00.000Z'),
           checkInAt: new Date('2026-03-10T09:30:00.000Z'),
           checkOutAt: new Date('2026-03-10T17:30:00.000Z'),
@@ -28,12 +28,14 @@ describe('UpsertAttendanceLogUseCase', () => {
       },
     };
     const lifecycle = {
-      assertAttendanceAllowed: jest.fn().mockResolvedValue(undefined),
+      assertAttendanceAllowed: jest
+        .fn()
+        .mockResolvedValue({ id: 'employee-1' }),
     };
     const reconciliation = {
       reconcileDateForUser: jest.fn().mockResolvedValue({
         id: 'attendance-1',
-        userId: 'user-1',
+        employeeId: 'employee-1',
         date: new Date('2026-03-10T00:00:00.000Z'),
         checkInAt: new Date('2026-03-10T09:30:00.000Z'),
         checkOutAt: new Date('2026-03-10T17:30:00.000Z'),
@@ -61,7 +63,7 @@ describe('UpsertAttendanceLogUseCase', () => {
 
     await expect(
       useCase.execute({
-        userId: 'user-1',
+        employeeId: 'employee-1',
         date: '2026-03-10',
         checkInAt: '2026-03-10T09:30:00.000Z',
         checkOutAt: '2026-03-10T17:30:00.000Z',
@@ -72,7 +74,7 @@ describe('UpsertAttendanceLogUseCase', () => {
     });
 
     expect(reconciliation.reconcileDateForUser).toHaveBeenCalledWith(
-      'user-1',
+      'employee-1',
       new Date('2026-03-10T00:00:00.000Z'),
     );
   });
@@ -83,7 +85,7 @@ describe('UpsertAttendanceLogUseCase', () => {
         findUnique: jest.fn().mockResolvedValue(null),
         create: jest.fn().mockResolvedValue({
           id: 'attendance-1',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           date: new Date('2026-03-10T00:00:00.000Z'),
           checkInAt: null,
           checkOutAt: null,
@@ -104,7 +106,9 @@ describe('UpsertAttendanceLogUseCase', () => {
       },
     };
     const lifecycle = {
-      assertAttendanceAllowed: jest.fn().mockResolvedValue(undefined),
+      assertAttendanceAllowed: jest
+        .fn()
+        .mockResolvedValue({ id: 'employee-1' }),
     };
     const reconciliation = {
       reconcileDateForUser: jest.fn(),
@@ -118,7 +122,7 @@ describe('UpsertAttendanceLogUseCase', () => {
 
     await expect(
       useCase.execute({
-        userId: 'user-1',
+        employeeId: 'employee-1',
         date: '2026-03-10',
         status: 'REMOTE',
         recalculateStatus: false,

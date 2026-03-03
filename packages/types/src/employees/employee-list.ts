@@ -11,13 +11,14 @@ export interface ListEmployeesQueryDto {
 
 export interface EmployeeListItemDto {
   id: string;
-  keycloakId: string;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  userId: string | null;
+  keycloakId: string | null;
+  username: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
   phone: string | null;
-  status: string;
+  status: string | null;
   departmentId: string | null;
   departmentName: string | null;
   employeeCode: string | null;
@@ -31,13 +32,14 @@ export interface EmployeeListItemDto {
 
 export interface EmployeeFullResponseDto {
   id: string;
-  keycloakId: string;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  userId: string | null;
+  keycloakId: string | null;
+  username: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
   phone: string | null;
-  status: string;
+  status: string | null;
   departmentId: string | null;
   departmentName: string | null;
   profile: {

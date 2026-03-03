@@ -88,10 +88,10 @@ export class OffboardingController {
   })
   @ApiOperation({ summary: 'List resignations' })
   listResignationsHandler(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
   ) {
-    return this.listResignations.execute({ userId, status });
+    return this.listResignations.execute({ employeeId, status });
   }
 
   @Get('resignations/:id')
@@ -184,10 +184,10 @@ export class OffboardingController {
   })
   @ApiOperation({ summary: 'List exit interviews' })
   listExitInterviewsHandler(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('resignationId') resignationId?: string,
   ) {
-    return this.listExitInterviews.execute({ userId, resignationId });
+    return this.listExitInterviews.execute({ employeeId, resignationId });
   }
 
   @Post('final-settlements')

@@ -16,12 +16,14 @@ export class UpsertAttendanceLogUseCase {
   ) {}
 
   async execute(dto: CreateOrUpdateAttendanceLogDto) {
-    await this.lifecycle.assertAttendanceAllowed(dto.userId);
+    const employee = await this.lifecycle.assertAttendanceAllowed(
+      dto.employeeId,
+    );
 
     const date = normalizeDateOnly(dto.date);
     const existing = await this.prisma.attendanceLog.findUnique({
       where: {
-        userId_date: { userId: dto.userId, date },
+        employeeId_date: { employeeId: employee.id, date },
       },
     });
 
@@ -73,7 +75,7 @@ export class UpsertAttendanceLogUseCase {
     }
 
     const reconciled = await this.reconciliation.reconcileDateForUser(
-      dto.userId,
+      employee.id,
       date,
     );
 
@@ -148,7 +150,7 @@ export class UpsertAttendanceLogUseCase {
     },
   ) {
     const data: Prisma.AttendanceLogUncheckedCreateInput = {
-      userId: dto.userId,
+      employeeId: dto.employeeId,
       date,
       checkInAt: params.checkInAt ?? null,
       checkOutAt: params.checkOutAt ?? null,

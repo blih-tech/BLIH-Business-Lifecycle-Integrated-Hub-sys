@@ -15,7 +15,7 @@ export class SubmitRecruitmentRequestUseCase {
         departmentId: true,
         positionId: true,
         type: true,
-        replacementUserId: true,
+        replacementEmployeeId: true,
       },
     });
     if (!existing) throw new NotFoundException('Recruitment request not found');
@@ -26,7 +26,7 @@ export class SubmitRecruitmentRequestUseCase {
       departmentId: existing.departmentId,
       positionId: existing.positionId,
       type: existing.type,
-      replacementUserId: existing.replacementUserId,
+      replacementEmployeeId: existing.replacementEmployeeId,
       requirePosition: true,
       enforceHeadcount: true,
     });
@@ -48,6 +48,7 @@ export class SubmitRecruitmentRequestUseCase {
       id: r.id,
       requestId: r.requestId,
       status: r.status,
+      replacementEmployeeId: r.replacementEmployeeId ?? null,
       submittedAt: r.submittedAt?.toISOString() ?? null,
     };
   }

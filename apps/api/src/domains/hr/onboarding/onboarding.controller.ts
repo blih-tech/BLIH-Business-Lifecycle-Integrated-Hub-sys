@@ -68,10 +68,10 @@ export class OnboardingController {
   @ApiOperation({ summary: 'List onboarding checklists' })
   @ApiOkResponse({ description: 'List of checklists' })
   listChecklists(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
   ) {
-    return this.listChecklistsUseCase.execute({ userId, status });
+    return this.listChecklistsUseCase.execute({ employeeId, status });
   }
 
   @Get('checklists/:id')

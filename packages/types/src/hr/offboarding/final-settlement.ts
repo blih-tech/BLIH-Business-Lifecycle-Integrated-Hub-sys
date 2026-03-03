@@ -15,7 +15,7 @@ export interface DeductionsDto {
 
 export interface FinalSettlementResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   lastWorkingDay: string;
   earnings: EarningsDto;
@@ -29,7 +29,7 @@ export interface FinalSettlementResponseDto {
 }
 
 export interface CreateFinalSettlementDto {
-  userId: string;
+  employeeId: string;
   resignationId: string;
   lastWorkingDay: string;
   breakdownDocumentUrl?: string | null;

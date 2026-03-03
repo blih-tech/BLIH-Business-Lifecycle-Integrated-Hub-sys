@@ -20,7 +20,7 @@ export class AttendanceReconciliationJob {
   async run(): Promise<void> {
     const today = normalizeDateOnly(new Date());
     const yesterday = addUtcDays(today, -1);
-    const users = await this.prisma.user.findMany({
+    const employees = await this.prisma.employee.findMany({
       where: {
         OR: [
           { lifecycle: null },
@@ -31,14 +31,14 @@ export class AttendanceReconciliationJob {
     });
 
     let count = 0;
-    for (const user of users) {
-      await this.reconciliation.reconcileDateForUser(user.id, yesterday);
-      await this.reconciliation.reconcileDateForUser(user.id, today);
+    for (const employee of employees) {
+      await this.reconciliation.reconcileDateForUser(employee.id, yesterday);
+      await this.reconciliation.reconcileDateForUser(employee.id, today);
       count += 1;
     }
 
     this.logger.log(
-      `Attendance reconciliation completed for ${count} users on ${today.toISOString().slice(0, 10)}`,
+      `Attendance reconciliation completed for ${count} employees on ${today.toISOString().slice(0, 10)}`,
     );
   }
 }

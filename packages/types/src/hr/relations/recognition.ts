@@ -4,7 +4,7 @@ export type RecognitionStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export interface RecognitionResponseDto {
   id: string;
   nominatorId: string;
-  nomineeId: string;
+  nomineeEmployeeId: string;
   category: RecognitionCategory;
   description: string;
   impact: string | null;
@@ -19,7 +19,7 @@ export interface RecognitionResponseDto {
 
 export interface CreateRecognitionDto {
   nominatorId: string;
-  nomineeId: string;
+  nomineeEmployeeId: string;
   category: RecognitionCategory;
   description: string;
   impact?: string | null;

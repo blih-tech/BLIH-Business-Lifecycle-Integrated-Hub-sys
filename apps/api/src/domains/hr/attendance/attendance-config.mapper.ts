@@ -30,7 +30,7 @@ type HolidayRow = {
 
 type UserWorkScheduleRow = {
   id: string;
-  userId: string;
+  employeeId: string;
   scheduleId: string;
   effectiveFrom: Date;
   effectiveTo: Date | null;
@@ -81,7 +81,7 @@ export function mapHolidayResponse(row: HolidayRow) {
 export function mapUserWorkScheduleResponse(row: UserWorkScheduleRow) {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     scheduleId: row.scheduleId,
     effectiveFrom: row.effectiveFrom.toISOString().slice(0, 10),
     effectiveTo: row.effectiveTo?.toISOString().slice(0, 10) ?? null,

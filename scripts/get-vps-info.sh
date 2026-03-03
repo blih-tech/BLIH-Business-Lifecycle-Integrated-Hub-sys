@@ -28,17 +28,13 @@ print_warning() {
     echo -e "${YELLOW}$1${NC}"
 }
 
-# Get VPS IP address
 get_ip() {
-    # Try multiple methods to get external IP
     local ip=""
     
-    # Method 1: hostname -I (gets local IPs)
     if command -v hostname > /dev/null 2>&1; then
         ip=$(hostname -I | awk '{print $1}')
     fi
     
-    # Method 2: Try to get public IP
     if [ -z "$ip" ] || [[ $ip == 127.* ]]; then
         ip=$(curl -s ifconfig.me 2>/dev/null || curl -s icanhazip.com 2>/dev/null || curl -s ipecho.net/plain 2>/dev/null)
     fi
@@ -46,12 +42,10 @@ get_ip() {
     echo "$ip"
 }
 
-# Get hostname
 get_hostname() {
     hostname -f 2>/dev/null || hostname
 }
 
-# Main
 main() {
     clear
     
@@ -60,37 +54,37 @@ main() {
     local vps_ip=$(get_ip)
     local vps_hostname=$(get_hostname)
     
-    echo "📍 VPS Information:"
+    echo "VPS Information:"
     echo "   IP Address: $vps_ip"
     echo "   Hostname: $vps_hostname"
     echo ""
     
-    print_warning "⚠️  Share this information with your team members securely!"
+    print_warning "WARNING: Share this information with your team members securely!"
     echo ""
     
     print_header "Service Access URLs"
     
-    echo "🗄️  PostgreSQL Database:"
+    echo "PostgreSQL Database:"
     echo "   Host: $vps_ip"
     echo "   Port: 5432"
     echo "   Databases: keycloak, blih-system-dev"
     echo ""
     echo "   Main App Database:"
-    echo "   • Database: blih-system-dev"
-    echo "   • Username: blih_dev_user"
-    echo "   • Password: blih_dev_pass_2024"
+    echo "   - Database: blih-system-dev"
+    echo "   - Username: blih_dev_user"
+    echo "   - Password: blih_dev_pass_2024"
     echo ""
     echo "   Connection String:"
     echo "   postgresql://blih_dev_user:blih_dev_pass_2024@$vps_ip:5432/blih-system-dev"
     echo ""
     
-    echo "🔐 Keycloak Admin Console:"
+    echo "Keycloak Admin Console:"
     echo "   URL: http://$vps_ip:8080"
     echo "   Username: admin"
     echo "   Password: admin"
     echo ""
     
-    echo "📧 MailHog (Email Testing):"
+    echo "MailHog (Email Testing):"
     echo "   URL: http://$vps_ip:8025"
     echo "   SMTP: $vps_ip:1025"
     echo ""
@@ -99,7 +93,7 @@ main() {
     
     echo "Share this .env configuration with team members:"
     echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "-------------------------------------------------------------"
     cat << EOF
 # Database Configuration
 DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@$vps_ip:5432/blih-system-dev
@@ -114,7 +108,7 @@ JWT_EXPECTED_ISSUER=http://$vps_ip:8080/realms/blih
 SMTP_HOST=$vps_ip
 SMTP_PORT=1025
 EOF
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "-------------------------------------------------------------"
     echo ""
     
     print_header "Firewall Configuration"
@@ -153,9 +147,9 @@ EOF
     
     print_header "Setup Complete"
     
-    print_info "✓ VPS is configured for team development"
-    print_info "✓ Share the information above with your team"
-    print_info "✓ See TEAM_QUICKSTART.md for detailed team instructions"
+    print_info "[OK] VPS is configured for team development"
+    print_info "[OK] Share the information above with your team"
+    print_info "[OK] See TEAM_QUICKSTART.md for detailed team instructions"
     echo ""
 }
 

@@ -27,7 +27,7 @@ import { CreateContractUseCase } from './use-cases/create-contract.usecase';
 import { UpdateContractUseCase } from './use-cases/update-contract.usecase';
 
 @ApiTags('HR Employee Contracts')
-@Controller('hr/employees/:userId/contracts')
+@Controller('hr/employees/:employeeId/contracts')
 @UseGuards(KeycloakAuthGuard, RbacGuard)
 export class EmployeeContractsController {
   constructor(
@@ -39,24 +39,24 @@ export class EmployeeContractsController {
   @Get()
   @Roles(EmployeePermissions.VIEW, UserProfilePermissions.VIEW)
   @ApiProtected({
-    path: '/api/v1/hr/employees/:userId/contracts',
+    path: '/api/v1/hr/employees/:employeeId/contracts',
     roles: [EmployeePermissions.VIEW, UserProfilePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List employee contracts' })
-  @ApiParam({ name: 'userId' })
+  @ApiParam({ name: 'employeeId' })
   @ApiOkResponse({ description: 'List of contracts' })
-  list(@Param('userId') userId: string) {
-    return this.listEmployeeContractsUseCase.execute(userId);
+  list(@Param('employeeId') employeeId: string) {
+    return this.listEmployeeContractsUseCase.execute(employeeId);
   }
 
   @Post()
   @Roles(EmployeePermissions.UPDATE)
   @ApiProtected({
-    path: '/api/v1/hr/employees/:userId/contracts',
+    path: '/api/v1/hr/employees/:employeeId/contracts',
     roles: [EmployeePermissions.UPDATE],
   })
   @ApiOperation({ summary: 'Create contract' })
-  @ApiParam({ name: 'userId' })
+  @ApiParam({ name: 'employeeId' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -65,30 +65,30 @@ export class EmployeeContractsController {
   })
   @ApiOkResponse({ description: 'Created contract' })
   create(
-    @Param('userId') userId: string,
+    @Param('employeeId') employeeId: string,
     @Body() body: Record<string, unknown>,
   ) {
-    return this.createContractUseCase.execute(userId, body as never);
+    return this.createContractUseCase.execute(employeeId, body as never);
   }
 
   @Patch(':contractId')
   @Roles(EmployeePermissions.UPDATE)
   @ApiProtected({
-    path: '/api/v1/hr/employees/:userId/contracts/:contractId',
+    path: '/api/v1/hr/employees/:employeeId/contracts/:contractId',
     roles: [EmployeePermissions.UPDATE],
   })
   @ApiOperation({ summary: 'Update contract' })
-  @ApiParam({ name: 'userId' })
+  @ApiParam({ name: 'employeeId' })
   @ApiParam({ name: 'contractId' })
   @ApiBody({ schema: { type: 'object' } })
   @ApiOkResponse({ description: 'Updated contract' })
   update(
-    @Param('userId') userId: string,
+    @Param('employeeId') employeeId: string,
     @Param('contractId') contractId: string,
     @Body() body: Record<string, unknown>,
   ) {
     return this.updateContractUseCase.execute(
-      userId,
+      employeeId,
       contractId,
       body as never,
     );

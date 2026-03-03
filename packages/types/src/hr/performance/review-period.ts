@@ -48,7 +48,7 @@ export interface CreateReviewPeriodConfigDto {
 
 export interface PerformanceReviewResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   periodConfigId: string;
   selfAssessment: unknown;
   managerReview: unknown;
@@ -64,7 +64,7 @@ export interface PerformanceReviewResponseDto {
 }
 
 export interface CreatePerformanceReviewDto {
-  userId: string;
+  employeeId: string;
   periodConfigId: string;
 }
 
@@ -154,7 +154,7 @@ export interface RaiseRecommendationDto {
 }
 
 export interface AnnualPerformanceSummaryDto {
-  userId: string;
+  employeeId: string;
   year: number;
   completedReviews: number;
   averageRating: number | null;

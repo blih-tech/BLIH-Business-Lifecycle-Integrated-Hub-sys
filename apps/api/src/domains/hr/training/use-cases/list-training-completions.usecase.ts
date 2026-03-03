@@ -6,8 +6,8 @@ import { mapTrainingCompletionResponse } from '../training.mapper';
 export class ListTrainingCompletionsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string }) {
-    const where = filters.userId ? { userId: filters.userId } : {};
+  async execute(filters: { employeeId?: string }) {
+    const where = filters.employeeId ? { employeeId: filters.employeeId } : {};
     const list = await this.prisma.trainingCompletion.findMany({
       where,
       orderBy: { createdAt: 'desc' },

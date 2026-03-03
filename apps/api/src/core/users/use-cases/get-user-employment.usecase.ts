@@ -1,23 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class GetUserEmploymentUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+    );
 
     const employment = await this.prisma.userEmployment.findUnique({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       include: {
         position: {
           select: {
@@ -41,11 +37,11 @@ export class GetUserEmploymentUseCase {
       },
     });
     if (!employment) {
-      throw new NotFoundException('User employment not found');
+      throw new NotFoundException('Employee employment not found');
     }
 
     return {
-      userId: employment.userId,
+      employeeId: employment.employeeId,
       employeeCode: employment.employeeCode,
       departmentId: employment.position?.departmentId ?? null,
       departmentName: employment.position?.department?.name ?? null,

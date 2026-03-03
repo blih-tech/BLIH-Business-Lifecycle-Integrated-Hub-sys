@@ -1,6 +1,6 @@
 export interface ExitInterviewResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   conductedById: string | null;
   conductedAt: string | null;
@@ -14,7 +14,7 @@ export interface ExitInterviewResponseDto {
 }
 
 export interface CreateExitInterviewDto {
-  userId: string;
+  employeeId: string;
   resignationId: string;
   conductedById?: string | null;
   conductedAt?: string | null;

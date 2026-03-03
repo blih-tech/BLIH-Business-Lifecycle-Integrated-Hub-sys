@@ -18,8 +18,8 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
 }
 
 $requiredChecks = @(
-    "Governance / commit-and-branch-rules",
-    "Governance / quality-gates"
+    "Monorepo Governance / commit-rules",
+    "Monorepo Governance / quality-gates"
 )
 
 foreach ($branch in $Branches) {

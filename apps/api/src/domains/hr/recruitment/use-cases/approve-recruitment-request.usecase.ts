@@ -24,7 +24,7 @@ export class ApproveRecruitmentRequestUseCase {
         departmentId: true,
         positionId: true,
         type: true,
-        replacementUserId: true,
+        replacementEmployeeId: true,
       },
     });
     if (!existing) throw new NotFoundException('Recruitment request not found');
@@ -37,7 +37,7 @@ export class ApproveRecruitmentRequestUseCase {
       departmentId: existing.departmentId,
       positionId: existing.positionId,
       type: existing.type,
-      replacementUserId: existing.replacementUserId,
+      replacementEmployeeId: existing.replacementEmployeeId,
       requirePosition: true,
       enforceHeadcount: body.decision === 'APPROVED',
     });
@@ -94,6 +94,7 @@ export class ApproveRecruitmentRequestUseCase {
       id: r.id,
       requestId: r.requestId,
       status: r.status,
+      replacementEmployeeId: r.replacementEmployeeId ?? null,
       approvals: newApprovals,
     };
   }

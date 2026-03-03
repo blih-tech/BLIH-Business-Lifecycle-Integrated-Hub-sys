@@ -77,7 +77,7 @@ export class CreateOkrUseCase {
 
     const okr = await this.prisma.okr.create({
       data: {
-        userId: assignment.userId,
+        employeeId: assignment.employeeId,
         scope: dto.scope,
         departmentId: assignment.departmentId,
         parentOkrId: dto.parentOkrId ?? null,

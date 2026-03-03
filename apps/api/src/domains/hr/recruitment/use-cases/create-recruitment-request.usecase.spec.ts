@@ -18,8 +18,8 @@ describe('CreateRecruitmentRequestUseCase', () => {
           isActive: true,
         }),
       },
-      user: {
-        findUnique: jest.fn(),
+      employee: {
+        findFirst: jest.fn(),
       },
       userEmployment: {
         count: jest.fn(),
@@ -61,9 +61,9 @@ describe('CreateRecruitmentRequestUseCase', () => {
           isActive: true,
         }),
       },
-      user: {
-        findUnique: jest.fn().mockResolvedValue({
-          id: 'user-2',
+      employee: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'employee-2',
           employment: {
             id: 'employment-1',
             positionId: 'position-1',
@@ -102,7 +102,7 @@ describe('CreateRecruitmentRequestUseCase', () => {
           departmentId: 'dept-1',
           positionId: 'position-1',
           type: 'REPLACEMENT',
-          replacementUserId: 'user-2',
+          replacementEmployeeId: 'employee-2',
         },
         'user-1',
       ),

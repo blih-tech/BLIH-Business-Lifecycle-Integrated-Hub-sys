@@ -20,7 +20,7 @@ function decNum(d: { toNumber?: () => number } | number | null): number | null {
 
 export function mapResignation(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   proposedLastDay: Date;
   actualLastDay: Date | null;
   reason: string | null;
@@ -37,7 +37,7 @@ export function mapResignation(row: {
 }): ResignationResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     proposedLastDay: dateStr(row.proposedLastDay)!,
     actualLastDay: dateStr(row.actualLastDay),
     reason: row.reason,
@@ -82,7 +82,7 @@ export function mapOffboardingTask(row: {
 
 export function mapOffboardingChecklist(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   lastWorkingDay: Date;
   status: string;
@@ -93,7 +93,7 @@ export function mapOffboardingChecklist(row: {
 }): OffboardingChecklistResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     resignationId: row.resignationId,
     lastWorkingDay: dateStr(row.lastWorkingDay)!,
     status: row.status as OffboardingChecklistResponseDto['status'],
@@ -106,7 +106,7 @@ export function mapOffboardingChecklist(row: {
 
 export function mapExitInterview(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   conductedById: string | null;
   conductedAt: Date | null;
@@ -120,7 +120,7 @@ export function mapExitInterview(row: {
 }): ExitInterviewResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     resignationId: row.resignationId,
     conductedById: row.conductedById,
     conductedAt: row.conductedAt?.toISOString() ?? null,
@@ -136,7 +136,7 @@ export function mapExitInterview(row: {
 
 export function mapFinalSettlement(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   lastWorkingDay: Date;
   earnings: unknown;
@@ -150,7 +150,7 @@ export function mapFinalSettlement(row: {
 }): FinalSettlementResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     resignationId: row.resignationId,
     lastWorkingDay: dateStr(row.lastWorkingDay)!,
     earnings: (row.earnings ?? {}) as FinalSettlementResponseDto['earnings'],
@@ -169,7 +169,7 @@ export function mapFinalSettlement(row: {
 
 export function mapAssetReturn(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   checklistId: string;
   items: unknown;
   depositReturn: unknown;
@@ -184,7 +184,7 @@ export function mapAssetReturn(row: {
 }): AssetReturnResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     checklistId: row.checklistId,
     items: row.items,
     depositReturn: decNum(row.depositReturn as { toNumber?: () => number }),
@@ -203,7 +203,7 @@ export function mapAssetReturn(row: {
 
 export function mapComplianceChecklist(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   terminationType: string;
   noticePeriodContractual: number | null;
@@ -223,7 +223,7 @@ export function mapComplianceChecklist(row: {
 }): ComplianceChecklistResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     resignationId: row.resignationId,
     terminationType:
       row.terminationType as ComplianceChecklistResponseDto['terminationType'],

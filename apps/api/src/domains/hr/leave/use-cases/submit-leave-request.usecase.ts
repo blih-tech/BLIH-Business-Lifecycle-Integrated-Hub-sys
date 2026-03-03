@@ -33,8 +33,8 @@ export class SubmitLeaveRequestUseCase {
       );
     }
 
-    const user = await this.lifecycle.getUserForLeave(existing.userId);
-    const employmentType = user.employment?.employmentType ?? 'FULL_TIME';
+    const employee = await this.lifecycle.getUserForLeave(existing.employeeId);
+    const employmentType = employee.employment?.employmentType ?? 'FULL_TIME';
     const year = existing.startDate.getUTCFullYear();
 
     if (
@@ -47,7 +47,7 @@ export class SubmitLeaveRequestUseCase {
 
     const overlapping = await this.prisma.leaveRequest.findFirst({
       where: {
-        userId: existing.userId,
+        employeeId: existing.employeeId,
         status: { in: ['PENDING', 'APPROVED'] },
         id: { not: existing.id },
         startDate: { lte: existing.endDate },
@@ -62,7 +62,7 @@ export class SubmitLeaveRequestUseCase {
     }
 
     const workingDates = await this.calendar.getWorkingDatesForUser(
-      existing.userId,
+      existing.employeeId,
       existing.startDate,
       existing.endDate,
     );
@@ -90,7 +90,7 @@ export class SubmitLeaveRequestUseCase {
     }
 
     const balance = await this.leaveBalance.ensureBalance({
-      userId: existing.userId,
+      employeeId: existing.employeeId,
       leaveType: existing.leaveType,
       year,
       employmentType,
@@ -100,8 +100,8 @@ export class SubmitLeaveRequestUseCase {
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.leaveBalance.update({
         where: {
-          userId_leaveType_year: {
-            userId: existing.userId,
+          employeeId_leaveType_year: {
+            employeeId: existing.employeeId,
             leaveType: existing.leaveType,
             year,
           },

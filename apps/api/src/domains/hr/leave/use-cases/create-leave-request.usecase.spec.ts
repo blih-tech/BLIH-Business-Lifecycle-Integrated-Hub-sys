@@ -11,7 +11,7 @@ describe('CreateLeaveRequestUseCase', () => {
         create: jest.fn().mockResolvedValue({
           id: 'leave-1',
           requestId: 'LV-2026-0001',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           leaveType: 'ANNUAL',
           startDate: new Date('2026-03-09T00:00:00.000Z'),
           endDate: new Date('2026-03-11T00:00:00.000Z'),
@@ -57,7 +57,8 @@ describe('CreateLeaveRequestUseCase', () => {
     };
     const lifecycle = {
       getUserForLeave: jest.fn().mockResolvedValue({
-        id: 'user-1',
+        id: 'employee-1',
+        userId: 'user-1',
         employment: { employmentType: 'FULL_TIME' },
       }),
     };
@@ -92,7 +93,7 @@ describe('CreateLeaveRequestUseCase', () => {
 
     await expect(
       useCase.execute({
-        userId: 'user-1',
+        employeeId: 'employee-1',
         leaveType: 'ANNUAL',
         startDate: '2026-03-09',
         endDate: '2026-03-11',
@@ -112,8 +113,8 @@ describe('CreateLeaveRequestUseCase', () => {
     );
     expect(tx.leaveBalance.update).toHaveBeenCalledWith({
       where: {
-        userId_leaveType_year: {
-          userId: 'user-1',
+        employeeId_leaveType_year: {
+          employeeId: 'employee-1',
           leaveType: 'ANNUAL',
           year: 2026,
         },
@@ -137,7 +138,8 @@ describe('CreateLeaveRequestUseCase', () => {
     };
     const lifecycle = {
       getUserForLeave: jest.fn().mockResolvedValue({
-        id: 'user-1',
+        id: 'employee-1',
+        userId: 'user-1',
         employment: { employmentType: 'FULL_TIME' },
       }),
     };
@@ -163,7 +165,7 @@ describe('CreateLeaveRequestUseCase', () => {
 
     await expect(
       useCase.execute({
-        userId: 'user-1',
+        employeeId: 'employee-1',
         leaveType: 'ANNUAL',
         startDate: '2026-03-09',
         endDate: '2026-03-10',

@@ -162,8 +162,8 @@ export class RelationsController {
     roles: [RelationsPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List disciplinary actions' })
-  listDisciplinary(@Query('userId') userId?: string) {
-    return this.listDisciplinaryActions.execute({ userId });
+  listDisciplinary(@Query('employeeId') employeeId?: string) {
+    return this.listDisciplinaryActions.execute({ employeeId });
   }
 
   @Get('disciplinary/:id')
@@ -198,10 +198,10 @@ export class RelationsController {
   })
   @ApiOperation({ summary: 'List grievances' })
   listGrievances(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('assignedToId') assignedToId?: string,
   ) {
-    return this.listGrievancesUseCase.execute({ userId, assignedToId });
+    return this.listGrievancesUseCase.execute({ employeeId, assignedToId });
   }
 
   @Get('grievances/:id')
@@ -249,10 +249,13 @@ export class RelationsController {
   })
   @ApiOperation({ summary: 'List recognitions' })
   listRecognitions(
-    @Query('nomineeId') nomineeId?: string,
+    @Query('nomineeEmployeeId') nomineeEmployeeId?: string,
     @Query('status') status?: string,
   ) {
-    return this.listRecognitionsUseCase.execute({ nomineeId, status });
+    return this.listRecognitionsUseCase.execute({
+      nomineeEmployeeId,
+      status,
+    });
   }
 
   @Get('recognition/:id')
@@ -384,12 +387,12 @@ export class RelationsController {
   })
   @ApiOperation({ summary: 'List mediations' })
   listMediations(
-    @Query('requesterId') requesterId?: string,
+    @Query('requesterEmployeeId') requesterEmployeeId?: string,
     @Query('mediatorId') mediatorId?: string,
     @Query('status') status?: string,
   ) {
     return this.listMediationsUseCase.execute({
-      requesterId,
+      requesterEmployeeId,
       mediatorId,
       status,
     });

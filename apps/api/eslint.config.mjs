@@ -8,9 +8,7 @@ export default [
   {
     ignores: [
       'eslint.config.mjs',
-      'scripts/**/*.js',
-      // When ESLint is run from repo root (e.g. lint-staged), match from root:
-      'apps/api/scripts/**',
+      'validate-permission-constants.mjs',
       'src/platform/prisma/generated/**',
       'src/shared/demo-hr-types/**',
     ],

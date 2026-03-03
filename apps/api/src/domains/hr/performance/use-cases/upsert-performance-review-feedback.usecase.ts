@@ -14,7 +14,14 @@ export class UpsertPerformanceReviewFeedbackUseCase {
   async execute(reviewId: string, dto: UpsertPerformanceReviewFeedbackDto) {
     const review = await this.prisma.performanceReview.findUnique({
       where: { id: reviewId },
-      select: { id: true, userId: true },
+      select: {
+        id: true,
+        employee: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
     if (!review) {
       throw new NotFoundException('Performance review not found');
@@ -28,9 +35,9 @@ export class UpsertPerformanceReviewFeedbackUseCase {
       throw new NotFoundException('Reviewer not found');
     }
 
-    if (dto.role === 'SELF' && dto.reviewerId !== review.userId) {
+    if (dto.role === 'SELF' && dto.reviewerId !== review.employee?.userId) {
       throw new BadRequestException(
-        'SELF feedback reviewer must match the review user',
+        'SELF feedback reviewer must match the review employee identity',
       );
     }
 

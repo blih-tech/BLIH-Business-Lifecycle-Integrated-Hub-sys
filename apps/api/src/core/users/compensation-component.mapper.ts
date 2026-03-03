@@ -1,6 +1,6 @@
 type CompensationComponentRow = {
   id: string;
-  userId: string;
+  employeeId: string;
   name: string;
   type: string;
   amount: { toString(): string } | string | number;
@@ -15,7 +15,7 @@ export const mapCompensationComponent = (
   component: CompensationComponentRow,
 ) => ({
   id: component.id,
-  userId: component.userId,
+  employeeId: component.employeeId,
   name: component.name,
   type: component.type,
   amount: component.amount.toString(),

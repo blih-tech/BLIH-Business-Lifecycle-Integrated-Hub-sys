@@ -28,7 +28,7 @@ export class GenerateOffboardingChecklistUseCase {
     const lastDay = new Date(lastWorkingDay);
     const checklist = await this.prisma.offboardingChecklist.create({
       data: {
-        userId: resignation.userId,
+        employeeId: resignation.employeeId,
         resignationId,
         lastWorkingDay: lastDay,
         status: 'PENDING',

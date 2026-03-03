@@ -66,7 +66,7 @@ export class OkrController {
   @ApiOperation({ summary: 'List OKRs' })
   @ApiOkResponse({ description: 'List of OKRs' })
   list(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('scope') scope?: string,
     @Query('departmentId') departmentId?: string,
     @Query('periodYear') periodYear?: string,
@@ -74,7 +74,7 @@ export class OkrController {
     @Query('status') status?: string,
   ) {
     return this.listUseCase.execute({
-      userId,
+      employeeId,
       scope,
       departmentId,
       periodYear: periodYear != null ? parseInt(periodYear, 10) : undefined,

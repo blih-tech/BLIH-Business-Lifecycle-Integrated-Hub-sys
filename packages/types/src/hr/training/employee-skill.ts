@@ -4,7 +4,7 @@ export type SkillSource = 'SELF' | 'MANAGER' | 'ASSESSMENT' | 'TRAINING';
 
 export interface EmployeeSkillResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   skillId: string;
   skillName?: string;
   level: SkillLevel;

@@ -50,7 +50,7 @@ export interface WorkScheduleResponseDto {
 }
 
 export interface AssignUserWorkScheduleDto {
-  userId: string;
+  employeeId: string;
   scheduleId: string;
   effectiveFrom: string;
   effectiveTo?: string | null;
@@ -58,7 +58,7 @@ export interface AssignUserWorkScheduleDto {
 
 export interface UserWorkScheduleResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   scheduleId: string;
   effectiveFrom: string;
   effectiveTo: string | null;

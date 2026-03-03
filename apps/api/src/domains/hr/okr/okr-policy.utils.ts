@@ -1,18 +1,19 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { CreateOkrDto } from '@repo/types';
 import type { PrismaService } from '../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../employees/employee-subject.utils';
 
 export async function resolveOkrAssignment(
   prisma: PrismaService,
-  dto: Pick<CreateOkrDto, 'scope' | 'userId' | 'departmentId'>,
-): Promise<{ userId: string | null; departmentId: string | null }> {
+  dto: Pick<CreateOkrDto, 'scope' | 'employeeId' | 'departmentId'>,
+): Promise<{ employeeId: string | null; departmentId: string | null }> {
   if (dto.scope === 'COMPANY') {
-    if (dto.userId != null || dto.departmentId != null) {
+    if (dto.employeeId != null || dto.departmentId != null) {
       throw new BadRequestException(
-        'COMPANY OKRs cannot be assigned to a user or department',
+        'COMPANY OKRs cannot be assigned to an employee or department',
       );
     }
-    return { userId: null, departmentId: null };
+    return { employeeId: null, departmentId: null };
   }
 
   if (dto.scope === 'DEPARTMENT') {
@@ -26,14 +27,15 @@ export async function resolveOkrAssignment(
     if (!department) {
       throw new NotFoundException('Department not found');
     }
-    return { userId: null, departmentId: department.id };
+    return { employeeId: null, departmentId: department.id };
   }
 
-  if (!dto.userId) {
-    throw new BadRequestException('USER OKRs require userId');
+  if (!dto.employeeId) {
+    throw new BadRequestException('USER OKRs require employeeId');
   }
-  const user = await prisma.user.findUnique({
-    where: { id: dto.userId },
+  const employee = await resolveEmployeeSubjectOrThrow(prisma, dto.employeeId);
+  const employeeWithEmployment = await prisma.employee.findUnique({
+    where: { id: employee.id },
     select: {
       id: true,
       employment: {
@@ -47,12 +49,14 @@ export async function resolveOkrAssignment(
       },
     },
   });
-  if (!user) {
-    throw new NotFoundException('User not found');
+  if (!employeeWithEmployment) {
+    throw new NotFoundException('Employee not found');
   }
 
   const departmentId =
-    dto.departmentId ?? user.employment?.position?.departmentId ?? null;
+    dto.departmentId ??
+    employeeWithEmployment.employment?.position?.departmentId ??
+    null;
 
   if (dto.departmentId) {
     const department = await prisma.department.findUnique({
@@ -65,7 +69,7 @@ export async function resolveOkrAssignment(
   }
 
   return {
-    userId: user.id,
+    employeeId: employeeWithEmployment.id,
     departmentId,
   };
 }

@@ -17,7 +17,7 @@ export class ListEmployeesUseCase {
       limit = 20,
     } = query;
 
-    const where: Prisma.UserWhereInput = {};
+    const filters: Prisma.EmployeeWhereInput[] = [];
     const employmentWhere: Prisma.UserEmploymentWhereInput = {};
     if (departmentId) {
       employmentWhere.position = {
@@ -27,40 +27,50 @@ export class ListEmployeesUseCase {
       };
     }
     if (lifecycleStatus) {
-      where.lifecycle = { status: lifecycleStatus };
+      filters.push({
+        lifecycle: {
+          is: {
+            status: lifecycleStatus,
+          },
+        },
+      });
     }
     if (employmentType) {
       employmentWhere.employmentType = employmentType;
     }
     if (Object.keys(employmentWhere).length > 0) {
-      where.employment = {
-        is: employmentWhere,
-      };
+      filters.push({
+        employment: {
+          is: employmentWhere,
+        },
+      });
     }
     if (search?.trim()) {
       const term = search.trim();
-      where.OR = [
-        { firstName: { contains: term, mode: 'insensitive' } },
-        { lastName: { contains: term, mode: 'insensitive' } },
-        { email: { contains: term, mode: 'insensitive' } },
-      ];
+      filters.push({
+        user: {
+          is: {
+            OR: [
+              { firstName: { contains: term, mode: 'insensitive' } },
+              { lastName: { contains: term, mode: 'insensitive' } },
+              { email: { contains: term, mode: 'insensitive' } },
+            ],
+          },
+        },
+      });
     }
+    const where: Prisma.EmployeeWhereInput = { AND: filters };
 
-    const [users, total] = await Promise.all([
-      this.prisma.user.findMany({
+    const [employees, total] = await Promise.all([
+      this.prisma.employee.findMany({
         where,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
-          keycloakId: true,
-          username: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          phone: true,
-          status: true,
+          userId: true,
+          createdAt: true,
           employment: {
             select: {
               employeeCode: true,
@@ -77,30 +87,41 @@ export class ListEmployeesUseCase {
             },
           },
           lifecycle: { select: { status: true } },
-          createdAt: true,
+          user: {
+            select: {
+              keycloakId: true,
+              username: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+              status: true,
+            },
+          },
         },
       }),
-      this.prisma.user.count({ where }),
+      this.prisma.employee.count({ where }),
     ]);
 
-    const items = users.map((u) => ({
-      id: u.id,
-      keycloakId: u.keycloakId,
-      username: u.username,
-      email: u.email,
-      firstName: u.firstName,
-      lastName: u.lastName,
-      phone: u.phone ?? null,
-      status: u.status,
-      departmentId: u.employment?.position?.departmentId ?? null,
-      departmentName: u.employment?.position?.department?.name ?? null,
-      employeeCode: u.employment?.employeeCode ?? null,
-      positionId: u.employment?.positionId ?? null,
-      positionTitle: u.employment?.position?.title ?? null,
-      employmentType: u.employment?.employmentType ?? 'FULL_TIME',
-      lifecycleStatus: u.lifecycle?.status ?? null,
-      hiredAt: u.employment?.hiredAt?.toISOString() ?? null,
-      createdAt: u.createdAt.toISOString(),
+    const items = employees.map((employee) => ({
+      id: employee.id,
+      userId: employee.userId ?? null,
+      keycloakId: employee.user?.keycloakId ?? null,
+      username: employee.user?.username ?? null,
+      email: employee.user?.email ?? null,
+      firstName: employee.user?.firstName ?? null,
+      lastName: employee.user?.lastName ?? null,
+      phone: employee.user?.phone ?? null,
+      status: employee.user?.status ?? null,
+      departmentId: employee.employment?.position?.departmentId ?? null,
+      departmentName: employee.employment?.position?.department?.name ?? null,
+      employeeCode: employee.employment?.employeeCode ?? null,
+      positionId: employee.employment?.positionId ?? null,
+      positionTitle: employee.employment?.position?.title ?? null,
+      employmentType: employee.employment?.employmentType ?? 'FULL_TIME',
+      lifecycleStatus: employee.lifecycle?.status ?? null,
+      hiredAt: employee.employment?.hiredAt?.toISOString() ?? null,
+      createdAt: employee.createdAt.toISOString(),
     }));
 
     return {

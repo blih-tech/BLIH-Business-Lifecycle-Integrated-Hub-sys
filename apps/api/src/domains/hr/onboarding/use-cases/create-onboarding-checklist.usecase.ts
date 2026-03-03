@@ -6,14 +6,19 @@ import {
   getOnboardingTemplateTasks,
 } from '../onboarding-checklist.template';
 import { mapOnboardingChecklistResponse } from '../onboarding.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class CreateOnboardingChecklistUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateOnboardingChecklistDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: dto.userId },
+    const subject = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+    );
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: subject.id },
       select: {
         id: true,
         employment: {
@@ -24,15 +29,15 @@ export class CreateOnboardingChecklistUseCase {
         },
       },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!employee) throw new NotFoundException('Employee not found');
 
     const joinDate = new Date(dto.joinDate);
-    const employmentType = user.employment?.employmentType ?? 'FULL_TIME';
-    const positionTitle = user.employment?.position?.title ?? null;
+    const employmentType = employee.employment?.employmentType ?? 'FULL_TIME';
+    const positionTitle = employee.employment?.position?.title ?? null;
 
     const checklist = await this.prisma.onboardingChecklist.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         onboardingId: dto.onboardingId ?? undefined,
         hiringDecisionId: dto.hiringDecisionId ?? undefined,
         joinDate,

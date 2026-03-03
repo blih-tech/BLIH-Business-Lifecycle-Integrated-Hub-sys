@@ -32,7 +32,7 @@ type KeyResultUpdateRow = {
 
 type OkrRow = {
   id: string;
-  userId: string | null;
+  employeeId: string | null;
   scope: string;
   departmentId: string | null;
   department?: {
@@ -99,7 +99,7 @@ export function mapKeyResultUpdateResponse(
 export function mapOkrResponse(row: OkrRow): OkrResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     scope: row.scope as OkrResponseDto['scope'],
     departmentId: row.departmentId,
     departmentName: row.department?.name ?? null,

@@ -1,23 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { CreateEmployeeDocumentDto } from '@repo/types';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class CreateEmployeeDocumentUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(userIdOrKeycloakId: string, dto: CreateEmployeeDocumentDto) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) throw new NotFoundException('User not found');
+  async execute(
+    employeeIdOrUserIdOrKeycloakId: string,
+    dto: CreateEmployeeDocumentDto,
+  ) {
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeIdOrUserIdOrKeycloakId,
+    );
 
     const doc = await this.prisma.employeeDocument.create({
       data: {
-        userId: user.id,
+        employeeId: employee.id,
         type: dto.type,
         typeOther: dto.typeOther ?? undefined,
         fileUrl: dto.fileUrl,
@@ -35,7 +36,7 @@ export class CreateEmployeeDocumentUseCase {
 
   private toResponse(doc: {
     id: string;
-    userId: string;
+    employeeId: string;
     type: string;
     typeOther: string | null;
     fileUrl: string;
@@ -53,7 +54,7 @@ export class CreateEmployeeDocumentUseCase {
   }) {
     return {
       id: doc.id,
-      userId: doc.userId,
+      employeeId: doc.employeeId,
       type: doc.type,
       typeOther: doc.typeOther ?? null,
       fileUrl: doc.fileUrl,

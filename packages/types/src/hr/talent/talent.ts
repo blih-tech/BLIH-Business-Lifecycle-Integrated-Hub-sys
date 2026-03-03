@@ -5,7 +5,7 @@ export type SuccessionRiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export interface SuccessionPlanResponseDto {
   id: string;
   positionId: string;
-  candidateId: string;
+  candidateEmployeeId: string;
   readiness: SuccessionReadiness;
   riskLevel: SuccessionRiskLevel;
   notes: string | null;
@@ -15,7 +15,7 @@ export interface SuccessionPlanResponseDto {
 
 export interface CreateSuccessionPlanDto {
   positionId: string;
-  candidateId: string;
+  candidateEmployeeId: string;
   readiness: SuccessionReadiness;
   riskLevel: SuccessionRiskLevel;
   notes?: string | null;
@@ -31,7 +31,7 @@ export type PromotionProposalStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export interface PromotionProposalResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   fromPositionId: string | null;
   toPositionId: string | null;
   proposedById: string;
@@ -45,7 +45,7 @@ export interface PromotionProposalResponseDto {
 }
 
 export interface CreatePromotionProposalDto {
-  userId: string;
+  employeeId: string;
   toPositionId: string;
   proposedById: string;
   justification?: Record<string, unknown> | null;

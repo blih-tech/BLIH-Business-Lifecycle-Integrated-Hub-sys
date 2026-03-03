@@ -24,7 +24,7 @@ export class ReviewPromotionProposalUseCase {
     const proposal = await this.prisma.promotionProposal.findUnique({
       where: { id },
       include: {
-        user: {
+        employee: {
           select: {
             employment: {
               select: {
@@ -78,10 +78,10 @@ export class ReviewPromotionProposalUseCase {
   private async applyPromotion(
     tx: Prisma.TransactionClient,
     proposal: {
-      userId: string;
+      employeeId: string;
       toPositionId: string | null;
       approvedById: string | null;
-      user: {
+      employee: {
         employment: {
           id: string;
           employeeCode: string | null;
@@ -94,7 +94,7 @@ export class ReviewPromotionProposalUseCase {
     },
     dto: ReviewPromotionProposalDto,
   ) {
-    const employment = proposal.user.employment;
+    const employment = proposal.employee.employment;
     if (!employment) {
       throw new BadRequestException(
         'Promotion approval requires an existing employment record',
@@ -169,7 +169,7 @@ export class ReviewPromotionProposalUseCase {
 
       await tx.userCompensationHistory.updateMany({
         where: {
-          userId: proposal.userId,
+          employeeId: proposal.employeeId,
           validFrom: { lt: effectiveFrom },
           OR: [{ validTo: null }, { validTo: { gte: effectiveFrom } }],
         },
@@ -179,7 +179,7 @@ export class ReviewPromotionProposalUseCase {
       });
 
       const compensation = await tx.userCompensation.upsert({
-        where: { userId: proposal.userId },
+        where: { employeeId: proposal.employeeId },
         update: {
           baseSalary: dto.compensationAdjustment.baseSalary,
           ...(dto.compensationAdjustment.currency !== undefined
@@ -188,7 +188,7 @@ export class ReviewPromotionProposalUseCase {
           effectiveFrom,
         },
         create: {
-          userId: proposal.userId,
+          employeeId: proposal.employeeId,
           baseSalary: dto.compensationAdjustment.baseSalary,
           currency: dto.compensationAdjustment.currency,
           effectiveFrom,
@@ -197,7 +197,7 @@ export class ReviewPromotionProposalUseCase {
 
       await tx.userCompensationHistory.create({
         data: {
-          userId: proposal.userId,
+          employeeId: proposal.employeeId,
           baseSalary: compensation.baseSalary,
           currency: compensation.currency,
           payFrequency: compensation.payFrequency,

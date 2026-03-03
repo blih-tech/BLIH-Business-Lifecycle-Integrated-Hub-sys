@@ -27,7 +27,7 @@ export class AcceptHiringOfferUseCase {
       where: { id },
       include: {
         submittedBy: { select: { email: true } },
-        onboarding: { select: { status: true, userId: true } },
+        onboarding: { select: { status: true, employeeId: true } },
       },
     });
     if (!existing) throw new NotFoundException('Hiring decision not found');
@@ -37,12 +37,14 @@ export class AcceptHiringOfferUseCase {
       );
     }
 
-    const employee = await this.prisma.user.findUnique({
-      where: { id: dto.employeeId },
-      select: { id: true },
+    const employee = await this.prisma.employee.findFirst({
+      where: {
+        OR: [{ id: dto.employeeId }, { userId: dto.employeeId }],
+      },
+      select: { id: true, userId: true },
     });
     if (!employee) throw new NotFoundException('Employee not found');
-    if (existing.employeeId && existing.employeeId !== dto.employeeId) {
+    if (existing.employeeId && existing.employeeId !== employee.id) {
       throw new BadRequestException(
         'Hiring decision is already linked to a different employee',
       );
@@ -64,7 +66,7 @@ export class AcceptHiringOfferUseCase {
 
     const duplicateEmployee = await this.prisma.hiringDecision.findFirst({
       where: {
-        employeeId: dto.employeeId,
+        employeeId: employee.id,
         id: { not: id },
       },
       select: { id: true },
@@ -83,10 +85,10 @@ export class AcceptHiringOfferUseCase {
       if (onboardingId) {
         const onboarding = await tx.onboarding.findUnique({
           where: { id: onboardingId },
-          select: { id: true, userId: true },
+          select: { id: true, employeeId: true },
         });
         if (!onboarding) throw new NotFoundException('Onboarding not found');
-        if (onboarding.userId !== dto.employeeId) {
+        if (onboarding.employeeId !== employee.id) {
           throw new BadRequestException(
             'Onboarding record must belong to the accepted employee',
           );
@@ -102,7 +104,7 @@ export class AcceptHiringOfferUseCase {
       } else {
         const onboarding = await tx.onboarding.create({
           data: {
-            userId: dto.employeeId,
+            employeeId: employee.id,
             status: 'IN_PROGRESS',
             startedAt: acceptedAt,
           },
@@ -112,12 +114,12 @@ export class AcceptHiringOfferUseCase {
       }
 
       await tx.userLifecycle.upsert({
-        where: { userId: dto.employeeId },
+        where: { employeeId: employee.id },
         update: {
           status: 'ONBOARDING',
         },
         create: {
-          userId: dto.employeeId,
+          employeeId: employee.id,
           status: 'ONBOARDING',
         },
       });
@@ -136,7 +138,7 @@ export class AcceptHiringOfferUseCase {
         where: { id: existing.recruitmentRequestId },
         data: {
           status: 'COMPLETED',
-          linkedUserId: dto.employeeId,
+          linkedEmployeeId: employee.id,
         },
       });
 
@@ -145,7 +147,7 @@ export class AcceptHiringOfferUseCase {
         data: {
           offerAccepted: true,
           acceptedAt,
-          employeeId: dto.employeeId,
+          employeeId: employee.id,
           onboardingId,
         },
         include: {
@@ -158,7 +160,7 @@ export class AcceptHiringOfferUseCase {
     // Create onboarding checklist from template when offer is accepted
     try {
       await this.createOnboardingChecklistUseCase.execute({
-        userId: dto.employeeId,
+        employeeId: employee.id,
         onboardingId: updated.onboardingId ?? undefined,
         hiringDecisionId: id,
         joinDate: acceptedAt.toISOString().slice(0, 10),

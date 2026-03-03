@@ -32,7 +32,7 @@ export interface UpdateContractDto {
 
 export interface ContractResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   contractType: ContractType;
   sequenceNumber: number;
   startDate: string;

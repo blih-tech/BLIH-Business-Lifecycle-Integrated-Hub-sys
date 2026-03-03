@@ -9,7 +9,7 @@ function decimalToNumber(value: unknown): number {
 }
 
 type ResolvedLeaveBalance = {
-  userId: string;
+  employeeId: string;
   leaveType: string;
   year: number;
   totalDays: number;
@@ -24,7 +24,7 @@ export class LeaveBalanceService {
   constructor(private readonly prisma: PrismaService) {}
 
   async ensureBalance(params: {
-    userId: string;
+    employeeId: string;
     leaveType: string;
     year: number;
     employmentType: string;
@@ -35,15 +35,15 @@ export class LeaveBalanceService {
 
     const balance = await this.prisma.leaveBalance.upsert({
       where: {
-        userId_leaveType_year: {
-          userId: params.userId,
+        employeeId_leaveType_year: {
+          employeeId: params.employeeId,
           leaveType: params.leaveType as never,
           year: params.year,
         },
       },
       update: {},
       create: {
-        userId: params.userId,
+        employeeId: params.employeeId,
         leaveType: params.leaveType as never,
         year: params.year,
         totalDays,
@@ -55,7 +55,7 @@ export class LeaveBalanceService {
   }
 
   async ensureBalancesForYear(params: {
-    userId: string;
+    employeeId: string;
     year: number;
     employmentType: string;
     leaveType?: string;
@@ -78,7 +78,7 @@ export class LeaveBalanceService {
     for (const type of types) {
       balances.push(
         await this.ensureBalance({
-          userId: params.userId,
+          employeeId: params.employeeId,
           leaveType: type,
           year: params.year,
           employmentType: params.employmentType,
@@ -101,7 +101,7 @@ export class LeaveBalanceService {
   }
 
   async reserveDays(params: {
-    userId: string;
+    employeeId: string;
     leaveType: string;
     year: number;
     days: number;
@@ -112,8 +112,8 @@ export class LeaveBalanceService {
 
     return this.prisma.leaveBalance.update({
       where: {
-        userId_leaveType_year: {
-          userId: params.userId,
+        employeeId_leaveType_year: {
+          employeeId: params.employeeId,
           leaveType: params.leaveType as never,
           year: params.year,
         },
@@ -125,15 +125,15 @@ export class LeaveBalanceService {
   }
 
   async consumeReservedDays(params: {
-    userId: string;
+    employeeId: string;
     leaveType: string;
     year: number;
     days: number;
   }) {
     const balance = await this.prisma.leaveBalance.findUnique({
       where: {
-        userId_leaveType_year: {
-          userId: params.userId,
+        employeeId_leaveType_year: {
+          employeeId: params.employeeId,
           leaveType: params.leaveType as never,
           year: params.year,
         },
@@ -151,8 +151,8 @@ export class LeaveBalanceService {
 
     return this.prisma.leaveBalance.update({
       where: {
-        userId_leaveType_year: {
-          userId: params.userId,
+        employeeId_leaveType_year: {
+          employeeId: params.employeeId,
           leaveType: params.leaveType as never,
           year: params.year,
         },
@@ -165,15 +165,15 @@ export class LeaveBalanceService {
   }
 
   async releaseReservedDays(params: {
-    userId: string;
+    employeeId: string;
     leaveType: string;
     year: number;
     days: number;
   }) {
     const balance = await this.prisma.leaveBalance.findUnique({
       where: {
-        userId_leaveType_year: {
-          userId: params.userId,
+        employeeId_leaveType_year: {
+          employeeId: params.employeeId,
           leaveType: params.leaveType as never,
           year: params.year,
         },
@@ -191,8 +191,8 @@ export class LeaveBalanceService {
 
     return this.prisma.leaveBalance.update({
       where: {
-        userId_leaveType_year: {
-          userId: params.userId,
+        employeeId_leaveType_year: {
+          employeeId: params.employeeId,
           leaveType: params.leaveType as never,
           year: params.year,
         },
@@ -206,7 +206,7 @@ export class LeaveBalanceService {
   }
 
   private mapBalance(balance: {
-    userId: string;
+    employeeId: string;
     leaveType: string;
     year: number;
     totalDays: unknown;
@@ -223,7 +223,7 @@ export class LeaveBalanceService {
     );
 
     return {
-      userId: balance.userId,
+      employeeId: balance.employeeId,
       leaveType: balance.leaveType,
       year: balance.year,
       totalDays: roundDays(totalDays),

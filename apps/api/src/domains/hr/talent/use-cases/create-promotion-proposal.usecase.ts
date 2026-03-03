@@ -2,13 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import type { CreatePromotionProposalDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapPromotionProposal } from '../talent.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class CreatePromotionProposalUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreatePromotionProposalDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: dto.userId } });
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+    );
     await this.prisma.user.findUniqueOrThrow({
       where: { id: dto.proposedById },
     });
@@ -17,7 +21,7 @@ export class CreatePromotionProposalUseCase {
     });
 
     const employment = await this.prisma.userEmployment.findUnique({
-      where: { userId: dto.userId },
+      where: { employeeId: employee.id },
       select: {
         positionId: true,
       },
@@ -34,7 +38,7 @@ export class CreatePromotionProposalUseCase {
     }
 
     const latestReview = await this.prisma.performanceReview.findFirst({
-      where: { userId: dto.userId, status: 'COMPLETED' },
+      where: { employeeId: employee.id, status: 'COMPLETED' },
       orderBy: [{ completedAt: 'desc' }],
       select: {
         id: true,
@@ -53,7 +57,7 @@ export class CreatePromotionProposalUseCase {
     const currentYear = new Date().getUTCFullYear();
     const okrAggregate = await this.prisma.okr.aggregate({
       where: {
-        userId: dto.userId,
+        employeeId: employee.id,
         scope: 'USER',
         periodYear: currentYear,
       },
@@ -70,7 +74,7 @@ export class CreatePromotionProposalUseCase {
 
     const proposal = await this.prisma.promotionProposal.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         fromPositionId: employment.positionId,
         toPositionId: dto.toPositionId,
         proposedById: dto.proposedById,

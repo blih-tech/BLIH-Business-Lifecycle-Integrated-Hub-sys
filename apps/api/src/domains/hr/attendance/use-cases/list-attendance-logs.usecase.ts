@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapAttendanceLogResponse } from '../attendance.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class ListAttendanceLogsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(filters: {
-    userId: string;
+    employeeId: string;
     fromDate?: string;
     toDate?: string;
   }) {
-    const where: { userId: string; date?: { gte?: Date; lte?: Date } } = {
-      userId: filters.userId,
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      filters.employeeId,
+    );
+    const where: {
+      employeeId: string;
+      date?: { gte?: Date; lte?: Date };
+    } = {
+      employeeId: employee.id,
     };
     if (filters.fromDate) {
       where.date = { ...where.date, gte: new Date(filters.fromDate) };

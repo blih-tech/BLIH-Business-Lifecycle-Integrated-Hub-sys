@@ -31,7 +31,7 @@ import { CreateEmployeeDocumentUseCase } from './use-cases/create-employee-docum
 import { UpdateEmployeeDocumentUseCase } from './use-cases/update-employee-document.usecase';
 
 @ApiTags('HR Employee Documents')
-@Controller('hr/employees/:userId/documents')
+@Controller('hr/employees/:employeeId/documents')
 @UseGuards(KeycloakAuthGuard, RbacGuard)
 export class EmployeeDocumentsController {
   constructor(
@@ -43,49 +43,58 @@ export class EmployeeDocumentsController {
   @Get()
   @Roles(EmployeePermissions.VIEW, UserProfilePermissions.VIEW)
   @ApiProtected({
-    path: '/api/v1/hr/employees/:userId/documents',
+    path: '/api/v1/hr/employees/:employeeId/documents',
     roles: [EmployeePermissions.VIEW, UserProfilePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List employee documents' })
-  @ApiParam({ name: 'userId', description: 'User id or Keycloak subject' })
+  @ApiParam({
+    name: 'employeeId',
+    description: 'Employee id or linked user/keycloak subject',
+  })
   @ApiOkResponse({ description: 'List of documents' })
-  list(@Param('userId') userId: string) {
-    return this.listEmployeeDocumentsUseCase.execute(userId);
+  list(@Param('employeeId') employeeId: string) {
+    return this.listEmployeeDocumentsUseCase.execute(employeeId);
   }
 
   @Post()
   @Roles(EmployeePermissions.UPDATE, UserProfilePermissions.UPDATE)
   @ApiProtected({
-    path: '/api/v1/hr/employees/:userId/documents',
+    path: '/api/v1/hr/employees/:employeeId/documents',
     roles: [EmployeePermissions.UPDATE, UserProfilePermissions.UPDATE],
   })
   @ApiOperation({ summary: 'Create employee document' })
-  @ApiParam({ name: 'userId', description: 'User id or Keycloak subject' })
+  @ApiParam({
+    name: 'employeeId',
+    description: 'Employee id or linked user/keycloak subject',
+  })
   @ApiBody({ schema: { type: 'object', required: ['type', 'fileUrl'] } })
   @ApiOkResponse({ description: 'Created document' })
   create(
-    @Param('userId') userId: string,
+    @Param('employeeId') employeeId: string,
     @Body() body: CreateEmployeeDocumentDto,
   ) {
-    return this.createEmployeeDocumentUseCase.execute(userId, body);
+    return this.createEmployeeDocumentUseCase.execute(employeeId, body);
   }
 
   @Patch(':docId')
   @Roles(EmployeePermissions.UPDATE, UserProfilePermissions.UPDATE)
   @ApiProtected({
-    path: '/api/v1/hr/employees/:userId/documents/:docId',
+    path: '/api/v1/hr/employees/:employeeId/documents/:docId',
     roles: [EmployeePermissions.UPDATE, UserProfilePermissions.UPDATE],
   })
   @ApiOperation({ summary: 'Update employee document' })
-  @ApiParam({ name: 'userId', description: 'User id or Keycloak subject' })
+  @ApiParam({
+    name: 'employeeId',
+    description: 'Employee id or linked user/keycloak subject',
+  })
   @ApiParam({ name: 'docId', description: 'Document id' })
   @ApiBody({ schema: { type: 'object' } })
   @ApiOkResponse({ description: 'Updated document' })
   update(
-    @Param('userId') userId: string,
+    @Param('employeeId') employeeId: string,
     @Param('docId') docId: string,
     @Body() body: UpdateEmployeeDocumentDto,
   ) {
-    return this.updateEmployeeDocumentUseCase.execute(userId, docId, body);
+    return this.updateEmployeeDocumentUseCase.execute(employeeId, docId, body);
   }
 }

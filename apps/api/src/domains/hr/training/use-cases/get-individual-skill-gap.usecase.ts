@@ -3,20 +3,25 @@ import type { IndividualSkillGapResponseDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { readinessScore, computeGap, gapPriority } from '../skill-gap.utils';
 import type { SkillLevel } from '@repo/types';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class GetIndividualSkillGapUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
-    userId: string,
+    employeeId: string,
     targetPositionId?: string | null,
   ): Promise<IndividualSkillGapResponseDto> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeId,
+    );
+    const employeeWithSkills = await this.prisma.employee.findUnique({
+      where: { id: employee.id },
       include: { employeeSkills: { include: { skill: true } } },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!employeeWithSkills) throw new NotFoundException('Employee not found');
     let requiredSkills: Array<{
       skillId: string;
       skillName: string;
@@ -65,7 +70,7 @@ export class GetIndividualSkillGapUseCase {
       }));
     }
     const currentBySkill = Object.fromEntries(
-      user.employeeSkills.map((es) => [
+      employeeWithSkills.employeeSkills.map((es) => [
         es.skillId,
         { level: es.level as SkillLevel, name: es.skill.name },
       ]),
@@ -100,7 +105,7 @@ export class GetIndividualSkillGapUseCase {
       }
     }
     return {
-      userId,
+      employeeId: employeeWithSkills.id,
       targetPositionId: targetPositionId ?? null,
       gaps,
       strengths,

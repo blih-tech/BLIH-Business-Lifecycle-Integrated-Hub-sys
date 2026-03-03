@@ -16,7 +16,7 @@
     "start:prod": "node dist/apps/api/src/main",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --max-warnings=0",
     "lint:fix": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --fix",
-    "validate:rbac-catalog": "node scripts/rbac/validate-permission-constants.mjs",
+    "validate:rbac-catalog": "node validate-permission-constants.mjs",
     "lint:check": "npm run validate:rbac-catalog && npm run lint",
     "check-types": "npm run prisma:generate && npm run typecheck",
     "typecheck": "tsc --noEmit",
@@ -27,10 +27,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "validate:branch-name": "node scripts/git/validate-branch-name.js",
     "validate:commits": "commitlint --from HEAD~1 --to HEAD --verbose",
     "validate:commits:branch": "commitlint --from main --to HEAD --verbose",
-    "validate:pre-push": "node scripts/git/validate-pre-push.js",
     "verify": "npm run lint:check && npm run typecheck && npm run test -- --ci --passWithNoTests",
     "prisma:generate": "prisma generate --schema prisma/schema.prisma",
     "prisma:migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
@@ -42,11 +40,7 @@
     "db:status": "docker compose -f docker-compose.yml ps",
     "db:logs": "docker compose -f docker-compose.yml logs -f",
     "db:reset": "docker compose -f docker-compose.yml down -v && docker compose -f docker-compose.yml up -d",
-    "db:check-ports": "./scripts/check-ports.sh",
-    "db:psql": "docker exec -it blih-postgres psql -U postgres -d blih-system-dev",
-    "db:health": "./scripts/db-local.sh health",
-    "vps:info": "./scripts/get-vps-info.sh",
-    "vps:backup": "./scripts/db-local.sh backup blih-system-dev && ./scripts/db-local.sh backup keycloak"
+    "db:psql": "docker exec -it blih-postgres psql -U postgres -d blih-system-dev"
   },
   "dependencies": {
     "@repo/types": "^0.0.0",

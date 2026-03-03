@@ -12,7 +12,7 @@ export interface CreateRecruitmentRequestDto {
   departmentId: string;
   positionId?: string | null;
   type?: RecruitmentRequestType;
-  replacementUserId?: string | null;
+  replacementEmployeeId?: string | null;
   rationale?: Record<string, unknown> | null;
   staffing?: Record<string, unknown> | null;
   schedule?: Record<string, unknown> | null;
@@ -21,7 +21,7 @@ export interface CreateRecruitmentRequestDto {
 export interface UpdateRecruitmentRequestDto {
   positionId?: string | null;
   type?: RecruitmentRequestType;
-  replacementUserId?: string | null;
+  replacementEmployeeId?: string | null;
   rationale?: Record<string, unknown> | null;
   staffing?: Record<string, unknown> | null;
   schedule?: Record<string, unknown> | null;
@@ -45,7 +45,7 @@ export interface RecruitmentRequestResponseDto {
   positionTitle?: string | null;
   type: RecruitmentRequestType;
   status: RecruitmentRequestStatus;
-  replacementUserId: string | null;
+  replacementEmployeeId: string | null;
   rationale: unknown;
   staffing: unknown;
   schedule: unknown;
@@ -54,7 +54,7 @@ export interface RecruitmentRequestResponseDto {
   submittedAt: string | null;
   approvals: ApprovalStepDto[];
   linkedJobPostingId: string | null;
-  linkedUserId: string | null;
+  linkedEmployeeId: string | null;
   createdAt: string;
   updatedAt: string;
 }

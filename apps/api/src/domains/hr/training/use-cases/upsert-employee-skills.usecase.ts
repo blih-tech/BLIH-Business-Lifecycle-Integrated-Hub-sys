@@ -2,13 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { UpsertEmployeeSkillsDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapEmployeeSkillResponse } from '../training.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class UpsertEmployeeSkillsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(userId: string, dto: UpsertEmployeeSkillsDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  async execute(employeeId: string, dto: UpsertEmployeeSkillsDto) {
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeId,
+    );
     const results: Awaited<ReturnType<typeof mapEmployeeSkillResponse>>[] = [];
     for (const item of dto.skills) {
       const skill = await this.prisma.skill.findUnique({
@@ -18,10 +22,13 @@ export class UpsertEmployeeSkillsUseCase {
         throw new NotFoundException(`Skill not found: ${item.skillId}`);
       const upserted = await this.prisma.employeeSkill.upsert({
         where: {
-          userId_skillId: { userId, skillId: item.skillId },
+          employeeId_skillId: {
+            employeeId: employee.id,
+            skillId: item.skillId,
+          },
         },
         create: {
-          userId,
+          employeeId: employee.id,
           skillId: item.skillId,
           level: item.level as never,
           source: (item.source ?? 'SELF') as never,

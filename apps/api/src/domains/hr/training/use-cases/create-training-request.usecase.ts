@@ -2,13 +2,17 @@ import { Injectable } from '@nestjs/common';
 import type { CreateTrainingRequestDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapTrainingRequestResponse } from '../training.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class CreateTrainingRequestUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateTrainingRequestDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: dto.userId } });
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+    );
     await this.prisma.department.findUniqueOrThrow({
       where: { id: dto.departmentId },
     });
@@ -19,7 +23,7 @@ export class CreateTrainingRequestUseCase {
     const status = dto.submit ? 'PENDING' : 'DRAFT';
     const request = await this.prisma.trainingRequest.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         departmentId: dto.departmentId,
         trainingType: dto.trainingType as never,
         title: dto.title,

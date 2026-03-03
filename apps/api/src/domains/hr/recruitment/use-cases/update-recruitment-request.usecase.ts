@@ -16,7 +16,7 @@ export class UpdateRecruitmentRequestUseCase {
         departmentId: true,
         positionId: true,
         type: true,
-        replacementUserId: true,
+        replacementEmployeeId: true,
       },
     });
     if (!existing) throw new NotFoundException('Recruitment request not found');
@@ -27,24 +27,24 @@ export class UpdateRecruitmentRequestUseCase {
     const positionId =
       dto.positionId === undefined ? existing.positionId : dto.positionId;
     const type = dto.type ?? existing.type;
-    const replacementUserId =
-      dto.replacementUserId === undefined
-        ? existing.replacementUserId
-        : dto.replacementUserId;
+    const replacementEmployeeId =
+      dto.replacementEmployeeId === undefined
+        ? existing.replacementEmployeeId
+        : dto.replacementEmployeeId;
 
     await validateRecruitmentRequestInput(this.prisma, {
       departmentId,
       positionId,
       type,
-      replacementUserId,
+      replacementEmployeeId,
       enforceHeadcount: Boolean(positionId),
     });
 
     const data: Record<string, unknown> = {};
     if (dto.positionId !== undefined) data.positionId = dto.positionId;
     if (dto.type !== undefined) data.type = dto.type;
-    if (dto.replacementUserId !== undefined)
-      data.replacementUserId = dto.replacementUserId;
+    if (dto.replacementEmployeeId !== undefined)
+      data.replacementEmployeeId = dto.replacementEmployeeId;
     if (dto.rationale !== undefined) data.rationale = dto.rationale;
     if (dto.staffing !== undefined) data.staffing = dto.staffing;
     if (dto.schedule !== undefined) data.schedule = dto.schedule;
@@ -71,6 +71,7 @@ export class UpdateRecruitmentRequestUseCase {
       positionTitle: withRels.position?.title ?? null,
       type: withRels.type,
       status: withRels.status,
+      replacementEmployeeId: withRels.replacementEmployeeId ?? null,
       submittedById: withRels.submittedById,
       submittedByEmail: withRels.submittedBy.email,
       submittedAt: withRels.submittedAt?.toISOString() ?? null,
