@@ -82,10 +82,10 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     icon: 'sparkles',
     subItems: [
       { id: 'performance-overview', label: 'Overview', href: '/dashboard/hr/performance/overview' },
-      { id: 'goals', label: 'Goals', href: '/dashboard/hr/performance/goals' },
-      { id: 'reviews', label: 'Reviews', href: '/dashboard/hr/performance/reviews' },
-      { id: 'feedback', label: 'Feedback', href: '/dashboard/hr/performance/feedback' },
-      { id: 'improvement-plans', label: 'Improvement Plans', href: '/dashboard/hr/performance/improvement-plans' },
+      { id: 'performance-review', label: 'Performance Review', href: '/dashboard/hr/performance/performance-review' },
+      { id: 'okrs', label: 'OKRs', href: '/dashboard/hr/performance/okrs' },
+      { id: 'kpis', label: 'KPIs', href: '/dashboard/hr/performance/kpis' },
+      { id: 'evaluation-form', label: 'Evaluation Form', href: '/dashboard/hr/performance/evaluation-form' },
     ],
   },
   {
