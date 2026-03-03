@@ -1,0 +1,25 @@
+import type { OrgPersonNode, OrganogramMeta } from "@/features/hr/people/organogram/types";
+
+export const organogramMeta: OrganogramMeta = {
+  initialZoomPercent: 95,
+  minZoomPercent: 25,
+  maxZoomPercent: 120,
+  zoomStep: 5,
+};
+
+export const organogramNodes: OrgPersonNode[] = [
+  { id: "ceo", name: "Abriel Gebe", role: "Chief Executive Officer", x: 430, y: 38, managerId: null, avatarInitials: "AG" },
+  { id: "hr-dir", name: "Michael Kerejege", role: "HR Director", x: 430, y: 112, managerId: "ceo", avatarInitials: "MK" },
+  { id: "ops-dir", name: "Emily Mukasa", role: "Operations Director", x: 585, y: 112, managerId: "ceo", avatarInitials: "EM" },
+  { id: "fin-dir", name: "Patricia Williams", role: "Finance Director", x: 740, y: 112, managerId: "ceo", avatarInitials: "PW" },
+  { id: "lead-recruit", name: "Lani Johnson", role: "Lead Recruiter", x: 275, y: 184, managerId: "hr-dir", avatarInitials: "LJ" },
+  { id: "hr-spec", name: "Ari Samuelsen Lo", role: "HR Specialist", x: 430, y: 184, managerId: "hr-dir", avatarInitials: "AS" },
+  { id: "ops-mgr", name: "Mia Thompson", role: "Operations Manager", x: 585, y: 184, managerId: "ops-dir", avatarInitials: "MT" },
+  { id: "acct-mgr", name: "Ava Turner", role: "Account Manager", x: 740, y: 184, managerId: "fin-dir", avatarInitials: "AT" },
+  { id: "recruit-1", name: "Jessica Perez", role: "Recruiter", x: 120, y: 256, managerId: "lead-recruit", avatarInitials: "JP" },
+  { id: "recruit-2", name: "Miles Clark", role: "Recruiter", x: 240, y: 256, managerId: "lead-recruit", avatarInitials: "MC" },
+  { id: "hr-assist", name: "Rena Thomas", role: "HR Assistant", x: 360, y: 256, managerId: "hr-spec", avatarInitials: "RT" },
+  { id: "ops-assist", name: "Lana Brooks", role: "Ops Assistant", x: 500, y: 256, managerId: "ops-mgr", avatarInitials: "LB" },
+  { id: "acct-1", name: "Sergio Alvarez", role: "Accountant", x: 655, y: 256, managerId: "acct-mgr", avatarInitials: "SA" },
+  { id: "acct-2", name: "Janice White", role: "Accountant", x: 775, y: 256, managerId: "acct-mgr", avatarInitials: "JW" },
+];
