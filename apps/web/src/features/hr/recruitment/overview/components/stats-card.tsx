@@ -1,31 +1,23 @@
+import { CircleCheckBig, Clock3, UserRoundPlus } from "lucide-react";
+
 import type { RecruitmentStatItem } from "@/features/hr/recruitment/overview/types";
-import { cn } from "@/shared/lib/utils";
 
 type StatsCardProps = RecruitmentStatItem;
 
-function deltaToneClass(tone: RecruitmentStatItem["deltaTone"]) {
-  if (tone === "positive") return "text-[#1e66f7]";
-  if (tone === "negative") return "text-[#1e66f7]";
-  return "text-muted-foreground";
+function IconByType({ icon }: { icon: RecruitmentStatItem["icon"] }) {
+  if (icon === "clock-3") return <Clock3 className="h-4 w-4 text-primary" />;
+  if (icon === "circle-check-big") return <CircleCheckBig className="h-4 w-4 text-primary" />;
+  return <UserRoundPlus className="h-4 w-4 text-primary" />;
 }
 
-export function StatsCard({ label, value, deltaText, deltaTone }: StatsCardProps) {
+export function StatsCard({ label, value, icon }: StatsCardProps) {
   return (
     <article className="ui-surface p-4 md:p-5">
-      <p className="ui-label">{label}</p>
-      <div className="mt-1 flex items-end gap-1.5">
-        <p className="ui-value text-foreground">{value}</p>
-        {deltaText ? (
-          <span
-            className={cn(
-              "ui-body pb-0.5",
-              deltaToneClass(deltaTone),
-            )}
-          >
-            {deltaText}
-          </span>
-        ) : null}
+      <div className="flex items-start justify-between">
+        <p className="ui-label">{label}</p>
+        <IconByType icon={icon} />
       </div>
+      <p className="mt-1 text-[36px] font-semibold leading-9 tracking-[0.0703px] text-black">{value}</p>
     </article>
   );
 }

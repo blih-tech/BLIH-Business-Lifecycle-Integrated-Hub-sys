@@ -1,27 +1,17 @@
-export type DeltaTone = "positive" | "negative" | "neutral";
-
 export type RecruitmentStatItem = {
   id: string;
   label: string;
   value: string;
-  deltaText?: string;
-  deltaTone?: DeltaTone;
+  icon: "clock-3" | "circle-check-big" | "user-round-plus";
 };
 
-export type ActivityStatusTone = "active" | "completed" | "pending" | "scheduled";
-
-export type RecentActivityItem = {
-  id: string;
-  category: string;
-  title: string;
-  timeAgo: string;
-  status: string;
-  statusTone: ActivityStatusTone;
-};
-
-export type PendingActionItem = {
-  id: string;
-  category: string;
-  description: string;
+export type MonthlyFrequencyPoint = {
+  month: string;
   count: number;
+};
+
+export type DailyAreaPoint = {
+  day: string;
+  upper: number;
+  lower: number;
 };
