@@ -1,5 +1,5 @@
-import { StatsCard } from "@/features/hr/attendance/requests/components/stats-card";
-import type { AttendanceRequestStat } from "@/features/hr/attendance/requests/types";
+import { StatsCard } from "@/features/hr/attendance/leaves/components/stats-card";
+import type { AttendanceRequestStat } from "@/features/hr/attendance/leaves/types";
 
 type StatsGridProps = {
   items: AttendanceRequestStat[];

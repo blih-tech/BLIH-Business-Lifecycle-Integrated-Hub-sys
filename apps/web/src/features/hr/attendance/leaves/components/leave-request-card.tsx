@@ -1,6 +1,6 @@
 import { Clock3 } from "lucide-react";
 
-import type { LeaveRequestCardItem } from "@/features/hr/attendance/requests/types";
+import type { LeaveRequestCardItem } from "@/features/hr/attendance/leaves/types";
 import { Button } from "@/shared/components/ui/button";
 
 type LeaveRequestCardProps = {

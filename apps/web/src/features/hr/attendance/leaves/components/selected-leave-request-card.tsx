@@ -2,7 +2,7 @@
 
 import { Clock3, FileText } from "lucide-react";
 
-import type { PreviousLeaveRow } from "@/features/hr/attendance/requests/types";
+import type { PreviousLeaveRow } from "@/features/hr/attendance/leaves/types";
 import { Button } from "@/shared/components/ui/button";
 
 type SelectedLeaveRequestCardProps = {

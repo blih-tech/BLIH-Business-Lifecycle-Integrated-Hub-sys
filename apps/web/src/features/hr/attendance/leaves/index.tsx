@@ -6,18 +6,18 @@ import {
   attendanceRequestStats,
   leaveRequestCards,
   previousLeaveRows,
-} from '@/features/hr/attendance/requests/mock-data';
+} from '@/features/hr/attendance/leaves/mock-data';
 import {
   LeaveRequestCard,
   PreviousLeavesTable,
   SelectedLeaveRequestCard,
   StatsGrid,
-} from '@/features/hr/attendance/requests/components';
+} from '@/features/hr/attendance/leaves/components';
 
 const PAGE_SIZE = 8;
 
-export * from '@/features/hr/attendance/requests/components';
-export * from '@/features/hr/attendance/requests/types';
+export * from '@/features/hr/attendance/leaves/components';
+export * from '@/features/hr/attendance/leaves/types';
 
 export function AttendanceRequestsContent() {
   const [searchTerm, setSearchTerm] = useState('');

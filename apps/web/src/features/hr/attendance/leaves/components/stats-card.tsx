@@ -1,6 +1,6 @@
 import { CircleCheckBig, Clock3 } from "lucide-react";
 
-import type { AttendanceRequestStat } from "@/features/hr/attendance/requests/types";
+import type { AttendanceRequestStat } from "@/features/hr/attendance/leaves/types";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 type StatsCardProps = AttendanceRequestStat;

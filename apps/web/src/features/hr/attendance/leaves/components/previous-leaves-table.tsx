@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight, ListFilter, Search } from "lucide-react";
 
-import type { PreviousLeaveRow } from "@/features/hr/attendance/requests/types";
+import type { PreviousLeaveRow } from "@/features/hr/attendance/leaves/types";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {

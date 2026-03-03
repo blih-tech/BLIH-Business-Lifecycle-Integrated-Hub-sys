@@ -2,7 +2,7 @@ import type {
   AttendanceRequestStat,
   LeaveRequestCardItem,
   PreviousLeaveRow,
-} from "@/features/hr/attendance/requests/types";
+} from "@/features/hr/attendance/leaves/types";
 
 export const attendanceRequestStats: AttendanceRequestStat[] = [
   { id: "month-hours", label: "Avg Work Hours This Month", value: "12", icon: "clock-3" },
