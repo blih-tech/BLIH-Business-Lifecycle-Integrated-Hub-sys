@@ -41,6 +41,7 @@ import { ListCandidatesForPostingUseCase } from './recruitment/use-cases/list-ca
 import { CreateCandidateUseCase } from './recruitment/use-cases/create-candidate.usecase';
 import { GetCandidateUseCase } from './recruitment/use-cases/get-candidate.usecase';
 import { UpdateCandidateUseCase } from './recruitment/use-cases/update-candidate.usecase';
+import { UpdateCandidateStatusUseCase } from './recruitment/use-cases/update-candidate-status.usecase';
 import { ListCandidateScreeningsUseCase } from './recruitment/use-cases/list-candidate-screenings.usecase';
 import { CreateCvScreeningUseCase } from './recruitment/use-cases/create-cv-screening.usecase';
 import { ListInterviewFeedbackUseCase } from './recruitment/use-cases/list-interview-feedback.usecase';
@@ -272,6 +273,7 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     CreateCandidateUseCase,
     GetCandidateUseCase,
     UpdateCandidateUseCase,
+    UpdateCandidateStatusUseCase,
     ListCandidateScreeningsUseCase,
     CreateCvScreeningUseCase,
     ListInterviewFeedbackUseCase,
