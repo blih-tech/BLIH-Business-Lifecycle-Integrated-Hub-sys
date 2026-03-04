@@ -16,7 +16,7 @@ describe('UpdateRoleUseCase', () => {
       },
     };
     const userPermissionSnapshot = {
-      recomputeAllUsers: jest.fn(),
+      invalidateAll: jest.fn(),
     };
 
     const useCase = new UpdateRoleUseCase(
@@ -32,6 +32,6 @@ describe('UpdateRoleUseCase', () => {
     ).rejects.toThrow(ForbiddenException);
 
     expect(keycloakAdmin.updateRole).not.toHaveBeenCalled();
-    expect(userPermissionSnapshot.recomputeAllUsers).not.toHaveBeenCalled();
+    expect(userPermissionSnapshot.invalidateAll).not.toHaveBeenCalled();
   });
 });

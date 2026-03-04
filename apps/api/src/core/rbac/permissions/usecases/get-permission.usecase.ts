@@ -11,11 +11,6 @@ export class GetPermissionUseCase {
         id: permissionId,
       },
       include: {
-        module: {
-          select: {
-            name: true,
-          },
-        },
         resource: {
           select: {
             name: true,
@@ -36,8 +31,6 @@ export class GetPermissionUseCase {
     return {
       id: permission.id,
       slug: permission.slug,
-      moduleId: permission.moduleId,
-      module: permission.module.name,
       resourceId: permission.resourceId,
       resource: permission.resource.name,
       actionId: permission.actionId,

@@ -2,6 +2,7 @@ import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { OpenAPIObject } from '@nestjs/swagger';
+import { RESPONSE_MESSAGE_EXTENSION } from '../../decorators/response-message.decorator';
 import {
   SWAGGER_BEARER_AUTH_NAME,
   SWAGGER_DEFAULT_DOCS_PATH,
@@ -213,13 +214,16 @@ function buildDataExampleFromSchema(
   return fallbackExampleForType(schema);
 }
 
-function successEnvelopeSchema(dataSchema: unknown): Record<string, unknown> {
+function successEnvelopeSchema(
+  dataSchema: unknown,
+  message = DOC_SUCCESS_MESSAGE,
+): Record<string, unknown> {
   return {
     type: 'object',
     required: ['success', 'message', 'data', 'error', 'meta'],
     properties: {
       success: { type: 'boolean', example: true },
-      message: { type: 'string', example: DOC_SUCCESS_MESSAGE },
+      message: { type: 'string', example: message },
       data: isRecord(dataSchema)
         ? dataSchema
         : { type: 'object', nullable: true },
@@ -296,10 +300,13 @@ function errorEnvelopeSchema(errorSchema: unknown): Record<string, unknown> {
   };
 }
 
-function successEnvelopeExample(data: unknown): Record<string, unknown> {
+function successEnvelopeExample(
+  data: unknown,
+  message = DOC_SUCCESS_MESSAGE,
+): Record<string, unknown> {
   return {
     success: true,
-    message: DOC_SUCCESS_MESSAGE,
+    message,
     data: data ?? null,
     error: null,
     meta: {
@@ -416,6 +423,10 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
         }
 
         const isSuccess = /^2\d{2}$/.test(statusCode);
+        const successMessage =
+          isSuccess && typeof operation[RESPONSE_MESSAGE_EXTENSION] === 'string'
+            ? operation[RESPONSE_MESSAGE_EXTENSION]
+            : DOC_SUCCESS_MESSAGE;
         const originalSchema = json.schema;
         const schemaLevelExample = isRecord(originalSchema)
           ? originalSchema.example
@@ -427,13 +438,13 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
 
         if (!isEnvelopeSchema(json.schema)) {
           json.schema = isSuccess
-            ? successEnvelopeSchema(json.schema)
+            ? successEnvelopeSchema(json.schema, successMessage)
             : errorEnvelopeSchema(json.schema);
         }
 
         if (dataExample !== undefined && !isEnvelopeExample(dataExample)) {
           json.example = isSuccess
-            ? successEnvelopeExample(dataExample)
+            ? successEnvelopeExample(dataExample, successMessage)
             : errorEnvelopeExample(dataExample);
         } else if (!isSuccess && json.example === undefined) {
           json.example = defaultErrorEnvelopeExample(
@@ -451,7 +462,7 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
             }
 
             example.value = isSuccess
-              ? successEnvelopeExample(example.value)
+              ? successEnvelopeExample(example.value, successMessage)
               : errorEnvelopeExample(example.value);
           }
         }

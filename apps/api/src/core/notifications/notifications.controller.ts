@@ -16,6 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { Audit } from '../../shared/decorators/audit.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
@@ -102,6 +103,7 @@ export class NotificationsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Notification sent successfully')
   async send(@Body() dto: NotificationDto) {
     return this.sendNotificationUseCase.execute(dto);
   }
@@ -172,6 +174,7 @@ export class NotificationsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Security event notification sent successfully')
   async security(@Body() dto: NotificationDto) {
     return this.notifySecurityEventUseCase.execute(dto);
   }
@@ -185,7 +188,7 @@ export class NotificationsController {
   @ApiOperation({
     summary: 'Get user inbox',
     description:
-      'Returns notifications for a specific user in the configured realm sorted by latest first. Requires role `system_notification:view`.',
+      'Returns persisted notifications for a specific user sorted by newest first.',
   })
   @ApiParam({
     name: 'userId',
@@ -215,6 +218,7 @@ export class NotificationsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('User inbox retrieved successfully')
   async inbox(@Param('userId') userId: string) {
     return this.prisma.notification.findMany({
       where: { userId },
@@ -232,7 +236,7 @@ export class NotificationsController {
   @ApiOperation({
     summary: 'Mark notification as read',
     description:
-      'Marks a notification as read by setting `readAt`. Requires role `system_notification:view`.',
+      'Marks a notification as read by setting its `readAt` timestamp to the current server time.',
   })
   @ApiParam({
     name: 'notificationId',
@@ -261,6 +265,7 @@ export class NotificationsController {
     forbidden: 'Required roles are missing',
     notFound: 'Record to update not found',
   })
+  @ResponseMessage('Notification marked as read successfully')
   async markRead(@Param('notificationId') notificationId: string) {
     return this.prisma.notification.update({
       where: { id: notificationId },

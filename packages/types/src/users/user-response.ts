@@ -7,7 +7,7 @@ export interface UserResponseDto {
   lastName: string;
   phone?: string;
   status: string;
-  position?: string;
+  departmentId?: string | null;
   permissions: string[];
   createdAt: string;
   updatedAt: string;

@@ -1,9 +1,423 @@
 import { Module } from '@nestjs/common';
-import { HrService } from './hr.service';
-import { HrController } from './hr.controller';
+import { EmployeesController } from './employees/employees.controller';
+import { ListEmployeesUseCase } from './employees/use-cases/list-employees.usecase';
+import { GetEmployeeFullUseCase } from './employees/use-cases/get-employee-full.usecase';
+import { EmployeeDocumentsController } from './documents/employee-documents.controller';
+import { ListEmployeeDocumentsUseCase } from './documents/use-cases/list-employee-documents.usecase';
+import { CreateEmployeeDocumentUseCase } from './documents/use-cases/create-employee-document.usecase';
+import { UpdateEmployeeDocumentUseCase } from './documents/use-cases/update-employee-document.usecase';
+import { EmployeeContractsController } from './contracts/employee-contracts.controller';
+import { ListEmployeeContractsUseCase } from './contracts/use-cases/list-employee-contracts.usecase';
+import { CreateContractUseCase } from './contracts/use-cases/create-contract.usecase';
+import { UpdateContractUseCase } from './contracts/use-cases/update-contract.usecase';
+import { JobDescriptionsController } from './job-descriptions/job-descriptions.controller';
+import { ListJobDescriptionsUseCase } from './job-descriptions/use-cases/list-job-descriptions.usecase';
+import { GetJobDescriptionUseCase } from './job-descriptions/use-cases/get-job-description.usecase';
+import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create-job-description.usecase';
+import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
+import { DocumentExpiryJob } from './jobs/document-expiry.job';
+import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.job';
+import { RecruitmentRequestsController } from './recruitment/recruitment-requests.controller';
+import { HiringDecisionsController } from './recruitment/hiring-decisions.controller';
+import { JobPostingsController } from './recruitment/job-postings.controller';
+import { CandidatesController } from './recruitment/candidates.controller';
+import { ListRecruitmentRequestsUseCase } from './recruitment/use-cases/list-recruitment-requests.usecase';
+import { GetRecruitmentRequestUseCase } from './recruitment/use-cases/get-recruitment-request.usecase';
+import { CreateRecruitmentRequestUseCase } from './recruitment/use-cases/create-recruitment-request.usecase';
+import { UpdateRecruitmentRequestUseCase } from './recruitment/use-cases/update-recruitment-request.usecase';
+import { SubmitRecruitmentRequestUseCase } from './recruitment/use-cases/submit-recruitment-request.usecase';
+import { ApproveRecruitmentRequestUseCase } from './recruitment/use-cases/approve-recruitment-request.usecase';
+import { CreateJobPostingFromRequestUseCase } from './recruitment/use-cases/create-job-posting-from-request.usecase';
+import { CreateHiringDecisionUseCase } from './recruitment/use-cases/create-hiring-decision.usecase';
+import { GetHiringDecisionUseCase } from './recruitment/use-cases/get-hiring-decision.usecase';
+import { FinalizeHiringDecisionUseCase } from './recruitment/use-cases/finalize-hiring-decision.usecase';
+import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-offer.usecase';
+import { ListJobPostingsUseCase } from './recruitment/use-cases/list-job-postings.usecase';
+import { GetJobPostingUseCase } from './recruitment/use-cases/get-job-posting.usecase';
+import { UpdateJobPostingUseCase } from './recruitment/use-cases/update-job-posting.usecase';
+import { PublishJobPostingUseCase } from './recruitment/use-cases/publish-job-posting.usecase';
+import { CloseJobPostingUseCase } from './recruitment/use-cases/close-job-posting.usecase';
+import { ListCandidatesForPostingUseCase } from './recruitment/use-cases/list-candidates-for-posting.usecase';
+import { CreateCandidateUseCase } from './recruitment/use-cases/create-candidate.usecase';
+import { GetCandidateUseCase } from './recruitment/use-cases/get-candidate.usecase';
+import { UpdateCandidateUseCase } from './recruitment/use-cases/update-candidate.usecase';
+import { UpdateCandidateStatusUseCase } from './recruitment/use-cases/update-candidate-status.usecase';
+import { ListCandidateScreeningsUseCase } from './recruitment/use-cases/list-candidate-screenings.usecase';
+import { CreateCvScreeningUseCase } from './recruitment/use-cases/create-cv-screening.usecase';
+import { ListInterviewFeedbackUseCase } from './recruitment/use-cases/list-interview-feedback.usecase';
+import { CreateInterviewFeedbackUseCase } from './recruitment/use-cases/create-interview-feedback.usecase';
+import { ListHiringDecisionsUseCase } from './recruitment/use-cases/list-hiring-decisions.usecase';
+import { RecruitmentNotificationService } from './recruitment/recruitment-notification.service';
+import { OnboardingController } from './onboarding/onboarding.controller';
+import { AssetProvisioningController } from './onboarding/asset-provisioning.controller';
+import { PolicyAcknowledgementsController } from './onboarding/policy-acknowledgements.controller';
+import { ProbationPlansController } from './onboarding/probation-plans.controller';
+import { ProbationEvaluationsController } from './onboarding/probation-evaluations.controller';
+import { ProbationConfirmationsController } from './onboarding/probation-confirmations.controller';
+import { OnboardingNotificationService } from './onboarding/onboarding-notification.service';
+import { OnboardingLifecycleService } from './onboarding/onboarding-lifecycle.service';
+import { CreateOnboardingChecklistUseCase } from './onboarding/use-cases/create-onboarding-checklist.usecase';
+import { GetOnboardingChecklistUseCase } from './onboarding/use-cases/get-onboarding-checklist.usecase';
+import { ListOnboardingChecklistsUseCase } from './onboarding/use-cases/list-onboarding-checklists.usecase';
+import { UpdateOnboardingChecklistUseCase } from './onboarding/use-cases/update-onboarding-checklist.usecase';
+import { UpdateOnboardingTaskUseCase } from './onboarding/use-cases/update-onboarding-task.usecase';
+import { CreateAssetProvisioningUseCase } from './onboarding/use-cases/create-asset-provisioning.usecase';
+import { ListAssetProvisioningUseCase } from './onboarding/use-cases/list-asset-provisioning.usecase';
+import { GetAssetProvisioningUseCase } from './onboarding/use-cases/get-asset-provisioning.usecase';
+import { UpdateAssetProvisioningUseCase } from './onboarding/use-cases/update-asset-provisioning.usecase';
+import { ApproveAssetProvisioningUseCase } from './onboarding/use-cases/approve-asset-provisioning.usecase';
+import { CreatePolicyAcknowledgementUseCase } from './onboarding/use-cases/create-policy-acknowledgement.usecase';
+import { ListPolicyAcknowledgementsUseCase } from './onboarding/use-cases/list-policy-acknowledgements.usecase';
+import { GetPolicyAcknowledgementUseCase } from './onboarding/use-cases/get-policy-acknowledgement.usecase';
+import { VerifyPolicyAcknowledgementUseCase } from './onboarding/use-cases/verify-policy-acknowledgement.usecase';
+import { GrantPolicyAccessUseCase } from './onboarding/use-cases/grant-policy-access.usecase';
+import { CreateProbationPlanUseCase } from './onboarding/use-cases/create-probation-plan.usecase';
+import { ListProbationPlansUseCase } from './onboarding/use-cases/list-probation-plans.usecase';
+import { GetProbationPlanUseCase } from './onboarding/use-cases/get-probation-plan.usecase';
+import { UpdateProbationPlanUseCase } from './onboarding/use-cases/update-probation-plan.usecase';
+import { EndorseProbationPlanUseCase } from './onboarding/use-cases/endorse-probation-plan.usecase';
+import { CreateProbationEvaluationUseCase } from './onboarding/use-cases/create-probation-evaluation.usecase';
+import { ListProbationEvaluationsUseCase } from './onboarding/use-cases/list-probation-evaluations.usecase';
+import { GetProbationEvaluationUseCase } from './onboarding/use-cases/get-probation-evaluation.usecase';
+import { UpdateProbationEvaluationUseCase } from './onboarding/use-cases/update-probation-evaluation.usecase';
+import { ApproveProbationEvaluationUseCase } from './onboarding/use-cases/approve-probation-evaluation.usecase';
+import { CreateProbationConfirmationUseCase } from './onboarding/use-cases/create-probation-confirmation.usecase';
+import { ListProbationConfirmationsUseCase } from './onboarding/use-cases/list-probation-confirmations.usecase';
+import { GetProbationConfirmationUseCase } from './onboarding/use-cases/get-probation-confirmation.usecase';
+import { UpdateProbationConfirmationUseCase } from './onboarding/use-cases/update-probation-confirmation.usecase';
+import { SignOffProbationConfirmationUseCase } from './onboarding/use-cases/sign-off-probation-confirmation.usecase';
+import { LeaveController } from './leave/leave.controller';
+import { CreateLeaveRequestUseCase } from './leave/use-cases/create-leave-request.usecase';
+import { ListLeaveRequestsUseCase } from './leave/use-cases/list-leave-requests.usecase';
+import { GetLeaveRequestUseCase } from './leave/use-cases/get-leave-request.usecase';
+import { SubmitLeaveRequestUseCase } from './leave/use-cases/submit-leave-request.usecase';
+import { ApproveLeaveRequestUseCase } from './leave/use-cases/approve-leave-request.usecase';
+import { RejectLeaveRequestUseCase } from './leave/use-cases/reject-leave-request.usecase';
+import { GetLeaveBalanceUseCase } from './leave/use-cases/get-leave-balance.usecase';
+import { AttendanceController } from './attendance/attendance.controller';
+import { AttendanceCalendarService } from './attendance/attendance-calendar.service';
+import { AttendanceReconciliationService } from './attendance/attendance-reconciliation.service';
+import { AssignUserWorkScheduleUseCase } from './attendance/use-cases/assign-user-work-schedule.usecase';
+import { CreateHolidayUseCase } from './attendance/use-cases/create-holiday.usecase';
+import { CreateWorkScheduleUseCase } from './attendance/use-cases/create-work-schedule.usecase';
+import { UpsertAttendanceLogUseCase } from './attendance/use-cases/upsert-attendance-log.usecase';
+import { ListAttendanceLogsUseCase } from './attendance/use-cases/list-attendance-logs.usecase';
+import { GetAttendanceLogUseCase } from './attendance/use-cases/get-attendance-log.usecase';
+import { ListHolidaysUseCase } from './attendance/use-cases/list-holidays.usecase';
+import { ListUserWorkSchedulesUseCase } from './attendance/use-cases/list-user-work-schedules.usecase';
+import { ListWorkSchedulesUseCase } from './attendance/use-cases/list-work-schedules.usecase';
+import { HrUserLifecycleService } from './hr-user-lifecycle.service';
+import { LeaveBalanceService } from './leave/leave-balance.service';
+import { PerformanceController } from './performance/performance.controller';
+import { ListReviewPeriodsUseCase } from './performance/use-cases/list-review-periods.usecase';
+import { EnsureReviewPeriodUseCase } from './performance/use-cases/ensure-review-period.usecase';
+import { CreatePerformanceReviewUseCase } from './performance/use-cases/create-performance-review.usecase';
+import { ListPerformanceReviewsUseCase } from './performance/use-cases/list-performance-reviews.usecase';
+import { GetPerformanceReviewUseCase } from './performance/use-cases/get-performance-review.usecase';
+import { UpdateSelfAssessmentUseCase } from './performance/use-cases/update-self-assessment.usecase';
+import { UpdateManagerReviewUseCase } from './performance/use-cases/update-manager-review.usecase';
+import { CompletePerformanceReviewUseCase } from './performance/use-cases/complete-performance-review.usecase';
+import { GetAnnualSummaryUseCase } from './performance/use-cases/get-annual-summary.usecase';
+import { ListPerformanceCalibrationsUseCase } from './performance/use-cases/list-performance-calibrations.usecase';
+import { ListPerformanceReviewFeedbackUseCase } from './performance/use-cases/list-performance-review-feedback.usecase';
+import { UpsertPerformanceCalibrationUseCase } from './performance/use-cases/upsert-performance-calibration.usecase';
+import { UpsertPerformanceReviewFeedbackUseCase } from './performance/use-cases/upsert-performance-review-feedback.usecase';
+import { OkrController } from './okr/okr.controller';
+import { CreateOkrUseCase } from './okr/use-cases/create-okr.usecase';
+import { ListOkrsUseCase } from './okr/use-cases/list-okrs.usecase';
+import { GetOkrUseCase } from './okr/use-cases/get-okr.usecase';
+import { UpdateOkrUseCase } from './okr/use-cases/update-okr.usecase';
+import { UpdateKeyResultUseCase } from './okr/use-cases/update-key-result.usecase';
+import { GetOkrProgressUseCase } from './okr/use-cases/get-okr-progress.usecase';
+import { ListKeyResultUpdatesUseCase } from './okr/use-cases/list-key-result-updates.usecase';
+import { ReweightKeyResultsUseCase } from './okr/use-cases/reweight-key-results.usecase';
+import { PromotionProposalsController } from './talent/promotion-proposals.controller';
+import { SuccessionPlansController } from './talent/succession-plans.controller';
+import { CreatePromotionProposalUseCase } from './talent/use-cases/create-promotion-proposal.usecase';
+import { CreateSuccessionPlanUseCase } from './talent/use-cases/create-succession-plan.usecase';
+import { GetPromotionProposalUseCase } from './talent/use-cases/get-promotion-proposal.usecase';
+import { ListPromotionProposalsUseCase } from './talent/use-cases/list-promotion-proposals.usecase';
+import { ListSuccessionPlansUseCase } from './talent/use-cases/list-succession-plans.usecase';
+import { ReviewPromotionProposalUseCase } from './talent/use-cases/review-promotion-proposal.usecase';
+import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-succession-plan.usecase';
+import { TrainingController } from './training/training.controller';
+import { ListSkillsUseCase } from './training/use-cases/list-skills.usecase';
+import { CreateSkillUseCase } from './training/use-cases/create-skill.usecase';
+import { GetEmployeeSkillsUseCase } from './training/use-cases/get-employee-skills.usecase';
+import { UpsertEmployeeSkillsUseCase } from './training/use-cases/upsert-employee-skills.usecase';
+import { GetTrainingBudgetUseCase } from './training/use-cases/get-training-budget.usecase';
+import { CreateTrainingRequestUseCase } from './training/use-cases/create-training-request.usecase';
+import { ListTrainingRequestsUseCase } from './training/use-cases/list-training-requests.usecase';
+import { GetTrainingRequestUseCase } from './training/use-cases/get-training-request.usecase';
+import { ApproveTrainingRequestUseCase } from './training/use-cases/approve-training-request.usecase';
+import { CreateTrainingCompletionUseCase } from './training/use-cases/create-training-completion.usecase';
+import { ListTrainingCompletionsUseCase } from './training/use-cases/list-training-completions.usecase';
+import { GetTrainingCompletionUseCase } from './training/use-cases/get-training-completion.usecase';
+import { UpdateTrainingCompletionUseCase } from './training/use-cases/update-training-completion.usecase';
+import { CreateSkillGapAssessmentUseCase } from './training/use-cases/create-skill-gap-assessment.usecase';
+import { ListSkillGapAssessmentsUseCase } from './training/use-cases/list-skill-gap-assessments.usecase';
+import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap-assessment.usecase';
+import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
+import { CertificationExpiryJob } from './jobs/certification-expiry.job';
+import { RecruitmentPostingLifecycleJob } from './jobs/recruitment-posting-lifecycle.job';
+import { OnboardingOverdueJob } from './jobs/onboarding-overdue.job';
+import { ProbationMilestoneJob } from './jobs/probation-milestone.job';
+import { RelationsController } from './relations/relations.controller';
+import { OffboardingController } from './offboarding/offboarding.controller';
+import { CreateResignationUseCase } from './offboarding/use-cases/create-resignation.usecase';
+import { ListResignationsUseCase } from './offboarding/use-cases/list-resignations.usecase';
+import { GetResignationUseCase } from './offboarding/use-cases/get-resignation.usecase';
+import { UpdateResignationUseCase } from './offboarding/use-cases/update-resignation.usecase';
+import { GenerateOffboardingChecklistUseCase } from './offboarding/use-cases/generate-offboarding-checklist.usecase';
+import { GetOffboardingChecklistUseCase } from './offboarding/use-cases/get-offboarding-checklist.usecase';
+import { CompleteOffboardingTaskUseCase } from './offboarding/use-cases/complete-offboarding-task.usecase';
+import { CreateExitInterviewUseCase } from './offboarding/use-cases/create-exit-interview.usecase';
+import { ListExitInterviewsUseCase } from './offboarding/use-cases/list-exit-interviews.usecase';
+import { CreateFinalSettlementUseCase } from './offboarding/use-cases/create-final-settlement.usecase';
+import { GetFinalSettlementUseCase } from './offboarding/use-cases/get-final-settlement.usecase';
+import { UpdateFinalSettlementUseCase } from './offboarding/use-cases/update-final-settlement.usecase';
+import { CreateAssetReturnUseCase } from './offboarding/use-cases/create-asset-return.usecase';
+import { UpdateAssetReturnUseCase } from './offboarding/use-cases/update-asset-return.usecase';
+import { CreateComplianceChecklistUseCase } from './offboarding/use-cases/create-compliance-checklist.usecase';
+import { UpdateComplianceChecklistUseCase } from './offboarding/use-cases/update-compliance-checklist.usecase';
+import { CompleteOffboardingUseCase } from './offboarding/use-cases/complete-offboarding.usecase';
+import { CreateIncidentReportUseCase } from './relations/use-cases/create-incident-report.usecase';
+import { ListIncidentReportsUseCase } from './relations/use-cases/list-incident-reports.usecase';
+import { GetIncidentReportUseCase } from './relations/use-cases/get-incident-report.usecase';
+import { UpdateIncidentReportUseCase } from './relations/use-cases/update-incident-report.usecase';
+import { CreateDisciplinaryActionUseCase } from './relations/use-cases/create-disciplinary-action.usecase';
+import { ListDisciplinaryActionsUseCase } from './relations/use-cases/list-disciplinary-actions.usecase';
+import { GetDisciplinaryActionUseCase } from './relations/use-cases/get-disciplinary-action.usecase';
+import { CreateGrievanceUseCase } from './relations/use-cases/create-grievance.usecase';
+import { ListGrievancesUseCase } from './relations/use-cases/list-grievances.usecase';
+import { GetGrievanceUseCase } from './relations/use-cases/get-grievance.usecase';
+import { UpdateGrievanceUseCase } from './relations/use-cases/update-grievance.usecase';
+import { CreateRecognitionUseCase } from './relations/use-cases/create-recognition.usecase';
+import { ListRecognitionsUseCase } from './relations/use-cases/list-recognitions.usecase';
+import { GetRecognitionUseCase } from './relations/use-cases/get-recognition.usecase';
+import { ApproveRecognitionUseCase } from './relations/use-cases/approve-recognition.usecase';
+import { CreateSurveyUseCase } from './relations/use-cases/create-survey.usecase';
+import { ListSurveysUseCase } from './relations/use-cases/list-surveys.usecase';
+import { GetSurveyUseCase } from './relations/use-cases/get-survey.usecase';
+import { UpdateSurveyUseCase } from './relations/use-cases/update-survey.usecase';
+import { SubmitSurveyResponseUseCase } from './relations/use-cases/submit-survey-response.usecase';
+import { GetSurveyResultsUseCase } from './relations/use-cases/get-survey-results.usecase';
+import { CreateMediationUseCase } from './relations/use-cases/create-mediation.usecase';
+import { ListMediationsUseCase } from './relations/use-cases/list-mediations.usecase';
+import { GetMediationUseCase } from './relations/use-cases/get-mediation.usecase';
+import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.usecase';
 
 @Module({
-  providers: [HrService],
-  controllers: [HrController],
+  controllers: [
+    EmployeesController,
+    EmployeeDocumentsController,
+    EmployeeContractsController,
+    JobDescriptionsController,
+    RecruitmentRequestsController,
+    HiringDecisionsController,
+    JobPostingsController,
+    CandidatesController,
+    OnboardingController,
+    AssetProvisioningController,
+    PolicyAcknowledgementsController,
+    ProbationPlansController,
+    ProbationEvaluationsController,
+    ProbationConfirmationsController,
+    LeaveController,
+    AttendanceController,
+    PerformanceController,
+    OkrController,
+    SuccessionPlansController,
+    PromotionProposalsController,
+    TrainingController,
+    RelationsController,
+    OffboardingController,
+  ],
+  providers: [
+    ListEmployeesUseCase,
+    GetEmployeeFullUseCase,
+    ListEmployeeDocumentsUseCase,
+    CreateEmployeeDocumentUseCase,
+    UpdateEmployeeDocumentUseCase,
+    ListEmployeeContractsUseCase,
+    CreateContractUseCase,
+    UpdateContractUseCase,
+    ListJobDescriptionsUseCase,
+    GetJobDescriptionUseCase,
+    CreateJobDescriptionUseCase,
+    UpdateJobDescriptionUseCase,
+    DocumentExpiryJob,
+    AttendanceReconciliationJob,
+    CertificationExpiryJob,
+    RecruitmentPostingLifecycleJob,
+    OnboardingOverdueJob,
+    ProbationMilestoneJob,
+    ListRecruitmentRequestsUseCase,
+    GetRecruitmentRequestUseCase,
+    CreateRecruitmentRequestUseCase,
+    UpdateRecruitmentRequestUseCase,
+    SubmitRecruitmentRequestUseCase,
+    ApproveRecruitmentRequestUseCase,
+    CreateJobPostingFromRequestUseCase,
+    CreateHiringDecisionUseCase,
+    ListHiringDecisionsUseCase,
+    GetHiringDecisionUseCase,
+    FinalizeHiringDecisionUseCase,
+    AcceptHiringOfferUseCase,
+    ListJobPostingsUseCase,
+    GetJobPostingUseCase,
+    UpdateJobPostingUseCase,
+    PublishJobPostingUseCase,
+    CloseJobPostingUseCase,
+    ListCandidatesForPostingUseCase,
+    CreateCandidateUseCase,
+    GetCandidateUseCase,
+    UpdateCandidateUseCase,
+    UpdateCandidateStatusUseCase,
+    ListCandidateScreeningsUseCase,
+    CreateCvScreeningUseCase,
+    ListInterviewFeedbackUseCase,
+    CreateInterviewFeedbackUseCase,
+    RecruitmentNotificationService,
+    OnboardingNotificationService,
+    OnboardingLifecycleService,
+    CreateOnboardingChecklistUseCase,
+    ListOnboardingChecklistsUseCase,
+    GetOnboardingChecklistUseCase,
+    UpdateOnboardingChecklistUseCase,
+    UpdateOnboardingTaskUseCase,
+    CreateAssetProvisioningUseCase,
+    ListAssetProvisioningUseCase,
+    GetAssetProvisioningUseCase,
+    UpdateAssetProvisioningUseCase,
+    ApproveAssetProvisioningUseCase,
+    CreatePolicyAcknowledgementUseCase,
+    ListPolicyAcknowledgementsUseCase,
+    GetPolicyAcknowledgementUseCase,
+    VerifyPolicyAcknowledgementUseCase,
+    GrantPolicyAccessUseCase,
+    CreateProbationPlanUseCase,
+    ListProbationPlansUseCase,
+    GetProbationPlanUseCase,
+    UpdateProbationPlanUseCase,
+    EndorseProbationPlanUseCase,
+    CreateProbationEvaluationUseCase,
+    ListProbationEvaluationsUseCase,
+    GetProbationEvaluationUseCase,
+    UpdateProbationEvaluationUseCase,
+    ApproveProbationEvaluationUseCase,
+    CreateProbationConfirmationUseCase,
+    ListProbationConfirmationsUseCase,
+    GetProbationConfirmationUseCase,
+    UpdateProbationConfirmationUseCase,
+    SignOffProbationConfirmationUseCase,
+    CreateLeaveRequestUseCase,
+    ListLeaveRequestsUseCase,
+    GetLeaveRequestUseCase,
+    SubmitLeaveRequestUseCase,
+    ApproveLeaveRequestUseCase,
+    RejectLeaveRequestUseCase,
+    GetLeaveBalanceUseCase,
+    LeaveBalanceService,
+    HrUserLifecycleService,
+    AttendanceCalendarService,
+    AttendanceReconciliationService,
+    CreateWorkScheduleUseCase,
+    ListWorkSchedulesUseCase,
+    AssignUserWorkScheduleUseCase,
+    ListUserWorkSchedulesUseCase,
+    CreateHolidayUseCase,
+    ListHolidaysUseCase,
+    UpsertAttendanceLogUseCase,
+    ListAttendanceLogsUseCase,
+    GetAttendanceLogUseCase,
+    ListReviewPeriodsUseCase,
+    EnsureReviewPeriodUseCase,
+    CreatePerformanceReviewUseCase,
+    ListPerformanceReviewsUseCase,
+    GetPerformanceReviewUseCase,
+    UpdateSelfAssessmentUseCase,
+    UpdateManagerReviewUseCase,
+    CompletePerformanceReviewUseCase,
+    GetAnnualSummaryUseCase,
+    ListPerformanceReviewFeedbackUseCase,
+    UpsertPerformanceReviewFeedbackUseCase,
+    ListPerformanceCalibrationsUseCase,
+    UpsertPerformanceCalibrationUseCase,
+    CreateOkrUseCase,
+    ListOkrsUseCase,
+    GetOkrUseCase,
+    UpdateOkrUseCase,
+    UpdateKeyResultUseCase,
+    GetOkrProgressUseCase,
+    ListKeyResultUpdatesUseCase,
+    ReweightKeyResultsUseCase,
+    CreateSuccessionPlanUseCase,
+    ListSuccessionPlansUseCase,
+    UpdateSuccessionPlanUseCase,
+    CreatePromotionProposalUseCase,
+    ListPromotionProposalsUseCase,
+    GetPromotionProposalUseCase,
+    ReviewPromotionProposalUseCase,
+    ListSkillsUseCase,
+    CreateSkillUseCase,
+    GetEmployeeSkillsUseCase,
+    UpsertEmployeeSkillsUseCase,
+    GetTrainingBudgetUseCase,
+    CreateTrainingRequestUseCase,
+    ListTrainingRequestsUseCase,
+    GetTrainingRequestUseCase,
+    ApproveTrainingRequestUseCase,
+    CreateTrainingCompletionUseCase,
+    ListTrainingCompletionsUseCase,
+    GetTrainingCompletionUseCase,
+    UpdateTrainingCompletionUseCase,
+    CreateSkillGapAssessmentUseCase,
+    ListSkillGapAssessmentsUseCase,
+    GetSkillGapAssessmentUseCase,
+    GetIndividualSkillGapUseCase,
+    CreateIncidentReportUseCase,
+    ListIncidentReportsUseCase,
+    GetIncidentReportUseCase,
+    UpdateIncidentReportUseCase,
+    CreateDisciplinaryActionUseCase,
+    ListDisciplinaryActionsUseCase,
+    GetDisciplinaryActionUseCase,
+    CreateGrievanceUseCase,
+    ListGrievancesUseCase,
+    GetGrievanceUseCase,
+    UpdateGrievanceUseCase,
+    CreateRecognitionUseCase,
+    ListRecognitionsUseCase,
+    GetRecognitionUseCase,
+    ApproveRecognitionUseCase,
+    CreateSurveyUseCase,
+    ListSurveysUseCase,
+    GetSurveyUseCase,
+    UpdateSurveyUseCase,
+    SubmitSurveyResponseUseCase,
+    GetSurveyResultsUseCase,
+    CreateMediationUseCase,
+    ListMediationsUseCase,
+    GetMediationUseCase,
+    UpdateMediationUseCase,
+    CreateResignationUseCase,
+    ListResignationsUseCase,
+    GetResignationUseCase,
+    UpdateResignationUseCase,
+    GenerateOffboardingChecklistUseCase,
+    GetOffboardingChecklistUseCase,
+    CompleteOffboardingTaskUseCase,
+    CreateExitInterviewUseCase,
+    ListExitInterviewsUseCase,
+    CreateFinalSettlementUseCase,
+    GetFinalSettlementUseCase,
+    UpdateFinalSettlementUseCase,
+    CreateAssetReturnUseCase,
+    UpdateAssetReturnUseCase,
+    CreateComplianceChecklistUseCase,
+    UpdateComplianceChecklistUseCase,
+    CompleteOffboardingUseCase,
+  ],
 })
 export class HrModule {}

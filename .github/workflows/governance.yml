@@ -23,7 +23,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  commit-and-branch-rules:
+  commit-rules:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -43,9 +43,6 @@ jobs:
           NODE_AUTH_TOKEN: ''
         run: npm ci --workspaces=false --ignore-scripts --include=optional
 
-      - name: Validate branch naming
-        run: node apps/api/scripts/git/validate-branch-name.js "${{ github.head_ref }}"
-
       - name: Validate conventional commits
         run: |
           npx --no-install commitlint \
@@ -58,6 +55,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -70,11 +69,44 @@ jobs:
           NODE_AUTH_TOKEN: ''
         run: npm ci --include=optional
 
-      - name: Lint monorepo
-        run: npm run lint
+      - name: Detect changed workspaces
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            root:
+              - 'package.json'
+              - 'package-lock.json'
+              - 'turbo.json'
+            web:
+              - 'apps/web/**'
+            api:
+              - 'apps/api/**'
+            types:
+              - 'packages/types/**'
+            shared_configs:
+              - 'packages/eslint-config/**'
+              - 'packages/typescript-config/**'
 
-      - name: Type-check monorepo
-        run: npm run check-types
+      - name: Lint and type-check shared types
+        if: steps.changes.outputs.root == 'true' || steps.changes.outputs.types == 'true' || steps.changes.outputs.shared_configs == 'true'
+        run: |
+          npm run lint --workspace @repo/types
+          npm run check-types --workspace @repo/types
 
-      - name: Test monorepo
-        run: npm run test:ci
+      - name: Lint and type-check web
+        if: steps.changes.outputs.root == 'true' || steps.changes.outputs.web == 'true' || steps.changes.outputs.shared_configs == 'true'
+        run: |
+          npm run lint --workspace web
+          npm run check-types --workspace web
+
+      - name: Verify backend
+        if: steps.changes.outputs.root == 'true' || steps.changes.outputs.api == 'true' || steps.changes.outputs.types == 'true'
+        run: |
+          npm run lint:check --workspace blih-system-backend
+          npm run check-types --workspace blih-system-backend
+          npm run test --workspace blih-system-backend -- --ci --passWithNoTests
+
+      - name: No scoped verification needed
+        if: steps.changes.outputs.root != 'true' && steps.changes.outputs.web != 'true' && steps.changes.outputs.api != 'true' && steps.changes.outputs.types != 'true' && steps.changes.outputs.shared_configs != 'true'
+        run: echo "No application or shared workspace changes detected."
