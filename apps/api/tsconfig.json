@@ -25,11 +25,5 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  },
-  "exclude": [
-    "src/domains/hr/training/use-cases/create-feedback-template.usecase.ts",
-    "src/domains/hr/training/use-cases/create-training-feedback.usecase.ts",
-    "src/domains/hr/training/use-cases/list-feedback-templates.usecase.ts",
-    "src/domains/hr/training/use-cases/list-training-feedback.usecase.ts"
-  ]
+  }
 }

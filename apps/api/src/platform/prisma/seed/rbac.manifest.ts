@@ -120,6 +120,13 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
   { name: 'user_lifecycle', description: 'User lifecycle records' },
   { name: 'succession_plan', description: 'Succession planning records' },
   { name: 'promotion_proposal', description: 'Promotion workflow proposals' },
+  { name: 'training_feedback', description: 'Training feedback records' },
+  { name: 'training_analytics', description: 'Training analytics and ROI' },
+  { name: 'certification', description: 'Certification lifecycle records' },
+  {
+    name: 'training_compliance',
+    description: 'Training compliance and audit reporting',
+  },
 ];
 
 export const RBAC_PERMISSIONS = [...AllPermissionSlugs];

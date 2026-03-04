@@ -366,6 +366,35 @@ export const TrainingPermissions = {
   ALL: 'training:*',
 } as const;
 
+export const TrainingFeedbackPermissions = {
+  VIEW: 'training_feedback:view',
+  CREATE: 'training_feedback:create',
+  MANAGE: 'training_feedback:manage',
+  ALL: 'training_feedback:*',
+} as const;
+
+export const TrainingAnalyticsPermissions = {
+  VIEW: 'training_analytics:view',
+  ROI: 'training_analytics:roi',
+  REPORT: 'training_analytics:report',
+  ALL: 'training_analytics:*',
+} as const;
+
+export const CertificationPermissions = {
+  VIEW: 'certification:view',
+  CREATE: 'certification:create',
+  UPDATE: 'certification:update',
+  RENEW: 'certification:renew',
+  ALL: 'certification:*',
+} as const;
+
+export const TrainingCompliancePermissions = {
+  VIEW: 'training_compliance:view',
+  AUDIT: 'training_compliance:audit',
+  REPORT: 'training_compliance:report',
+  ALL: 'training_compliance:*',
+} as const;
+
 export const CareerDevelopmentPermissions = {
   VIEW: 'career_development:view',
   CREATE: 'career_development:create',
@@ -453,6 +482,10 @@ export const PermissionGroups = {
   succession_plan: SuccessionPlanPermissions,
   promotion_proposal: PromotionProposalPermissions,
   training: TrainingPermissions,
+  training_feedback: TrainingFeedbackPermissions,
+  training_analytics: TrainingAnalyticsPermissions,
+  certification: CertificationPermissions,
+  training_compliance: TrainingCompliancePermissions,
   career_development: CareerDevelopmentPermissions,
   internal_transfer: InternalTransferPermissions,
   salary_adjustment: SalaryAdjustmentPermissions,

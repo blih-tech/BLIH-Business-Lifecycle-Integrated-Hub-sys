@@ -151,6 +151,15 @@ import { ListSuccessionPlansUseCase } from './talent/use-cases/list-succession-p
 import { ReviewPromotionProposalUseCase } from './talent/use-cases/review-promotion-proposal.usecase';
 import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-succession-plan.usecase';
 import { TrainingController } from './training/training.controller';
+import { TrainingFeedbackController } from './training/training-feedback.controller';
+import { TrainingAnalyticsController } from './training/training-analytics.controller';
+import { TrainingCertificationsController } from './training/training-certifications.controller';
+import { TrainingComplianceController } from './training/training-compliance.controller';
+import { TrainingFeedbackService } from './training/training-feedback.service';
+import { TrainingAnalyticsService } from './training/training-analytics.service';
+import { TrainingCertificationService } from './training/training-certification.service';
+import { TrainingComplianceService } from './training/training-compliance.service';
+import { TrainingProfileSyncService } from './training/training-profile-sync.service';
 import { TrainingNeedsAssessmentService } from './training/training-needs-assessment.service';
 import { ListSkillsUseCase } from './training/use-cases/list-skills.usecase';
 import { CreateSkillUseCase } from './training/use-cases/create-skill.usecase';
@@ -262,6 +271,10 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     SuccessionPlansController,
     PromotionProposalsController,
     TrainingController,
+    TrainingFeedbackController,
+    TrainingAnalyticsController,
+    TrainingCertificationsController,
+    TrainingComplianceController,
     InternalTransfersController,
     SalaryAdjustmentsController,
     RelationsController,
@@ -427,6 +440,7 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     ListTrainingRequestsUseCase,
     GetTrainingRequestUseCase,
     ApproveTrainingRequestUseCase,
+    TrainingProfileSyncService,
     CreateTrainingCompletionUseCase,
     ListTrainingCompletionsUseCase,
     GetTrainingCompletionUseCase,
@@ -436,6 +450,10 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     GetSkillGapAssessmentUseCase,
     GetIndividualSkillGapUseCase,
     TrainingNeedsAssessmentService,
+    TrainingFeedbackService,
+    TrainingAnalyticsService,
+    TrainingCertificationService,
+    TrainingComplianceService,
     CreateIncidentReportUseCase,
     ListIncidentReportsUseCase,
     GetIncidentReportUseCase,

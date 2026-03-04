@@ -459,6 +459,29 @@ enum CostPayer {
   SELF
 }
 
+enum FeedbackType {
+  COURSE
+  TRAINER
+  PROVIDER
+}
+
+enum FeedbackStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+}
+
+enum FeedbackRatingScale {
+  ONE_TO_FIVE
+  ONE_TO_TEN
+}
+
+enum FeedbackSubmissionType {
+  ANONYMOUS
+  IDENTIFIED
+  MANAGER_ONLY
+}
+
 model User {
   id                               String                        @id @default(uuid()) @db.Uuid
   keycloakId                       String                        @unique
@@ -510,6 +533,8 @@ model User {
   approvedPromotions               PromotionProposal[]           @relation("PromotionProposalApprovedBy")
   approvedTrainingRequests         TrainingRequest[]             @relation("TrainingRequestApprover")
   skillGapAssessmentsCreated       SkillGapAssessment[]          @relation("SkillGapAssessmentAssessor")
+  feedbackTemplatesCreated         TrainingFeedbackTemplate[]    @relation("FeedbackTemplateCreator")
+  trainingFeedbackReviewed         TrainingFeedback[]            @relation("TrainingFeedbackReviewer")
   incidentInvestigations           IncidentReport[]              @relation("IncidentReportInvestigator")
   disciplinaryActionsApproved      DisciplinaryAction[]          @relation("DisciplinaryActionApprover")
   grievancesAssigned               Grievance[]                   @relation("GrievanceAssignee")
@@ -567,6 +592,7 @@ model Employee {
   promotionProposals             PromotionProposal[]           @relation("PromotionProposalEmployee")
   trainingRequests               TrainingRequest[]
   trainingCompletions            TrainingCompletion[]
+  trainingFeedbackSubmissions    TrainingFeedback[]             @relation("FeedbackParticipant")
   employeeSkills                 EmployeeSkill[]
   incidentReportsFiled           IncidentReport[]              @relation("IncidentReportReporter")
   disciplinaryActionsSubject     DisciplinaryAction[]          @relation("DisciplinaryActionSubject")
@@ -2179,10 +2205,58 @@ model TrainingCompletion {
   syncedToProfile   Boolean          @default(false) @map("synced_to_profile")
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
+  feedback          TrainingFeedback[]
 
   @@index([employeeId])
   @@index([trainingRequestId])
   @@index([expiryDate])
+}
+
+model TrainingFeedbackTemplate {
+  id               String              @id @default(uuid()) @db.Uuid
+  name             String              @db.VarChar(256)
+  description      String?             @db.Text
+  feedbackType     FeedbackType        @map("feedback_type")
+  ratingScale      FeedbackRatingScale @map("rating_scale")
+  questions        Json                @db.JsonB
+  isActive         Boolean             @default(true) @map("is_active")
+  createdById      String              @map("created_by_id") @db.Uuid
+  createdBy        User                @relation("FeedbackTemplateCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  feedbackSessions TrainingFeedback[]
+
+  @@index([feedbackType])
+  @@index([isActive])
+  @@index([createdById])
+}
+
+model TrainingFeedback {
+  id                   String                 @id @default(uuid()) @db.Uuid
+  trainingCompletionId String                 @map("training_completion_id") @db.Uuid
+  trainingCompletion   TrainingCompletion     @relation(fields: [trainingCompletionId], references: [id], onDelete: Cascade)
+  templateId           String                 @map("template_id") @db.Uuid
+  template             TrainingFeedbackTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  participantId        String                 @map("participant_id") @db.Uuid
+  participant          Employee               @relation("FeedbackParticipant", fields: [participantId], references: [id], onDelete: Cascade)
+  submissionType       FeedbackSubmissionType @map("submission_type")
+  status               FeedbackStatus         @default(DRAFT)
+  responses            Json                   @db.JsonB
+  overallRating        Decimal?               @map("overall_rating") @db.Decimal(3, 2)
+  comments             String?                @db.Text
+  submittedAt          DateTime?              @map("submitted_at")
+  reviewedById         String?                @map("reviewed_by_id") @db.Uuid
+  reviewedBy           User?                  @relation("TrainingFeedbackReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt           DateTime?              @map("reviewed_at")
+  actionTaken          String?                @map("action_taken") @db.Text
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  @@index([trainingCompletionId])
+  @@index([templateId])
+  @@index([participantId])
+  @@index([status])
+  @@index([submittedAt])
 }
 
 model SkillGapAssessment {
