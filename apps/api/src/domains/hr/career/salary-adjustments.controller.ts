@@ -8,13 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   ApproveSalaryAdjustmentRequestDto,
   CreateSalaryAdjustmentRequestDto,
@@ -23,9 +17,15 @@ import type {
 } from '@repo/types';
 import { SalaryAdjustmentPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
+import { SalaryAdjustmentRequestResponseDto } from './dto/career-response.dto';
 import { SalaryAdjustmentService } from './salary-adjustment.service';
 
 @ApiTags('HR Salary Adjustments')
@@ -41,7 +41,15 @@ export class SalaryAdjustmentsController {
     roles: [SalaryAdjustmentPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List salary adjustment requests' })
-  @ApiOkResponse({ description: 'Salary adjustment request list' })
+  @ApiEnvelopeArrayResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Salary adjustment request list',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -58,7 +66,17 @@ export class SalaryAdjustmentsController {
   })
   @ApiOperation({ summary: 'Create salary adjustment request' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created salary adjustment request' })
+  @ApiEnvelopeOkResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Created salary adjustment request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments',
+    badRequest: 'Salary adjustment payload is invalid',
+    notFound: 'Employee or proposer not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateSalaryAdjustmentRequestDto) {
     return this.service.create(body);
   }
@@ -71,7 +89,16 @@ export class SalaryAdjustmentsController {
   })
   @ApiOperation({ summary: 'Get salary adjustment request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Salary adjustment request details' })
+  @ApiEnvelopeOkResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Salary adjustment request details',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments/:id',
+    notFound: 'Salary adjustment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.service.get(id);
   }
@@ -85,7 +112,17 @@ export class SalaryAdjustmentsController {
   @ApiOperation({ summary: 'Update draft salary adjustment request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated salary adjustment request' })
+  @ApiEnvelopeOkResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Updated salary adjustment request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments/:id',
+    badRequest: 'Salary adjustment payload is invalid',
+    notFound: 'Salary adjustment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(
     @Param('id') id: string,
     @Body() body: UpdateSalaryAdjustmentRequestDto,
@@ -101,7 +138,18 @@ export class SalaryAdjustmentsController {
   })
   @ApiOperation({ summary: 'Submit salary adjustment request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Submitted salary adjustment request' })
+  @ApiEnvelopeOkResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Submitted salary adjustment request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments/:id/submit',
+    badRequest:
+      'Salary adjustment request cannot be submitted in its current state',
+    notFound: 'Salary adjustment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submit(@Param('id') id: string) {
     return this.service.submit(id);
   }
@@ -115,7 +163,18 @@ export class SalaryAdjustmentsController {
   @ApiOperation({ summary: 'Approve salary adjustment request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Approved salary adjustment request' })
+  @ApiEnvelopeOkResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Approved salary adjustment request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments/:id/approve',
+    badRequest:
+      'Salary adjustment request cannot be approved in its current state',
+    notFound: 'Salary adjustment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   approve(
     @Param('id') id: string,
     @Body() body: ApproveSalaryAdjustmentRequestDto,
@@ -132,7 +191,17 @@ export class SalaryAdjustmentsController {
   @ApiOperation({ summary: 'Reject salary adjustment request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Rejected salary adjustment request' })
+  @ApiEnvelopeOkResponse(
+    SalaryAdjustmentRequestResponseDto,
+    'Rejected salary adjustment request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/salary-adjustments/:id/reject',
+    badRequest: 'Salary adjustment rejection payload is invalid',
+    notFound: 'Salary adjustment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   reject(
     @Param('id') id: string,
     @Body() body: RejectSalaryAdjustmentRequestDto & { approvedById: string },

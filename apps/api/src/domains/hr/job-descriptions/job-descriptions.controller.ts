@@ -8,15 +8,15 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ApiProtected } from '../../../shared/docs/openapi';
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeCreatedResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { EmployeePermissions } from '../../../core/rbac/constants/permissions.constants';
@@ -48,7 +48,15 @@ export class JobDescriptionsController {
     roles: [EmployeePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List job descriptions' })
-  @ApiOkResponse({ description: 'List of job descriptions' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'List of job descriptions',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/job-descriptions',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('departmentId') departmentId?: string,
     @Query('positionId') positionId?: string,
@@ -64,7 +72,13 @@ export class JobDescriptionsController {
   })
   @ApiOperation({ summary: 'Get job description' })
   @ApiParam({ name: 'id', description: 'Job description id' })
-  @ApiOkResponse({ description: 'Job description' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Job description')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/job-descriptions/:id',
+    notFound: 'Job description not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.getJobDescriptionUseCase.execute(id);
   }
@@ -77,7 +91,16 @@ export class JobDescriptionsController {
   })
   @ApiOperation({ summary: 'Create job description' })
   @ApiBody({ schema: { type: 'object', required: ['title'] } })
-  @ApiCreatedResponse({ description: 'Created job description' })
+  @ApiEnvelopeCreatedResponse(
+    GenericEntityResponseDto,
+    'Created job description',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/job-descriptions',
+    badRequest: 'Job description payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateJobDescriptionDto) {
     return this.createJobDescriptionUseCase.execute(body);
   }
@@ -91,7 +114,14 @@ export class JobDescriptionsController {
   @ApiOperation({ summary: 'Update job description' })
   @ApiParam({ name: 'id', description: 'Job description id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated job description' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated job description')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/job-descriptions/:id',
+    badRequest: 'Job description payload is invalid',
+    notFound: 'Job description not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(@Param('id') id: string, @Body() body: UpdateJobDescriptionDto) {
     return this.updateJobDescriptionUseCase.execute(id, body);
   }

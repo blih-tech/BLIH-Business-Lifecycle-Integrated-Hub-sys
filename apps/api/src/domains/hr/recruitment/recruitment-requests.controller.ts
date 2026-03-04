@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { AuthPrincipal } from '../../../shared/interfaces/auth-principal.interface';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ApiProtected } from '../../../shared/docs/openapi';
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { RecruitmentRequestPermissions } from '../../../core/rbac/constants/permissions.constants';
@@ -59,7 +59,15 @@ export class RecruitmentRequestsController {
     roles: [RecruitmentRequestPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List recruitment requests' })
-  @ApiOkResponse({ description: 'List of recruitment requests' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'List of recruitment requests',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('status') status?: string,
     @Query('departmentId') departmentId?: string,
@@ -76,7 +84,13 @@ export class RecruitmentRequestsController {
   })
   @ApiOperation({ summary: 'Get recruitment request' })
   @ApiParam({ name: 'id', description: 'Request id' })
-  @ApiOkResponse({ description: 'Recruitment request' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Recruitment request')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests/:id',
+    notFound: 'Recruitment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.getUseCase.execute(id);
   }
@@ -90,7 +104,13 @@ export class RecruitmentRequestsController {
   })
   @ApiOperation({ summary: 'Create recruitment request' })
   @ApiBody({ schema: { type: 'object', required: ['departmentId'] } })
-  @ApiOkResponse({ description: 'Created request' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created request')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests',
+    badRequest: 'Recruitment request payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Authenticated user id required',
+  })
   create(
     @Body() body: CreateRecruitmentRequestDto,
     @Req() req: Request & { user?: AuthPrincipal },
@@ -110,7 +130,15 @@ export class RecruitmentRequestsController {
   })
   @ApiOperation({ summary: 'Update draft recruitment request' })
   @ApiParam({ name: 'id', description: 'Request id' })
-  @ApiOkResponse({ description: 'Updated request' })
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated request')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests/:id',
+    badRequest: 'Recruitment request payload is invalid',
+    notFound: 'Recruitment request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(@Param('id') id: string, @Body() body: UpdateRecruitmentRequestDto) {
     return this.updateUseCase.execute(id, body);
   }
@@ -124,7 +152,14 @@ export class RecruitmentRequestsController {
   })
   @ApiOperation({ summary: 'Submit request for approval' })
   @ApiParam({ name: 'id', description: 'Request id' })
-  @ApiOkResponse({ description: 'Submitted' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Submitted request')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests/:id/submit',
+    notFound: 'Recruitment request not found',
+    conflict: 'Recruitment request cannot be submitted from its current state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submit(@Param('id') id: string) {
     return this.submitUseCase.execute(id);
   }
@@ -139,7 +174,15 @@ export class RecruitmentRequestsController {
   @ApiOperation({ summary: 'Record approval step' })
   @ApiParam({ name: 'id', description: 'Request id' })
   @ApiBody({ schema: { type: 'object', required: ['role', 'decision'] } })
-  @ApiOkResponse({ description: 'Approval recorded' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Approval recorded')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests/:id/approve',
+    badRequest: 'Approval payload is invalid',
+    notFound: 'Recruitment request not found',
+    conflict: 'Recruitment request cannot be approved from its current state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Authenticated user id required',
+  })
   approve(
     @Param('id') id: string,
     @Body()
@@ -173,7 +216,15 @@ export class RecruitmentRequestsController {
   @ApiOperation({ summary: 'Create job posting from approved request' })
   @ApiParam({ name: 'id', description: 'Request id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created job posting' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created job posting')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/requests/:id/job-posting',
+    badRequest: 'Job posting payload is invalid',
+    notFound: 'Recruitment request not found',
+    conflict: 'Job posting cannot be created from the current request state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createJobPosting(
     @Param('id') id: string,
     @Body()

@@ -10,20 +10,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   CreateFeedbackTemplateDto,
   CreateTrainingFeedbackDto,
 } from '@repo/types';
 import { TrainingFeedbackPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import type { AuthPrincipal } from '../../../shared/interfaces/auth-principal.interface';
@@ -45,7 +45,15 @@ export class TrainingFeedbackController {
     ],
   })
   @ApiOperation({ summary: 'List training feedback templates' })
-  @ApiOkResponse({ description: 'Training feedback templates' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'Training feedback templates',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/feedback/templates',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listTemplates(
     @Query('feedbackType') feedbackType?: string,
     @Query('isActive') isActive?: string,
@@ -67,6 +75,16 @@ export class TrainingFeedbackController {
   })
   @ApiOperation({ summary: 'Create training feedback template' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Created training feedback template',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/feedback/templates',
+    badRequest: 'Training feedback template payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Authenticated user required to create template',
+  })
   createTemplate(
     @Body() body: CreateFeedbackTemplateDto,
     @Req() req: Request & { user?: AuthPrincipal },
@@ -87,6 +105,15 @@ export class TrainingFeedbackController {
     roles: [TrainingFeedbackPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List training feedback submissions' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'Training feedback submissions',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/feedback',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listFeedback(
     @Query('trainingCompletionId') trainingCompletionId?: string,
     @Query('templateId') templateId?: string,
@@ -113,6 +140,16 @@ export class TrainingFeedbackController {
   })
   @ApiOperation({ summary: 'Submit training feedback' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Submitted training feedback',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/feedback',
+    badRequest: 'Training feedback payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Authenticated user required to submit feedback',
+  })
   createFeedback(
     @Body() body: CreateTrainingFeedbackDto,
     @Req() req: Request & { user?: AuthPrincipal },
@@ -134,6 +171,13 @@ export class TrainingFeedbackController {
   })
   @ApiOperation({ summary: 'Get training feedback' })
   @ApiParam({ name: 'id' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Training feedback')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/feedback/:id',
+    notFound: 'Training feedback not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getFeedback(@Param('id') id: string) {
     return this.service.getFeedback(id);
   }
@@ -146,6 +190,16 @@ export class TrainingFeedbackController {
   })
   @ApiOperation({ summary: 'List feedback for a training completion' })
   @ApiParam({ name: 'completionId' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'Training completion feedback',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/completions/:completionId/feedback',
+    notFound: 'Training completion not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listCompletionFeedback(@Param('completionId') completionId: string) {
     return this.service.listFeedback({ trainingCompletionId: completionId });
   }

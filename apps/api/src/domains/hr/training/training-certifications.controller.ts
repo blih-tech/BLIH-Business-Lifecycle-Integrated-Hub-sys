@@ -8,13 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   CreateCertificationDto,
   RenewCertificationDto,
@@ -22,7 +16,13 @@ import type {
 } from '@repo/types';
 import { CertificationPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { TrainingCertificationService } from './training-certification.service';
@@ -40,6 +40,12 @@ export class TrainingCertificationsController {
     roles: [CertificationPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List expiring certifications' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Expiring certifications')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/certifications/expiring',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listExpiring(
     @Query('employeeId') employeeId?: string,
     @Query('days') days?: string,
@@ -57,7 +63,12 @@ export class TrainingCertificationsController {
     roles: [CertificationPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List certifications' })
-  @ApiOkResponse({ description: 'Certification list' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Certification list')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/certifications',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -81,6 +92,16 @@ export class TrainingCertificationsController {
   })
   @ApiOperation({ summary: 'Create certification record' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Created certification record',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/certifications',
+    badRequest: 'Certification payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateCertificationDto) {
     return this.service.create(body);
   }
@@ -93,6 +114,13 @@ export class TrainingCertificationsController {
   })
   @ApiOperation({ summary: 'Get certification' })
   @ApiParam({ name: 'id' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Certification details')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/certifications/:id',
+    notFound: 'Certification not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.service.get(id);
   }
@@ -106,6 +134,14 @@ export class TrainingCertificationsController {
   @ApiOperation({ summary: 'Update certification' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated certification')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/certifications/:id',
+    badRequest: 'Certification payload is invalid',
+    notFound: 'Certification not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(@Param('id') id: string, @Body() body: UpdateCertificationDto) {
     return this.service.update(id, body);
   }
@@ -119,6 +155,14 @@ export class TrainingCertificationsController {
   @ApiOperation({ summary: 'Renew certification' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Renewed certification')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/training/certifications/:id/renew',
+    badRequest: 'Certification renewal payload is invalid',
+    notFound: 'Certification not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   renew(@Param('id') id: string, @Body() body: RenewCertificationDto) {
     return this.service.renew(id, body);
   }

@@ -14,17 +14,17 @@ import type {
   CreateHiringDecisionDto,
   FinalizeHiringDecisionDto,
 } from '@repo/types';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { HiringDecisionPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
@@ -55,6 +55,15 @@ export class HiringDecisionsController {
     roles: [HiringDecisionPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List hiring decisions' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'List of hiring decisions',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/hiring-decisions',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('finalDecision') finalDecision?: string,
     @Query('recruitmentRequestId') recruitmentRequestId?: string,
@@ -76,7 +85,13 @@ export class HiringDecisionsController {
   })
   @ApiOperation({ summary: 'Create hiring decision' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created hiring decision' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created hiring decision')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/hiring-decisions',
+    badRequest: 'Hiring decision payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Authenticated user id required',
+  })
   create(
     @Body() body: CreateHiringDecisionDto,
     @Req() req: Request & { user?: AuthPrincipal },
@@ -96,7 +111,13 @@ export class HiringDecisionsController {
   })
   @ApiOperation({ summary: 'Get hiring decision' })
   @ApiParam({ name: 'id', description: 'Hiring decision id' })
-  @ApiOkResponse({ description: 'Hiring decision details' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Hiring decision details')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/hiring-decisions/:id',
+    notFound: 'Hiring decision not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.getUseCase.execute(id);
   }
@@ -111,7 +132,15 @@ export class HiringDecisionsController {
   @ApiOperation({ summary: 'Finalize hiring decision outcome' })
   @ApiParam({ name: 'id', description: 'Hiring decision id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Finalized hiring decision' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Finalized hiring decision')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/hiring-decisions/:id/finalize',
+    badRequest: 'Hiring decision finalization payload is invalid',
+    notFound: 'Hiring decision not found',
+    conflict: 'Hiring decision cannot be finalized from its current state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   finalize(@Param('id') id: string, @Body() body: FinalizeHiringDecisionDto) {
     return this.finalizeUseCase.execute(id, body);
   }
@@ -128,7 +157,15 @@ export class HiringDecisionsController {
   })
   @ApiParam({ name: 'id', description: 'Hiring decision id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Offer acceptance processed' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Offer acceptance processed')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/hiring-decisions/:id/accept-offer',
+    badRequest: 'Offer acceptance payload is invalid',
+    notFound: 'Hiring decision not found',
+    conflict: 'Offer cannot be accepted from the current decision state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   acceptOffer(@Param('id') id: string, @Body() body: AcceptOfferDto) {
     return this.acceptOfferUseCase.execute(id, body);
   }

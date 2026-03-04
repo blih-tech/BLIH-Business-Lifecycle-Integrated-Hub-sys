@@ -30,13 +30,7 @@ import type {
   UpdateFlexWorkRequestDto,
 } from '@repo/types';
 import type { Request } from 'express';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
   AttendanceCorrectionPermissions,
   AttendanceReportPermissions,
@@ -46,10 +40,32 @@ import {
   PunctualityPermissions,
   TimesheetPermissions,
 } from '../../../core/rbac/constants/permissions.constants';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+} from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
+import {
+  AttendanceAnalyticsResponseDto,
+  AttendanceComplianceReportResponseDto,
+  AttendanceCorrectionRequestResponseDto,
+  AttendanceLogResponseDto,
+  FlexWorkRequestResponseDto,
+  HolidayResponseDto,
+  LeaveAnalyticsResponseDto,
+  MonthlyAttendanceReportResponseDto,
+  OvertimeRequestResponseDto,
+  PunctualityAlertResponseDto,
+  PunctualityLogItemDto,
+  PunctualityTrendDto,
+  TimesheetResponseDto,
+  UserWorkScheduleResponseDto,
+  WorkScheduleResponseDto,
+} from './dto/attendance-response.dto';
 import { AttendanceReportingService } from './attendance-reporting.service';
 import { AttendanceCorrectionService } from './attendance-correction.service';
 import { FlexWorkRequestService } from './flex-work-request.service';
@@ -98,7 +114,13 @@ export class AttendanceController {
     summary: 'Create or update attendance log (check-in/check-out)',
   })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created or updated log' })
+  @ApiEnvelopeOkResponse(AttendanceLogResponseDto, 'Created or updated log')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/logs',
+    badRequest: 'Attendance log payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   upsertLog(@Body() body: CreateOrUpdateAttendanceLogDto) {
     return this.upsertLogUseCase.execute(body);
   }
@@ -110,7 +132,12 @@ export class AttendanceController {
     roles: [AttendancePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List attendance logs by employee and date range' })
-  @ApiOkResponse({ description: 'List of attendance logs' })
+  @ApiEnvelopeArrayResponse(AttendanceLogResponseDto, 'List of attendance logs')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/logs',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listLogs(
     @Query('employeeId') employeeId: string,
     @Query('fromDate') fromDate?: string,
@@ -127,7 +154,13 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Get attendance log' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Attendance log details' })
+  @ApiEnvelopeOkResponse(AttendanceLogResponseDto, 'Attendance log details')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/logs/:id',
+    notFound: 'Attendance log not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getLog(@Param('id') id: string) {
     return this.getLogUseCase.execute(id);
   }
@@ -140,7 +173,14 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create work schedule' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created work schedule' })
+  @ApiEnvelopeOkResponse(WorkScheduleResponseDto, 'Created work schedule')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/schedules',
+    badRequest: 'Work schedule payload is invalid',
+    conflict: 'Work schedule name already exists',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createSchedule(@Body() body: CreateWorkScheduleDto) {
     return this.createWorkScheduleUseCase.execute(body);
   }
@@ -152,7 +192,15 @@ export class AttendanceController {
     roles: [AttendancePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List work schedules' })
-  @ApiOkResponse({ description: 'Configured work schedules' })
+  @ApiEnvelopeArrayResponse(
+    WorkScheduleResponseDto,
+    'Configured work schedules',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/schedules',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listSchedules() {
     return this.listWorkSchedulesUseCase.execute();
   }
@@ -165,7 +213,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Assign a work schedule to an employee' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created employee work schedule assignment' })
+  @ApiEnvelopeOkResponse(
+    UserWorkScheduleResponseDto,
+    'Created employee work schedule assignment',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/schedules/assignments',
+    badRequest: 'Work schedule assignment payload is invalid',
+    notFound: 'Work schedule or employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   assignSchedule(@Body() body: AssignUserWorkScheduleDto) {
     return this.assignUserWorkScheduleUseCase.execute(body);
   }
@@ -177,7 +235,16 @@ export class AttendanceController {
     roles: [AttendancePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List work schedule assignments for an employee' })
-  @ApiOkResponse({ description: 'Employee work schedule assignments' })
+  @ApiEnvelopeArrayResponse(
+    UserWorkScheduleResponseDto,
+    'Employee work schedule assignments',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/schedules/assignments',
+    badRequest: 'Query parameter employeeId is required',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listAssignments(@Query('employeeId') employeeId?: string) {
     return this.listUserWorkSchedulesUseCase.execute(employeeId);
   }
@@ -190,7 +257,14 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create holiday calendar entry' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created holiday entry' })
+  @ApiEnvelopeOkResponse(HolidayResponseDto, 'Created holiday entry')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/holidays',
+    badRequest: 'Holiday payload is invalid',
+    conflict: 'Holiday already exists for this date',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createHoliday(@Body() body: CreateHolidayDto) {
     return this.createHolidayUseCase.execute(body);
   }
@@ -202,7 +276,13 @@ export class AttendanceController {
     roles: [AttendancePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List holidays by date range and country' })
-  @ApiOkResponse({ description: 'Holiday calendar entries' })
+  @ApiEnvelopeArrayResponse(HolidayResponseDto, 'Holiday calendar entries')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/holidays',
+    badRequest: 'At least one of fromDate or toDate must be provided',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listHolidays(
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
@@ -225,7 +305,16 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create attendance correction request' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created attendance correction request' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Created attendance correction request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections',
+    badRequest: 'Attendance correction payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createCorrection(@Body() body: CreateAttendanceCorrectionRequestDto) {
     return this.attendanceCorrectionService.create(body);
   }
@@ -237,7 +326,15 @@ export class AttendanceController {
     roles: [AttendanceCorrectionPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List attendance correction requests' })
-  @ApiOkResponse({ description: 'Attendance correction requests' })
+  @ApiEnvelopeArrayResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Attendance correction requests',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listCorrections(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -253,7 +350,16 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Get attendance correction request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Attendance correction request details' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Attendance correction request details',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections/:id',
+    notFound: 'Attendance correction request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getCorrection(@Param('id') id: string) {
     return this.attendanceCorrectionService.get(id);
   }
@@ -267,7 +373,17 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Update draft attendance correction request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated attendance correction request' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Updated attendance correction request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections/:id',
+    badRequest: 'Attendance correction payload is invalid',
+    notFound: 'Attendance correction request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateCorrection(
     @Param('id') id: string,
     @Body() body: UpdateAttendanceCorrectionRequestDto,
@@ -283,7 +399,18 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Submit attendance correction request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Submitted attendance correction request' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Submitted attendance correction request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections/:id/submit',
+    badRequest:
+      'Attendance correction request cannot be submitted in its current state',
+    notFound: 'Attendance correction request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submitCorrection(@Param('id') id: string) {
     return this.attendanceCorrectionService.submit(id);
   }
@@ -296,7 +423,18 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Cancel attendance correction request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Cancelled attendance correction request' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Cancelled attendance correction request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections/:id/cancel',
+    badRequest:
+      'Attendance correction request cannot be cancelled in its current state',
+    notFound: 'Attendance correction request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   cancelCorrection(@Param('id') id: string) {
     return this.attendanceCorrectionService.cancel(id);
   }
@@ -309,7 +447,18 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Approve attendance correction request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Approved attendance correction request' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Approved attendance correction request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections/:id/approve',
+    badRequest:
+      'Attendance correction request cannot be approved in its current state',
+    notFound: 'Attendance correction request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   approveCorrection(@Param('id') id: string, @Req() req: Request) {
     return this.attendanceCorrectionService.approve(id, req as never);
   }
@@ -323,7 +472,17 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Reject attendance correction request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Rejected attendance correction request' })
+  @ApiEnvelopeOkResponse(
+    AttendanceCorrectionRequestResponseDto,
+    'Rejected attendance correction request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/corrections/:id/reject',
+    badRequest: 'Attendance correction rejection payload is invalid',
+    notFound: 'Attendance correction request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   rejectCorrection(
     @Param('id') id: string,
     @Body() body: RejectAttendanceCorrectionRequestDto,
@@ -340,7 +499,13 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create overtime request' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created overtime request' })
+  @ApiEnvelopeOkResponse(OvertimeRequestResponseDto, 'Created overtime request')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime',
+    badRequest: 'Overtime request payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createOvertime(@Body() body: CreateOvertimeRequestDto) {
     return this.overtimeRequestService.create(body);
   }
@@ -352,7 +517,12 @@ export class AttendanceController {
     roles: [OvertimePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List overtime requests' })
-  @ApiOkResponse({ description: 'Overtime requests' })
+  @ApiEnvelopeArrayResponse(OvertimeRequestResponseDto, 'Overtime requests')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listOvertime(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -368,7 +538,13 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Get overtime request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Overtime request details' })
+  @ApiEnvelopeOkResponse(OvertimeRequestResponseDto, 'Overtime request details')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime/:id',
+    notFound: 'Overtime request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getOvertime(@Param('id') id: string) {
     return this.overtimeRequestService.get(id);
   }
@@ -382,7 +558,14 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Update draft overtime request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated overtime request' })
+  @ApiEnvelopeOkResponse(OvertimeRequestResponseDto, 'Updated overtime request')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime/:id',
+    badRequest: 'Overtime request payload is invalid',
+    notFound: 'Overtime request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateOvertime(
     @Param('id') id: string,
     @Body() body: UpdateOvertimeRequestDto,
@@ -398,7 +581,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Submit overtime request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Submitted overtime request' })
+  @ApiEnvelopeOkResponse(
+    OvertimeRequestResponseDto,
+    'Submitted overtime request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime/:id/submit',
+    badRequest: 'Overtime request cannot be submitted in its current state',
+    notFound: 'Overtime request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submitOvertime(@Param('id') id: string) {
     return this.overtimeRequestService.submit(id);
   }
@@ -411,7 +604,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Cancel overtime request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Cancelled overtime request' })
+  @ApiEnvelopeOkResponse(
+    OvertimeRequestResponseDto,
+    'Cancelled overtime request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime/:id/cancel',
+    badRequest: 'Overtime request cannot be cancelled in its current state',
+    notFound: 'Overtime request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   cancelOvertime(@Param('id') id: string) {
     return this.overtimeRequestService.cancel(id);
   }
@@ -424,7 +627,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Approve overtime request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Approved overtime request' })
+  @ApiEnvelopeOkResponse(
+    OvertimeRequestResponseDto,
+    'Approved overtime request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime/:id/approve',
+    badRequest: 'Overtime request cannot be approved in its current state',
+    notFound: 'Overtime request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   approveOvertime(@Param('id') id: string, @Req() req: Request) {
     return this.overtimeRequestService.approve(id, req as never);
   }
@@ -438,7 +651,17 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Reject overtime request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Rejected overtime request' })
+  @ApiEnvelopeOkResponse(
+    OvertimeRequestResponseDto,
+    'Rejected overtime request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/overtime/:id/reject',
+    badRequest: 'Overtime rejection payload is invalid',
+    notFound: 'Overtime request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   rejectOvertime(
     @Param('id') id: string,
     @Body() body: RejectOvertimeRequestDto,
@@ -455,7 +678,16 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create work-from-home or flex-time request' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created flex work request' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Created flex work request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests',
+    badRequest: 'Flex work request payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createFlexRequest(@Body() body: CreateFlexWorkRequestDto) {
     return this.flexWorkRequestService.create(body);
   }
@@ -467,7 +699,12 @@ export class AttendanceController {
     roles: [FlexWorkPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List work-from-home and flex-time requests' })
-  @ApiOkResponse({ description: 'Flex work requests' })
+  @ApiEnvelopeArrayResponse(FlexWorkRequestResponseDto, 'Flex work requests')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listFlexRequests(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -488,7 +725,16 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Get flex work request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Flex work request details' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Flex work request details',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests/:id',
+    notFound: 'Flex work request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getFlexRequest(@Param('id') id: string) {
     return this.flexWorkRequestService.get(id);
   }
@@ -502,7 +748,17 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Update draft flex work request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated flex work request' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Updated flex work request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests/:id',
+    badRequest: 'Flex work request payload is invalid',
+    notFound: 'Flex work request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateFlexRequest(
     @Param('id') id: string,
     @Body() body: UpdateFlexWorkRequestDto,
@@ -518,7 +774,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Submit flex work request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Submitted flex work request' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Submitted flex work request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests/:id/submit',
+    badRequest: 'Flex work request cannot be submitted in its current state',
+    notFound: 'Flex work request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submitFlexRequest(@Param('id') id: string) {
     return this.flexWorkRequestService.submit(id);
   }
@@ -531,7 +797,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Cancel flex work request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Cancelled flex work request' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Cancelled flex work request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests/:id/cancel',
+    badRequest: 'Flex work request cannot be cancelled in its current state',
+    notFound: 'Flex work request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   cancelFlexRequest(@Param('id') id: string) {
     return this.flexWorkRequestService.cancel(id);
   }
@@ -544,7 +820,17 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Approve flex work request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Approved flex work request' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Approved flex work request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests/:id/approve',
+    badRequest: 'Flex work request cannot be approved in its current state',
+    notFound: 'Flex work request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   approveFlexRequest(@Param('id') id: string, @Req() req: Request) {
     return this.flexWorkRequestService.approve(id, req as never);
   }
@@ -558,7 +844,17 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Reject flex work request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Rejected flex work request' })
+  @ApiEnvelopeOkResponse(
+    FlexWorkRequestResponseDto,
+    'Rejected flex work request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/flex-requests/:id/reject',
+    badRequest: 'Flex work rejection payload is invalid',
+    notFound: 'Flex work request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   rejectFlexRequest(
     @Param('id') id: string,
     @Body() body: RejectFlexWorkRequestDto,
@@ -575,7 +871,13 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create timesheet for an employee and period' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created timesheet' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Created timesheet')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets',
+    badRequest: 'Timesheet payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createTimesheet(@Body() body: CreateTimesheetDto) {
     return this.timesheetService.create(body);
   }
@@ -587,7 +889,12 @@ export class AttendanceController {
     roles: [TimesheetPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List timesheets' })
-  @ApiOkResponse({ description: 'Timesheet list' })
+  @ApiEnvelopeArrayResponse(TimesheetResponseDto, 'Timesheet list')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listTimesheets(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -610,7 +917,13 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Get timesheet' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Timesheet details' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Timesheet details')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets/:id',
+    notFound: 'Timesheet not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getTimesheet(@Param('id') id: string) {
     return this.timesheetService.get(id);
   }
@@ -624,7 +937,14 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Update draft timesheet' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated timesheet' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Updated timesheet')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets/:id',
+    badRequest: 'Timesheet payload is invalid',
+    notFound: 'Timesheet not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateTimesheet(@Param('id') id: string, @Body() body: UpdateTimesheetDto) {
     return this.timesheetService.update(id, body);
   }
@@ -637,7 +957,14 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Submit timesheet for approval' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Submitted timesheet' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Submitted timesheet')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets/:id/submit',
+    badRequest: 'Timesheet cannot be submitted in its current state',
+    notFound: 'Timesheet not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submitTimesheet(@Param('id') id: string) {
     return this.timesheetService.submit(id);
   }
@@ -650,7 +977,14 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Cancel timesheet' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Cancelled timesheet' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Cancelled timesheet')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets/:id/cancel',
+    badRequest: 'Timesheet cannot be cancelled in its current state',
+    notFound: 'Timesheet not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   cancelTimesheet(@Param('id') id: string) {
     return this.timesheetService.cancel(id);
   }
@@ -663,7 +997,14 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Approve timesheet' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Approved timesheet' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Approved timesheet')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets/:id/approve',
+    badRequest: 'Timesheet cannot be approved in its current state',
+    notFound: 'Timesheet not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   approveTimesheet(@Param('id') id: string, @Req() req: Request) {
     return this.timesheetService.approve(id, req as never);
   }
@@ -677,7 +1018,14 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Reject timesheet' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Rejected timesheet' })
+  @ApiEnvelopeOkResponse(TimesheetResponseDto, 'Rejected timesheet')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/timesheets/:id/reject',
+    badRequest: 'Timesheet rejection payload is invalid',
+    notFound: 'Timesheet not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   rejectTimesheet(
     @Param('id') id: string,
     @Body() body: RejectTimesheetDto,
@@ -695,7 +1043,13 @@ export class AttendanceController {
   @ApiOperation({
     summary: 'Get punctuality log for an employee and date range',
   })
-  @ApiOkResponse({ description: 'Punctuality log' })
+  @ApiEnvelopeArrayResponse(PunctualityLogItemDto, 'Punctuality log')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/punctuality',
+    badRequest: 'employeeId, fromDate, and toDate are required',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   punctuality(
     @Query('employeeId') employeeId?: string,
     @Query('fromDate') fromDate?: string,
@@ -717,7 +1071,13 @@ export class AttendanceController {
     roles: [PunctualityPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get punctuality trend summary' })
-  @ApiOkResponse({ description: 'Punctuality trends' })
+  @ApiEnvelopeOkResponse(PunctualityTrendDto, 'Punctuality trends')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/punctuality/trends',
+    badRequest: 'employeeId, fromDate, and toDate are required',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   punctualityTrends(
     @Query('employeeId') employeeId?: string,
     @Query('fromDate') fromDate?: string,
@@ -740,7 +1100,16 @@ export class AttendanceController {
   })
   @ApiOperation({ summary: 'Create punctuality alert notification' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Punctuality alert result' })
+  @ApiEnvelopeOkResponse(
+    PunctualityAlertResponseDto,
+    'Punctuality alert result',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/punctuality/alerts',
+    badRequest: 'Punctuality alert payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createPunctualityAlert(@Body() body: CreatePunctualityAlertDto) {
     return this.punctualityService.createAlert(body);
   }
@@ -752,7 +1121,13 @@ export class AttendanceController {
     roles: [AttendanceReportPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get attendance analytics for a date range' })
-  @ApiOkResponse({ description: 'Attendance analytics' })
+  @ApiEnvelopeOkResponse(AttendanceAnalyticsResponseDto, 'Attendance analytics')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/analytics/attendance',
+    badRequest: 'fromDate and toDate are required',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   attendanceAnalytics(
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
@@ -776,7 +1151,13 @@ export class AttendanceController {
     roles: [AttendanceReportPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get leave analytics for a date range' })
-  @ApiOkResponse({ description: 'Leave analytics' })
+  @ApiEnvelopeOkResponse(LeaveAnalyticsResponseDto, 'Leave analytics')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/analytics/leave',
+    badRequest: 'fromDate and toDate are required',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   leaveAnalytics(
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
@@ -796,7 +1177,16 @@ export class AttendanceController {
     roles: [AttendanceReportPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get monthly attendance report' })
-  @ApiOkResponse({ description: 'Monthly attendance report' })
+  @ApiEnvelopeOkResponse(
+    MonthlyAttendanceReportResponseDto,
+    'Monthly attendance report',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/reports/monthly',
+    badRequest: 'year and month must be valid integers',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   monthlyReport(
     @Query('year') year?: string,
     @Query('month') month?: string,
@@ -826,7 +1216,16 @@ export class AttendanceController {
     roles: [AttendanceReportPermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get attendance compliance report' })
-  @ApiOkResponse({ description: 'Attendance compliance report' })
+  @ApiEnvelopeOkResponse(
+    AttendanceComplianceReportResponseDto,
+    'Attendance compliance report',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/attendance/reports/compliance',
+    badRequest: 'fromDate and toDate are required',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   complianceReport(
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,

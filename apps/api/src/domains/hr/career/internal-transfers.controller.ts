@@ -8,13 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   ApproveInternalTransferRequestDto,
   CreateInternalTransferRequestDto,
@@ -23,9 +17,15 @@ import type {
 } from '@repo/types';
 import { InternalTransferPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
+import { InternalTransferRequestResponseDto } from './dto/career-response.dto';
 import { InternalTransferService } from './internal-transfer.service';
 
 @ApiTags('HR Internal Transfers')
@@ -41,7 +41,15 @@ export class InternalTransfersController {
     roles: [InternalTransferPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List internal transfer requests' })
-  @ApiOkResponse({ description: 'Internal transfer request list' })
+  @ApiEnvelopeArrayResponse(
+    InternalTransferRequestResponseDto,
+    'Internal transfer request list',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
@@ -58,7 +66,17 @@ export class InternalTransfersController {
   })
   @ApiOperation({ summary: 'Create internal transfer request' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created internal transfer request' })
+  @ApiEnvelopeOkResponse(
+    InternalTransferRequestResponseDto,
+    'Created internal transfer request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers',
+    badRequest: 'Internal transfer payload is invalid',
+    notFound: 'Employee, requester, or target position not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateInternalTransferRequestDto) {
     return this.service.create(body);
   }
@@ -71,7 +89,16 @@ export class InternalTransfersController {
   })
   @ApiOperation({ summary: 'Get internal transfer request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Internal transfer request details' })
+  @ApiEnvelopeOkResponse(
+    InternalTransferRequestResponseDto,
+    'Internal transfer request details',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers/:id',
+    notFound: 'Internal transfer request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.service.get(id);
   }
@@ -85,7 +112,17 @@ export class InternalTransfersController {
   @ApiOperation({ summary: 'Update draft internal transfer request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated internal transfer request' })
+  @ApiEnvelopeOkResponse(
+    InternalTransferRequestResponseDto,
+    'Updated internal transfer request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers/:id',
+    badRequest: 'Internal transfer payload is invalid',
+    notFound: 'Internal transfer request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(
     @Param('id') id: string,
     @Body() body: UpdateInternalTransferRequestDto,
@@ -101,7 +138,18 @@ export class InternalTransfersController {
   })
   @ApiOperation({ summary: 'Submit internal transfer request' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Submitted internal transfer request' })
+  @ApiEnvelopeOkResponse(
+    InternalTransferRequestResponseDto,
+    'Submitted internal transfer request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers/:id/submit',
+    badRequest:
+      'Internal transfer request cannot be submitted in its current state',
+    notFound: 'Internal transfer request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   submit(@Param('id') id: string) {
     return this.service.submit(id);
   }
@@ -115,7 +163,18 @@ export class InternalTransfersController {
   @ApiOperation({ summary: 'Approve internal transfer request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Approved internal transfer request' })
+  @ApiEnvelopeOkResponse(
+    InternalTransferRequestResponseDto,
+    'Approved internal transfer request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers/:id/approve',
+    badRequest:
+      'Internal transfer request cannot be approved in its current state',
+    notFound: 'Internal transfer request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   approve(
     @Param('id') id: string,
     @Body() body: ApproveInternalTransferRequestDto,
@@ -132,7 +191,17 @@ export class InternalTransfersController {
   @ApiOperation({ summary: 'Reject internal transfer request' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Rejected internal transfer request' })
+  @ApiEnvelopeOkResponse(
+    InternalTransferRequestResponseDto,
+    'Rejected internal transfer request',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/internal-transfers/:id/reject',
+    badRequest: 'Internal transfer rejection payload is invalid',
+    notFound: 'Internal transfer request not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   reject(
     @Param('id') id: string,
     @Body() body: RejectInternalTransferRequestDto & { approvedById: string },

@@ -8,13 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CreateCompensationComponentDto } from '../../../core/users/dto/create-compensation-component.dto';
 import { UpdateCompensationComponentDto } from '../../../core/users/dto/update-compensation-component.dto';
 import { UpdateUserCompensationDto } from '../../../core/users/dto/update-user-compensation.dto';
@@ -43,9 +37,21 @@ import {
 } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ActionSuccessResponseDto,
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
+import { CompensationComponentResponseDto } from '../../../core/users/dto/compensation-component-response.dto';
+import { UserCompensationHistoryResponseDto } from '../../../core/users/dto/user-compensation-history-response.dto';
+import { UserCompensationResponseDto } from '../../../core/users/dto/user-compensation-response.dto';
+import { UserEmploymentResponseDto } from '../../../core/users/dto/user-employment-response.dto';
+import { UserLifecycleResponseDto } from '../../../core/users/dto/user-lifecycle-response.dto';
+import { UserProfileResponseDto } from '../../../core/users/dto/user-profile-response.dto';
 
 @ApiTags('HR Employee Records')
 @Controller('hr/employees/:employeeId')
@@ -76,7 +82,13 @@ export class EmployeeRecordsController {
   })
   @ApiOperation({ summary: 'Get employee profile record' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'Employee profile' })
+  @ApiEnvelopeOkResponse(UserProfileResponseDto, 'Employee profile')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/profile',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getProfile(@Param('employeeId') employeeId: string) {
     return this.getUserProfileUseCase.execute(employeeId);
   }
@@ -91,7 +103,14 @@ export class EmployeeRecordsController {
   @ApiOperation({ summary: 'Update employee profile record' })
   @ApiParam({ name: 'employeeId' })
   @ApiBody({ type: UpdateUserProfileDto })
-  @ApiOkResponse({ description: 'Updated employee profile' })
+  @ApiEnvelopeOkResponse(UserProfileResponseDto, 'Updated employee profile')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/profile',
+    badRequest: 'Employee profile payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateProfile(
     @Param('employeeId') employeeId: string,
     @Body() body: UpdateUserProfileDto,
@@ -108,7 +127,13 @@ export class EmployeeRecordsController {
   })
   @ApiOperation({ summary: 'Get employee employment record' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'Employee employment' })
+  @ApiEnvelopeOkResponse(UserEmploymentResponseDto, 'Employee employment')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/employment',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getEmployment(@Param('employeeId') employeeId: string) {
     return this.getUserEmploymentUseCase.execute(employeeId);
   }
@@ -123,7 +148,17 @@ export class EmployeeRecordsController {
   @ApiOperation({ summary: 'Update employee employment record' })
   @ApiParam({ name: 'employeeId' })
   @ApiBody({ type: UpdateUserEmploymentDto })
-  @ApiOkResponse({ description: 'Updated employee employment' })
+  @ApiEnvelopeOkResponse(
+    UserEmploymentResponseDto,
+    'Updated employee employment',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/employment',
+    badRequest: 'Employee employment payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateEmployment(
     @Param('employeeId') employeeId: string,
     @Body() body: UpdateUserEmploymentDto,
@@ -140,7 +175,13 @@ export class EmployeeRecordsController {
   })
   @ApiOperation({ summary: 'Get employee lifecycle record' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'Employee lifecycle' })
+  @ApiEnvelopeOkResponse(UserLifecycleResponseDto, 'Employee lifecycle')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/lifecycle',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getLifecycle(@Param('employeeId') employeeId: string) {
     return this.getUserLifecycleUseCase.execute(employeeId);
   }
@@ -155,7 +196,14 @@ export class EmployeeRecordsController {
   @ApiOperation({ summary: 'Update employee lifecycle record' })
   @ApiParam({ name: 'employeeId' })
   @ApiBody({ type: UpdateUserLifecycleDto })
-  @ApiOkResponse({ description: 'Updated employee lifecycle' })
+  @ApiEnvelopeOkResponse(UserLifecycleResponseDto, 'Updated employee lifecycle')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/lifecycle',
+    badRequest: 'Employee lifecycle payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateLifecycle(
     @Param('employeeId') employeeId: string,
     @Body() body: UpdateUserLifecycleDto,
@@ -172,7 +220,13 @@ export class EmployeeRecordsController {
   })
   @ApiOperation({ summary: 'Get current employee compensation' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'Employee compensation' })
+  @ApiEnvelopeOkResponse(UserCompensationResponseDto, 'Employee compensation')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getCompensation(@Param('employeeId') employeeId: string) {
     return this.getUserCompensationUseCase.execute(employeeId);
   }
@@ -187,7 +241,17 @@ export class EmployeeRecordsController {
   @ApiOperation({ summary: 'Update employee compensation' })
   @ApiParam({ name: 'employeeId' })
   @ApiBody({ type: UpdateUserCompensationDto })
-  @ApiOkResponse({ description: 'Updated employee compensation' })
+  @ApiEnvelopeOkResponse(
+    UserCompensationResponseDto,
+    'Updated employee compensation',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation',
+    badRequest: 'Employee compensation payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateCompensation(
     @Param('employeeId') employeeId: string,
     @Body() body: UpdateUserCompensationDto,
@@ -204,7 +268,16 @@ export class EmployeeRecordsController {
   })
   @ApiOperation({ summary: 'List employee compensation history' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'Employee compensation history' })
+  @ApiEnvelopeArrayResponse(
+    UserCompensationHistoryResponseDto,
+    'Employee compensation history',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation/history',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listCompensationHistory(@Param('employeeId') employeeId: string) {
     return this.listUserCompensationHistoryUseCase.execute(employeeId);
   }
@@ -221,7 +294,16 @@ export class EmployeeRecordsController {
   })
   @ApiOperation({ summary: 'List employee compensation components' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'Employee compensation components' })
+  @ApiEnvelopeArrayResponse(
+    CompensationComponentResponseDto,
+    'Employee compensation components',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation/components',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listCompensationComponents(@Param('employeeId') employeeId: string) {
     return this.listCompensationComponentsUseCase.execute(employeeId);
   }
@@ -242,7 +324,17 @@ export class EmployeeRecordsController {
   @ApiOperation({ summary: 'Add employee compensation component' })
   @ApiParam({ name: 'employeeId' })
   @ApiBody({ type: CreateCompensationComponentDto })
-  @ApiOkResponse({ description: 'Created compensation component' })
+  @ApiEnvelopeOkResponse(
+    CompensationComponentResponseDto,
+    'Created compensation component',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation/components',
+    badRequest: 'Compensation component payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createCompensationComponent(
     @Param('employeeId') employeeId: string,
     @Body() body: CreateCompensationComponentDto,
@@ -267,7 +359,17 @@ export class EmployeeRecordsController {
   @ApiParam({ name: 'employeeId' })
   @ApiParam({ name: 'componentId' })
   @ApiBody({ type: UpdateCompensationComponentDto })
-  @ApiOkResponse({ description: 'Updated compensation component' })
+  @ApiEnvelopeOkResponse(
+    CompensationComponentResponseDto,
+    'Updated compensation component',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation/components/:componentId',
+    badRequest: 'Compensation component payload is invalid',
+    notFound: 'Employee or compensation component not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateCompensationComponent(
     @Param('employeeId') employeeId: string,
     @Param('componentId') componentId: string,
@@ -296,7 +398,16 @@ export class EmployeeRecordsController {
   @ApiOperation({ summary: 'Delete employee compensation component' })
   @ApiParam({ name: 'employeeId' })
   @ApiParam({ name: 'componentId' })
-  @ApiOkResponse({ description: 'Deleted compensation component' })
+  @ApiEnvelopeOkResponse(
+    ActionSuccessResponseDto,
+    'Deleted compensation component',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/compensation/components/:componentId',
+    notFound: 'Employee or compensation component not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   deleteCompensationComponent(
     @Param('employeeId') employeeId: string,
     @Param('componentId') componentId: string,

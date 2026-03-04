@@ -9,20 +9,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { CreateCandidateDto, UpdateJobPostingDto } from '@repo/types';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
   JobPostingPermissions,
   CandidatePermissions,
 } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { CloseJobPostingUseCase } from './use-cases/close-job-posting.usecase';
@@ -55,6 +55,12 @@ export class JobPostingsController {
     roles: [JobPostingPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List job postings' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'List of job postings')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('status') status?: string,
     @Query('departmentId') departmentId?: string,
@@ -71,6 +77,13 @@ export class JobPostingsController {
   })
   @ApiParam({ name: 'id', description: 'Job posting id' })
   @ApiOperation({ summary: 'Get job posting' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Job posting details')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings/:id',
+    notFound: 'Job posting not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.getUseCase.execute(id);
   }
@@ -84,6 +97,15 @@ export class JobPostingsController {
   })
   @ApiParam({ name: 'id', description: 'Job posting id' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiOperation({ summary: 'Update job posting' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated job posting')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings/:id',
+    badRequest: 'Job posting payload is invalid',
+    notFound: 'Job posting not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(@Param('id') id: string, @Body() body: UpdateJobPostingDto) {
     return this.updateUseCase.execute(id, body);
   }
@@ -96,7 +118,15 @@ export class JobPostingsController {
     roles: [JobPostingPermissions.PUBLISH],
   })
   @ApiParam({ name: 'id', description: 'Job posting id' })
-  @ApiOkResponse({ description: 'Published job posting' })
+  @ApiOperation({ summary: 'Publish job posting' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Published job posting')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings/:id/publish',
+    notFound: 'Job posting not found',
+    conflict: 'Job posting cannot be published from its current state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   publish(@Param('id') id: string) {
     return this.publishUseCase.execute(id);
   }
@@ -110,6 +140,16 @@ export class JobPostingsController {
   })
   @ApiParam({ name: 'id', description: 'Job posting id' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiOperation({ summary: 'Close job posting' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Closed job posting')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings/:id/close',
+    badRequest: 'Job posting close payload is invalid',
+    notFound: 'Job posting not found',
+    conflict: 'Job posting cannot be closed from its current state',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   close(
     @Param('id') id: string,
     @Body() body?: { status?: 'CANCELLED' | 'EXPIRED' | 'FILLED' },
@@ -125,6 +165,14 @@ export class JobPostingsController {
     roles: [JobPostingPermissions.VIEW, CandidatePermissions.VIEW],
   })
   @ApiParam({ name: 'id', description: 'Job posting id' })
+  @ApiOperation({ summary: 'List candidates for job posting' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Job posting candidates')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings/:id/candidates',
+    notFound: 'Job posting not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listCandidates(@Param('id') id: string, @Query('status') status?: string) {
     return this.listCandidatesUseCase.execute(id, { status });
   }
@@ -138,6 +186,18 @@ export class JobPostingsController {
   })
   @ApiParam({ name: 'id', description: 'Job posting id' })
   @ApiBody({ schema: { type: 'object' } })
+  @ApiOperation({ summary: 'Create candidate application' })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Created candidate application',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/job-postings/:id/applications',
+    badRequest: 'Candidate application payload is invalid',
+    notFound: 'Job posting not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   apply(
     @Param('id') id: string,
     @Body() body: Omit<CreateCandidateDto, 'jobPostingId'>,

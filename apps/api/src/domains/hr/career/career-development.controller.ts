@@ -8,13 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   CreateCareerDevelopmentPlanDto,
   UpdateCareerDevelopmentPlanDto,
@@ -22,7 +16,13 @@ import type {
 } from '@repo/types';
 import { CareerDevelopmentPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { CareerDevelopmentService } from './career-development.service';
@@ -40,7 +40,15 @@ export class CareerDevelopmentController {
     roles: [CareerDevelopmentPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List career development plans' })
-  @ApiOkResponse({ description: 'Career development plan list' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'Career development plan list',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/career-development-plans',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('employeeId') employeeId?: string,
     @Query('planYear') planYear?: string,
@@ -61,7 +69,16 @@ export class CareerDevelopmentController {
   })
   @ApiOperation({ summary: 'Create career development plan' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created career development plan' })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Created career development plan',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/career-development-plans',
+    badRequest: 'Career development plan payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateCareerDevelopmentPlanDto) {
     return this.service.create(body);
   }
@@ -74,7 +91,16 @@ export class CareerDevelopmentController {
   })
   @ApiOperation({ summary: 'Get career development plan' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Career development plan details' })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Career development plan details',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/career-development-plans/:id',
+    notFound: 'Career development plan not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.service.get(id);
   }
@@ -88,7 +114,17 @@ export class CareerDevelopmentController {
   @ApiOperation({ summary: 'Update career development plan' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated career development plan' })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Updated career development plan',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/career-development-plans/:id',
+    badRequest: 'Career development plan payload is invalid',
+    notFound: 'Career development plan not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(
     @Param('id') id: string,
     @Body() body: UpdateCareerDevelopmentPlanDto,
@@ -105,7 +141,17 @@ export class CareerDevelopmentController {
   @ApiOperation({ summary: 'Update career development progress' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated career development plan progress' })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Updated career development plan progress',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/career-development-plans/:id/progress',
+    badRequest: 'Career development progress payload is invalid',
+    notFound: 'Career development plan not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateProgress(
     @Param('id') id: string,
     @Body() body: UpdateCareerDevelopmentProgressDto,

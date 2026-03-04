@@ -7,14 +7,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ApiProtected } from '../../../shared/docs/openapi';
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import {
@@ -51,7 +51,13 @@ export class EmployeeDocumentsController {
     name: 'employeeId',
     description: 'Employee id or linked user/keycloak subject',
   })
-  @ApiOkResponse({ description: 'List of documents' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'List of documents')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/documents',
+    notFound: 'Employee documents not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(@Param('employeeId') employeeId: string) {
     return this.listEmployeeDocumentsUseCase.execute(employeeId);
   }
@@ -68,7 +74,14 @@ export class EmployeeDocumentsController {
     description: 'Employee id or linked user/keycloak subject',
   })
   @ApiBody({ schema: { type: 'object', required: ['type', 'fileUrl'] } })
-  @ApiOkResponse({ description: 'Created document' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created document')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/documents',
+    badRequest: 'Employee document payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(
     @Param('employeeId') employeeId: string,
     @Body() body: CreateEmployeeDocumentDto,
@@ -89,7 +102,14 @@ export class EmployeeDocumentsController {
   })
   @ApiParam({ name: 'docId', description: 'Document id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated document' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated document')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/documents/:docId',
+    badRequest: 'Employee document payload is invalid',
+    notFound: 'Employee document not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(
     @Param('employeeId') employeeId: string,
     @Param('docId') docId: string,
