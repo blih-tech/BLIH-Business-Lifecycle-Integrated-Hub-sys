@@ -3,6 +3,37 @@ import { PayFrequency } from '../../../platform/prisma/prisma-client';
 import type { UserCompensationResponseDto as UserCompensationResponseDtoType } from '@repo/types';
 import { CompensationComponentResponseDto } from './compensation-component-response.dto';
 
+class UserCompensationSummaryResponseDto implements NonNullable<
+  UserCompensationResponseDtoType['summary']
+> {
+  @ApiPropertyOptional({ nullable: true })
+  currency!: string | null;
+
+  @ApiProperty()
+  annualBaseSalary!: number;
+
+  @ApiProperty()
+  periodBaseSalary!: number;
+
+  @ApiProperty()
+  recurringAnnualComponents!: number;
+
+  @ApiProperty()
+  recurringPeriodComponents!: number;
+
+  @ApiProperty()
+  oneTimeComponentsTotal!: number;
+
+  @ApiPropertyOptional({ nullable: true })
+  estimatedAnnualBonus!: number | null;
+
+  @ApiProperty()
+  totalAnnualCompensation!: number;
+
+  @ApiProperty()
+  totalPeriodCompensation!: number;
+}
+
 export class UserCompensationResponseDto implements UserCompensationResponseDtoType {
   @ApiProperty()
   userId!: string;
@@ -33,6 +64,9 @@ export class UserCompensationResponseDto implements UserCompensationResponseDtoT
     isArray: true,
   })
   components?: CompensationComponentResponseDto[];
+
+  @ApiPropertyOptional({ type: UserCompensationSummaryResponseDto })
+  summary?: UserCompensationResponseDtoType['summary'];
 
   @ApiProperty()
   createdAt!: string;

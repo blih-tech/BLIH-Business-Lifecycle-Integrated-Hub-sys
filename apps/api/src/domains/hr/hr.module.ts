@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EmployeesController } from './employees/employees.controller';
+import { EmployeeRecordsController } from './employees/employee-records.controller';
 import { ListEmployeesUseCase } from './employees/use-cases/list-employees.usecase';
 import { GetEmployeeFullUseCase } from './employees/use-cases/get-employee-full.usecase';
 import { EmployeeDocumentsController } from './documents/employee-documents.controller';
@@ -206,10 +207,24 @@ import { CreateMediationUseCase } from './relations/use-cases/create-mediation.u
 import { ListMediationsUseCase } from './relations/use-cases/list-mediations.usecase';
 import { GetMediationUseCase } from './relations/use-cases/get-mediation.usecase';
 import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.usecase';
+import { GetUserProfileUseCase } from '../../core/users/use-cases/get-user-profile.usecase';
+import { UpdateUserProfileUseCase } from '../../core/users/use-cases/update-user-profile.usecase';
+import { GetUserEmploymentUseCase } from '../../core/users/use-cases/get-user-employment.usecase';
+import { UpdateUserEmploymentUseCase } from '../../core/users/use-cases/update-user-employment.usecase';
+import { GetUserCompensationUseCase } from '../../core/users/use-cases/get-user-compensation.usecase';
+import { UpdateUserCompensationUseCase } from '../../core/users/use-cases/update-user-compensation.usecase';
+import { ListCompensationComponentsUseCase } from '../../core/users/use-cases/list-compensation-components.usecase';
+import { CreateCompensationComponentUseCase } from '../../core/users/use-cases/create-compensation-component.usecase';
+import { UpdateCompensationComponentUseCase } from '../../core/users/use-cases/update-compensation-component.usecase';
+import { DeleteCompensationComponentUseCase } from '../../core/users/use-cases/delete-compensation-component.usecase';
+import { ListUserCompensationHistoryUseCase } from '../../core/users/use-cases/list-user-compensation-history.usecase';
+import { GetUserLifecycleUseCase } from '../../core/users/use-cases/get-user-lifecycle.usecase';
+import { UpdateUserLifecycleUseCase } from '../../core/users/use-cases/update-user-lifecycle.usecase';
 
 @Module({
   controllers: [
     EmployeesController,
+    EmployeeRecordsController,
     EmployeeDocumentsController,
     EmployeeContractsController,
     JobDescriptionsController,
@@ -236,6 +251,19 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
   providers: [
     ListEmployeesUseCase,
     GetEmployeeFullUseCase,
+    GetUserProfileUseCase,
+    UpdateUserProfileUseCase,
+    GetUserEmploymentUseCase,
+    UpdateUserEmploymentUseCase,
+    GetUserCompensationUseCase,
+    UpdateUserCompensationUseCase,
+    ListCompensationComponentsUseCase,
+    CreateCompensationComponentUseCase,
+    UpdateCompensationComponentUseCase,
+    DeleteCompensationComponentUseCase,
+    ListUserCompensationHistoryUseCase,
+    GetUserLifecycleUseCase,
+    UpdateUserLifecycleUseCase,
     ListEmployeeDocumentsUseCase,
     CreateEmployeeDocumentUseCase,
     UpdateEmployeeDocumentUseCase,

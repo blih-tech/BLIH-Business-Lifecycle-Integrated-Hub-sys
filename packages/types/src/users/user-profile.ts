@@ -122,6 +122,17 @@ export interface UserCompensationResponseDto {
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
   components?: CompensationComponentResponseDto[];
+  summary?: {
+    currency: string | null;
+    annualBaseSalary: number;
+    periodBaseSalary: number;
+    recurringAnnualComponents: number;
+    recurringPeriodComponents: number;
+    oneTimeComponentsTotal: number;
+    estimatedAnnualBonus: number | null;
+    totalAnnualCompensation: number;
+    totalPeriodCompensation: number;
+  } | null;
   createdAt: string;
   updatedAt: string;
 }
