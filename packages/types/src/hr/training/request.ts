@@ -4,7 +4,7 @@ export type CostPayer = 'COMPANY' | 'SELF';
 
 export interface TrainingRequestResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   departmentId: string;
   trainingType: TrainingType;
   title: string;
@@ -26,7 +26,7 @@ export interface TrainingRequestResponseDto {
 }
 
 export interface CreateTrainingRequestDto {
-  userId: string;
+  employeeId: string;
   departmentId: string;
   trainingType: TrainingType;
   title: string;

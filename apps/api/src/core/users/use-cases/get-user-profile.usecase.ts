@@ -1,23 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class GetUserProfileUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+    );
 
     const profile = await this.prisma.userProfile.findUnique({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       include: {
         nationality: {
           select: { name: true },
@@ -29,7 +25,7 @@ export class GetUserProfileUseCase {
     });
 
     if (!profile) {
-      throw new NotFoundException('User profile not found');
+      throw new NotFoundException('Employee profile not found');
     }
 
     return {

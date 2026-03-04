@@ -8,7 +8,7 @@ export type ResignationStatus =
 
 export interface ResignationResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   proposedLastDay: string;
   actualLastDay: string | null;
   reason: string | null;
@@ -25,7 +25,7 @@ export interface ResignationResponseDto {
 }
 
 export interface CreateResignationDto {
-  userId: string;
+  employeeId: string;
   proposedLastDay: string;
   reason?: string | null;
   reasonNotes?: string | null;

@@ -12,7 +12,7 @@ export class CreateRecruitmentRequestUseCase {
       departmentId: dto.departmentId,
       positionId: dto.positionId,
       type: dto.type,
-      replacementUserId: dto.replacementUserId,
+      replacementEmployeeId: dto.replacementEmployeeId,
       enforceHeadcount: Boolean(dto.positionId),
     });
 
@@ -27,7 +27,7 @@ export class CreateRecruitmentRequestUseCase {
         departmentId: dto.departmentId,
         positionId: dto.positionId ?? undefined,
         type: dto.type ?? 'NEW',
-        replacementUserId: dto.replacementUserId ?? undefined,
+        replacementEmployeeId: dto.replacementEmployeeId ?? undefined,
         rationale: (dto.rationale ?? undefined) as object | undefined,
         staffing: (dto.staffing ?? undefined) as object | undefined,
         schedule: (dto.schedule ?? undefined) as object | undefined,
@@ -54,6 +54,7 @@ export class CreateRecruitmentRequestUseCase {
       positionTitle: withRels.position?.title ?? null,
       type: withRels.type,
       status: withRels.status,
+      replacementEmployeeId: withRels.replacementEmployeeId ?? null,
       submittedById: withRels.submittedById,
       submittedByEmail: withRels.submittedBy.email,
       submittedAt: withRels.submittedAt?.toISOString() ?? null,

@@ -1,25 +1,32 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { UpdateUserLifecycleDto } from '../dto/update-user-lifecycle.dto';
+import {
+  ensureEmployeeForUser,
+  resolveEmployeeSubjectOrThrow,
+} from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class UpdateUserLifecycleUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string, dto: UpdateUserLifecycleDto) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+      'Employee not found',
+    ).catch(async (error) => {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+        },
+        select: { id: true },
+      });
+      if (!user) {
+        throw error;
+      }
+      return ensureEmployeeForUser(this.prisma, user.id);
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     if (dto.status === 'TERMINATED' && !dto.terminatedAt) {
       throw new BadRequestException(
@@ -28,7 +35,7 @@ export class UpdateUserLifecycleUseCase {
     }
 
     const lifecycle = await this.prisma.userLifecycle.upsert({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       update: {
         ...(dto.status !== undefined ? { status: dto.status } : {}),
         ...(dto.onboardedAt !== undefined
@@ -48,7 +55,7 @@ export class UpdateUserLifecycleUseCase {
           : {}),
       },
       create: {
-        userId: user.id,
+        employeeId: employee.id,
         status: dto.status ?? 'ONBOARDING',
         ...(dto.onboardedAt !== undefined
           ? { onboardedAt: new Date(dto.onboardedAt) }

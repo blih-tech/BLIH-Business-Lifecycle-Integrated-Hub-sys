@@ -11,11 +11,11 @@ export class AttendanceReconciliationService {
     private readonly calendar: AttendanceCalendarService,
   ) {}
 
-  async reconcileDateForUser(userId: string, value: Date) {
+  async reconcileDateForUser(employeeId: string, value: Date) {
     const date = normalizeDateOnly(value);
     const existing = await this.prisma.attendanceLog.findUnique({
       where: {
-        userId_date: { userId, date },
+        employeeId_date: { employeeId, date },
       },
     });
 
@@ -23,7 +23,7 @@ export class AttendanceReconciliationService {
       return existing;
     }
 
-    const context = await this.calendar.getCalendarContext(userId, date);
+    const context = await this.calendar.getCalendarContext(employeeId, date);
     const shouldTrackWorkingDay = this.calendar.isWorkingDay(context);
     const checkInAt = existing?.checkInAt ?? null;
     const checkOutAt = existing?.checkOutAt ?? null;
@@ -63,7 +63,7 @@ export class AttendanceReconciliationService {
     });
 
     const payload: {
-      userId: string;
+      employeeId: string;
       date: Date;
       checkInAt: Date | null;
       checkOutAt: Date | null;
@@ -73,7 +73,7 @@ export class AttendanceReconciliationService {
       isAutoCalculated: boolean;
       reconciledAt: Date;
     } = {
-      userId,
+      employeeId,
       date,
       checkInAt,
       checkOutAt,
@@ -96,12 +96,12 @@ export class AttendanceReconciliationService {
     });
   }
 
-  async reconcileRangeForUser(userId: string, start: Date, end: Date) {
+  async reconcileRangeForUser(employeeId: string, start: Date, end: Date) {
     let cursor = normalizeDateOnly(start);
     const limit = normalizeDateOnly(end);
 
     while (cursor.getTime() <= limit.getTime()) {
-      await this.reconcileDateForUser(userId, cursor);
+      await this.reconcileDateForUser(employeeId, cursor);
       cursor = new Date(cursor);
       cursor.setUTCDate(cursor.getUTCDate() + 1);
     }

@@ -92,30 +92,30 @@ export class TrainingController {
     return this.createSkill.execute(body);
   }
 
-  @Get('employees/:userId/skills')
+  @Get('employees/:employeeId/skills')
   @Roles(TrainingPermissions.VIEW)
   @ApiProtected({
-    path: '/api/v1/hr/training/employees/:userId/skills',
+    path: '/api/v1/hr/training/employees/:employeeId/skills',
     roles: [TrainingPermissions.VIEW],
   })
-  @ApiParam({ name: 'userId' })
-  getEmployeeSkillsHandler(@Param('userId') userId: string) {
-    return this.getEmployeeSkills.execute(userId);
+  @ApiParam({ name: 'employeeId' })
+  getEmployeeSkillsHandler(@Param('employeeId') employeeId: string) {
+    return this.getEmployeeSkills.execute(employeeId);
   }
 
-  @Patch('employees/:userId/skills')
+  @Patch('employees/:employeeId/skills')
   @Roles(TrainingPermissions.VIEW, TrainingPermissions.MANAGE_SKILLS)
   @ApiProtected({
-    path: '/api/v1/hr/training/employees/:userId/skills',
+    path: '/api/v1/hr/training/employees/:employeeId/skills',
     roles: [TrainingPermissions.VIEW, TrainingPermissions.MANAGE_SKILLS],
   })
-  @ApiParam({ name: 'userId' })
+  @ApiParam({ name: 'employeeId' })
   @ApiBody({ schema: { type: 'object' } })
   upsertEmployeeSkillsHandler(
-    @Param('userId') userId: string,
+    @Param('employeeId') employeeId: string,
     @Body() body: UpsertEmployeeSkillsDto,
   ) {
-    return this.upsertEmployeeSkills.execute(userId, body);
+    return this.upsertEmployeeSkills.execute(employeeId, body);
   }
 
   @Get('budget')
@@ -152,10 +152,10 @@ export class TrainingController {
   })
   @ApiOperation({ summary: 'List training requests' })
   listRequestsHandler(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('status') status?: string,
   ) {
-    return this.listRequests.execute({ userId, status });
+    return this.listRequests.execute({ employeeId, status });
   }
 
   @Get('requests/:id')
@@ -207,8 +207,8 @@ export class TrainingController {
     path: '/api/v1/hr/training/completions',
     roles: [TrainingPermissions.VIEW],
   })
-  listCompletionsHandler(@Query('userId') userId?: string) {
-    return this.listCompletions.execute({ userId });
+  listCompletionsHandler(@Query('employeeId') employeeId?: string) {
+    return this.listCompletions.execute({ employeeId });
   }
 
   @Get('completions/:id')
@@ -269,17 +269,17 @@ export class TrainingController {
     return this.getSkillGap.execute(id);
   }
 
-  @Get('employees/:userId/skill-gap')
+  @Get('employees/:employeeId/skill-gap')
   @Roles(TrainingPermissions.SKILL_GAP, TrainingPermissions.VIEW)
   @ApiProtected({
-    path: '/api/v1/hr/training/employees/:userId/skill-gap',
+    path: '/api/v1/hr/training/employees/:employeeId/skill-gap',
     roles: [TrainingPermissions.SKILL_GAP, TrainingPermissions.VIEW],
   })
-  @ApiParam({ name: 'userId' })
+  @ApiParam({ name: 'employeeId' })
   getIndividualGapHandler(
-    @Param('userId') userId: string,
+    @Param('employeeId') employeeId: string,
     @Query('targetPositionId') targetPositionId?: string,
   ) {
-    return this.getIndividualGap.execute(userId, targetPositionId ?? null);
+    return this.getIndividualGap.execute(employeeId, targetPositionId ?? null);
   }
 }

@@ -5,7 +5,7 @@ export type IncidentReportStatus = 'OPEN' | 'INVESTIGATING' | 'RESOLVED';
 export interface IncidentReportResponseDto {
   id: string;
   reportId: string;
-  userId: string;
+  employeeId: string;
   incidentType: IncidentType;
   severity: IncidentSeverity;
   description: string;
@@ -25,7 +25,7 @@ export interface IncidentReportResponseDto {
 }
 
 export interface CreateIncidentReportDto {
-  userId: string;
+  employeeId: string;
   incidentType: IncidentType;
   severity: IncidentSeverity;
   description: string;

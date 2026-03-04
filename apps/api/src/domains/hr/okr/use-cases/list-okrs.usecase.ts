@@ -7,7 +7,7 @@ export class ListOkrsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(filters: {
-    userId?: string;
+    employeeId?: string;
     scope?: string;
     departmentId?: string;
     periodYear?: number;
@@ -15,7 +15,7 @@ export class ListOkrsUseCase {
     status?: string;
   }) {
     const where: Record<string, unknown> = {};
-    if (filters.userId) where.userId = filters.userId;
+    if (filters.employeeId) where.employeeId = filters.employeeId;
     if (filters.scope) where.scope = filters.scope;
     if (filters.departmentId) where.departmentId = filters.departmentId;
     if (filters.periodYear != null) where.periodYear = filters.periodYear;

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../employees/employee-subject.utils';
 import {
   enumerateDateRange,
   formatDateOnly,
@@ -25,7 +26,7 @@ type ResolvedSchedule = {
 };
 
 export type AttendanceCalendarContext = {
-  userId: string;
+  employeeId: string;
   lifecycleStatus: string | null;
   countryId: string | null;
   date: Date;
@@ -48,12 +49,16 @@ export class AttendanceCalendarService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getCalendarContext(
-    userId: string,
+    employeeIdOrUserIdOrKeycloakId: string,
     value: Date,
   ): Promise<AttendanceCalendarContext> {
     const date = normalizeDateOnly(value);
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+    const subject = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeIdOrUserIdOrKeycloakId,
+    );
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: subject.id },
       select: {
         id: true,
         lifecycle: { select: { status: true } },
@@ -61,16 +66,16 @@ export class AttendanceCalendarService {
       },
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
     }
 
     const [schedule, holiday, approvedLeave] = await Promise.all([
-      this.resolveSchedule(userId, date),
-      this.resolveHoliday(user.profile?.countryId ?? null, date),
+      this.resolveSchedule(employee.id, date),
+      this.resolveHoliday(employee.profile?.countryId ?? null, date),
       this.prisma.leaveRequest.findFirst({
         where: {
-          userId,
+          employeeId: employee.id,
           status: 'APPROVED',
           startDate: { lte: date },
           endDate: { gte: date },
@@ -86,9 +91,9 @@ export class AttendanceCalendarService {
     ]);
 
     return {
-      userId,
-      lifecycleStatus: user.lifecycle?.status ?? null,
-      countryId: user.profile?.countryId ?? null,
+      employeeId: employee.id,
+      lifecycleStatus: employee.lifecycle?.status ?? null,
+      countryId: employee.profile?.countryId ?? null,
       date,
       schedule,
       holiday,
@@ -96,11 +101,18 @@ export class AttendanceCalendarService {
     };
   }
 
-  async getWorkingDatesForUser(userId: string, start: Date, end: Date) {
+  async getWorkingDatesForUser(
+    employeeIdOrUserIdOrKeycloakId: string,
+    start: Date,
+    end: Date,
+  ) {
     const result: Date[] = [];
 
     for (const date of enumerateDateRange(start, end)) {
-      const context = await this.getCalendarContext(userId, date);
+      const context = await this.getCalendarContext(
+        employeeIdOrUserIdOrKeycloakId,
+        date,
+      );
       if (this.isWorkingDay(context)) {
         result.push(date);
       }
@@ -113,10 +125,10 @@ export class AttendanceCalendarService {
     return Boolean(context.schedule.day?.isWorkingDay) && !context.holiday;
   }
 
-  private async resolveSchedule(userId: string, date: Date) {
+  private async resolveSchedule(employeeId: string, date: Date) {
     const assignment = await this.prisma.userWorkSchedule.findFirst({
       where: {
-        userId,
+        employeeId,
         effectiveFrom: { lte: date },
         OR: [{ effectiveTo: null }, { effectiveTo: { gte: date } }],
       },

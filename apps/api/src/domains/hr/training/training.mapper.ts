@@ -34,7 +34,7 @@ export function mapSkillResponse(row: {
 
 export function mapEmployeeSkillResponse(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   skillId: string;
   level: string;
   attestedAt: Date | null;
@@ -45,7 +45,7 @@ export function mapEmployeeSkillResponse(row: {
 }): EmployeeSkillResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     skillId: row.skillId,
     skillName: row.skill?.name,
     level: row.level as EmployeeSkillResponseDto['level'],
@@ -85,7 +85,7 @@ export function mapTrainingBudgetResponse(row: {
 
 export function mapTrainingRequestResponse(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   departmentId: string;
   trainingType: string;
   title: string;
@@ -107,7 +107,7 @@ export function mapTrainingRequestResponse(row: {
 }): TrainingRequestResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     departmentId: row.departmentId,
     trainingType:
       row.trainingType as TrainingRequestResponseDto['trainingType'],
@@ -132,7 +132,7 @@ export function mapTrainingRequestResponse(row: {
 
 export function mapTrainingCompletionResponse(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   trainingRequestId: string | null;
   title: string;
   provider: string | null;
@@ -151,7 +151,7 @@ export function mapTrainingCompletionResponse(row: {
 }): TrainingCompletionResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     trainingRequestId: row.trainingRequestId,
     title: row.title,
     provider: row.provider,

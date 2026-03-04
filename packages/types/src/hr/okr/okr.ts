@@ -46,7 +46,7 @@ export interface KeyResultUpdateResponseDto {
 
 export interface OkrResponseDto {
   id: string;
-  userId: string | null;
+  employeeId: string | null;
   scope: OkrScope;
   departmentId: string | null;
   departmentName?: string | null;
@@ -66,7 +66,7 @@ export interface OkrResponseDto {
 }
 
 export interface CreateOkrDto {
-  userId?: string | null;
+  employeeId?: string | null;
   scope: OkrScope;
   departmentId?: string | null;
   parentOkrId?: string | null;

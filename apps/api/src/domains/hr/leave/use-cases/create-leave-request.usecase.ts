@@ -18,7 +18,7 @@ export class CreateLeaveRequestUseCase {
   ) {}
 
   async execute(dto: CreateLeaveRequestDto) {
-    const user = await this.lifecycle.getUserForLeave(dto.userId);
+    const employee = await this.lifecycle.getUserForLeave(dto.employeeId);
     const startDate = normalizeDateOnly(dto.startDate);
     const endDate = normalizeDateOnly(dto.endDate);
 
@@ -41,7 +41,7 @@ export class CreateLeaveRequestUseCase {
     }
 
     const daysRequested = await this.calculateDaysRequested(
-      dto.userId,
+      employee.id,
       startDate,
       endDate,
       dto.startHalfDay ?? false,
@@ -59,7 +59,7 @@ export class CreateLeaveRequestUseCase {
         'Leave of 5 or more days requires a handover delegate',
       );
     }
-    if (dto.handoverDelegateId === dto.userId) {
+    if (dto.handoverDelegateId && dto.handoverDelegateId === employee.userId) {
       throw new BadRequestException(
         'handoverDelegateId cannot be the same as the requesting user',
       );
@@ -78,7 +78,7 @@ export class CreateLeaveRequestUseCase {
 
     const overlapping = await this.prisma.leaveRequest.findFirst({
       where: {
-        userId: dto.userId,
+        employeeId: employee.id,
         status: { in: ['PENDING', 'APPROVED'] },
         startDate: { lte: endDate },
         endDate: { gte: startDate },
@@ -92,9 +92,9 @@ export class CreateLeaveRequestUseCase {
     }
 
     const year = startDate.getUTCFullYear();
-    const employmentType = user.employment?.employmentType ?? 'FULL_TIME';
+    const employmentType = employee.employment?.employmentType ?? 'FULL_TIME';
     const balance = await this.leaveBalance.ensureBalance({
-      userId: dto.userId,
+      employeeId: employee.id,
       leaveType: dto.leaveType,
       year,
       employmentType,
@@ -129,8 +129,8 @@ export class CreateLeaveRequestUseCase {
       if (dto.submit) {
         await tx.leaveBalance.update({
           where: {
-            userId_leaveType_year: {
-              userId: dto.userId,
+            employeeId_leaveType_year: {
+              employeeId: employee.id,
               leaveType: dto.leaveType as never,
               year,
             },
@@ -144,7 +144,7 @@ export class CreateLeaveRequestUseCase {
       return tx.leaveRequest.create({
         data: {
           requestId,
-          userId: dto.userId,
+          employeeId: employee.id,
           leaveType: dto.leaveType as never,
           startDate,
           endDate,
@@ -174,14 +174,14 @@ export class CreateLeaveRequestUseCase {
   }
 
   private async calculateDaysRequested(
-    userId: string,
+    employeeId: string,
     startDate: Date,
     endDate: Date,
     startHalfDay: boolean,
     endHalfDay: boolean,
   ) {
     const workingDates = await this.calendar.getWorkingDatesForUser(
-      userId,
+      employeeId,
       startDate,
       endDate,
     );

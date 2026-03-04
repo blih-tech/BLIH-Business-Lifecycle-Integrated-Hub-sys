@@ -10,7 +10,7 @@ export type DisciplinaryStatus = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'APPEALED';
 
 export interface DisciplinaryActionResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   incidentType: DisciplinaryIncidentType;
   actionType: DisciplinaryActionType;
   incidentReportId: string | null;
@@ -25,7 +25,7 @@ export interface DisciplinaryActionResponseDto {
 }
 
 export interface CreateDisciplinaryActionDto {
-  userId: string;
+  employeeId: string;
   incidentType: DisciplinaryIncidentType;
   actionType: DisciplinaryActionType;
   incidentReportId?: string | null;

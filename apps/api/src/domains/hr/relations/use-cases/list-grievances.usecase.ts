@@ -6,9 +6,9 @@ import { mapGrievance } from '../relations.mapper';
 export class ListGrievancesUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string; assignedToId?: string }) {
-    const where: { userId?: string; assignedToId?: string } = {};
-    if (filters.userId) where.userId = filters.userId;
+  async execute(filters: { employeeId?: string; assignedToId?: string }) {
+    const where: { employeeId?: string; assignedToId?: string } = {};
+    if (filters.employeeId) where.employeeId = filters.employeeId;
     if (filters.assignedToId) where.assignedToId = filters.assignedToId;
     const list = await this.prisma.grievance.findMany({
       where,

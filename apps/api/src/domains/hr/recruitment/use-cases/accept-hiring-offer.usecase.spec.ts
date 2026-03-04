@@ -58,6 +58,7 @@ describe('AcceptHiringOfferUseCase', () => {
           candidateId: 'candidate-1',
           recruitmentRequestId: 'request-1',
           jobPostingId: 'posting-1',
+          submittedById: 'user-1',
           finalDecision: 'OFFER_APPROVED',
           employeeId: null,
           onboardingId: null,
@@ -66,8 +67,11 @@ describe('AcceptHiringOfferUseCase', () => {
         }),
         findFirst: jest.fn().mockResolvedValue(null),
       },
-      user: {
-        findUnique: jest.fn().mockResolvedValue({ id: 'employee-1' }),
+      employee: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'employee-1',
+          userId: 'user-1',
+        }),
       },
       $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
     };
@@ -75,9 +79,13 @@ describe('AcceptHiringOfferUseCase', () => {
     const createOnboardingChecklistUseCase = {
       execute: jest.fn().mockResolvedValue(undefined),
     };
+    const notifications = {
+      notifyUsers: jest.fn().mockResolvedValue(undefined),
+    };
     const useCase = new AcceptHiringOfferUseCase(
       prisma as never,
       createOnboardingChecklistUseCase as never,
+      notifications as never,
     );
 
     await expect(
@@ -98,13 +106,13 @@ describe('AcceptHiringOfferUseCase', () => {
       data: { status: 'HIRED' },
     });
     expect(tx.userLifecycle.upsert).toHaveBeenCalledWith({
-      where: { userId: 'employee-1' },
+      where: { employeeId: 'employee-1' },
       update: { status: 'ONBOARDING' },
-      create: { userId: 'employee-1', status: 'ONBOARDING' },
+      create: { employeeId: 'employee-1', status: 'ONBOARDING' },
     });
     expect(tx.onboarding.create).toHaveBeenCalledWith({
       data: {
-        userId: 'employee-1',
+        employeeId: 'employee-1',
         status: 'IN_PROGRESS',
         startedAt: new Date('2026-03-02T00:00:00.000Z'),
       },
@@ -114,7 +122,7 @@ describe('AcceptHiringOfferUseCase', () => {
       where: { id: 'request-1' },
       data: {
         status: 'COMPLETED',
-        linkedUserId: 'employee-1',
+        linkedEmployeeId: 'employee-1',
       },
     });
   });

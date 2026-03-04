@@ -2,7 +2,7 @@ export type TerminationType = 'RESIGNATION' | 'END_OF_CONTRACT' | 'TERMINATION' 
 
 export interface ComplianceChecklistResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   resignationId: string;
   terminationType: TerminationType;
   noticePeriodContractual: number | null;
@@ -22,7 +22,7 @@ export interface ComplianceChecklistResponseDto {
 }
 
 export interface CreateComplianceChecklistDto {
-  userId: string;
+  employeeId: string;
   resignationId: string;
   terminationType: TerminationType;
   noticePeriodContractual?: number | null;

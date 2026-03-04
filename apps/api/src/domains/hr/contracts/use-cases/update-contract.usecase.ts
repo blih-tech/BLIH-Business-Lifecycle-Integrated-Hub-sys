@@ -1,32 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { UpdateContractDto } from '@repo/types';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class UpdateContractUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
-    userIdOrKeycloakId: string,
+    employeeIdOrUserIdOrKeycloakId: string,
     contractId: string,
     dto: UpdateContractDto,
   ) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) throw new NotFoundException('User not found');
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeIdOrUserIdOrKeycloakId,
+    );
 
     const existing = await this.prisma.contract.findFirst({
-      where: { id: contractId, userId: user.id },
+      where: { id: contractId, employeeId: employee.id },
     });
     if (!existing) throw new NotFoundException('Contract not found');
 
     const c = await this.prisma.contract.update({
       where: { id: contractId },
       data: {
+        employeeId: employee.id,
         ...(dto.endDate !== undefined && {
           endDate: dto.endDate ? new Date(dto.endDate) : null,
         }),
@@ -52,7 +51,7 @@ export class UpdateContractUseCase {
 
     return {
       id: c.id,
-      userId: c.userId,
+      employeeId: c.employeeId,
       contractType: c.contractType,
       sequenceNumber: c.sequenceNumber,
       startDate: c.startDate.toISOString().slice(0, 10),

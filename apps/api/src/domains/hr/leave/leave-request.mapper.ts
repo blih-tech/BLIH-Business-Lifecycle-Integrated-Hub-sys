@@ -1,7 +1,7 @@
 type LeaveRequestRow = {
   id: string;
   requestId: string;
-  userId: string;
+  employeeId: string;
   leaveType: string;
   startDate: Date;
   endDate: Date;
@@ -41,7 +41,7 @@ export function mapLeaveRequestResponse(row: LeaveRequestRow) {
   return {
     id: row.id,
     requestId: row.requestId,
-    userId: row.userId,
+    employeeId: row.employeeId,
     leaveType: row.leaveType,
     startDate: row.startDate.toISOString().slice(0, 10),
     endDate: row.endDate.toISOString().slice(0, 10),

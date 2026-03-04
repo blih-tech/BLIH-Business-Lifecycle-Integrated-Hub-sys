@@ -1,26 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { UpdateEmployeeDocumentDto } from '@repo/types';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class UpdateEmployeeDocumentUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
-    userIdOrKeycloakId: string,
+    employeeIdOrUserIdOrKeycloakId: string,
     documentId: string,
     dto: UpdateEmployeeDocumentDto,
   ) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) throw new NotFoundException('User not found');
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeIdOrUserIdOrKeycloakId,
+    );
 
     const existing = await this.prisma.employeeDocument.findFirst({
-      where: { id: documentId, userId: user.id },
+      where: { id: documentId, employeeId: employee.id },
     });
     if (!existing) throw new NotFoundException('Document not found');
 
@@ -35,6 +33,7 @@ export class UpdateEmployeeDocumentUseCase {
     const doc = await this.prisma.employeeDocument.update({
       where: { id: documentId },
       data: {
+        employeeId: employee.id,
         ...(dto.typeOther !== undefined && { typeOther: dto.typeOther }),
         ...(dto.fileUrl !== undefined && { fileUrl: dto.fileUrl }),
         ...(dto.fileName !== undefined && { fileName: dto.fileName }),
@@ -61,7 +60,7 @@ export class UpdateEmployeeDocumentUseCase {
 
     return {
       id: doc.id,
-      userId: doc.userId,
+      employeeId: doc.employeeId,
       type: doc.type,
       typeOther: doc.typeOther ?? null,
       fileUrl: doc.fileUrl,

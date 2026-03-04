@@ -19,6 +19,8 @@ import { DocumentExpiryJob } from './jobs/document-expiry.job';
 import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.job';
 import { RecruitmentRequestsController } from './recruitment/recruitment-requests.controller';
 import { HiringDecisionsController } from './recruitment/hiring-decisions.controller';
+import { JobPostingsController } from './recruitment/job-postings.controller';
+import { CandidatesController } from './recruitment/candidates.controller';
 import { ListRecruitmentRequestsUseCase } from './recruitment/use-cases/list-recruitment-requests.usecase';
 import { GetRecruitmentRequestUseCase } from './recruitment/use-cases/get-recruitment-request.usecase';
 import { CreateRecruitmentRequestUseCase } from './recruitment/use-cases/create-recruitment-request.usecase';
@@ -30,6 +32,21 @@ import { CreateHiringDecisionUseCase } from './recruitment/use-cases/create-hiri
 import { GetHiringDecisionUseCase } from './recruitment/use-cases/get-hiring-decision.usecase';
 import { FinalizeHiringDecisionUseCase } from './recruitment/use-cases/finalize-hiring-decision.usecase';
 import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-offer.usecase';
+import { ListJobPostingsUseCase } from './recruitment/use-cases/list-job-postings.usecase';
+import { GetJobPostingUseCase } from './recruitment/use-cases/get-job-posting.usecase';
+import { UpdateJobPostingUseCase } from './recruitment/use-cases/update-job-posting.usecase';
+import { PublishJobPostingUseCase } from './recruitment/use-cases/publish-job-posting.usecase';
+import { CloseJobPostingUseCase } from './recruitment/use-cases/close-job-posting.usecase';
+import { ListCandidatesForPostingUseCase } from './recruitment/use-cases/list-candidates-for-posting.usecase';
+import { CreateCandidateUseCase } from './recruitment/use-cases/create-candidate.usecase';
+import { GetCandidateUseCase } from './recruitment/use-cases/get-candidate.usecase';
+import { UpdateCandidateUseCase } from './recruitment/use-cases/update-candidate.usecase';
+import { ListCandidateScreeningsUseCase } from './recruitment/use-cases/list-candidate-screenings.usecase';
+import { CreateCvScreeningUseCase } from './recruitment/use-cases/create-cv-screening.usecase';
+import { ListInterviewFeedbackUseCase } from './recruitment/use-cases/list-interview-feedback.usecase';
+import { CreateInterviewFeedbackUseCase } from './recruitment/use-cases/create-interview-feedback.usecase';
+import { ListHiringDecisionsUseCase } from './recruitment/use-cases/list-hiring-decisions.usecase';
+import { RecruitmentNotificationService } from './recruitment/recruitment-notification.service';
 import { OnboardingController } from './onboarding/onboarding.controller';
 import { CreateOnboardingChecklistUseCase } from './onboarding/use-cases/create-onboarding-checklist.usecase';
 import { GetOnboardingChecklistUseCase } from './onboarding/use-cases/get-onboarding-checklist.usecase';
@@ -109,6 +126,7 @@ import { ListSkillGapAssessmentsUseCase } from './training/use-cases/list-skill-
 import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap-assessment.usecase';
 import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
 import { CertificationExpiryJob } from './jobs/certification-expiry.job';
+import { RecruitmentPostingLifecycleJob } from './jobs/recruitment-posting-lifecycle.job';
 import { RelationsController } from './relations/relations.controller';
 import { OffboardingController } from './offboarding/offboarding.controller';
 import { CreateResignationUseCase } from './offboarding/use-cases/create-resignation.usecase';
@@ -162,6 +180,8 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     JobDescriptionsController,
     RecruitmentRequestsController,
     HiringDecisionsController,
+    JobPostingsController,
+    CandidatesController,
     OnboardingController,
     LeaveController,
     AttendanceController,
@@ -189,6 +209,7 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     DocumentExpiryJob,
     AttendanceReconciliationJob,
     CertificationExpiryJob,
+    RecruitmentPostingLifecycleJob,
     ListRecruitmentRequestsUseCase,
     GetRecruitmentRequestUseCase,
     CreateRecruitmentRequestUseCase,
@@ -197,9 +218,24 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     ApproveRecruitmentRequestUseCase,
     CreateJobPostingFromRequestUseCase,
     CreateHiringDecisionUseCase,
+    ListHiringDecisionsUseCase,
     GetHiringDecisionUseCase,
     FinalizeHiringDecisionUseCase,
     AcceptHiringOfferUseCase,
+    ListJobPostingsUseCase,
+    GetJobPostingUseCase,
+    UpdateJobPostingUseCase,
+    PublishJobPostingUseCase,
+    CloseJobPostingUseCase,
+    ListCandidatesForPostingUseCase,
+    CreateCandidateUseCase,
+    GetCandidateUseCase,
+    UpdateCandidateUseCase,
+    ListCandidateScreeningsUseCase,
+    CreateCvScreeningUseCase,
+    ListInterviewFeedbackUseCase,
+    CreateInterviewFeedbackUseCase,
+    RecruitmentNotificationService,
     CreateOnboardingChecklistUseCase,
     ListOnboardingChecklistsUseCase,
     GetOnboardingChecklistUseCase,

@@ -47,8 +47,11 @@ export class PromotionProposalsController {
   })
   @ApiOperation({ summary: 'List promotion proposals' })
   @ApiOkResponse({ description: 'Promotion proposals' })
-  list(@Query('userId') userId?: string, @Query('status') status?: string) {
-    return this.listUseCase.execute({ userId, status });
+  list(
+    @Query('employeeId') employeeId?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.listUseCase.execute({ employeeId, status });
   }
 
   @Get(':id')

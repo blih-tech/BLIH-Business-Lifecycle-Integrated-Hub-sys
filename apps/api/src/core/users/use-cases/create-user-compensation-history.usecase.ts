@@ -1,25 +1,17 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { CreateCompensationHistoryDto } from '../dto/create-compensation-history.dto';
+import { resolveEmployeeSubjectOrThrow } from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class CreateUserCompensationHistoryUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string, dto: CreateCompensationHistoryDto) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+    );
 
     const validFrom = new Date(dto.validFrom);
     const validTo = dto.validTo ? new Date(dto.validTo) : null;
@@ -39,13 +31,13 @@ export class CreateUserCompensationHistoryUseCase {
       }
     }
 
-    await this.assertSalaryWithinGradeBand(user.id, dto.baseSalary ?? null);
+    await this.assertSalaryWithinGradeBand(employee.id, dto.baseSalary ?? null);
 
-    await this.assertNoOverlap(user.id, validFrom, validTo);
+    await this.assertNoOverlap(employee.id, validFrom, validTo);
 
     const entry = await this.prisma.userCompensationHistory.create({
       data: {
-        userId: user.id,
+        employeeId: employee.id,
         baseSalary: dto.baseSalary,
         currency: dto.currency,
         payFrequency: dto.payFrequency,
@@ -69,13 +61,13 @@ export class CreateUserCompensationHistoryUseCase {
   }
 
   private async assertNoOverlap(
-    userId: string,
+    employeeId: string,
     validFrom: Date,
     validTo: Date | null,
   ): Promise<void> {
     const overlap = await this.prisma.userCompensationHistory.findFirst({
       where: {
-        userId,
+        employeeId,
         validFrom: {
           lte: validTo ?? new Date('9999-12-31T23:59:59.999Z'),
         },
@@ -98,7 +90,7 @@ export class CreateUserCompensationHistoryUseCase {
   }
 
   private async assertSalaryWithinGradeBand(
-    userId: string,
+    employeeId: string,
     baseSalary: string | null,
   ): Promise<void> {
     if (!baseSalary) {
@@ -106,7 +98,7 @@ export class CreateUserCompensationHistoryUseCase {
     }
 
     const employment = await this.prisma.userEmployment.findUnique({
-      where: { userId },
+      where: { employeeId },
       select: {
         position: {
           select: {

@@ -55,7 +55,7 @@ export class GetRecruitmentRequestUseCase {
       positionId: withRels.positionId ?? null,
       positionTitle: withRels.position?.title ?? null,
       type: withRels.type,
-      replacementUserId: withRels.replacementUserId ?? null,
+      replacementEmployeeId: withRels.replacementEmployeeId ?? null,
       rationale: withRels.rationale,
       staffing: withRels.staffing,
       schedule: withRels.schedule,
@@ -65,7 +65,7 @@ export class GetRecruitmentRequestUseCase {
       approvals: withRels.approvalSteps.map(mapRecruitmentApprovalStep),
       status: withRels.status,
       linkedJobPostingId: withRels.linkedJobPostingId ?? null,
-      linkedUserId: withRels.linkedUserId ?? null,
+      linkedEmployeeId: withRels.linkedEmployeeId ?? null,
       createdAt: withRels.createdAt.toISOString(),
       updatedAt: withRels.updatedAt.toISOString(),
     };

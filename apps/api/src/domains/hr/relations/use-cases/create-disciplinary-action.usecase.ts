@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { CreateDisciplinaryActionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 import { requiresTerminationApproval } from '../disciplinary.utils';
 import { mapDisciplinaryAction } from '../relations.mapper';
 
@@ -9,7 +10,11 @@ export class CreateDisciplinaryActionUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateDisciplinaryActionDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: dto.userId } });
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+      'Employee not found',
+    );
     if (dto.incidentReportId) {
       await this.prisma.incidentReport.findUniqueOrThrow({
         where: { id: dto.incidentReportId },
@@ -30,7 +35,7 @@ export class CreateDisciplinaryActionUseCase {
       : 'ACTIVE';
     const action = await this.prisma.disciplinaryAction.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         incidentType: dto.incidentType as never,
         actionType: dto.actionType as never,
         incidentReportId: dto.incidentReportId ?? null,

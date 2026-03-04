@@ -25,7 +25,7 @@ type PerformanceReviewFeedbackRow = {
 
 type PerformanceReviewRow = {
   id: string;
-  userId: string;
+  employeeId: string;
   periodConfigId: string;
   selfAssessment: unknown;
   managerReview: unknown;
@@ -105,7 +105,7 @@ export function mapPerformanceReviewFeedbackResponse(
 export function mapPerformanceReviewResponse(row: PerformanceReviewRow) {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     periodConfigId: row.periodConfigId,
     selfAssessment: row.selfAssessment,
     managerReview: row.managerReview,

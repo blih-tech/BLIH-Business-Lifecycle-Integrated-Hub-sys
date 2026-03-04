@@ -11,7 +11,7 @@ describe('SubmitRecruitmentRequestUseCase', () => {
           departmentId: 'dept-1',
           positionId: null,
           type: 'NEW',
-          replacementUserId: null,
+          replacementEmployeeId: null,
         }),
         update: jest.fn(),
       },
@@ -23,8 +23,8 @@ describe('SubmitRecruitmentRequestUseCase', () => {
       position: {
         findUnique: jest.fn(),
       },
-      user: {
-        findUnique: jest.fn(),
+      employee: {
+        findFirst: jest.fn(),
       },
       userEmployment: {
         count: jest.fn(),

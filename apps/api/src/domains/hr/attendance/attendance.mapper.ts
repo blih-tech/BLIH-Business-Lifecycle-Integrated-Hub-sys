@@ -1,6 +1,6 @@
 type AttendanceLogRow = {
   id: string;
-  userId: string;
+  employeeId: string;
   date: Date;
   checkInAt: Date | null;
   checkOutAt: Date | null;
@@ -22,7 +22,7 @@ type AttendanceLogRow = {
 export function mapAttendanceLogResponse(row: AttendanceLogRow) {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     date: row.date.toISOString().slice(0, 10),
     checkInAt: row.checkInAt?.toISOString() ?? null,
     checkOutAt: row.checkOutAt?.toISOString() ?? null,

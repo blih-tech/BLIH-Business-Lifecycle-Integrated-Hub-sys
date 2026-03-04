@@ -22,18 +22,23 @@ export class CertificationExpiryJob {
         expiryDate: { not: null, gte: today, lte: in30 },
       },
       include: {
-        user: { select: { id: true, firstName: true, lastName: true } },
+        employee: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
     for (const c of expiring) {
       if (!c.expiryDate) continue;
+      if (!c.employee.userId) continue;
       const days = Math.ceil(
         (c.expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
       );
       await this.prisma.notification.create({
         data: {
-          userId: c.userId,
+          userId: c.employee.userId,
           type: 'certification_expiry_warning',
           priority: days <= 7 ? 'high' : 'normal',
           title: 'Certification expiring soon',

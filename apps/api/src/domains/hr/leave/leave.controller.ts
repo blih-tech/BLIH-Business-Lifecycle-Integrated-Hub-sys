@@ -66,8 +66,11 @@ export class LeaveController {
   })
   @ApiOperation({ summary: 'List leave requests' })
   @ApiOkResponse({ description: 'List of leave requests' })
-  list(@Query('userId') userId?: string, @Query('status') status?: string) {
-    return this.listUseCase.execute({ userId, status });
+  list(
+    @Query('employeeId') employeeId?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.listUseCase.execute({ employeeId, status });
   }
 
   @Get('requests/:id')
@@ -133,15 +136,15 @@ export class LeaveController {
     path: '/api/v1/hr/leave/balance',
     roles: [LeavePermissions.VIEW],
   })
-  @ApiOperation({ summary: 'Get leave balance for user' })
+  @ApiOperation({ summary: 'Get leave balance for employee' })
   @ApiOkResponse({ description: 'Leave balance by type' })
   balance(
-    @Query('userId') userId: string | undefined,
+    @Query('employeeId') employeeId: string | undefined,
     @Query('leaveType') leaveType?: string,
   ) {
-    if (!userId) {
-      throw new BadRequestException('Query parameter userId is required');
+    if (!employeeId) {
+      throw new BadRequestException('Query parameter employeeId is required');
     }
-    return this.getBalanceUseCase.execute(userId, leaveType);
+    return this.getBalanceUseCase.execute(employeeId, leaveType);
   }
 }

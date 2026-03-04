@@ -14,7 +14,7 @@ export interface AssetProvisioningEquipmentItem {
 }
 
 export interface CreateAssetProvisioningDto {
-  userId: string;
+  employeeId: string;
   equipment?: AssetProvisioningEquipmentItem[];
   platformPermissions?: Record<string, unknown>;
   financeApprovalRequired?: boolean;
@@ -31,7 +31,7 @@ export interface UpdateAssetProvisioningDto {
 
 export interface AssetProvisioningResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   equipment: unknown;
   platformPermissions: unknown;
   itSupervisorApprovedAt: string | null;

@@ -17,7 +17,9 @@ export class AssignUserWorkScheduleUseCase {
   ) {}
 
   async execute(dto: AssignUserWorkScheduleDto) {
-    await this.lifecycle.assertAttendanceAllowed(dto.userId);
+    const employee = await this.lifecycle.assertAttendanceAllowed(
+      dto.employeeId,
+    );
 
     const schedule = await this.prisma.workSchedule.findUnique({
       where: { id: dto.scheduleId },
@@ -40,7 +42,7 @@ export class AssignUserWorkScheduleUseCase {
 
     const overlapping = await this.prisma.userWorkSchedule.findFirst({
       where: {
-        userId: dto.userId,
+        employeeId: employee.id,
         effectiveFrom: {
           lte: effectiveTo ?? new Date('9999-12-31T00:00:00.000Z'),
         },
@@ -56,7 +58,7 @@ export class AssignUserWorkScheduleUseCase {
 
     const created = await this.prisma.userWorkSchedule.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         scheduleId: dto.scheduleId,
         effectiveFrom,
         effectiveTo,

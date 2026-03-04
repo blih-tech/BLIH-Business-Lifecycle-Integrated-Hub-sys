@@ -36,7 +36,7 @@ export interface UpdateEmployeeDocumentDto {
 
 export interface EmployeeDocumentResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   type: DocumentType;
   typeOther: string | null;
   fileUrl: string;

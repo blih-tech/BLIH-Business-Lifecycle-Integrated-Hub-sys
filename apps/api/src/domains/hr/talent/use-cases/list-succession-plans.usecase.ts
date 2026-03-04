@@ -6,11 +6,16 @@ import { mapSuccessionPlan } from '../talent.mapper';
 export class ListSuccessionPlansUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { positionId?: string; candidateId?: string }) {
+  async execute(filters: {
+    positionId?: string;
+    candidateEmployeeId?: string;
+  }) {
     const plans = await this.prisma.successionPlan.findMany({
       where: {
         ...(filters.positionId ? { positionId: filters.positionId } : {}),
-        ...(filters.candidateId ? { candidateId: filters.candidateId } : {}),
+        ...(filters.candidateEmployeeId
+          ? { candidateEmployeeId: filters.candidateEmployeeId }
+          : {}),
       },
       orderBy: [{ updatedAt: 'desc' }],
     });

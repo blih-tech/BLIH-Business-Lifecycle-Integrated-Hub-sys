@@ -46,8 +46,8 @@ export class ApproveLeaveRequestUseCase {
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.leaveBalance.update({
         where: {
-          userId_leaveType_year: {
-            userId: existing.userId,
+          employeeId_leaveType_year: {
+            employeeId: existing.employeeId,
             leaveType: existing.leaveType,
             year,
           },
@@ -85,7 +85,7 @@ export class ApproveLeaveRequestUseCase {
     });
 
     await this.reconciliation.reconcileRangeForUser(
-      updated.userId,
+      updated.employeeId,
       updated.startDate,
       updated.endDate,
     );

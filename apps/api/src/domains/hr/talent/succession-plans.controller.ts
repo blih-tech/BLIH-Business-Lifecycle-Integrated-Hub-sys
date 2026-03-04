@@ -48,9 +48,9 @@ export class SuccessionPlansController {
   @ApiOkResponse({ description: 'Succession plan list' })
   list(
     @Query('positionId') positionId?: string,
-    @Query('candidateId') candidateId?: string,
+    @Query('candidateEmployeeId') candidateEmployeeId?: string,
   ) {
-    return this.listUseCase.execute({ positionId, candidateId });
+    return this.listUseCase.execute({ positionId, candidateEmployeeId });
   }
 
   @Post()

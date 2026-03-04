@@ -35,12 +35,16 @@ export class AuditStateService {
             lastName: true,
             phone: true,
             status: true,
-            employment: {
+            employee: {
               select: {
-                positionId: true,
-                position: {
+                employment: {
                   select: {
-                    departmentId: true,
+                    positionId: true,
+                    position: {
+                      select: {
+                        departmentId: true,
+                      },
+                    },
                   },
                 },
               },
@@ -52,8 +56,9 @@ export class AuditStateService {
         return row
           ? ({
               ...row,
-              departmentId: row.employment?.position?.departmentId ?? null,
-              positionId: row.employment?.positionId ?? null,
+              departmentId:
+                row.employee?.employment?.position?.departmentId ?? null,
+              positionId: row.employee?.employment?.positionId ?? null,
             } as unknown as Record<string, unknown>)
           : null;
       }

@@ -9,11 +9,15 @@ export class ListUsersUseCase {
     return this.prisma.user
       .findMany({
         include: {
-          employment: {
+          employee: {
             select: {
-              position: {
+              employment: {
                 select: {
-                  departmentId: true,
+                  position: {
+                    select: {
+                      departmentId: true,
+                    },
+                  },
                 },
               },
             },
@@ -31,7 +35,8 @@ export class ListUsersUseCase {
           lastName: user.lastName,
           phone: user.phone,
           status: user.status,
-          departmentId: user.employment?.position?.departmentId ?? null,
+          departmentId:
+            user.employee?.employment?.position?.departmentId ?? null,
           permissions: user.permissions,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,

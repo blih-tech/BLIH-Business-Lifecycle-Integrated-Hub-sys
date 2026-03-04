@@ -21,7 +21,11 @@ export class DocumentExpiryJob {
         expiryDate: { not: null, gte: today, lte: in30 },
       },
       include: {
-        user: { select: { id: true, firstName: true, lastName: true } },
+        employee: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
@@ -30,18 +34,23 @@ export class DocumentExpiryJob {
         expiryDate: { not: null, gte: today, lte: in7 },
       },
       include: {
-        user: { select: { id: true, firstName: true, lastName: true } },
+        employee: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
     for (const doc of expiringIn30) {
       if (!doc.expiryDate) continue;
+      if (!doc.employee.userId) continue;
       const days = Math.ceil(
         (doc.expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
       );
       await this.prisma.notification.create({
         data: {
-          userId: doc.userId,
+          userId: doc.employee.userId,
           type: 'document_expiry_warning',
           priority: 'normal',
           title: 'Document expiring soon',
@@ -57,9 +66,10 @@ export class DocumentExpiryJob {
 
     for (const doc of expiringIn7) {
       if (!doc.expiryDate) continue;
+      if (!doc.employee.userId) continue;
       await this.prisma.notification.create({
         data: {
-          userId: doc.userId,
+          userId: doc.employee.userId,
           type: 'document_expiry_urgent',
           priority: 'high',
           title: 'Document expiring in 7 days',

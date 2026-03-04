@@ -4,8 +4,14 @@ import { CreatePromotionProposalUseCase } from './create-promotion-proposal.usec
 describe('CreatePromotionProposalUseCase', () => {
   it('requires a promotion-eligible performance review', async () => {
     const prisma = {
+      employee: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'employee-1',
+          userId: 'user-1',
+        }),
+      },
       user: {
-        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'user-1' }),
+        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'manager-1' }),
       },
       position: {
         findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'position-2' }),
@@ -27,7 +33,7 @@ describe('CreatePromotionProposalUseCase', () => {
 
     await expect(
       useCase.execute({
-        userId: 'user-1',
+        employeeId: 'employee-1',
         toPositionId: 'position-2',
         proposedById: 'manager-1',
       }),

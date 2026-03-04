@@ -2,7 +2,7 @@ export type GrievanceStatus = 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'CLOSED';
 
 export interface GrievanceResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   subject: string;
   description: string;
   category: string | null;
@@ -16,7 +16,7 @@ export interface GrievanceResponseDto {
 }
 
 export interface CreateGrievanceDto {
-  userId: string;
+  employeeId: string;
   subject: string;
   description: string;
   category?: string | null;

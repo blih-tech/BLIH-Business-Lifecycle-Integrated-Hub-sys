@@ -28,7 +28,7 @@ export interface ProbationDevelopmentDto {
 }
 
 export interface CreateProbationKpiPlanDto {
-  userId: string;
+  employeeId: string;
   supervisorId?: string | null;
   probationStart: string;
   probationEnd: string;
@@ -47,7 +47,7 @@ export interface UpdateProbationKpiPlanDto {
 
 export interface ProbationKpiPlanResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   supervisorId: string | null;
   probationStart: string;
   probationEnd: string;
@@ -76,7 +76,7 @@ export interface ConductDto {
 
 export interface CreateProbationEvaluationDto {
   kpiPlanId: string;
-  userId: string;
+  employeeId: string;
   evaluationRound: ProbationEvaluationRound;
   evaluationDate: string;
   goalReviews?: GoalReviewDto[];
@@ -101,7 +101,7 @@ export interface UpdateProbationEvaluationDto {
 export interface ProbationEvaluationResponseDto {
   id: string;
   kpiPlanId: string;
-  userId: string;
+  employeeId: string;
   evaluationRound: ProbationEvaluationRound;
   evaluationDate: string;
   goalReviews: unknown;
@@ -123,7 +123,7 @@ export interface ProbationEvaluationResponseDto {
 }
 
 export interface CreateProbationConfirmationDto {
-  userId: string;
+  employeeId: string;
   reviewSummary?: Record<string, unknown>;
   verdict: ProbationConfirmationVerdict;
   extension?: Record<string, unknown>;
@@ -140,7 +140,7 @@ export interface UpdateProbationConfirmationDto {
 
 export interface ProbationConfirmationResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   reviewSummary: unknown;
   verdict: ProbationConfirmationVerdict;
   extension: unknown;

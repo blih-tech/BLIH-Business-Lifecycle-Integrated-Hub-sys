@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -22,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { HiringDecisionPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { Audit } from '../../../shared/decorators/audit.decorator';
 import { ApiProtected } from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
@@ -31,6 +33,7 @@ import { AcceptHiringOfferUseCase } from './use-cases/accept-hiring-offer.usecas
 import { CreateHiringDecisionUseCase } from './use-cases/create-hiring-decision.usecase';
 import { FinalizeHiringDecisionUseCase } from './use-cases/finalize-hiring-decision.usecase';
 import { GetHiringDecisionUseCase } from './use-cases/get-hiring-decision.usecase';
+import { ListHiringDecisionsUseCase } from './use-cases/list-hiring-decisions.usecase';
 
 @ApiTags('HR Hiring Decisions')
 @Controller('hr/recruitment/hiring-decisions')
@@ -38,13 +41,35 @@ import { GetHiringDecisionUseCase } from './use-cases/get-hiring-decision.usecas
 export class HiringDecisionsController {
   constructor(
     private readonly createUseCase: CreateHiringDecisionUseCase,
+    private readonly listUseCase: ListHiringDecisionsUseCase,
     private readonly getUseCase: GetHiringDecisionUseCase,
     private readonly finalizeUseCase: FinalizeHiringDecisionUseCase,
     private readonly acceptOfferUseCase: AcceptHiringOfferUseCase,
   ) {}
 
+  @Get()
+  @Roles(HiringDecisionPermissions.VIEW)
+  @Audit('recruitment.hiring_decision.list', 'hr.hiring_decision')
+  @ApiProtected({
+    path: '/api/v1/hr/recruitment/hiring-decisions',
+    roles: [HiringDecisionPermissions.VIEW],
+  })
+  @ApiOperation({ summary: 'List hiring decisions' })
+  list(
+    @Query('finalDecision') finalDecision?: string,
+    @Query('recruitmentRequestId') recruitmentRequestId?: string,
+    @Query('candidateId') candidateId?: string,
+  ) {
+    return this.listUseCase.execute({
+      finalDecision,
+      recruitmentRequestId,
+      candidateId,
+    });
+  }
+
   @Post()
   @Roles(HiringDecisionPermissions.CREATE)
+  @Audit('recruitment.hiring_decision.create', 'hr.hiring_decision')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/hiring-decisions',
     roles: [HiringDecisionPermissions.CREATE],
@@ -64,6 +89,7 @@ export class HiringDecisionsController {
 
   @Get(':id')
   @Roles(HiringDecisionPermissions.VIEW)
+  @Audit('recruitment.hiring_decision.get', 'hr.hiring_decision')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/hiring-decisions/:id',
     roles: [HiringDecisionPermissions.VIEW],
@@ -77,6 +103,7 @@ export class HiringDecisionsController {
 
   @Post(':id/finalize')
   @Roles(HiringDecisionPermissions.APPROVE)
+  @Audit('recruitment.hiring_decision.finalize', 'hr.hiring_decision')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/hiring-decisions/:id/finalize',
     roles: [HiringDecisionPermissions.APPROVE],
@@ -91,6 +118,7 @@ export class HiringDecisionsController {
 
   @Post(':id/accept-offer')
   @Roles(HiringDecisionPermissions.APPROVE)
+  @Audit('recruitment.hiring_decision.accept_offer', 'hr.hiring_decision')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/hiring-decisions/:id/accept-offer',
     roles: [HiringDecisionPermissions.APPROVE],

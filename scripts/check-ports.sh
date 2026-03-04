@@ -22,19 +22,19 @@ declare -A PORTS=(
 )
 
 print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 print_success() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}[OK]${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
 check_port() {
@@ -43,7 +43,6 @@ check_port() {
     
     # Check if port is in use (works on Linux and macOS)
     if command -v lsof > /dev/null 2>&1; then
-        # Using lsof
         if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
             local process=$(lsof -Pi :$port -sTCP:LISTEN | tail -n 1)
             print_error "Port $port ($service) is already in use"
@@ -51,13 +50,11 @@ check_port() {
             return 1
         fi
     elif command -v netstat > /dev/null 2>&1; then
-        # Using netstat (fallback)
         if netstat -tuln 2>/dev/null | grep -q ":$port "; then
             print_error "Port $port ($service) is already in use"
             return 1
         fi
     elif command -v ss > /dev/null 2>&1; then
-        # Using ss (fallback)
         if ss -tuln 2>/dev/null | grep -q ":$port "; then
             print_error "Port $port ($service) is already in use"
             return 1
@@ -91,7 +88,7 @@ main() {
     else
         print_error "Some ports are in use. Please stop the conflicting services or modify the port configuration."
         echo ""
-        print_info "To modify ports, edit: docker-compose.yml"
+        print_info "To modify ports, edit: apps/api/docker-compose.yml"
         exit 1
     fi
 }

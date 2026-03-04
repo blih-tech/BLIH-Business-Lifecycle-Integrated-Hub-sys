@@ -6,10 +6,10 @@ import { mapOnboardingChecklistResponse } from '../onboarding.mapper';
 export class ListOnboardingChecklistsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string; status?: string }) {
+  async execute(filters: { employeeId?: string; status?: string }) {
     const checklists = await this.prisma.onboardingChecklist.findMany({
       where: {
-        ...(filters.userId && { userId: filters.userId }),
+        ...(filters.employeeId && { employeeId: filters.employeeId }),
         ...(filters.status && {
           status: filters.status as
             | 'NOT_STARTED'

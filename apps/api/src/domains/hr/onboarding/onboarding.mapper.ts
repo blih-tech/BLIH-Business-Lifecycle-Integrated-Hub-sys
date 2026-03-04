@@ -15,7 +15,7 @@ type OnboardingTaskRow = {
 
 type OnboardingChecklistRow = {
   id: string;
-  userId: string;
+  employeeId: string;
   onboardingId: string | null;
   hiringDecisionId: string | null;
   joinDate: Date;
@@ -53,7 +53,7 @@ export function mapOnboardingChecklistResponse(
 ) {
   return {
     id: checklist.id,
-    userId: checklist.userId,
+    employeeId: checklist.employeeId,
     onboardingId: checklist.onboardingId,
     hiringDecisionId: checklist.hiringDecisionId,
     joinDate: checklist.joinDate.toISOString().slice(0, 10),

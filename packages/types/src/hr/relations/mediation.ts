@@ -2,8 +2,8 @@ export type MediationStatus = 'PENDING' | 'IN_PROGRESS' | 'AGREEMENT_REACHED' | 
 
 export interface ConflictMediationResponseDto {
   id: string;
-  requesterId: string;
-  otherPartyId: string;
+  requesterEmployeeId: string;
+  otherPartyEmployeeId: string;
   nature: string;
   duration: string | null;
   attemptedResolutions: string | null;
@@ -19,8 +19,8 @@ export interface ConflictMediationResponseDto {
 }
 
 export interface CreateConflictMediationDto {
-  requesterId: string;
-  otherPartyId: string;
+  requesterEmployeeId: string;
+  otherPartyEmployeeId: string;
   nature: string;
   duration?: string | null;
   attemptedResolutions?: string | null;

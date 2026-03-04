@@ -7,7 +7,7 @@ export interface RequiredSkillItem {
 }
 
 export interface CurrentStateItem {
-  userId: string;
+  employeeId: string;
   skillId: string;
   currentLevel: SkillLevel | null;
   gap: number;
@@ -44,7 +44,7 @@ export interface CreateSkillGapAssessmentDto {
 }
 
 export interface IndividualSkillGapResponseDto {
-  userId: string;
+  employeeId: string;
   targetPositionId?: string | null;
   gaps: Array<{
     skillId: string;

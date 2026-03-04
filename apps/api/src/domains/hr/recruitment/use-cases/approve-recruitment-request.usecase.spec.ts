@@ -1,7 +1,7 @@
 import { ApproveRecruitmentRequestUseCase } from './approve-recruitment-request.usecase';
 
 describe('ApproveRecruitmentRequestUseCase', () => {
-  it('derives the next approval level from RecruitmentApproval records', async () => {
+  it('keeps the request pending until the full approval chain is complete', async () => {
     const prisma = {
       recruitmentRequest: {
         findUnique: jest.fn().mockResolvedValue({
@@ -10,19 +10,27 @@ describe('ApproveRecruitmentRequestUseCase', () => {
           departmentId: 'dept-1',
           positionId: 'position-1',
           type: 'NEW',
-          replacementUserId: null,
+          replacementEmployeeId: null,
+          staffing: {
+            salaryBracket: {
+              max: 60000,
+            },
+          },
+          schedule: {
+            priority: 'MEDIUM',
+          },
         }),
         update: jest.fn().mockResolvedValue({
           id: 'request-1',
           requestId: 'REQ-2026-001',
-          status: 'APPROVED',
+          status: 'PENDING',
         }),
       },
       recruitmentApproval: {
         findMany: jest.fn().mockResolvedValue([
           {
             level: 1,
-            role: 'Finance',
+            role: 'DEPARTMENT_HEAD',
             approverId: 'approver-1',
             decision: 'APPROVED',
             comments: null,
@@ -45,8 +53,8 @@ describe('ApproveRecruitmentRequestUseCase', () => {
           isActive: true,
         }),
       },
-      user: {
-        findUnique: jest.fn(),
+      employee: {
+        findFirst: jest.fn(),
       },
       userEmployment: {
         count: jest.fn().mockResolvedValue(1),
@@ -62,7 +70,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
       useCase.execute(
         'request-1',
         {
-          role: 'HR',
+          role: 'FINANCE',
           decision: 'APPROVED',
           comments: 'Looks good',
         },
@@ -70,7 +78,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
       ),
     ).resolves.toMatchObject({
       requestId: 'REQ-2026-001',
-      status: 'APPROVED',
+      status: 'PENDING',
     });
 
     expect(prisma.recruitmentApproval.create).toHaveBeenCalledWith({
@@ -78,7 +86,7 @@ describe('ApproveRecruitmentRequestUseCase', () => {
         recruitmentRequestId: 'request-1',
         approverId: 'approver-2',
         level: 2,
-        role: 'HR',
+        role: 'FINANCE_CONTROLLER',
         decision: 'APPROVED',
       }),
     });

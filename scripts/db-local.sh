@@ -14,28 +14,26 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# API root
-API_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+API_ROOT="$REPO_ROOT/apps/api"
 COMPOSE_FILE="$API_ROOT/docker-compose.yml"
 
-# Print colored message
 print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 print_success() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}[OK]${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Check if Docker is running
 check_docker() {
     if ! docker info > /dev/null 2>&1; then
         print_error "Docker is not running. Please start Docker and try again."
@@ -43,7 +41,6 @@ check_docker() {
     fi
 }
 
-# Start all services
 start() {
     print_info "Starting BLIH System local database services..."
     check_docker
@@ -53,7 +50,6 @@ start() {
     status
 }
 
-# Stop all services
 stop() {
     print_info "Stopping BLIH System local database services..."
     check_docker
@@ -61,7 +57,6 @@ stop() {
     print_success "Services stopped successfully!"
 }
 
-# Restart all services
 restart() {
     print_info "Restarting BLIH System local database services..."
     stop
@@ -69,7 +64,6 @@ restart() {
     start
 }
 
-# Show status of all services
 status() {
     check_docker
     print_info "Service Status:"
@@ -91,7 +85,6 @@ status() {
     echo ""
 }
 
-# View logs
 logs() {
     check_docker
     if [ -n "$1" ]; then
@@ -101,7 +94,6 @@ logs() {
     fi
 }
 
-# Connect to PostgreSQL
 psql_connect() {
     check_docker
     local db="${1:-postgres}"
@@ -109,9 +101,8 @@ psql_connect() {
     docker exec -it blih-postgres psql -U postgres -d "$db"
 }
 
-# Reset databases (WARNING: destroys all data)
 reset() {
-    print_warning "⚠️  WARNING: This will destroy all data in the databases!"
+    print_warning "WARNING: This will destroy all data in the databases!"
     read -p "Are you sure you want to continue? (yes/no): " confirm
     if [ "$confirm" = "yes" ]; then
         print_info "Stopping services and removing volumes..."
@@ -124,27 +115,23 @@ reset() {
     fi
 }
 
-# Check service health
 health() {
     check_docker
     print_info "Checking service health..."
     echo ""
     
-    # Check PostgreSQL
     if docker exec blih-postgres pg_isready -U postgres > /dev/null 2>&1; then
         print_success "PostgreSQL: Healthy"
     else
         print_error "PostgreSQL: Unhealthy"
     fi
     
-    # Check Keycloak
     if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 | grep -q "200\|303"; then
         print_success "Keycloak: Healthy"
     else
         print_error "Keycloak: Unhealthy (may still be starting up)"
     fi
     
-    # Check MailHog
     if curl -s -o /dev/null -w "%{http_code}" http://localhost:8025 | grep -q "200"; then
         print_success "MailHog: Healthy"
     else
@@ -153,7 +140,6 @@ health() {
     echo ""
 }
 
-# Backup database
 backup() {
     check_docker
     local db="${1:-blih-system-dev}"
@@ -168,7 +154,6 @@ backup() {
     print_success "Backup saved to: $backup_file"
 }
 
-# Restore database
 restore() {
     check_docker
     if [ -z "$1" ]; then
@@ -183,10 +168,9 @@ restore() {
         exit 1
     fi
     
-    # Extract database name from filename (assumes format: dbname_timestamp.sql)
     local db_name=$(basename "$backup_file" | cut -d'_' -f1)
     
-    print_warning "⚠️  This will restore $db_name from $backup_file"
+    print_warning "WARNING: This will restore $db_name from $backup_file"
     read -p "Continue? (yes/no): " confirm
     if [ "$confirm" = "yes" ]; then
         print_info "Restoring database: $db_name"
@@ -197,7 +181,6 @@ restore() {
     fi
 }
 
-# Show help
 help() {
     echo "BLIH System - Local Database Management"
     echo ""
@@ -213,19 +196,11 @@ help() {
     echo "  health             Check health of all services"
     echo "  backup [database]  Backup database (default: blih-system-dev)"
     echo "  restore <file>     Restore database from backup file"
-    echo "  reset              Reset all services and data (⚠️  destroys data)"
+    echo "  reset              Reset all services and data (destroys data)"
     echo "  help               Show this help message"
-    echo ""
-    echo "Examples:"
-    echo "  $0 start                          # Start all services"
-    echo "  $0 psql keycloak                  # Connect to keycloak database"
-    echo "  $0 logs postgres                  # View PostgreSQL logs"
-    echo "  $0 backup blih-system-dev         # Backup main database"
-    echo "  $0 restore backups/db_backup.sql  # Restore from backup"
     echo ""
 }
 
-# Main script logic
 case "${1:-help}" in
     start)
         start

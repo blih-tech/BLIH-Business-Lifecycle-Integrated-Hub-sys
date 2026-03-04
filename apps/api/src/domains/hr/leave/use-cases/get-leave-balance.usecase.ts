@@ -9,12 +9,12 @@ export class GetLeaveBalanceUseCase {
     private readonly leaveBalance: LeaveBalanceService,
   ) {}
 
-  async execute(userId: string, leaveType?: string) {
-    const user = await this.lifecycle.getUserForLeave(userId);
-    const employmentType = user.employment?.employmentType ?? 'FULL_TIME';
+  async execute(employeeId: string, leaveType?: string) {
+    const employee = await this.lifecycle.getUserForLeave(employeeId);
+    const employmentType = employee.employment?.employmentType ?? 'FULL_TIME';
     const year = new Date().getUTCFullYear();
     const balances = await this.leaveBalance.ensureBalancesForYear({
-      userId,
+      employeeId: employee.id,
       year,
       employmentType,
       leaveType,

@@ -12,7 +12,7 @@ type RecruitmentValidationInput = {
   departmentId: string;
   positionId?: string | null;
   type?: RecruitmentRequestType;
-  replacementUserId?: string | null;
+  replacementEmployeeId?: string | null;
   requirePosition?: boolean;
   enforceHeadcount?: boolean;
 };
@@ -64,21 +64,21 @@ export async function validateRecruitmentRequestInput(
   }
 
   if (input.type === 'REPLACEMENT') {
-    if (!input.replacementUserId) {
+    if (!input.replacementEmployeeId) {
       throw new BadRequestException(
-        'Replacement requests require replacementUserId',
+        'Replacement requests require replacementEmployeeId',
       );
     }
     if (!input.positionId) {
       throw new BadRequestException('Replacement requests require positionId');
     }
-  } else if (input.replacementUserId) {
+  } else if (input.replacementEmployeeId) {
     throw new BadRequestException(
-      'replacementUserId is only allowed for replacement requests',
+      'replacementEmployeeId is only allowed for replacement requests',
     );
   }
 
-  let replacementUser: {
+  let replacementEmployee: {
     id: string;
     employment: {
       id: string;
@@ -87,9 +87,14 @@ export async function validateRecruitmentRequestInput(
     } | null;
   } | null = null;
 
-  if (input.replacementUserId) {
-    replacementUser = await prisma.user.findUnique({
-      where: { id: input.replacementUserId },
+  if (input.replacementEmployeeId) {
+    replacementEmployee = await prisma.employee.findFirst({
+      where: {
+        OR: [
+          { id: input.replacementEmployeeId },
+          { userId: input.replacementEmployeeId },
+        ],
+      },
       select: {
         id: true,
         employment: {
@@ -101,41 +106,42 @@ export async function validateRecruitmentRequestInput(
         },
       },
     });
-    if (!replacementUser)
-      throw new NotFoundException('Replacement user not found');
-    if (!replacementUser.employment) {
+    if (!replacementEmployee)
+      throw new NotFoundException('Replacement employee not found');
+    if (!replacementEmployee.employment) {
       throw new BadRequestException(
-        'Replacement user must have an active employment record',
+        'Replacement employee must have an active employment record',
       );
     }
 
     if (
       input.positionId &&
-      replacementUser.employment.positionId !== input.positionId
+      replacementEmployee.employment.positionId !== input.positionId
     ) {
       throw new BadRequestException(
-        'Replacement user must currently occupy the requested position',
+        'Replacement employee must currently occupy the requested position',
       );
     }
 
     if (
-      replacementUser.employment.position?.departmentId &&
-      replacementUser.employment.position.departmentId !== input.departmentId
+      replacementEmployee.employment.position?.departmentId &&
+      replacementEmployee.employment.position.departmentId !==
+        input.departmentId
     ) {
       throw new BadRequestException(
-        'Replacement user must belong to the requested department',
+        'Replacement employee must belong to the requested department',
       );
     }
   }
 
   if (input.enforceHeadcount && position) {
-    await ensurePositionHasCapacity(prisma, position, replacementUser);
+    await ensurePositionHasCapacity(prisma, position, replacementEmployee);
   }
 
   return {
     department,
     position,
-    replacementUser,
+    replacementEmployee,
   };
 }
 
@@ -146,7 +152,7 @@ async function ensurePositionHasCapacity(
     title: string;
     headcountLimit: number | null;
   },
-  replacementUser: {
+  replacementEmployee: {
     employment: {
       positionId: string | null;
     } | null;
@@ -157,7 +163,7 @@ async function ensurePositionHasCapacity(
   const filledSeats = await prisma.userEmployment.count({
     where: {
       positionId: position.id,
-      user: {
+      employee: {
         is: {
           OR: [
             { lifecycle: { is: null } },
@@ -177,7 +183,7 @@ async function ensurePositionHasCapacity(
   });
 
   const replacementSeatOffset =
-    replacementUser?.employment?.positionId === position.id ? 1 : 0;
+    replacementEmployee?.employment?.positionId === position.id ? 1 : 0;
   const effectiveFilledSeats = Math.max(0, filledSeats - replacementSeatOffset);
 
   if (effectiveFilledSeats >= position.headcountLimit) {

@@ -98,12 +98,12 @@ export class PerformanceController {
   @ApiOperation({ summary: 'List performance reviews' })
   @ApiOkResponse({ description: 'List of reviews' })
   listReviews(
-    @Query('userId') userId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('periodConfigId') periodConfigId?: string,
     @Query('status') status?: string,
   ) {
     return this.listReviewsUseCase.execute({
-      userId,
+      employeeId,
       periodConfigId,
       status: status as never,
     });
@@ -234,17 +234,20 @@ export class PerformanceController {
     return this.upsertCalibrationUseCase.execute(body);
   }
 
-  @Get('summary/:userId/:year')
+  @Get('summary/:employeeId/:year')
   @Roles(PerformancePermissions.VIEW_SUMMARY, PerformancePermissions.VIEW)
   @ApiProtected({
-    path: '/api/v1/hr/performance/summary/:userId/:year',
+    path: '/api/v1/hr/performance/summary/:employeeId/:year',
     roles: [PerformancePermissions.VIEW_SUMMARY, PerformancePermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get annual performance summary' })
-  @ApiParam({ name: 'userId' })
+  @ApiParam({ name: 'employeeId' })
   @ApiParam({ name: 'year' })
   @ApiOkResponse({ description: 'Annual summary' })
-  getSummary(@Param('userId') userId: string, @Param('year') year: string) {
-    return this.getAnnualSummaryUseCase.execute(userId, parseInt(year, 10));
+  getSummary(
+    @Param('employeeId') employeeId: string,
+    @Param('year') year: string,
+  ) {
+    return this.getAnnualSummaryUseCase.execute(employeeId, parseInt(year, 10));
   }
 }

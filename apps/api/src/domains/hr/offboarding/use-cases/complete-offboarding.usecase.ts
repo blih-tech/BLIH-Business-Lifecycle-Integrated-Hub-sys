@@ -15,20 +15,20 @@ export class CompleteOffboardingUseCase {
     });
     if (!resignation) throw new NotFoundException('Resignation not found');
     const lifecycle = await this.prisma.userLifecycle.findUnique({
-      where: { userId: resignation.userId },
+      where: { employeeId: resignation.employeeId },
     });
     if (lifecycle?.offboardingCompleted)
       throw new BadRequestException('Offboarding already completed');
     const now = new Date();
     await this.prisma.userLifecycle.upsert({
-      where: { userId: resignation.userId },
+      where: { employeeId: resignation.employeeId },
       update: {
         status: 'RESIGNED',
         terminatedAt: now,
         offboardingCompleted: true,
       },
       create: {
-        userId: resignation.userId,
+        employeeId: resignation.employeeId,
         status: 'RESIGNED',
         terminatedAt: now,
         offboardingCompleted: true,
@@ -40,7 +40,7 @@ export class CompleteOffboardingUseCase {
     });
     return {
       success: true,
-      userId: resignation.userId,
+      employeeId: resignation.employeeId,
       message: 'Offboarding completed; lifecycle updated.',
     };
   }

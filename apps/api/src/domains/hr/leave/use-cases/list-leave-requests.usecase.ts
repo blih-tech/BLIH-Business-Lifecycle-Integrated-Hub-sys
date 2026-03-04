@@ -6,10 +6,10 @@ import { mapLeaveRequestResponse } from '../leave-request.mapper';
 export class ListLeaveRequestsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string; status?: string }) {
+  async execute(filters: { employeeId?: string; status?: string }) {
     const where: Record<string, unknown> = {};
-    if (filters.userId) {
-      where.userId = filters.userId;
+    if (filters.employeeId) {
+      where.employeeId = filters.employeeId;
     }
     if (filters.status) {
       where.status = filters.status;

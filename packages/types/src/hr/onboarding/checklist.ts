@@ -13,7 +13,7 @@ export type OnboardingTaskStatus =
   | 'OVERDUE';
 
 export interface CreateOnboardingChecklistDto {
-  userId: string;
+  employeeId: string;
   onboardingId?: string | null;
   hiringDecisionId?: string | null;
   joinDate: string;
@@ -52,7 +52,7 @@ export interface UpdateOnboardingTaskDto {
 
 export interface OnboardingChecklistResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   onboardingId: string | null;
   hiringDecisionId: string | null;
   joinDate: string;

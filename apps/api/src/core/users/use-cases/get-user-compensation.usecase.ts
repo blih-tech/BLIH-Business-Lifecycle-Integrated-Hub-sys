@@ -1,33 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { mapCompensationComponent } from '../compensation-component.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class GetUserCompensationUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+    );
 
     const [compensation, components] = await Promise.all([
       this.prisma.userCompensation.findUnique({
-        where: { userId: user.id },
+        where: { employeeId: employee.id },
       }),
       this.prisma.compensationComponent.findMany({
-        where: { userId: user.id },
+        where: { employeeId: employee.id },
         orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }],
       }),
     ]);
     if (!compensation) {
-      throw new NotFoundException('User compensation not found');
+      throw new NotFoundException('Employee compensation not found');
     }
 
     return {

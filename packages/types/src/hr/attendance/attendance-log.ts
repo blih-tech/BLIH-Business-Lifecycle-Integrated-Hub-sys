@@ -9,7 +9,7 @@ export type AttendanceStatus =
   | 'BUSINESS_TRIP';
 
 export interface CreateOrUpdateAttendanceLogDto {
-  userId: string;
+  employeeId: string;
   date: string;
   checkInAt?: string | null;
   checkOutAt?: string | null;
@@ -26,7 +26,7 @@ export interface CreateOrUpdateAttendanceLogDto {
 
 export interface AttendanceLogResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   date: string;
   checkInAt: string | null;
   checkOutAt: string | null;

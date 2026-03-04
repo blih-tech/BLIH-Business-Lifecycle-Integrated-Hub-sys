@@ -15,7 +15,7 @@ function dateStr(d: Date | null): string | null {
 export function mapIncidentReport(row: {
   id: string;
   reportId: string;
-  userId: string;
+  employeeId: string;
   incidentType: string;
   severity: string;
   description: string;
@@ -36,7 +36,7 @@ export function mapIncidentReport(row: {
   return {
     id: row.id,
     reportId: row.reportId,
-    userId: row.userId,
+    employeeId: row.employeeId,
     incidentType: row.incidentType as IncidentReportResponseDto['incidentType'],
     severity: row.severity as IncidentReportResponseDto['severity'],
     description: row.description,
@@ -58,7 +58,7 @@ export function mapIncidentReport(row: {
 
 export function mapDisciplinaryAction(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   incidentType: string;
   actionType: string;
   incidentReportId: string | null;
@@ -73,7 +73,7 @@ export function mapDisciplinaryAction(row: {
 }): DisciplinaryActionResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     incidentType:
       row.incidentType as DisciplinaryActionResponseDto['incidentType'],
     actionType: row.actionType as DisciplinaryActionResponseDto['actionType'],
@@ -91,7 +91,7 @@ export function mapDisciplinaryAction(row: {
 
 export function mapGrievance(row: {
   id: string;
-  userId: string;
+  employeeId: string;
   subject: string;
   description: string;
   category: string | null;
@@ -105,7 +105,7 @@ export function mapGrievance(row: {
 }): GrievanceResponseDto {
   return {
     id: row.id,
-    userId: row.userId,
+    employeeId: row.employeeId,
     subject: row.subject,
     description: row.description,
     category: row.category,
@@ -122,7 +122,7 @@ export function mapGrievance(row: {
 export function mapRecognition(row: {
   id: string;
   nominatorId: string;
-  nomineeId: string;
+  nomineeEmployeeId: string;
   category: string;
   description: string;
   impact: string | null;
@@ -137,7 +137,7 @@ export function mapRecognition(row: {
   return {
     id: row.id,
     nominatorId: row.nominatorId,
-    nomineeId: row.nomineeId,
+    nomineeEmployeeId: row.nomineeEmployeeId,
     category: row.category as RecognitionResponseDto['category'],
     description: row.description,
     impact: row.impact,
@@ -184,7 +184,7 @@ export function mapSurvey(row: {
 export function mapSurveyResponseRecord(row: {
   id: string;
   surveyId: string;
-  userId: string | null;
+  employeeId: string | null;
   responses: unknown;
   submittedAt: Date;
   createdAt: Date;
@@ -192,7 +192,7 @@ export function mapSurveyResponseRecord(row: {
   return {
     id: row.id,
     surveyId: row.surveyId,
-    userId: row.userId,
+    employeeId: row.employeeId,
     responses: row.responses,
     submittedAt: row.submittedAt.toISOString(),
     createdAt: row.createdAt.toISOString(),
@@ -201,8 +201,8 @@ export function mapSurveyResponseRecord(row: {
 
 export function mapConflictMediation(row: {
   id: string;
-  requesterId: string;
-  otherPartyId: string;
+  requesterEmployeeId: string;
+  otherPartyEmployeeId: string;
   nature: string;
   duration: string | null;
   attemptedResolutions: string | null;
@@ -218,8 +218,8 @@ export function mapConflictMediation(row: {
 }): ConflictMediationResponseDto {
   return {
     id: row.id,
-    requesterId: row.requesterId,
-    otherPartyId: row.otherPartyId,
+    requesterEmployeeId: row.requesterEmployeeId,
+    otherPartyEmployeeId: row.otherPartyEmployeeId,
     nature: row.nature,
     duration: row.duration,
     attemptedResolutions: row.attemptedResolutions,

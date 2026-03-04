@@ -7,6 +7,7 @@ import {
 import type { CreateHiringDecisionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapHiringDecisionResponse } from '../hiring-decision.mapper';
+import { normalizeOfferPackage } from '../offer-analysis.utils';
 
 @Injectable()
 export class CreateHiringDecisionUseCase {
@@ -15,12 +16,21 @@ export class CreateHiringDecisionUseCase {
   async execute(dto: CreateHiringDecisionDto, submittedById: string) {
     const candidate = await this.prisma.candidate.findUnique({
       where: { id: dto.candidateId },
-      select: { id: true, jobPostingId: true },
+      select: { id: true, jobPostingId: true, status: true },
     });
     if (!candidate) throw new NotFoundException('Candidate not found');
     if (candidate.jobPostingId !== dto.jobPostingId) {
       throw new BadRequestException(
         'Candidate must belong to the selected job posting',
+      );
+    }
+    if (
+      !['SHORTLISTED', 'INTERVIEW_STAGE', 'OFFER_PENDING'].includes(
+        candidate.status,
+      )
+    ) {
+      throw new BadRequestException(
+        'Hiring decisions can only be created for candidates that reached the shortlist or interview stages',
       );
     }
 
@@ -61,6 +71,15 @@ export class CreateHiringDecisionUseCase {
       where: { decisionId: { startsWith: `DEC-${year}-` } },
     });
     const decisionId = `DEC-${year}-${String(count + 1).padStart(3, '0')}`;
+    const normalizedOffer =
+      dto.offer != null
+        ? await normalizeOfferPackage(this.prisma, {
+            candidateId: dto.candidateId,
+            recruitmentRequestId: dto.recruitmentRequestId,
+            jobPostingId: dto.jobPostingId,
+            offer: dto.offer as Record<string, unknown>,
+          })
+        : null;
 
     const created = await this.prisma.hiringDecision.create({
       data: {
@@ -71,7 +90,7 @@ export class CreateHiringDecisionUseCase {
         candidateSummary: (dto.candidateSummary ?? undefined) as
           | object
           | undefined,
-        offer: (dto.offer ?? undefined) as object | undefined,
+        offer: (normalizedOffer ?? undefined) as object | undefined,
         selectionReasoning: dto.selectionReasoning ?? undefined,
         keyAssets: (dto.keyAssets ?? undefined) as object | undefined,
         attachments: (dto.attachments ?? undefined) as object | undefined,

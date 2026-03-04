@@ -6,28 +6,39 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { UpdateUserEmploymentDto } from '../dto/update-user-employment.dto';
+import {
+  ensureEmployeeForUser,
+  resolveEmployeeSubjectOrThrow,
+} from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class UpdateUserEmploymentUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userIdOrKeycloakId: string, dto: UpdateUserEmploymentDto) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+      'Employee not found',
+    ).catch(async (error) => {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+        },
+        select: { id: true },
+      });
+      if (!user) {
+        throw error;
+      }
+      return ensureEmployeeForUser(this.prisma, user.id);
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     if (dto.employeeCode) {
       const duplicate = await this.prisma.userEmployment.findFirst({
         where: {
           employeeCode: dto.employeeCode,
           NOT: {
-            userId: user.id,
+            employeeId: employee.id,
           },
         },
         select: { id: true },
@@ -38,10 +49,10 @@ export class UpdateUserEmploymentUseCase {
     }
 
     const existing = await this.prisma.userEmployment.findUnique({
-      where: { userId: user.id },
+      where: { employeeId: employee.id },
       select: {
         id: true,
-        userId: true,
+        employeeId: true,
         employeeCode: true,
         positionId: true,
         employmentType: true,
@@ -106,7 +117,7 @@ export class UpdateUserEmploymentUseCase {
 
     const employment = await this.prisma.$transaction(async (tx) => {
       const saved = await tx.userEmployment.upsert({
-        where: { userId: user.id },
+        where: { employeeId: employee.id },
         update: {
           ...(dto.employeeCode !== undefined
             ? { employeeCode: dto.employeeCode }
@@ -127,7 +138,7 @@ export class UpdateUserEmploymentUseCase {
             : {}),
         },
         create: {
-          userId: user.id,
+          employeeId: employee.id,
           employeeCode: dto.employeeCode,
           positionId,
           employmentType: dto.employmentType,
@@ -207,7 +218,7 @@ export class UpdateUserEmploymentUseCase {
     });
 
     return {
-      userId: employment.userId,
+      employeeId: employment.employeeId,
       employeeCode: employment.employeeCode,
       departmentId: employment.position?.departmentId ?? null,
       departmentName: employment.position?.department?.name ?? null,

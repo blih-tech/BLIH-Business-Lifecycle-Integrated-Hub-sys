@@ -6,6 +6,10 @@ import {
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { mapCompensationComponent } from '../compensation-component.mapper';
 import { UpdateCompensationComponentDto } from '../dto/update-compensation-component.dto';
+import {
+  ensureEmployeeForUser,
+  resolveEmployeeSubjectOrThrow,
+} from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class UpdateCompensationComponentUseCase {
@@ -16,18 +20,25 @@ export class UpdateCompensationComponentUseCase {
     componentId: string,
     dto: UpdateCompensationComponentDto,
   ) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+      'Employee not found',
+    ).catch(async (error) => {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+        },
+        select: { id: true },
+      });
+      if (!user) {
+        throw error;
+      }
+      return ensureEmployeeForUser(this.prisma, user.id);
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     const existing = await this.prisma.compensationComponent.findFirst({
-      where: { id: componentId, userId: user.id },
+      where: { id: componentId, employeeId: employee.id },
       select: { id: true },
     });
     if (!existing) {
@@ -53,6 +64,7 @@ export class UpdateCompensationComponentUseCase {
     const component = await this.prisma.compensationComponent.update({
       where: { id: componentId },
       data: {
+        employeeId: employee.id,
         ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
         ...(dto.type !== undefined ? { type: dto.type } : {}),
         ...(dto.amount !== undefined ? { amount: dto.amount } : {}),

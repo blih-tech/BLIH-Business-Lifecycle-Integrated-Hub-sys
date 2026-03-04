@@ -2,21 +2,25 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import type { CreatePerformanceReviewDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapPerformanceReviewResponse } from '../performance.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class CreatePerformanceReviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreatePerformanceReviewDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: dto.userId } });
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+    );
     await this.prisma.reviewPeriodConfig.findUniqueOrThrow({
       where: { id: dto.periodConfigId },
     });
 
     const existing = await this.prisma.performanceReview.findUnique({
       where: {
-        userId_periodConfigId: {
-          userId: dto.userId,
+        employeeId_periodConfigId: {
+          employeeId: employee.id,
           periodConfigId: dto.periodConfigId,
         },
       },
@@ -29,7 +33,7 @@ export class CreatePerformanceReviewUseCase {
 
     const review = await this.prisma.performanceReview.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         periodConfigId: dto.periodConfigId,
         status: 'NOT_STARTED',
       },

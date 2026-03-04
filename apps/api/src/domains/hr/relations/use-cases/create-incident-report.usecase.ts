@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { CreateIncidentReportDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 import {
   getSlaHoursForSeverity,
   getInvestigationDueAt,
@@ -12,7 +13,11 @@ export class CreateIncidentReportUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateIncidentReportDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: dto.userId } });
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+      'Employee not found',
+    );
     const year = new Date().getFullYear();
     const prefix = `INC-${year}-`;
     const existing = await this.prisma.incidentReport.findMany({
@@ -30,7 +35,7 @@ export class CreateIncidentReportUseCase {
     const incident = await this.prisma.incidentReport.create({
       data: {
         reportId,
-        userId: dto.userId,
+        employeeId: employee.id,
         incidentType: dto.incidentType as never,
         severity: dto.severity as never,
         description: dto.description,

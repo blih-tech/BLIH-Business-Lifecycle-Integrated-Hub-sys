@@ -55,7 +55,10 @@ export class EmployeesController {
     roles: [EmployeePermissions.VIEW],
   })
   @ApiOperation({ summary: 'Get full employee record' })
-  @ApiParam({ name: 'id', description: 'User id or Keycloak subject' })
+  @ApiParam({
+    name: 'id',
+    description: 'Employee id, user id, or Keycloak subject',
+  })
   @ApiOkResponse({ description: 'Full employee' })
   getFull(@Param('id') id: string) {
     return this.getEmployeeFullUseCase.execute(id);

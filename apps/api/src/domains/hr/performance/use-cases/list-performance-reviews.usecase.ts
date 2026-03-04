@@ -4,7 +4,7 @@ import type { ReviewStatus } from '../../../../platform/prisma/generated/enums';
 import { mapPerformanceReviewResponse } from '../performance.mapper';
 
 export interface ListPerformanceReviewsFilters {
-  userId?: string;
+  employeeId?: string;
   periodConfigId?: string;
   status?: string;
 }
@@ -15,11 +15,11 @@ export class ListPerformanceReviewsUseCase {
 
   async execute(filters: ListPerformanceReviewsFilters) {
     const where: {
-      userId?: string;
+      employeeId?: string;
       periodConfigId?: string;
       status?: ReviewStatus;
     } = {};
-    if (filters.userId) where.userId = filters.userId;
+    if (filters.employeeId) where.employeeId = filters.employeeId;
     if (filters.periodConfigId) where.periodConfigId = filters.periodConfigId;
     if (filters.status) where.status = filters.status as ReviewStatus;
 

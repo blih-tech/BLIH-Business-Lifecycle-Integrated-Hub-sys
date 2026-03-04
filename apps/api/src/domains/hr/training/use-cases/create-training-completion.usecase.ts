@@ -2,16 +2,20 @@ import { Injectable } from '@nestjs/common';
 import type { CreateTrainingCompletionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapTrainingCompletionResponse } from '../training.mapper';
+import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
 
 @Injectable()
 export class CreateTrainingCompletionUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateTrainingCompletionDto) {
-    await this.prisma.user.findUniqueOrThrow({ where: { id: dto.userId } });
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      dto.employeeId,
+    );
     const c = await this.prisma.trainingCompletion.create({
       data: {
-        userId: dto.userId,
+        employeeId: employee.id,
         trainingRequestId: dto.trainingRequestId ?? null,
         title: dto.title,
         provider: dto.provider ?? null,

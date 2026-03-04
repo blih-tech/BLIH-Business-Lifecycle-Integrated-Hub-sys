@@ -6,6 +6,7 @@ import {
 import type { FinalizeHiringDecisionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapHiringDecisionResponse } from '../hiring-decision.mapper';
+import { normalizeOfferPackage } from '../offer-analysis.utils';
 import { validateHiringDecisionOffer } from '../validate-hiring-decision';
 
 @Injectable()
@@ -22,7 +23,18 @@ export class FinalizeHiringDecisionUseCase {
     });
     if (!existing) throw new NotFoundException('Hiring decision not found');
 
-    validateHiringDecisionOffer(dto.finalDecision, dto.offer ?? existing.offer);
+    const normalizedOffer = await normalizeOfferPackage(this.prisma, {
+      candidateId: existing.candidateId,
+      recruitmentRequestId: existing.recruitmentRequestId,
+      jobPostingId: existing.jobPostingId,
+      offer: (dto.offer ?? existing.offer ?? null) as Record<
+        string,
+        unknown
+      > | null,
+      createIfMissing: dto.finalDecision === 'OFFER_APPROVED',
+    });
+
+    validateHiringDecisionOffer(dto.finalDecision, normalizedOffer);
 
     if (dto.finalDecision === 'OFFER_APPROVED') {
       const duplicateApproved = await this.prisma.hiringDecision.findFirst({
@@ -57,9 +69,7 @@ export class FinalizeHiringDecisionUseCase {
         where: { id },
         data: {
           finalDecision: dto.finalDecision,
-          offer: (dto.offer ?? existing.offer ?? undefined) as
-            | object
-            | undefined,
+          offer: (normalizedOffer ?? undefined) as object | undefined,
           offerExpiresAt:
             dto.offerExpiresAt === undefined
               ? undefined

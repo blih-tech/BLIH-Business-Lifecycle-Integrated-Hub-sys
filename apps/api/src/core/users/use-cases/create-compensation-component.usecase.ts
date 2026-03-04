@@ -1,11 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { mapCompensationComponent } from '../compensation-component.mapper';
 import { CreateCompensationComponentDto } from '../dto/create-compensation-component.dto';
+import {
+  ensureEmployeeForUser,
+  resolveEmployeeSubjectOrThrow,
+} from '../../../domains/hr/employees/employee-subject.utils';
 
 @Injectable()
 export class CreateCompensationComponentUseCase {
@@ -15,15 +15,22 @@ export class CreateCompensationComponentUseCase {
     userIdOrKeycloakId: string,
     dto: CreateCompensationComponentDto,
   ) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
-      },
-      select: { id: true },
+    const employee = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      userIdOrKeycloakId,
+      'Employee not found',
+    ).catch(async (error) => {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ id: userIdOrKeycloakId }, { keycloakId: userIdOrKeycloakId }],
+        },
+        select: { id: true },
+      });
+      if (!user) {
+        throw error;
+      }
+      return ensureEmployeeForUser(this.prisma, user.id);
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     const effectiveFrom = new Date(dto.effectiveFrom);
     const effectiveTo = dto.effectiveTo ? new Date(dto.effectiveTo) : null;
@@ -33,7 +40,7 @@ export class CreateCompensationComponentUseCase {
 
     const component = await this.prisma.compensationComponent.create({
       data: {
-        userId: user.id,
+        employeeId: employee.id,
         name: dto.name.trim(),
         type: dto.type,
         amount: dto.amount,

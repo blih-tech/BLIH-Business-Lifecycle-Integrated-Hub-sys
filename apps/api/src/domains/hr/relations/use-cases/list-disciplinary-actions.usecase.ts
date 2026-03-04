@@ -6,9 +6,9 @@ import { mapDisciplinaryAction } from '../relations.mapper';
 export class ListDisciplinaryActionsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string }) {
-    const where: { userId?: string } = {};
-    if (filters.userId) where.userId = filters.userId;
+  async execute(filters: { employeeId?: string }) {
+    const where: { employeeId?: string } = {};
+    if (filters.employeeId) where.employeeId = filters.employeeId;
     const list = await this.prisma.disciplinaryAction.findMany({
       where,
       orderBy: { effectiveFrom: 'desc' },

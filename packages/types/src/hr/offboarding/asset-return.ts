@@ -9,7 +9,7 @@ export interface AssetReturnItemDto {
 
 export interface AssetReturnResponseDto {
   id: string;
-  userId: string;
+  employeeId: string;
   checklistId: string;
   items: AssetReturnItemDto[] | unknown;
   depositReturn: number | null;
@@ -24,7 +24,7 @@ export interface AssetReturnResponseDto {
 }
 
 export interface CreateAssetReturnDto {
-  userId: string;
+  employeeId: string;
   checklistId: string;
   items?: AssetReturnItemDto[] | unknown;
   depositReturn?: number | null;

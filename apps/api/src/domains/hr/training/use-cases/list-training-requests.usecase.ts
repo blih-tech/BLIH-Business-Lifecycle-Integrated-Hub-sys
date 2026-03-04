@@ -7,9 +7,9 @@ import { mapTrainingRequestResponse } from '../training.mapper';
 export class ListTrainingRequestsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(filters: { userId?: string; status?: string }) {
-    const where: { userId?: string; status?: TrainingRequestStatus } = {};
-    if (filters.userId) where.userId = filters.userId;
+  async execute(filters: { employeeId?: string; status?: string }) {
+    const where: { employeeId?: string; status?: TrainingRequestStatus } = {};
+    if (filters.employeeId) where.employeeId = filters.employeeId;
     if (filters.status) where.status = filters.status as TrainingRequestStatus;
 
     const requests = await this.prisma.trainingRequest.findMany({

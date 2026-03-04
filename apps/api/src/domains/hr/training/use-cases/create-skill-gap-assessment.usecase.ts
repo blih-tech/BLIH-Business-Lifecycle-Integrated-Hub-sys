@@ -23,7 +23,7 @@ export class CreateSkillGapAssessmentUseCase {
     }> = [];
     for (const req of dto.requiredSkills) {
       const cur = currentState.find(
-        (c) => c.skillId === req.skillId && c.userId,
+        (c) => c.skillId === req.skillId && c.employeeId,
       );
       const gap = cur ? cur.gap : 0;
       if (gap > 0)
