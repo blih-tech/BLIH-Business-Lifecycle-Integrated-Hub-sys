@@ -21,6 +21,21 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
   { name: 'hr_payroll', description: 'HR payroll operations' },
   { name: 'onboarding', description: 'Onboarding workflows' },
   { name: 'probation', description: 'Probation workflows' },
+  { name: 'onboarding_checklist', description: 'Onboarding checklist records' },
+  { name: 'asset_provisioning', description: 'Asset provisioning workflows' },
+  {
+    name: 'policy_acknowledgement',
+    description: 'Policy acknowledgement workflows',
+  },
+  { name: 'probation_plan', description: 'Probation KPI plan workflows' },
+  {
+    name: 'probation_evaluation',
+    description: 'Probation evaluation workflows',
+  },
+  {
+    name: 'probation_confirmation',
+    description: 'Probation confirmation workflows',
+  },
   { name: 'hr_report', description: 'HR reports' },
   { name: 'invoice', description: 'Invoice management' },
   { name: 'payment', description: 'Payment tracking' },

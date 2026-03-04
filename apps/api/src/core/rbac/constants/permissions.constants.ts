@@ -229,6 +229,46 @@ export const OnboardingChecklistPermissions = {
   ALL: 'onboarding_checklist:*',
 } as const;
 
+export const AssetProvisioningPermissions = {
+  VIEW: 'asset_provisioning:view',
+  CREATE: 'asset_provisioning:create',
+  UPDATE: 'asset_provisioning:update',
+  APPROVE: 'asset_provisioning:approve',
+  ALL: 'asset_provisioning:*',
+} as const;
+
+export const PolicyAcknowledgementPermissions = {
+  VIEW: 'policy_acknowledgement:view',
+  CREATE: 'policy_acknowledgement:create',
+  VERIFY: 'policy_acknowledgement:verify',
+  GRANT_ACCESS: 'policy_acknowledgement:grant_access',
+  ALL: 'policy_acknowledgement:*',
+} as const;
+
+export const ProbationPlanPermissions = {
+  VIEW: 'probation_plan:view',
+  CREATE: 'probation_plan:create',
+  UPDATE: 'probation_plan:update',
+  ENDORSE: 'probation_plan:endorse',
+  ALL: 'probation_plan:*',
+} as const;
+
+export const ProbationEvaluationPermissions = {
+  VIEW: 'probation_evaluation:view',
+  CREATE: 'probation_evaluation:create',
+  UPDATE: 'probation_evaluation:update',
+  APPROVE: 'probation_evaluation:approve',
+  ALL: 'probation_evaluation:*',
+} as const;
+
+export const ProbationConfirmationPermissions = {
+  VIEW: 'probation_confirmation:view',
+  CREATE: 'probation_confirmation:create',
+  UPDATE: 'probation_confirmation:update',
+  SIGN_OFF: 'probation_confirmation:sign_off',
+  ALL: 'probation_confirmation:*',
+} as const;
+
 export const PerformancePermissions = {
   VIEW: 'performance:view',
   CREATE: 'performance:create',
@@ -321,6 +361,11 @@ export const PermissionGroups = {
   candidate: CandidatePermissions,
   hiring_decision: HiringDecisionPermissions,
   onboarding_checklist: OnboardingChecklistPermissions,
+  asset_provisioning: AssetProvisioningPermissions,
+  policy_acknowledgement: PolicyAcknowledgementPermissions,
+  probation_plan: ProbationPlanPermissions,
+  probation_evaluation: ProbationEvaluationPermissions,
+  probation_confirmation: ProbationConfirmationPermissions,
   performance: PerformancePermissions,
   okr: OkrPermissions,
   succession_plan: SuccessionPlanPermissions,

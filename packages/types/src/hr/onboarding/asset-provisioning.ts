@@ -11,6 +11,8 @@ export interface AssetProvisioningEquipmentItem {
   serialNumber?: string;
   status?: string;
   allocatedAt?: string;
+  estimatedCost?: number;
+  currency?: string;
 }
 
 export interface CreateAssetProvisioningDto {

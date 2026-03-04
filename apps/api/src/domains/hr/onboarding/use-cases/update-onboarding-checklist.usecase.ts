@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { UpdateOnboardingChecklistDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapOnboardingChecklistResponse } from '../onboarding.mapper';
+import { OnboardingLifecycleService } from '../onboarding-lifecycle.service';
 
 @Injectable()
 export class UpdateOnboardingChecklistUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly lifecycle: OnboardingLifecycleService,
+  ) {}
 
   async execute(id: string, dto: UpdateOnboardingChecklistDto) {
     const existing = await this.prisma.onboardingChecklist.findUnique({
@@ -30,6 +34,11 @@ export class UpdateOnboardingChecklistUseCase {
       },
       include: { tasks: true },
     });
+
+    if (updated.status === 'COMPLETED') {
+      await this.lifecycle.activateEmployeeIfEligible(updated.employeeId);
+    }
+
     return mapOnboardingChecklistResponse(updated);
   }
 }
