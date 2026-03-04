@@ -41,6 +41,7 @@ import { ListCandidatesForPostingUseCase } from './recruitment/use-cases/list-ca
 import { CreateCandidateUseCase } from './recruitment/use-cases/create-candidate.usecase';
 import { GetCandidateUseCase } from './recruitment/use-cases/get-candidate.usecase';
 import { UpdateCandidateUseCase } from './recruitment/use-cases/update-candidate.usecase';
+import { UpdateCandidateStatusUseCase } from './recruitment/use-cases/update-candidate-status.usecase';
 import { ListCandidateScreeningsUseCase } from './recruitment/use-cases/list-candidate-screenings.usecase';
 import { CreateCvScreeningUseCase } from './recruitment/use-cases/create-cv-screening.usecase';
 import { ListInterviewFeedbackUseCase } from './recruitment/use-cases/list-interview-feedback.usecase';
@@ -48,11 +49,43 @@ import { CreateInterviewFeedbackUseCase } from './recruitment/use-cases/create-i
 import { ListHiringDecisionsUseCase } from './recruitment/use-cases/list-hiring-decisions.usecase';
 import { RecruitmentNotificationService } from './recruitment/recruitment-notification.service';
 import { OnboardingController } from './onboarding/onboarding.controller';
+import { AssetProvisioningController } from './onboarding/asset-provisioning.controller';
+import { PolicyAcknowledgementsController } from './onboarding/policy-acknowledgements.controller';
+import { ProbationPlansController } from './onboarding/probation-plans.controller';
+import { ProbationEvaluationsController } from './onboarding/probation-evaluations.controller';
+import { ProbationConfirmationsController } from './onboarding/probation-confirmations.controller';
+import { OnboardingNotificationService } from './onboarding/onboarding-notification.service';
+import { OnboardingLifecycleService } from './onboarding/onboarding-lifecycle.service';
 import { CreateOnboardingChecklistUseCase } from './onboarding/use-cases/create-onboarding-checklist.usecase';
 import { GetOnboardingChecklistUseCase } from './onboarding/use-cases/get-onboarding-checklist.usecase';
 import { ListOnboardingChecklistsUseCase } from './onboarding/use-cases/list-onboarding-checklists.usecase';
 import { UpdateOnboardingChecklistUseCase } from './onboarding/use-cases/update-onboarding-checklist.usecase';
 import { UpdateOnboardingTaskUseCase } from './onboarding/use-cases/update-onboarding-task.usecase';
+import { CreateAssetProvisioningUseCase } from './onboarding/use-cases/create-asset-provisioning.usecase';
+import { ListAssetProvisioningUseCase } from './onboarding/use-cases/list-asset-provisioning.usecase';
+import { GetAssetProvisioningUseCase } from './onboarding/use-cases/get-asset-provisioning.usecase';
+import { UpdateAssetProvisioningUseCase } from './onboarding/use-cases/update-asset-provisioning.usecase';
+import { ApproveAssetProvisioningUseCase } from './onboarding/use-cases/approve-asset-provisioning.usecase';
+import { CreatePolicyAcknowledgementUseCase } from './onboarding/use-cases/create-policy-acknowledgement.usecase';
+import { ListPolicyAcknowledgementsUseCase } from './onboarding/use-cases/list-policy-acknowledgements.usecase';
+import { GetPolicyAcknowledgementUseCase } from './onboarding/use-cases/get-policy-acknowledgement.usecase';
+import { VerifyPolicyAcknowledgementUseCase } from './onboarding/use-cases/verify-policy-acknowledgement.usecase';
+import { GrantPolicyAccessUseCase } from './onboarding/use-cases/grant-policy-access.usecase';
+import { CreateProbationPlanUseCase } from './onboarding/use-cases/create-probation-plan.usecase';
+import { ListProbationPlansUseCase } from './onboarding/use-cases/list-probation-plans.usecase';
+import { GetProbationPlanUseCase } from './onboarding/use-cases/get-probation-plan.usecase';
+import { UpdateProbationPlanUseCase } from './onboarding/use-cases/update-probation-plan.usecase';
+import { EndorseProbationPlanUseCase } from './onboarding/use-cases/endorse-probation-plan.usecase';
+import { CreateProbationEvaluationUseCase } from './onboarding/use-cases/create-probation-evaluation.usecase';
+import { ListProbationEvaluationsUseCase } from './onboarding/use-cases/list-probation-evaluations.usecase';
+import { GetProbationEvaluationUseCase } from './onboarding/use-cases/get-probation-evaluation.usecase';
+import { UpdateProbationEvaluationUseCase } from './onboarding/use-cases/update-probation-evaluation.usecase';
+import { ApproveProbationEvaluationUseCase } from './onboarding/use-cases/approve-probation-evaluation.usecase';
+import { CreateProbationConfirmationUseCase } from './onboarding/use-cases/create-probation-confirmation.usecase';
+import { ListProbationConfirmationsUseCase } from './onboarding/use-cases/list-probation-confirmations.usecase';
+import { GetProbationConfirmationUseCase } from './onboarding/use-cases/get-probation-confirmation.usecase';
+import { UpdateProbationConfirmationUseCase } from './onboarding/use-cases/update-probation-confirmation.usecase';
+import { SignOffProbationConfirmationUseCase } from './onboarding/use-cases/sign-off-probation-confirmation.usecase';
 import { LeaveController } from './leave/leave.controller';
 import { CreateLeaveRequestUseCase } from './leave/use-cases/create-leave-request.usecase';
 import { ListLeaveRequestsUseCase } from './leave/use-cases/list-leave-requests.usecase';
@@ -127,6 +160,8 @@ import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap
 import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
 import { CertificationExpiryJob } from './jobs/certification-expiry.job';
 import { RecruitmentPostingLifecycleJob } from './jobs/recruitment-posting-lifecycle.job';
+import { OnboardingOverdueJob } from './jobs/onboarding-overdue.job';
+import { ProbationMilestoneJob } from './jobs/probation-milestone.job';
 import { RelationsController } from './relations/relations.controller';
 import { OffboardingController } from './offboarding/offboarding.controller';
 import { CreateResignationUseCase } from './offboarding/use-cases/create-resignation.usecase';
@@ -183,6 +218,11 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     JobPostingsController,
     CandidatesController,
     OnboardingController,
+    AssetProvisioningController,
+    PolicyAcknowledgementsController,
+    ProbationPlansController,
+    ProbationEvaluationsController,
+    ProbationConfirmationsController,
     LeaveController,
     AttendanceController,
     PerformanceController,
@@ -210,6 +250,8 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     AttendanceReconciliationJob,
     CertificationExpiryJob,
     RecruitmentPostingLifecycleJob,
+    OnboardingOverdueJob,
+    ProbationMilestoneJob,
     ListRecruitmentRequestsUseCase,
     GetRecruitmentRequestUseCase,
     CreateRecruitmentRequestUseCase,
@@ -231,16 +273,44 @@ import { UpdateMediationUseCase } from './relations/use-cases/update-mediation.u
     CreateCandidateUseCase,
     GetCandidateUseCase,
     UpdateCandidateUseCase,
+    UpdateCandidateStatusUseCase,
     ListCandidateScreeningsUseCase,
     CreateCvScreeningUseCase,
     ListInterviewFeedbackUseCase,
     CreateInterviewFeedbackUseCase,
     RecruitmentNotificationService,
+    OnboardingNotificationService,
+    OnboardingLifecycleService,
     CreateOnboardingChecklistUseCase,
     ListOnboardingChecklistsUseCase,
     GetOnboardingChecklistUseCase,
     UpdateOnboardingChecklistUseCase,
     UpdateOnboardingTaskUseCase,
+    CreateAssetProvisioningUseCase,
+    ListAssetProvisioningUseCase,
+    GetAssetProvisioningUseCase,
+    UpdateAssetProvisioningUseCase,
+    ApproveAssetProvisioningUseCase,
+    CreatePolicyAcknowledgementUseCase,
+    ListPolicyAcknowledgementsUseCase,
+    GetPolicyAcknowledgementUseCase,
+    VerifyPolicyAcknowledgementUseCase,
+    GrantPolicyAccessUseCase,
+    CreateProbationPlanUseCase,
+    ListProbationPlansUseCase,
+    GetProbationPlanUseCase,
+    UpdateProbationPlanUseCase,
+    EndorseProbationPlanUseCase,
+    CreateProbationEvaluationUseCase,
+    ListProbationEvaluationsUseCase,
+    GetProbationEvaluationUseCase,
+    UpdateProbationEvaluationUseCase,
+    ApproveProbationEvaluationUseCase,
+    CreateProbationConfirmationUseCase,
+    ListProbationConfirmationsUseCase,
+    GetProbationConfirmationUseCase,
+    UpdateProbationConfirmationUseCase,
+    SignOffProbationConfirmationUseCase,
     CreateLeaveRequestUseCase,
     ListLeaveRequestsUseCase,
     GetLeaveRequestUseCase,
