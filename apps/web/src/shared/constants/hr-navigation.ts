@@ -108,11 +108,12 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     href: '/dashboard/hr/exit/overview',
     icon: 'log-out',
     subItems: [
-      { id: 'exit-overview', label: 'Overview', href: '/dashboard/hr/exit/overview' },
-      { id: 'resignations', label: 'Resignations', href: '/dashboard/hr/exit/resignations' },
-      { id: 'interviews', label: 'Interviews', href: '/dashboard/hr/exit/interviews' },
-      { id: 'clearance', label: 'Clearance', href: '/dashboard/hr/exit/clearance' },
-      { id: 'final-settlement', label: 'Final Settlement', href: '/dashboard/hr/exit/final-settlement' },
+      { id: 'exit-overview', label: 'Overview', href: '/dashboard/hr/exit/overview', badge: '4' },
+      { id: 'exit-resign', label: 'Resign', href: '/dashboard/hr/exit/resign', badge: '4' },
+      { id: 'exit-interviews', label: 'Interviews', href: '/dashboard/hr/exit/interviews', badge: '3' },
+      { id: 'exit-documents', label: 'Documents', href: '/dashboard/hr/exit/documents' },
+      { id: 'exit-clearance-checklist', label: 'Clearance Checklist', href: '/dashboard/hr/exit/clearance-checklist' },
+      { id: 'exit-related-forms', label: 'Related Forms', href: '/dashboard/hr/exit/related-forms' },
     ],
   },
   {
