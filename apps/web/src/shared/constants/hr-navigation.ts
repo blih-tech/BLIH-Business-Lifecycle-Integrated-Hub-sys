@@ -95,10 +95,11 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     icon: 'graduation-cap',
     subItems: [
       { id: 'talent-overview', label: 'Overview', href: '/dashboard/hr/talent/overview' },
-      { id: 'succession', label: 'Succession', href: '/dashboard/hr/talent/succession' },
-      { id: 'learning', label: 'Learning', href: '/dashboard/hr/talent/learning' },
-      { id: 'career-paths', label: 'Career Paths', href: '/dashboard/hr/talent/career-paths' },
-      { id: 'skills-matrix', label: 'Skills Matrix', href: '/dashboard/hr/talent/skills-matrix' },
+      { id: 'talent-career', label: 'Career', href: '/dashboard/hr/talent/career' },
+      { id: 'talent-training-skills', label: 'Training & Skills', href: '/dashboard/hr/talent/training-skills' },
+      { id: 'talent-culture', label: 'Culture', href: '/dashboard/hr/talent/culture' },
+      { id: 'talent-discipline', label: 'Discipline', href: '/dashboard/hr/talent/discipline' },
+      { id: 'talent-related-forms', label: 'Related Forms', href: '/dashboard/hr/talent/related-forms' },
     ],
   },
   {
