@@ -336,6 +336,7 @@ export const OkrPermissions = {
   UPDATE: 'okr:update',
   UPDATE_KEY_RESULT: 'okr:update_key_result',
   VIEW_CHECKINS: 'okr:view_checkins',
+  MANAGER_REVIEW: 'okr:manager_review',
   REWEIGHT: 'okr:reweight',
   ALL: 'okr:*',
 } as const;
@@ -361,7 +362,34 @@ export const TrainingPermissions = {
   MANAGE_SKILLS: 'training:manage_skills',
   MANAGE_BUDGET: 'training:manage_budget',
   SKILL_GAP: 'training:skill_gap',
+  ASSESS_NEEDS: 'training:assess_needs',
   ALL: 'training:*',
+} as const;
+
+export const CareerDevelopmentPermissions = {
+  VIEW: 'career_development:view',
+  CREATE: 'career_development:create',
+  UPDATE: 'career_development:update',
+  MANAGE: 'career_development:manage',
+  ALL: 'career_development:*',
+} as const;
+
+export const InternalTransferPermissions = {
+  VIEW: 'internal_transfer:view',
+  CREATE: 'internal_transfer:create',
+  UPDATE: 'internal_transfer:update',
+  APPROVE: 'internal_transfer:approve',
+  REJECT: 'internal_transfer:reject',
+  ALL: 'internal_transfer:*',
+} as const;
+
+export const SalaryAdjustmentPermissions = {
+  VIEW: 'salary_adjustment:view',
+  CREATE: 'salary_adjustment:create',
+  UPDATE: 'salary_adjustment:update',
+  APPROVE: 'salary_adjustment:approve',
+  REJECT: 'salary_adjustment:reject',
+  ALL: 'salary_adjustment:*',
 } as const;
 
 export const RelationsPermissions = {
@@ -425,6 +453,9 @@ export const PermissionGroups = {
   succession_plan: SuccessionPlanPermissions,
   promotion_proposal: PromotionProposalPermissions,
   training: TrainingPermissions,
+  career_development: CareerDevelopmentPermissions,
+  internal_transfer: InternalTransferPermissions,
+  salary_adjustment: SalaryAdjustmentPermissions,
   relations: RelationsPermissions,
   offboarding: OffboardingPermissions,
   system_role: SystemRolePermissions,

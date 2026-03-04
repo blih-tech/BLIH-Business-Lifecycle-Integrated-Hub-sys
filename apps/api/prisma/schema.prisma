@@ -361,6 +361,39 @@ enum PromotionProposalStatus {
   REJECTED
 }
 
+enum CareerDevelopmentPlanStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum CareerGoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+}
+
+enum InternalTransferType {
+  PROMOTION
+  TRANSFER
+}
+
+enum SalaryAdjustmentReason {
+  MERIT
+  EQUITY
+  PROMOTION
+  TRANSFER
+  RETENTION
+  MARKET
+}
+
+enum OkrManagerReviewDecision {
+  APPROVED
+  CHANGES_REQUESTED
+}
+
 enum DayOfWeek {
   MONDAY
   TUESDAY
@@ -462,6 +495,14 @@ model User {
   overtimeRequestsApproved         OvertimeRequest[]             @relation("OvertimeRequestApprover")
   flexWorkRequestsApproved         FlexWorkRequest[]             @relation("FlexWorkRequestApprover")
   approvedTimesheets               Timesheet[]                   @relation("TimesheetApprover")
+  createdCareerDevelopmentPlans    CareerDevelopmentPlan[]       @relation("CareerPlanCreatedBy")
+  assessedTrainingNeeds            TrainingNeedsAssessment[]     @relation("TrainingNeedsAssessmentAssessor")
+  reviewedTrainingNeeds            TrainingNeedsAssessment[]     @relation("TrainingNeedsAssessmentReviewer")
+  requestedInternalTransfers       InternalTransferRequest[]     @relation("InternalTransferRequester")
+  approvedInternalTransfers        InternalTransferRequest[]     @relation("InternalTransferApprover")
+  proposedSalaryAdjustments        SalaryAdjustmentRequest[]     @relation("SalaryAdjustmentProposer")
+  approvedSalaryAdjustments        SalaryAdjustmentRequest[]     @relation("SalaryAdjustmentApprover")
+  okrManagerReviews                OkrManagerReview[]            @relation("OkrManagerReviewer")
   performanceReviewFeedback        PerformanceReviewFeedback[]   @relation("PerformanceReviewFeedbackReviewer")
   finalizedPerformanceCalibrations PerformanceCalibration[]      @relation("PerformanceCalibrationFinalizedBy")
   keyResultUpdates                 KeyResultUpdate[]             @relation("KeyResultUpdatedBy")
@@ -515,6 +556,10 @@ model Employee {
   overtimeRequests               OvertimeRequest[]
   flexWorkRequests               FlexWorkRequest[]
   timesheets                     Timesheet[]
+  careerDevelopmentPlans         CareerDevelopmentPlan[]
+  trainingNeedsAssessments       TrainingNeedsAssessment[]
+  internalTransferRequests       InternalTransferRequest[]
+  salaryAdjustmentRequests       SalaryAdjustmentRequest[]
   workScheduleAssignments        UserWorkSchedule[]
   performanceReviews             PerformanceReview[]
   okrs                           Okr[]
@@ -594,6 +639,10 @@ model Position {
   successionPlans     SuccessionPlan[]
   promotionSourceFor  PromotionProposal[]     @relation("PromotionProposalFromPosition")
   promotionTargetFor  PromotionProposal[]     @relation("PromotionProposalToPosition")
+  careerPlansCurrent  CareerDevelopmentPlan[] @relation("CareerPlanCurrentPosition")
+  careerPlansTarget   CareerDevelopmentPlan[] @relation("CareerPlanTargetPosition")
+  transferRequestsFrom InternalTransferRequest[] @relation("InternalTransferCurrentPosition")
+  transferRequestsTo   InternalTransferRequest[] @relation("InternalTransferTargetPosition")
   isActive            Boolean                 @default(true)
   createdAt           DateTime                @default(now())
   updatedAt           DateTime                @updatedAt
@@ -1716,6 +1765,8 @@ model PerformanceReview {
   createdAt           DateTime                    @default(now())
   updatedAt           DateTime                    @updatedAt
   feedbackEntries     PerformanceReviewFeedback[]
+  trainingNeedsAssessments TrainingNeedsAssessment[]
+  salaryAdjustmentRequests SalaryAdjustmentRequest[]
 
   @@unique([employeeId, periodConfigId])
   @@index([employeeId])
@@ -1783,6 +1834,7 @@ model Okr {
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   keyResults      KeyResult[]
+  managerReviews  OkrManagerReview[]
 
   @@index([employeeId])
   @@index([scope])
@@ -1870,6 +1922,161 @@ model PromotionProposal {
   @@index([proposedById])
   @@index([approvedById])
   @@index([status])
+}
+
+model CareerDevelopmentPlan {
+  id                 String                      @id @default(uuid()) @db.Uuid
+  employeeId         String                      @map("employee_id") @db.Uuid
+  employee           Employee                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  currentPositionId  String?                     @map("current_position_id") @db.Uuid
+  currentPosition    Position?                   @relation("CareerPlanCurrentPosition", fields: [currentPositionId], references: [id], onDelete: SetNull)
+  targetPositionId   String?                     @map("target_position_id") @db.Uuid
+  targetPosition     Position?                   @relation("CareerPlanTargetPosition", fields: [targetPositionId], references: [id], onDelete: SetNull)
+  planYear           Int                         @map("plan_year")
+  title              String                      @db.VarChar(255)
+  summary            String?                     @db.Text
+  goals              Json                        @db.JsonB
+  developmentActions Json?                       @map("development_actions") @db.JsonB
+  successMetrics     Json?                       @map("success_metrics") @db.JsonB
+  progressPercent    Int                         @default(0) @map("progress_percent")
+  lastProgressAt     DateTime?                   @map("last_progress_at")
+  completedAt        DateTime?                   @map("completed_at")
+  status             CareerDevelopmentPlanStatus @default(DRAFT)
+  createdById        String                      @map("created_by_id") @db.Uuid
+  createdBy          User                        @relation("CareerPlanCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt          DateTime                    @default(now())
+  updatedAt          DateTime                    @updatedAt
+
+  @@index([employeeId])
+  @@index([currentPositionId])
+  @@index([targetPositionId])
+  @@index([planYear])
+  @@index([status])
+  @@index([createdById])
+}
+
+model TrainingNeedsAssessment {
+  id                 String                @id @default(uuid()) @db.Uuid
+  employeeId         String                @map("employee_id") @db.Uuid
+  employee           Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  basedOnReviewId    String?               @map("based_on_review_id") @db.Uuid
+  basedOnReview      PerformanceReview?    @relation(fields: [basedOnReviewId], references: [id], onDelete: SetNull)
+  periodYear         Int                   @map("period_year")
+  assessedById       String                @map("assessed_by_id") @db.Uuid
+  assessedBy         User                  @relation("TrainingNeedsAssessmentAssessor", fields: [assessedById], references: [id], onDelete: Restrict)
+  developmentAreas   Json                  @map("development_areas") @db.JsonB
+  requestedTrainings Json                  @map("requested_trainings") @db.JsonB
+  skillGapSummary    String?               @map("skill_gap_summary") @db.Text
+  managerNotes       String?               @map("manager_notes") @db.Text
+  priority           String?               @db.VarChar(32)
+  status             RequestWorkflowStatus @default(DRAFT)
+  submittedAt        DateTime?             @map("submitted_at")
+  reviewedById       String?               @map("reviewed_by_id") @db.Uuid
+  reviewedBy         User?                 @relation("TrainingNeedsAssessmentReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt         DateTime?             @map("reviewed_at")
+  rejectionReason    String?               @map("rejection_reason") @db.Text
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  @@index([employeeId])
+  @@index([basedOnReviewId])
+  @@index([periodYear])
+  @@index([assessedById])
+  @@index([reviewedById])
+  @@index([status])
+}
+
+model InternalTransferRequest {
+  id                   String                @id @default(uuid()) @db.Uuid
+  requestId            String                @unique @map("request_id") @db.VarChar(32)
+  employeeId           String                @map("employee_id") @db.Uuid
+  employee             Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  requestType          InternalTransferType  @map("request_type")
+  currentPositionId    String?               @map("current_position_id") @db.Uuid
+  currentPosition      Position?             @relation("InternalTransferCurrentPosition", fields: [currentPositionId], references: [id], onDelete: SetNull)
+  targetPositionId     String                @map("target_position_id") @db.Uuid
+  targetPosition       Position              @relation("InternalTransferTargetPosition", fields: [targetPositionId], references: [id], onDelete: Restrict)
+  requestedById        String                @map("requested_by_id") @db.Uuid
+  requestedBy          User                  @relation("InternalTransferRequester", fields: [requestedById], references: [id], onDelete: Restrict)
+  reason               String                @db.Text
+  businessCase         Json?                 @map("business_case") @db.JsonB
+  desiredEffectiveDate DateTime?             @map("desired_effective_date") @db.Date
+  compensationChange   Json?                 @map("compensation_change") @db.JsonB
+  status               RequestWorkflowStatus @default(DRAFT)
+  submittedAt          DateTime?             @map("submitted_at")
+  approvedById         String?               @map("approved_by_id") @db.Uuid
+  approvedBy           User?                 @relation("InternalTransferApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt           DateTime?             @map("approved_at")
+  rejectionReason      String?               @map("rejection_reason") @db.Text
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  salaryAdjustments    SalaryAdjustmentRequest[]
+
+  @@index([employeeId])
+  @@index([requestType])
+  @@index([currentPositionId])
+  @@index([targetPositionId])
+  @@index([requestedById])
+  @@index([approvedById])
+  @@index([status])
+}
+
+model SalaryAdjustmentRequest {
+  id                      String                @id @default(uuid()) @db.Uuid
+  requestId               String                @unique @map("request_id") @db.VarChar(32)
+  employeeId              String                @map("employee_id") @db.Uuid
+  employee                Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  proposedById            String                @map("proposed_by_id") @db.Uuid
+  proposedBy              User                  @relation("SalaryAdjustmentProposer", fields: [proposedById], references: [id], onDelete: Restrict)
+  linkedReviewId          String?               @map("linked_review_id") @db.Uuid
+  linkedReview            PerformanceReview?    @relation(fields: [linkedReviewId], references: [id], onDelete: SetNull)
+  linkedTransferRequestId String?               @map("linked_transfer_request_id") @db.Uuid
+  linkedTransferRequest   InternalTransferRequest? @relation(fields: [linkedTransferRequestId], references: [id], onDelete: SetNull)
+  reason                  SalaryAdjustmentReason
+  currentBaseSalary       Decimal?              @map("current_base_salary") @db.Decimal(15, 2)
+  proposedBaseSalary      Decimal               @map("proposed_base_salary") @db.Decimal(15, 2)
+  percentChange           Decimal               @map("percent_change") @db.Decimal(6, 2)
+  currency                String?               @db.VarChar(3)
+  effectiveFrom           DateTime              @map("effective_from") @db.Date
+  justification           Json?                 @db.JsonB
+  status                  RequestWorkflowStatus @default(DRAFT)
+  submittedAt             DateTime?             @map("submitted_at")
+  approvedById            String?               @map("approved_by_id") @db.Uuid
+  approvedBy              User?                 @relation("SalaryAdjustmentApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt              DateTime?             @map("approved_at")
+  rejectionReason         String?               @map("rejection_reason") @db.Text
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+
+  @@index([employeeId])
+  @@index([proposedById])
+  @@index([linkedReviewId])
+  @@index([linkedTransferRequestId])
+  @@index([approvedById])
+  @@index([effectiveFrom])
+  @@index([status])
+}
+
+model OkrManagerReview {
+  id                String                   @id @default(uuid()) @db.Uuid
+  okrId             String                   @map("okr_id") @db.Uuid
+  okr               Okr                      @relation(fields: [okrId], references: [id], onDelete: Cascade)
+  reviewerId        String                   @map("reviewer_id") @db.Uuid
+  reviewer          User                     @relation("OkrManagerReviewer", fields: [reviewerId], references: [id], onDelete: Restrict)
+  decision          OkrManagerReviewDecision
+  overallConfidence Int?                     @map("overall_confidence")
+  comments          String?                  @db.Text
+  strengths         Json?                    @db.JsonB
+  risks             Json?                    @db.JsonB
+  supportActions    Json?                    @map("support_actions") @db.JsonB
+  reviewedAt        DateTime                 @map("reviewed_at")
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+
+  @@unique([okrId, reviewerId])
+  @@index([okrId])
+  @@index([reviewerId])
+  @@index([decision])
 }
 
 // Training (HR Implementation Plan 06)

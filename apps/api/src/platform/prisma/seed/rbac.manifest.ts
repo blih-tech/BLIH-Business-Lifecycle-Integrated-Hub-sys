@@ -48,6 +48,18 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
     name: 'probation_confirmation',
     description: 'Probation confirmation workflows',
   },
+  {
+    name: 'career_development',
+    description: 'Career development planning workflows',
+  },
+  {
+    name: 'internal_transfer',
+    description: 'Internal transfer and mobility workflows',
+  },
+  {
+    name: 'salary_adjustment',
+    description: 'Salary adjustment approval workflows',
+  },
   { name: 'hr_report', description: 'HR reports' },
   { name: 'invoice', description: 'Invoice management' },
   { name: 'payment', description: 'Payment tracking' },

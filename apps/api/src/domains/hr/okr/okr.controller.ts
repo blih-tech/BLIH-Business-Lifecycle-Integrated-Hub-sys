@@ -18,6 +18,7 @@ import {
 import type {
   CreateOkrDto,
   ReweightKeyResultsDto,
+  UpsertOkrManagerReviewDto,
   UpdateKeyResultDto,
   UpdateOkrDto,
 } from '@repo/types';
@@ -34,6 +35,7 @@ import { UpdateKeyResultUseCase } from './use-cases/update-key-result.usecase';
 import { GetOkrProgressUseCase } from './use-cases/get-okr-progress.usecase';
 import { ListKeyResultUpdatesUseCase } from './use-cases/list-key-result-updates.usecase';
 import { ReweightKeyResultsUseCase } from './use-cases/reweight-key-results.usecase';
+import { OkrManagerReviewService } from './okr-manager-review.service';
 
 @ApiTags('HR OKRs')
 @Controller('hr/okrs')
@@ -48,6 +50,7 @@ export class OkrController {
     private readonly getProgressUseCase: GetOkrProgressUseCase,
     private readonly listKeyResultUpdatesUseCase: ListKeyResultUpdatesUseCase,
     private readonly reweightKeyResultsUseCase: ReweightKeyResultsUseCase,
+    private readonly managerReviewService: OkrManagerReviewService,
   ) {}
 
   @Post()
@@ -171,5 +174,35 @@ export class OkrController {
     @Body() body: ReweightKeyResultsDto,
   ) {
     return this.reweightKeyResultsUseCase.execute(okrId, body);
+  }
+
+  @Get(':id/manager-reviews')
+  @Roles(OkrPermissions.VIEW)
+  @ApiProtected({
+    path: '/api/v1/hr/okrs/:id/manager-reviews',
+    roles: [OkrPermissions.VIEW],
+  })
+  @ApiOperation({ summary: 'List manager reviews for an OKR' })
+  @ApiParam({ name: 'id', description: 'OKR id' })
+  @ApiOkResponse({ description: 'Manager review history' })
+  listManagerReviews(@Param('id') okrId: string) {
+    return this.managerReviewService.list(okrId);
+  }
+
+  @Post(':id/manager-reviews')
+  @Roles(OkrPermissions.MANAGER_REVIEW)
+  @ApiProtected({
+    path: '/api/v1/hr/okrs/:id/manager-reviews',
+    roles: [OkrPermissions.MANAGER_REVIEW],
+  })
+  @ApiOperation({ summary: 'Create or update manager OKR review' })
+  @ApiParam({ name: 'id', description: 'OKR id' })
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiOkResponse({ description: 'Manager review upserted' })
+  upsertManagerReview(
+    @Param('id') okrId: string,
+    @Body() body: UpsertOkrManagerReviewDto,
+  ) {
+    return this.managerReviewService.upsert(okrId, body);
   }
 }

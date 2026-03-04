@@ -132,6 +132,7 @@ import { ListPerformanceReviewFeedbackUseCase } from './performance/use-cases/li
 import { UpsertPerformanceCalibrationUseCase } from './performance/use-cases/upsert-performance-calibration.usecase';
 import { UpsertPerformanceReviewFeedbackUseCase } from './performance/use-cases/upsert-performance-review-feedback.usecase';
 import { OkrController } from './okr/okr.controller';
+import { OkrManagerReviewService } from './okr/okr-manager-review.service';
 import { CreateOkrUseCase } from './okr/use-cases/create-okr.usecase';
 import { ListOkrsUseCase } from './okr/use-cases/list-okrs.usecase';
 import { GetOkrUseCase } from './okr/use-cases/get-okr.usecase';
@@ -150,6 +151,7 @@ import { ListSuccessionPlansUseCase } from './talent/use-cases/list-succession-p
 import { ReviewPromotionProposalUseCase } from './talent/use-cases/review-promotion-proposal.usecase';
 import { UpdateSuccessionPlanUseCase } from './talent/use-cases/update-succession-plan.usecase';
 import { TrainingController } from './training/training.controller';
+import { TrainingNeedsAssessmentService } from './training/training-needs-assessment.service';
 import { ListSkillsUseCase } from './training/use-cases/list-skills.usecase';
 import { CreateSkillUseCase } from './training/use-cases/create-skill.usecase';
 import { GetEmployeeSkillsUseCase } from './training/use-cases/get-employee-skills.usecase';
@@ -228,6 +230,12 @@ import { DeleteCompensationComponentUseCase } from '../../core/users/use-cases/d
 import { ListUserCompensationHistoryUseCase } from '../../core/users/use-cases/list-user-compensation-history.usecase';
 import { GetUserLifecycleUseCase } from '../../core/users/use-cases/get-user-lifecycle.usecase';
 import { UpdateUserLifecycleUseCase } from '../../core/users/use-cases/update-user-lifecycle.usecase';
+import { CareerDevelopmentController } from './career/career-development.controller';
+import { CareerDevelopmentService } from './career/career-development.service';
+import { InternalTransfersController } from './career/internal-transfers.controller';
+import { InternalTransferService } from './career/internal-transfer.service';
+import { SalaryAdjustmentsController } from './career/salary-adjustments.controller';
+import { SalaryAdjustmentService } from './career/salary-adjustment.service';
 
 @Module({
   controllers: [
@@ -250,9 +258,12 @@ import { UpdateUserLifecycleUseCase } from '../../core/users/use-cases/update-us
     AttendanceController,
     PerformanceController,
     OkrController,
+    CareerDevelopmentController,
     SuccessionPlansController,
     PromotionProposalsController,
     TrainingController,
+    InternalTransfersController,
+    SalaryAdjustmentsController,
     RelationsController,
     OffboardingController,
   ],
@@ -396,6 +407,10 @@ import { UpdateUserLifecycleUseCase } from '../../core/users/use-cases/update-us
     GetOkrProgressUseCase,
     ListKeyResultUpdatesUseCase,
     ReweightKeyResultsUseCase,
+    OkrManagerReviewService,
+    CareerDevelopmentService,
+    InternalTransferService,
+    SalaryAdjustmentService,
     CreateSuccessionPlanUseCase,
     ListSuccessionPlansUseCase,
     UpdateSuccessionPlanUseCase,
@@ -420,6 +435,7 @@ import { UpdateUserLifecycleUseCase } from '../../core/users/use-cases/update-us
     ListSkillGapAssessmentsUseCase,
     GetSkillGapAssessmentUseCase,
     GetIndividualSkillGapUseCase,
+    TrainingNeedsAssessmentService,
     CreateIncidentReportUseCase,
     ListIncidentReportsUseCase,
     GetIncidentReportUseCase,
