@@ -120,6 +120,54 @@ export const AttendancePermissions = {
   ALL: 'attendance:*',
 } as const;
 
+export const AttendanceCorrectionPermissions = {
+  VIEW: 'attendance_correction:view',
+  CREATE: 'attendance_correction:create',
+  UPDATE: 'attendance_correction:update',
+  APPROVE: 'attendance_correction:approve',
+  REJECT: 'attendance_correction:reject',
+  ALL: 'attendance_correction:*',
+} as const;
+
+export const OvertimePermissions = {
+  VIEW: 'overtime:view',
+  CREATE: 'overtime:create',
+  UPDATE: 'overtime:update',
+  APPROVE: 'overtime:approve',
+  REJECT: 'overtime:reject',
+  ALL: 'overtime:*',
+} as const;
+
+export const FlexWorkPermissions = {
+  VIEW: 'flex_work:view',
+  CREATE: 'flex_work:create',
+  UPDATE: 'flex_work:update',
+  APPROVE: 'flex_work:approve',
+  REJECT: 'flex_work:reject',
+  ALL: 'flex_work:*',
+} as const;
+
+export const PunctualityPermissions = {
+  VIEW: 'punctuality:view',
+  ALERT: 'punctuality:alert',
+  ALL: 'punctuality:*',
+} as const;
+
+export const TimesheetPermissions = {
+  VIEW: 'timesheet:view',
+  CREATE: 'timesheet:create',
+  UPDATE: 'timesheet:update',
+  APPROVE: 'timesheet:approve',
+  REJECT: 'timesheet:reject',
+  ALL: 'timesheet:*',
+} as const;
+
+export const AttendanceReportPermissions = {
+  VIEW: 'attendance_report:view',
+  EXPORT: 'attendance_report:export',
+  ALL: 'attendance_report:*',
+} as const;
+
 export const HrPayrollPermissions = {
   VIEW: 'hr_payroll:view',
   PROCESS: 'hr_payroll:process',
@@ -346,6 +394,12 @@ export const PermissionGroups = {
   employee: EmployeePermissions,
   leave: LeavePermissions,
   attendance: AttendancePermissions,
+  attendance_correction: AttendanceCorrectionPermissions,
+  overtime: OvertimePermissions,
+  flex_work: FlexWorkPermissions,
+  punctuality: PunctualityPermissions,
+  timesheet: TimesheetPermissions,
+  attendance_report: AttendanceReportPermissions,
   hr_payroll: HrPayrollPermissions,
   invoice: InvoicePermissions,
   expense: ExpensePermissions,

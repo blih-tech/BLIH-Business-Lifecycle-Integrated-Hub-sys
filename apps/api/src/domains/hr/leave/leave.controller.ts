@@ -4,12 +4,17 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import type { CreateLeaveRequestDto, RejectLeaveRequestDto } from '@repo/types';
+import type {
+  CreateLeaveRequestDto,
+  RejectLeaveRequestDto,
+  UpdateLeaveRequestDto,
+} from '@repo/types';
 import type { Request } from 'express';
 import {
   ApiBody,
@@ -30,6 +35,8 @@ import { GetLeaveRequestUseCase } from './use-cases/get-leave-request.usecase';
 import { ListLeaveRequestsUseCase } from './use-cases/list-leave-requests.usecase';
 import { RejectLeaveRequestUseCase } from './use-cases/reject-leave-request.usecase';
 import { SubmitLeaveRequestUseCase } from './use-cases/submit-leave-request.usecase';
+import { UpdateLeaveRequestUseCase } from './use-cases/update-leave-request.usecase';
+import { CancelLeaveRequestUseCase } from './use-cases/cancel-leave-request.usecase';
 
 @ApiTags('HR Leave')
 @Controller('hr/leave')
@@ -39,9 +46,11 @@ export class LeaveController {
     private readonly createUseCase: CreateLeaveRequestUseCase,
     private readonly listUseCase: ListLeaveRequestsUseCase,
     private readonly getUseCase: GetLeaveRequestUseCase,
+    private readonly updateUseCase: UpdateLeaveRequestUseCase,
     private readonly submitUseCase: SubmitLeaveRequestUseCase,
     private readonly approveUseCase: ApproveLeaveRequestUseCase,
     private readonly rejectUseCase: RejectLeaveRequestUseCase,
+    private readonly cancelUseCase: CancelLeaveRequestUseCase,
     private readonly getBalanceUseCase: GetLeaveBalanceUseCase,
   ) {}
 
@@ -86,6 +95,20 @@ export class LeaveController {
     return this.getUseCase.execute(id);
   }
 
+  @Patch('requests/:id')
+  @Roles(LeavePermissions.CREATE)
+  @ApiProtected({
+    path: '/api/v1/hr/leave/requests/:id',
+    roles: [LeavePermissions.CREATE],
+  })
+  @ApiOperation({ summary: 'Update draft leave request' })
+  @ApiParam({ name: 'id' })
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiOkResponse({ description: 'Updated leave request' })
+  update(@Param('id') id: string, @Body() body: UpdateLeaveRequestDto) {
+    return this.updateUseCase.execute(id, body);
+  }
+
   @Post('requests/:id/submit')
   @Roles(LeavePermissions.CREATE)
   @ApiProtected({
@@ -97,6 +120,19 @@ export class LeaveController {
   @ApiOkResponse({ description: 'Submitted' })
   submit(@Param('id') id: string) {
     return this.submitUseCase.execute(id);
+  }
+
+  @Post('requests/:id/cancel')
+  @Roles(LeavePermissions.CREATE)
+  @ApiProtected({
+    path: '/api/v1/hr/leave/requests/:id/cancel',
+    roles: [LeavePermissions.CREATE],
+  })
+  @ApiOperation({ summary: 'Cancel leave request' })
+  @ApiParam({ name: 'id' })
+  @ApiOkResponse({ description: 'Cancelled leave request' })
+  cancel(@Param('id') id: string) {
+    return this.cancelUseCase.execute(id);
   }
 
   @Post('requests/:id/approve')

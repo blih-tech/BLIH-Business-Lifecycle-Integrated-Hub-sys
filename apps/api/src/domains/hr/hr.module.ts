@@ -88,6 +88,7 @@ import { GetProbationConfirmationUseCase } from './onboarding/use-cases/get-prob
 import { UpdateProbationConfirmationUseCase } from './onboarding/use-cases/update-probation-confirmation.usecase';
 import { SignOffProbationConfirmationUseCase } from './onboarding/use-cases/sign-off-probation-confirmation.usecase';
 import { LeaveController } from './leave/leave.controller';
+import { CancelLeaveRequestUseCase } from './leave/use-cases/cancel-leave-request.usecase';
 import { CreateLeaveRequestUseCase } from './leave/use-cases/create-leave-request.usecase';
 import { ListLeaveRequestsUseCase } from './leave/use-cases/list-leave-requests.usecase';
 import { GetLeaveRequestUseCase } from './leave/use-cases/get-leave-request.usecase';
@@ -95,9 +96,16 @@ import { SubmitLeaveRequestUseCase } from './leave/use-cases/submit-leave-reques
 import { ApproveLeaveRequestUseCase } from './leave/use-cases/approve-leave-request.usecase';
 import { RejectLeaveRequestUseCase } from './leave/use-cases/reject-leave-request.usecase';
 import { GetLeaveBalanceUseCase } from './leave/use-cases/get-leave-balance.usecase';
+import { UpdateLeaveRequestUseCase } from './leave/use-cases/update-leave-request.usecase';
 import { AttendanceController } from './attendance/attendance.controller';
+import { AttendanceReportingService } from './attendance/attendance-reporting.service';
+import { AttendanceCorrectionService } from './attendance/attendance-correction.service';
 import { AttendanceCalendarService } from './attendance/attendance-calendar.service';
 import { AttendanceReconciliationService } from './attendance/attendance-reconciliation.service';
+import { FlexWorkRequestService } from './attendance/flex-work-request.service';
+import { OvertimeRequestService } from './attendance/overtime-request.service';
+import { PunctualityService } from './attendance/punctuality.service';
+import { TimesheetService } from './attendance/timesheet.service';
 import { AssignUserWorkScheduleUseCase } from './attendance/use-cases/assign-user-work-schedule.usecase';
 import { CreateHolidayUseCase } from './attendance/use-cases/create-holiday.usecase';
 import { CreateWorkScheduleUseCase } from './attendance/use-cases/create-work-schedule.usecase';
@@ -342,14 +350,22 @@ import { UpdateUserLifecycleUseCase } from '../../core/users/use-cases/update-us
     CreateLeaveRequestUseCase,
     ListLeaveRequestsUseCase,
     GetLeaveRequestUseCase,
+    UpdateLeaveRequestUseCase,
     SubmitLeaveRequestUseCase,
     ApproveLeaveRequestUseCase,
     RejectLeaveRequestUseCase,
+    CancelLeaveRequestUseCase,
     GetLeaveBalanceUseCase,
     LeaveBalanceService,
     HrUserLifecycleService,
     AttendanceCalendarService,
     AttendanceReconciliationService,
+    AttendanceReportingService,
+    AttendanceCorrectionService,
+    OvertimeRequestService,
+    FlexWorkRequestService,
+    TimesheetService,
+    PunctualityService,
     CreateWorkScheduleUseCase,
     ListWorkSchedulesUseCase,
     AssignUserWorkScheduleUseCase,

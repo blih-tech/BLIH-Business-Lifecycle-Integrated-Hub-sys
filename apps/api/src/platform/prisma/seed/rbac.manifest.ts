@@ -18,6 +18,18 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
   { name: 'employee', description: 'Employee records' },
   { name: 'leave', description: 'Leave management' },
   { name: 'attendance', description: 'Attendance tracking' },
+  {
+    name: 'attendance_correction',
+    description: 'Attendance correction request workflows',
+  },
+  { name: 'overtime', description: 'Overtime request workflows' },
+  { name: 'flex_work', description: 'Flex work request workflows' },
+  { name: 'punctuality', description: 'Punctuality monitoring and alerts' },
+  { name: 'timesheet', description: 'Timesheet management workflows' },
+  {
+    name: 'attendance_report',
+    description: 'Attendance and leave analytics reporting',
+  },
   { name: 'hr_payroll', description: 'HR payroll operations' },
   { name: 'onboarding', description: 'Onboarding workflows' },
   { name: 'probation', description: 'Probation workflows' },
