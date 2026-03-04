@@ -34,12 +34,4 @@ export class UpdateUserDto implements UpdateUserDtoType {
   @IsOptional()
   @IsString()
   phone?: string;
-
-  @ApiPropertyOptional({
-    description: 'Updated job position/title.',
-    example: 'Finance Manager',
-  })
-  @IsOptional()
-  @IsString()
-  position?: string;
 }

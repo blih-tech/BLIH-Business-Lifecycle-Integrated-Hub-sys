@@ -1,0 +1,144 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '../../../../platform/prisma/prisma-client';
+import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { resolveEmployeeSubjectOrThrow } from '../employee-subject.utils';
+
+const employeeDetailsInclude = {
+  user: {
+    select: {
+      keycloakId: true,
+      username: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      status: true,
+    },
+  },
+  profile: {
+    include: {
+      nationality: { select: { name: true } },
+      country: { select: { name: true } },
+    },
+  },
+  employment: {
+    include: {
+      position: {
+        select: {
+          title: true,
+          departmentId: true,
+          department: { select: { name: true } },
+        },
+      },
+    },
+  },
+  compensation: true,
+  lifecycle: true,
+  _count: {
+    select: { employeeDocuments: true, contracts: true },
+  },
+} satisfies Prisma.EmployeeInclude;
+
+type EmployeeWithDetails = Prisma.EmployeeGetPayload<{
+  include: typeof employeeDetailsInclude;
+}>;
+
+@Injectable()
+export class GetEmployeeFullUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async execute(employeeIdOrUserIdOrKeycloakId: string) {
+    const subject = await resolveEmployeeSubjectOrThrow(
+      this.prisma,
+      employeeIdOrUserIdOrKeycloakId,
+    );
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: subject.id },
+      include: employeeDetailsInclude,
+    });
+
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    return this.mapEmployee(employee);
+  }
+
+  private mapEmployee(employee: EmployeeWithDetails) {
+    return {
+      id: employee.id,
+      userId: employee.userId ?? null,
+      keycloakId: employee.user?.keycloakId ?? null,
+      username: employee.user?.username ?? null,
+      email: employee.user?.email ?? null,
+      firstName: employee.user?.firstName ?? null,
+      lastName: employee.user?.lastName ?? null,
+      phone: employee.user?.phone ?? null,
+      status: employee.user?.status ?? null,
+      departmentId: employee.employment?.position?.departmentId ?? null,
+      departmentName: employee.employment?.position?.department?.name ?? null,
+      profile: employee.profile
+        ? {
+            dateOfBirth: employee.profile.dateOfBirth?.toISOString() ?? null,
+            gender: employee.profile.gender,
+            nationalityId: employee.profile.nationalityId ?? null,
+            nationalityName: employee.profile.nationality?.name ?? null,
+            maritalStatus: employee.profile.maritalStatus,
+            addressLine1: employee.profile.addressLine1 ?? null,
+            addressLine2: employee.profile.addressLine2 ?? null,
+            city: employee.profile.city ?? null,
+            state: employee.profile.state ?? null,
+            countryId: employee.profile.countryId ?? null,
+            countryName: employee.profile.country?.name ?? null,
+            postalCode: employee.profile.postalCode ?? null,
+            emergencyContactName: employee.profile.emergencyContactName ?? null,
+            emergencyContactPhone:
+              employee.profile.emergencyContactPhone ?? null,
+          }
+        : null,
+      employment: employee.employment
+        ? {
+            employeeCode: employee.employment.employeeCode ?? null,
+            departmentId: employee.employment.position?.departmentId ?? null,
+            departmentName:
+              employee.employment.position?.department?.name ?? null,
+            positionId: employee.employment.positionId ?? null,
+            positionTitle: employee.employment.position?.title ?? null,
+            employmentType: employee.employment.employmentType,
+            managerEmploymentId:
+              employee.employment.managerEmploymentId ?? null,
+            hiredAt: employee.employment.hiredAt?.toISOString() ?? null,
+            probationEndAt:
+              employee.employment.probationEndAt?.toISOString() ?? null,
+            confirmedAt: employee.employment.confirmedAt?.toISOString() ?? null,
+          }
+        : null,
+      compensation: employee.compensation
+        ? {
+            baseSalary: employee.compensation.baseSalary?.toString() ?? null,
+            currency: employee.compensation.currency ?? null,
+            payFrequency: employee.compensation.payFrequency,
+            bonusEligible: employee.compensation.bonusEligible,
+            effectiveFrom:
+              employee.compensation.effectiveFrom?.toISOString() ?? null,
+            effectiveTo:
+              employee.compensation.effectiveTo?.toISOString() ?? null,
+          }
+        : null,
+      lifecycle: employee.lifecycle
+        ? {
+            status: employee.lifecycle.status,
+            onboardedAt: employee.lifecycle.onboardedAt?.toISOString() ?? null,
+            suspendedAt: employee.lifecycle.suspendedAt?.toISOString() ?? null,
+            terminatedAt:
+              employee.lifecycle.terminatedAt?.toISOString() ?? null,
+            offboardingCompleted: employee.lifecycle.offboardingCompleted,
+          }
+        : null,
+      documentsCount: employee._count.employeeDocuments,
+      contractsCount: employee._count.contracts,
+      createdAt: employee.createdAt.toISOString(),
+      updatedAt: employee.updatedAt.toISOString(),
+    };
+  }
+}

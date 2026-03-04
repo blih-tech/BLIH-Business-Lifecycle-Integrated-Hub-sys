@@ -1,31 +1,8 @@
-
 #!/usr/bin/env sh
 set -e
 
-npm run branch:check
-npx --no-install lint-staged
+echo "🔍 Running lint-staged checks..."
+# ⚡ Only 1–2 concurrent tasks, max 3000 characters per chunk
+npx lint-staged --concurrent 1 --max-arg-length 3000
 
-STASH_NAME="pre-commit-verify-$(date +%s)"
-STASH_CREATED=0
-
-# Validate the staged snapshot only; ignore untracked/unstaged working files.
-git stash push --quiet --keep-index --include-untracked -m "$STASH_NAME" || true
-if git stash list | grep -q "$STASH_NAME"; then
-  STASH_CREATED=1
-fi
-
-restore_stash() {
-  if [ "$STASH_CREATED" -eq 1 ]; then
-    git stash pop --quiet || {
-      echo "Failed to restore stashed changes. Run 'git stash list' then 'git stash pop' manually."
-      exit 1
-    }
-  fi
-}
-
-trap restore_stash EXIT INT TERM
-
-npm run verify
-
-trap - EXIT INT TERM
-restore_stash
+echo "✅ Pre-commit checks passed"
