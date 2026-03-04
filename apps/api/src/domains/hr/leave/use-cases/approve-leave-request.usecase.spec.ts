@@ -13,7 +13,7 @@ describe('ApproveLeaveRequestUseCase', () => {
         update: jest.fn().mockResolvedValue({
           id: 'leave-1',
           requestId: 'LV-2026-0001',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           leaveType: 'ANNUAL',
           startDate: new Date('2026-03-09T00:00:00.000Z'),
           endDate: new Date('2026-03-11T00:00:00.000Z'),
@@ -51,7 +51,7 @@ describe('ApproveLeaveRequestUseCase', () => {
       leaveRequest: {
         findUnique: jest.fn().mockResolvedValue({
           id: 'leave-1',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           leaveType: 'ANNUAL',
           startDate: new Date('2026-03-09T00:00:00.000Z'),
           endDate: new Date('2026-03-11T00:00:00.000Z'),
@@ -94,7 +94,7 @@ describe('ApproveLeaveRequestUseCase', () => {
       }),
     });
     expect(reconciliation.reconcileRangeForUser).toHaveBeenCalledWith(
-      'user-1',
+      'employee-1',
       new Date('2026-03-09T00:00:00.000Z'),
       new Date('2026-03-11T00:00:00.000Z'),
     );

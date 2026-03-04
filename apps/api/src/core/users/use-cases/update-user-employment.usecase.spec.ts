@@ -3,6 +3,12 @@ import { UpdateUserEmploymentUseCase } from './update-user-employment.usecase';
 describe('UpdateUserEmploymentUseCase', () => {
   it('derives the response department from the selected position', async () => {
     const prisma = {
+      employee: {
+        findFirst: jest.fn().mockResolvedValue(null),
+        upsert: jest
+          .fn()
+          .mockResolvedValue({ id: 'employee-1', userId: 'user-1' }),
+      },
       user: {
         findFirst: jest.fn().mockResolvedValue({ id: 'user-1' }),
         findUnique: jest.fn(),
@@ -21,7 +27,7 @@ describe('UpdateUserEmploymentUseCase', () => {
           userEmployment: {
             upsert: jest.fn().mockResolvedValue({
               id: 'employment-1',
-              userId: 'user-1',
+              employeeId: 'employee-1',
               employeeCode: 'EMP-001',
               positionId: 'position-1',
               position: {
@@ -64,7 +70,7 @@ describe('UpdateUserEmploymentUseCase', () => {
       userEmployment: {
         upsert: jest.fn().mockResolvedValue({
           id: 'employment-1',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           employeeCode: 'EMP-001',
           positionId: 'position-1',
           position: {
@@ -88,6 +94,12 @@ describe('UpdateUserEmploymentUseCase', () => {
     };
 
     const prisma = {
+      employee: {
+        findFirst: jest.fn().mockResolvedValue(null),
+        upsert: jest
+          .fn()
+          .mockResolvedValue({ id: 'employee-1', userId: 'user-1' }),
+      },
       user: {
         findFirst: jest.fn().mockResolvedValue({ id: 'user-1' }),
         findUnique: jest.fn(),
@@ -96,7 +108,7 @@ describe('UpdateUserEmploymentUseCase', () => {
         findFirst: jest.fn().mockResolvedValue(null),
         findUnique: jest.fn().mockResolvedValue({
           id: 'employment-1',
-          userId: 'user-1',
+          employeeId: 'employee-1',
           employeeCode: null,
           positionId: null,
           employmentType: 'FULL_TIME',
