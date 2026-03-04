@@ -8,12 +8,6 @@ export class PermissionResponseDto implements PermissionResponseDtoType {
   @ApiProperty({ example: 'invoice:approve' })
   slug!: string;
 
-  @ApiProperty({ example: 'c2aeb3b0-dfce-4752-8092-4e7542e6ba4b' })
-  moduleId!: string;
-
-  @ApiProperty({ example: 'finance' })
-  module!: string;
-
   @ApiProperty({ example: '1f24cdb6-f4e4-4d2a-b991-a82af2019d64' })
   resourceId!: string;
 

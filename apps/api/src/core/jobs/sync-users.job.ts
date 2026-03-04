@@ -22,21 +22,34 @@ export class SyncUsersJob {
       const keycloakId = String(user.id ?? '');
       const username = String(user.username ?? user.email ?? keycloakId);
       const email = String(user.email ?? `${keycloakId}@placeholder.local`);
-      await this.prisma.user.upsert({
-        where: { keycloakId },
-        update: {
-          username,
-          email,
-          firstName: String(user.firstName ?? 'Unknown'),
-          lastName: String(user.lastName ?? 'User'),
-        },
-        create: {
-          keycloakId,
-          username,
-          email,
-          firstName: String(user.firstName ?? 'Unknown'),
-          lastName: String(user.lastName ?? 'User'),
-        },
+      await this.prisma.$transaction(async (tx) => {
+        const syncedUser = await tx.user.upsert({
+          where: { keycloakId },
+          update: {
+            username,
+            email,
+            firstName: String(user.firstName ?? 'Unknown'),
+            lastName: String(user.lastName ?? 'User'),
+          },
+          create: {
+            keycloakId,
+            username,
+            email,
+            firstName: String(user.firstName ?? 'Unknown'),
+            lastName: String(user.lastName ?? 'User'),
+          },
+        });
+
+        await tx.employee.upsert({
+          where: {
+            userId: syncedUser.id,
+          },
+          update: {},
+          create: {
+            id: syncedUser.id,
+            userId: syncedUser.id,
+          },
+        });
       });
     }
 

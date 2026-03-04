@@ -5,9 +5,11 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable, map } from 'rxjs';
 import { getOrCreateRequestId } from '../utils/request.util';
+import { RESPONSE_MESSAGE_KEY } from '../decorators/response-message.decorator';
 import {
   ApiResponse,
   buildSuccessEnvelope,
@@ -65,9 +67,16 @@ function isLegacyPaginatedResult(value: unknown): boolean {
 
 @Injectable()
 export class ResponseEnvelopeInterceptor implements NestInterceptor {
+  constructor(private readonly reflector: Reflector) {}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();
     const requestId = getOrCreateRequestId(request);
+    const successMessage =
+      this.reflector.getAllAndOverride<string>(RESPONSE_MESSAGE_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]) ?? DEFAULT_SUCCESS_MESSAGE;
 
     return next.handle().pipe(
       map((data: unknown) => {
@@ -80,7 +89,7 @@ export class ResponseEnvelopeInterceptor implements NestInterceptor {
           return buildSuccessEnvelope(
             paginated.items,
             requestId,
-            DEFAULT_SUCCESS_MESSAGE,
+            successMessage,
             {
               page: paginated.pagination.page,
               limit: paginated.pagination.limit,
@@ -98,11 +107,7 @@ export class ResponseEnvelopeInterceptor implements NestInterceptor {
           );
         }
 
-        return buildSuccessEnvelope(
-          data ?? null,
-          requestId,
-          DEFAULT_SUCCESS_MESSAGE,
-        );
+        return buildSuccessEnvelope(data ?? null, requestId, successMessage);
       }),
     );
   }

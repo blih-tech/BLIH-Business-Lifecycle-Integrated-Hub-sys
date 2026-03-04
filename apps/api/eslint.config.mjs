@@ -8,8 +8,9 @@ export default [
   {
     ignores: [
       'eslint.config.mjs',
-      'scripts/**/*.js',
+      'validate-permission-constants.mjs',
       'src/platform/prisma/generated/**',
+      'src/shared/demo-hr-types/**',
     ],
   },
   eslint.configs.recommended,
@@ -23,6 +24,8 @@ export default [
       },
       sourceType: 'commonjs',
       parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
         sourceType: 'commonjs',
       },
     },

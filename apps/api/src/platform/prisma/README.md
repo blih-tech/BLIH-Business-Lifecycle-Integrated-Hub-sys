@@ -18,7 +18,7 @@ Schema and migrations are stored at the API root in `prisma/`.
 - **PermissionResource**: Unique by `name` globally. The seed and app (e.g. `CreateScopeUseCase`, `CreateRoleUseCase`) use `findUnique({ where: { name } })` and upsert by resource name.
 - **Role**: Global (no `realmId`). Roles are upserted by `name`; hierarchy is set via `parentRoleId`. The manifest defines `RBAC_ROLES` with `parentRoleName`; the seed applies that to `parentRoleId`.
 - **User.permissions**: String array of permission slugs (and optionally `'*'` for superadmin). Populated by the seed’s `rebuildAllUserPermissions()` and by `UserPermissionSnapshotService` in the app.
-- **Realm / Organization**: Seed creates realm `blih` and default org; `SystemConfig` and `ModuleConfig` use the same realm and org.
+- **Realm bootstrap**: Seed creates module and RBAC catalog data for the default `blih` realm context.
 
 ## Running
 
@@ -41,11 +41,11 @@ npm run prisma:seed
 
 ## Seed behaviour
 
-1. Upserts realm `blih` and default organization.
+1. Ensures the RBAC catalog and baseline module configuration exist.
 2. Ensures all modules/resources from `seed/rbac.manifest.ts` and all permission slugs from `core/rbac/constants/permissions.constants.ts` exist.
 3. Prunes catalog drift by deleting permissions/actions/resources/modules not in canonical constants/manifest.
 4. Upserts roles from `RBAC_ROLES`, sets `parentRoleId` from `parentRoleName`, then assigns permissions to roles via `RolePermission`.
 5. Rebuilds `User.permissions` for all users (role-derived + overrides).
-6. Upserts `ModuleConfig` (core) and `SystemConfig` (org.default).
+6. Upserts `ModuleConfig` for the core module.
 
 Catalog truth is split intentionally: modules/resources/roles in `seed/rbac.manifest.ts`, permission slugs in `core/rbac/constants/permissions.constants.ts`. Seed reconciliation keeps DB aligned with both.

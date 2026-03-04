@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Audit } from '../../shared/decorators/audit.decorator';
 import { Public } from '../../shared/decorators/public.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { TokenRequestDto } from './dto/token-request.dto';
@@ -31,7 +32,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Validate access token',
     description:
-      'Validates a JWT access token and returns mapped principal scopes, roles, and permissions. Public endpoint.',
+      'Validates an access token and returns the resolved principal identity, scopes, roles, and persisted permissions.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -68,6 +69,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Token validated successfully')
   validate(@Body() dto: TokenRequestDto) {
     return this.validateTokenUseCase.execute(dto.token, env.KEYCLOAK_REALM);
   }
@@ -77,7 +79,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Introspect token',
     description:
-      'Performs OAuth token introspection against Keycloak and returns normalized activity/subject metadata. Public endpoint.',
+      'Performs Keycloak token introspection and returns normalized token activity and subject metadata.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -98,7 +100,7 @@ export class AuthController {
         active: true,
         policyVersion: '2026.1',
         sub: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
-        email: 'admin@blih.local',
+        email: 'admin1',
         scopes: ['openid', 'profile', 'email'],
         roles: [],
         permissions: [],
@@ -114,6 +116,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Token introspected successfully')
   introspect(@Body() dto: TokenRequestDto) {
     return this.introspectTokenUseCase.execute(dto.token, env.KEYCLOAK_REALM);
   }
@@ -123,7 +126,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Exchange token',
     description:
-      'Exchanges an existing token (and optional requested subject) for a new access/refresh pair. Public endpoint for trusted clients.',
+      'Exchanges an existing token, and optionally impersonates a requested subject, to issue a new access and refresh token pair.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -161,6 +164,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Token exchanged successfully')
   exchange(@Body() dto: TokenRequestDto) {
     return this.exchangeTokenUseCase.execute(
       dto.token,
@@ -174,7 +178,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Refresh token',
     description:
-      'Refreshes an access token using a refresh token and returns the new token pair. Public endpoint for trusted clients.',
+      'Refreshes an access token using a refresh token and returns a new access and refresh token pair.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -211,6 +215,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired refresh token',
   })
+  @ResponseMessage('Token refreshed successfully')
   async refresh(@Body() dto: TokenRequestDto) {
     const refreshed = await this.tokenService.refreshToken(
       dto.token,
@@ -233,7 +238,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Revoke session token',
     description:
-      'Revokes an access or refresh token and publishes session revocation events. Public endpoint for trusted clients.',
+      'Revokes an access or refresh token and returns the subject and session metadata when introspection succeeds.',
   })
   @ApiBody({
     type: TokenRequestDto,
@@ -270,6 +275,7 @@ export class AuthController {
     },
     unauthorized: 'Invalid or expired token',
   })
+  @ResponseMessage('Session revoked successfully')
   revokeSession(@Body() dto: TokenRequestDto) {
     return this.revokeSessionUseCase.execute(
       dto.token,
@@ -287,60 +293,51 @@ export class AuthController {
   @ApiOperation({
     summary: 'Get authenticated user',
     description:
-      'Returns the authenticated user profile and access context. Requires bearer authentication.',
+      'Returns the authenticated user profile and resolved access context for the current bearer token.',
   })
   @ApiOkResponse({
     description: 'Authenticated user and auth context.',
     type: AuthMeResponseDto,
     schema: {
       example: {
-        user: {
-          id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
-          keycloakId: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
-          username: 'admin1',
-          email: 'admin@blih.local',
-          firstName: 'Admin',
-          lastName: 'User',
-          status: 'ACTIVE',
-          position: 'System Administrator',
-          phone: '+12025550199',
-          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-          organizationId: '28ac5ccf-af0c-4e14-b34e-8cd37cb392f8',
-        },
-        auth: {
-          sub: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
-          roles: ['superadmin'],
-          permissions: ['user:view', 'user:update'],
-          scopes: ['openid', 'profile', 'email'],
-          sessionId: '4f5c57c7-4f17-4171-a23a-53f38eb9f7c8',
-          clientId: 'blih-system-api',
-        },
+        id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+        keycloakId: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
+        username: 'admin1',
+        email: 'admin@blih.local',
+        firstName: 'Admin',
+        lastName: 'User',
+        status: 'ACTIVE',
+        phone: '+12025550199',
+        departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+        sub: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
+        roles: ['superadmin'],
+        permissions: ['user:view', 'user:update'],
+        scopes: ['openid', 'profile', 'email'],
+        sessionId: '4f5c57c7-4f17-4171-a23a-53f38eb9f7c8',
+        clientId: 'blih-system-api',
       },
     },
   })
+  @ResponseMessage('Authenticated user retrieved successfully')
   me(@Req() request: { user: AuthPrincipal }): AuthMeResponseDto {
     const principal = request.user;
 
     return {
-      user: {
-        id: principal.userId ?? principal.sub,
-        keycloakId: principal.sub,
-        username: principal.username,
-        email: principal.email,
-        firstName: principal.firstName,
-        lastName: principal.lastName,
-        phone: principal.phone,
-        status: principal.status,
-        position: principal.position,
-      },
-      auth: {
-        sub: principal.sub,
-        roles: principal.roles,
-        permissions: principal.permissions,
-        scopes: principal.scopes,
-        sessionId: principal.sessionId,
-        clientId: principal.clientId,
-      },
+      id: principal.userId ?? principal.sub,
+      keycloakId: principal.sub,
+      username: principal.username,
+      email: principal.email,
+      firstName: principal.firstName,
+      lastName: principal.lastName,
+      phone: principal.phone,
+      status: principal.status,
+      departmentId: principal.departmentId ?? null,
+      sub: principal.sub,
+      roles: principal.roles,
+      permissions: principal.permissions,
+      scopes: principal.scopes,
+      sessionId: principal.sessionId,
+      clientId: principal.clientId,
     };
   }
 }

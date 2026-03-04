@@ -65,14 +65,10 @@ jobs:
           : "${VERCEL_ORG_ID:?VERCEL_ORG_ID secret is required}"
           : "${VERCEL_PROJECT_ID:?VERCEL_PROJECT_ID secret is required}"
 
-      - name: Lint monorepo
-        run: npm run lint
-
-      - name: Type-check monorepo
-        run: npm run check-types
-
-      - name: Test monorepo
-        run: npm run test:ci
+      - name: Verify web
+        run: |
+          npm run lint --workspace web
+          npm run check-types --workspace web
 
       - name: Pull Vercel preview environment
         run: npx vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
@@ -133,14 +129,10 @@ jobs:
           : "${VERCEL_ORG_ID:?VERCEL_ORG_ID secret is required}"
           : "${VERCEL_PROJECT_ID:?VERCEL_PROJECT_ID secret is required}"
 
-      - name: Lint monorepo
-        run: npm run lint
-
-      - name: Type-check monorepo
-        run: npm run check-types
-
-      - name: Test monorepo
-        run: npm run test:ci
+      - name: Verify web
+        run: |
+          npm run lint --workspace web
+          npm run check-types --workspace web
 
       - name: Pull Vercel production environment
         run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"

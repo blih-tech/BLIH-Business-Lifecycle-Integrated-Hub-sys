@@ -20,7 +20,6 @@ src/
 │   ├── auth/            # Authentication and JWT token management
 │   ├── jobs/            # Scheduled background jobs (cleanup, sync)
 │   ├── notifications/   # Multi-channel notification system
-│   ├── organization/    # Multi-tenant organization management
 │   ├── rbac/            # Role-based access control engine
 │   ├── realms/          # Multi-realm configuration
 │   ├── system-config/   # Governance and policy management
@@ -252,7 +251,6 @@ All controllers are versioned under `/api/v1/`:
 | RBAC           | `/api/v1/rbac`          | ✅ Implemented | Roles, permissions, access evaluation              |
 | Users          | `/api/v1/users`         | ✅ Implemented | User management, profiles, preferences             |
 | Realms         | `/api/v1/realms`        | ✅ Implemented | Multi-realm configuration                          |
-| Organization   | `/api/v1/organization`  | ✅ Implemented | Org structure, departments, hierarchies            |
 | System Config  | `/api/v1/system-config` | ✅ Implemented | Governance settings, policies                      |
 | Notifications  | `/api/v1/notifications` | ✅ Implemented | Notification management and delivery               |
 | Audit          | `/api/v1/audit`         | ✅ Implemented | Audit logs, compliance reports                     |
@@ -301,8 +299,7 @@ curl -X POST http://localhost:5000/api/v1/auth/exchange \
 - **Realm**: Multi-tenant isolation and configuration
 - **User**: User profiles, authentication, and preferences
 - **Role & Permission**: Granular RBAC implementation
-- **Organization**: Hierarchical organizational structure
-- **Department**: Sub-organizational units
+- **Department**: Functional units used across staffing and workflow features
 - **AuditLog**: Comprehensive audit trail with metadata
 - **Notification**: Multi-channel notification delivery
 - **SystemConfig**: Governance and policy configuration
@@ -346,7 +343,7 @@ The system integrates with Keycloak for identity and access management:
 Granular role-based access control with:
 
 - **Hierarchical Roles**: Parent-child role inheritance
-- **Permission Scopes**: Global, organization, department, self
+- **Permission Scopes**: Global, department, self
 - **Dynamic Evaluation**: Real-time permission checking
 - **Audit Integration**: All access decisions logged
 - **Policy Engine**: Configurable authorization policies
@@ -356,9 +353,9 @@ Granular role-based access control with:
 ```typescript
 // Permission structure
 {
-  resource: string;     // e.g., 'users', 'organizations'
+  resource: string;     // e.g., 'users', 'departments'
   action: string;       // e.g., 'create', 'read', 'update', 'delete'
-  scope: RoleDataScope; // GLOBAL, ORGANIZATION, DEPARTMENT, SELF
+  scope: RoleDataScope; // GLOBAL, DEPARTMENT, SELF
   conditions?: any[];   // Additional conditions
 }
 ```
@@ -393,7 +390,6 @@ The system can publish domain events to a message broker when messaging is enabl
 
 - **User Events**: `user.created`, `user.updated`, `user.disabled`
 - **RBAC Events**: `role.assigned`, `role.revoked`, `permission.granted`
-- **Organization Events**: `organization.created`, `organization.updated`
 - **Audit Events**: `audit.log.created`, `audit.export.completed`
 - **Notification Events**: `notification.sent`, `notification.failed`
 

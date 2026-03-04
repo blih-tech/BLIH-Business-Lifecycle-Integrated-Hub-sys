@@ -59,6 +59,25 @@ function parseFieldErrors(
   });
 }
 
+function buildValidationMessage(
+  fieldErrors: { field: string; message: string }[],
+): string {
+  const primaryError = fieldErrors[0]?.message;
+  return primaryError
+    ? `Validation failed: ${primaryError}`
+    : 'Validation failed';
+}
+
+function buildValidationDetails(
+  fieldErrors: { field: string; message: string }[],
+): string {
+  if (fieldErrors.length <= 1) {
+    return fieldErrors[0]?.message ?? 'One or more fields are invalid';
+  }
+
+  return `${fieldErrors.length} fields are invalid. Review fieldErrors for the complete list.`;
+}
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
@@ -88,14 +107,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const o = body as Record<string, unknown>;
         if (Array.isArray(o.message)) {
           const msgs = o.message as string[];
-          message =
-            status === BAD_REQUEST_STATUS
-              ? 'Validation failed'
-              : defaultMessage;
-          details = 'One or more fields are invalid';
           fieldErrors = parseFieldErrors(msgs);
           if (status === BAD_REQUEST_STATUS && fieldErrors.length > 0) {
             code = ErrorCode.VALIDATION_ERROR;
+            message = buildValidationMessage(fieldErrors);
+            details = buildValidationDetails(fieldErrors);
+          } else {
+            message = defaultMessage;
+            details = msgs[0];
           }
         } else if (typeof o.message === 'string') {
           message = o.message;
@@ -114,6 +133,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
           }));
           if (status === BAD_REQUEST_STATUS) {
             code = ErrorCode.VALIDATION_ERROR;
+            if (
+              message === 'Validation failed' ||
+              message === defaultMessage ||
+              message === 'Bad Request'
+            ) {
+              message = buildValidationMessage(fieldErrors);
+            }
+            if (!details || details === 'One or more fields are invalid') {
+              details = buildValidationDetails(fieldErrors);
+            }
           }
         }
       }

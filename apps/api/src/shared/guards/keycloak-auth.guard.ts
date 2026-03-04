@@ -140,7 +140,7 @@ export class KeycloakAuthGuard implements CanActivate {
       lastName: contextData.lastName || profileClaims.lastName,
       phone: contextData.phone,
       status: contextData.status ?? 'ACTIVE',
-      position: contextData.position,
+      departmentId: contextData.departmentId ?? null,
     };
   }
 

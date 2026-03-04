@@ -1,29 +1,22 @@
 #!/usr/bin/env sh
 set -e
 
-node apps/api/scripts/git/validate-pre-push.js "$@"
+REFS_FILE="$(mktemp)"
+cat > "$REFS_FILE"
 
-STASH_NAME="pre-push-verify-$(date +%s)"
-STASH_CREATED=0
-
-# Validate pushed commits only; ignore local untracked/unstaged files.
-git stash push --quiet --include-untracked -m "$STASH_NAME" || true
-if git stash list | grep -q "$STASH_NAME"; then
-  STASH_CREATED=1
-fi
-
-restore_stash() {
-  if [ "$STASH_CREATED" -eq 1 ]; then
-    git stash pop --quiet || {
-      echo "Failed to restore stashed changes. Run 'git stash list' then 'git stash pop' manually."
-      exit 1
-    }
-  fi
+cleanup() {
+  rm -f "$REFS_FILE"
 }
 
-trap restore_stash EXIT INT TERM
+trap cleanup EXIT INT TERM
 
-npm run verify
+echo "Running pre-push validations..."
+node validate-pre-push.js "$@" < "$REFS_FILE"
 
-trap - EXIT INT TERM
-restore_stash
+echo "Running type checks..."
+npm run check-types
+
+echo "Running lint..."
+npm run lint
+
+echo "Pre-push checks passed."

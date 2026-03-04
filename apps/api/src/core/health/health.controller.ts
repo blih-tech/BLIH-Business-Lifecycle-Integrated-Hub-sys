@@ -9,6 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
 import { Public } from '../../shared/decorators/public.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import {
   ApiErrorResponseDto,
   createEnvelopeErrorExample,
@@ -29,16 +30,16 @@ export class HealthController {
   @ApiOperation({
     summary: 'Health check',
     description:
-      'Returns health state of core dependencies (database, keycloak, smtp). Public endpoint.',
+      'Returns the aggregated health state of the database, Keycloak, and SMTP configuration.',
   })
   @ApiOkResponse({
     description: 'Health check result.',
     schema: {
       example: {
-        status: 'up',
+        status: 'degraded',
         checks: {
           database: { status: 'up' },
-          keycloak: { status: 'up' },
+          keycloak: { status: 'down', error: 'connect ECONNREFUSED' },
           smtp: { status: 'up', mode: 'disabled' },
         },
         timestamp: '2026-02-15T12:00:00.000Z',
@@ -56,6 +57,7 @@ export class HealthController {
       }),
     },
   })
+  @ResponseMessage('Health status retrieved successfully')
   async check() {
     const checks = {
       database: await this.databaseCheck(),

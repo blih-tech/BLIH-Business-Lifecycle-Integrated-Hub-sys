@@ -1,29 +1,34 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../platform/prisma/prisma.service';
 import { hasWildcardPermission } from '../../platform/keycloak/utils/role.util';
+import { UserPermissionSnapshotService } from './user-permission-snapshot.service';
 
 @Injectable()
 export class EvaluateAccessUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly userPermissionSnapshot: UserPermissionSnapshotService,
+  ) {}
 
   async execute(userId: string, requiredPermissions: string[]) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ id: userId }, { keycloakId: userId }],
-      },
-      select: {
-        permissions: true,
-      },
-    });
-
-    if (!user) {
-      throw new ForbiddenException('User not found');
+    const permissions =
+      await this.userPermissionSnapshot.getEffectivePermissionsByUserId(userId);
+    if (permissions.length === 0) {
+      const fallbackPermissions =
+        await this.userPermissionSnapshot.getEffectivePermissionsByKeycloakId(
+          userId,
+        );
+      if (fallbackPermissions.length === 0) {
+        throw new ForbiddenException('User not found');
+      }
+      return this.evaluatePermissions(fallbackPermissions, requiredPermissions);
     }
 
-    const permissions = (user.permissions ?? [])
-      .map((permission) => permission.toLowerCase())
-      .filter(Boolean);
+    return this.evaluatePermissions(permissions, requiredPermissions);
+  }
 
+  private evaluatePermissions(
+    permissions: string[],
+    requiredPermissions: string[],
+  ) {
     const normalizedRequiredPermissions = requiredPermissions.map(
       (permission) => permission.toLowerCase(),
     );

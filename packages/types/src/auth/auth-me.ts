@@ -7,7 +7,7 @@ export interface AuthMeUserDto {
   lastName?: string;
   phone?: string;
   status?: string;
-  position?: string;
+  departmentId?: string | null;
 }
 
 export interface AuthMeAuthDto {
@@ -19,7 +19,4 @@ export interface AuthMeAuthDto {
   clientId?: string;
 }
 
-export interface AuthMeResponseDto {
-  user: AuthMeUserDto;
-  auth: AuthMeAuthDto;
-}
+export interface AuthMeResponseDto extends AuthMeUserDto, AuthMeAuthDto {}

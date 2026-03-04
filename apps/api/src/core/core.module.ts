@@ -4,7 +4,9 @@ import { OpenApiDocsModule } from '../shared/docs/openapi/openapi-docs.module';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
+import { JobGradesModule } from './job-grades/job-grades.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { PositionsModule } from './positions/positions.module';
 import { RbacModule } from './rbac/rbac.module';
 import { SystemConfigModule } from './system-config/system-config.module';
 import { UsersModule } from './users/users.module';
@@ -15,6 +17,8 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     RbacModule,
     UsersModule,
+    JobGradesModule,
+    PositionsModule,
     AuditModule,
     NotificationsModule,
     SystemConfigModule,
