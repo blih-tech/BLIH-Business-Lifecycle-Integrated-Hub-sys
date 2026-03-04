@@ -38,7 +38,6 @@ export class UpdateUserUseCase {
         firstName: dto.firstName,
         lastName: dto.lastName,
         phone: dto.phone,
-        position: dto.position,
       },
     });
 

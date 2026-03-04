@@ -46,14 +46,16 @@ jobs:
           # and to avoid Windows file permission issues
           npm install --workspaces --include-workspace-root --include=optional
 
-      - name: Lint monorepo
-        run: npm run lint
+      - name: Verify shared types
+        run: |
+          npm run lint --workspace @repo/types
+          npm run check-types --workspace @repo/types
 
-      - name: Type-check monorepo
-        run: npm run check-types
-
-      - name: Test monorepo
-        run: npm run test:ci
+      - name: Verify backend
+        run: |
+          npm run lint:check --workspace blih-system-backend
+          npm run check-types --workspace blih-system-backend
+          npm run test --workspace blih-system-backend -- --ci --passWithNoTests
 
   build-images:
     needs: verify

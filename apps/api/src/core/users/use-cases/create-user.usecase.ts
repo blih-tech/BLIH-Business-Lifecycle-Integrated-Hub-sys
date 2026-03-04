@@ -6,6 +6,7 @@ import {
 import { env } from '../../../config/env.config';
 import { KeycloakAdminService } from '../../../platform/keycloak/keycloak-admin.service';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { ensureEmployeeForUser } from '../../../domains/hr/employees/employee-subject.utils';
 import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
@@ -32,15 +33,32 @@ export class CreateUserUseCase {
       this.rethrowCreateUserError(error);
     }
 
-    const user = await this.prisma.user.create({
-      data: {
-        keycloakId,
-        username,
-        email: dto.email,
-        firstName: dto.firstName,
-        lastName: dto.lastName,
-        phone: dto.phone,
-      },
+    const user = await this.prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          keycloakId,
+          username,
+          email: dto.email,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
+          phone: dto.phone,
+        },
+      });
+
+      await ensureEmployeeForUser(tx as PrismaService, createdUser.id);
+
+      await tx.userLifecycle.upsert({
+        where: {
+          employeeId: createdUser.id,
+        },
+        update: {},
+        create: {
+          employeeId: createdUser.id,
+          status: 'ONBOARDING',
+        },
+      });
+
+      return createdUser;
     });
 
     return user;

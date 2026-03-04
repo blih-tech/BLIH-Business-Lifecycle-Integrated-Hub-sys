@@ -17,17 +17,14 @@ export class RoleResponseDto implements RoleResponseDtoType {
   })
   description?: string | null;
 
-  @ApiProperty({
-    enum: ['global', 'organization', 'department', 'self'],
-    example: 'organization',
-  })
-  dataScope!: 'global' | 'organization' | 'department' | 'self';
-
   @ApiProperty({ example: false })
   isSystem!: boolean;
 
-  @ApiPropertyOptional({ nullable: true, example: 'finance' })
-  parentRoleName?: string | null;
+  @ApiPropertyOptional({
+    nullable: true,
+    example: '57e883d0-d0c0-4187-a232-50fa729f6876',
+  })
+  parentRoleId?: string | null;
 
   @ApiProperty({ type: [String], example: ['invoice:view', 'invoice:approve'] })
   permissions!: string[];

@@ -25,19 +25,16 @@ export class CreateRoleUseCase {
       }
     }
 
-    const dataScope = this.toRoleDataScope(dto.dataScope);
-
-    const parentRole =
-      dto.parentRoleName?.trim() && dto.parentRoleName.trim().length > 0
-        ? await this.prisma.role.findUnique({
-            where: { name: dto.parentRoleName.trim() },
-            select: { id: true },
-          })
-        : null;
-    if (dto.parentRoleName && !parentRole) {
-      throw new BadRequestException(
-        `Parent role not found: ${dto.parentRoleName}`,
-      );
+    if (dto.parentRoleId) {
+      const parentRole = await this.prisma.role.findUnique({
+        where: { id: dto.parentRoleId },
+        select: { id: true },
+      });
+      if (!parentRole) {
+        throw new BadRequestException(
+          `Parent role not found: ${dto.parentRoleId}`,
+        );
+      }
     }
 
     const role = await this.prisma.role.upsert({
@@ -47,86 +44,18 @@ export class CreateRoleUseCase {
       update: {
         displayName: dto.displayName,
         description: dto.description,
-        dataScope,
-        parentRoleId: parentRole?.id ?? null,
+        parentRoleId: dto.parentRoleId ?? null,
       },
       create: {
         name: dto.name,
         displayName: dto.displayName,
         description: dto.description,
-        dataScope,
-        parentRoleId: parentRole?.id ?? null,
+        parentRoleId: dto.parentRoleId ?? null,
       },
     });
 
-    const permissionKeys = [
-      ...(dto.permissions ?? []),
-      ...(dto.permission ? [dto.permission] : []),
-    ]
-      .map((permission) => permission.trim().toLowerCase())
-      .filter(Boolean);
-
-    if (permissionKeys.length > 0) {
-      const uniquePermissionKeys = [...new Set(permissionKeys)];
-      const persistedPermissions = await this.prisma.permission.findMany({
-        where: {
-          slug: {
-            in: uniquePermissionKeys,
-          },
-        },
-        select: {
-          id: true,
-          slug: true,
-        },
-      });
-      const permissionBySlug = new Map(
-        persistedPermissions.map((permission) => [
-          permission.slug,
-          permission.id,
-        ]),
-      );
-      const unknownPermissionKeys = uniquePermissionKeys.filter(
-        (permissionKey) => !permissionBySlug.has(permissionKey),
-      );
-
-      if (unknownPermissionKeys.length > 0) {
-        throw new BadRequestException(
-          `Unknown permission key(s): ${unknownPermissionKeys.join(', ')}`,
-        );
-      }
-
-      await this.prisma.rolePermission.deleteMany({
-        where: {
-          roleId: role.id,
-        },
-      });
-
-      const permissionRows: { roleId: string; permissionId: string }[] = [];
-      for (const permissionKey of uniquePermissionKeys) {
-        const permissionId = permissionBySlug.get(permissionKey);
-        if (!permissionId) {
-          continue;
-        }
-        permissionRows.push({
-          roleId: role.id,
-          permissionId,
-        });
-      }
-
-      if (permissionRows.length > 0) {
-        await this.prisma.rolePermission.createMany({
-          data: permissionRows,
-          skipDuplicates: true,
-        });
-      }
-    }
-
-    await this.userPermissionSnapshot.recomputeAllUsers();
+    await this.userPermissionSnapshot.invalidateAll();
 
     return role;
-  }
-
-  private toRoleDataScope(scope?: CreateRoleDto['dataScope']) {
-    return scope === 'self' ? ('SELF' as const) : ('GLOBAL' as const);
   }
 }

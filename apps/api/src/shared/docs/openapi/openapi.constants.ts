@@ -21,6 +21,10 @@ export const SWAGGER_TAGS: ReadonlyArray<{
     description: 'User lifecycle management and credential operations.',
   },
   {
+    name: 'Positions',
+    description: 'Position catalog CRUD for reusable job titles.',
+  },
+  {
     name: 'RBAC',
     description:
       'Role and permission management (2-part resource:action only), scoped assignment, and access evaluation.',
@@ -28,10 +32,6 @@ export const SWAGGER_TAGS: ReadonlyArray<{
   {
     name: 'Realms',
     description: 'Multi-tenant realm provisioning and governance.',
-  },
-  {
-    name: 'Organization',
-    description: 'Organization profile and department hierarchy management.',
   },
   {
     name: 'System Config',
