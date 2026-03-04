@@ -24,6 +24,7 @@ import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { RecruitmentRequestPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
+import { Audit } from '../../../shared/decorators/audit.decorator';
 import type {
   CreateRecruitmentRequestDto,
   UpdateRecruitmentRequestDto,
@@ -52,6 +53,7 @@ export class RecruitmentRequestsController {
 
   @Get()
   @Roles(RecruitmentRequestPermissions.VIEW)
+  @Audit('recruitment.request.list', 'hr.recruitment_request')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests',
     roles: [RecruitmentRequestPermissions.VIEW],
@@ -67,6 +69,7 @@ export class RecruitmentRequestsController {
 
   @Get(':id')
   @Roles(RecruitmentRequestPermissions.VIEW)
+  @Audit('recruitment.request.get', 'hr.recruitment_request')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests/:id',
     roles: [RecruitmentRequestPermissions.VIEW],
@@ -80,6 +83,7 @@ export class RecruitmentRequestsController {
 
   @Post()
   @Roles(RecruitmentRequestPermissions.CREATE)
+  @Audit('recruitment.request.create', 'hr.recruitment_request')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests',
     roles: [RecruitmentRequestPermissions.CREATE],
@@ -99,6 +103,7 @@ export class RecruitmentRequestsController {
 
   @Patch(':id')
   @Roles(RecruitmentRequestPermissions.UPDATE)
+  @Audit('recruitment.request.update', 'hr.recruitment_request')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests/:id',
     roles: [RecruitmentRequestPermissions.UPDATE],
@@ -112,6 +117,7 @@ export class RecruitmentRequestsController {
 
   @Post(':id/submit')
   @Roles(RecruitmentRequestPermissions.UPDATE)
+  @Audit('recruitment.request.submit', 'hr.recruitment_request')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests/:id/submit',
     roles: [RecruitmentRequestPermissions.UPDATE],
@@ -125,6 +131,7 @@ export class RecruitmentRequestsController {
 
   @Post(':id/approve')
   @Roles(RecruitmentRequestPermissions.APPROVE)
+  @Audit('recruitment.request.approve', 'hr.recruitment_request')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests/:id/approve',
     roles: [RecruitmentRequestPermissions.APPROVE],
@@ -155,6 +162,7 @@ export class RecruitmentRequestsController {
     RecruitmentRequestPermissions.VIEW,
     RecruitmentRequestPermissions.UPDATE,
   )
+  @Audit('recruitment.job_posting.create_from_request', 'hr.job_posting')
   @ApiProtected({
     path: '/api/v1/hr/recruitment/requests/:id/job-posting',
     roles: [

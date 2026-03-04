@@ -17,6 +17,37 @@ describe('FinalizeHiringDecisionUseCase', () => {
         }),
         findFirst: jest.fn().mockResolvedValue({ id: 'decision-2' }),
       },
+      recruitmentRequest: {
+        findUnique: jest.fn().mockResolvedValue({
+          departmentId: 'dept-1',
+          staffing: {
+            salaryBracket: { min: 800, max: 1500, currency: 'USD' },
+          },
+          position: {
+            id: 'position-1',
+            grade: {
+              minSalary: 800,
+              maxSalary: 1500,
+            },
+          },
+        }),
+      },
+      jobPosting: {
+        findUnique: jest.fn().mockResolvedValue({
+          positionId: 'position-1',
+        }),
+      },
+      cvScreening: {
+        findFirst: jest.fn().mockResolvedValue({
+          aggregateRating: 92,
+        }),
+      },
+      interviewFeedback: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+      userCompensation: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
     };
 
     const useCase = new FinalizeHiringDecisionUseCase(prisma as never);

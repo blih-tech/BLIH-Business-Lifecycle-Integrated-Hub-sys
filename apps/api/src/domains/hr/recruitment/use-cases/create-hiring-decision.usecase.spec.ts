@@ -5,9 +5,11 @@ describe('CreateHiringDecisionUseCase', () => {
   it('rejects candidates that do not belong to the selected job posting', async () => {
     const prisma = {
       candidate: {
-        findUnique: jest
-          .fn()
-          .mockResolvedValue({ id: 'candidate-1', jobPostingId: 'posting-2' }),
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'candidate-1',
+          jobPostingId: 'posting-2',
+          status: 'INTERVIEW_STAGE',
+        }),
       },
       jobPosting: {
         findUnique: jest.fn(),
@@ -39,9 +41,11 @@ describe('CreateHiringDecisionUseCase', () => {
   it('rejects duplicate hiring decisions for the same candidate', async () => {
     const prisma = {
       candidate: {
-        findUnique: jest
-          .fn()
-          .mockResolvedValue({ id: 'candidate-1', jobPostingId: 'posting-1' }),
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'candidate-1',
+          jobPostingId: 'posting-1',
+          status: 'INTERVIEW_STAGE',
+        }),
       },
       jobPosting: {
         findUnique: jest.fn().mockResolvedValue({

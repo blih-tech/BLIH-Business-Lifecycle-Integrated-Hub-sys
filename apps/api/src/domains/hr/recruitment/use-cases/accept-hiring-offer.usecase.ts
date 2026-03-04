@@ -8,12 +8,14 @@ import type { AcceptOfferDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { CreateOnboardingChecklistUseCase } from '../../onboarding/use-cases/create-onboarding-checklist.usecase';
 import { mapHiringDecisionResponse } from '../hiring-decision.mapper';
+import { RecruitmentNotificationService } from '../recruitment-notification.service';
 
 @Injectable()
 export class AcceptHiringOfferUseCase {
   constructor(
     private readonly prisma: PrismaService,
     private readonly createOnboardingChecklistUseCase: CreateOnboardingChecklistUseCase,
+    private readonly notifications: RecruitmentNotificationService,
   ) {}
 
   async execute(id: string, dto: AcceptOfferDto) {
@@ -169,6 +171,17 @@ export class AcceptHiringOfferUseCase {
     } catch {
       // Non-fatal: checklist can be created manually later
     }
+
+    await this.notifications.notifyUsers({
+      userIds: [existing.submittedById],
+      title: `Offer accepted for ${existing.decisionId}`,
+      body: `Candidate accepted the offer and onboarding has started.`,
+      payload: {
+        hiringDecisionId: existing.id,
+        employeeId: employee.id,
+        onboardingId: updated.onboardingId,
+      },
+    });
 
     return mapHiringDecisionResponse(updated);
   }

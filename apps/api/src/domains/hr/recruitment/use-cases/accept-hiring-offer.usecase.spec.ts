@@ -58,6 +58,7 @@ describe('AcceptHiringOfferUseCase', () => {
           candidateId: 'candidate-1',
           recruitmentRequestId: 'request-1',
           jobPostingId: 'posting-1',
+          submittedById: 'user-1',
           finalDecision: 'OFFER_APPROVED',
           employeeId: null,
           onboardingId: null,
@@ -78,9 +79,13 @@ describe('AcceptHiringOfferUseCase', () => {
     const createOnboardingChecklistUseCase = {
       execute: jest.fn().mockResolvedValue(undefined),
     };
+    const notifications = {
+      notifyUsers: jest.fn().mockResolvedValue(undefined),
+    };
     const useCase = new AcceptHiringOfferUseCase(
       prisma as never,
       createOnboardingChecklistUseCase as never,
+      notifications as never,
     );
 
     await expect(
