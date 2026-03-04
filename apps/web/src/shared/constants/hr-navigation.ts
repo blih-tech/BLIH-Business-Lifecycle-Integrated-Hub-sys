@@ -123,10 +123,11 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
     icon: 'building-2',
     subItems: [
       { id: 'workforce-overview', label: 'Overview', href: '/dashboard/hr/workforce/overview' },
+      { id: 'workforce-salary', label: 'Salary', href: '/dashboard/hr/workforce/salary' },
       { id: 'payroll', label: 'Payroll', href: '/dashboard/hr/workforce/payroll' },
       { id: 'budget', label: 'Budget', href: '/dashboard/hr/workforce/budget' },
-      { id: 'compensation', label: 'Compensation', href: '/dashboard/hr/workforce/compensation' },
-      { id: 'cost-analysis', label: 'Cost Analysis', href: '/dashboard/hr/workforce/cost-analysis' },
+      { id: 'workforce-expense', label: 'Expense', href: '/dashboard/hr/workforce/expense' },
+      { id: 'workforce-benefits', label: 'Benefits', href: '/dashboard/hr/workforce/benefits' },
     ],
   },
 ];
