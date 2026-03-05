@@ -29,7 +29,7 @@ function priorityLabel(priority: JobRequestPriority) {
 
 export function JobRequestCard({ item }: JobRequestCardProps) {
   return (
-    <article className="ui-surface p-4">
+    <article className="ui-surface cursor-pointer p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="ui-section-title truncate text-foreground">{item.title}</p>
