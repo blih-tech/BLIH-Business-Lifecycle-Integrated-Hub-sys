@@ -239,35 +239,48 @@ export const BrainConfigPermissions = {
   ALL: 'brain_config:*',
 } as const;
 
-export const RecruitmentRequestPermissions = {
-  VIEW: 'recruitment_request:view',
-  CREATE: 'recruitment_request:create',
-  UPDATE: 'recruitment_request:update',
-  APPROVE: 'recruitment_request:approve',
-  ALL: 'recruitment_request:*',
+export const JobPermissions = {
+  VIEW: 'job:view',
+  CREATE: 'job:create',
+  UPDATE: 'job:update',
+  DELETE: 'job:delete',
+  SUBMIT: 'job:submit',
+  PUBLISH: 'job:publish',
+  CLOSE: 'job:close',
+  MANAGE_SKILLS: 'job:manage_skills',
+  MANAGE_TOOLS: 'job:manage_tools',
+  MANAGE_RESPONSIBILITIES: 'job:manage_responsibilities',
+  ALL: 'job:*',
 } as const;
 
-export const JobPostingPermissions = {
-  VIEW: 'job_posting:view',
-  CREATE: 'job_posting:create',
-  UPDATE: 'job_posting:update',
-  PUBLISH: 'job_posting:publish',
-  ALL: 'job_posting:*',
+export const JobApprovalPermissions = {
+  VIEW: 'job_approval:view',
+  DECIDE: 'job_approval:decide',
+  ALL: 'job_approval:*',
 } as const;
 
 export const CandidatePermissions = {
   VIEW: 'candidate:view',
   CREATE: 'candidate:create',
   UPDATE: 'candidate:update',
-  SCREEN: 'candidate:screen',
+  DELETE: 'candidate:delete',
   ALL: 'candidate:*',
 } as const;
 
-export const HiringDecisionPermissions = {
-  VIEW: 'hiring_decision:view',
-  CREATE: 'hiring_decision:create',
-  APPROVE: 'hiring_decision:approve',
-  ALL: 'hiring_decision:*',
+export const JobApplicationPermissions = {
+  VIEW: 'job_application:view',
+  CREATE: 'job_application:create',
+  UPDATE: 'job_application:update',
+  DELETE: 'job_application:delete',
+  ALL: 'job_application:*',
+} as const;
+
+export const InterviewPermissions = {
+  VIEW: 'interview:view',
+  CREATE: 'interview:create',
+  UPDATE: 'interview:update',
+  DELETE: 'interview:delete',
+  ALL: 'interview:*',
 } as const;
 
 export const OnboardingChecklistPermissions = {
@@ -467,10 +480,11 @@ export const PermissionGroups = {
   deal: DealPermissions,
   pipeline: PipelinePermissions,
   brain_config: BrainConfigPermissions,
-  recruitment_request: RecruitmentRequestPermissions,
-  job_posting: JobPostingPermissions,
+  job: JobPermissions,
+  job_approval: JobApprovalPermissions,
   candidate: CandidatePermissions,
-  hiring_decision: HiringDecisionPermissions,
+  job_application: JobApplicationPermissions,
+  interview: InterviewPermissions,
   onboarding_checklist: OnboardingChecklistPermissions,
   asset_provisioning: AssetProvisioningPermissions,
   policy_acknowledgement: PolicyAcknowledgementPermissions,

@@ -2,7 +2,9 @@
 set -e
 
 echo "🔍 Running lint-staged checks..."
-# ⚡ Only 1–2 concurrent tasks, max 3000 characters per chunk
-npx lint-staged --concurrent 1 --max-arg-length 3000
+
+# Disable lint-staged's automatic git backup/restore to avoid
+# failing with 'fatal: Needed a single revision' on Windows/PowerShell
+LINT_STAGED_DISABLE_BACKUP=true npx lint-staged --concurrent 1 --max-arg-length 3000
 
 echo "✅ Pre-commit checks passed"

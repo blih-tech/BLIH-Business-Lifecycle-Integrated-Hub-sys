@@ -18,37 +18,36 @@ import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create
 import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
 import { DocumentExpiryJob } from './jobs/document-expiry.job';
 import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.job';
-import { RecruitmentRequestsController } from './recruitment/recruitment-requests.controller';
-import { HiringDecisionsController } from './recruitment/hiring-decisions.controller';
-import { JobPostingsController } from './recruitment/job-postings.controller';
+import { JobsController } from './recruitment/jobs.controller';
 import { CandidatesController } from './recruitment/candidates.controller';
-import { ListRecruitmentRequestsUseCase } from './recruitment/use-cases/list-recruitment-requests.usecase';
-import { GetRecruitmentRequestUseCase } from './recruitment/use-cases/get-recruitment-request.usecase';
-import { CreateRecruitmentRequestUseCase } from './recruitment/use-cases/create-recruitment-request.usecase';
-import { UpdateRecruitmentRequestUseCase } from './recruitment/use-cases/update-recruitment-request.usecase';
-import { SubmitRecruitmentRequestUseCase } from './recruitment/use-cases/submit-recruitment-request.usecase';
-import { ApproveRecruitmentRequestUseCase } from './recruitment/use-cases/approve-recruitment-request.usecase';
-import { CreateJobPostingFromRequestUseCase } from './recruitment/use-cases/create-job-posting-from-request.usecase';
-import { CreateHiringDecisionUseCase } from './recruitment/use-cases/create-hiring-decision.usecase';
-import { GetHiringDecisionUseCase } from './recruitment/use-cases/get-hiring-decision.usecase';
-import { FinalizeHiringDecisionUseCase } from './recruitment/use-cases/finalize-hiring-decision.usecase';
-import { AcceptHiringOfferUseCase } from './recruitment/use-cases/accept-hiring-offer.usecase';
-import { ListJobPostingsUseCase } from './recruitment/use-cases/list-job-postings.usecase';
-import { GetJobPostingUseCase } from './recruitment/use-cases/get-job-posting.usecase';
-import { UpdateJobPostingUseCase } from './recruitment/use-cases/update-job-posting.usecase';
-import { PublishJobPostingUseCase } from './recruitment/use-cases/publish-job-posting.usecase';
-import { CloseJobPostingUseCase } from './recruitment/use-cases/close-job-posting.usecase';
-import { ListCandidatesForPostingUseCase } from './recruitment/use-cases/list-candidates-for-posting.usecase';
-import { CreateCandidateUseCase } from './recruitment/use-cases/create-candidate.usecase';
-import { GetCandidateUseCase } from './recruitment/use-cases/get-candidate.usecase';
-import { UpdateCandidateUseCase } from './recruitment/use-cases/update-candidate.usecase';
-import { UpdateCandidateStatusUseCase } from './recruitment/use-cases/update-candidate-status.usecase';
-import { ListCandidateScreeningsUseCase } from './recruitment/use-cases/list-candidate-screenings.usecase';
-import { CreateCvScreeningUseCase } from './recruitment/use-cases/create-cv-screening.usecase';
-import { ListInterviewFeedbackUseCase } from './recruitment/use-cases/list-interview-feedback.usecase';
-import { CreateInterviewFeedbackUseCase } from './recruitment/use-cases/create-interview-feedback.usecase';
-import { ListHiringDecisionsUseCase } from './recruitment/use-cases/list-hiring-decisions.usecase';
+import { JobApplicationsController } from './recruitment/applications.controller';
+import { InterviewsController } from './recruitment/interviews.controller';
 import { RecruitmentNotificationService } from './recruitment/recruitment-notification.service';
+import {
+  ApproveJobUseCase,
+  CloseJobUseCase,
+  CreateCandidateUseCase,
+  CreateInterviewUseCase,
+  CreateJobApplicationUseCase,
+  CreateJobUseCase,
+  GetCandidateUseCase,
+  GetInterviewUseCase,
+  GetJobApplicationUseCase,
+  GetJobUseCase,
+  ListCandidatesUseCase,
+  ListInterviewsUseCase,
+  ListJobApplicationsUseCase,
+  ListJobsUseCase,
+  PublishJobUseCase,
+  SubmitJobUseCase,
+  UpdateCandidateUseCase,
+  UpdateInterviewUseCase,
+  UpdateJobApplicationStatusUseCase,
+  UpdateJobUseCase,
+  UpsertJobResponsibilitiesUseCase,
+  UpsertJobSkillsUseCase,
+  UpsertJobToolsUseCase,
+} from './recruitment/use-cases';
 import { OnboardingController } from './onboarding/onboarding.controller';
 import { AssetProvisioningController } from './onboarding/asset-provisioning.controller';
 import { PolicyAcknowledgementsController } from './onboarding/policy-acknowledgements.controller';
@@ -179,7 +178,7 @@ import { ListSkillGapAssessmentsUseCase } from './training/use-cases/list-skill-
 import { GetSkillGapAssessmentUseCase } from './training/use-cases/get-skill-gap-assessment.usecase';
 import { GetIndividualSkillGapUseCase } from './training/use-cases/get-individual-skill-gap.usecase';
 import { CertificationExpiryJob } from './jobs/certification-expiry.job';
-import { RecruitmentPostingLifecycleJob } from './jobs/recruitment-posting-lifecycle.job';
+import { RecruitmentJobLifecycleJob } from './jobs/recruitment-job-lifecycle.job';
 import { OnboardingOverdueJob } from './jobs/onboarding-overdue.job';
 import { ProbationMilestoneJob } from './jobs/probation-milestone.job';
 import { RelationsController } from './relations/relations.controller';
@@ -253,10 +252,10 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     EmployeeDocumentsController,
     EmployeeContractsController,
     JobDescriptionsController,
-    RecruitmentRequestsController,
-    HiringDecisionsController,
-    JobPostingsController,
+    JobsController,
     CandidatesController,
+    JobApplicationsController,
+    InterviewsController,
     OnboardingController,
     AssetProvisioningController,
     PolicyAcknowledgementsController,
@@ -309,35 +308,32 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     DocumentExpiryJob,
     AttendanceReconciliationJob,
     CertificationExpiryJob,
-    RecruitmentPostingLifecycleJob,
+    RecruitmentJobLifecycleJob,
     OnboardingOverdueJob,
     ProbationMilestoneJob,
-    ListRecruitmentRequestsUseCase,
-    GetRecruitmentRequestUseCase,
-    CreateRecruitmentRequestUseCase,
-    UpdateRecruitmentRequestUseCase,
-    SubmitRecruitmentRequestUseCase,
-    ApproveRecruitmentRequestUseCase,
-    CreateJobPostingFromRequestUseCase,
-    CreateHiringDecisionUseCase,
-    ListHiringDecisionsUseCase,
-    GetHiringDecisionUseCase,
-    FinalizeHiringDecisionUseCase,
-    AcceptHiringOfferUseCase,
-    ListJobPostingsUseCase,
-    GetJobPostingUseCase,
-    UpdateJobPostingUseCase,
-    PublishJobPostingUseCase,
-    CloseJobPostingUseCase,
-    ListCandidatesForPostingUseCase,
+    CreateJobUseCase,
+    ListJobsUseCase,
+    GetJobUseCase,
+    UpdateJobUseCase,
+    SubmitJobUseCase,
+    ApproveJobUseCase,
+    PublishJobUseCase,
+    CloseJobUseCase,
+    UpsertJobSkillsUseCase,
+    UpsertJobToolsUseCase,
+    UpsertJobResponsibilitiesUseCase,
     CreateCandidateUseCase,
+    ListCandidatesUseCase,
     GetCandidateUseCase,
     UpdateCandidateUseCase,
-    UpdateCandidateStatusUseCase,
-    ListCandidateScreeningsUseCase,
-    CreateCvScreeningUseCase,
-    ListInterviewFeedbackUseCase,
-    CreateInterviewFeedbackUseCase,
+    CreateJobApplicationUseCase,
+    ListJobApplicationsUseCase,
+    GetJobApplicationUseCase,
+    UpdateJobApplicationStatusUseCase,
+    CreateInterviewUseCase,
+    ListInterviewsUseCase,
+    GetInterviewUseCase,
+    UpdateInterviewUseCase,
     RecruitmentNotificationService,
     OnboardingNotificationService,
     OnboardingLifecycleService,
