@@ -9,6 +9,7 @@ import { Button } from "@/shared/components/ui/button";
 type JobRequestCardProps = {
   item: JobRequestItem;
   onClick?: () => void;
+  onJustifyClick?: () => void;
 };
 
 function departmentLabel(department: JobRequestDepartment) {
@@ -29,7 +30,7 @@ function priorityLabel(priority: JobRequestPriority) {
   return "Low";
 }
 
-export function JobRequestCard({ item, onClick }: JobRequestCardProps) {
+export function JobRequestCard({ item, onClick, onJustifyClick }: JobRequestCardProps) {
   function handleActionClick(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
   }
@@ -87,7 +88,10 @@ export function JobRequestCard({ item, onClick }: JobRequestCardProps) {
           variant="outline"
           size="sm"
           className="h-7 cursor-pointer text-xs"
-          onClick={handleActionClick}
+          onClick={(event) => {
+            handleActionClick(event);
+            onJustifyClick?.();
+          }}
         >
           {item.secondaryActionLabel}
         </Button>
