@@ -6,9 +6,9 @@ export class RagController {
   constructor(private readonly ragService: RagService) {}
 
   @Post('ingest-text')
-  async ingestText(@Body() data: { text: string; source: string }) {
+  async ingestText(@Body() data: { text: string; source: string; metadata?: any }) {
     console.log(`Received document from source: ${data.source}`);
-    return await this.ragService.ingest(data.text, data.source);
+    return await this.ragService.ingest(data.text, data.source, data.metadata);
   }
 
   @Post('ask')
@@ -17,9 +17,10 @@ export class RagController {
     body: {
       question: string;
       history?: { role: string; content: string }[];
+      filter?: any;
     },
   ) {
-    return await this.ragService.askQuestion(body.question, body.history || []);
+    return await this.ragService.askQuestion(body.question, body.history || [], body.filter);
   }
 
   @Get('status')
