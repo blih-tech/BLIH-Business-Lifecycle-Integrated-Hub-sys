@@ -42,6 +42,11 @@ export function JobRequestsSection({ items }: JobRequestsSectionProps) {
         onOpenChange={(isOpen) => {
           if (!isOpen) setSelectedRequestId(null);
         }}
+        onApprove={() => setSelectedRequestId(null)}
+        onJustify={(requestId) => {
+          setSelectedRequestId(null);
+          setJustifyRequestId(requestId);
+        }}
       />
 
       <JobRequestJustifyDialog

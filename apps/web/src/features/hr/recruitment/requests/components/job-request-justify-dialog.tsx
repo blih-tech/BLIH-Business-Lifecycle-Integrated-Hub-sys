@@ -43,7 +43,10 @@ type JobRequestJustifyDialogProps = {
 };
 
 const justifySchema = z.object({
-  justification: z.string().trim().min(1, 'Justification is required'),
+  justification: z
+    .string()
+    .trim()
+    .min(20, 'Justification must be at least 20 characters'),
   nextStep: z.enum(['decline', 'request_revision'], {
     error: () => 'Please select the next step',
   }),
@@ -140,7 +143,7 @@ export function JobRequestJustifyDialog({
                           </FormControl>
                           <FormDescription className="text-xs">
                             Keep this clear and actionable for the requesting
-                            manager.
+                            manager (minimum 20 characters).
                           </FormDescription>
                           <FormMessage />
                         </FormItem>

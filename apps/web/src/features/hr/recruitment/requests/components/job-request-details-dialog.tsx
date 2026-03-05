@@ -6,7 +6,6 @@ import type {
 import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -17,6 +16,8 @@ import {
 type JobRequestDetailsDialogProps = {
   request: JobRequestItem | null;
   onOpenChange: (isOpen: boolean) => void;
+  onApprove: () => void;
+  onJustify: (requestId: string) => void;
 };
 
 type DetailItemProps = {
@@ -59,6 +60,8 @@ function DetailItem({ label, value, className }: DetailItemProps) {
 export function JobRequestDetailsDialog({
   request,
   onOpenChange,
+  onApprove,
+  onJustify,
 }: JobRequestDetailsDialogProps) {
   return (
     <Dialog open={request !== null} onOpenChange={onOpenChange}>
@@ -176,16 +179,19 @@ export function JobRequestDetailsDialog({
             </div>
 
             <DialogFooter className="border-t border-border p-4">
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="cursor-pointer"
-                >
-                  {request.secondaryActionLabel}
-                </Button>
-              </DialogClose>
-              <Button type="button" className="cursor-pointer">
+              <Button
+                type="button"
+                variant="outline"
+                className="cursor-pointer"
+                onClick={() => onJustify(request.id)}
+              >
+                {request.secondaryActionLabel}
+              </Button>
+              <Button
+                type="button"
+                className="cursor-pointer"
+                onClick={onApprove}
+              >
                 {request.primaryActionLabel}
               </Button>
             </DialogFooter>
