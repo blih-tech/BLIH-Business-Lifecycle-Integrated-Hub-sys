@@ -10,6 +10,7 @@ import { Button } from "@/shared/components/ui/button";
 type JobPostCardProps = {
   item: JobPostItem;
   onPreviewClick?: () => void;
+  onEditClick?: () => void;
 };
 
 function departmentLabel(department: ReadyToPostDepartment) {
@@ -30,7 +31,7 @@ function priorityClass(priority: ReadyToPostPriority) {
   return "border-border text-muted-foreground";
 }
 
-export function JobPostCard({ item, onPreviewClick }: JobPostCardProps) {
+export function JobPostCard({ item, onPreviewClick, onEditClick }: JobPostCardProps) {
   return (
     <article className="ui-surface overflow-hidden">
       <div className="flex items-start justify-between gap-4 p-4 md:p-5">
@@ -127,6 +128,7 @@ export function JobPostCard({ item, onPreviewClick }: JobPostCardProps) {
                 variant="outline"
                 size="sm"
                 className="h-8 cursor-pointer gap-1.5 text-xs"
+                onClick={onEditClick}
               >
                 <Pencil className="h-3.5 w-3.5" />
                 Edit
