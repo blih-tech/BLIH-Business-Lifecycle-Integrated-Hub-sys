@@ -1,3 +1,4 @@
+export * from "@/features/hr/recruitment/requests/components/create-request-dialog";
 export * from "@/features/hr/recruitment/requests/components/empty-requests-state";
 export * from "@/features/hr/recruitment/requests/components/job-request-card";
 export * from "@/features/hr/recruitment/requests/components/job-request-details-dialog";
