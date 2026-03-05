@@ -10,9 +10,14 @@ export type JobPostItem = {
   levelTag?: string;
   department: ReadyToPostDepartment;
   employmentType: ReadyToPostType;
+  location: string;
+  team: string;
+  salaryRange: string;
   positions: number;
   jobOverview: string;
   requirements: string[];
+  responsibilities: string[];
+  benefits: string[];
   priority: ReadyToPostPriority;
   requisitionId: string;
   dueDate: string;

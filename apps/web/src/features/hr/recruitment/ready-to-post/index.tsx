@@ -3,7 +3,7 @@ import {
   readyToPostJobs,
 } from "@/features/hr/recruitment/ready-to-post/mock-data";
 import {
-  JobPostCard,
+  ReadyToPostJobsSection,
   ReadyToPostEmptyState,
 } from "@/features/hr/recruitment/ready-to-post/components";
 
@@ -18,11 +18,7 @@ export function RecruitmentReadyToPostContent() {
         <p className="ui-body text-muted-foreground">Review and publish job postings</p>
       </section>
 
-      <section className="space-y-3">
-        {readyToPostJobs.map((item) => (
-          <JobPostCard key={item.id} item={item} />
-        ))}
-      </section>
+      <ReadyToPostJobsSection items={readyToPostJobs} />
 
       {readyToPostJobs.length === 0 ? (
         <ReadyToPostEmptyState message={emptyReadyToPostMessage} />
