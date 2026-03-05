@@ -12,6 +12,12 @@ export type JobRequestItem = {
   positions: number;
   employmentType: JobRequestType;
   requestedAt: string;
+  expectedStartDate: string;
+  requestedBy: string;
+  hiringManager: string;
+  experienceLevel: string;
+  justification: string;
+  keySkills: string[];
   primaryActionLabel: string;
   secondaryActionLabel: string;
 };

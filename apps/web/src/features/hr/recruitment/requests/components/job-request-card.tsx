@@ -3,10 +3,12 @@ import type {
   JobRequestItem,
   JobRequestPriority,
 } from "@/features/hr/recruitment/requests/types";
+import type { MouseEvent } from "react";
 import { Button } from "@/shared/components/ui/button";
 
 type JobRequestCardProps = {
   item: JobRequestItem;
+  onClick?: () => void;
 };
 
 function departmentLabel(department: JobRequestDepartment) {
@@ -27,9 +29,24 @@ function priorityLabel(priority: JobRequestPriority) {
   return "Low";
 }
 
-export function JobRequestCard({ item }: JobRequestCardProps) {
+export function JobRequestCard({ item, onClick }: JobRequestCardProps) {
+  function handleActionClick(event: MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+  }
+
   return (
-    <article className="ui-surface cursor-pointer p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm">
+    <article
+      className="ui-surface cursor-pointer p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onClick?.();
+        }
+      }}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="ui-section-title truncate text-foreground">{item.title}</p>
@@ -61,6 +78,7 @@ export function JobRequestCard({ item }: JobRequestCardProps) {
           type="button"
           size="sm"
           className="h-7 cursor-pointer text-xs"
+          onClick={handleActionClick}
         >
           {item.primaryActionLabel}
         </Button>
@@ -69,6 +87,7 @@ export function JobRequestCard({ item }: JobRequestCardProps) {
           variant="outline"
           size="sm"
           className="h-7 cursor-pointer text-xs"
+          onClick={handleActionClick}
         >
           {item.secondaryActionLabel}
         </Button>

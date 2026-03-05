@@ -5,7 +5,7 @@ import {
 } from "@/features/hr/recruitment/requests/mock-data";
 import {
   EmptyRequestsState,
-  JobRequestCard,
+  JobRequestsSection,
   RequestsStatsCard,
 } from "@/features/hr/recruitment/requests/components";
 
@@ -20,11 +20,7 @@ export function RecruitmentRequestsContent() {
         <p className="ui-body text-muted-foreground">Review and publish job postings</p>
       </section>
 
-      <section className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {jobRequests.map((item) => (
-          <JobRequestCard key={item.id} item={item} />
-        ))}
-      </section>
+      <JobRequestsSection items={jobRequests} />
 
       <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {requestStats.map((item) => (
