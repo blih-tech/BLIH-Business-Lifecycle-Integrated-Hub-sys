@@ -47,6 +47,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
           <JobRequestCard
             key={`${item.requestForm.jobTitle}-${index}`}
             item={item}
+            currentUserName={currentUserName}
             priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
             onClick={() => setSelectedRequestIndex(index)}
             onJustifyClick={() => setJustifyRequestIndex(index)}
@@ -56,6 +57,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
 
       <JobRequestDetailsDialog
         request={selectedRequest}
+        currentUserName={currentUserName}
         onOpenChange={(isOpen) => {
           if (!isOpen) setSelectedRequestIndex(null);
         }}

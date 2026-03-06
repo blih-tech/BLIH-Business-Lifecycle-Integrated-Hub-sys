@@ -10,9 +10,14 @@ import { Button } from "@/shared/components/ui/button";
 type JobRequestCardProps = {
   item: FullJobRequest;
   priority: JobRequestPriority;
+  currentUserName: string;
   onClick?: () => void;
   onJustifyClick?: () => void;
 };
+
+function isOwnRequest(requestedBy: string, currentUserName: string) {
+  return requestedBy.trim().toLowerCase() === currentUserName.trim().toLowerCase();
+}
 
 function departmentLabel(department: JobRequestDepartment) {
   if (department === "technical") return "TECHNICAL DEPT.";
@@ -59,7 +64,9 @@ function progressLabel(status: ApprovalProgressState) {
   return "Pending";
 }
 
-export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobRequestCardProps) {
+export function JobRequestCard({ item, priority, currentUserName, onClick, onJustifyClick }: JobRequestCardProps) {
+  const ownRequest = isOwnRequest(item.requestForm.requestedBy, currentUserName);
+
   function handleActionClick(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
   }
@@ -114,28 +121,34 @@ export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobR
         </span>
       </div>
 
-      <div className="mt-3 flex items-center justify-end gap-2">
-        <Button
-          type="button"
-          size="sm"
-          className="h-7 cursor-pointer text-xs"
-          onClick={handleActionClick}
-        >
-          Approve
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="h-7 cursor-pointer text-xs"
-          onClick={(event) => {
-            handleActionClick(event);
-            onJustifyClick?.();
-          }}
-        >
-          Justify
-        </Button>
-      </div>
+      {ownRequest ? (
+        <div className="mt-3 rounded-lg border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+          Waiting for other reviewers to make a decision.
+        </div>
+      ) : (
+        <div className="mt-3 flex items-center justify-end gap-2">
+          <Button
+            type="button"
+            size="sm"
+            className="h-7 cursor-pointer text-xs"
+            onClick={handleActionClick}
+          >
+            Approve
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 cursor-pointer text-xs"
+            onClick={(event) => {
+              handleActionClick(event);
+              onJustifyClick?.();
+            }}
+          >
+            Justify
+          </Button>
+        </div>
+      )}
     </article>
   );
 }

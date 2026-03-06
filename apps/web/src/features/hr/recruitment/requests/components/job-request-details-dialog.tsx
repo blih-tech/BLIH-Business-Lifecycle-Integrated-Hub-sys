@@ -24,6 +24,7 @@ import {
 
 type JobRequestDetailsDialogProps = {
   request: FullJobRequest | null;
+  currentUserName: string;
   onOpenChange: (isOpen: boolean) => void;
   onApprove: () => void;
   onJustify: () => void;
@@ -104,6 +105,10 @@ function salaryLabel(request: FullJobRequest) {
   return "Not specified";
 }
 
+function isOwnRequest(requestedBy: string, currentUserName: string) {
+  return requestedBy.trim().toLowerCase() === currentUserName.trim().toLowerCase();
+}
+
 function formatValue(value: string) {
   return value
     .split("_")
@@ -166,10 +171,13 @@ function ListSection({ title, items, emptyLabel = "Not provided" }: ListSectionP
 
 export function JobRequestDetailsDialog({
   request,
+  currentUserName,
   onOpenChange,
   onApprove,
   onJustify,
 }: JobRequestDetailsDialogProps) {
+  const ownRequest = request ? isOwnRequest(request.requestForm.requestedBy, currentUserName) : false;
+
   return (
     <Dialog open={request !== null} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] w-[97vw] overflow-y-auto p-0 sm:max-w-[1080px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2">
@@ -353,12 +361,20 @@ export function JobRequestDetailsDialog({
             </div>
 
             <DialogFooter className="border-t border-border/70 px-5 py-4">
-              <Button type="button" variant="outline" className="cursor-pointer" onClick={onJustify}>
-                Justify
-              </Button>
-              <Button type="button" className="cursor-pointer" onClick={onApprove}>
-                Approve
-              </Button>
+              {ownRequest ? (
+                <div className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+                  Waiting for other reviewers to make a decision on this request.
+                </div>
+              ) : (
+                <>
+                  <Button type="button" variant="outline" className="cursor-pointer" onClick={onJustify}>
+                    Justify
+                  </Button>
+                  <Button type="button" className="cursor-pointer" onClick={onApprove}>
+                    Approve
+                  </Button>
+                </>
+              )}
             </DialogFooter>
           </>
         ) : null}
