@@ -1,4 +1,13 @@
-import type { OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
+import type { OngoingCommitteePerson, OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
+
+export const ongoingCommitteePeople: OngoingCommitteePerson[] = [
+  { id: "committee-1", fullName: "Meron Tadesse", role: "HR Business Partner" },
+  { id: "committee-2", fullName: "Abel Girma", role: "Engineering Manager" },
+  { id: "committee-3", fullName: "Saron Bekele", role: "Senior Product Manager" },
+  { id: "committee-4", fullName: "Nathan Tesfaye", role: "Head of Design" },
+  { id: "committee-5", fullName: "Rahel Assefa", role: "Talent Acquisition Specialist" },
+  { id: "committee-6", fullName: "Dawit Kebede", role: "Finance Business Partner" },
+];
 
 export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
   {
@@ -18,13 +27,14 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
       canStart: "Feb 03, 2025",
       matchScore: 90,
     },
+    interviewCommittee: [],
     interviews: [
       {
         id: "i-1",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
         interviewStatus: "interviewed",
-        appliedAt: "Feb 24, 2025",
+        status: "waitlisted",
         rating: 90,
       },
       {
@@ -32,7 +42,7 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
         interviewStatus: "interviewed",
-        appliedAt: "Feb 24, 2025",
+        status: "waitlisted",
         rating: 90,
       },
       {
@@ -40,9 +50,9 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
         interviewStatus: "scheduled",
+        status: "pending",
         interviewDate: "Feb 24, 2025",
         interviewTime: "10:00 AM",
-        appliedAt: "Feb 24, 2025",
         rating: 90,
       },
       {
@@ -50,9 +60,9 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
         interviewStatus: "scheduled",
+        status: "pending",
         interviewDate: "Feb 24, 2025",
         interviewTime: "10:00 AM",
-        appliedAt: "Feb 24, 2025",
         rating: 90,
       },
     ],
@@ -94,13 +104,14 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
       canStart: "Mar 12, 2025",
       matchScore: 88,
     },
+    interviewCommittee: [],
     interviews: [
       {
         id: "i-5",
         fullName: "Samuel Tadesse",
         phone: "+251 923 10 9876",
         interviewStatus: "interviewed",
-        appliedAt: "Feb 19, 2025",
+        status: "waitlisted",
         rating: 87,
       },
       {
@@ -108,9 +119,9 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         fullName: "Mina Bekele",
         phone: "+251 910 22 1188",
         interviewStatus: "scheduled",
+        status: "pending",
         interviewDate: "Mar 03, 2025",
         interviewTime: "02:30 PM",
-        appliedAt: "Feb 17, 2025",
         rating: 88,
       },
     ],
