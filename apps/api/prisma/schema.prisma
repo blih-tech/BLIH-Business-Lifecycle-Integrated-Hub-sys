@@ -616,6 +616,7 @@ model User {
   exitInterviewsConducted          ExitInterview[]               @relation("ExitInterviewConductedBy")
   finalSettlementsApproved         FinalSettlement[]             @relation("FinalSettlementApprover")
   complianceChecklistsVerified     ComplianceChecklist[]         @relation("ComplianceChecklistVerifiedBy")
+  userLifecycleVerifications        UserLifecycle[]               @relation("UserLifecycleVerifiedBy")
 
   @@index([status])
 }
@@ -904,7 +905,7 @@ model UserLifecycle {
   offboardingCompleted Boolean         @default(false)
   noPendingClaims      Boolean         @default(false) @map("no_pending_claims")
   verifiedById         String?         @map("verified_by_id") @db.Uuid
-  verifiedBy           User?           @relation("ComplianceChecklistVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedBy           User?           @relation("UserLifecycleVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
   verifiedAt           DateTime?       @map("verified_at")
   createdAt            DateTime        @default(now()) @map("created_at")
   updatedAt            DateTime        @updatedAt @map("updated_at")
