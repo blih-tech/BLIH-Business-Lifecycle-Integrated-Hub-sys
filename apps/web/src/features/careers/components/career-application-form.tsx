@@ -169,152 +169,165 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
       </section>
 
       <section className="rounded-[28px] border border-border/70 bg-card px-5 py-6">
-        <div className="space-y-1">
-          <p className="text-lg font-semibold text-foreground">
-            Application Form
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Complete the fields below and submit your application.
-          </p>
-        </div>
-
-        <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-          {enabledFields.map((field) => {
-            const error = errors[field.key];
-            const value = values[field.key] ?? null;
-
-            return (
-              <div key={field.id} className="space-y-2">
-                {field.type === 'checkbox' ? (
-                  <label className="flex items-start gap-3 rounded-xl border border-border/70 bg-background px-3 py-3">
-                    <input
-                      type="checkbox"
-                      checked={value === true}
-                      onChange={(event) =>
-                        setFieldValue(field.key, event.target.checked)
-                      }
-                      className="mt-1 h-4 w-4 rounded border-border"
-                    />
-                    <span className="space-y-1">
-                      <span className="block text-sm font-medium text-foreground">
-                        {field.label}
-                        {field.required ? (
-                          <span className="ml-1 text-destructive">*</span>
-                        ) : null}
-                      </span>
-                      {field.helpText ? (
-                        <span className="block text-xs text-muted-foreground">
-                          {field.helpText}
-                        </span>
-                      ) : null}
-                    </span>
-                  </label>
-                ) : (
-                  <>
-                    <Label className="text-sm font-medium text-foreground">
-                      {field.label}
-                      {field.required ? (
-                        <span className="ml-1 text-destructive">*</span>
-                      ) : null}
-                    </Label>
-
-                    {field.type === 'textarea' ? (
-                      <Textarea
-                        value={typeof value === 'string' ? value : ''}
-                        onChange={(event) =>
-                          setFieldValue(field.key, event.target.value)
-                        }
-                        placeholder={getFieldPlaceholder(field)}
-                        className="min-h-[140px] rounded-xl border-border bg-background"
-                      />
-                    ) : null}
-
-                    {field.type === 'select' ? (
-                      <Select
-                        value={typeof value === 'string' ? value : ''}
-                        onValueChange={(nextValue) =>
-                          setFieldValue(field.key, nextValue)
-                        }
-                      >
-                        <SelectTrigger className="w-full bg-background">
-                          <SelectValue
-                            placeholder={`Select ${field.label.toLowerCase()}`}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {field.options.map((option) => (
-                            <SelectItem
-                              key={`${field.key}-${option}`}
-                              value={option}
-                            >
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : null}
-
-                    {field.type === 'file' ? (
-                      <Input
-                        type="file"
-                        onChange={(event) =>
-                          setFieldValue(
-                            field.key,
-                            event.target.files?.[0] ?? null,
-                          )
-                        }
-                        className="rounded-xl border-border bg-background"
-                      />
-                    ) : null}
-
-                    {field.type === 'text' ||
-                    field.type === 'number' ||
-                    field.type === 'date' ? (
-                      <Input
-                        type={
-                          field.type === 'number'
-                            ? 'number'
-                            : field.type === 'date'
-                              ? 'date'
-                              : 'text'
-                        }
-                        value={typeof value === 'string' ? value : ''}
-                        onChange={(event) =>
-                          setFieldValue(field.key, event.target.value)
-                        }
-                        placeholder={getFieldPlaceholder(field)}
-                        className="rounded-xl border-border bg-background"
-                      />
-                    ) : null}
-
-                    {field.helpText ? (
-                      <p className="text-xs text-muted-foreground">
-                        {field.helpText}
-                      </p>
-                    ) : null}
-                  </>
-                )}
-
-                {error ? (
-                  <p className="text-sm text-destructive">{error}</p>
-                ) : null}
-              </div>
-            );
-          })}
-
-          <div className="flex flex-col gap-3 border-t border-border/70 pt-5 sm:flex-row sm:items-center sm:justify-between">
-            {isSubmitted ? (
-              <p className="text-sm text-emerald-700">
-                Application submitted. The payload was logged to the console.
-              </p>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Required fields must be completed before submission.
-              </p>
-            )}
-            <Button type="submit">Submit Application</Button>
+        {isSubmitted ? (
+          <div className="flex min-h-[420px] flex-col items-center justify-center px-4 py-10 text-center">
+            <div className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+              Application submitted
+            </div>
+            <h2 className="mt-5 text-2xl font-semibold tracking-tight text-foreground">
+              Your application has been received.
+            </h2>
+            <p className="mt-3 max-w-[480px] text-sm leading-6 text-muted-foreground">
+              We have received your application for {job.title}. You can return to the careers page to explore other open roles.
+            </p>
+            <Button asChild className="mt-6">
+              <Link href="/careers">Back to see more jobs</Link>
+            </Button>
           </div>
-        </form>
+        ) : (
+          <>
+            <div className="space-y-1">
+              <p className="text-lg font-semibold text-foreground">
+                Application Form
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Complete the fields below and submit your application.
+              </p>
+            </div>
+
+            <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+              {enabledFields.map((field) => {
+                const error = errors[field.key];
+                const value = values[field.key] ?? null;
+
+                return (
+                  <div key={field.id} className="space-y-2">
+                    {field.type === 'checkbox' ? (
+                      <label className="flex items-start gap-3 rounded-xl border border-border/70 bg-background px-3 py-3">
+                        <input
+                          type="checkbox"
+                          checked={value === true}
+                          onChange={(event) =>
+                            setFieldValue(field.key, event.target.checked)
+                          }
+                          className="mt-1 h-4 w-4 rounded border-border"
+                        />
+                        <span className="space-y-1">
+                          <span className="block text-sm font-medium text-foreground">
+                            {field.label}
+                            {field.required ? (
+                              <span className="ml-1 text-destructive">*</span>
+                            ) : null}
+                          </span>
+                          {field.helpText ? (
+                            <span className="block text-xs text-muted-foreground">
+                              {field.helpText}
+                            </span>
+                          ) : null}
+                        </span>
+                      </label>
+                    ) : (
+                      <>
+                        <Label className="text-sm font-medium text-foreground">
+                          {field.label}
+                          {field.required ? (
+                            <span className="ml-1 text-destructive">*</span>
+                          ) : null}
+                        </Label>
+
+                        {field.type === 'textarea' ? (
+                          <Textarea
+                            value={typeof value === 'string' ? value : ''}
+                            onChange={(event) =>
+                              setFieldValue(field.key, event.target.value)
+                            }
+                            placeholder={getFieldPlaceholder(field)}
+                            className="min-h-[140px] rounded-xl border-border bg-background"
+                          />
+                        ) : null}
+
+                        {field.type === 'select' ? (
+                          <Select
+                            value={typeof value === 'string' ? value : ''}
+                            onValueChange={(nextValue) =>
+                              setFieldValue(field.key, nextValue)
+                            }
+                          >
+                            <SelectTrigger className="w-full bg-background">
+                              <SelectValue
+                                placeholder={`Select ${field.label.toLowerCase()}`}
+                              />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {field.options.map((option) => (
+                                <SelectItem
+                                  key={`${field.key}-${option}`}
+                                  value={option}
+                                >
+                                  {option}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : null}
+
+                        {field.type === 'file' ? (
+                          <Input
+                            type="file"
+                            onChange={(event) =>
+                              setFieldValue(
+                                field.key,
+                                event.target.files?.[0] ?? null,
+                              )
+                            }
+                            className="rounded-xl border-border bg-background"
+                          />
+                        ) : null}
+
+                        {field.type === 'text' ||
+                        field.type === 'number' ||
+                        field.type === 'date' ? (
+                          <Input
+                            type={
+                              field.type === 'number'
+                                ? 'number'
+                                : field.type === 'date'
+                                  ? 'date'
+                                  : 'text'
+                            }
+                            value={typeof value === 'string' ? value : ''}
+                            onChange={(event) =>
+                              setFieldValue(field.key, event.target.value)
+                            }
+                            placeholder={getFieldPlaceholder(field)}
+                            className="rounded-xl border-border bg-background"
+                          />
+                        ) : null}
+
+                        {field.helpText ? (
+                          <p className="text-xs text-muted-foreground">
+                            {field.helpText}
+                          </p>
+                        ) : null}
+                      </>
+                    )}
+
+                    {error ? (
+                      <p className="text-sm text-destructive">{error}</p>
+                    ) : null}
+                  </div>
+                );
+              })}
+
+              <div className="flex flex-col gap-3 border-t border-border/70 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-muted-foreground">
+                  Required fields must be completed before submission.
+                </p>
+                <Button type="submit">Submit Application</Button>
+              </div>
+            </form>
+          </>
+        )}
       </section>
     </main>
   );
