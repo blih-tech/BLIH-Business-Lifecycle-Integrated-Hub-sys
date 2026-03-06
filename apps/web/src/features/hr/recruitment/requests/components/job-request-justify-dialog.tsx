@@ -6,8 +6,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import type {
+  FullJobRequest,
   JobRequestDepartment,
-  JobRequestItem,
 } from '@/features/hr/recruitment/requests/types';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -38,7 +38,7 @@ import {
 import { Textarea } from '@/shared/components/ui/textarea';
 
 type JobRequestJustifyDialogProps = {
-  request: JobRequestItem | null;
+  request: FullJobRequest | null;
   onOpenChange: (isOpen: boolean) => void;
 };
 
@@ -58,10 +58,6 @@ function departmentLabel(department: JobRequestDepartment) {
   if (department === 'technical') return 'TECHNICAL DEPT.';
   if (department === 'creative') return 'CREATIVE DEPT.';
   return 'DIGITAL MARKETING DEPT.';
-}
-
-function requestIdLabel(id: string) {
-  return id.toUpperCase().replace('JR-', 'REQ-');
 }
 
 export function JobRequestJustifyDialog({
@@ -108,13 +104,10 @@ export function JobRequestJustifyDialog({
               </DialogDescription>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
-                  {request.title}
+                  {request.jobDetailsForm.jobTitle}
                 </span>
                 <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {departmentLabel(request.department)}
-                </span>
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {requestIdLabel(request.id)}
+                  {departmentLabel(request.requestForm.department as JobRequestDepartment)}
                 </span>
               </div>
             </DialogHeader>

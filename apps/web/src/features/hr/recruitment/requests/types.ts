@@ -37,10 +37,10 @@ export type RequestsStatItem = {
 
 export type SubmittedJobDetails = Omit<
   JobDetailsFormValues,
-  "keyResponsibilities" | "requiredSkills" | "preferredSkills" | "benefits"
+  "keyResponsibilities" | "requirements" | "preferredSkills" | "benefits"
 > & {
   keyResponsibilities: string[];
-  requiredSkills: string[];
+  requirements: string[];
   preferredSkills: string[];
   benefits: string[];
 };

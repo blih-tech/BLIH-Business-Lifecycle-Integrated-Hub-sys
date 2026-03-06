@@ -15,7 +15,7 @@ export const jobDetailsFormSchema = z
     jobSummary: z.string().trim().min(40, "Job summary must be at least 40 characters"),
     whyJoinUs: z.string().trim().optional(),
     keyResponsibilities: z.string().trim().min(1, "Key responsibilities are required"),
-    requiredSkills: z.string().trim().min(1, "Required skills are required"),
+    requirements: z.string().trim().min(1, "Requirements are required"),
     preferredSkills: z.string().trim().optional(),
     experienceLevel: z.enum(["entry", "mid", "senior", "lead"], {
       error: () => "Experience level is required",

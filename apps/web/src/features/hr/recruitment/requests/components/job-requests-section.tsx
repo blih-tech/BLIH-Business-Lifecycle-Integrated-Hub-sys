@@ -7,10 +7,10 @@ import { CreateRequestDialog } from "@/features/hr/recruitment/requests/componen
 import { JobRequestDetailsDialog } from "@/features/hr/recruitment/requests/components/job-request-details-dialog";
 import { JobRequestCard } from "@/features/hr/recruitment/requests/components/job-request-card";
 import { JobRequestJustifyDialog } from "@/features/hr/recruitment/requests/components/job-request-justify-dialog";
-import type { JobRequestItem } from "@/features/hr/recruitment/requests/types";
+import type { FullJobRequest, JobRequestPriority } from "@/features/hr/recruitment/requests/types";
 
 type JobRequestsSectionProps = {
-  items: JobRequestItem[];
+  items: FullJobRequest[];
   currentUserName: string;
 };
 
@@ -18,17 +18,18 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-  const [justifyRequestId, setJustifyRequestId] = useState<string | null>(null);
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
+  const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
   const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
+  const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
 
   const selectedRequest = useMemo(
-    () => items.find((item) => item.id === selectedRequestId) ?? null,
-    [items, selectedRequestId],
+    () => (selectedRequestIndex === null ? null : items[selectedRequestIndex] ?? null),
+    [items, selectedRequestIndex],
   );
   const justifyRequest = useMemo(
-    () => items.find((item) => item.id === justifyRequestId) ?? null,
-    [items, justifyRequestId],
+    () => (justifyRequestIndex === null ? null : items[justifyRequestIndex] ?? null),
+    [items, justifyRequestIndex],
   );
 
   function handleCreateRequestDialogOpenChange(isOpen: boolean) {
@@ -42,12 +43,13 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
   return (
     <>
       <section className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <JobRequestCard
-            key={item.id}
+            key={`${item.requestForm.jobTitle}-${index}`}
             item={item}
-            onClick={() => setSelectedRequestId(item.id)}
-            onJustifyClick={() => setJustifyRequestId(item.id)}
+            priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
+            onClick={() => setSelectedRequestIndex(index)}
+            onJustifyClick={() => setJustifyRequestIndex(index)}
           />
         ))}
       </section>
@@ -55,19 +57,19 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
       <JobRequestDetailsDialog
         request={selectedRequest}
         onOpenChange={(isOpen) => {
-          if (!isOpen) setSelectedRequestId(null);
+          if (!isOpen) setSelectedRequestIndex(null);
         }}
-        onApprove={() => setSelectedRequestId(null)}
-        onJustify={(requestId) => {
-          setSelectedRequestId(null);
-          setJustifyRequestId(requestId);
+        onApprove={() => setSelectedRequestIndex(null)}
+        onJustify={() => {
+          setSelectedRequestIndex(null);
+          setJustifyRequestIndex(selectedRequestIndex);
         }}
       />
 
       <JobRequestJustifyDialog
         request={justifyRequest}
         onOpenChange={(isOpen) => {
-          if (!isOpen) setJustifyRequestId(null);
+          if (!isOpen) setJustifyRequestIndex(null);
         }}
       />
 

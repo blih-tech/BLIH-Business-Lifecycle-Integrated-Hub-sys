@@ -146,7 +146,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
     workMode,
     employmentType,
     experienceLevel,
-    requiredSkills,
+    requirements,
     preferredSkills,
     keyResponsibilities,
     salaryMode,
@@ -162,7 +162,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
       'workMode',
       'employmentType',
       'experienceLevel',
-      'requiredSkills',
+      'requirements',
       'preferredSkills',
       'keyResponsibilities',
       'salaryMode',
@@ -173,7 +173,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
     ],
   });
   const responsibilitiesPreview = listPreview(keyResponsibilities);
-  const requiredSkillsPreview = listPreview(requiredSkills);
+  const requirementsPreview = listPreview(requirements);
   const preferredSkillsPreview = listPreview(preferredSkills);
   const benefitsPreview = listPreview(benefits);
 
@@ -390,11 +390,11 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                 <div className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.9))] p-3.5">
                   <FormField
                     control={form.control}
-                    name="requiredSkills"
+                    name="requirements"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="ui-meta text-muted-foreground">
-                          Required Skills
+                          Requirements
                         </FormLabel>
                         <FormControl>
                           <Textarea
@@ -404,7 +404,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                           />
                         </FormControl>
                         <FormDescription className="text-xs">
-                          Add one skill per line.
+                          Add one requirement per line.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -597,9 +597,9 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                   moreLabel={responsibilitiesPreview.moreLabel}
                 />
                 <SummaryItem
-                  label="Required skills"
-                  value={requiredSkillsPreview.value}
-                  moreLabel={requiredSkillsPreview.moreLabel}
+                  label="Requirements"
+                  value={requirementsPreview.value}
+                  moreLabel={requirementsPreview.moreLabel}
                 />
                 <SummaryItem
                   label="Preferred skills"

@@ -70,7 +70,7 @@ const defaultJobDetailsValues: JobDetailsFormValues = {
   jobSummary: "",
   whyJoinUs: "",
   keyResponsibilities: "",
-  requiredSkills: "",
+  requirements: "",
   preferredSkills: "",
   experienceLevel: "mid",
   salaryMode: "not_specified",
@@ -173,7 +173,7 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
       jobDetailsForm: {
         ...jobDetailsValues,
         keyResponsibilities: toList(jobDetailsValues.keyResponsibilities),
-        requiredSkills: toList(jobDetailsValues.requiredSkills),
+        requirements: toList(jobDetailsValues.requirements),
         preferredSkills: toList(jobDetailsValues.preferredSkills ?? ""),
         benefits: toList(jobDetailsValues.benefits ?? ""),
       },
