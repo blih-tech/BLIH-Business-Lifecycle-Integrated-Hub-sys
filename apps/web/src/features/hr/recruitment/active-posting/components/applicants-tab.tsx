@@ -78,6 +78,7 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("appliedAt");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [selectedApplicantIds, setSelectedApplicantIds] = useState<string[]>([]);
 
   const sortedApplicants = useMemo(() => {
     return [...job.applicants].sort((left, right) => {
@@ -95,6 +96,9 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
     const startIndex = (currentPage - 1) * APPLICANTS_PER_PAGE;
     return sortedApplicants.slice(startIndex, startIndex + APPLICANTS_PER_PAGE);
   }, [currentPage, sortedApplicants]);
+  const allVisibleSelected =
+    paginatedApplicants.length > 0 &&
+    paginatedApplicants.every((applicant) => selectedApplicantIds.includes(applicant.id));
 
   function handleSort(nextSortKey: SortKey) {
     setCurrentPage(1);
@@ -106,11 +110,82 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
     setSortDirection("asc");
   }
 
+  function toggleApplicantSelection(applicantId: string, checked: boolean) {
+    setSelectedApplicantIds((current) =>
+      checked ? [...new Set([...current, applicantId])] : current.filter((id) => id !== applicantId),
+    );
+  }
+
+  function toggleSelectAllVisible(checked: boolean) {
+    const visibleIds = paginatedApplicants.map((applicant) => applicant.id);
+    setSelectedApplicantIds((current) =>
+      checked
+        ? [...new Set([...current, ...visibleIds])]
+        : current.filter((id) => !visibleIds.includes(id)),
+    );
+  }
+
+  function handleBulkAction(action: "summon_for_interview" | "shortlist" | "reject") {
+    const selectedApplicants = job.applicants.filter((applicant) => selectedApplicantIds.includes(applicant.id));
+    console.log("activePostingApplicantAction", {
+      action,
+      applicantIds: selectedApplicantIds,
+      applicants: selectedApplicants,
+    });
+  }
+
   return (
     <section className="space-y-2 px-6">
+      <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-[#666]">
+          {selectedApplicantIds.length} applicant{selectedApplicantIds.length === 1 ? "" : "s"} selected
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 cursor-pointer text-xs"
+            disabled={selectedApplicantIds.length === 0}
+            onClick={() => handleBulkAction("summon_for_interview")}
+          >
+            Summon for Interview
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 cursor-pointer text-xs"
+            disabled={selectedApplicantIds.length === 0}
+            onClick={() => handleBulkAction("shortlist")}
+          >
+            Shortlist
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 cursor-pointer text-xs"
+            disabled={selectedApplicantIds.length === 0}
+            onClick={() => handleBulkAction("reject")}
+          >
+            Reject
+          </Button>
+        </div>
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
+            <TableHead className="w-12 px-4 py-3">
+              <input
+                type="checkbox"
+                checked={allVisibleSelected}
+                onChange={(event) => toggleSelectAllVisible(event.target.checked)}
+                aria-label="Select all applicants on current page"
+                className="h-4 w-4 rounded border-border"
+              />
+            </TableHead>
             <TableHead className="px-4 py-3">
               <SortHeader label="Name" sortKey="name" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
             </TableHead>
@@ -134,6 +209,15 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
               key={applicant.id}
               className="group border-0 bg-white transition-colors duration-200 hover:bg-[#f8fbff]"
             >
+              <TableCell className="w-12 px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
+                <input
+                  type="checkbox"
+                  checked={selectedApplicantIds.includes(applicant.id)}
+                  onChange={(event) => toggleApplicantSelection(applicant.id, event.target.checked)}
+                  aria-label={`Select ${applicant.fullName}`}
+                  className="h-4 w-4 rounded border-border"
+                />
+              </TableCell>
               <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
                 <div className="space-y-0.5">
                   <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
