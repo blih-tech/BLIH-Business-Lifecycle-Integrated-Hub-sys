@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
@@ -12,24 +13,119 @@ type ApplicantsTabProps = {
 
 const APPLICANTS_PER_PAGE = 10;
 
+type SortKey = "name" | "appliedAt" | "yearsOfExperience" | "salaryExpectation" | "aiScore";
+type SortDirection = "asc" | "desc";
+
+function parseExperience(value: string) {
+  return Number.parseInt(value, 10) || 0;
+}
+
+function parseSalary(value: string) {
+  return Number.parseFloat(value.replace(/,/g, "")) || 0;
+}
+
+function getComparableValue(applicant: ActiveJobItem["applicants"][number], key: SortKey) {
+  if (key === "name") return applicant.fullName.toLowerCase();
+  if (key === "appliedAt") return new Date(applicant.appliedAt).getTime();
+  if (key === "yearsOfExperience") return parseExperience(applicant.yearsOfExperience);
+  if (key === "salaryExpectation") return parseSalary(applicant.salaryExpectation);
+  return applicant.aiScore;
+}
+
+function SortHeader({
+  label,
+  sortKey,
+  activeSortKey,
+  direction,
+  onSort,
+  align = "left",
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeSortKey: SortKey;
+  direction: SortDirection;
+  onSort: (key: SortKey) => void;
+  align?: "left" | "right";
+}) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className={`h-auto cursor-pointer gap-1 px-0 py-0 text-xs font-semibold uppercase text-primary hover:bg-transparent hover:text-primary ${
+        align === "right" ? "ml-auto flex" : ""
+      }`}
+      onClick={() => onSort(sortKey)}
+    >
+      {label}
+      <span className="flex flex-col items-center leading-none">
+        <ChevronUp
+          className={`h-3 w-3 ${
+            activeSortKey === sortKey && direction === "asc" ? "text-primary opacity-100" : "opacity-30"
+          }`}
+        />
+        <ChevronDown
+          className={`-mt-1 h-3 w-3 ${
+            activeSortKey === sortKey && direction === "desc" ? "text-primary opacity-100" : "opacity-30"
+          }`}
+        />
+      </span>
+    </Button>
+  );
+}
+
 export function ApplicantsTab({ job }: ApplicantsTabProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(job.applicants.length / APPLICANTS_PER_PAGE));
+  const [sortKey, setSortKey] = useState<SortKey>("appliedAt");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const sortedApplicants = useMemo(() => {
+    return [...job.applicants].sort((left, right) => {
+      const leftValue = getComparableValue(left, sortKey);
+      const rightValue = getComparableValue(right, sortKey);
+
+      if (leftValue < rightValue) return sortDirection === "asc" ? -1 : 1;
+      if (leftValue > rightValue) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [job.applicants, sortDirection, sortKey]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedApplicants.length / APPLICANTS_PER_PAGE));
   const paginatedApplicants = useMemo(() => {
     const startIndex = (currentPage - 1) * APPLICANTS_PER_PAGE;
-    return job.applicants.slice(startIndex, startIndex + APPLICANTS_PER_PAGE);
-  }, [currentPage, job.applicants]);
+    return sortedApplicants.slice(startIndex, startIndex + APPLICANTS_PER_PAGE);
+  }, [currentPage, sortedApplicants]);
+
+  function handleSort(nextSortKey: SortKey) {
+    setCurrentPage(1);
+    if (sortKey === nextSortKey) {
+      setSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortKey(nextSortKey);
+    setSortDirection("asc");
+  }
 
   return (
     <section className="space-y-2 px-6">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Name of Applicant</TableHead>
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Applied Date</TableHead>
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Year of Experience</TableHead>
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Salary Expectation</TableHead>
-            <TableHead className="px-4 py-3 text-right text-xs font-semibold uppercase text-primary">AI Score</TableHead>
+            <TableHead className="px-4 py-3">
+              <SortHeader label="Name" sortKey="name" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+            </TableHead>
+            <TableHead className="px-4 py-3">
+              <SortHeader label="Applied" sortKey="appliedAt" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+            </TableHead>
+            <TableHead className="px-4 py-3">
+              <SortHeader label="Experience" sortKey="yearsOfExperience" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+            </TableHead>
+            <TableHead className="px-4 py-3">
+              <SortHeader label="Salary" sortKey="salaryExpectation" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+            </TableHead>
+            <TableHead className="px-4 py-3 text-right">
+              <SortHeader label="AI Score" sortKey="aiScore" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" />
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
