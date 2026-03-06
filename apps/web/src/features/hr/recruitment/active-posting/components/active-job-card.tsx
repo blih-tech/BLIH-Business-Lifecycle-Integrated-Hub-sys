@@ -65,9 +65,7 @@ export function ActiveJobCard({ job, defaultExpanded = false }: ActiveJobCardPro
             {job.department}
           </span>
           <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">{job.employmentType}</span>
-          <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">
-            {job.openings} {job.openings > 1 ? "Positions" : "Position"}
-          </span>
+          <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">{job.workMode}</span>
         </div>
       </div>
 

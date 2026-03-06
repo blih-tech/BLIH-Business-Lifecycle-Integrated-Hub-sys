@@ -8,6 +8,7 @@ export const activePostingJobs: ActiveJobItem[] = [
     statusLabel: "Active Job",
     department: "Digital Marketing Dept.",
     employmentType: "Full-time",
+    workMode: "On-site",
     openings: 1,
     applicantsCount: 124,
     viewsCount: 1420,
@@ -40,7 +41,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Feb 24, 2025",
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
-        status: "new",
+        aiScore: 94,
       },
       {
         id: "a2",
@@ -49,7 +50,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Feb 24, 2025",
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
-        status: "new",
+        aiScore: 91,
       },
       {
         id: "a3",
@@ -58,7 +59,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Feb 24, 2025",
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
-        status: "new",
+        aiScore: 88,
       },
       {
         id: "a4",
@@ -67,7 +68,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Feb 24, 2025",
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
-        status: "new",
+        aiScore: 84,
       },
       {
         id: "a5",
@@ -76,7 +77,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Feb 24, 2025",
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
-        status: "reviewed",
+        aiScore: 79,
       },
       {
         id: "a6",
@@ -85,7 +86,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Feb 24, 2025",
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
-        status: "reviewed",
+        aiScore: 73,
       },
     ],
     analytics: [
@@ -146,6 +147,7 @@ export const activePostingJobs: ActiveJobItem[] = [
     statusLabel: "Active Job",
     department: "Creative Dept.",
     employmentType: "Full-time",
+    workMode: "Hybrid",
     openings: 2,
     applicantsCount: 86,
     viewsCount: 910,
@@ -178,7 +180,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Mar 02, 2025",
         yearsOfExperience: "6 years",
         salaryExpectation: "18,500",
-        status: "new",
+        aiScore: 92,
       },
       {
         id: "b2",
@@ -187,7 +189,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Mar 01, 2025",
         yearsOfExperience: "5 years",
         salaryExpectation: "16,000",
-        status: "reviewed",
+        aiScore: 81,
       },
     ],
     analytics: [
@@ -248,6 +250,7 @@ export const activePostingJobs: ActiveJobItem[] = [
     statusLabel: "Active Job",
     department: "Technical Dept.",
     employmentType: "Hybrid",
+    workMode: "Remote",
     openings: 1,
     applicantsCount: 64,
     viewsCount: 744,
@@ -280,7 +283,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Mar 03, 2025",
         yearsOfExperience: "4 years",
         salaryExpectation: "14,000",
-        status: "new",
+        aiScore: 89,
       },
       {
         id: "c2",
@@ -289,7 +292,7 @@ export const activePostingJobs: ActiveJobItem[] = [
         appliedAt: "Mar 02, 2025",
         yearsOfExperience: "5 years",
         salaryExpectation: "15,500",
-        status: "reviewed",
+        aiScore: 86,
       },
     ],
     analytics: [

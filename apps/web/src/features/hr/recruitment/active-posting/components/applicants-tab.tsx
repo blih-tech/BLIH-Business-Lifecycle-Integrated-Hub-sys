@@ -15,7 +15,7 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
             <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Applied Date</TableHead>
             <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Year of Experience</TableHead>
             <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Salary Expectation</TableHead>
-            <TableHead className="px-4 py-3 text-right text-xs font-semibold uppercase text-primary">Status</TableHead>
+            <TableHead className="px-4 py-3 text-right text-xs font-semibold uppercase text-primary">AI Score</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -40,13 +40,9 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
                 {applicant.salaryExpectation}
               </TableCell>
               <TableCell className="px-4 py-3 text-right transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.status === "new" ? (
-                  <span className="inline-flex h-[22px] items-center rounded-[6px] bg-primary px-[9px] py-[3px] text-xs font-medium text-white">
-                    New
-                  </span>
-                ) : (
-                  <span className="text-xs font-medium text-[rgba(0,0,0,0.7)]">Reviewed</span>
-                )}
+                <span className="inline-flex rounded-[6px] bg-[rgba(30,102,247,0.1)] px-[9px] py-[3px] text-xs font-medium text-primary">
+                  {applicant.aiScore}%
+                </span>
               </TableCell>
             </TableRow>
           ))}

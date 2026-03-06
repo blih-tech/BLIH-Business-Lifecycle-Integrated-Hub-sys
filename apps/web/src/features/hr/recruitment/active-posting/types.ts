@@ -13,7 +13,7 @@ export type JobApplicant = {
   appliedAt: string;
   yearsOfExperience: string;
   salaryExpectation: string;
-  status: "new" | "reviewed";
+  aiScore: number;
 };
 
 export type JobAnalyticsPoint = {
@@ -44,6 +44,7 @@ export type ActiveJobItem = {
   statusLabel: string;
   department: string;
   employmentType: string;
+  workMode: string;
   openings: number;
   applicantsCount: number;
   viewsCount: number;
