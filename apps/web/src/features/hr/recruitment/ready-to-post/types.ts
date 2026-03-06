@@ -1,25 +1,9 @@
-export type ReadyToPostDepartment = "technical" | "creative" | "digital_marketing";
+import type {
+  FullJobRequest,
+  JobRequestDepartment,
+  JobRequestPriority,
+} from "@/features/hr/recruitment/requests/types";
 
-export type ReadyToPostPriority = "high" | "medium" | "low";
-
-export type ReadyToPostType = "Full-time" | "Part-time" | "Remote" | "Hybrid";
-
-export type JobPostItem = {
-  id: string;
-  title: string;
-  levelTag?: string;
-  department: ReadyToPostDepartment;
-  employmentType: ReadyToPostType;
-  location: string;
-  team: string;
-  salaryRange: string;
-  positions: number;
-  jobOverview: string;
-  requirements: string[];
-  responsibilities: string[];
-  benefits: string[];
-  priority: ReadyToPostPriority;
-  requisitionId: string;
-  dueDate: string;
-  expectedDate: string;
-};
+export type ReadyToPostDepartment = JobRequestDepartment;
+export type ReadyToPostPriority = JobRequestPriority;
+export type ReadyToPostJob = FullJobRequest;

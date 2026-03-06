@@ -1,8 +1,8 @@
 "use client";
 
 import type {
-  JobPostItem,
   ReadyToPostDepartment,
+  ReadyToPostJob,
   ReadyToPostPriority,
 } from "@/features/hr/recruitment/ready-to-post/types";
 import { Button } from "@/shared/components/ui/button";
@@ -16,7 +16,8 @@ import {
 } from "@/shared/components/ui/dialog";
 
 type JobPostPreviewDialogProps = {
-  item: JobPostItem | null;
+  item: ReadyToPostJob | null;
+  requestId: string | null;
   onOpenChange: (isOpen: boolean) => void;
 };
 
@@ -30,6 +31,33 @@ function priorityClass(priority: ReadyToPostPriority) {
   if (priority === "high") return "border-primary bg-[rgba(30,102,247,0.1)] text-primary";
   if (priority === "medium") return "border-border bg-muted text-foreground";
   return "border-border bg-muted text-muted-foreground";
+}
+
+function priorityFromUrgency(urgency: ReadyToPostJob["requestForm"]["urgency"]): ReadyToPostPriority {
+  if (urgency === "high") return "high";
+  if (urgency === "medium") return "medium";
+  return "low";
+}
+
+function employmentTypeLabel(value: ReadyToPostJob["jobDetailsForm"]["employmentType"]) {
+  if (value === "full_time") return "Full-time";
+  if (value === "part_time") return "Part-time";
+  if (value === "contract") return "Contract";
+  return "Intern";
+}
+
+function workModeLabel(value: ReadyToPostJob["jobDetailsForm"]["workMode"]) {
+  if (value === "on_site") return "On-site";
+  if (value === "hybrid") return "Hybrid";
+  return "Remote";
+}
+
+function salaryLabel(item: ReadyToPostJob) {
+  const { salaryMode, salaryRangeMin, salaryRangeMax, salaryCurrency } = item.jobDetailsForm;
+  if (salaryMode === "negotiable") return "Negotiable";
+  if (salaryMode === "competitive") return "Competitive";
+  if (salaryMode === "range") return `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`;
+  return "Not specified";
 }
 
 type PreviewMetaItemProps = {
@@ -46,7 +74,7 @@ function PreviewMetaItem({ label, value }: PreviewMetaItemProps) {
   );
 }
 
-export function JobPostPreviewDialog({ item, onOpenChange }: JobPostPreviewDialogProps) {
+export function JobPostPreviewDialog({ item, requestId, onOpenChange }: JobPostPreviewDialogProps) {
   return (
     <Dialog open={item !== null} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[86vh] w-[96vw] overflow-y-auto p-0 sm:w-[92vw] sm:max-w-[1080px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2">
@@ -55,29 +83,26 @@ export function JobPostPreviewDialog({ item, onOpenChange }: JobPostPreviewDialo
             <DialogHeader className="border-b border-border p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <DialogTitle className="ui-section-title text-foreground">{item.title}</DialogTitle>
+                  <DialogTitle className="ui-section-title text-foreground">{item.jobDetailsForm.jobTitle}</DialogTitle>
                   <DialogDescription className="ui-body mt-1 text-muted-foreground">
                     Public job post preview for review before publishing.
                   </DialogDescription>
                 </div>
                 <span
-                  className={`inline-flex rounded-md border px-2.5 py-1 text-xs font-medium ${priorityClass(item.priority)}`}
+                  className={`inline-flex rounded-md border px-2.5 py-1 text-xs font-medium ${priorityClass(priorityFromUrgency(item.requestForm.urgency))}`}
                 >
-                  {item.priority.toUpperCase()} PRIORITY
+                  {priorityFromUrgency(item.requestForm.urgency).toUpperCase()} PRIORITY
                 </span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {departmentLabel(item.department)}
+                  {departmentLabel(item.requestForm.department as ReadyToPostDepartment)}
                 </span>
                 <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {item.employmentType}
+                  {employmentTypeLabel(item.jobDetailsForm.employmentType)}
                 </span>
                 <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {item.positions} {item.positions > 1 ? "Positions" : "Position"}
-                </span>
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {item.levelTag ?? "Role"}
+                  {workModeLabel(item.jobDetailsForm.workMode)}
                 </span>
               </div>
             </DialogHeader>
@@ -86,13 +111,13 @@ export function JobPostPreviewDialog({ item, onOpenChange }: JobPostPreviewDialo
               <div className="space-y-4">
                 <section className="ui-surface p-4">
                   <p className="ui-section-title text-foreground">Job Overview</p>
-                  <p className="ui-body mt-2 text-muted-foreground">{item.jobOverview}</p>
+                  <p className="ui-body mt-2 text-muted-foreground">{item.jobDetailsForm.jobSummary}</p>
                 </section>
 
                 <section className="ui-surface p-4">
                   <p className="ui-section-title text-foreground">Role Responsibilities</p>
                   <ul className="mt-2 space-y-2">
-                    {item.responsibilities.map((responsibility) => (
+                    {item.jobDetailsForm.keyResponsibilities.map((responsibility) => (
                       <li key={responsibility} className="ui-body flex items-start gap-2 text-muted-foreground">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
                         <span>{responsibility}</span>
@@ -104,7 +129,7 @@ export function JobPostPreviewDialog({ item, onOpenChange }: JobPostPreviewDialo
                 <section className="ui-surface p-4">
                   <p className="ui-section-title text-foreground">Requirements</p>
                   <ul className="mt-2 space-y-2">
-                    {item.requirements.map((requirement) => (
+                    {item.jobDetailsForm.requirements.map((requirement) => (
                       <li key={requirement} className="ui-body flex items-start gap-2 text-muted-foreground">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
                         <span>{requirement}</span>
@@ -118,25 +143,26 @@ export function JobPostPreviewDialog({ item, onOpenChange }: JobPostPreviewDialo
                 <section className="ui-surface p-4">
                   <p className="ui-section-title text-foreground">Posting Details</p>
                   <div className="mt-3 grid grid-cols-1 gap-2.5">
-                    <PreviewMetaItem label="Requisition ID" value={item.requisitionId} />
-                    <PreviewMetaItem label="Team" value={item.team} />
-                    <PreviewMetaItem label="Location" value={item.location} />
-                    <PreviewMetaItem label="Salary Range" value={item.salaryRange} />
-                    <PreviewMetaItem label="Due Date" value={item.dueDate} />
-                    <PreviewMetaItem label="Expected Start" value={item.expectedDate} />
+                    <PreviewMetaItem label="Requisition ID" value={requestId ?? "REQ-000"} />
+                    <PreviewMetaItem label="Location" value={item.jobDetailsForm.location} />
+                    <PreviewMetaItem label="Salary Range" value={salaryLabel(item)} />
+                    <PreviewMetaItem label="Needed By" value={item.requestForm.neededByDate} />
+                    <PreviewMetaItem label="Expected Start" value={item.requestForm.neededByDate} />
                   </div>
                 </section>
 
-                <section className="ui-surface p-4">
-                  <p className="ui-section-title text-foreground">Benefits</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {item.benefits.map((benefit) => (
-                      <span key={benefit} className="rounded-md border border-border bg-muted px-2 py-1 text-xs">
-                        {benefit}
-                      </span>
-                    ))}
-                  </div>
-                </section>
+                {item.jobDetailsForm.benefits.length > 0 ? (
+                  <section className="ui-surface p-4">
+                    <p className="ui-section-title text-foreground">Benefits</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {item.jobDetailsForm.benefits.map((benefit) => (
+                        <span key={benefit} className="rounded-md border border-border bg-muted px-2 py-1 text-xs">
+                          {benefit}
+                        </span>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
               </div>
             </div>
 

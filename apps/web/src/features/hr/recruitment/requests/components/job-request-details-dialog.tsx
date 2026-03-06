@@ -44,7 +44,6 @@ type InfoItemProps = {
 type ListSectionProps = {
   title: string;
   items: string[];
-  emptyLabel?: string;
 };
 
 function departmentLabel(department: JobRequestDepartment) {
@@ -145,26 +144,22 @@ function InfoItem({ label, value }: InfoItemProps) {
   );
 }
 
-function ListSection({ title, items, emptyLabel = "Not provided" }: ListSectionProps) {
+function ListSection({ title, items }: ListSectionProps) {
   return (
     <section className="space-y-3 rounded-2xl border border-border/70 bg-card px-4 py-4">
       <div>
         <p className="text-sm font-semibold text-foreground">{title}</p>
       </div>
-      {items.length > 0 ? (
-        <div className="grid gap-2">
-          {items.map((item) => (
-            <div
-              key={`${title}-${item}`}
-              className="rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">{emptyLabel}</p>
-      )}
+      <div className="grid gap-2">
+        {items.map((item) => (
+          <div
+            key={`${title}-${item}`}
+            className="rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground"
+          >
+            {item}
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -293,8 +288,12 @@ export function JobRequestDetailsDialog({
                     </div>
 
                     <div className="grid gap-4 xl:grid-cols-2">
-                      <ListSection title="Preferred Skills" items={request.jobDetailsForm.preferredSkills} />
-                      <ListSection title="Benefits" items={request.jobDetailsForm.benefits} />
+                      {request.jobDetailsForm.preferredSkills.length > 0 ? (
+                        <ListSection title="Preferred Skills" items={request.jobDetailsForm.preferredSkills} />
+                      ) : null}
+                      {request.jobDetailsForm.benefits.length > 0 ? (
+                        <ListSection title="Benefits" items={request.jobDetailsForm.benefits} />
+                      ) : null}
                     </div>
                   </div>
                 </section>

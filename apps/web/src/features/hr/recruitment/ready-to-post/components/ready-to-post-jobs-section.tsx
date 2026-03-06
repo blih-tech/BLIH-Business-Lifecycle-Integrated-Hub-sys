@@ -3,50 +3,47 @@
 import { useMemo, useState } from "react";
 
 import { JobPostCard } from "@/features/hr/recruitment/ready-to-post/components/job-post-card";
-import { JobPostEditDialog } from "@/features/hr/recruitment/ready-to-post/components/job-post-edit-dialog";
 import { JobPostPreviewDialog } from "@/features/hr/recruitment/ready-to-post/components/job-post-preview-dialog";
-import type { JobPostItem } from "@/features/hr/recruitment/ready-to-post/types";
+import type { ReadyToPostJob } from "@/features/hr/recruitment/ready-to-post/types";
 
 type ReadyToPostJobsSectionProps = {
-  items: JobPostItem[];
+  items: ReadyToPostJob[];
 };
 
+function requestIdLabel(index: number) {
+  return `REQ-${String(index + 1).padStart(3, "0")}`;
+}
+
 export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
-  const [previewId, setPreviewId] = useState<string | null>(null);
-  const [editId, setEditId] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const previewItem = useMemo(
-    () => items.find((item) => item.id === previewId) ?? null,
-    [items, previewId],
+    () => (previewIndex === null ? null : items[previewIndex] ?? null),
+    [items, previewIndex],
   );
-  const editItem = useMemo(
-    () => items.find((item) => item.id === editId) ?? null,
-    [items, editId],
+  const previewRequestId = useMemo(
+    () => (previewIndex === null ? null : requestIdLabel(previewIndex)),
+    [previewIndex],
   );
 
   return (
     <>
       <section className="space-y-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <JobPostCard
-            key={item.id}
+            key={`${item.jobDetailsForm.jobTitle}-${index}`}
             item={item}
-            onPreviewClick={() => setPreviewId(item.id)}
-            onEditClick={() => setEditId(item.id)}
+            requestId={requestIdLabel(index)}
+            onPreviewClick={() => setPreviewIndex(index)}
           />
         ))}
       </section>
 
       <JobPostPreviewDialog
         item={previewItem}
+        requestId={previewRequestId}
         onOpenChange={(isOpen) => {
-          if (!isOpen) setPreviewId(null);
-        }}
-      />
-      <JobPostEditDialog
-        item={editItem}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setEditId(null);
+          if (!isOpen) setPreviewIndex(null);
         }}
       />
     </>

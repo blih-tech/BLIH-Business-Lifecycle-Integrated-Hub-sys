@@ -21,27 +21,22 @@ type CareerJobDetailDialogProps = {
 type ListSectionProps = {
   title: string;
   items: string[];
-  emptyLabel?: string;
 };
 
-function ListSection({ title, items, emptyLabel = "Not provided" }: ListSectionProps) {
+function ListSection({ title, items }: ListSectionProps) {
   return (
     <section className="space-y-3 rounded-2xl border border-border/70 bg-card px-4 py-4">
       <p className="text-sm font-semibold text-foreground">{title}</p>
-      {items.length > 0 ? (
-        <div className="grid gap-2">
-          {items.map((item) => (
-            <div
-              key={`${title}-${item}`}
-              className="rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">{emptyLabel}</p>
-      )}
+      <div className="grid gap-2">
+        {items.map((item) => (
+          <div
+            key={`${title}-${item}`}
+            className="rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground"
+          >
+            {item}
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -96,8 +91,12 @@ export function CareerJobDetailDialog({ job, onOpenChange }: CareerJobDetailDial
               </div>
 
               <div className="space-y-4">
-                <ListSection title="Preferred Skills" items={job.preferredSkills} />
-                <ListSection title="Benefits" items={job.benefits} />
+                {job.preferredSkills.length > 0 ? (
+                  <ListSection title="Preferred Skills" items={job.preferredSkills} />
+                ) : null}
+                {job.benefits.length > 0 ? (
+                  <ListSection title="Benefits" items={job.benefits} />
+                ) : null}
               </div>
             </div>
 
