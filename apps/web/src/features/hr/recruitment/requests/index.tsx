@@ -12,7 +12,11 @@ import {
 export * from "@/features/hr/recruitment/requests/components";
 export * from "@/features/hr/recruitment/requests/types";
 
-export function RecruitmentRequestsContent() {
+type RecruitmentRequestsContentProps = {
+  currentUserName: string;
+};
+
+export function RecruitmentRequestsContent({ currentUserName }: RecruitmentRequestsContentProps) {
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-4 px-4 py-5 md:px-5 md:py-6">
       <section className="space-y-1">
@@ -20,7 +24,7 @@ export function RecruitmentRequestsContent() {
         <p className="ui-body text-muted-foreground">Review and publish job postings</p>
       </section>
 
-      <JobRequestsSection items={jobRequests} />
+      <JobRequestsSection items={jobRequests} currentUserName={currentUserName} />
 
       <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {requestStats.map((item) => (

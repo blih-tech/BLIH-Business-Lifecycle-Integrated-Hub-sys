@@ -1,35 +1,239 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Check } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+
+import { createRequestFormSchema, type CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
+import { RequestFormStep } from "@/features/hr/recruitment/requests/components/request-form-step";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
+import { Form } from "@/shared/components/ui/form";
 
 type CreateRequestDialogProps = {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  currentUserName: string;
 };
 
-export function CreateRequestDialog({ open, onOpenChange }: CreateRequestDialogProps) {
+const steps = [
+  {
+    id: 1,
+    title: "Request Form",
+    description: "Internal hiring request details",
+  },
+  {
+    id: 2,
+    title: "Job Details",
+    description: "Public job board information",
+  },
+  {
+    id: 3,
+    title: "Application Form",
+    description: "Candidate application questions",
+  },
+] as const;
+
+const defaultValues: CreateRequestFormValues = {
+  jobTitle: "",
+  department: "",
+  requestedBy: "User",
+  position: "",
+  requestType: "new",
+  replaceFor: "",
+  businessJustification: "",
+  employmentType: "full_time",
+  workMode: "on_site",
+  urgency: "medium",
+  neededByDate: "",
+};
+
+function PlaceholderStep({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="p-4">
+      <section className="ui-surface p-4">
+        <h3 className="ui-section-title text-foreground">{title}</h3>
+        <p className="ui-body mt-2 text-muted-foreground">{description}</p>
+      </section>
+    </div>
+  );
+}
+
+export function CreateRequestDialog({ open, onOpenChange, currentUserName }: CreateRequestDialogProps) {
+  const [currentStep, setCurrentStep] = useState(1);
+  const form = useForm<CreateRequestFormValues>({
+    resolver: zodResolver(createRequestFormSchema),
+    mode: "onSubmit",
+    defaultValues: {
+      ...defaultValues,
+      requestedBy: currentUserName,
+    },
+  });
+
+  const stepMeta = useMemo(
+    () => steps.find((step) => step.id === currentStep) ?? steps[0],
+    [currentStep],
+  );
+
+  useEffect(() => {
+    if (!open) {
+      setCurrentStep(1);
+      form.reset({
+        ...defaultValues,
+        requestedBy: currentUserName,
+      });
+    }
+  }, [currentUserName, form, open]);
+
+  useEffect(() => {
+    form.setValue("requestedBy", currentUserName, {
+      shouldDirty: false,
+      shouldTouch: false,
+      shouldValidate: false,
+    });
+  }, [currentUserName, form]);
+
+  async function handleContinue() {
+    const isValid = await form.trigger();
+    if (!isValid) return;
+    setCurrentStep(2);
+  }
+
+  function handleClose() {
+    onOpenChange(false);
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[96vw] p-0 sm:max-w-[560px]">
+      <DialogContent className="max-h-[88vh] w-[97vw] overflow-y-auto p-0 sm:w-[94vw] sm:max-w-[1080px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2">
         <DialogHeader className="border-b border-border p-4">
-          <DialogTitle className="ui-section-title text-foreground">Create New Request</DialogTitle>
-          <DialogDescription className="ui-body text-muted-foreground">
-            Coming soon
-          </DialogDescription>
+          <div className="space-y-4">
+            <div>
+              <div className="mb-2 inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                Step {currentStep} of 3
+              </div>
+              <DialogTitle className="ui-section-title text-foreground">Create Hiring Request</DialogTitle>
+              <DialogDescription className="ui-body text-muted-foreground">
+                {stepMeta.description}
+              </DialogDescription>
+            </div>
+
+            <div className="flex items-start">
+              {steps.map((step, index) => {
+                const isActive = currentStep === step.id;
+                const isComplete = currentStep > step.id;
+                const isLast = index === steps.length - 1;
+
+                return (
+                  <div
+                    key={step.id}
+                    className={`flex min-w-0 items-start ${isLast ? "flex-none" : "flex-1"}`}
+                    aria-current={isActive ? "step" : undefined}
+                  >
+                    <div className="flex min-w-0 items-start gap-3">
+                      <div className="flex flex-col items-center pt-0.5">
+                        <div
+                          className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold ${
+                            isActive
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : isComplete
+                                ? "border-primary bg-[rgba(30,102,247,0.12)] text-primary"
+                                : "border-border bg-background text-muted-foreground"
+                          }`}
+                        >
+                          {isComplete ? <Check className="h-4 w-4" /> : step.id}
+                        </div>
+                      </div>
+
+                      <div className="min-w-0">
+                        <p
+                          className={`text-sm font-semibold ${
+                            isActive || isComplete ? "text-foreground" : "text-muted-foreground"
+                          }`}
+                        >
+                          {step.title}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{step.description}</p>
+                      </div>
+                    </div>
+
+                    {!isLast ? (
+                      <div className="mx-3 mt-4 h-px flex-1 bg-border">
+                        <div
+                          className={`h-px ${
+                            isComplete ? "w-full bg-primary" : "w-full bg-border"
+                          }`}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </DialogHeader>
-        <DialogFooter className="border-t border-border p-4">
-          <Button type="button" className="cursor-pointer" onClick={() => onOpenChange(false)}>
-            Close
-          </Button>
-        </DialogFooter>
+
+        <Form {...form}>
+          <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+            {currentStep === 1 ? <RequestFormStep form={form} /> : null}
+            {currentStep === 2 ? (
+              <PlaceholderStep
+                title="Job Details Form"
+                description="This is the second step shell. Public-facing role content will be added here next."
+              />
+            ) : null}
+            {currentStep === 3 ? (
+              <PlaceholderStep
+                title="Application Form"
+                description="This is the third step shell. Candidate application questions and requirements will go here."
+              />
+            ) : null}
+
+            <DialogFooter className="border-t border-border p-4">
+              {currentStep === 1 ? (
+                <>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline" className="cursor-pointer" onClick={handleClose}>
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button type="button" className="cursor-pointer" onClick={handleContinue}>
+                    Continue to Job Details
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="cursor-pointer"
+                    onClick={() => setCurrentStep((step) => Math.max(1, step - 1))}
+                  >
+                    Back
+                  </Button>
+                  <Button type="button" className="cursor-pointer" disabled>
+                    Coming Next
+                  </Button>
+                </>
+              )}
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

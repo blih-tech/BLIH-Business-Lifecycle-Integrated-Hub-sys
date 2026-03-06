@@ -11,9 +11,10 @@ import type { JobRequestItem } from "@/features/hr/recruitment/requests/types";
 
 type JobRequestsSectionProps = {
   items: JobRequestItem[];
+  currentUserName: string;
 };
 
-export function JobRequestsSection({ items }: JobRequestsSectionProps) {
+export function JobRequestsSection({ items, currentUserName }: JobRequestsSectionProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -73,6 +74,7 @@ export function JobRequestsSection({ items }: JobRequestsSectionProps) {
       <CreateRequestDialog
         open={isCreateRequestDialogOpen}
         onOpenChange={handleCreateRequestDialogOpenChange}
+        currentUserName={currentUserName}
       />
     </>
   );
