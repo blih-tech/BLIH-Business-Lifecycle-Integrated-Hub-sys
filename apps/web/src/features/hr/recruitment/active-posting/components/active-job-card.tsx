@@ -13,9 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui
 type ActiveJobCardProps = {
   job: ActiveJobItem;
   defaultExpanded?: boolean;
+  historyMode?: boolean;
 };
 
-export function ActiveJobCard({ job, defaultExpanded = false }: ActiveJobCardProps) {
+export function ActiveJobCard({ job, defaultExpanded = false, historyMode = false }: ActiveJobCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
@@ -101,7 +102,7 @@ export function ActiveJobCard({ job, defaultExpanded = false }: ActiveJobCardPro
               <JobDetailTab job={job} />
             </TabsContent>
             <TabsContent value="applicants" className="mt-0 px-6 pt-6">
-              <ApplicantsTab job={job} />
+              <ApplicantsTab job={job} historyMode={historyMode} />
             </TabsContent>
             <TabsContent value="analytics" className="mt-0 px-6 pt-6">
               <AnalyticsTab job={job} />
