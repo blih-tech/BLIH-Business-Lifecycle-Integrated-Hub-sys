@@ -5,7 +5,9 @@ import { Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { jobDetailsFormSchema, type JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
 import { createRequestFormSchema, type CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
+import { JobDetailsStep } from "@/features/hr/recruitment/requests/components/job-details-step";
 import { RequestFormStep } from "@/features/hr/recruitment/requests/components/request-form-step";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -57,6 +59,23 @@ const defaultValues: CreateRequestFormValues = {
   neededByDate: "",
 };
 
+const defaultJobDetailsValues: JobDetailsFormValues = {
+  jobTitle: "",
+  location: "",
+  workMode: "on_site",
+  employmentType: "full_time",
+  jobSummary: "",
+  whyJoinUs: "",
+  keyResponsibilities: "",
+  requiredSkills: "",
+  preferredSkills: "",
+  experienceLevel: "mid",
+  salaryRangeMin: "",
+  salaryRangeMax: "",
+  salaryCurrency: "",
+  benefits: "",
+};
+
 function PlaceholderStep({
   title,
   description,
@@ -76,13 +95,18 @@ function PlaceholderStep({
 
 export function CreateRequestDialog({ open, onOpenChange, currentUserName }: CreateRequestDialogProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const form = useForm<CreateRequestFormValues>({
+  const requestForm = useForm<CreateRequestFormValues>({
     resolver: zodResolver(createRequestFormSchema),
     mode: "onSubmit",
     defaultValues: {
       ...defaultValues,
       requestedBy: currentUserName,
     },
+  });
+  const jobDetailsForm = useForm<JobDetailsFormValues>({
+    resolver: zodResolver(jobDetailsFormSchema),
+    mode: "onSubmit",
+    defaultValues: defaultJobDetailsValues,
   });
 
   const stepMeta = useMemo(
@@ -93,25 +117,36 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
   useEffect(() => {
     if (!open) {
       setCurrentStep(1);
-      form.reset({
+      requestForm.reset({
         ...defaultValues,
         requestedBy: currentUserName,
       });
+      jobDetailsForm.reset(defaultJobDetailsValues);
     }
-  }, [currentUserName, form, open]);
+  }, [currentUserName, jobDetailsForm, open, requestForm]);
 
   useEffect(() => {
-    form.setValue("requestedBy", currentUserName, {
+    requestForm.setValue("requestedBy", currentUserName, {
       shouldDirty: false,
       shouldTouch: false,
       shouldValidate: false,
     });
-  }, [currentUserName, form]);
+  }, [currentUserName, requestForm]);
 
-  async function handleContinue() {
-    const isValid = await form.trigger();
+  async function handleRequestContinue() {
+    const isValid = await requestForm.trigger();
     if (!isValid) return;
+    const requestValues = requestForm.getValues();
+    jobDetailsForm.setValue("jobTitle", requestValues.jobTitle, { shouldDirty: false });
+    jobDetailsForm.setValue("workMode", requestValues.workMode, { shouldDirty: false });
+    jobDetailsForm.setValue("employmentType", requestValues.employmentType, { shouldDirty: false });
     setCurrentStep(2);
+  }
+
+  async function handleJobDetailsContinue() {
+    const isValid = await jobDetailsForm.trigger();
+    if (!isValid) return;
+    setCurrentStep(3);
   }
 
   function handleClose() {
@@ -188,52 +223,69 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
           </div>
         </DialogHeader>
 
-        <Form {...form}>
-          <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
-            {currentStep === 1 ? <RequestFormStep form={form} /> : null}
-            {currentStep === 2 ? (
-              <PlaceholderStep
-                title="Job Details Form"
-                description="This is the second step shell. Public-facing role content will be added here next."
-              />
-            ) : null}
-            {currentStep === 3 ? (
-              <PlaceholderStep
-                title="Application Form"
-                description="This is the third step shell. Candidate application questions and requirements will go here."
-              />
-            ) : null}
+        {currentStep === 1 ? (
+          <Form {...requestForm}>
+            <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+              <RequestFormStep form={requestForm} />
+
+              <DialogFooter className="border-t border-border p-4">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline" className="cursor-pointer" onClick={handleClose}>
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button type="button" className="cursor-pointer" onClick={handleRequestContinue}>
+                  Continue to Job Details
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        ) : null}
+
+        {currentStep === 2 ? (
+          <Form {...jobDetailsForm}>
+            <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+              <JobDetailsStep form={jobDetailsForm} />
+
+              <DialogFooter className="border-t border-border p-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cursor-pointer"
+                  onClick={() => setCurrentStep(1)}
+                >
+                  Back
+                </Button>
+                <Button type="button" className="cursor-pointer" onClick={handleJobDetailsContinue}>
+                  Continue to Application Form
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        ) : null}
+
+        {currentStep === 3 ? (
+          <div className="space-y-0">
+            <PlaceholderStep
+              title="Application Form"
+              description="Candidate application questions and requirements will go here."
+            />
 
             <DialogFooter className="border-t border-border p-4">
-              {currentStep === 1 ? (
-                <>
-                  <DialogClose asChild>
-                    <Button type="button" variant="outline" className="cursor-pointer" onClick={handleClose}>
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                  <Button type="button" className="cursor-pointer" onClick={handleContinue}>
-                    Continue to Job Details
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="cursor-pointer"
-                    onClick={() => setCurrentStep((step) => Math.max(1, step - 1))}
-                  >
-                    Back
-                  </Button>
-                  <Button type="button" className="cursor-pointer" disabled>
-                    Coming Next
-                  </Button>
-                </>
-              )}
+              <Button
+                type="button"
+                variant="outline"
+                className="cursor-pointer"
+                onClick={() => setCurrentStep(2)}
+              >
+                Back
+              </Button>
+              <Button type="button" className="cursor-pointer" disabled>
+                Coming Next
+              </Button>
             </DialogFooter>
-          </form>
-        </Form>
+          </div>
+        ) : null}
       </DialogContent>
     </Dialog>
   );
