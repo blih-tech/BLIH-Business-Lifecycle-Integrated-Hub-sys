@@ -39,6 +39,7 @@ import { Textarea } from '@/shared/components/ui/textarea';
 
 type JobRequestJustifyDialogProps = {
   request: FullJobRequest | null;
+  requestId: string | null;
   onOpenChange: (isOpen: boolean) => void;
 };
 
@@ -47,8 +48,8 @@ const justifySchema = z.object({
     .string()
     .trim()
     .min(20, 'Justification must be at least 20 characters'),
-  nextStep: z.enum(['decline', 'request_revision'], {
-    error: () => 'Please select the next step',
+  action: z.enum(['reject', 'review'], {
+    error: () => 'Please select an action',
   }),
 });
 
@@ -62,6 +63,7 @@ function departmentLabel(department: JobRequestDepartment) {
 
 export function JobRequestJustifyDialog({
   request,
+  requestId,
   onOpenChange,
 }: JobRequestJustifyDialogProps) {
   const form = useForm<JustifyFormValues>({
@@ -69,7 +71,7 @@ export function JobRequestJustifyDialog({
     mode: 'onChange',
     defaultValues: {
       justification: '',
-      nextStep: undefined,
+      action: undefined,
     },
   });
 
@@ -77,7 +79,7 @@ export function JobRequestJustifyDialog({
     if (!request) {
       form.reset({
         justification: '',
-        nextStep: undefined,
+        action: undefined,
       });
     }
   }, [form, request]);
@@ -86,7 +88,16 @@ export function JobRequestJustifyDialog({
     onOpenChange(false);
   }
 
-  function handleSubmit() {
+  function handleSubmit(values: JustifyFormValues) {
+    if (!request || !requestId) return;
+
+    const payload = {
+      requestId,
+      action: values.action,
+      justification: values.justification,
+    };
+
+    console.log('jobRequestJustification', payload);
     closeDialog();
   }
 
@@ -109,6 +120,11 @@ export function JobRequestJustifyDialog({
                 <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                   {departmentLabel(request.requestForm.department as JobRequestDepartment)}
                 </span>
+                {requestId ? (
+                  <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                    {requestId}
+                  </span>
+                ) : null}
               </div>
             </DialogHeader>
 
@@ -117,8 +133,38 @@ export function JobRequestJustifyDialog({
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-0"
               >
-                <div className="space-y-4 p-4">
-                  <section className="ui-surface p-3.5">
+                <div className="space-y-5 p-4">
+                  <div className="grid gap-5">
+                    <FormField
+                      control={form.control}
+                      name="action"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="ui-meta text-muted-foreground">
+                            Action
+                          </FormLabel>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full rounded-[6px] bg-background">
+                                <SelectValue placeholder="Select action" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="reject">Reject</SelectItem>
+                              <SelectItem value="review">Review</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormDescription className="text-xs">
+                            Choose whether to reject the request or send it back for review.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <FormField
                       control={form.control}
                       name="justification"
@@ -130,54 +176,18 @@ export function JobRequestJustifyDialog({
                           <FormControl>
                             <Textarea
                               {...field}
-                              placeholder="Explain why this request should be declined or sent for revision..."
-                              className="max-h-[180px] rounded-[6px] border-border bg-background"
+                              placeholder="Explain the decision and what the requester should do next."
+                              className="min-h-[180px] rounded-[10px] border-border bg-background"
                             />
                           </FormControl>
                           <FormDescription className="text-xs">
-                            Keep this clear and actionable for the requesting
-                            manager (minimum 20 characters).
+                            Keep it clear and actionable for the requester.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </section>
-
-                  <section className="ui-surface p-3.5">
-                    <FormField
-                      control={form.control}
-                      name="nextStep"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="ui-meta text-muted-foreground">
-                            Next Step
-                          </FormLabel>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="h-10 w-full rounded-[6px] bg-background">
-                                <SelectValue placeholder="Select next step" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="decline">Decline</SelectItem>
-                              <SelectItem value="request_revision">
-                                Request Revision
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormDescription className="text-xs">
-                            Decline closes this request. Request Revision sends
-                            it back for updates.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </section>
+                  </div>
                 </div>
 
                 <DialogFooter className="border-t border-border p-4">

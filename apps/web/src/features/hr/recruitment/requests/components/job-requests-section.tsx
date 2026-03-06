@@ -71,24 +71,36 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
       }),
     [currentUserName, departmentFilter, items, ownershipFilter],
   );
+  const filteredRequestEntries = useMemo(
+    () =>
+      filteredItems.map((request) => ({
+        request,
+        requestId: `REQ-${String(items.indexOf(request) + 1).padStart(3, "0")}`,
+      })),
+    [filteredItems, items],
+  );
 
   const selectedRequest = useMemo(
-    () => (selectedRequestIndex === null ? null : filteredItems[selectedRequestIndex] ?? null),
-    [filteredItems, selectedRequestIndex],
+    () => (selectedRequestIndex === null ? null : filteredRequestEntries[selectedRequestIndex]?.request ?? null),
+    [filteredRequestEntries, selectedRequestIndex],
   );
   const justifyRequest = useMemo(
-    () => (justifyRequestIndex === null ? null : filteredItems[justifyRequestIndex] ?? null),
-    [filteredItems, justifyRequestIndex],
+    () => (justifyRequestIndex === null ? null : filteredRequestEntries[justifyRequestIndex]?.request ?? null),
+    [filteredRequestEntries, justifyRequestIndex],
+  );
+  const justifyRequestId = useMemo(
+    () => (justifyRequestIndex === null ? null : filteredRequestEntries[justifyRequestIndex]?.requestId ?? null),
+    [filteredRequestEntries, justifyRequestIndex],
   );
 
   useEffect(() => {
-    if (selectedRequestIndex !== null && !filteredItems[selectedRequestIndex]) {
+    if (selectedRequestIndex !== null && !filteredRequestEntries[selectedRequestIndex]) {
       setSelectedRequestIndex(null);
     }
-    if (justifyRequestIndex !== null && !filteredItems[justifyRequestIndex]) {
+    if (justifyRequestIndex !== null && !filteredRequestEntries[justifyRequestIndex]) {
       setJustifyRequestIndex(null);
     }
-  }, [filteredItems, justifyRequestIndex, selectedRequestIndex]);
+  }, [filteredRequestEntries, justifyRequestIndex, selectedRequestIndex]);
 
   function handleCreateRequestDialogOpenChange(isOpen: boolean) {
     if (isOpen) return;
@@ -156,10 +168,10 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
 
         {filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {filteredItems.map((item, index) => (
+            {filteredRequestEntries.map(({ request }, index) => (
               <JobRequestCard
-                key={`${item.requestForm.jobTitle}-${index}`}
-                item={item}
+                key={`${request.requestForm.jobTitle}-${index}`}
+                item={request}
                 currentUserName={currentUserName}
                 priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
                 onClick={() => setSelectedRequestIndex(index)}
@@ -192,6 +204,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
 
       <JobRequestJustifyDialog
         request={justifyRequest}
+        requestId={justifyRequestId}
         onOpenChange={(isOpen) => {
           if (!isOpen) setJustifyRequestIndex(null);
         }}
