@@ -5,8 +5,10 @@ import { Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { applicationFormSchema, type ApplicationFormValues } from "@/features/hr/recruitment/requests/application-form-schema";
 import { jobDetailsFormSchema, type JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
 import { createRequestFormSchema, type CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
+import { ApplicationFormStep } from "@/features/hr/recruitment/requests/components/application-form-step";
 import { JobDetailsStep } from "@/features/hr/recruitment/requests/components/job-details-step";
 import { RequestFormStep } from "@/features/hr/recruitment/requests/components/request-form-step";
 import { Button } from "@/shared/components/ui/button";
@@ -76,22 +78,21 @@ const defaultJobDetailsValues: JobDetailsFormValues = {
   benefits: "",
 };
 
-function PlaceholderStep({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="p-4">
-      <section className="ui-surface p-4">
-        <h3 className="ui-section-title text-foreground">{title}</h3>
-        <p className="ui-body mt-2 text-muted-foreground">{description}</p>
-      </section>
-    </div>
-  );
-}
+const defaultApplicationValues: ApplicationFormValues = {
+  predefinedFields: [
+    { key: "full_name", label: "Full Name", type: "text", enabled: true, required: true },
+    { key: "email", label: "Email Address", type: "text", enabled: true, required: true },
+    { key: "phone", label: "Phone Number", type: "text", enabled: true, required: true },
+    { key: "resume", label: "Resume / CV", type: "file", enabled: true, required: true },
+    { key: "cover_letter", label: "Cover Letter", type: "textarea", enabled: false, required: false },
+    { key: "portfolio", label: "Portfolio Link", type: "text", enabled: false, required: false },
+    { key: "linkedin", label: "LinkedIn Profile", type: "text", enabled: false, required: false },
+    { key: "current_location", label: "Current Location", type: "text", enabled: false, required: false },
+    { key: "notice_period", label: "Notice Period", type: "text", enabled: false, required: false },
+    { key: "salary_expectation", label: "Salary Expectation", type: "number", enabled: false, required: false },
+  ],
+  customFields: [],
+};
 
 export function CreateRequestDialog({ open, onOpenChange, currentUserName }: CreateRequestDialogProps) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -108,6 +109,11 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
     mode: "onSubmit",
     defaultValues: defaultJobDetailsValues,
   });
+  const applicationForm = useForm<ApplicationFormValues>({
+    resolver: zodResolver(applicationFormSchema),
+    mode: "onSubmit",
+    defaultValues: defaultApplicationValues,
+  });
 
   const stepMeta = useMemo(
     () => steps.find((step) => step.id === currentStep) ?? steps[0],
@@ -122,8 +128,9 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
         requestedBy: currentUserName,
       });
       jobDetailsForm.reset(defaultJobDetailsValues);
+      applicationForm.reset(defaultApplicationValues);
     }
-  }, [currentUserName, jobDetailsForm, open, requestForm]);
+  }, [applicationForm, currentUserName, jobDetailsForm, open, requestForm]);
 
   useEffect(() => {
     requestForm.setValue("requestedBy", currentUserName, {
@@ -147,6 +154,19 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
     const isValid = await jobDetailsForm.trigger();
     if (!isValid) return;
     setCurrentStep(3);
+  }
+
+  async function handleApplicationComplete() {
+    const isValid = await applicationForm.trigger();
+    if (!isValid) return;
+    const payload = {
+      requestForm: requestForm.getValues(),
+      jobDetailsForm: jobDetailsForm.getValues(),
+      applicationForm: applicationForm.getValues(),
+    };
+
+    console.log("newRequestPayload", payload);
+    handleClose();
   }
 
   function handleClose() {
@@ -265,26 +285,25 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
         ) : null}
 
         {currentStep === 3 ? (
-          <div className="space-y-0">
-            <PlaceholderStep
-              title="Application Form"
-              description="Candidate application questions and requirements will go here."
-            />
+          <Form {...applicationForm}>
+            <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+              <ApplicationFormStep form={applicationForm} />
 
-            <DialogFooter className="border-t border-border p-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="cursor-pointer"
-                onClick={() => setCurrentStep(2)}
-              >
-                Back
-              </Button>
-              <Button type="button" className="cursor-pointer" disabled>
-                Coming Next
-              </Button>
-            </DialogFooter>
-          </div>
+              <DialogFooter className="border-t border-border p-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cursor-pointer"
+                  onClick={() => setCurrentStep(2)}
+                >
+                  Back
+                </Button>
+                <Button type="button" className="cursor-pointer" onClick={handleApplicationComplete}>
+                  Finish Setup
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         ) : null}
       </DialogContent>
     </Dialog>
