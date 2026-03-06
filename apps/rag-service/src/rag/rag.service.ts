@@ -41,19 +41,20 @@ export class RagService {
     }
   }
 
-  async ingest(text: string, source: string) {
+  async ingest(text: string, source: string, metadata?: Record<string, any>) {
     console.log(`Ingesting text from: ${source}`);
     const doc = new Document({
       pageContent: text,
       metadata: {
+        ...metadata,
         source,
         date_ingested: new Date().toISOString(),
       },
     });
 
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 800,
-      chunkOverlap: 150,
+      chunkSize: 1000,
+      chunkOverlap: 200,
     });
 
     const splitDocs = await splitter.splitDocuments([doc]);
@@ -75,8 +76,8 @@ export class RagService {
     const docs = await loader.load();
 
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 800,
-      chunkOverlap: 150,
+      chunkSize: 1000,
+      chunkOverlap: 200,
     });
 
     const splitDocs = await splitter.splitDocuments(docs);
@@ -92,6 +93,7 @@ export class RagService {
   async askQuestion(
     question: string,
     history: { role: string; content: string }[] = [],
+    filter: any = {}
   ) {
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
       this.embeddings,
@@ -101,7 +103,7 @@ export class RagService {
       },
     );
 
-    const relevantDocs = await vectorStore.similaritySearch(question, 3);
+    const relevantDocs = await vectorStore.similaritySearch(question, 3, filter);
 
     const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
 
@@ -118,23 +120,30 @@ export class RagService {
     );
 
     const prompt = `
-    You are a helpful assistant for BLIH.
-    Use the chat history and the provided context to answer the human's next question.
+    You are BLIH Brain, an expert corporate assistant.
+    Use the following context and chat history to answer the user's question accurately.
 
-    Chat History:
+    RULES:
+    1. If the answer is not in the context, say: "I'm sorry, I don't have that specific information in my knowledge base."
+    2. Do not make up facts.
+    3. Be professional and concise.
+
+    CHAT HISTORY:
     ${chatHistoryString}
 
-    Context from Documents:
+    CONTEXT FROM KNOWLEDGE BASE:
     ${context}
 
-    Human's Question:
-    ${question}
-
-    Answer:
+    USER QUESTION: ${question}
+    
+    ANSWER:
     `;
 
     const response = await this.llm.invoke(prompt);
-    return { answer: response.content };
+    return { 
+      answer: response.content,
+      sources: relevantDocs.map(d =>d.metadata.source) 
+    };
   }
 
   status() {
