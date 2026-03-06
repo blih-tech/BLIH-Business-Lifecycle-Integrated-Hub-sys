@@ -50,3 +50,19 @@ export type SubmittedJobRequest = {
   jobDetailsForm: SubmittedJobDetails;
   applicationForm: ApplicationFormValues;
 };
+
+export type ApprovalProgressState = "pending" | "approved" | "requested_review" | "rejected";
+
+export type ApprovalStep = {
+  status: ApprovalProgressState;
+  justification?: string;
+};
+
+export type FullJobRequest = SubmittedJobRequest & {
+  status: "pending" | "posted";
+  progress: {
+    jm: ApprovalStep;
+    hr: ApprovalStep;
+    finance: ApprovalStep;
+  };
+};
