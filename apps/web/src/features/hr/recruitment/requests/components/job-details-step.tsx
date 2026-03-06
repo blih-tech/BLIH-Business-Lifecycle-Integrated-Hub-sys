@@ -3,7 +3,10 @@
 import type { ReactNode } from 'react';
 import { useWatch, type UseFormReturn } from 'react-hook-form';
 
-import type { JobDetailsFormValues } from '@/features/hr/recruitment/requests/job-details-schema';
+import {
+  salaryModeValues,
+  type JobDetailsFormValues,
+} from '@/features/hr/recruitment/requests/job-details-schema';
 import {
   FormControl,
   FormDescription,
@@ -65,6 +68,16 @@ const salaryCurrencyOptions = [
   { value: 'KES', label: 'KES' },
   { value: 'ETB', label: 'ETB' },
 ] as const;
+
+const salaryModeOptions = [
+  { value: 'not_specified', label: 'Not Specified' },
+  { value: 'range', label: 'Salary Range' },
+  { value: 'negotiable', label: 'Negotiable' },
+  { value: 'competitive', label: 'Competitive' },
+] as const satisfies ReadonlyArray<{
+  value: (typeof salaryModeValues)[number];
+  label: string;
+}>;
 
 function optionLabel(
   value: string | undefined,
@@ -136,6 +149,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
     requiredSkills,
     preferredSkills,
     keyResponsibilities,
+    salaryMode,
     salaryRangeMin,
     salaryRangeMax,
     salaryCurrency,
@@ -151,6 +165,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
       'requiredSkills',
       'preferredSkills',
       'keyResponsibilities',
+      'salaryMode',
       'salaryRangeMin',
       'salaryRangeMax',
       'salaryCurrency',
@@ -427,9 +442,36 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
           <FormSectionCard
             eyebrow="Compensation"
             title="Salary & Benefits"
-            description="Salary is optional, but complete the full range if you add it."
+            description="Choose how salary should appear on the job post."
           >
             <div className="grid gap-3 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="salaryMode"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="ui-meta text-muted-foreground">
+                      Salary Type
+                    </FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-background">
+                          <SelectValue placeholder="Select salary type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {salaryModeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="salaryRangeMin"
@@ -439,7 +481,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                       Salary From
                     </FormLabel>
                     <FormControl>
-                      <Input inputMode="numeric" {...field} />
+                      <Input inputMode="numeric" disabled={salaryMode !== 'range'} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -455,7 +497,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                       Salary To
                     </FormLabel>
                     <FormControl>
-                      <Input inputMode="numeric" {...field} />
+                      <Input inputMode="numeric" disabled={salaryMode !== 'range'} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -472,7 +514,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="w-full bg-background">
+                        <SelectTrigger className="w-full bg-background" disabled={salaryMode !== 'range'}>
                           <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
                       </FormControl>
@@ -567,11 +609,12 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                 <SummaryItem
                   label="Salary"
                   value={
+                    salaryMode === 'range' &&
                     salaryRangeMin?.trim() &&
                     salaryRangeMax?.trim() &&
                     salaryCurrency?.trim()
                       ? `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`
-                      : 'Not set'
+                      : optionLabel(salaryMode, salaryModeOptions)
                   }
                 />
                 <SummaryItem

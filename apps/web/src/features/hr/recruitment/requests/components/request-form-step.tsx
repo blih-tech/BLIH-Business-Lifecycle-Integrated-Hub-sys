@@ -59,6 +59,14 @@ const requestTypeOptions = [
   { value: 'replacement', label: 'Replacement' },
 ] as const;
 
+const employeeOptions = [
+  { value: 'emp-alice-njeri', label: 'Alice Njeri' },
+  { value: 'emp-mercy-wanjiku', label: 'Mercy Wanjiku' },
+  { value: 'emp-ian-mwangi', label: 'Ian Mwangi' },
+  { value: 'emp-kevin-kiptoo', label: 'Kevin Kiptoo' },
+  { value: 'emp-ruth-kinyanjui', label: 'Ruth Kinyanjui' },
+] as const;
+
 const employmentTypeOptions = [
   { value: 'full_time', label: 'Full-time' },
   { value: 'part_time', label: 'Part-time' },
@@ -296,20 +304,28 @@ export function RequestFormStep({ form }: RequestFormStepProps) {
                       Replace For
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={
-                          requestType === 'replacement'
-                            ? 'Employee name or position'
-                            : 'Not applicable'
-                        }
-                        {...field}
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
                         disabled={requestType !== 'replacement'}
-                        className={
-                          requestType !== 'replacement'
-                            ? 'bg-muted text-muted-foreground'
-                            : ''
-                        }
-                      />
+                      >
+                        <SelectTrigger className="w-full bg-background disabled:bg-muted disabled:text-muted-foreground">
+                          <SelectValue
+                            placeholder={
+                              requestType === 'replacement'
+                                ? 'Select employee'
+                                : 'Not applicable'
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {employeeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -501,7 +517,7 @@ export function RequestFormStep({ form }: RequestFormStepProps) {
                   label="Replacement for"
                   value={
                     requestType === 'replacement'
-                      ? replaceFor?.trim() || 'Not specified'
+                      ? optionLabel(replaceFor, employeeOptions)
                       : 'Not applicable'
                   }
                 />

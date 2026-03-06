@@ -1,3 +1,7 @@
+import type { ApplicationFormValues } from "@/features/hr/recruitment/requests/application-form-schema";
+import type { CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
+import type { JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
+
 export type JobRequestPriority = "high" | "medium" | "low";
 
 export type JobRequestDepartment = "technical" | "creative" | "digital_marketing";
@@ -29,4 +33,20 @@ export type RequestsStatItem = {
   label: string;
   value: string;
   icon: RequestsStatIcon;
+};
+
+export type SubmittedJobDetails = Omit<
+  JobDetailsFormValues,
+  "keyResponsibilities" | "requiredSkills" | "preferredSkills" | "benefits"
+> & {
+  keyResponsibilities: string[];
+  requiredSkills: string[];
+  preferredSkills: string[];
+  benefits: string[];
+};
+
+export type SubmittedJobRequest = {
+  requestForm: CreateRequestFormValues;
+  jobDetailsForm: SubmittedJobDetails;
+  applicationForm: ApplicationFormValues;
 };

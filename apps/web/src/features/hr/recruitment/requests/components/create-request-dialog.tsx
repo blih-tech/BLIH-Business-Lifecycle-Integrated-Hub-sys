@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { applicationFormSchema, type ApplicationFormValues } from "@/features/hr/recruitment/requests/application-form-schema";
 import { jobDetailsFormSchema, type JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
 import { createRequestFormSchema, type CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
+import type { SubmittedJobRequest } from "@/features/hr/recruitment/requests/types";
 import { ApplicationFormStep } from "@/features/hr/recruitment/requests/components/application-form-step";
 import { JobDetailsStep } from "@/features/hr/recruitment/requests/components/job-details-step";
 import { RequestFormStep } from "@/features/hr/recruitment/requests/components/request-form-step";
@@ -72,6 +73,7 @@ const defaultJobDetailsValues: JobDetailsFormValues = {
   requiredSkills: "",
   preferredSkills: "",
   experienceLevel: "mid",
+  salaryMode: "not_specified",
   salaryRangeMin: "",
   salaryRangeMax: "",
   salaryCurrency: "",
@@ -159,9 +161,22 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
   async function handleApplicationComplete() {
     const isValid = await applicationForm.trigger();
     if (!isValid) return;
-    const payload = {
+    const jobDetailsValues = jobDetailsForm.getValues();
+    const toList = (value: string) =>
+      value
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+    const payload: SubmittedJobRequest = {
       requestForm: requestForm.getValues(),
-      jobDetailsForm: jobDetailsForm.getValues(),
+      jobDetailsForm: {
+        ...jobDetailsValues,
+        keyResponsibilities: toList(jobDetailsValues.keyResponsibilities),
+        requiredSkills: toList(jobDetailsValues.requiredSkills),
+        preferredSkills: toList(jobDetailsValues.preferredSkills ?? ""),
+        benefits: toList(jobDetailsValues.benefits ?? ""),
+      },
       applicationForm: applicationForm.getValues(),
     };
 
@@ -299,7 +314,7 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
                   Back
                 </Button>
                 <Button type="button" className="cursor-pointer" onClick={handleApplicationComplete}>
-                  Finish Setup
+                  Create
                 </Button>
               </DialogFooter>
             </form>

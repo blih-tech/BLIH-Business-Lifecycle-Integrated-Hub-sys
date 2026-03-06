@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const salaryFieldMessage = "Complete salary range and currency or leave all salary fields empty";
+export const salaryModeValues = ["not_specified", "range", "negotiable", "competitive"] as const;
 
 export const jobDetailsFormSchema = z
   .object({
@@ -20,36 +20,35 @@ export const jobDetailsFormSchema = z
     experienceLevel: z.enum(["entry", "mid", "senior", "lead"], {
       error: () => "Experience level is required",
     }),
+    salaryMode: z.enum(salaryModeValues, {
+      error: () => "Salary type is required",
+    }),
     salaryRangeMin: z.string().trim().optional(),
     salaryRangeMax: z.string().trim().optional(),
     salaryCurrency: z.string().trim().optional(),
     benefits: z.string().trim().optional(),
   })
   .superRefine((values, ctx) => {
-    const hasSalaryValue = Boolean(
-      values.salaryRangeMin?.trim() || values.salaryRangeMax?.trim() || values.salaryCurrency?.trim(),
-    );
-
-    if (hasSalaryValue) {
+    if (values.salaryMode === "range") {
       if (!values.salaryRangeMin?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["salaryRangeMin"],
-          message: salaryFieldMessage,
+          message: "Minimum salary is required for salary range",
         });
       }
       if (!values.salaryRangeMax?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["salaryRangeMax"],
-          message: salaryFieldMessage,
+          message: "Maximum salary is required for salary range",
         });
       }
       if (!values.salaryCurrency?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["salaryCurrency"],
-          message: salaryFieldMessage,
+          message: "Salary currency is required for salary range",
         });
       }
     }
