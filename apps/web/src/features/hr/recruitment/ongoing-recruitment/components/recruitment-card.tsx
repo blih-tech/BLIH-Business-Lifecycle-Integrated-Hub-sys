@@ -6,7 +6,6 @@ import { useState } from "react";
 import { InterviewTab } from "@/features/hr/recruitment/ongoing-recruitment/components/interview-tab";
 import { ShortlistedTab } from "@/features/hr/recruitment/ongoing-recruitment/components/shortlisted-tab";
 import { TopTriggers } from "@/features/hr/recruitment/ongoing-recruitment/components/top-triggers";
-import { TopMatchCard } from "@/features/hr/recruitment/ongoing-recruitment/components/top-match-card";
 import { WaitlistedTab } from "@/features/hr/recruitment/ongoing-recruitment/components/waitlisted-tab";
 import type { OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
 import { Button } from "@/shared/components/ui/button";
@@ -54,8 +53,6 @@ export function RecruitmentCard({ job, defaultExpanded = false }: RecruitmentCar
             </Button>
           </div>
         </div>
-
-        {!isExpanded ? <TopMatchCard topMatch={job.topMatch} /> : null}
       </div>
 
       <div
@@ -72,10 +69,7 @@ export function RecruitmentCard({ job, defaultExpanded = false }: RecruitmentCar
             />
 
             <TabsContent value="interview" className="mt-0">
-              <div className="space-y-4">
-                <TopMatchCard topMatch={job.topMatch} />
-                <InterviewTab job={job} />
-              </div>
+              <InterviewTab job={job} />
             </TabsContent>
             <TabsContent value="shortlisted" className="mt-0">
               <ShortlistedTab job={job} />

@@ -13,7 +13,7 @@ export function TopTriggers({ onInterviewCount, shortlistedCount, waitlistedCoun
         value="interview"
         className="h-auto flex-1 rounded-b-none rounded-t-[12px] border border-transparent bg-[#f3f3f3] px-6 py-[9px] text-sm font-medium tracking-[-0.1504px] text-black !shadow-none data-[state=active]:border-[#e5e5e5] data-[state=active]:border-b-transparent data-[state=active]:bg-white data-[state=active]:py-[9px] data-[state=active]:!shadow-none"
       >
-        On Interview ({onInterviewCount})
+        Interviews ({onInterviewCount})
       </TabsTrigger>
       <TabsTrigger
         value="shortlisted"
@@ -25,7 +25,7 @@ export function TopTriggers({ onInterviewCount, shortlistedCount, waitlistedCoun
         value="waitlisted"
         className="h-auto flex-1 rounded-b-none rounded-t-[12px] border border-transparent bg-[#f3f3f3] px-6 py-[9px] text-sm font-medium tracking-[-0.1504px] text-black !shadow-none data-[state=active]:border-[#e5e5e5] data-[state=active]:border-b-transparent data-[state=active]:bg-white data-[state=active]:py-[9px] data-[state=active]:!shadow-none"
       >
-        Waitlisted ({waitlistedCount})
+        Rejected ({waitlistedCount})
       </TabsTrigger>
     </TabsList>
   );

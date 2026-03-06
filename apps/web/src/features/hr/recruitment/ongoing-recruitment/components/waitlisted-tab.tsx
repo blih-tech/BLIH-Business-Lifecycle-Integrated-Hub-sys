@@ -14,7 +14,7 @@ export function WaitlistedTab({ job }: WaitlistedTabProps) {
         <span className="inline-flex h-7 w-7 items-center justify-center rounded-[6px] bg-black text-white">
           <UsersRound className="h-4 w-4" />
         </span>
-        <p className="text-base font-medium tracking-[-0.3125px] text-black">Waitlist</p>
+        <p className="text-base font-medium tracking-[-0.3125px] text-black">Rejected</p>
       </div>
 
       <div className="max-h-[320px] overflow-y-auto pr-1">
