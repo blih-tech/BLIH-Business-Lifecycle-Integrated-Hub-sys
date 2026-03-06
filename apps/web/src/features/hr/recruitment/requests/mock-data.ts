@@ -5,11 +5,11 @@ import type {
 
 export const jobRequests: FullJobRequest[] = [
   {
-    status: 'pending',
+    status: 'posted',
     progress: {
       jm: { status: 'pending' },
-      hr: { status: 'pending' },
-      finance: { status: 'pending' },
+      hr: { status: 'approved' },
+      finance: { status: 'approved' },
     },
     requestForm: {
       jobTitle: 'HR Operations Specialist',
@@ -81,7 +81,7 @@ export const jobRequests: FullJobRequest[] = [
     },
   },
   {
-    status: 'pending',
+    status: 'posted',
     progress: {
       jm: { status: 'approved' },
       hr: { status: 'pending' },
@@ -252,10 +252,7 @@ export const jobRequests: FullJobRequest[] = [
     progress: {
       jm: { status: 'approved' },
       hr: { status: 'approved' },
-      finance: {
-        status: 'rejected',
-        justification: 'Current quarter budget is fully allocated.',
-      },
+      finance: { status: 'approved' },
     },
     requestForm: {
       jobTitle: 'Data Analyst',
