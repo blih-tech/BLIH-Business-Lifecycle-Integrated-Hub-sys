@@ -1,6 +1,13 @@
 export type OngoingInterviewStatus = "interviewed" | "scheduled";
 export type OngoingInterviewDecisionStatus = "pending" | "waitlisted";
 
+export type OngoingCommitteeReview = {
+  memberId: string;
+  memberName: string;
+  note: string;
+  rate: number | null;
+};
+
 export type OngoingInterviewApplicant = {
   id: string;
   fullName: string;
@@ -10,6 +17,7 @@ export type OngoingInterviewApplicant = {
   interviewDate?: string;
   interviewTime?: string;
   rating: number;
+  committeeReviews: OngoingCommitteeReview[];
 };
 
 export type OngoingCommitteePerson = {

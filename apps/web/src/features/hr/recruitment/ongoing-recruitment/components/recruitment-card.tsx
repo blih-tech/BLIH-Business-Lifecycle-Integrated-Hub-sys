@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
+import { InterviewReviewDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/interview-review-dialog";
 import { SetupCommitteeDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/setup-committee-dialog";
 import { InterviewTab } from "@/features/hr/recruitment/ongoing-recruitment/components/interview-tab";
 import { ShortlistedTab } from "@/features/hr/recruitment/ongoing-recruitment/components/shortlisted-tab";
@@ -10,25 +11,53 @@ import { TopTriggers } from "@/features/hr/recruitment/ongoing-recruitment/compo
 import { WaitlistedTab } from "@/features/hr/recruitment/ongoing-recruitment/components/waitlisted-tab";
 import { ongoingCommitteePeople } from "@/features/hr/recruitment/ongoing-recruitment/mock-data";
 import type { OngoingCommitteePerson } from "@/features/hr/recruitment/ongoing-recruitment/types";
-import type { OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
+import type { OngoingInterviewApplicant, OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent } from "@/shared/components/ui/tabs";
 
 type RecruitmentCardProps = {
   job: OngoingRecruitmentJob;
+  currentUserName: string;
   defaultExpanded?: boolean;
 };
 
-export function RecruitmentCard({ job, defaultExpanded = false }: RecruitmentCardProps) {
+function namesEqual(left: string, right: string) {
+  return left.trim().toLowerCase() === right.trim().toLowerCase();
+}
+
+export function RecruitmentCard({ job, currentUserName, defaultExpanded = false }: RecruitmentCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [isCommitteeDialogOpen, setIsCommitteeDialogOpen] = useState(false);
   const [committeeMembers, setCommitteeMembers] = useState<OngoingCommitteePerson[]>(job.interviewCommittee);
+  const [interviews, setInterviews] = useState(job.interviews);
+  const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
 
   function handleSaveCommittee(members: OngoingCommitteePerson[]) {
     setCommitteeMembers(members);
     console.log("interviewCommittee", {
       jobId: job.id,
       committeeMemberIds: members.map((member) => member.id),
+    });
+  }
+
+  const selectedApplicant = interviews.find((item) => item.id === selectedApplicantId) ?? null;
+
+  function handleInterviewDecision(payload: {
+    applicantId: string;
+    action: "reject" | "offer" | "waitlist";
+    reviews: OngoingInterviewApplicant["committeeReviews"];
+  }) {
+    setInterviews((current) =>
+      current.map((item) => (item.id === payload.applicantId ? { ...item, committeeReviews: payload.reviews } : item)),
+    );
+
+    console.log("interviewDecision", {
+      jobId: job.id,
+      applicantId: payload.applicantId,
+      action: payload.action,
+      currentUserName,
+      currentUserReview: payload.reviews.find((review) => namesEqual(review.memberName, currentUserName)) ?? null,
+      reviews: payload.reviews,
     });
   }
 
@@ -84,9 +113,10 @@ export function RecruitmentCard({ job, defaultExpanded = false }: RecruitmentCar
 
               <TabsContent value="interview" className="mt-0">
                 <InterviewTab
-                  job={job}
+                  interviews={interviews}
                   committeeMembers={committeeMembers}
                   onSetupCommittee={() => setIsCommitteeDialogOpen(true)}
+                  onSelectApplicant={setSelectedApplicantId}
                 />
               </TabsContent>
               <TabsContent value="shortlisted" className="mt-0">
@@ -107,6 +137,18 @@ export function RecruitmentCard({ job, defaultExpanded = false }: RecruitmentCar
         selectedPeople={committeeMembers}
         onOpenChange={setIsCommitteeDialogOpen}
         onSave={handleSaveCommittee}
+      />
+      <InterviewReviewDialog
+        open={selectedApplicant !== null}
+        applicant={selectedApplicant}
+        committeeMembers={committeeMembers}
+        currentUserName={currentUserName}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedApplicantId(null);
+          }
+        }}
+        onSubmit={handleInterviewDecision}
       />
     </>
   );

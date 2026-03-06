@@ -5,12 +5,13 @@ import { Button } from "@/shared/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
 
 type InterviewTabProps = {
-  job: OngoingRecruitmentJob;
+  interviews: OngoingRecruitmentJob["interviews"];
   committeeMembers: OngoingCommitteePerson[];
   onSetupCommittee: () => void;
+  onSelectApplicant: (applicantId: string) => void;
 };
 
-export function InterviewTab({ job, committeeMembers, onSetupCommittee }: InterviewTabProps) {
+export function InterviewTab({ interviews, committeeMembers, onSetupCommittee, onSelectApplicant }: InterviewTabProps) {
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
@@ -62,8 +63,12 @@ export function InterviewTab({ job, committeeMembers, onSetupCommittee }: Interv
           </TableHeader>
 
           <TableBody>
-            {job.interviews.map((item) => (
-              <TableRow key={item.id} className="group bg-white transition-colors duration-200 hover:bg-[#f3f3f3]">
+            {interviews.map((item) => (
+              <TableRow
+                key={item.id}
+                className="group cursor-pointer bg-white transition-colors duration-200 hover:bg-[#f3f3f3]"
+                onClick={() => onSelectApplicant(item.id)}
+              >
                 <TableCell className="px-4 py-3 group-hover:bg-transparent">
                   <p className="text-base font-medium tracking-[-0.3125px] text-black">{item.fullName}</p>
                   <p className="text-xs text-[#666]">{item.phone}</p>

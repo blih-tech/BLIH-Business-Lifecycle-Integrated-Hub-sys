@@ -1,4 +1,5 @@
 export * from "@/features/hr/recruitment/ongoing-recruitment/components/interview-tab";
+export * from "@/features/hr/recruitment/ongoing-recruitment/components/interview-review-dialog";
 export * from "@/features/hr/recruitment/ongoing-recruitment/components/pipeline-candidate-card";
 export * from "@/features/hr/recruitment/ongoing-recruitment/components/recruitment-card";
 export * from "@/features/hr/recruitment/ongoing-recruitment/components/setup-committee-dialog";

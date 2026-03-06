@@ -1,6 +1,7 @@
 import type { OngoingCommitteePerson, OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
 
 export const ongoingCommitteePeople: OngoingCommitteePerson[] = [
+  { id: "committee-0", fullName: "User1", role: "HR Manager" },
   { id: "committee-1", fullName: "Meron Tadesse", role: "HR Business Partner" },
   { id: "committee-2", fullName: "Abel Girma", role: "Engineering Manager" },
   { id: "committee-3", fullName: "Saron Bekele", role: "Senior Product Manager" },
@@ -36,6 +37,11 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         interviewStatus: "interviewed",
         status: "waitlisted",
         rating: 90,
+        committeeReviews: [
+          { memberId: "committee-0", memberName: "User1", note: "Strong communication and clear backend reasoning.", rate: 88 },
+          { memberId: "committee-2", memberName: "Abel Girma", note: "Good system design depth. Needs tighter API validation examples.", rate: 84 },
+          { memberId: "committee-5", memberName: "Rahel Assefa", note: "Professional and responsive throughout the process.", rate: 86 },
+        ],
       },
       {
         id: "i-2",
@@ -44,6 +50,11 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         interviewStatus: "interviewed",
         status: "waitlisted",
         rating: 90,
+        committeeReviews: [
+          { memberId: "committee-0", memberName: "User1", note: "Needs stronger examples on production incident handling.", rate: 79 },
+          { memberId: "committee-1", memberName: "Meron Tadesse", note: "Good attitude, but experience fit is mixed.", rate: 76 },
+          { memberId: "committee-6", memberName: "Dawit Kebede", note: "Compensation expectations are manageable for the level.", rate: 81 },
+        ],
       },
       {
         id: "i-3",
@@ -54,6 +65,10 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         interviewDate: "Feb 24, 2025",
         interviewTime: "10:00 AM",
         rating: 90,
+        committeeReviews: [
+          { memberId: "committee-0", memberName: "User1", note: "", rate: null },
+          { memberId: "committee-2", memberName: "Abel Girma", note: "", rate: null },
+        ],
       },
       {
         id: "i-4",
@@ -64,6 +79,10 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         interviewDate: "Feb 24, 2025",
         interviewTime: "10:00 AM",
         rating: 90,
+        committeeReviews: [
+          { memberId: "committee-0", memberName: "User1", note: "", rate: null },
+          { memberId: "committee-4", memberName: "Nathan Tesfaye", note: "", rate: null },
+        ],
       },
     ],
     shortlisted: [
@@ -113,6 +132,11 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         interviewStatus: "interviewed",
         status: "waitlisted",
         rating: 87,
+        committeeReviews: [
+          { memberId: "committee-0", memberName: "User1", note: "Strong frontend ownership and practical tradeoff thinking.", rate: 91 },
+          { memberId: "committee-4", memberName: "Nathan Tesfaye", note: "Works well cross-functionally with design.", rate: 89 },
+          { memberId: "committee-3", memberName: "Saron Bekele", note: "Clear product thinking and strong stakeholder communication.", rate: 87 },
+        ],
       },
       {
         id: "i-6",
@@ -123,6 +147,10 @@ export const ongoingRecruitmentJobs: OngoingRecruitmentJob[] = [
         interviewDate: "Mar 03, 2025",
         interviewTime: "02:30 PM",
         rating: 88,
+        committeeReviews: [
+          { memberId: "committee-0", memberName: "User1", note: "", rate: null },
+          { memberId: "committee-3", memberName: "Saron Bekele", note: "", rate: null },
+        ],
       },
     ],
     shortlisted: [
