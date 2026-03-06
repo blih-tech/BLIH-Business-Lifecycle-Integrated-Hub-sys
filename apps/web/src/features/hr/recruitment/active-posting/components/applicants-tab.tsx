@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { ScheduleInterviewDialog } from "@/features/hr/recruitment/active-posting/components/schedule-interview-dialog";
 import { CandidateDetailDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/candidate-detail-dialog";
 import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
 import { Button } from "@/shared/components/ui/button";
@@ -81,6 +82,7 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedApplicantIds, setSelectedApplicantIds] = useState<string[]>([]);
   const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
 
   const sortedApplicants = useMemo(() => {
     return [...job.applicants].sort((left, right) => {
@@ -129,6 +131,12 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
 
   function handleBulkAction(action: "summon_for_interview" | "shortlist" | "reject") {
     const selectedApplicants = job.applicants.filter((applicant) => selectedApplicantIds.includes(applicant.id));
+
+    if (action === "summon_for_interview") {
+      setIsScheduleDialogOpen(true);
+      return;
+    }
+
     console.log("activePostingApplicantAction", {
       action,
       applicantIds: selectedApplicantIds,
@@ -136,6 +144,7 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
     });
   }
 
+  const selectedApplicants = job.applicants.filter((applicant) => selectedApplicantIds.includes(applicant.id));
   const selectedApplicant = job.applicants.find((applicant) => applicant.id === selectedApplicantId) ?? null;
   const selectedCandidate = selectedApplicant
     ? {
@@ -297,6 +306,18 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
           if (!open) {
             setSelectedApplicantId(null);
           }
+        }}
+      />
+      <ScheduleInterviewDialog
+        open={isScheduleDialogOpen}
+        applicants={selectedApplicants}
+        onOpenChange={setIsScheduleDialogOpen}
+        onProceed={(payload) => {
+          console.log("activePostingApplicantAction", {
+            action: "summon_for_interview",
+            ...payload,
+            applicants: selectedApplicants,
+          });
         }}
       />
     </>
