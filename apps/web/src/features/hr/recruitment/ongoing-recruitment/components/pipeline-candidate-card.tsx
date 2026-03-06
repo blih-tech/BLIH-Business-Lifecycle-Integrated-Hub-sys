@@ -1,25 +1,61 @@
-import { Star } from "lucide-react";
+import { Bot, MoreHorizontal } from "lucide-react";
 
 import type { OngoingPipelineCandidate } from "@/features/hr/recruitment/ongoing-recruitment/types";
+import { Button } from "@/shared/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu";
 
 type PipelineCandidateCardProps = {
   candidate: OngoingPipelineCandidate;
+  variant?: "default" | "shortlist";
+  onMoveToInterview?: (candidateId: string) => void;
+  onReject?: (candidateId: string) => void;
 };
 
-export function PipelineCandidateCard({ candidate }: PipelineCandidateCardProps) {
+export function PipelineCandidateCard({
+  candidate,
+  variant = "default",
+  onMoveToInterview,
+  onReject,
+}: PipelineCandidateCardProps) {
   return (
-    <article className="rounded-[12px] bg-[#f3f3f3] p-4">
+    <article className="rounded-[14px] border border-[#e5e5e5] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-sm font-medium leading-5 tracking-[-0.1504px] text-black">{candidate.fullName}</p>
-          <p className="mt-1 text-xs text-[#666]">{candidate.phone}</p>
         </div>
-        <span className="inline-flex h-[22px] w-fit items-center gap-1 rounded-[4px] border border-primary px-[5px] py-[3px] text-[10px] font-bold text-primary">
-          <Star className="h-2.5 w-2.5 fill-[#ffe345] text-[#ffe345]" />
-          {candidate.rating}%
-        </span>
+
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-[24px] w-fit items-center gap-1 rounded-[6px] border border-primary/20 bg-primary/5 px-2 py-[3px] text-[10px] font-bold text-primary">
+            <Bot className="h-3 w-3" />
+            {candidate.rating}%
+          </span>
+
+          {variant === "shortlist" ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" variant="ghost" size="icon" className="h-7 w-7 rounded-[6px]">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onMoveToInterview?.(candidate.id)}>Move to Interview</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onClick={() => onReject?.(candidate.id)}>
+                  Reject
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
+        </div>
       </div>
-      <p className="mt-5 text-xs text-[#666]">{candidate.listedAt}</p>
+
+      <div className="mt-5 flex items-center justify-between border-t border-[#f0f0f0] pt-3">
+        <p className="text-xs text-[#666]">{candidate.listedAt}</p>
+      </div>
     </article>
   );
 }

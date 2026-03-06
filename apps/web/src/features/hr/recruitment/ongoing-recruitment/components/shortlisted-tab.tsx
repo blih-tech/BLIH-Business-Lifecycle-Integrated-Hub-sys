@@ -8,6 +8,22 @@ type ShortlistedTabProps = {
 };
 
 export function ShortlistedTab({ job }: ShortlistedTabProps) {
+  function handleMoveToInterview(candidateId: string) {
+    console.log("shortlistAction", {
+      jobId: job.id,
+      candidateId,
+      action: "move_to_interview",
+    });
+  }
+
+  function handleReject(candidateId: string) {
+    console.log("shortlistAction", {
+      jobId: job.id,
+      candidateId,
+      action: "reject",
+    });
+  }
+
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-2 border-b border-border pb-4">
@@ -17,10 +33,16 @@ export function ShortlistedTab({ job }: ShortlistedTabProps) {
         <p className="text-base font-medium tracking-[-0.3125px] text-black">Shortlist</p>
       </div>
 
-      <div className="max-h-[320px] overflow-y-auto pr-1">
+      <div className="max-h-[320px] overflow-y-auto pr-1 [scrollbar-color:#d4d4d8_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#d4d4d8] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
           {job.shortlisted.map((candidate) => (
-            <PipelineCandidateCard key={candidate.id} candidate={candidate} />
+            <PipelineCandidateCard
+              key={candidate.id}
+              candidate={candidate}
+              variant="shortlist"
+              onMoveToInterview={handleMoveToInterview}
+              onReject={handleReject}
+            />
           ))}
         </div>
       </div>

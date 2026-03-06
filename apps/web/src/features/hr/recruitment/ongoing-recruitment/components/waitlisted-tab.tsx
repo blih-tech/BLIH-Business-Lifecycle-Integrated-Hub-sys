@@ -17,7 +17,7 @@ export function WaitlistedTab({ job }: WaitlistedTabProps) {
         <p className="text-base font-medium tracking-[-0.3125px] text-black">Rejected</p>
       </div>
 
-      <div className="max-h-[320px] overflow-y-auto pr-1">
+      <div className="max-h-[320px] overflow-y-auto pr-1 [scrollbar-color:#d4d4d8_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#d4d4d8] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
           {job.waitlisted.map((candidate) => (
             <PipelineCandidateCard key={candidate.id} candidate={candidate} />
