@@ -14,6 +14,19 @@ export type JobApplicant = {
   yearsOfExperience: string;
   salaryExpectation: string;
   aiScore: number;
+  answers: Array<{
+    id: string;
+    label: string;
+    value: string;
+    type: "text" | "textarea" | "link" | "file" | "number" | "date";
+  }>;
+  aiAnalysis: {
+    score: number;
+    summary: string;
+    strengths: string[];
+    concerns: string[];
+    recommendation: string;
+  };
 };
 
 export type JobAnalyticsPoint = {

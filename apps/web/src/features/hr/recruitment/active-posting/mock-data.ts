@@ -1,5 +1,46 @@
 import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
 
+function createApplicant(applicant: {
+  id: string;
+  fullName: string;
+  phone: string;
+  appliedAt: string;
+  yearsOfExperience: string;
+  salaryExpectation: string;
+  aiScore: number;
+  location: string;
+  portfolioUrl: string;
+  linkedinUrl: string;
+  resumeUrl: string;
+  summary: string;
+  strengths: string[];
+  concerns: string[];
+  recommendation: string;
+}) {
+  return {
+    ...applicant,
+    answers: [
+      { id: `${applicant.id}-a1`, label: "Full Name", value: applicant.fullName, type: "text" as const },
+      { id: `${applicant.id}-a2`, label: "Phone Number", value: applicant.phone, type: "text" as const },
+      { id: `${applicant.id}-a3`, label: "Applied Date", value: applicant.appliedAt, type: "date" as const },
+      { id: `${applicant.id}-a4`, label: "Years of Experience", value: applicant.yearsOfExperience, type: "text" as const },
+      { id: `${applicant.id}-a5`, label: "Salary Expectation", value: applicant.salaryExpectation, type: "number" as const },
+      { id: `${applicant.id}-a6`, label: "Current Location", value: applicant.location, type: "text" as const },
+      { id: `${applicant.id}-a7`, label: "Portfolio", value: applicant.portfolioUrl, type: "link" as const },
+      { id: `${applicant.id}-a8`, label: "LinkedIn Profile", value: applicant.linkedinUrl, type: "link" as const },
+      { id: `${applicant.id}-a9`, label: "Resume / CV", value: applicant.resumeUrl, type: "file" as const },
+      { id: `${applicant.id}-a10`, label: "Candidate Summary", value: applicant.summary, type: "textarea" as const },
+    ],
+    aiAnalysis: {
+      score: applicant.aiScore,
+      summary: applicant.summary,
+      strengths: applicant.strengths,
+      concerns: applicant.concerns,
+      recommendation: applicant.recommendation,
+    },
+  };
+}
+
 export const activePostingJobs: ActiveJobItem[] = [
   {
     id: "job-marketing-manager-001",
@@ -34,7 +75,7 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Professional development budget",
     ],
     applicants: [
-      {
+      createApplicant({
         id: "a1",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
@@ -42,8 +83,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
         aiScore: 94,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/alex-johnson",
+        linkedinUrl: "https://linkedin.com/in/alex-johnson",
+        resumeUrl: "https://files.example.com/alex-johnson-resume.pdf",
+        summary: "Highly aligned marketing profile with strong campaign leadership and analytics depth.",
+        strengths: ["Strong campaign strategy", "Good leadership history", "Clear reporting discipline"],
+        concerns: ["Needs deeper brand partnership examples"],
+        recommendation: "Move forward for recruiter screening.",
+      }),
+      createApplicant({
         id: "a2",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
@@ -51,8 +100,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
         aiScore: 91,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/alex-johnson-2",
+        linkedinUrl: "https://linkedin.com/in/alex-johnson-2",
+        resumeUrl: "https://files.example.com/alex-johnson-2-resume.pdf",
+        summary: "Strong strategic marketer with solid performance marketing fundamentals.",
+        strengths: ["Strong strategic thinking", "Performance marketing", "Good communication"],
+        concerns: ["Portfolio examples are repetitive"],
+        recommendation: "Keep under consideration for interview.",
+      }),
+      createApplicant({
         id: "a3",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
@@ -60,8 +117,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
         aiScore: 88,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/alex-johnson-3",
+        linkedinUrl: "https://linkedin.com/in/alex-johnson-3",
+        resumeUrl: "https://files.example.com/alex-johnson-3-resume.pdf",
+        summary: "Good marketer with balanced execution strength and reliable ownership.",
+        strengths: ["Execution consistency", "Cross-team communication"],
+        concerns: ["Limited regional campaign depth"],
+        recommendation: "Good fit for shortlist review.",
+      }),
+      createApplicant({
         id: "a4",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
@@ -69,8 +134,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
         aiScore: 84,
-      },
-      {
+        location: "Adama",
+        portfolioUrl: "https://portfolio.example.com/alex-johnson-4",
+        linkedinUrl: "https://linkedin.com/in/alex-johnson-4",
+        resumeUrl: "https://files.example.com/alex-johnson-4-resume.pdf",
+        summary: "Capable marketer with decent leadership experience and moderate analytics strength.",
+        strengths: ["Good team coordination", "Campaign execution"],
+        concerns: ["Lighter analytics depth than top candidates"],
+        recommendation: "Reserve for later stage review.",
+      }),
+      createApplicant({
         id: "a5",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
@@ -78,8 +151,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
         aiScore: 79,
-      },
-      {
+        location: "Bahir Dar",
+        portfolioUrl: "https://portfolio.example.com/alex-johnson-5",
+        linkedinUrl: "https://linkedin.com/in/alex-johnson-5",
+        resumeUrl: "https://files.example.com/alex-johnson-5-resume.pdf",
+        summary: "Reasonable marketing background, but profile fit is below current top set.",
+        strengths: ["Positive communication"],
+        concerns: ["Less strategic ownership", "Weaker analytics examples"],
+        recommendation: "Do not prioritize.",
+      }),
+      createApplicant({
         id: "a6",
         fullName: "Alex Johnson",
         phone: "+251 967 97 3799",
@@ -87,8 +168,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "15,000",
         aiScore: 73,
-      },
-      {
+        location: "Dire Dawa",
+        portfolioUrl: "https://portfolio.example.com/alex-johnson-6",
+        linkedinUrl: "https://linkedin.com/in/alex-johnson-6",
+        resumeUrl: "https://files.example.com/alex-johnson-6-resume.pdf",
+        summary: "Profile shows potential but does not meet the current benchmark for this role.",
+        strengths: ["Adaptability"],
+        concerns: ["Lower role fit", "Thin leadership examples"],
+        recommendation: "Reject at this stage.",
+      }),
+      createApplicant({
         id: "a7",
         fullName: "Martha Kamau",
         phone: "+254 712 443 221",
@@ -96,8 +185,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "6 years",
         salaryExpectation: "16,500",
         aiScore: 90,
-      },
-      {
+        location: "Nairobi",
+        portfolioUrl: "https://portfolio.example.com/martha-kamau",
+        linkedinUrl: "https://linkedin.com/in/martha-kamau",
+        resumeUrl: "https://files.example.com/martha-kamau-resume.pdf",
+        summary: "Strong marketing manager candidate with balanced performance and leadership experience.",
+        strengths: ["Regional campaign leadership", "Strong reporting"],
+        concerns: ["Comp expectations slightly above median"],
+        recommendation: "Advance to shortlist.",
+      }),
+      createApplicant({
         id: "a8",
         fullName: "Daniel Otieno",
         phone: "+254 733 100 889",
@@ -105,8 +202,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "8 years",
         salaryExpectation: "17,200",
         aiScore: 87,
-      },
-      {
+        location: "Nakuru",
+        portfolioUrl: "https://portfolio.example.com/daniel-otieno",
+        linkedinUrl: "https://linkedin.com/in/daniel-otieno",
+        resumeUrl: "https://files.example.com/daniel-otieno-resume.pdf",
+        summary: "Experienced marketing lead with strong delivery record and good stakeholder alignment.",
+        strengths: ["Leadership", "Delivery consistency"],
+        concerns: ["Portfolio is less product-led"],
+        recommendation: "Consider for interview.",
+      }),
+      createApplicant({
         id: "a9",
         fullName: "Linet Abebe",
         phone: "+251 913 008 445",
@@ -114,8 +219,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "5 years",
         salaryExpectation: "14,800",
         aiScore: 85,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/linet-abebe",
+        linkedinUrl: "https://linkedin.com/in/linet-abebe",
+        resumeUrl: "https://files.example.com/linet-abebe-resume.pdf",
+        summary: "Solid individual contributor with good channel planning and collaboration skills.",
+        strengths: ["Channel planning", "Reliable communication"],
+        concerns: ["Less team leadership depth"],
+        recommendation: "Good backup shortlist candidate.",
+      }),
+      createApplicant({
         id: "a10",
         fullName: "Peter Njoroge",
         phone: "+254 701 552 114",
@@ -123,8 +236,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "7 years",
         salaryExpectation: "18,000",
         aiScore: 82,
-      },
-      {
+        location: "Nairobi",
+        portfolioUrl: "https://portfolio.example.com/peter-njoroge",
+        linkedinUrl: "https://linkedin.com/in/peter-njoroge",
+        resumeUrl: "https://files.example.com/peter-njoroge-resume.pdf",
+        summary: "Experienced profile but less convincing on strategic breadth than higher-ranked candidates.",
+        strengths: ["Strong reporting", "Longer experience"],
+        concerns: ["Higher comp ask", "Less strategic range"],
+        recommendation: "Keep as a reserve candidate.",
+      }),
+      createApplicant({
         id: "a11",
         fullName: "Sara Tesfaye",
         phone: "+251 921 443 778",
@@ -132,8 +253,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "4 years",
         salaryExpectation: "13,900",
         aiScore: 80,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/sara-tesfaye",
+        linkedinUrl: "https://linkedin.com/in/sara-tesfaye",
+        resumeUrl: "https://files.example.com/sara-tesfaye-resume.pdf",
+        summary: "Promising growth profile with strong communication and good campaign support history.",
+        strengths: ["Fast learner", "Clear communication"],
+        concerns: ["Needs more leadership experience"],
+        recommendation: "Not top-tier for this role yet.",
+      }),
+      createApplicant({
         id: "a12",
         fullName: "Brian Kiptoo",
         phone: "+254 722 338 901",
@@ -141,7 +270,15 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "6 years",
         salaryExpectation: "15,700",
         aiScore: 78,
-      },
+        location: "Eldoret",
+        portfolioUrl: "https://portfolio.example.com/brian-kiptoo",
+        linkedinUrl: "https://linkedin.com/in/brian-kiptoo",
+        resumeUrl: "https://files.example.com/brian-kiptoo-resume.pdf",
+        summary: "Reasonable profile with acceptable experience but weaker differentiation from the pool.",
+        strengths: ["Solid execution", "Organized delivery"],
+        concerns: ["Less distinct strengths", "Average strategic depth"],
+        recommendation: "Reject unless pool narrows significantly.",
+      }),
     ],
     analytics: [
       { label: "Views", value: 1683 },
@@ -227,7 +364,7 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Annual design conference budget",
     ],
     applicants: [
-      {
+      createApplicant({
         id: "b1",
         fullName: "Mina Bekele",
         phone: "+251 910 22 1188",
@@ -235,8 +372,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "6 years",
         salaryExpectation: "18,500",
         aiScore: 92,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/mina-bekele",
+        linkedinUrl: "https://linkedin.com/in/mina-bekele",
+        resumeUrl: "https://files.example.com/mina-bekele-resume.pdf",
+        summary: "Strong design profile with high product thinking and strong portfolio clarity.",
+        strengths: ["Excellent portfolio", "Strong research thinking", "Great visual system discipline"],
+        concerns: ["Needs deeper design ops examples"],
+        recommendation: "Advance to interview.",
+      }),
+      createApplicant({
         id: "b2",
         fullName: "Samuel Tadesse",
         phone: "+251 923 10 9876",
@@ -244,7 +389,15 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "5 years",
         salaryExpectation: "16,000",
         aiScore: 81,
-      },
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/samuel-tadesse-designer",
+        linkedinUrl: "https://linkedin.com/in/samuel-tadesse-designer",
+        resumeUrl: "https://files.example.com/samuel-tadesse-designer-resume.pdf",
+        summary: "Good design practitioner with steady craft but lower product strategy depth than the top candidate.",
+        strengths: ["Clean craft", "Strong execution"],
+        concerns: ["Lower research depth", "Portfolio breadth is narrower"],
+        recommendation: "Keep in reserve.",
+      }),
     ],
     analytics: [
       { label: "Views", value: 910 },
@@ -330,7 +483,7 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Flexible working hours",
     ],
     applicants: [
-      {
+      createApplicant({
         id: "c1",
         fullName: "Naol Girma",
         phone: "+251 911 67 3401",
@@ -338,8 +491,16 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "4 years",
         salaryExpectation: "14,000",
         aiScore: 89,
-      },
-      {
+        location: "Addis Ababa",
+        portfolioUrl: "https://portfolio.example.com/naol-girma",
+        linkedinUrl: "https://linkedin.com/in/naol-girma",
+        resumeUrl: "https://files.example.com/naol-girma-resume.pdf",
+        summary: "Strong analytics candidate with solid reporting and dashboard construction history.",
+        strengths: ["SQL depth", "Dashboard communication", "Reliable KPI ownership"],
+        concerns: ["Needs broader experimentation work"],
+        recommendation: "Advance to interview.",
+      }),
+      createApplicant({
         id: "c2",
         fullName: "Helen Assefa",
         phone: "+251 929 88 4410",
@@ -347,7 +508,15 @@ export const activePostingJobs: ActiveJobItem[] = [
         yearsOfExperience: "5 years",
         salaryExpectation: "15,500",
         aiScore: 86,
-      },
+        location: "Adama",
+        portfolioUrl: "https://portfolio.example.com/helen-assefa",
+        linkedinUrl: "https://linkedin.com/in/helen-assefa",
+        resumeUrl: "https://files.example.com/helen-assefa-resume.pdf",
+        summary: "Good analyst with strong communication and operational reporting experience.",
+        strengths: ["Stakeholder reporting", "Reliable analysis"],
+        concerns: ["Less advanced BI depth"],
+        recommendation: "Good shortlist candidate.",
+      }),
     ],
     analytics: [
       { label: "Views", value: 744 },

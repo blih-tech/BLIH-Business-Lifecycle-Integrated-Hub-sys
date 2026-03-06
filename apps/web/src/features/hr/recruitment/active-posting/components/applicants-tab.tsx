@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { CandidateDetailDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/candidate-detail-dialog";
 import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
 import { Button } from "@/shared/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
@@ -79,6 +80,7 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
   const [sortKey, setSortKey] = useState<SortKey>("appliedAt");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedApplicantIds, setSelectedApplicantIds] = useState<string[]>([]);
+  const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
 
   const sortedApplicants = useMemo(() => {
     return [...job.applicants].sort((left, right) => {
@@ -134,142 +136,169 @@ export function ApplicantsTab({ job }: ApplicantsTabProps) {
     });
   }
 
-  return (
-    <section className="space-y-2 px-6">
-      <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-[#666]">
-          {selectedApplicantIds.length} applicant{selectedApplicantIds.length === 1 ? "" : "s"} selected
-        </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 cursor-pointer text-xs"
-            disabled={selectedApplicantIds.length === 0}
-            onClick={() => handleBulkAction("summon_for_interview")}
-          >
-            Summon for Interview
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 cursor-pointer text-xs"
-            disabled={selectedApplicantIds.length === 0}
-            onClick={() => handleBulkAction("shortlist")}
-          >
-            Shortlist
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 cursor-pointer text-xs"
-            disabled={selectedApplicantIds.length === 0}
-            onClick={() => handleBulkAction("reject")}
-          >
-            Reject
-          </Button>
-        </div>
-      </div>
+  const selectedApplicant = job.applicants.find((applicant) => applicant.id === selectedApplicantId) ?? null;
+  const selectedCandidate = selectedApplicant
+    ? {
+        id: selectedApplicant.id,
+        fullName: selectedApplicant.fullName,
+        phone: selectedApplicant.phone,
+        listedAt: selectedApplicant.appliedAt,
+        rating: selectedApplicant.aiScore,
+        answers: selectedApplicant.answers,
+        aiAnalysis: selectedApplicant.aiAnalysis,
+      }
+    : null;
 
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-12 px-4 py-3">
-              <input
-                type="checkbox"
-                checked={allVisibleSelected}
-                onChange={(event) => toggleSelectAllVisible(event.target.checked)}
-                aria-label="Select all applicants on current page"
-                className="h-4 w-4 rounded border-border"
-              />
-            </TableHead>
-            <TableHead className="px-4 py-3">
-              <SortHeader label="Name" sortKey="name" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
-            </TableHead>
-            <TableHead className="px-4 py-3">
-              <SortHeader label="Applied" sortKey="appliedAt" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
-            </TableHead>
-            <TableHead className="px-4 py-3">
-              <SortHeader label="Experience" sortKey="yearsOfExperience" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
-            </TableHead>
-            <TableHead className="px-4 py-3">
-              <SortHeader label="Salary" sortKey="salaryExpectation" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
-            </TableHead>
-            <TableHead className="px-4 py-3 text-right">
-              <SortHeader label="AI Score" sortKey="aiScore" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedApplicants.map((applicant) => (
-            <TableRow
-              key={applicant.id}
-              className="group border-0 bg-white transition-colors duration-200 hover:bg-[#f8fbff]"
+  return (
+    <>
+      <section className="space-y-2 px-6">
+        <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-[#666]">
+            {selectedApplicantIds.length} applicant{selectedApplicantIds.length === 1 ? "" : "s"} selected
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={selectedApplicantIds.length === 0}
+              onClick={() => handleBulkAction("summon_for_interview")}
             >
-              <TableCell className="w-12 px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
+              Summon for Interview
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={selectedApplicantIds.length === 0}
+              onClick={() => handleBulkAction("shortlist")}
+            >
+              Shortlist
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={selectedApplicantIds.length === 0}
+              onClick={() => handleBulkAction("reject")}
+            >
+              Reject
+            </Button>
+          </div>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-12 px-4 py-3">
                 <input
                   type="checkbox"
-                  checked={selectedApplicantIds.includes(applicant.id)}
-                  onChange={(event) => toggleApplicantSelection(applicant.id, event.target.checked)}
-                  aria-label={`Select ${applicant.fullName}`}
+                  checked={allVisibleSelected}
+                  onChange={(event) => toggleSelectAllVisible(event.target.checked)}
+                  aria-label="Select all applicants on current page"
                   className="h-4 w-4 rounded border-border"
                 />
-              </TableCell>
-              <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
-                <div className="space-y-0.5">
-                  <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
-                  <p className="text-xs text-[#666]">{applicant.phone}</p>
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.appliedAt}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.yearsOfExperience}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.salaryExpectation}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-right transition-colors duration-200 group-hover:bg-transparent">
-                <span className="inline-flex rounded-[6px] bg-[rgba(30,102,247,0.1)] px-[9px] py-[3px] text-xs font-medium text-primary">
-                  {applicant.aiScore}%
-                </span>
-              </TableCell>
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Name" sortKey="name" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Applied" sortKey="appliedAt" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Experience" sortKey="yearsOfExperience" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Salary" sortKey="salaryExpectation" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3 text-right">
+                <SortHeader label="AI Score" sortKey="aiScore" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" />
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {paginatedApplicants.map((applicant) => (
+              <TableRow
+                key={applicant.id}
+                className="group border-0 bg-white transition-colors duration-200 hover:cursor-pointer hover:bg-[#f8fbff]"
+                onClick={() => setSelectedApplicantId(applicant.id)}
+              >
+                <TableCell className="w-12 px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
+                  <input
+                    type="checkbox"
+                    checked={selectedApplicantIds.includes(applicant.id)}
+                    onClick={(event) => event.stopPropagation()}
+                    onChange={(event) => toggleApplicantSelection(applicant.id, event.target.checked)}
+                    aria-label={`Select ${applicant.fullName}`}
+                    className="h-4 w-4 rounded border-border"
+                  />
+                </TableCell>
+                <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
+                  <div className="space-y-0.5">
+                    <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
+                    <p className="text-xs text-[#666]">{applicant.phone}</p>
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
+                  {applicant.appliedAt}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
+                  {applicant.yearsOfExperience}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
+                  {applicant.salaryExpectation}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-right transition-colors duration-200 group-hover:bg-transparent">
+                  <span className="inline-flex rounded-[6px] bg-[rgba(30,102,247,0.1)] px-[9px] py-[3px] text-xs font-medium text-primary">
+                    {applicant.aiScore}%
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-      <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
-        <p className="text-sm text-[#666]">
-          Page {currentPage} of {totalPages}
-        </p>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 cursor-pointer text-xs"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-          >
-            Previous
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 cursor-pointer text-xs"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-          >
-            Next
-          </Button>
+        <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
+          <p className="text-sm text-[#666]">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            >
+              Previous
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            >
+              Next
+            </Button>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <CandidateDetailDialog
+        candidate={selectedCandidate}
+        open={selectedCandidate !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedApplicantId(null);
+          }
+        }}
+      />
+    </>
   );
 }
