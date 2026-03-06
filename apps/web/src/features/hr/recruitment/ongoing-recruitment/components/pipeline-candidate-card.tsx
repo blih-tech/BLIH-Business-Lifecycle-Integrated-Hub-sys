@@ -14,6 +14,7 @@ type PipelineCandidateCardProps = {
   variant?: "default" | "shortlist";
   onMoveToInterview?: (candidateId: string) => void;
   onReject?: (candidateId: string) => void;
+  onClick?: (candidateId: string) => void;
 };
 
 export function PipelineCandidateCard({
@@ -21,9 +22,15 @@ export function PipelineCandidateCard({
   variant = "default",
   onMoveToInterview,
   onReject,
+  onClick,
 }: PipelineCandidateCardProps) {
   return (
-    <article className="rounded-[14px] border border-[#e5e5e5] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
+    <article
+      className={`rounded-[14px] border border-[#e5e5e5] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-colors hover:bg-[#fcfcfc] ${
+        onClick ? "cursor-pointer" : ""
+      }`}
+      onClick={() => onClick?.(candidate.id)}
+    >
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-sm font-medium leading-5 tracking-[-0.1504px] text-black">{candidate.fullName}</p>
@@ -38,13 +45,32 @@ export function PipelineCandidateCard({
           {variant === "shortlist" ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button type="button" variant="ghost" size="icon" className="h-7 w-7 rounded-[6px]">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 rounded-[6px]"
+                  onClick={(event) => event.stopPropagation()}
+                >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onMoveToInterview?.(candidate.id)}>Move to Interview</DropdownMenuItem>
-                <DropdownMenuItem variant="destructive" onClick={() => onReject?.(candidate.id)}>
+                <DropdownMenuItem
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onMoveToInterview?.(candidate.id);
+                  }}
+                >
+                  Move to Interview
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onReject?.(candidate.id);
+                  }}
+                >
                   Reject
                 </DropdownMenuItem>
               </DropdownMenuContent>
