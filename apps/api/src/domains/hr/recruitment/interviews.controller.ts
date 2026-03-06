@@ -58,6 +58,8 @@ export class InterviewsController {
   @ApiOperation({ summary: 'Create interview' })
   @ApiBody({
     type: CreateInterviewDto,
+    description:
+      'Request body: applicationId (required, UUID), type (required) — HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, or FINAL. Optional: round, status, scheduledAt, completedAt, interviewerId, interviewers, feedback, endorsement, score, nextAction.',
     examples: {
       createInterview: {
         summary: 'Schedule interview payload',
@@ -68,6 +70,13 @@ export class InterviewsController {
           status: 'SCHEDULED',
           scheduledAt: '2026-03-10T10:00:00.000Z',
           interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+        },
+      },
+      createInterviewMinimal: {
+        summary: 'Create interview (minimal)',
+        value: {
+          applicationId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
+          type: 'HR_SCREENING',
         },
       },
     },
@@ -146,9 +155,11 @@ export class InterviewsController {
   @ApiParam({ name: 'id', description: 'Interview id' })
   @ApiBody({
     type: UpdateInterviewDto,
+    description:
+      'Request body: partial interview fields (all optional). Same structure as create; send only fields to update. Common: status, completedAt, feedback, endorsement (STRONG_YES|YES|UNCERTAIN|NO), score, nextAction.',
     examples: {
       updateInterview: {
-        summary: 'Interview feedback payload',
+        summary: 'Submit interview feedback',
         value: {
           status: 'COMPLETED',
           completedAt: '2026-03-10T11:00:00.000Z',
@@ -156,6 +167,13 @@ export class InterviewsController {
           endorsement: 'YES',
           score: 4.5,
           nextAction: 'Proceed to final round',
+        },
+      },
+      updateInterviewReschedule: {
+        summary: 'Reschedule interview',
+        value: {
+          scheduledAt: '2026-03-15T14:00:00.000Z',
+          status: 'SCHEDULED',
         },
       },
     },

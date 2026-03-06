@@ -4,15 +4,57 @@ import { ApproveJobUseCase, SubmitJobUseCase } from './jobs.usecases';
 import { UpdateJobApplicationStatusUseCase } from './applications.usecases';
 import { UpdateInterviewUseCase } from './interviews.usecases';
 
+const approvalTemplate = [
+  {
+    id: 'approval-finance',
+    stage: 'FINANCE',
+    level: 1,
+    requiredRole: SYSTEM_ROLES.FINANCE_MANAGER,
+    decision: 'PENDING',
+    approverId: null,
+    autoApproved: false,
+    autoApprovalReason: null,
+    comments: null,
+    decidedAt: null,
+    createdAt: new Date('2026-03-05T10:00:00.000Z'),
+  },
+  {
+    id: 'approval-gm',
+    stage: 'GM',
+    level: 2,
+    requiredRole: SYSTEM_ROLES.SUPERADMIN,
+    decision: 'PENDING',
+    approverId: null,
+    autoApproved: false,
+    autoApprovalReason: null,
+    comments: null,
+    decidedAt: null,
+    createdAt: new Date('2026-03-05T10:00:00.000Z'),
+  },
+  {
+    id: 'approval-hr',
+    stage: 'HR_REVIEW',
+    level: 3,
+    requiredRole: SYSTEM_ROLES.HR_MANAGER,
+    decision: 'PENDING',
+    approverId: null,
+    autoApproved: false,
+    autoApprovalReason: null,
+    comments: null,
+    decidedAt: null,
+    createdAt: new Date('2026-03-05T10:00:00.000Z'),
+  },
+];
+
 const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   id: 'job-1',
   title: 'Senior Backend Engineer',
   slug: 'senior-backend-engineer',
-  departmentId: null,
-  positionId: null,
+  departmentId: 'dept-1',
+  positionId: 'pos-1',
   description: 'Role description',
   summary: null,
-  experienceLevel: null,
+  experienceLevel: 'SENIOR',
   contractType: 'PERMANENT',
   employmentType: 'FULL_TIME',
   workLocationType: 'HYBRID',
@@ -20,26 +62,26 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   city: null,
   country: null,
   openings: 1,
-  salaryMin: null,
-  salaryMax: null,
+  salaryMin: 100000,
+  salaryMax: 180000,
   currency: 'USD',
   benefits: [],
   status,
   creatorIsHr: false,
-  applicationDeadline: null,
+  applicationDeadline: new Date('2026-10-01T00:00:00.000Z'),
   publishedAt: null,
   createdById: 'creator-1',
   createdAt: new Date('2026-03-05T10:00:00.000Z'),
   updatedAt: new Date('2026-03-05T10:00:00.000Z'),
-  approvals: [],
-  skills: [],
+  approvals: approvalTemplate,
+  skills: [{ id: 'skill-1' }],
   tools: [],
-  responsibilities: [],
+  responsibilities: [{ id: 'resp-1' }],
   ...overrides,
 });
 
 describe('Recruitment UseCases', () => {
-  it('submits a draft job and creates ordered approval stages', async () => {
+  it('submits a ready draft job and creates approval stages', async () => {
     const tx = {
       jobApproval: {
         deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
@@ -51,14 +93,20 @@ describe('Recruitment UseCases', () => {
     };
     const prisma = {
       job: {
+        findUnique: jest.fn().mockResolvedValue(buildJob('DRAFT')),
+      },
+      department: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'dept-1' }),
+      },
+      position: {
         findUnique: jest
           .fn()
-          .mockResolvedValue({ id: 'job-1', status: 'DRAFT' }),
+          .mockResolvedValue({ id: 'pos-1', departmentId: 'dept-1' }),
       },
       $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
     };
-    const usecase = new SubmitJobUseCase(prisma as never);
 
+    const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
     expect(result.status).toBe('PENDING_FINANCE');
@@ -71,20 +119,69 @@ describe('Recruitment UseCases', () => {
     });
   });
 
-  it('auto-approves HR review after GM approval when creator is HR', async () => {
-    const gmApproval = {
-      id: 'approval-gm',
-      stage: 'GM',
-      decision: 'PENDING',
-      createdAt: new Date('2026-03-05T10:00:00.000Z'),
+  it('rejects submit when strict readiness gate fails', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest
+          .fn()
+          .mockResolvedValue(buildJob('DRAFT', { skills: [] })),
+      },
+      department: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'dept-1' }),
+      },
+      position: {
+        findUnique: jest
+          .fn()
+          .mockResolvedValue({ id: 'pos-1', departmentId: 'dept-1' }),
+      },
+      $transaction: jest.fn(),
     };
-    const hrApproval = {
-      id: 'approval-hr',
-      stage: 'HR_REVIEW',
-      decision: 'PENDING',
-      createdAt: new Date('2026-03-05T10:00:00.000Z'),
-    };
+    const usecase = new SubmitJobUseCase(prisma as never);
 
+    await expect(usecase.execute('job-1')).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+  });
+
+  it('allows GM approval before finance with explicit stage and keeps pending_finance', async () => {
+    const tx = {
+      jobApproval: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(
+          buildJob('PENDING_FINANCE', {
+            approvals: approvalTemplate.map((approval) =>
+              approval.stage === 'GM'
+                ? { ...approval, decision: 'APPROVED' }
+                : approval,
+            ),
+          }),
+        ),
+      },
+    };
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+    const usecase = new ApproveJobUseCase(prisma as never);
+
+    const result = await usecase.execute(
+      'job-1',
+      { decision: 'APPROVED', stage: 'GM' },
+      {
+        userId: 'gm-1',
+        sub: 'gm-1',
+        roles: [SYSTEM_ROLES.SUPERADMIN],
+      } as never,
+    );
+
+    expect(result.status).toBe('PENDING_FINANCE');
+  });
+
+  it('auto-approves HR after second parallel approval when creator is HR', async () => {
     const tx = {
       jobApproval: {
         update: jest.fn().mockResolvedValue(undefined),
@@ -95,9 +192,10 @@ describe('Recruitment UseCases', () => {
             creatorIsHr: true,
             createdById: 'hr-creator-1',
             approvals: [
-              { ...gmApproval, decision: 'APPROVED' },
+              { ...approvalTemplate[0], decision: 'APPROVED' },
+              { ...approvalTemplate[1], decision: 'APPROVED' },
               {
-                ...hrApproval,
+                ...approvalTemplate[2],
                 decision: 'APPROVED',
                 autoApproved: true,
                 autoApprovalReason: 'CREATOR_HAS_HR_ROLE',
@@ -107,14 +205,17 @@ describe('Recruitment UseCases', () => {
         ),
       },
     };
-
     const prisma = {
       job: {
         findUnique: jest.fn().mockResolvedValue(
-          buildJob('PENDING_GM', {
+          buildJob('PENDING_FINANCE', {
             creatorIsHr: true,
             createdById: 'hr-creator-1',
-            approvals: [gmApproval, hrApproval],
+            approvals: [
+              { ...approvalTemplate[0], decision: 'PENDING' },
+              { ...approvalTemplate[1], decision: 'APPROVED' },
+              approvalTemplate[2],
+            ],
           }),
         ),
       },
@@ -124,11 +225,11 @@ describe('Recruitment UseCases', () => {
 
     const result = await usecase.execute(
       'job-1',
-      { decision: 'APPROVED', comments: 'GM approved' },
+      { decision: 'APPROVED', stage: 'FINANCE' },
       {
-        userId: 'gm-1',
-        sub: 'gm-1',
-        roles: [SYSTEM_ROLES.SUPERADMIN],
+        userId: 'finance-1',
+        sub: 'finance-1',
+        roles: [SYSTEM_ROLES.FINANCE_MANAGER],
       } as never,
     );
 
@@ -146,28 +247,49 @@ describe('Recruitment UseCases', () => {
     );
   });
 
+  it('rejects immediately when any stage rejects', async () => {
+    const tx = {
+      jobApproval: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+      job: {
+        update: jest
+          .fn()
+          .mockResolvedValue(buildJob('REJECTED', { status: 'REJECTED' })),
+      },
+    };
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+    const usecase = new ApproveJobUseCase(prisma as never);
+
+    const result = await usecase.execute(
+      'job-1',
+      { decision: 'REJECTED', stage: 'FINANCE' },
+      {
+        userId: 'finance-1',
+        sub: 'finance-1',
+        roles: [SYSTEM_ROLES.FINANCE_MANAGER],
+      } as never,
+    );
+
+    expect(result.status).toBe('REJECTED');
+  });
+
   it('enforces stage role before approving a job', async () => {
     const prisma = {
       job: {
-        findUnique: jest.fn().mockResolvedValue(
-          buildJob('PENDING_FINANCE', {
-            approvals: [
-              {
-                id: 'approval-finance',
-                stage: 'FINANCE',
-                decision: 'PENDING',
-                createdAt: new Date('2026-03-05T10:00:00.000Z'),
-              },
-            ],
-          }),
-        ),
+        findUnique: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
       },
       $transaction: jest.fn(),
     };
     const usecase = new ApproveJobUseCase(prisma as never);
 
     await expect(
-      usecase.execute('job-1', { decision: 'APPROVED' }, {
+      usecase.execute('job-1', { decision: 'APPROVED', stage: 'FINANCE' }, {
         userId: 'regular-user',
         sub: 'regular-user',
         roles: ['hr_assistant'],

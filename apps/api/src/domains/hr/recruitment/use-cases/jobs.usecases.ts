@@ -19,20 +19,52 @@ import type {
   UpsertJobToolsDto,
 } from '../dto/job.dto';
 import {
+  assertDepartmentPositionIntegrity,
   assertSalaryRange,
-  currentApprovalStage,
+  assertSubmitReadiness,
+  computeJobStatusFromApprovals,
   generateUniqueSlug,
+  isApprovalStageActionable,
   jobInclude,
   mapJob,
   requiredRoleForStage,
 } from './recruitment.usecase-helpers';
+
+type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
+
+interface ApprovalState {
+  id: string;
+  stage: ApprovalStage;
+  decision: 'PENDING' | 'APPROVED' | 'REJECTED';
+}
+
+const toNumberOrNull = (value: unknown): number | null => {
+  if (value == null) return null;
+  return Number(value);
+};
+
+const toApprovalState = (approval: {
+  id: string;
+  stage: string;
+  decision: string;
+}): ApprovalState => ({
+  id: approval.id,
+  stage: approval.stage as ApprovalStage,
+  decision: approval.decision as ApprovalState['decision'],
+});
 
 @Injectable()
 export class CreateJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(dto: CreateJobDto, principal: AuthPrincipal) {
-    assertSalaryRange(dto.salaryMin ?? null, dto.salaryMax ?? null);
+    await assertDepartmentPositionIntegrity(
+      this.prisma,
+      dto.departmentId!,
+      dto.positionId!,
+    );
+    assertSalaryRange(dto.salaryMin!, dto.salaryMax!);
+
     const slug = await generateUniqueSlug(this.prisma, dto.title);
     const creatorId = principal.userId ?? principal.sub;
     const creatorIsHr =
@@ -44,26 +76,24 @@ export class CreateJobUseCase {
       data: {
         title: dto.title,
         slug,
-        departmentId: dto.departmentId ?? undefined,
-        positionId: dto.positionId ?? undefined,
+        departmentId: dto.departmentId,
+        positionId: dto.positionId,
         description: dto.description,
         summary: dto.summary ?? undefined,
-        experienceLevel: dto.experienceLevel ?? undefined,
+        experienceLevel: dto.experienceLevel,
         contractType: dto.contractType,
         employmentType: dto.employmentType ?? undefined,
         workLocationType: dto.workLocationType,
         remoteScope: dto.remoteScope ?? undefined,
         city: dto.city ?? undefined,
         country: dto.country ?? undefined,
-        openings: dto.openings ?? 1,
-        salaryMin: dto.salaryMin ?? undefined,
-        salaryMax: dto.salaryMax ?? undefined,
-        currency: dto.currency ?? undefined,
+        openings: dto.openings,
+        salaryMin: dto.salaryMin,
+        salaryMax: dto.salaryMax,
+        currency: dto.currency,
         benefits: dto.benefits ?? [],
         creatorIsHr,
-        applicationDeadline: dto.applicationDeadline
-          ? new Date(dto.applicationDeadline)
-          : undefined,
+        applicationDeadline: new Date(dto.applicationDeadline!),
         createdById: creatorId,
       },
       include: jobInclude,
@@ -111,7 +141,14 @@ export class UpdateJobUseCase {
   async execute(id: string, dto: UpdateJobDto) {
     const existing = await this.prisma.job.findUnique({
       where: { id },
-      select: { id: true, status: true },
+      select: {
+        id: true,
+        status: true,
+        departmentId: true,
+        positionId: true,
+        salaryMin: true,
+        salaryMax: true,
+      },
     });
     if (!existing) throw new NotFoundException('Job not found');
     if (!['DRAFT', 'REJECTED'].includes(existing.status)) {
@@ -120,7 +157,28 @@ export class UpdateJobUseCase {
       );
     }
 
-    assertSalaryRange(dto.salaryMin ?? null, dto.salaryMax ?? null);
+    const nextDepartmentId = dto.departmentId ?? existing.departmentId;
+    const nextPositionId = dto.positionId ?? existing.positionId;
+    if (!nextDepartmentId || !nextPositionId) {
+      throw new BadRequestException(
+        'departmentId and positionId are required for job updates',
+      );
+    }
+    await assertDepartmentPositionIntegrity(
+      this.prisma,
+      nextDepartmentId,
+      nextPositionId,
+    );
+
+    const nextSalaryMin =
+      dto.salaryMin !== undefined
+        ? dto.salaryMin
+        : toNumberOrNull(existing.salaryMin);
+    const nextSalaryMax =
+      dto.salaryMax !== undefined
+        ? dto.salaryMax
+        : toNumberOrNull(existing.salaryMax);
+    assertSalaryRange(nextSalaryMin, nextSalaryMax);
 
     const updated = await this.prisma.job.update({
       where: { id },
@@ -153,9 +211,7 @@ export class UpdateJobUseCase {
         ...(dto.currency !== undefined && { currency: dto.currency }),
         ...(dto.benefits !== undefined && { benefits: dto.benefits }),
         ...(dto.applicationDeadline !== undefined && {
-          applicationDeadline: dto.applicationDeadline
-            ? new Date(dto.applicationDeadline)
-            : null,
+          applicationDeadline: new Date(dto.applicationDeadline!),
         }),
       },
       include: jobInclude,
@@ -172,7 +228,10 @@ export class SubmitJobUseCase {
   async execute(id: string) {
     const existing = await this.prisma.job.findUnique({
       where: { id },
-      select: { id: true, status: true },
+      include: {
+        skills: { select: { id: true } },
+        responsibilities: { select: { id: true } },
+      },
     });
     if (!existing) throw new NotFoundException('Job not found');
     if (!['DRAFT', 'REJECTED'].includes(existing.status)) {
@@ -180,6 +239,33 @@ export class SubmitJobUseCase {
         'Only draft or rejected jobs can be submitted',
       );
     }
+    if (!existing.departmentId || !existing.positionId) {
+      throw new BadRequestException(
+        'departmentId and positionId are required before submit',
+      );
+    }
+
+    await assertDepartmentPositionIntegrity(
+      this.prisma,
+      existing.departmentId,
+      existing.positionId,
+    );
+    assertSubmitReadiness({
+      title: existing.title,
+      description: existing.description,
+      departmentId: existing.departmentId,
+      positionId: existing.positionId,
+      experienceLevel: existing.experienceLevel,
+      contractType: existing.contractType,
+      workLocationType: existing.workLocationType,
+      openings: existing.openings,
+      salaryMin: toNumberOrNull(existing.salaryMin),
+      salaryMax: toNumberOrNull(existing.salaryMax),
+      currency: existing.currency,
+      applicationDeadline: existing.applicationDeadline,
+      skills: existing.skills,
+      responsibilities: existing.responsibilities,
+    });
 
     const submitted = await this.prisma.$transaction(async (tx) => {
       await tx.jobApproval.deleteMany({ where: { jobId: id } });
@@ -223,8 +309,9 @@ export class ApproveJobUseCase {
 
   async execute(id: string, dto: ApproveJobDto, principal: AuthPrincipal) {
     const approverId = principal.userId ?? principal.sub;
-    if (!approverId)
+    if (!approverId) {
       throw new ForbiddenException('Authenticated user id required');
+    }
 
     const existing = await this.prisma.job.findUnique({
       where: { id },
@@ -232,24 +319,62 @@ export class ApproveJobUseCase {
     });
     if (!existing) throw new NotFoundException('Job not found');
 
-    const stage = currentApprovalStage(existing.status);
-    if (!stage) throw new BadRequestException('Job is not awaiting approval');
+    const approvals = existing.approvals.map(toApprovalState);
+    if (approvals.length === 0) {
+      throw new BadRequestException('Missing approval stage configuration');
+    }
 
-    const requiredRole = requiredRoleForStage(stage);
+    const pendingActionable = approvals.filter(
+      (approval) =>
+        approval.decision === 'PENDING' &&
+        isApprovalStageActionable(approval.stage, approvals),
+    );
+
+    let target = pendingActionable[0];
+    if (dto.stage !== undefined) {
+      const stageApproval = approvals.find(
+        (approval) => approval.stage === dto.stage,
+      );
+      if (!stageApproval) {
+        throw new BadRequestException('Invalid approval stage');
+      }
+      if (stageApproval.decision !== 'PENDING') {
+        throw new ConflictException('Approval already decided');
+      }
+      if (!isApprovalStageActionable(dto.stage!, approvals)) {
+        throw new BadRequestException('Approval stage is not actionable');
+      }
+      target = stageApproval;
+    }
+
+    if (!target) {
+      throw new BadRequestException('No pending approval stage available');
+    }
+
+    const requiredRole = requiredRoleForStage(target.stage);
     if (!principal.roles?.includes(requiredRole)) {
       throw new ForbiddenException(`Role ${requiredRole} is required`);
     }
 
-    const approval = existing.approvals.find((row) => row.stage === stage);
-    if (!approval) throw new BadRequestException('Missing approval stage');
-    if (approval.decision !== 'PENDING') {
-      throw new ConflictException('Approval already decided');
+    if (!dto.stage) {
+      const eligibleStages = pendingActionable.filter((approval) =>
+        principal.roles?.includes(requiredRoleForStage(approval.stage)),
+      );
+      if (eligibleStages.length === 0) {
+        throw new ForbiddenException('Required approval role is missing');
+      }
+      if (eligibleStages.length > 1) {
+        throw new BadRequestException(
+          'Multiple approval stages are available; specify stage',
+        );
+      }
+      target = eligibleStages[0];
     }
 
     const decidedAt = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.jobApproval.update({
-        where: { id: approval.id },
+        where: { id: target.id },
         data: {
           approverId,
           decision: dto.decision,
@@ -266,49 +391,49 @@ export class ApproveJobUseCase {
         });
       }
 
-      if (stage === 'FINANCE') {
-        return tx.job.update({
-          where: { id },
-          data: { status: 'PENDING_GM' },
-          include: jobInclude,
-        });
+      const nextApprovals: ApprovalState[] = approvals.map((approval) =>
+        approval.id === target.id
+          ? { ...approval, decision: 'APPROVED' }
+          : approval,
+      );
+
+      const finance = nextApprovals.find(
+        (approval) => approval.stage === 'FINANCE',
+      );
+      const gm = nextApprovals.find((approval) => approval.stage === 'GM');
+      const hr = nextApprovals.find(
+        (approval) => approval.stage === 'HR_REVIEW',
+      );
+
+      if (!finance || !gm || !hr) {
+        throw new BadRequestException('Missing approval stage configuration');
       }
 
-      if (stage === 'GM') {
-        if (existing.creatorIsHr && existing.createdById) {
-          const hrApproval = existing.approvals.find(
-            (row) => row.stage === 'HR_REVIEW',
-          );
-          if (!hrApproval)
-            throw new BadRequestException('Missing HR approval stage');
-          await tx.jobApproval.update({
-            where: { id: hrApproval.id },
-            data: {
-              approverId: existing.createdById,
-              decision: 'APPROVED',
-              autoApproved: true,
-              autoApprovalReason: 'CREATOR_HAS_HR_ROLE',
-              comments: 'Auto-approved because creator has HR role',
-              decidedAt,
-            },
-          });
-          return tx.job.update({
-            where: { id },
-            data: { status: 'APPROVED' },
-            include: jobInclude,
-          });
-        }
-
-        return tx.job.update({
-          where: { id },
-          data: { status: 'PENDING_HR_REVIEW' },
-          include: jobInclude,
+      if (
+        existing.creatorIsHr &&
+        existing.createdById &&
+        finance.decision === 'APPROVED' &&
+        gm.decision === 'APPROVED' &&
+        hr.decision === 'PENDING'
+      ) {
+        await tx.jobApproval.update({
+          where: { id: hr.id },
+          data: {
+            approverId: existing.createdById,
+            decision: 'APPROVED',
+            autoApproved: true,
+            autoApprovalReason: 'CREATOR_HAS_HR_ROLE',
+            comments: 'Auto-approved because creator has HR role',
+            decidedAt,
+          },
         });
+        hr.decision = 'APPROVED';
       }
 
+      const nextStatus = computeJobStatusFromApprovals(nextApprovals);
       return tx.job.update({
         where: { id },
-        data: { status: 'APPROVED' },
+        data: { status: nextStatus },
         include: jobInclude,
       });
     });

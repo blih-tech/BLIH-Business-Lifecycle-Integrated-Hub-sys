@@ -129,6 +129,7 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
   { name: 'user_profile', description: 'User personal profile records' },
   { name: 'user_employment', description: 'User employment records' },
   { name: 'user_compensation', description: 'User compensation records' },
+  { name: 'department', description: 'Department catalog management' },
   { name: 'position', description: 'Position catalog management' },
   { name: 'job_grade', description: 'Job grade catalog management' },
   {

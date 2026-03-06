@@ -57,6 +57,8 @@ export class JobApplicationsController {
   @ApiOperation({ summary: 'Create job application' })
   @ApiBody({
     type: CreateJobApplicationDto,
+    description:
+      'Request body: jobId (required, UUID), candidateId (required, UUID). Optional: coverLetter, expectedSalary, sourceSnapshot (object).',
     examples: {
       createApplication: {
         summary: 'Create application payload',
@@ -65,6 +67,13 @@ export class JobApplicationsController {
           candidateId: '7f4d5938-1031-4b42-9369-f64b5b3de2ca',
           coverLetter: 'I have built high-scale APIs in NestJS.',
           expectedSalary: 145000,
+        },
+      },
+      createApplicationMinimal: {
+        summary: 'Create application (minimal)',
+        value: {
+          jobId: 'a4b8e6cc-3df0-4e38-8a6d-40d6e8b1ea2f',
+          candidateId: '7f4d5938-1031-4b42-9369-f64b5b3de2ca',
         },
       },
     },
@@ -143,12 +152,28 @@ export class JobApplicationsController {
   @ApiParam({ name: 'id', description: 'Job application id' })
   @ApiBody({
     type: UpdateApplicationStatusDto,
+    description:
+      'Request body: status (required) — NEW, SCREENING, SHORTLISTED, INTERVIEW_STAGE, OFFER_PENDING, HIRED, REJECTED, or WITHDRAWN (valid transitions apply). Optional: notes.',
     examples: {
-      updateStatus: {
-        summary: 'Move candidate to interview stage',
+      updateStatusInterview: {
+        summary: 'Move to interview stage',
         value: {
           status: 'INTERVIEW_STAGE',
           notes: 'Passed technical screening',
+        },
+      },
+      updateStatusRejected: {
+        summary: 'Reject application',
+        value: {
+          status: 'REJECTED',
+          notes: 'Does not meet experience requirements',
+        },
+      },
+      updateStatusHired: {
+        summary: 'Mark as hired',
+        value: {
+          status: 'HIRED',
+          notes: 'Offer accepted',
         },
       },
     },

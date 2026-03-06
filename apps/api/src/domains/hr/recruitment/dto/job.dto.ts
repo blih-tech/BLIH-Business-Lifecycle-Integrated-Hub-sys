@@ -23,7 +23,15 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export const EXPERIENCE_LEVELS = [
+const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
+const EMPLOYMENT_TYPES = [
+  'FULL_TIME',
+  'PART_TIME',
+  'CONTRACT',
+  'INTERN',
+  'TEMPORARY',
+] as const;
+const EXPERIENCE_LEVELS = [
   'ENTRY',
   'JUNIOR',
   'MID',
@@ -31,27 +39,14 @@ export const EXPERIENCE_LEVELS = [
   'LEAD',
   'PRINCIPAL',
 ] as const;
-
-export const JOB_CONTRACT_TYPES = [
+const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
+const JOB_CONTRACT_TYPES = [
   'PERMANENT',
   'CONTRACT',
   'INTERNSHIP',
   'FREELANCE',
 ] as const;
-
-export const EMPLOYMENT_TYPES = [
-  'FULL_TIME',
-  'PART_TIME',
-  'CONTRACT',
-  'INTERN',
-  'TEMPORARY',
-] as const;
-
-export const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
-
-export const REMOTE_SCOPES = ['CITY', 'COUNTRY', 'REGION', 'GLOBAL'] as const;
-
-export const JOB_WORKFLOW_STATUSES = [
+const JOB_WORKFLOW_STATUSES = [
   'DRAFT',
   'PENDING_FINANCE',
   'PENDING_GM',
@@ -60,11 +55,15 @@ export const JOB_WORKFLOW_STATUSES = [
   'PUBLISHED',
   'CLOSED',
   'REJECTED',
-  'CANCELLED',
 ] as const;
-
-export const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
-export const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
+const REMOTE_SCOPES = ['CITY', 'COUNTRY', 'REGION', 'GLOBAL'] as const;
+const SKILL_LEVELS = [
+  'BEGINNER',
+  'INTERMEDIATE',
+  'ADVANCED',
+  'EXPERT',
+] as const;
+const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
 
 export class JobSkillInputDto {
   @ApiProperty({ example: 'TypeScript' })
@@ -73,11 +72,11 @@ export class JobSkillInputDto {
   name!: string;
 
   @ApiPropertyOptional({
-    enum: ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'],
+    enum: SKILL_LEVELS,
   })
   @IsOptional()
-  @IsEnum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'])
-  level?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT' | null;
+  @IsEnum(SKILL_LEVELS)
+  level?: (typeof SKILL_LEVELS)[number] | null;
 
   @ApiPropertyOptional({ default: true })
   @IsOptional()
@@ -120,21 +119,17 @@ export class CreateJobDto {
   @IsNotEmpty()
   title!: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-    nullable: true,
   })
-  @IsOptional()
   @IsUUID()
-  departmentId?: string | null;
+  departmentId!: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     example: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
-    nullable: true,
   })
-  @IsOptional()
   @IsUUID()
-  positionId?: string | null;
+  positionId!: string;
 
   @ApiProperty({ example: 'Lead backend architecture and delivery.' })
   @IsString()
@@ -146,17 +141,15 @@ export class CreateJobDto {
   @IsString()
   summary?: string | null;
 
-  @ApiPropertyOptional({ enum: EXPERIENCE_LEVELS, nullable: true })
-  @IsOptional()
+  @ApiProperty({ enum: EXPERIENCE_LEVELS })
   @IsEnum(EXPERIENCE_LEVELS)
-  experienceLevel?:
+  experienceLevel!:
     | 'ENTRY'
     | 'JUNIOR'
     | 'MID'
     | 'SENIOR'
     | 'LEAD'
-    | 'PRINCIPAL'
-    | null;
+    | 'PRINCIPAL';
 
   @ApiProperty({ enum: JOB_CONTRACT_TYPES })
   @IsEnum(JOB_CONTRACT_TYPES)
@@ -192,27 +185,23 @@ export class CreateJobDto {
   @IsString()
   country?: string | null;
 
-  @ApiPropertyOptional({ default: 1, minimum: 1 })
-  @IsOptional()
+  @ApiProperty({ default: 1, minimum: 1 })
   @IsInt()
   @Min(1)
-  openings?: number;
+  openings!: number;
 
-  @ApiPropertyOptional({ nullable: true, example: 100000 })
-  @IsOptional()
+  @ApiProperty({ example: 100000 })
   @IsNumber({ maxDecimalPlaces: 2 })
-  salaryMin?: number | null;
+  salaryMin!: number;
 
-  @ApiPropertyOptional({ nullable: true, example: 180000 })
-  @IsOptional()
+  @ApiProperty({ example: 180000 })
   @IsNumber({ maxDecimalPlaces: 2 })
-  salaryMax?: number | null;
+  salaryMax!: number;
 
-  @ApiPropertyOptional({ nullable: true, example: 'USD' })
-  @IsOptional()
+  @ApiProperty({ example: 'USD' })
   @IsString()
   @Matches(/^[A-Z]{3}$/)
-  currency?: string | null;
+  currency!: string;
 
   @ApiPropertyOptional({ type: [String], default: [] })
   @IsOptional()
@@ -221,10 +210,9 @@ export class CreateJobDto {
   @IsString({ each: true })
   benefits?: string[];
 
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
+  @ApiProperty()
   @IsDateString()
-  applicationDeadline?: string | null;
+  applicationDeadline!: string;
 }
 
 export class UpdateJobDto extends PartialType(CreateJobDto) {}
@@ -233,6 +221,11 @@ export class ApproveJobDto {
   @ApiProperty({ enum: ['APPROVED', 'REJECTED'] })
   @IsEnum(['APPROVED', 'REJECTED'])
   decision!: 'APPROVED' | 'REJECTED';
+
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STAGES, nullable: true })
+  @IsOptional()
+  @IsEnum(JOB_APPROVAL_STAGES)
+  stage?: 'FINANCE' | 'GM' | 'HR_REVIEW' | null;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -340,11 +333,11 @@ export class JobResponseDto {
   @ApiProperty()
   slug!: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  departmentId!: string | null;
+  @ApiProperty()
+  departmentId!: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  positionId!: string | null;
+  @ApiProperty()
+  positionId!: string;
 
   @ApiProperty()
   description!: string;
@@ -410,8 +403,7 @@ export class JobResponseDto {
     | 'APPROVED'
     | 'PUBLISHED'
     | 'CLOSED'
-    | 'REJECTED'
-    | 'CANCELLED';
+    | 'REJECTED';
 
   @ApiProperty()
   creatorIsHr!: boolean;
@@ -456,8 +448,7 @@ export class JobListQueryDto {
     | 'APPROVED'
     | 'PUBLISHED'
     | 'CLOSED'
-    | 'REJECTED'
-    | 'CANCELLED';
+    | 'REJECTED';
 
   @ApiPropertyOptional()
   @IsOptional()

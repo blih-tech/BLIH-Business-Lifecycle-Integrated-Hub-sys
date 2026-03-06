@@ -9,26 +9,19 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export const INTERVIEW_TYPES = [
-  'HR_SCREENING',
-  'TECHNICAL',
-  'BEHAVIORAL',
-  'PANEL',
-  'FINAL',
-] as const;
-
-export const INTERVIEW_STATUSES = [
+const ENDORSEMENT_LEVELS = ['STRONG_YES', 'YES', 'UNCERTAIN', 'NO'] as const;
+const INTERVIEW_STATUSES = [
   'SCHEDULED',
   'COMPLETED',
   'CANCELLED',
   'NO_SHOW',
 ] as const;
-
-export const ENDORSEMENT_LEVELS = [
-  'STRONG_YES',
-  'YES',
-  'UNCERTAIN',
-  'NO',
+const INTERVIEW_TYPES = [
+  'HR_SCREENING',
+  'TECHNICAL',
+  'BEHAVIORAL',
+  'PANEL',
+  'FINAL',
 ] as const;
 
 export class CreateInterviewDto {

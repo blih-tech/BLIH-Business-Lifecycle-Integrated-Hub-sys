@@ -32,6 +32,14 @@ export const UserLifecyclePermissions = {
   UPDATE: 'user_lifecycle:update',
 } as const;
 
+export const DepartmentPermissions = {
+  VIEW: 'department:view',
+  CREATE: 'department:create',
+  UPDATE: 'department:update',
+  DELETE: 'department:delete',
+  ALL: 'department:*',
+} as const;
+
 export const PositionPermissions = {
   VIEW: 'position:view',
   CREATE: 'position:create',
@@ -459,6 +467,7 @@ export const PermissionGroups = {
   user_employment: UserEmploymentPermissions,
   user_compensation: UserCompensationPermissions,
   user_lifecycle: UserLifecyclePermissions,
+  department: DepartmentPermissions,
   position: PositionPermissions,
   job_grade: JobGradePermissions,
   employee: EmployeePermissions,

@@ -2,6 +2,15 @@ import type { SkillLevel } from '../hr/training/skill.js';
 import type { Gender } from '../users/user-profile.js';
 import type { CandidateSource } from './jobs.js';
 
+/** Const array for validation/Swagger */
+export const CANDIDATE_SOURCES = [
+  'COMPANY_SITE',
+  'LINKEDIN',
+  'TELEGRAM',
+  'REFERRAL',
+  'AGENCY',
+] as const;
+
 export interface CreateCandidateDto {
   firstName: string;
   lastName: string;

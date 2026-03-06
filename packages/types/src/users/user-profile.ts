@@ -5,6 +5,15 @@ export type EmploymentType =
   | 'INTERN'
   | 'TEMPORARY';
 
+/** Const array for validation/Swagger (shared with recruitment job DTOs) */
+export const EMPLOYMENT_TYPES = [
+  'FULL_TIME',
+  'PART_TIME',
+  'CONTRACT',
+  'INTERN',
+  'TEMPORARY',
+] as const;
+
 export type PayFrequency = 'MONTHLY' | 'BIWEEKLY' | 'WEEKLY' | 'ANNUAL';
 
 export type CompensationComponentType =

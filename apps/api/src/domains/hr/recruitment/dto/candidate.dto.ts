@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+const GENDERS = ['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY'] as const;
 const CANDIDATE_SOURCES = [
   'COMPANY_SITE',
   'LINKEDIN',
@@ -19,8 +20,6 @@ const CANDIDATE_SOURCES = [
   'REFERRAL',
   'AGENCY',
 ] as const;
-
-const GENDERS = ['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY'] as const;
 const SKILL_LEVELS = [
   'BEGINNER',
   'INTERMEDIATE',
@@ -37,7 +36,7 @@ export class CandidateSkillInputDto {
   @ApiPropertyOptional({ enum: SKILL_LEVELS, nullable: true })
   @IsOptional()
   @IsEnum(SKILL_LEVELS)
-  level?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT' | null;
+  level?: (typeof SKILL_LEVELS)[number] | null;
 
   @ApiPropertyOptional({ nullable: true, example: 4 })
   @IsOptional()
@@ -93,7 +92,7 @@ export class CreateCandidateDto {
   @ApiPropertyOptional({ enum: CANDIDATE_SOURCES })
   @IsOptional()
   @IsEnum(CANDIDATE_SOURCES)
-  source?: 'COMPANY_SITE' | 'LINKEDIN' | 'TELEGRAM' | 'REFERRAL' | 'AGENCY';
+  source?: (typeof CANDIDATE_SOURCES)[number];
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()

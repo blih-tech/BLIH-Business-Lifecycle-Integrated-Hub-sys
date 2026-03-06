@@ -1,4 +1,4 @@
-import {
+﻿import {
   Body,
   Controller,
   ForbiddenException,
@@ -90,14 +90,17 @@ export class JobsController {
   @ApiOperation({ summary: 'Create job' })
   @ApiBody({
     type: CreateJobDto,
+    description:
+      'Request body: title, departmentId, positionId, description, experienceLevel, contractType, workLocationType, openings, salaryMin, salaryMax, currency, and applicationDeadline are required. Optional: summary, employmentType, remoteScope, city, country, benefits.',
     examples: {
       createJob: {
-        summary: 'Create job payload',
+        summary: 'Create job payload (minimal)',
         value: {
           title: 'Senior Backend Engineer',
           departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
           positionId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
           description: 'Lead backend architecture and delivery.',
+          experienceLevel: 'SENIOR',
           contractType: 'PERMANENT',
           workLocationType: 'HYBRID',
           openings: 2,
@@ -105,6 +108,30 @@ export class JobsController {
           salaryMax: 180000,
           currency: 'USD',
           benefits: ['Health insurance', 'Annual bonus'],
+          applicationDeadline: '2026-04-30T23:59:59.000Z',
+        },
+      },
+      createJobFull: {
+        summary: 'Create job payload (full structure)',
+        value: {
+          title: 'Senior Backend Engineer',
+          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+          positionId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
+          description: 'Lead backend architecture and delivery.',
+          summary: 'Backend platform leadership role.',
+          experienceLevel: 'SENIOR',
+          contractType: 'PERMANENT',
+          employmentType: 'FULL_TIME',
+          workLocationType: 'HYBRID',
+          remoteScope: 'COUNTRY',
+          city: 'Addis Ababa',
+          country: 'Ethiopia',
+          openings: 2,
+          salaryMin: 100000,
+          salaryMax: 180000,
+          currency: 'USD',
+          benefits: ['Health insurance', 'Annual bonus'],
+          applicationDeadline: '2026-04-30T23:59:59.000Z',
         },
       },
     },
@@ -179,12 +206,24 @@ export class JobsController {
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: UpdateJobDto,
+    description:
+      'Request body: partial job fields (all optional). Only draft or rejected jobs can be updated. Same structure as create; send only fields to change.',
     examples: {
       updateJob: {
         summary: 'Update job payload',
         value: {
           summary: 'Drive backend architecture and delivery.',
           openings: 3,
+        },
+      },
+      updateJobExtended: {
+        summary: 'Update multiple fields',
+        value: {
+          title: 'Lead Backend Engineer',
+          description: 'Updated description.',
+          experienceLevel: 'LEAD',
+          openings: 2,
+          applicationDeadline: '2026-05-15T23:59:59.000Z',
         },
       },
     },
@@ -208,8 +247,17 @@ export class JobsController {
     path: '/api/v1/hr/recruitment/jobs/:id/submit',
     roles: [JobPermissions.SUBMIT],
   })
-  @ApiOperation({ summary: 'Submit job for approval workflow' })
+  @ApiOperation({
+    summary: 'Submit job for approval workflow',
+    description:
+      'Submits a DRAFT or REJECTED job into approval workflow. Finance and GM stages open in parallel, and HR review is unlocked after both approve. Any rejection marks the job REJECTED immediately.',
+  })
   @ApiParam({ name: 'id', description: 'Job id' })
+  @ApiBody({
+    description: 'No request body required. Job id is provided in the path.',
+    required: false,
+    schema: { type: 'object', nullable: true },
+  })
   @ApiEnvelopeOkResponse(JobResponseDto, 'Submitted job', jobResponseEnvelope)
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/jobs/:id/submit',
@@ -229,18 +277,32 @@ export class JobsController {
     path: '/api/v1/hr/recruitment/jobs/:id/approve',
     roles: [JobApprovalPermissions.DECIDE],
   })
-  @ApiOperation({ summary: 'Approve/reject current job approval stage' })
+  @ApiOperation({
+    summary: 'Approve/reject current job approval stage',
+    description:
+      'Records approval or rejection for a pending actionable stage. Finance and GM can be approved in parallel. Use optional stage for deterministic targeting when an actor can decide multiple stages.',
+  })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: ApproveJobDto,
+    description:
+      'Request body: decision (required) — APPROVED or REJECTED; stage (optional) — FINANCE | GM | HR_REVIEW; comments (optional).',
     examples: {
       approve: {
         summary: 'Approve stage',
-        value: { decision: 'APPROVED', comments: 'Approved by stage owner.' },
+        value: {
+          decision: 'APPROVED',
+          stage: 'GM',
+          comments: 'Approved by stage owner.',
+        },
       },
       reject: {
         summary: 'Reject stage',
-        value: { decision: 'REJECTED', comments: 'Budget is not approved.' },
+        value: {
+          decision: 'REJECTED',
+          stage: 'FINANCE',
+          comments: 'Budget is not approved.',
+        },
       },
     },
   })
@@ -275,8 +337,17 @@ export class JobsController {
     path: '/api/v1/hr/recruitment/jobs/:id/publish',
     roles: [JobPermissions.PUBLISH],
   })
-  @ApiOperation({ summary: 'Publish approved job' })
+  @ApiOperation({
+    summary: 'Publish approved job',
+    description:
+      'Moves an APPROVED job to PUBLISHED and sets publishedAt. Only APPROVED jobs can be published.',
+  })
   @ApiParam({ name: 'id', description: 'Job id' })
+  @ApiBody({
+    description: 'No request body required. Job id is provided in the path.',
+    required: false,
+    schema: { type: 'object', nullable: true },
+  })
   @ApiEnvelopeOkResponse(JobResponseDto, 'Published job', jobResponseEnvelope)
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/jobs/:id/publish',
@@ -300,8 +371,17 @@ export class JobsController {
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: CloseJobDto,
+    description:
+      'Request body (optional): reason â€” optional string, e.g. "Filled" or "Position cancelled". Body may be omitted.',
     examples: {
-      close: { summary: 'Close job payload', value: { reason: 'Filled' } },
+      close: {
+        summary: 'Close with reason',
+        value: { reason: 'Filled' },
+      },
+      closeNoReason: {
+        summary: 'Close without reason (empty body)',
+        value: {},
+      },
     },
   })
   @ApiEnvelopeOkResponse(JobResponseDto, 'Closed job', jobResponseEnvelope)
@@ -327,6 +407,8 @@ export class JobsController {
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: UpsertJobSkillsDto,
+    description:
+      'Request body: skills (required) â€” array of { name (required), level (optional: BEGINNER|INTERMEDIATE|ADVANCED|EXPERT), required (optional, default true), order (optional) }. Replaces all existing skills.',
     examples: {
       upsertSkills: {
         summary: 'Skills payload',
@@ -371,6 +453,8 @@ export class JobsController {
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: UpsertJobToolsDto,
+    description:
+      'Request body: tools (required) â€” array of { name (required), order (optional) }. Replaces all existing tools.',
     examples: {
       upsertTools: {
         summary: 'Tools payload',
@@ -410,6 +494,8 @@ export class JobsController {
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: UpsertJobResponsibilitiesDto,
+    description:
+      'Request body: responsibilities (required) â€” array of { description (required), order (optional) }. Replaces all existing responsibilities.',
     examples: {
       upsertResponsibilities: {
         summary: 'Responsibilities payload',

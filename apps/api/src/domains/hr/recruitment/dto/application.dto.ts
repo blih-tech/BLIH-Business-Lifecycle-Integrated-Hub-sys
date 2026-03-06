@@ -8,7 +8,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export const APPLICATION_STATUSES = [
+const JOB_APPLICATION_STATUSES = [
   'NEW',
   'SCREENING',
   'SHORTLISTED',
@@ -45,8 +45,8 @@ export class CreateJobApplicationDto {
 }
 
 export class UpdateApplicationStatusDto {
-  @ApiProperty({ enum: APPLICATION_STATUSES })
-  @IsEnum(APPLICATION_STATUSES)
+  @ApiProperty({ enum: JOB_APPLICATION_STATUSES })
+  @IsEnum(JOB_APPLICATION_STATUSES)
   status!:
     | 'NEW'
     | 'SCREENING'
@@ -73,7 +73,7 @@ export class JobApplicationResponseDto {
   @ApiProperty()
   candidateId!: string;
 
-  @ApiProperty({ enum: APPLICATION_STATUSES })
+  @ApiProperty({ enum: JOB_APPLICATION_STATUSES })
   status!:
     | 'NEW'
     | 'SCREENING'
@@ -104,9 +104,9 @@ export class JobApplicationResponseDto {
 }
 
 export class JobApplicationListQueryDto {
-  @ApiPropertyOptional({ enum: APPLICATION_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPLICATION_STATUSES })
   @IsOptional()
-  @IsEnum(APPLICATION_STATUSES)
+  @IsEnum(JOB_APPLICATION_STATUSES)
   status?:
     | 'NEW'
     | 'SCREENING'

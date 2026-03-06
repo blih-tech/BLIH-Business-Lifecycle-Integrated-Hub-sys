@@ -2,6 +2,29 @@ import type { EndorsementLevel, InterviewType } from './jobs.js';
 
 export type InterviewStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 
+/** Const array for validation/Swagger */
+export const INTERVIEW_TYPES = [
+  'HR_SCREENING',
+  'TECHNICAL',
+  'BEHAVIORAL',
+  'PANEL',
+  'FINAL',
+] as const;
+
+export const INTERVIEW_STATUSES = [
+  'SCHEDULED',
+  'COMPLETED',
+  'CANCELLED',
+  'NO_SHOW',
+] as const;
+
+export const ENDORSEMENT_LEVELS = [
+  'STRONG_YES',
+  'YES',
+  'UNCERTAIN',
+  'NO',
+] as const;
+
 export interface CreateInterviewDto {
   applicationId: string;
   type: InterviewType;

@@ -8,6 +8,18 @@ export type JobApplicationStatus =
   | 'REJECTED'
   | 'WITHDRAWN';
 
+/** Const array for validation/Swagger */
+export const JOB_APPLICATION_STATUSES = [
+  'NEW',
+  'SCREENING',
+  'SHORTLISTED',
+  'INTERVIEW_STAGE',
+  'OFFER_PENDING',
+  'HIRED',
+  'REJECTED',
+  'WITHDRAWN',
+] as const;
+
 export interface CreateJobApplicationDto {
   jobId: string;
   candidateId: string;

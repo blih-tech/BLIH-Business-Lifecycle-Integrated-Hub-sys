@@ -58,9 +58,11 @@ export class CandidatesController {
   @ApiOperation({ summary: 'Create candidate' })
   @ApiBody({
     type: CreateCandidateDto,
+    description:
+      'Request body: firstName (required), lastName (required), email (required). Optional: phone, gender, yearsExperience, linkedinUrl, portfolioUrl, githubUrl, source, referredById, resumeUrl, skills (array of { name, level, years }).',
     examples: {
       createCandidate: {
-        summary: 'Create candidate payload',
+        summary: 'Create candidate payload (minimal)',
         value: {
           firstName: 'Abel',
           lastName: 'Tesfaye',
@@ -68,6 +70,26 @@ export class CandidatesController {
           source: 'LINKEDIN',
           yearsExperience: 6,
           skills: [{ name: 'NestJS', level: 'ADVANCED', years: 4 }],
+        },
+      },
+      createCandidateFull: {
+        summary: 'Create candidate payload (full structure)',
+        value: {
+          firstName: 'Abel',
+          lastName: 'Tesfaye',
+          email: 'abel.tesfaye@example.com',
+          phone: '+251912345678',
+          gender: 'MALE',
+          yearsExperience: 6,
+          linkedinUrl: 'https://linkedin.com/in/abeltesfaye',
+          portfolioUrl: null,
+          githubUrl: 'https://github.com/abeltesfaye',
+          source: 'LINKEDIN',
+          resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+          skills: [
+            { name: 'NestJS', level: 'ADVANCED', years: 4 },
+            { name: 'PostgreSQL', level: 'INTERMEDIATE', years: 3 },
+          ],
         },
       },
     },
@@ -145,6 +167,8 @@ export class CandidatesController {
   @ApiParam({ name: 'id', description: 'Candidate id' })
   @ApiBody({
     type: UpdateCandidateDto,
+    description:
+      'Request body: partial candidate fields (all optional). Same structure as create; send only fields to update.',
     examples: {
       updateCandidate: {
         summary: 'Update candidate payload',
@@ -152,6 +176,14 @@ export class CandidatesController {
           phone: '+251912345678',
           githubUrl: 'https://github.com/abeltesfaye',
           skills: [{ name: 'PostgreSQL', level: 'ADVANCED', years: 5 }],
+        },
+      },
+      updateCandidateExtended: {
+        summary: 'Update multiple fields',
+        value: {
+          yearsExperience: 7,
+          linkedinUrl: 'https://linkedin.com/in/abeltesfaye-updated',
+          resumeUrl: 'https://cdn.example.com/cv/abel-v2.pdf',
         },
       },
     },

@@ -9,8 +9,7 @@ export type JobWorkflowStatus =
   | 'APPROVED'
   | 'PUBLISHED'
   | 'CLOSED'
-  | 'REJECTED'
-  | 'CANCELLED';
+  | 'REJECTED';
 
 export type JobApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
 
@@ -48,6 +47,42 @@ export type InterviewType =
 
 export type EndorsementLevel = 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO';
 
+/** Const array for validation/Swagger (Job workflow: DRAFT -> ... -> PUBLISHED) */
+export const JOB_WORKFLOW_STATUSES = [
+  'DRAFT',
+  'PENDING_FINANCE',
+  'PENDING_GM',
+  'PENDING_HR_REVIEW',
+  'APPROVED',
+  'PUBLISHED',
+  'CLOSED',
+  'REJECTED',
+] as const;
+
+export const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
+
+export const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
+
+export const JOB_CONTRACT_TYPES = [
+  'PERMANENT',
+  'CONTRACT',
+  'INTERNSHIP',
+  'FREELANCE',
+] as const;
+
+export const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
+
+export const REMOTE_SCOPES = ['CITY', 'COUNTRY', 'REGION', 'GLOBAL'] as const;
+
+export const EXPERIENCE_LEVELS = [
+  'ENTRY',
+  'JUNIOR',
+  'MID',
+  'SENIOR',
+  'LEAD',
+  'PRINCIPAL',
+] as const;
+
 export interface JobSkillDto {
   id: string;
   name: string;
@@ -84,29 +119,30 @@ export interface JobApprovalDto {
 
 export interface CreateJobDto {
   title: string;
-  departmentId?: string | null;
-  positionId?: string | null;
+  departmentId: string;
+  positionId: string;
   description: string;
   summary?: string | null;
-  experienceLevel?: ExperienceLevel | null;
+  experienceLevel: ExperienceLevel;
   contractType: JobContractType;
   employmentType?: EmploymentType | null;
   workLocationType: WorkLocationType;
   remoteScope?: RemoteScope | null;
   city?: string | null;
   country?: string | null;
-  openings?: number;
-  salaryMin?: number | null;
-  salaryMax?: number | null;
-  currency?: string | null;
+  openings: number;
+  salaryMin: number;
+  salaryMax: number;
+  currency: string;
   benefits?: string[];
-  applicationDeadline?: string | null;
+  applicationDeadline: string;
 }
 
 export type UpdateJobDto = Partial<CreateJobDto>;
 
 export interface ApproveJobDto {
   decision: 'APPROVED' | 'REJECTED';
+  stage?: JobApprovalStage | null;
   comments?: string | null;
 }
 
@@ -141,8 +177,8 @@ export interface JobResponseDto {
   id: string;
   title: string;
   slug: string;
-  departmentId: string | null;
-  positionId: string | null;
+  departmentId: string;
+  positionId: string;
   description: string;
   summary: string | null;
   experienceLevel: ExperienceLevel | null;
