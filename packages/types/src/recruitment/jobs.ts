@@ -3,25 +3,20 @@ import type { EmploymentType, Gender } from '../users/user-profile.js';
 
 export type JobWorkflowStatus =
   | 'DRAFT'
-  | 'PENDING_FINANCE'
-  | 'PENDING_GM'
-  | 'PENDING_HR_REVIEW'
-  | 'APPROVED'
+  | 'PENDING_FOR_APPROVAL'
+  | 'READY_TO_POST'
   | 'PUBLISHED'
   | 'CLOSED'
   | 'REJECTED';
 
+export type JobStageApprovalStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'APPROVED'
+  | 'REJECTED';
+
 export type JobApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
 
-export type JobContractType =
-  | 'PERMANENT'
-  | 'CONTRACT'
-  | 'INTERNSHIP'
-  | 'FREELANCE';
-
 export type WorkLocationType = 'ON_SITE' | 'HYBRID' | 'REMOTE';
-
-export type RemoteScope = 'CITY' | 'COUNTRY' | 'REGION' | 'GLOBAL';
 
 export type ExperienceLevel =
   | 'ENTRY'
@@ -30,6 +25,34 @@ export type ExperienceLevel =
   | 'SENIOR'
   | 'LEAD'
   | 'PRINCIPAL';
+
+export type JobRequestType = 'NEW' | 'REPLACEMENT';
+
+export type JobUrgency = 'HIGH' | 'MEDIUM' | 'LOW';
+
+export type JobSalaryMode = 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
+
+export type JobApplicationFieldType =
+  | 'TEXT'
+  | 'TEXTAREA'
+  | 'NUMBER'
+  | 'SELECT'
+  | 'FILE'
+  | 'DATE'
+  | 'CHECKBOX';
+
+export type JobPredefinedFieldKey =
+  | 'fullName'
+  | 'email'
+  | 'phone'
+  | 'resume'
+  | 'coverLetter'
+  | 'linkedin'
+  | 'portfolio'
+  | 'github'
+  | 'currentCompany'
+  | 'currentPosition'
+  | 'yearsExperience';
 
 export type CandidateSource =
   | 'COMPANY_SITE'
@@ -47,15 +70,18 @@ export type InterviewType =
 
 export type EndorsementLevel = 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO';
 
-/** Const array for validation/Swagger (Job workflow: DRAFT -> ... -> PUBLISHED) */
 export const JOB_WORKFLOW_STATUSES = [
   'DRAFT',
-  'PENDING_FINANCE',
-  'PENDING_GM',
-  'PENDING_HR_REVIEW',
-  'APPROVED',
+  'PENDING_FOR_APPROVAL',
+  'READY_TO_POST',
   'PUBLISHED',
   'CLOSED',
+  'REJECTED',
+] as const;
+
+export const JOB_STAGE_STATUSES = [
+  'PENDING_FOR_APPROVAL',
+  'APPROVED',
   'REJECTED',
 ] as const;
 
@@ -63,16 +89,7 @@ export const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
 
 export const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
 
-export const JOB_CONTRACT_TYPES = [
-  'PERMANENT',
-  'CONTRACT',
-  'INTERNSHIP',
-  'FREELANCE',
-] as const;
-
 export const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
-
-export const REMOTE_SCOPES = ['CITY', 'COUNTRY', 'REGION', 'GLOBAL'] as const;
 
 export const EXPERIENCE_LEVELS = [
   'ENTRY',
@@ -81,6 +98,14 @@ export const EXPERIENCE_LEVELS = [
   'SENIOR',
   'LEAD',
   'PRINCIPAL',
+] as const;
+
+export const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
+export const JOB_URGENCY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
+export const JOB_SALARY_MODES = [
+  'NOT_SPECIFIED',
+  'NEGOTIABLE',
+  'COMPETITIVE',
 ] as const;
 
 export interface JobSkillDto {
@@ -117,25 +142,69 @@ export interface JobApprovalDto {
   createdAt: string;
 }
 
-export interface CreateJobDto {
-  title: string;
-  departmentId: string;
-  positionId: string;
-  description: string;
-  summary?: string | null;
+export interface JobRequestFormDto {
+  jobTitle: string;
+  department: string;
+  requestedBy: string;
+  position: string;
+  requestType: JobRequestType;
+  replaceFor?: string | null;
+  businessJustification: string;
+  employmentType: EmploymentType;
+  workMode: WorkLocationType;
+  urgency: JobUrgency;
+  neededByDate: string;
+}
+
+export interface JobDetailsFormDto {
+  jobTitle: string;
+  location: string;
+  workMode: WorkLocationType;
+  employmentType: EmploymentType;
+  jobSummary: string;
+  whyJoinUs?: string | null;
+  keyResponsibilities: string;
+  skills: Array<{
+    name: string;
+    level?: SkillLevel | null;
+    required?: boolean;
+    order?: number | null;
+  }>;
+  preferredSkills?: string | null;
   experienceLevel: ExperienceLevel;
-  contractType: JobContractType;
-  employmentType?: EmploymentType | null;
-  workLocationType: WorkLocationType;
-  remoteScope?: RemoteScope | null;
-  city?: string | null;
-  country?: string | null;
-  openings: number;
-  salaryMin: number;
-  salaryMax: number;
-  currency: string;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  salaryCurrency?: string | null;
+  salaryMode: JobSalaryMode;
   benefits?: string[];
+  openings: number;
   applicationDeadline: string;
+}
+
+export interface JobApplicationPredefinedFieldDto {
+  key: JobPredefinedFieldKey;
+  enabled: boolean;
+  required: boolean;
+}
+
+export interface JobApplicationCustomFieldDto {
+  id: string;
+  label: string;
+  type: JobApplicationFieldType;
+  required: boolean;
+  helpText?: string | null;
+  options?: string[];
+}
+
+export interface JobApplicationFormDto {
+  predefinedFields: JobApplicationPredefinedFieldDto[];
+  customFields: JobApplicationCustomFieldDto[];
+}
+
+export interface CreateJobDto {
+  requestForm: JobRequestFormDto;
+  jobDetailsForm: JobDetailsFormDto;
+  applicationForm: JobApplicationFormDto;
 }
 
 export type UpdateJobDto = Partial<CreateJobDto>;
@@ -175,29 +244,67 @@ export interface UpsertJobResponsibilitiesDto {
 
 export interface JobResponseDto {
   id: string;
-  title: string;
   slug: string;
-  departmentId: string;
-  positionId: string;
-  description: string;
-  summary: string | null;
-  experienceLevel: ExperienceLevel | null;
-  contractType: JobContractType;
-  employmentType: EmploymentType | null;
-  workLocationType: WorkLocationType;
-  remoteScope: RemoteScope | null;
-  city: string | null;
-  country: string | null;
-  openings: number;
-  salaryMin: string | null;
-  salaryMax: string | null;
-  currency: string | null;
-  benefits: string[];
   status: JobWorkflowStatus;
+  financeApprovalStatus: JobStageApprovalStatus;
+  gmApprovalStatus: JobStageApprovalStatus;
+  hrApprovalStatus: JobStageApprovalStatus;
   creatorIsHr: boolean;
-  applicationDeadline: string | null;
   publishedAt: string | null;
   createdById: string | null;
+  requestForm: {
+    id: string;
+    jobTitle: string;
+    department: string;
+    requestedBy: string;
+    position: string;
+    requestType: JobRequestType;
+    replaceFor: string | null;
+    businessJustification: string;
+    employmentType: EmploymentType;
+    workMode: WorkLocationType;
+    urgency: JobUrgency;
+    neededByDate: string | null;
+  } | null;
+  jobDetailsForm: {
+    id: string;
+    jobTitle: string;
+    location: string;
+    workMode: WorkLocationType;
+    employmentType: EmploymentType;
+    jobSummary: string;
+    whyJoinUs: string | null;
+    keyResponsibilities: string;
+    skills: JobSkillDto[];
+    preferredSkills: string | null;
+    experienceLevel: ExperienceLevel;
+    salaryMin: string | null;
+    salaryMax: string | null;
+    salaryCurrency: string | null;
+    salaryMode: JobSalaryMode;
+    benefits: string[];
+    openings: number;
+    applicationDeadline: string | null;
+  } | null;
+  applicationForm: {
+    id: string;
+    predefinedFields: Array<{
+      id: string;
+      key: JobPredefinedFieldKey;
+      label: string;
+      type: JobApplicationFieldType;
+      enabled: boolean;
+      required: boolean;
+    }>;
+    customFields: Array<{
+      id: string;
+      label: string;
+      type: JobApplicationFieldType;
+      required: boolean;
+      helpText: string | null;
+      options: string[];
+    }>;
+  } | null;
   approvals: JobApprovalDto[];
   skills: JobSkillDto[];
   tools: JobToolDto[];

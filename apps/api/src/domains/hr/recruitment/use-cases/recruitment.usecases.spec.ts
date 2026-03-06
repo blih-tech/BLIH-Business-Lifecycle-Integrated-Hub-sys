@@ -65,8 +65,12 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   salaryMin: 100000,
   salaryMax: 180000,
   currency: 'USD',
+  salaryMode: 'NOT_SPECIFIED',
   benefits: [],
   status,
+  financeApprovalStatus: 'PENDING_FOR_APPROVAL',
+  gmApprovalStatus: 'PENDING_FOR_APPROVAL',
+  hrApprovalStatus: 'PENDING_FOR_APPROVAL',
   creatorIsHr: false,
   applicationDeadline: new Date('2026-10-01T00:00:00.000Z'),
   publishedAt: null,
@@ -88,7 +92,7 @@ describe('Recruitment UseCases', () => {
         createMany: jest.fn().mockResolvedValue({ count: 3 }),
       },
       job: {
-        update: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
+        update: jest.fn().mockResolvedValue(buildJob('PENDING_FOR_APPROVAL')),
       },
     };
     const prisma = {
@@ -109,7 +113,7 @@ describe('Recruitment UseCases', () => {
     const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
-    expect(result.status).toBe('PENDING_FINANCE');
+    expect(result.status).toBe('PENDING_FOR_APPROVAL');
     expect(tx.jobApproval.createMany).toHaveBeenCalledWith({
       data: [
         expect.objectContaining({ stage: 'FINANCE', level: 1 }),
@@ -143,14 +147,14 @@ describe('Recruitment UseCases', () => {
     );
   });
 
-  it('allows GM approval before finance with explicit stage and keeps pending_finance', async () => {
+  it('allows GM approval before finance with explicit stage and keeps pending_for_approval', async () => {
     const tx = {
       jobApproval: {
         update: jest.fn().mockResolvedValue(undefined),
       },
       job: {
         update: jest.fn().mockResolvedValue(
-          buildJob('PENDING_FINANCE', {
+          buildJob('PENDING_FOR_APPROVAL', {
             approvals: approvalTemplate.map((approval) =>
               approval.stage === 'GM'
                 ? { ...approval, decision: 'APPROVED' }
@@ -162,7 +166,9 @@ describe('Recruitment UseCases', () => {
     };
     const prisma = {
       job: {
-        findUnique: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
+        findUnique: jest
+          .fn()
+          .mockResolvedValue(buildJob('PENDING_FOR_APPROVAL')),
       },
       $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
     };
@@ -178,7 +184,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.status).toBe('PENDING_FINANCE');
+    expect(result.status).toBe('PENDING_FOR_APPROVAL');
   });
 
   it('auto-approves HR after second parallel approval when creator is HR', async () => {
@@ -188,7 +194,7 @@ describe('Recruitment UseCases', () => {
       },
       job: {
         update: jest.fn().mockResolvedValue(
-          buildJob('APPROVED', {
+          buildJob('READY_TO_POST', {
             creatorIsHr: true,
             createdById: 'hr-creator-1',
             approvals: [
@@ -208,7 +214,7 @@ describe('Recruitment UseCases', () => {
     const prisma = {
       job: {
         findUnique: jest.fn().mockResolvedValue(
-          buildJob('PENDING_FINANCE', {
+          buildJob('PENDING_FOR_APPROVAL', {
             creatorIsHr: true,
             createdById: 'hr-creator-1',
             approvals: [
@@ -233,7 +239,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.status).toBe('APPROVED');
+    expect(result.status).toBe('READY_TO_POST');
     expect(tx.jobApproval.update).toHaveBeenCalledTimes(2);
     expect(tx.jobApproval.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -260,7 +266,9 @@ describe('Recruitment UseCases', () => {
     };
     const prisma = {
       job: {
-        findUnique: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
+        findUnique: jest
+          .fn()
+          .mockResolvedValue(buildJob('PENDING_FOR_APPROVAL')),
       },
       $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
     };
@@ -282,7 +290,9 @@ describe('Recruitment UseCases', () => {
   it('enforces stage role before approving a job', async () => {
     const prisma = {
       job: {
-        findUnique: jest.fn().mockResolvedValue(buildJob('PENDING_FINANCE')),
+        findUnique: jest
+          .fn()
+          .mockResolvedValue(buildJob('PENDING_FOR_APPROVAL')),
       },
       $transaction: jest.fn(),
     };

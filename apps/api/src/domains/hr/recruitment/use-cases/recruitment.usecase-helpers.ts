@@ -2,11 +2,46 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 
+const PREDEFINED_FIELD_METADATA: Record<
+  string,
+  { label: string; type: 'TEXT' | 'TEXTAREA' | 'NUMBER' | 'FILE' }
+> = {
+  FULL_NAME: { label: 'Full Name', type: 'TEXT' },
+  EMAIL: { label: 'Email', type: 'TEXT' },
+  PHONE: { label: 'Phone', type: 'TEXT' },
+  RESUME: { label: 'Resume', type: 'FILE' },
+  COVER_LETTER: { label: 'Cover Letter', type: 'TEXTAREA' },
+  LINKEDIN: { label: 'LinkedIn', type: 'TEXT' },
+  PORTFOLIO: { label: 'Portfolio', type: 'TEXT' },
+  GITHUB: { label: 'GitHub', type: 'TEXT' },
+  CURRENT_COMPANY: { label: 'Current Company', type: 'TEXT' },
+  CURRENT_POSITION: { label: 'Current Position', type: 'TEXT' },
+  YEARS_EXPERIENCE: { label: 'Years of Experience', type: 'NUMBER' },
+};
+
 export const jobInclude = {
   approvals: { orderBy: { level: 'asc' as const } },
   skills: { orderBy: { order: 'asc' as const } },
   tools: { orderBy: { order: 'asc' as const } },
   responsibilities: { orderBy: { order: 'asc' as const } },
+  requestForm: {
+    include: {
+      detailsForm: {
+        include: {
+          skills: { orderBy: { order: 'asc' as const } },
+          applicationForm: {
+            include: {
+              predefinedFields: { orderBy: { order: 'asc' as const } },
+              customFields: {
+                orderBy: { order: 'asc' as const },
+                include: { options: { orderBy: { order: 'asc' as const } } },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
@@ -54,10 +89,8 @@ const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
 };
 
 export function currentApprovalStage(status: string) {
-  if (status === 'PENDING_FINANCE') return 'FINANCE';
-  if (status === 'PENDING_GM') return 'GM';
-  if (status === 'PENDING_HR_REVIEW') return 'HR_REVIEW';
-  return null;
+  if (status !== 'PENDING_FOR_APPROVAL') return null;
+  return 'FINANCE';
 }
 
 export function requiredRoleForStage(stage: 'FINANCE' | 'GM' | 'HR_REVIEW') {
@@ -109,19 +142,21 @@ export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {
     return 'REJECTED' as const;
   }
 
-  if (finance.decision !== 'APPROVED') {
-    return 'PENDING_FINANCE' as const;
+  if (
+    finance.decision === 'APPROVED' &&
+    gm.decision === 'APPROVED' &&
+    hr.decision === 'APPROVED'
+  ) {
+    return 'READY_TO_POST' as const;
   }
 
-  if (gm.decision !== 'APPROVED') {
-    return 'PENDING_GM' as const;
-  }
+  return 'PENDING_FOR_APPROVAL' as const;
+}
 
-  if (hr.decision !== 'APPROVED') {
-    return 'PENDING_HR_REVIEW' as const;
-  }
-
-  return 'APPROVED' as const;
+export function approvalDecisionToStageStatus(decision: ApprovalDecision) {
+  if (decision === 'APPROVED') return 'APPROVED' as const;
+  if (decision === 'REJECTED') return 'REJECTED' as const;
+  return 'PENDING_FOR_APPROVAL' as const;
 }
 
 export function assertApplicationTransition(
@@ -184,11 +219,6 @@ export function assertSubmitReadiness(job: SubmitReadinessPayload) {
   }
   if (!job.openings || job.openings < 1) {
     throw new BadRequestException('openings must be at least 1 before submit');
-  }
-  if (job.salaryMin == null || job.salaryMax == null || !job.currency?.trim()) {
-    throw new BadRequestException(
-      'salaryMin, salaryMax, and currency are required before submit',
-    );
   }
   assertSalaryRange(job.salaryMin, job.salaryMax);
 
@@ -273,20 +303,118 @@ function decimalToString(value: unknown) {
   return String(value);
 }
 
+function dateToIso(value: Date | null | undefined) {
+  if (!value) return null;
+  return value.toISOString();
+}
+
+function snakeToCamel(key: string) {
+  return key.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
 export function mapJob(job: any) {
+  const requestForm = job.requestForm;
+  const detailsForm = requestForm?.detailsForm;
+  const applicationForm = detailsForm?.applicationForm;
+
   return {
-    ...job,
-    salaryMin: decimalToString(job.salaryMin),
-    salaryMax: decimalToString(job.salaryMax),
-    applicationDeadline: job.applicationDeadline?.toISOString() ?? null,
-    publishedAt: job.publishedAt?.toISOString() ?? null,
-    createdAt: job.createdAt.toISOString(),
-    updatedAt: job.updatedAt.toISOString(),
+    id: job.id,
+    slug: job.slug,
+    status: job.status,
+    financeApprovalStatus: job.financeApprovalStatus,
+    gmApprovalStatus: job.gmApprovalStatus,
+    hrApprovalStatus: job.hrApprovalStatus,
+    creatorIsHr: job.creatorIsHr,
+    publishedAt: dateToIso(job.publishedAt),
+    createdById: job.createdById ?? null,
+    requestForm: requestForm
+      ? {
+          id: requestForm.id,
+          jobTitle: requestForm.jobTitle,
+          department: requestForm.departmentId,
+          requestedBy: requestForm.requestedBy,
+          position: requestForm.positionId,
+          requestType: requestForm.requestType,
+          replaceFor: requestForm.replaceFor ?? null,
+          businessJustification: requestForm.businessJustification,
+          employmentType: requestForm.employmentType,
+          workMode: requestForm.workMode,
+          urgency: requestForm.urgency,
+          neededByDate: dateToIso(requestForm.neededByDate),
+        }
+      : null,
+    jobDetailsForm: detailsForm
+      ? {
+          id: detailsForm.id,
+          jobTitle: detailsForm.jobTitle,
+          location: detailsForm.location,
+          workMode: detailsForm.workMode,
+          employmentType: detailsForm.employmentType,
+          jobSummary: detailsForm.jobSummary,
+          whyJoinUs: detailsForm.whyJoinUs ?? null,
+          keyResponsibilities: detailsForm.keyResponsibilities,
+          skills: (detailsForm.skills ?? []).map((skill: any) => ({
+            id: skill.id,
+            name: skill.name,
+            level: skill.level ?? null,
+            required: skill.required,
+            order: skill.order ?? null,
+          })),
+          preferredSkills: detailsForm.preferredSkills ?? null,
+          experienceLevel: detailsForm.experienceLevel,
+          salaryMin: decimalToString(detailsForm.salaryMin),
+          salaryMax: decimalToString(detailsForm.salaryMax),
+          salaryCurrency: detailsForm.salaryCurrency ?? null,
+          salaryMode: detailsForm.salaryMode,
+          benefits: detailsForm.benefits ?? [],
+          openings: detailsForm.openings,
+          applicationDeadline: dateToIso(detailsForm.applicationDeadline),
+        }
+      : null,
+    applicationForm: applicationForm
+      ? {
+          id: applicationForm.id,
+          predefinedFields: (applicationForm.predefinedFields ?? []).map(
+            (field: any) => {
+              const meta = PREDEFINED_FIELD_METADATA[field.key] ?? {
+                label: field.key,
+                type: 'TEXT' as const,
+              };
+              return {
+                id: field.id,
+                key: snakeToCamel(field.key),
+                label: meta.label,
+                type: meta.type,
+                enabled: field.enabled,
+                required: field.required,
+              };
+            },
+          ),
+          customFields: (applicationForm.customFields ?? []).map(
+            (field: any) => ({
+              id: field.customFieldId,
+              label: field.label,
+              type: field.type,
+              required: field.required,
+              helpText: field.helpText ?? null,
+              options: (field.options ?? []).map((option: any) => option.value),
+            }),
+          ),
+        }
+      : null,
     approvals: (job.approvals ?? []).map((approval: any) => ({
       ...approval,
-      decidedAt: approval.decidedAt?.toISOString() ?? null,
+      decidedAt: dateToIso(approval.decidedAt),
       createdAt: approval.createdAt.toISOString(),
     })),
+    skills: (job.skills ?? []).map((skill: any) => ({
+      ...skill,
+      level: skill.level ?? null,
+    })),
+    tools: job.tools ?? [],
+    responsibilities: job.responsibilities ?? [],
+    createdAt: job.createdAt.toISOString(),
+    updatedAt: job.updatedAt.toISOString(),
   };
 }
 

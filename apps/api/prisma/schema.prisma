@@ -100,12 +100,16 @@ enum ContractStatus {
 // Recruitment (Enterprise Canonical)
 enum JobWorkflowStatus {
   DRAFT
-  PENDING_FINANCE
-  PENDING_GM
-  PENDING_HR_REVIEW
-  APPROVED
+  PENDING_FOR_APPROVAL
+  READY_TO_POST
   PUBLISHED
   CLOSED
+  REJECTED
+}
+
+enum JobStageApprovalStatus {
+  PENDING_FOR_APPROVAL
+  APPROVED
   REJECTED
 }
 
@@ -113,6 +117,47 @@ enum JobApprovalStage {
   FINANCE
   GM
   HR_REVIEW
+}
+
+enum JobSalaryMode {
+  NOT_SPECIFIED
+  NEGOTIABLE
+  COMPETITIVE
+}
+
+enum JobRequestType {
+  NEW
+  REPLACEMENT
+}
+
+enum JobUrgency {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum JobApplicationFieldType {
+  TEXT
+  TEXTAREA
+  NUMBER
+  SELECT
+  FILE
+  DATE
+  CHECKBOX
+}
+
+enum JobPredefinedFieldKey {
+  FULL_NAME
+  EMAIL
+  PHONE
+  RESUME
+  COVER_LETTER
+  LINKEDIN
+  PORTFOLIO
+  GITHUB
+  CURRENT_COMPANY
+  CURRENT_POSITION
+  YEARS_EXPERIENCE
 }
 
 enum JobContractType {
@@ -646,6 +691,7 @@ model Department {
   positions               Position[]
   employmentHistory       UserEmploymentHistory[]
   jobs                    Job[]
+  jobRequestForms         JobRequestForm[]          @relation("JobRequestDepartment")
   okrs                    Okr[]
   performanceCalibrations PerformanceCalibration[]
   trainingBudgets         TrainingBudget[]
@@ -682,6 +728,7 @@ model Position {
   jobDescriptions      JobDescription[]
   employmentHistory    UserEmploymentHistory[]
   jobs                 Job[]
+  jobRequestForms      JobRequestForm[]             @relation("JobRequestPosition")
   successionPlans      SuccessionPlan[]
   promotionSourceFor   PromotionProposal[]       @relation("PromotionProposalFromPosition")
   promotionTargetFor   PromotionProposal[]       @relation("PromotionProposalToPosition")
@@ -855,8 +902,14 @@ model UserLifecycle {
   terminatedAt         DateTime?
   terminationReason    String?
   offboardingCompleted Boolean         @default(false)
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
+  noPendingClaims      Boolean         @default(false) @map("no_pending_claims")
+  verifiedById         String?         @map("verified_by_id") @db.Uuid
+  verifiedBy           User?           @relation("ComplianceChecklistVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt           DateTime?       @map("verified_at")
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+
+  @@index([employeeId])
 }
 
 model Role {
@@ -1185,7 +1238,7 @@ model JobDescription {
 }
 
 // Recruitment (Enterprise Canonical)
-// Job workflow: DRAFT -> submit -> parallel FINANCE/GM approvals -> PENDING_HR_REVIEW -> APPROVED -> PUBLISHED
+// Job workflow: DRAFT -> PENDING_FOR_APPROVAL -> READY_TO_POST -> PUBLISHED -> CLOSED (or REJECTED on rejection)
 model Job {
   id                  String              @id @default(uuid()) @db.Uuid
   title               String
@@ -1200,15 +1253,19 @@ model Job {
   contractType        JobContractType     @map("contract_type")
   employmentType      EmploymentType?     @map("employment_type")
   workLocationType    WorkLocationType    @map("work_location_type")
-  remoteScope         RemoteScope?        @map("remote_scope")
+  remoteScope         RemoteScope?         @map("remote_scope")
   city                String?             @db.VarChar(128)
   country             String?             @db.VarChar(128)
   openings            Int                 @default(1)
   salaryMin           Decimal?            @map("salary_min") @db.Decimal(12, 2)
   salaryMax           Decimal?            @map("salary_max") @db.Decimal(12, 2)
   currency            String?             @db.VarChar(8)
+  salaryMode          JobSalaryMode       @default(NOT_SPECIFIED) @map("salary_mode")
   benefits            String[]            @default([])
   status              JobWorkflowStatus   @default(DRAFT)
+  financeApprovalStatus JobStageApprovalStatus @default(PENDING_FOR_APPROVAL) @map("finance_approval_status")
+  gmApprovalStatus      JobStageApprovalStatus @default(PENDING_FOR_APPROVAL) @map("gm_approval_status")
+  hrApprovalStatus      JobStageApprovalStatus @default(PENDING_FOR_APPROVAL) @map("hr_approval_status")
   creatorIsHr         Boolean             @default(false) @map("creator_is_hr")
   applicationDeadline DateTime?           @map("application_deadline")
   publishedAt         DateTime?           @map("published_at")
@@ -1221,11 +1278,139 @@ model Job {
   tools               JobTool[]
   responsibilities    JobResponsibility[]
   applications        JobApplication[]
+  requestForm         JobRequestForm?
 
   @@index([departmentId])
   @@index([positionId])
   @@index([status])
   @@index([createdById])
+  @@index([financeApprovalStatus])
+  @@index([gmApprovalStatus])
+  @@index([hrApprovalStatus])
+}
+
+model JobRequestForm {
+  id                    String          @id @default(uuid()) @db.Uuid
+  jobId                 String          @unique @map("job_id") @db.Uuid
+  job                   Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobTitle              String          @map("job_title")
+  departmentId          String          @map("department_id") @db.Uuid
+  department            Department      @relation("JobRequestDepartment", fields: [departmentId], references: [id], onDelete: Restrict)
+  requestedBy           String          @map("requested_by") @db.VarChar(255)
+  positionId            String          @map("position_id") @db.Uuid
+  position              Position        @relation("JobRequestPosition", fields: [positionId], references: [id], onDelete: Restrict)
+  requestType           JobRequestType  @map("request_type")
+  replaceFor            String?         @map("replace_for") @db.VarChar(255)
+  businessJustification String          @map("business_justification") @db.Text
+  employmentType        EmploymentType  @map("employment_type")
+  workMode              WorkLocationType @map("work_mode")
+  urgency               JobUrgency
+  neededByDate          DateTime        @map("needed_by_date") @db.Date
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  detailsForm           JobDetailsForm?
+
+  @@index([departmentId])
+  @@index([positionId])
+}
+
+model JobDetailsForm {
+  id                  String            @id @default(uuid()) @db.Uuid
+  requestFormId       String            @unique @map("request_form_id") @db.Uuid
+  requestForm         JobRequestForm    @relation(fields: [requestFormId], references: [id], onDelete: Cascade)
+  jobTitle            String            @map("job_title")
+  location            String            @db.VarChar(255)
+  workMode            WorkLocationType  @map("work_mode")
+  employmentType      EmploymentType    @map("employment_type")
+  jobSummary          String            @map("job_summary") @db.Text
+  whyJoinUs           String?           @map("why_join_us") @db.Text
+  keyResponsibilities String            @map("key_responsibilities") @db.Text
+  preferredSkills     String?           @map("preferred_skills") @db.Text
+  experienceLevel     ExperienceLevel   @map("experience_level")
+  salaryMin           Decimal?          @map("salary_min") @db.Decimal(12, 2)
+  salaryMax           Decimal?          @map("salary_max") @db.Decimal(12, 2)
+  salaryCurrency      String?           @map("salary_currency") @db.VarChar(8)
+  salaryMode          JobSalaryMode     @default(NOT_SPECIFIED) @map("salary_mode")
+  benefits            String[]          @default([])
+  openings            Int               @default(1)
+  applicationDeadline DateTime          @map("application_deadline")
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  skills              JobDetailSkill[]
+  applicationForm     JobApplicationForm?
+}
+
+model JobDetailSkill {
+  id              String       @id @default(uuid()) @db.Uuid
+  jobDetailsFormId String      @map("job_details_form_id") @db.Uuid
+  jobDetailsForm  JobDetailsForm @relation(fields: [jobDetailsFormId], references: [id], onDelete: Cascade)
+  name            String       @db.VarChar(128)
+  level           SkillLevel?
+  required        Boolean      @default(true)
+  order           Int?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([jobDetailsFormId])
+  @@index([jobDetailsFormId, order])
+}
+
+model JobApplicationForm {
+  id               String                         @id @default(uuid()) @db.Uuid
+  jobDetailsFormId String                         @unique @map("job_details_form_id") @db.Uuid
+  jobDetailsForm   JobDetailsForm                 @relation(fields: [jobDetailsFormId], references: [id], onDelete: Cascade)
+  createdAt        DateTime                       @default(now())
+  updatedAt        DateTime                       @updatedAt
+  predefinedFields JobApplicationPredefinedField[]
+  customFields     JobApplicationCustomField[]
+}
+
+model JobApplicationPredefinedField {
+  id                   String                  @id @default(uuid()) @db.Uuid
+  jobApplicationFormId String                  @map("job_application_form_id") @db.Uuid
+  jobApplicationForm   JobApplicationForm      @relation(fields: [jobApplicationFormId], references: [id], onDelete: Cascade)
+  key                  JobPredefinedFieldKey
+  enabled              Boolean                 @default(true)
+  required             Boolean                 @default(false)
+  order                Int?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+
+  @@unique([jobApplicationFormId, key])
+  @@index([jobApplicationFormId])
+  @@index([jobApplicationFormId, order])
+}
+
+model JobApplicationCustomField {
+  id                   String                       @id @default(uuid()) @db.Uuid
+  jobApplicationFormId String                       @map("job_application_form_id") @db.Uuid
+  jobApplicationForm   JobApplicationForm           @relation(fields: [jobApplicationFormId], references: [id], onDelete: Cascade)
+  customFieldId        String                       @map("custom_field_id") @db.VarChar(64)
+  label                String                       @db.VarChar(255)
+  type                 JobApplicationFieldType
+  required             Boolean                      @default(false)
+  helpText             String?                      @map("help_text") @db.Text
+  order                Int?
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
+  options              JobApplicationCustomFieldOption[]
+
+  @@unique([jobApplicationFormId, customFieldId])
+  @@index([jobApplicationFormId])
+  @@index([jobApplicationFormId, order])
+}
+
+model JobApplicationCustomFieldOption {
+  id                       String                     @id @default(uuid()) @db.Uuid
+  customFieldRowId         String                     @map("custom_field_row_id") @db.Uuid
+  customField              JobApplicationCustomField  @relation(fields: [customFieldRowId], references: [id], onDelete: Cascade)
+  value                    String                     @db.VarChar(255)
+  order                    Int
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+
+  @@index([customFieldRowId])
+  @@index([customFieldRowId, order])
 }
 
 model JobApproval {

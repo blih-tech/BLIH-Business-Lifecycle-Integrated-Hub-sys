@@ -91,47 +91,72 @@ export class JobsController {
   @ApiBody({
     type: CreateJobDto,
     description:
-      'Request body: title, departmentId, positionId, description, experienceLevel, contractType, workLocationType, openings, salaryMin, salaryMax, currency, and applicationDeadline are required. Optional: summary, employmentType, remoteScope, city, country, benefits.',
+      'Request body uses nested-only contract: requestForm, jobDetailsForm, applicationForm.',
     examples: {
       createJob: {
-        summary: 'Create job payload (minimal)',
+        summary: 'Create job payload (nested)',
         value: {
-          title: 'Senior Backend Engineer',
-          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-          positionId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
-          description: 'Lead backend architecture and delivery.',
-          experienceLevel: 'SENIOR',
-          contractType: 'PERMANENT',
-          workLocationType: 'HYBRID',
-          openings: 2,
-          salaryMin: 100000,
-          salaryMax: 180000,
-          currency: 'USD',
-          benefits: ['Health insurance', 'Annual bonus'],
-          applicationDeadline: '2026-04-30T23:59:59.000Z',
-        },
-      },
-      createJobFull: {
-        summary: 'Create job payload (full structure)',
-        value: {
-          title: 'Senior Backend Engineer',
-          departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-          positionId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
-          description: 'Lead backend architecture and delivery.',
-          summary: 'Backend platform leadership role.',
-          experienceLevel: 'SENIOR',
-          contractType: 'PERMANENT',
-          employmentType: 'FULL_TIME',
-          workLocationType: 'HYBRID',
-          remoteScope: 'COUNTRY',
-          city: 'Addis Ababa',
-          country: 'Ethiopia',
-          openings: 2,
-          salaryMin: 100000,
-          salaryMax: 180000,
-          currency: 'USD',
-          benefits: ['Health insurance', 'Annual bonus'],
-          applicationDeadline: '2026-04-30T23:59:59.000Z',
+          requestForm: {
+            jobTitle: 'Senior Frontend Engineer',
+            department: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+            requestedBy: 'Alice Njeri',
+            position: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
+            requestType: 'replacement',
+            replaceFor: 'Frontend Engineer II',
+            businessJustification:
+              'We need to backfill a critical delivery role.',
+            employmentType: 'full_time',
+            workMode: 'hybrid',
+            urgency: 'high',
+            neededByDate: '2026-03-30',
+          },
+          jobDetailsForm: {
+            jobTitle: 'Senior Frontend Engineer',
+            location: 'Addis Ababa, Ethiopia',
+            workMode: 'hybrid',
+            employmentType: 'full_time',
+            jobSummary: 'Lead frontend delivery for customer-facing products.',
+            whyJoinUs: 'Join a fast-moving product team with strong ownership.',
+            keyResponsibilities:
+              'Lead frontend delivery\\nCollaborate with product and design',
+            skills: [
+              { name: 'React', level: 'ADVANCED', required: true },
+              { name: 'TypeScript', level: 'ADVANCED', required: true },
+              { name: 'Next.js', required: false },
+            ],
+            preferredSkills: 'Design systems',
+            experienceLevel: 'senior',
+            salaryMin: 2000,
+            salaryMax: 3000,
+            salaryCurrency: 'USD',
+            salaryMode: 'competitive',
+            benefits: ['Health insurance', 'Learning budget'],
+            openings: 2,
+            applicationDeadline: '2026-04-30T23:59:59.000Z',
+          },
+          applicationForm: {
+            predefinedFields: [
+              { key: 'fullName', enabled: true, required: true },
+              { key: 'email', enabled: true, required: true },
+              { key: 'resume', enabled: true, required: true },
+            ],
+            customFields: [
+              {
+                id: 'custom-123',
+                label: 'Portfolio URL',
+                type: 'text',
+                required: false,
+                options: [],
+              },
+              {
+                id: 'custom-456',
+                label: 'Do you need visa sponsorship?',
+                type: 'select',
+                required: true,
+                options: ['Yes', 'No'],
+              },
+            ],
+          },
         },
       },
     },
@@ -207,23 +232,43 @@ export class JobsController {
   @ApiBody({
     type: UpdateJobDto,
     description:
-      'Request body: partial job fields (all optional). Only draft or rejected jobs can be updated. Same structure as create; send only fields to change.',
+      'Request body: nested job contract (requestForm, jobDetailsForm, applicationForm). Only draft or rejected jobs can be updated.',
     examples: {
       updateJob: {
         summary: 'Update job payload',
         value: {
-          summary: 'Drive backend architecture and delivery.',
-          openings: 3,
-        },
-      },
-      updateJobExtended: {
-        summary: 'Update multiple fields',
-        value: {
-          title: 'Lead Backend Engineer',
-          description: 'Updated description.',
-          experienceLevel: 'LEAD',
-          openings: 2,
-          applicationDeadline: '2026-05-15T23:59:59.000Z',
+          requestForm: {
+            jobTitle: 'Lead Frontend Engineer',
+            department: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+            requestedBy: 'Alice Njeri',
+            position: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
+            requestType: 'replacement',
+            businessJustification: 'Updated business need.',
+            employmentType: 'full_time',
+            workMode: 'hybrid',
+            urgency: 'medium',
+            neededByDate: '2026-04-15',
+          },
+          jobDetailsForm: {
+            jobTitle: 'Lead Frontend Engineer',
+            location: 'Addis Ababa, Ethiopia',
+            workMode: 'hybrid',
+            employmentType: 'full_time',
+            jobSummary: 'Updated summary',
+            keyResponsibilities: 'Lead team\\nShip product',
+            skills: [{ name: 'React', level: 'ADVANCED', required: true }],
+            experienceLevel: 'lead',
+            salaryMode: 'negotiable',
+            openings: 1,
+            applicationDeadline: '2026-05-15T23:59:59.000Z',
+          },
+          applicationForm: {
+            predefinedFields: [
+              { key: 'fullName', enabled: true, required: true },
+              { key: 'email', enabled: true, required: true },
+            ],
+            customFields: [],
+          },
         },
       },
     },
@@ -340,7 +385,7 @@ export class JobsController {
   @ApiOperation({
     summary: 'Publish approved job',
     description:
-      'Moves an APPROVED job to PUBLISHED and sets publishedAt. Only APPROVED jobs can be published.',
+      'Moves a READY_TO_POST job to PUBLISHED and sets publishedAt. Only READY_TO_POST jobs can be published.',
   })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
@@ -351,7 +396,7 @@ export class JobsController {
   @ApiEnvelopeOkResponse(JobResponseDto, 'Published job', jobResponseEnvelope)
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/jobs/:id/publish',
-    badRequest: 'Only approved jobs can be published',
+    badRequest: 'Only ready-to-post jobs can be published',
     notFound: 'Job not found',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
