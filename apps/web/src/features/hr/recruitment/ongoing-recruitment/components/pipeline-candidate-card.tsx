@@ -11,8 +11,9 @@ import {
 
 type PipelineCandidateCardProps = {
   candidate: OngoingPipelineCandidate;
-  variant?: "default" | "shortlist";
+  variant?: "default" | "shortlist" | "rejected";
   onMoveToInterview?: (candidateId: string) => void;
+  onMoveToShortlist?: (candidateId: string) => void;
   onReject?: (candidateId: string) => void;
   onClick?: (candidateId: string) => void;
 };
@@ -21,6 +22,7 @@ export function PipelineCandidateCard({
   candidate,
   variant = "default",
   onMoveToInterview,
+  onMoveToShortlist,
   onReject,
   onClick,
 }: PipelineCandidateCardProps) {
@@ -42,7 +44,7 @@ export function PipelineCandidateCard({
             {candidate.rating}%
           </span>
 
-          {variant === "shortlist" ? (
+          {variant !== "default" ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -56,23 +58,48 @@ export function PipelineCandidateCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onMoveToInterview?.(candidate.id);
-                  }}
-                >
-                  Move to Interview
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onReject?.(candidate.id);
-                  }}
-                >
-                  Reject
-                </DropdownMenuItem>
+                {variant === "shortlist" ? (
+                  <>
+                    <DropdownMenuItem
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onMoveToInterview?.(candidate.id);
+                      }}
+                    >
+                      Move to Interview
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      variant="destructive"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onReject?.(candidate.id);
+                      }}
+                    >
+                      Reject
+                    </DropdownMenuItem>
+                  </>
+                ) : null}
+
+                {variant === "rejected" ? (
+                  <>
+                    <DropdownMenuItem
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onMoveToShortlist?.(candidate.id);
+                      }}
+                    >
+                      Move to Shortlist
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onMoveToInterview?.(candidate.id);
+                      }}
+                    >
+                      Move to Interview
+                    </DropdownMenuItem>
+                  </>
+                ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : null}
