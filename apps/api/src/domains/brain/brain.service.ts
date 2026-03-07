@@ -2,8 +2,7 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../platform/prisma/prisma.service';
-
-const pdf = require('pdf-parse');
+import * as pdf from 'pdf-parse';
 
 @Injectable()
 export class BrainService {
@@ -24,7 +23,7 @@ export class BrainService {
 
     try {
 
-      const data = await pdf(fileBuffer);
+      const data = await (pdf as any)(fileBuffer);
       const extractedText = data.text;
 
       const response = await firstValueFrom(
@@ -58,7 +57,7 @@ export class BrainService {
 
   async processCvUpload(fileBuffer: Buffer, candidateId: string, jobPostingId: string) {
 
-    const data = await pdf(fileBuffer);
+    const data = await (pdf as any)(fileBuffer);
     const extractedText = data.text;
 
     this.logger.log(`CV parsed for candidate ${candidateId}. Starting auto-score...`);
