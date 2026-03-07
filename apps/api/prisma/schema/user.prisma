@@ -1,0 +1,282 @@
+// User and Employee Management Models
+// This file contains User, Employee, and related profile models
+
+model User {
+  id                               String                        @id @default(uuid()) @db.Uuid
+  keycloakId                       String                        @unique
+  username                         String                        @unique
+  email                            String                        @unique
+  firstName                        String
+  lastName                         String
+  phone                            String?
+  status                           UserStatus                    @default(ACTIVE)
+  lastLoginAt                      DateTime?
+  metadata                         Json?
+  permissions                      String[]                      @default([])
+  employee                         Employee?
+  employmentChanges                UserEmploymentHistory[]       @relation("EmploymentChangedBy")
+  compensationChanges              UserCompensationHistory[]     @relation("CompensationChangedBy")
+  createdAt                        DateTime                      @default(now())
+  updatedAt                        DateTime                      @updatedAt
+  roles                            UserRole[]
+  verifiedDocuments                EmployeeDocument[]            @relation("EmployeeDocumentVerifiedBy")
+  createdJobs                      Job[]                         @relation("JobCreatedBy")
+  referredCandidates               Candidate[]                   @relation("CandidateReferral")
+  conductedInterviews              Interview[]                   @relation("InterviewInterviewer")
+  submittedHiringDecisions         HiringDecision[]              @relation("HiringDecisionSubmittedBy")
+  givenJobApprovals                JobApproval[]                 @relation("JobApprovalApprover")
+  checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")
+  assignedOnboardingTasks          OnboardingTask[]              @relation("OnboardingTaskAssignee")
+  completedOnboardingTasks         OnboardingTask[]              @relation("OnboardingTaskCompletedBy")
+  policyAcknowledgementsVerified   PolicyAcknowledgement[]       @relation("PolicyAcknowledgementVerifiedBy")
+  delegatedLeaveHandovers          LeaveRequest[]                @relation("LeaveRequestHandoverDelegate")
+  leaveRequestsApproved            LeaveRequest[]                @relation("LeaveRequestApprover")
+  leaveApprovals                   LeaveApproval[]               @relation("LeaveApprovalApprover")
+  attendanceCorrectionsApproved    AttendanceCorrectionRequest[] @relation("AttendanceCorrectionApprover")
+  overtimeRequestsApproved         OvertimeRequest[]             @relation("OvertimeRequestApprover")
+  flexWorkRequestsApproved         FlexWorkRequest[]             @relation("FlexWorkRequestApprover")
+  approvedTimesheets               Timesheet[]                   @relation("TimesheetApprover")
+  createdCareerDevelopmentPlans    CareerDevelopmentPlan[]       @relation("CareerPlanCreatedBy")
+  assessedTrainingNeeds            TrainingNeedsAssessment[]     @relation("TrainingNeedsAssessmentAssessor")
+  reviewedTrainingNeeds            TrainingNeedsAssessment[]     @relation("TrainingNeedsAssessmentReviewer")
+  requestedInternalTransfers       InternalTransferRequest[]     @relation("InternalTransferRequester")
+  approvedInternalTransfers        InternalTransferRequest[]     @relation("InternalTransferApprover")
+  proposedSalaryAdjustments        SalaryAdjustmentRequest[]     @relation("SalaryAdjustmentProposer")
+  approvedSalaryAdjustments        SalaryAdjustmentRequest[]     @relation("SalaryAdjustmentApprover")
+  okrManagerReviews                OkrManagerReview[]            @relation("OkrManagerReviewer")
+  performanceReviewFeedback        PerformanceReviewFeedback[]   @relation("PerformanceReviewFeedbackReviewer")
+  finalizedPerformanceCalibrations PerformanceCalibration[]      @relation("PerformanceCalibrationFinalizedBy")
+  keyResultUpdates                 KeyResultUpdate[]             @relation("KeyResultUpdatedBy")
+  proposedPromotions               PromotionProposal[]           @relation("PromotionProposalProposedBy")
+  approvedPromotions               PromotionProposal[]           @relation("PromotionProposalApprovedBy")
+  approvedTrainingRequests         TrainingRequest[]             @relation("TrainingRequestApprover")
+  skillGapAssessmentsCreated       SkillGapAssessment[]          @relation("SkillGapAssessmentAssessor")
+  feedbackTemplatesCreated         TrainingFeedbackTemplate[]    @relation("FeedbackTemplateCreator")
+  trainingFeedbackReviewed         TrainingFeedback[]            @relation("TrainingFeedbackReviewer")
+  incidentInvestigations           IncidentReport[]              @relation("IncidentReportInvestigator")
+  disciplinaryActionsApproved      DisciplinaryAction[]          @relation("DisciplinaryActionApprover")
+  grievancesAssigned               Grievance[]                   @relation("GrievanceAssignee")
+  recognitionsNominated            Recognition[]                 @relation("RecognitionNominator")
+  recognitionsApproved             Recognition[]                 @relation("RecognitionApprover")
+  surveysCreated                   Survey[]                      @relation("SurveyCreator")
+  mediationAsMediator              ConflictMediation[]           @relation("MediationMediator")
+  resignationsApproved             Resignation[]                 @relation("ResignationApprover")
+  offboardingTasksAssigned         OffboardingTask[]             @relation("OffboardingTaskAssignee")
+  offboardingTasksCompleted        OffboardingTask[]             @relation("OffboardingTaskCompletedBy")
+  exitInterviewsConducted          ExitInterview[]               @relation("ExitInterviewConductedBy")
+  finalSettlementsApproved         FinalSettlement[]             @relation("FinalSettlementApprover")
+  complianceChecklistsVerified     ComplianceChecklist[]         @relation("ComplianceChecklistVerifiedBy")
+  userLifecycleVerifications        UserLifecycle[]               @relation("UserLifecycleVerifiedBy")
+
+  @@index([status])
+}
+
+model Employee {
+  id                          String                        @id @default(uuid()) @db.Uuid
+  userId                      String?                       @unique @map("user_id") @db.Uuid
+  user                        User?                         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  profile                     UserProfile?
+  employment                  UserEmployment?
+  compensation                UserCompensation?
+  compensationHistory         UserCompensationHistory[]
+  compensationComponents      CompensationComponent[]
+  lifecycle                   UserLifecycle?
+  employeeDocuments           EmployeeDocument[]
+  contracts                   Contract[]
+  onboardings                 Onboarding[]
+  onboardingChecklists        OnboardingChecklist[]
+  assetProvisionings          AssetProvisioning[]
+  policyAcknowledgements      PolicyAcknowledgement[]
+  probationKpiPlans           ProbationKpiPlan[]
+  probationEvaluations        ProbationEvaluation[]
+  probationConfirmations      ProbationConfirmation[]
+  leaveRequests               LeaveRequest[]
+  leaveBalances               LeaveBalance[]
+  attendanceLogs              AttendanceLog[]
+  attendanceCorrections       AttendanceCorrectionRequest[]
+  overtimeRequests            OvertimeRequest[]
+  flexWorkRequests            FlexWorkRequest[]
+  timesheets                  Timesheet[]
+  careerDevelopmentPlans      CareerDevelopmentPlan[]
+  trainingNeedsAssessments    TrainingNeedsAssessment[]
+  internalTransferRequests    InternalTransferRequest[]
+  salaryAdjustmentRequests    SalaryAdjustmentRequest[]
+  workScheduleAssignments     UserWorkSchedule[]
+  performanceReviews          PerformanceReview[]
+  okrs                        Okr[]
+  successionPlans             SuccessionPlan[]              @relation("SuccessionCandidateEmployee")
+  promotionProposals          PromotionProposal[]           @relation("PromotionProposalEmployee")
+  trainingRequests            TrainingRequest[]
+  trainingCompletions         TrainingCompletion[]
+  trainingFeedbackSubmissions TrainingFeedback[]            @relation("FeedbackParticipant")
+  employeeSkills              EmployeeSkill[]
+  incidentReportsFiled        IncidentReport[]              @relation("IncidentReportReporter")
+  disciplinaryActionsSubject  DisciplinaryAction[]          @relation("DisciplinaryActionSubject")
+  grievancesFiled             Grievance[]                   @relation("GrievanceReporter")
+  recognitionsReceived        Recognition[]                 @relation("RecognitionNominee")
+  surveyResponses             SurveyResponse[]
+  mediationAsRequester        ConflictMediation[]           @relation("MediationRequester")
+  mediationAsOtherParty       ConflictMediation[]           @relation("MediationOtherParty")
+  resignations                Resignation[]
+  offboardingChecklists       OffboardingChecklist[]
+  exitInterviews              ExitInterview[]
+  finalSettlements            FinalSettlement[]
+  assetReturns                AssetReturn[]
+  complianceChecklists        ComplianceChecklist[]
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+
+  @@index([userId])
+}
+
+model UserProfile {
+  id                    String            @id @default(uuid()) @db.Uuid
+  employeeId            String            @unique @map("employee_id") @db.Uuid
+  employee              Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  dateOfBirth           DateTime?
+  gender                Gender?
+  nationalityId         String?           @db.Uuid
+  nationality           CountryReference? @relation("ProfileNationality", fields: [nationalityId], references: [id], onDelete: SetNull)
+  maritalStatus         MaritalStatus?
+  avatarUrl             String?
+  addressLine1          String?
+  addressLine2          String?
+  city                  String?
+  state                 String?
+  countryId             String?           @db.Uuid
+  country               CountryReference? @relation("ProfileResidenceCountry", fields: [countryId], references: [id], onDelete: SetNull)
+  postalCode            String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  @@index([nationalityId])
+  @@index([countryId])
+}
+
+model UserEmployment {
+  id                     String                  @id @default(uuid()) @db.Uuid
+  employeeId             String                  @unique @map("employee_id") @db.Uuid
+  employee               Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeeCode           String?                 @unique
+  positionId             String?                 @db.Uuid
+  position               Position?               @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  employmentType         EmploymentType          @default(FULL_TIME)
+  managerEmploymentId    String?                 @db.Uuid
+  managerEmployment      UserEmployment?         @relation("EmploymentManagerRelation", fields: [managerEmploymentId], references: [id], onDelete: SetNull)
+  subordinateEmployments UserEmployment[]        @relation("EmploymentManagerRelation")
+  history                UserEmploymentHistory[] @relation("EmploymentHistory")
+  managedHistoryEntries  UserEmploymentHistory[] @relation("EmploymentHistoryManagerRelation")
+  hiredAt                DateTime?
+  probationEndAt         DateTime?
+  confirmedAt            DateTime?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  @@index([positionId])
+  @@index([managerEmploymentId])
+}
+
+model UserEmploymentHistory {
+  id                  String          @id @default(uuid()) @db.Uuid
+  userEmploymentId    String          @db.Uuid
+  userEmployment      UserEmployment  @relation("EmploymentHistory", fields: [userEmploymentId], references: [id], onDelete: Cascade)
+  employeeCode        String?
+  departmentId        String?         @db.Uuid
+  department          Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  positionId          String?         @db.Uuid
+  position            Position?       @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  employmentType      EmploymentType  @default(FULL_TIME)
+  managerEmploymentId String?         @db.Uuid
+  managerEmployment   UserEmployment? @relation("EmploymentHistoryManagerRelation", fields: [managerEmploymentId], references: [id], onDelete: SetNull)
+  effectiveFrom       DateTime        @default(now())
+  effectiveTo         DateTime?
+  changeReason        String?
+  changedById         String?         @db.Uuid
+  changedBy           User?           @relation("EmploymentChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+  createdAt           DateTime        @default(now())
+
+  @@index([userEmploymentId])
+  @@index([departmentId])
+  @@index([positionId])
+  @@index([managerEmploymentId])
+  @@index([changedById])
+  @@index([effectiveFrom])
+  @@index([userEmploymentId, effectiveFrom])
+}
+
+model UserCompensation {
+  id            String       @id @default(uuid()) @db.Uuid
+  employeeId    String       @unique @map("employee_id") @db.Uuid
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  baseSalary    Decimal?     @db.Decimal(15, 2)
+  currency      String?
+  payFrequency  PayFrequency @default(MONTHLY)
+  bonusEligible Boolean      @default(false)
+  bonusRate     Decimal?     @db.Decimal(5, 2)
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model UserCompensationHistory {
+  id            String       @id @default(uuid()) @db.Uuid
+  employeeId    String       @map("employee_id") @db.Uuid
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  baseSalary    Decimal?     @db.Decimal(15, 2)
+  currency      String?
+  payFrequency  PayFrequency @default(MONTHLY)
+  bonusEligible Boolean      @default(false)
+  bonusRate     Decimal?     @db.Decimal(5, 2)
+  validFrom     DateTime
+  validTo       DateTime?
+  changeReason  String?
+  changedById   String?      @db.Uuid
+  changedBy     User?        @relation("CompensationChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
+
+  @@index([employeeId])
+  @@index([employeeId, validFrom])
+  @@index([employeeId, validTo])
+  @@index([changedById])
+}
+
+model CompensationComponent {
+  id            String                    @id @default(uuid()) @db.Uuid
+  employeeId    String                    @map("employee_id") @db.Uuid
+  employee      Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  name          String
+  type          CompensationComponentType
+  amount        Decimal                   @db.Decimal(15, 2)
+  isRecurring   Boolean                   @default(true) @map("is_recurring")
+  effectiveFrom DateTime                  @map("effective_from")
+  effectiveTo   DateTime?                 @map("effective_to")
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  @@index([employeeId])
+  @@index([type])
+  @@index([effectiveFrom])
+}
+
+model UserLifecycle {
+  id                   String          @id @default(uuid()) @db.Uuid
+  employeeId           String          @unique @map("employee_id") @db.Uuid
+  employee             Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  status               LifecycleStatus @default(ONBOARDING)
+  onboardedAt          DateTime?
+  suspendedAt          DateTime?
+  terminatedAt         DateTime?
+  terminationReason    String?
+  offboardingCompleted Boolean         @default(false)
+  noPendingClaims      Boolean         @default(false) @map("no_pending_claims")
+  verifiedById         String?         @map("verified_by_id") @db.Uuid
+  verifiedBy           User?           @relation("UserLifecycleVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt           DateTime?       @map("verified_at")
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+
+  @@index([employeeId])
+}

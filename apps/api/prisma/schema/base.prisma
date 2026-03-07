@@ -1,0 +1,684 @@
+// Base enums and shared types for BLIH System
+// This file contains all reusable enums and base models
+
+// Core System Enums
+enum UserStatus {
+  ACTIVE
+  DISABLED
+  PENDING
+}
+
+enum NotificationChannel {
+  EMAIL
+  WEBHOOK
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum AuditResult {
+  SUCCESS
+  FAILURE
+}
+
+// Employment & HR Enums
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+  TEMPORARY
+}
+
+enum PayFrequency {
+  MONTHLY
+  BIWEEKLY
+  WEEKLY
+  ANNUAL
+}
+
+enum LifecycleStatus {
+  ONBOARDING
+  ACTIVE
+  SUSPENDED
+  ON_LEAVE
+  TERMINATED
+  RESIGNED
+  RETIRED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+  SEPARATED
+}
+
+enum DocumentType {
+  CONTRACT
+  ID
+  CERTIFICATE
+  MEDICAL
+  RESUME
+  POLICY_ACK
+  QUALIFICATION
+  OTHER
+}
+
+enum ContractType {
+  INITIAL
+  RENEWAL
+  AMENDMENT
+  ADDENDUM
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  RENEWED
+}
+
+// Recruitment Enums
+enum JobWorkflowStatus {
+  DRAFT
+  PENDING_FOR_APPROVAL
+  READY_TO_POST
+  PUBLISHED
+  CLOSED
+  REJECTED
+}
+
+enum JobStageApprovalStatus {
+  PENDING_FOR_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum JobApprovalStage {
+  FINANCE
+  GM
+  HR_REVIEW
+}
+
+enum JobSalaryMode {
+  NOT_SPECIFIED
+  NEGOTIABLE
+  COMPETITIVE
+}
+
+enum JobRequestType {
+  NEW
+  REPLACEMENT
+}
+
+enum JobUrgency {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum JobApplicationFieldType {
+  TEXT
+  TEXTAREA
+  NUMBER
+  SELECT
+  FILE
+  DATE
+  CHECKBOX
+}
+
+enum JobPredefinedFieldKey {
+  FULL_NAME
+  EMAIL
+  PHONE
+  RESUME
+  COVER_LETTER
+  LINKEDIN
+  PORTFOLIO
+  GITHUB
+  CURRENT_COMPANY
+  CURRENT_POSITION
+  YEARS_EXPERIENCE
+}
+
+enum JobContractType {
+  PERMANENT
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+}
+
+enum WorkLocationType {
+  ON_SITE
+  HYBRID
+  REMOTE
+}
+
+enum RemoteScope {
+  CITY
+  COUNTRY
+  REGION
+  GLOBAL
+}
+
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+  PRINCIPAL
+}
+
+enum CandidateSource {
+  COMPANY_SITE
+  LINKEDIN
+  TELEGRAM
+  REFERRAL
+  AGENCY
+}
+
+enum JobApplicationStatus {
+  NEW
+  SCREENING
+  SHORTLISTED
+  INTERVIEW_STAGE
+  OFFER_PENDING
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+enum InterviewType {
+  HR_SCREENING
+  TECHNICAL
+  BEHAVIORAL
+  PANEL
+  FINAL
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum EndorsementLevel {
+  STRONG_YES
+  YES
+  UNCERTAIN
+  NO
+}
+
+enum HiringDecisionOutcome {
+  OFFER_APPROVED
+  OFFER_DECLINED
+  SUSPENDED
+}
+
+// Onboarding Enums
+enum OnboardingStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum OnboardingChecklistStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+}
+
+enum OnboardingTaskDepartment {
+  HR
+  IT
+  ADMIN
+  TEAM
+}
+
+enum OnboardingTaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+}
+
+enum ProbationPlanStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum ProbationEvaluationRound {
+  DAY_30
+  DAY_55
+  DAY_60_FINAL
+}
+
+enum ProbationRecommendation {
+  CONFIRM
+  EXTEND
+  TERMINATE
+}
+
+enum ProbationConfirmationVerdict {
+  CONFIRM
+  EXTEND
+  TERMINATE
+}
+
+enum ProbationFinalDecision {
+  CONFIRM
+  EXTEND
+  TERMINATE
+}
+
+enum ProbationEvaluationStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum AssetProvisioningStatus {
+  PENDING
+  APPROVED
+  PROVISIONED
+  REJECTED
+  COMPLETED
+}
+
+// Attendance & Leave Enums
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  BEREAVEMENT
+  UNPAID
+  STUDY
+  EMERGENCY
+  COMPASSIONATE
+}
+
+enum LeaveRequestStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EARLY_DEPARTURE
+  ON_LEAVE
+  HALF_DAY
+  REMOTE
+  BUSINESS_TRIP
+}
+
+enum RequestWorkflowStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum FlexWorkRequestType {
+  WORK_FROM_HOME
+  FLEX_TIME
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+// Performance & OKR Enums
+enum ReviewPeriodType {
+  QUARTERLY
+  ANNUAL
+}
+
+enum ReviewStatus {
+  NOT_STARTED
+  SELF_PENDING
+  SELF_SUBMITTED
+  MANAGER_PENDING
+  MANAGER_SUBMITTED
+  COMPLETED
+}
+
+enum PerformanceCategory {
+  UNSATISFACTORY
+  BELOW_EXPECTATIONS
+  MEETS_EXPECTATIONS
+  EXCEEDS_EXPECTATIONS
+  OUTSTANDING
+}
+
+enum PerformanceFeedbackRole {
+  SELF
+  MANAGER
+  PEER
+  SKIP_LEVEL
+  DIRECT_REPORT
+}
+
+enum OkrStatus {
+  DRAFT
+  ACTIVE
+  AT_RISK
+  DELAYED
+  ACHIEVED
+  PARTIALLY_ACHIEVED
+  MISSED
+  COMPLETED
+}
+
+enum KeyResultType {
+  NUMERIC
+  PERCENTAGE
+  BOOLEAN
+  MILESTONE
+}
+
+enum KeyResultStatus {
+  NOT_STARTED
+  ON_TRACK
+  AT_RISK
+  DELAYED
+  ACHIEVED
+}
+
+enum OkrScope {
+  COMPANY
+  DEPARTMENT
+  USER
+}
+
+enum CompensationComponentType {
+  ALLOWANCE
+  BONUS
+  DEDUCTION
+  BENEFIT
+}
+
+enum SuccessionReadiness {
+  READY_NOW
+  ONE_YEAR
+  TWO_YEARS
+}
+
+enum SuccessionRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum PromotionProposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CareerDevelopmentPlanStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum CareerGoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+}
+
+enum InternalTransferType {
+  PROMOTION
+  TRANSFER
+}
+
+enum SalaryAdjustmentReason {
+  MERIT
+  EQUITY
+  PROMOTION
+  TRANSFER
+  RETENTION
+  MARKET
+}
+
+enum OkrManagerReviewDecision {
+  APPROVED
+  CHANGES_REQUESTED
+}
+
+// Training Enums
+enum TrainingRequestStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum TrainingType {
+  SKILL
+  COMPLIANCE
+  LEADERSHIP
+  OTHER
+}
+
+enum CompletionStatus {
+  COMPLETED
+  PARTIAL
+  DROPPED
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum SkillSource {
+  SELF
+  MANAGER
+  ASSESSMENT
+  TRAINING
+}
+
+enum CostPayer {
+  COMPANY
+  SELF
+}
+
+enum FeedbackType {
+  COURSE
+  TRAINER
+  PROVIDER
+}
+
+enum FeedbackStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+}
+
+enum FeedbackRatingScale {
+  ONE_TO_FIVE
+  ONE_TO_TEN
+}
+
+enum FeedbackSubmissionType {
+  ANONYMOUS
+  IDENTIFIED
+  MANAGER_ONLY
+}
+
+// Employee Relations Enums
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentType {
+  SAFETY
+  SECURITY
+  CONFLICT
+  HARASSMENT
+  OTHER
+}
+
+enum IncidentReportStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+}
+
+enum DisciplinaryIncidentType {
+  ATTENDANCE_VIOLATION
+  PERFORMANCE_ISSUE
+  CODE_OF_CONDUCT
+}
+
+enum DisciplinaryActionType {
+  VERBAL_WARNING
+  WRITTEN_WARNING
+  FINAL_WARNING
+  PERFORMANCE_IMPROVEMENT_PLAN
+  SUSPENSION
+  TERMINATION
+}
+
+enum DisciplinaryStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  APPEALED
+}
+
+enum GrievanceStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum RecognitionCategory {
+  EXCELLENCE
+  TEAMWORK
+  INNOVATION
+  SERVICE
+  OTHER
+}
+
+enum RecognitionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SurveyType {
+  SATISFACTION
+  PULSE
+}
+
+enum SurveyStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum MediationStatus {
+  PENDING
+  IN_PROGRESS
+  AGREEMENT_REACHED
+  CLOSED
+}
+
+// Offboarding Enums
+enum ResignationStatus {
+  DRAFT
+  SUBMITTED
+  NOTICE_PERIOD
+  HANDOVER
+  EXIT_PENDING
+  COMPLETED
+}
+
+enum OffboardingTaskDepartment {
+  HR
+  IT
+  ADMIN
+  FINANCE
+  MANAGER
+}
+
+enum OffboardingTaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+}
+
+enum OffboardingChecklistStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TerminationType {
+  RESIGNATION
+  END_OF_CONTRACT
+  TERMINATION
+  LAYOFF
+}
+
+enum AssetReturnStatus {
+  PENDING
+  IT_SIGNED
+  ADMIN_SIGNED
+  FINANCE_SIGNED
+  COMPLETED
+}
+
+// Common Workflow Enums
+enum ApprovalDecision {
+  PENDING
+  APPROVED
+  REJECTED
+}
