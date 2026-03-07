@@ -1,0 +1,59 @@
+{
+  "name": "@repo/database",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "schema",
+    "migrations",
+    "seed",
+    "prisma.config.ts"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./prisma-client": {
+      "types": "./dist/src/prisma-client.d.ts",
+      "import": "./dist/src/prisma-client.js"
+    },
+    "./prisma-adapter": {
+      "types": "./dist/src/prisma-adapter.d.ts",
+      "import": "./dist/src/prisma-adapter.js"
+    },
+    "./rbac/permissions.constants": {
+      "types": "./dist/src/rbac/permissions.constants.d.ts",
+      "import": "./dist/src/rbac/permissions.constants.js"
+    },
+    "./seed/rbac.manifest": {
+      "types": "./dist/seed/rbac.manifest.d.ts",
+      "import": "./dist/seed/rbac.manifest.js"
+    }
+  },
+  "scripts": {
+    "build": "npm run prisma:generate && tsc -p tsconfig.json",
+    "check-types": "npm run prisma:generate && tsc -p tsconfig.json --noEmit",
+    "prisma:format": "prisma format",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:seed": "tsx seed/prisma.seed.ts",
+    "prisma:validate": "prisma validate"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.4.1",
+    "@prisma/client": "7.4.1",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.15.6",
+    "@repo/eslint-config": "file:../eslint-config",
+    "@repo/typescript-config": "file:../typescript-config",
+    "prisma": "7.4.1",
+    "tsx": "^4.21.0",
+    "typescript": "5.9.2"
+  }
+}

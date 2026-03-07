@@ -30,12 +30,12 @@
     "validate:commits": "commitlint --from HEAD~1 --to HEAD --verbose",
     "validate:commits:branch": "commitlint --from main --to HEAD --verbose",
     "verify": "npm run lint:check && npm run typecheck && npm run test -- --ci --passWithNoTests",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:brain:validate": "prisma validate",
-    "prisma:brain:format": "prisma format",
-    "prisma:seed": "tsx src/platform/prisma/prisma.seed.ts",
+    "prisma:generate": "npm run build --workspace @repo/database",
+    "prisma:migrate:dev": "npm run prisma:migrate:dev --workspace @repo/database",
+    "prisma:migrate:deploy": "npm run prisma:migrate:deploy --workspace @repo/database",
+    "prisma:brain:validate": "npm run prisma:validate --workspace @repo/database",
+    "prisma:brain:format": "npm run prisma:format --workspace @repo/database",
+    "prisma:seed": "npm run prisma:seed --workspace @repo/database",
     "db:start": "docker-compose -f docker-compose.local.yml up -d",
     "db:stop": "docker-compose -f docker-compose.local.yml down",
     "db:restart": "npm run db:stop && npm run db:start",
@@ -45,6 +45,7 @@
     "db:psql": "docker exec -it blih-postgres psql -U postgres -d blih-system-dev"
   },
   "dependencies": {
+    "@repo/database": "^0.0.0",
     "@repo/types": "^0.0.0",
     "@keycloak/keycloak-admin-client": "^26.4.2",
     "@nestjs/axios": "^4.0.1",
@@ -57,9 +58,6 @@
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/websockets": "^11.1.13",
-    "@prisma/adapter-pg": "7.4.1",
-    "@prisma/client": "7.4.1",
-    "@prisma/client-runtime-utils": "^7.3.0",
     "axios": "^1.13.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
@@ -67,7 +65,6 @@
     "joi": "^17.13.3",
     "jose": "^6.1.2",
     "nodemailer": "^7.0.10",
-    "pg": "^8.18.0",
     "rate-limiter-flexible": "^9.1.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -90,13 +87,11 @@
     "globals": "^16.0.0",
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
-    "prisma": "7.4.1",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.21.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
@@ -120,9 +115,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "prisma": {
-    "schema": "prisma/schema.prisma",
-    "seed": "tsx src/platform/prisma/prisma.seed.ts"
   }
 }

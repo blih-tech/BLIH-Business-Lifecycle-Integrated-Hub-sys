@@ -598,7 +598,7 @@ The migration coordinator should:
 3. **Commit migration files**:
 
    ```bash
-   git add src/prisma/migrations/
+   git add ../../packages/database/migrations/
    git commit -m "feat: add users table migration"
    git push
    ```

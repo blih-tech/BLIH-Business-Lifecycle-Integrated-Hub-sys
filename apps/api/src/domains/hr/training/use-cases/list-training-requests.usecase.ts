@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { TrainingRequestStatus } from '../../../../platform/prisma/generated/enums';
+import type { TrainingRequestStatus } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapTrainingRequestResponse } from '../training.mapper';
 
