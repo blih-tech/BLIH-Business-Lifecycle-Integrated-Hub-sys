@@ -23,6 +23,18 @@ export class RagController {
     return await this.ragService.askQuestion(body.question, body.history || [], body.filter);
   }
 
+  @Post('analyze-cv')
+async analyzeCv(
+  @Body()
+  body: {
+    
+    cvText: string;
+    jobDescription: string;
+  },
+) {
+  return this.ragService.analyzeCv(body.cvText, body.jobDescription);
+}
+
   @Get('status')
   status() {
     return this.ragService.status();

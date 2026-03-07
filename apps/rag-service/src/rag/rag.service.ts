@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ChatOllama, OllamaEmbeddings } from '@langchain/ollama';
 import { QdrantVectorStore } from '@langchain/qdrant';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
@@ -7,6 +7,7 @@ import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
 @Injectable()
 export class RagService {
+  private readonly logger = new Logger(RagService.name);
   private llm: ChatOllama;
   private embeddings: OllamaEmbeddings;
   private readonly qdrantUrl = process.env.QDRANT_URL;
@@ -145,6 +146,64 @@ export class RagService {
       sources: relevantDocs.map(d =>d.metadata.source) 
     };
   }
+
+  async analyzeCv(cvText: string, jobDescription: string) {
+
+  const prompt = `
+You are a senior HR recruiter specializing in candidate evaluation.
+
+Your task is to compare a candidate CV with a job description and evaluate suitability.
+
+SCORING RULES:
+- 90-100 = Excellent match
+- 70-89 = Good match
+- 50-69 = Partial match
+- 0-49 = Poor match
+
+Return ONLY valid JSON in this format:
+
+{
+ "score": number,
+ "strengths": ["..."],
+ "weaknesses": ["..."],
+ "recommendation": "SHORTLIST | REJECT | REVIEW",
+ "summary": "short explanation"
+}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+CANDIDATE CV:
+${cvText}
+`;
+
+  const response = await this.llm.invoke([
+    {
+      role: "system",
+      content: "You are a senior HR recruiter specialized in talent evaluation."
+    },
+    {
+      role: "user",
+      content: prompt
+    }
+  ]);
+
+  try {
+  // Use a regex to find the JSON block if the AI adds conversational text
+  const jsonMatch = (response.content as string).match(/\{[\s\S]*\}/);
+  const jsonString = jsonMatch ? jsonMatch[0] : response.content as string;
+  return JSON.parse(jsonString);
+} catch (e) {
+  this.logger.error("AI returned invalid JSON, falling back to raw content");
+  return {
+    score: 0,
+    strengths: [],
+    weaknesses: [],
+    recommendation: "REVIEW",
+    summary: response.content
+  };
+}
+}
 
   status() {
     return {
