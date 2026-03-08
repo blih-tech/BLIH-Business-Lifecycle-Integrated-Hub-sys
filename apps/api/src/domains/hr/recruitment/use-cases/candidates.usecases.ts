@@ -9,7 +9,11 @@ import type {
   CreateCandidateDto,
   UpdateCandidateDto,
 } from '../dto/candidate.dto';
-import { mapCandidate, normalizeEmail } from './recruitment.usecase-helpers';
+import {
+  mapCandidate,
+  normalizeEmail,
+  splitFullName,
+} from './recruitment.usecase-helpers';
 
 @Injectable()
 export class CreateCandidateUseCase {
@@ -18,27 +22,24 @@ export class CreateCandidateUseCase {
   async execute(dto: CreateCandidateDto) {
     const normalizedEmail = normalizeEmail(dto.email);
     const existing = await this.prisma.candidate.findUnique({
-      where: { emailNormalized: normalizedEmail },
-      include: { skills: true },
+      where: { email: normalizedEmail },
+      include: { candidateSkills: true },
     });
     if (existing) throw new ConflictException('Candidate email already exists');
 
     const candidate = await this.prisma.candidate.create({
       data: {
-        firstName: dto.firstName,
-        lastName: dto.lastName,
-        email: dto.email,
-        emailNormalized: normalizedEmail,
+        fullName: `${dto.firstName} ${dto.lastName}`.trim(),
+        email: normalizedEmail,
         phone: dto.phone ?? undefined,
-        gender: dto.gender ?? undefined,
         yearsExperience: dto.yearsExperience ?? undefined,
         linkedinUrl: dto.linkedinUrl ?? undefined,
         portfolioUrl: dto.portfolioUrl ?? undefined,
         githubUrl: dto.githubUrl ?? undefined,
         source: dto.source ?? 'COMPANY_SITE',
-        referredById: dto.referredById ?? undefined,
-        resumeUrl: dto.resumeUrl ?? undefined,
-        skills: dto.skills
+        referredBy: dto.referredById ?? undefined,
+        cvUrl: dto.resumeUrl ?? undefined,
+        candidateSkills: dto.skills
           ? {
               create: dto.skills.map((skill) => ({
                 name: skill.name,
@@ -48,7 +49,7 @@ export class CreateCandidateUseCase {
             }
           : undefined,
       },
-      include: { skills: { orderBy: { name: 'asc' } } },
+      include: { candidateSkills: { orderBy: { name: 'asc' } } },
     });
 
     return mapCandidate(candidate);
@@ -62,11 +63,9 @@ export class ListCandidatesUseCase {
   async execute(query: CandidateListQueryDto) {
     const list = await this.prisma.candidate.findMany({
       where: {
-        ...(query.email
-          ? { emailNormalized: normalizeEmail(query.email) }
-          : {}),
+        ...(query.email ? { email: normalizeEmail(query.email) } : {}),
       },
-      include: { skills: { orderBy: { name: 'asc' } } },
+      include: { candidateSkills: { orderBy: { name: 'asc' } } },
       orderBy: { createdAt: 'desc' },
     });
     return list.map((candidate) => mapCandidate(candidate));
@@ -80,7 +79,7 @@ export class GetCandidateUseCase {
   async execute(id: string) {
     const candidate = await this.prisma.candidate.findUnique({
       where: { id },
-      include: { skills: { orderBy: { name: 'asc' } } },
+      include: { candidateSkills: { orderBy: { name: 'asc' } } },
     });
     if (!candidate) throw new NotFoundException('Candidate not found');
     return mapCandidate(candidate);
@@ -92,22 +91,25 @@ export class UpdateCandidateUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(id: string, dto: UpdateCandidateDto) {
-    await this.prisma.candidate.findUniqueOrThrow({
+    const existing = await this.prisma.candidate.findUniqueOrThrow({
       where: { id },
-      select: { id: true },
+      select: { id: true, fullName: true },
     });
+    const existingName = splitFullName(existing.fullName);
+    const nextFirstName = dto.firstName ?? existingName.firstName;
+    const nextLastName = dto.lastName ?? existingName.lastName;
+
     const updated = await this.prisma.$transaction(async (tx) => {
       const row = await tx.candidate.update({
         where: { id },
         data: {
-          ...(dto.firstName !== undefined && { firstName: dto.firstName }),
-          ...(dto.lastName !== undefined && { lastName: dto.lastName }),
+          ...((dto.firstName !== undefined || dto.lastName !== undefined) && {
+            fullName: `${nextFirstName} ${nextLastName}`.trim(),
+          }),
           ...(dto.email !== undefined && {
-            email: dto.email,
-            emailNormalized: normalizeEmail(dto.email),
+            email: normalizeEmail(dto.email),
           }),
           ...(dto.phone !== undefined && { phone: dto.phone }),
-          ...(dto.gender !== undefined && { gender: dto.gender }),
           ...(dto.yearsExperience !== undefined && {
             yearsExperience: dto.yearsExperience,
           }),
@@ -120,9 +122,9 @@ export class UpdateCandidateUseCase {
           ...(dto.githubUrl !== undefined && { githubUrl: dto.githubUrl }),
           ...(dto.source !== undefined && { source: dto.source }),
           ...(dto.referredById !== undefined && {
-            referredById: dto.referredById,
+            referredBy: dto.referredById,
           }),
-          ...(dto.resumeUrl !== undefined && { resumeUrl: dto.resumeUrl }),
+          ...(dto.resumeUrl !== undefined && { cvUrl: dto.resumeUrl }),
         },
       });
 
@@ -145,7 +147,7 @@ export class UpdateCandidateUseCase {
 
     const withSkills = await this.prisma.candidate.findUniqueOrThrow({
       where: { id: updated.id },
-      include: { skills: { orderBy: { name: 'asc' } } },
+      include: { candidateSkills: { orderBy: { name: 'asc' } } },
     });
     return mapCandidate(withSkills);
   }

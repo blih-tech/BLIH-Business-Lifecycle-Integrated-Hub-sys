@@ -422,7 +422,7 @@ export class CreateJobUseCase {
         },
         responsibilities: {
           create: responsibilities.map((description, index) => ({
-            description,
+            title: description,
             order: index + 1,
           })),
         },
@@ -696,7 +696,7 @@ export class UpdateJobUseCase {
         await tx.jobResponsibility.createMany({
           data: responsibilities.map((description, index) => ({
             jobId: id,
-            description,
+            title: description,
             order: index + 1,
           })),
         });
@@ -1101,7 +1101,7 @@ export class UpsertJobResponsibilitiesUseCase {
         await tx.jobResponsibility.createMany({
           data: dto.responsibilities.map((responsibility, index) => ({
             jobId: id,
-            description: responsibility.description,
+            title: responsibility.description,
             order: responsibility.order ?? index + 1,
           })),
         });

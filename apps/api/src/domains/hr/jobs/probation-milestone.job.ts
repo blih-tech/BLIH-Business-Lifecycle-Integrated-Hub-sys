@@ -71,8 +71,8 @@ export class ProbationMilestoneJob {
         const finalEvaluation = await this.prisma.probationEvaluation.findFirst(
           {
             where: {
-              kpiPlanId: plan.id,
-              evaluationRound: 'DAY_60_FINAL',
+              probationPlanId: plan.id,
+              round: 'DAY_60_FINAL',
             },
             select: { id: true },
           },

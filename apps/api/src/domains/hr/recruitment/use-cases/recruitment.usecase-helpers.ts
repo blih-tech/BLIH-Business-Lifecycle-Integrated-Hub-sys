@@ -277,6 +277,19 @@ export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
+export function splitFullName(fullName: string | null | undefined) {
+  const normalized = (fullName ?? '').trim();
+  if (!normalized) {
+    return { firstName: '', lastName: '' };
+  }
+
+  const parts = normalized.split(/\s+/);
+  return {
+    firstName: parts[0] ?? '',
+    lastName: parts.slice(1).join(' '),
+  };
+}
+
 export async function generateUniqueSlug(prisma: PrismaService, title: string) {
   const base = title
     .toLowerCase()
@@ -310,6 +323,56 @@ function dateToIso(value: Date | null | undefined) {
 
 function snakeToCamel(key: string) {
   return key.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function toObjectRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  return value as Record<string, unknown>;
+}
+
+export function buildInterviewMetadata(input: {
+  applicationId: string;
+  round: number;
+  interviewers?: unknown[] | null;
+  feedback?: string | null;
+  endorsement?: string | null;
+  score?: number | null;
+  nextAction?: string | null;
+}) {
+  return {
+    applicationId: input.applicationId,
+    round: input.round,
+    interviewers: input.interviewers ?? null,
+    feedback: input.feedback ?? null,
+    endorsement: input.endorsement ?? null,
+    score: input.score ?? null,
+    nextAction: input.nextAction ?? null,
+  };
+}
+
+export function parseInterviewMetadata(value: unknown) {
+  const payload = toObjectRecord(value);
+
+  return {
+    applicationId:
+      typeof payload?.applicationId === 'string' ? payload.applicationId : '',
+    round:
+      typeof payload?.round === 'number' && Number.isInteger(payload.round)
+        ? payload.round
+        : 1,
+    interviewers: Array.isArray(payload?.interviewers)
+      ? payload.interviewers
+      : null,
+    feedback: typeof payload?.feedback === 'string' ? payload.feedback : null,
+    endorsement:
+      typeof payload?.endorsement === 'string' ? payload.endorsement : null,
+    score: typeof payload?.score === 'number' ? payload.score : null,
+    nextAction:
+      typeof payload?.nextAction === 'string' ? payload.nextAction : null,
+  };
 }
 
 export function mapJob(job: any) {
@@ -412,42 +475,82 @@ export function mapJob(job: any) {
       level: skill.level ?? null,
     })),
     tools: job.tools ?? [],
-    responsibilities: job.responsibilities ?? [],
+    responsibilities: (job.responsibilities ?? []).map(
+      (responsibility: any) => ({
+        id: responsibility.id,
+        description: responsibility.title,
+        order: responsibility.order ?? null,
+      }),
+    ),
     createdAt: job.createdAt.toISOString(),
     updatedAt: job.updatedAt.toISOString(),
   };
 }
 
 export function mapCandidate(candidate: any) {
+  const { firstName, lastName } = splitFullName(candidate.fullName);
+
   return {
-    ...candidate,
+    id: candidate.id,
+    firstName,
+    lastName,
+    email: candidate.email,
+    phone: candidate.phone ?? null,
+    gender: null,
+    yearsExperience: candidate.yearsExperience ?? null,
+    linkedinUrl: candidate.linkedinUrl ?? null,
+    portfolioUrl: candidate.portfolioUrl ?? null,
+    githubUrl: candidate.githubUrl ?? null,
+    source: candidate.source,
+    referredById: candidate.referredBy ?? null,
+    resumeUrl: candidate.cvUrl ?? null,
+    skills: (candidate.candidateSkills ?? []).map((skill: any) => ({
+      id: skill.id,
+      name: skill.name,
+      level: skill.level ?? null,
+      years: skill.years ?? null,
+    })),
     createdAt: candidate.createdAt.toISOString(),
     updatedAt: candidate.updatedAt.toISOString(),
   };
 }
 
 export function mapApplication(application: any) {
+  const payload = toObjectRecord(application.customFieldValues);
+  const sourceSnapshot = toObjectRecord(payload?.sourceSnapshot ?? null);
+
   return {
-    ...application,
-    expectedSalary: decimalToString(application.expectedSalary),
+    id: application.id,
+    jobId: application.jobId,
+    candidateId: application.candidateId,
+    status: application.status,
+    coverLetter:
+      typeof payload?.coverLetter === 'string' ? payload.coverLetter : null,
+    expectedSalary: decimalToString(payload?.expectedSalary),
     appliedAt: application.appliedAt.toISOString(),
-    sourceSnapshot:
-      application.sourceSnapshot &&
-      typeof application.sourceSnapshot === 'object' &&
-      !Array.isArray(application.sourceSnapshot)
-        ? application.sourceSnapshot
-        : null,
+    sourceSnapshot,
     createdAt: application.createdAt.toISOString(),
     updatedAt: application.updatedAt.toISOString(),
   };
 }
 
 export function mapInterview(interview: any) {
+  const metadata = parseInterviewMetadata(interview.feedback);
+
   return {
-    ...interview,
+    id: interview.id,
+    applicationId: interview.applicationId ?? metadata.applicationId,
+    type: interview.type,
+    round: metadata.round,
+    status: interview.status,
     scheduledAt: interview.scheduledAt?.toISOString() ?? null,
     completedAt: interview.completedAt?.toISOString() ?? null,
-    score: decimalToString(interview.score),
+    interviewerId: interview.interviewerId ?? null,
+    interviewers: metadata.interviewers,
+    feedback: metadata.feedback,
+    endorsement: metadata.endorsement,
+    score: metadata.score == null ? null : String(metadata.score),
+    nextAction: metadata.nextAction,
     createdAt: interview.createdAt.toISOString(),
     updatedAt: interview.updatedAt.toISOString(),
   };

@@ -32,7 +32,7 @@ export class CreateJobApplicationUseCase {
       }),
       this.prisma.candidate.findUnique({
         where: { id: dto.candidateId },
-        select: { id: true, firstName: true, lastName: true, source: true },
+        select: { id: true, fullName: true, source: true },
       }),
     ]);
     if (!job) throw new NotFoundException('Job not found');
@@ -57,18 +57,20 @@ export class CreateJobApplicationUseCase {
       data: {
         jobId: dto.jobId,
         candidateId: dto.candidateId,
-        coverLetter: dto.coverLetter ?? undefined,
-        expectedSalary: dto.expectedSalary ?? undefined,
-        sourceSnapshot: (dto.sourceSnapshot ?? {
-          candidateSource: candidate.source,
-        }) as Prisma.InputJsonValue,
+        customFieldValues: {
+          coverLetter: dto.coverLetter ?? null,
+          expectedSalary: dto.expectedSalary ?? null,
+          sourceSnapshot: dto.sourceSnapshot ?? {
+            candidateSource: candidate.source,
+          },
+        } as Prisma.InputJsonValue,
       },
     });
 
     await this.notifications.notifyUsers({
       userIds: [job.createdById],
       title: `New application for ${job.title}`,
-      body: `${candidate.firstName} ${candidate.lastName} submitted an application.`,
+      body: `${candidate.fullName} submitted an application.`,
       payload: {
         jobId: dto.jobId,
         candidateId: dto.candidateId,

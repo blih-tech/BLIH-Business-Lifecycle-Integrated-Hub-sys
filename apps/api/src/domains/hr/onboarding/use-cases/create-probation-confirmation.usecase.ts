@@ -18,7 +18,7 @@ export class CreateProbationConfirmationUseCase {
       await this.prisma.probationEvaluation.findFirst({
         where: {
           employeeId: employee.id,
-          evaluationRound: 'DAY_60_FINAL',
+          round: 'DAY_60_FINAL',
         },
         orderBy: { createdAt: 'desc' },
       });
@@ -33,8 +33,8 @@ export class CreateProbationConfirmationUseCase {
       dto.reviewSummary ??
       ({
         latestEvaluationId: latestFinalEvaluation?.id ?? null,
-        finalDecision: latestFinalEvaluation?.finalDecision ?? null,
-        averageRating: latestFinalEvaluation?.averageRating?.toString() ?? null,
+        finalDecision: latestFinalEvaluation?.recommendation ?? null,
+        averageRating: latestFinalEvaluation?.overallScore?.toString() ?? null,
       } as Record<string, unknown>);
 
     const created = await this.prisma.probationConfirmation.create({
