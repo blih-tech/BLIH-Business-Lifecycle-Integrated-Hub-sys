@@ -14,23 +14,28 @@
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
     },
     "./prisma-client": {
       "types": "./dist/src/prisma-client.d.ts",
-      "import": "./dist/src/prisma-client.js"
+      "import": "./dist/src/prisma-client.js",
+      "default": "./dist/src/prisma-client.js"
     },
     "./prisma-adapter": {
       "types": "./dist/src/prisma-adapter.d.ts",
-      "import": "./dist/src/prisma-adapter.js"
+      "import": "./dist/src/prisma-adapter.js",
+      "default": "./dist/src/prisma-adapter.js"
     },
     "./rbac/permissions.constants": {
       "types": "./dist/src/rbac/permissions.constants.d.ts",
-      "import": "./dist/src/rbac/permissions.constants.js"
+      "import": "./dist/src/rbac/permissions.constants.js",
+      "default": "./dist/src/rbac/permissions.constants.js"
     },
     "./seed/rbac.manifest": {
       "types": "./dist/seed/rbac.manifest.d.ts",
-      "import": "./dist/seed/rbac.manifest.js"
+      "import": "./dist/seed/rbac.manifest.js",
+      "default": "./dist/seed/rbac.manifest.js"
     }
   },
   "scripts": {
