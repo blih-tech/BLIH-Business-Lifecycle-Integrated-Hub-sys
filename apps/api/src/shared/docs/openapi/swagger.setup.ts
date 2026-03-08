@@ -25,6 +25,258 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
 }
 
+function isSuccessStatusCode(statusCode: string): boolean {
+  return /^2\d{2}$/.test(statusCode);
+}
+
+function methodNeedsSuccessResponse(method: string): boolean {
+  return ['get', 'post', 'put', 'patch', 'delete'].includes(method);
+}
+
+function getOperationSummary(operation: Record<string, unknown>): string {
+  return typeof operation.summary === 'string' ? operation.summary : '';
+}
+
+function hasPathParameter(operation: Record<string, unknown>): boolean {
+  if (!Array.isArray(operation.parameters)) {
+    return false;
+  }
+
+  return operation.parameters.some(
+    (parameter) => isRecord(parameter) && parameter.in === 'path',
+  );
+}
+
+function needsValidationResponse(
+  method: string,
+  operation: Record<string, unknown>,
+): boolean {
+  return (
+    isRecord(operation.requestBody) ||
+    hasPathParameter(operation) ||
+    method === 'post' ||
+    method === 'put' ||
+    method === 'patch'
+  );
+}
+
+function pickSuccessStatusCode(
+  method: string,
+  operation: Record<string, unknown>,
+): string {
+  const summary = getOperationSummary(operation).toLowerCase();
+  if (method === 'post' && /^(create|record)\b/.test(summary)) {
+    return '201';
+  }
+
+  return '200';
+}
+
+function deriveResourceName(path: string): string {
+  const segment = path
+    .split('/')
+    .filter(Boolean)
+    .reverse()
+    .find((value) => !/^\{.+\}$/.test(value));
+
+  if (!segment) {
+    return 'resource';
+  }
+
+  const normalized = segment.replace(/-/g, ' ').replace(/s$/, '').trim();
+
+  return normalized || 'resource';
+}
+
+function defaultResourceExample(path: string): Record<string, unknown> {
+  const resource = deriveResourceName(path);
+
+  return {
+    id: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+    resource,
+    status: 'ACTIVE',
+    createdAt: DOC_TIMESTAMP,
+    updatedAt: DOC_TIMESTAMP,
+  };
+}
+
+function defaultSuccessDataExample(
+  path: string,
+  method: string,
+  operation: Record<string, unknown>,
+): unknown {
+  const summary = getOperationSummary(operation).toLowerCase();
+
+  if (summary.includes('health')) {
+    return {
+      status: 'degraded',
+      checks: {
+        database: { status: 'up' },
+        keycloak: { status: 'down', error: 'connect ECONNREFUSED' },
+        smtp: { status: 'up', mode: 'disabled' },
+      },
+      timestamp: DOC_TIMESTAMP,
+    };
+  }
+
+  if (
+    summary.includes('analytics') ||
+    summary.includes('report') ||
+    summary.includes('summary') ||
+    summary.includes('trend') ||
+    summary.includes('balance') ||
+    summary.includes('progress')
+  ) {
+    return {
+      rangeStart: '2026-02-01',
+      rangeEnd: '2026-02-29',
+      total: 1,
+      items: [defaultResourceExample(path)],
+    };
+  }
+
+  if (
+    summary.includes('list') ||
+    (method === 'get' && !hasPathParameter(operation))
+  ) {
+    return [defaultResourceExample(path)];
+  }
+
+  return defaultResourceExample(path);
+}
+
+function buildSchemaFromExample(example: unknown): Record<string, unknown> {
+  if (Array.isArray(example)) {
+    return {
+      type: 'array',
+      items:
+        example.length > 0
+          ? buildSchemaFromExample(example[0])
+          : { type: 'object', additionalProperties: true },
+    };
+  }
+
+  if (example === null) {
+    return { type: 'object', nullable: true, example: null };
+  }
+
+  switch (typeof example) {
+    case 'string':
+      return { type: 'string', example };
+    case 'number':
+      return { type: 'number', example };
+    case 'boolean':
+      return { type: 'boolean', example };
+    case 'object': {
+      if (!isRecord(example)) {
+        return { type: 'object', additionalProperties: true };
+      }
+
+      const properties: Record<string, unknown> = {};
+      const required: string[] = [];
+
+      for (const [key, value] of Object.entries(example)) {
+        properties[key] = buildSchemaFromExample(value);
+        if (value !== undefined) {
+          required.push(key);
+        }
+      }
+
+      return {
+        type: 'object',
+        ...(required.length > 0 && { required }),
+        properties,
+      };
+    }
+    default:
+      return { type: 'object', additionalProperties: true };
+  }
+}
+
+function ensureJsonMedia(
+  response: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!isRecord(response.content)) {
+    response.content = {};
+  }
+
+  const content = response.content as Record<string, unknown>;
+  if (!isRecord(content['application/json'])) {
+    content['application/json'] = {};
+  }
+
+  return content['application/json'] as Record<string, unknown>;
+}
+
+function ensureSuccessResponse(
+  method: string,
+  path: string,
+  operation: Record<string, unknown>,
+): void {
+  if (!isRecord(operation.responses)) {
+    operation.responses = {};
+  }
+
+  const responses = operation.responses as Record<string, unknown>;
+  const existingSuccess = Object.keys(responses).find(isSuccessStatusCode);
+  if (existingSuccess) {
+    const response = responses[existingSuccess];
+    if (isRecord(response)) {
+      ensureJsonMedia(response);
+    }
+    return;
+  }
+
+  if (!methodNeedsSuccessResponse(method)) {
+    return;
+  }
+
+  const statusCode = pickSuccessStatusCode(method, operation);
+  const dataExample = defaultSuccessDataExample(path, method, operation);
+  responses[statusCode] = {
+    description:
+      getOperationSummary(operation) || 'Request processed successfully',
+    content: {
+      'application/json': {
+        schema: buildSchemaFromExample(dataExample),
+        example: dataExample,
+      },
+    },
+  };
+}
+
+function ensureDefaultErrorResponses(
+  method: string,
+  operation: Record<string, unknown>,
+): void {
+  if (!isRecord(operation.responses)) {
+    operation.responses = {};
+  }
+
+  const responses = operation.responses as Record<string, unknown>;
+
+  if (
+    needsValidationResponse(method, operation) &&
+    !isRecord(responses['400'])
+  ) {
+    responses['400'] = {
+      description: 'Validation failed',
+      content: { 'application/json': {} },
+    };
+  }
+
+  if (
+    hasPathParameter(operation) &&
+    ['get', 'patch', 'delete', 'post'].includes(method) &&
+    !isRecord(responses['404'])
+  ) {
+    responses['404'] = {
+      description: 'Resource not found',
+      content: { 'application/json': {} },
+    };
+  }
+}
+
 function isEnvelopeSchema(schema: unknown): boolean {
   if (!isRecord(schema)) {
     return false;
@@ -385,7 +637,7 @@ function defaultErrorEnvelopeExample(
 }
 
 export function enforceUnifiedSchemas(document: OpenAPIObject): void {
-  for (const pathItem of Object.values(document.paths ?? {})) {
+  for (const [path, pathItem] of Object.entries(document.paths ?? {})) {
     if (!isRecord(pathItem)) {
       continue;
     }
@@ -401,7 +653,14 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
       'trace',
     ] as const) {
       const operation = pathItem[method];
-      if (!isRecord(operation) || !isRecord(operation.responses)) {
+      if (!isRecord(operation)) {
+        continue;
+      }
+
+      ensureSuccessResponse(method, path, operation);
+      ensureDefaultErrorResponses(method, operation);
+
+      if (!isRecord(operation.responses)) {
         continue;
       }
 
@@ -412,21 +671,28 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
           continue;
         }
 
-        const content = response.content;
-        if (!isRecord(content)) {
-          continue;
-        }
+        const json = ensureJsonMedia(response);
 
-        const json = content['application/json'];
-        if (!isRecord(json)) {
-          continue;
-        }
-
-        const isSuccess = /^2\d{2}$/.test(statusCode);
+        const isSuccess = isSuccessStatusCode(statusCode);
         const successMessage =
           isSuccess && typeof operation[RESPONSE_MESSAGE_EXTENSION] === 'string'
             ? operation[RESPONSE_MESSAGE_EXTENSION]
             : DOC_SUCCESS_MESSAGE;
+        if (isSuccess && !isRecord(json.schema) && json.example === undefined) {
+          const fallbackExample = defaultSuccessDataExample(
+            path,
+            method,
+            operation,
+          );
+          json.schema = buildSchemaFromExample(fallbackExample);
+          json.example = fallbackExample;
+        } else if (
+          isSuccess &&
+          !isRecord(json.schema) &&
+          json.example !== undefined
+        ) {
+          json.schema = buildSchemaFromExample(json.example);
+        }
         const originalSchema = json.schema;
         const schemaLevelExample = isRecord(originalSchema)
           ? originalSchema.example

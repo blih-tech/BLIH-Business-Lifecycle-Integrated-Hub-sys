@@ -75,8 +75,20 @@ export interface EmployeeFullResponseDto {
     currency: string | null;
     payFrequency: string;
     bonusEligible: boolean;
+    bonusRate: string | null;
     effectiveFrom: string | null;
     effectiveTo: string | null;
+    summary: {
+      currency: string | null;
+      annualBaseSalary: number;
+      periodBaseSalary: number;
+      recurringAnnualComponents: number;
+      recurringPeriodComponents: number;
+      oneTimeComponentsTotal: number;
+      estimatedAnnualBonus: number | null;
+      totalAnnualCompensation: number;
+      totalPeriodCompensation: number;
+    } | null;
   } | null;
   lifecycle: {
     status: LifecycleStatus;

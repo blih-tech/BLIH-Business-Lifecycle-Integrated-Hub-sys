@@ -8,13 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   CreateReviewPeriodConfigDto,
   CreatePerformanceReviewDto,
@@ -24,7 +18,14 @@ import type {
   UpdateManagerReviewDto,
 } from '@repo/types';
 import { PerformancePermissions } from '../../../core/rbac/constants/permissions.constants';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+  GenericMetricsResponseDto,
+} from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
@@ -69,7 +70,12 @@ export class PerformanceController {
     roles: [PerformancePermissions.VIEW, PerformancePermissions.MANAGE_PERIODS],
   })
   @ApiOperation({ summary: 'List review period configs' })
-  @ApiOkResponse({ description: 'List of period configs' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'List of period configs')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/periods',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listPeriods(@Query('year') year?: string) {
     return this.listPeriodsUseCase.execute({
       year: year != null ? parseInt(year, 10) : undefined,
@@ -84,7 +90,13 @@ export class PerformanceController {
   })
   @ApiOperation({ summary: 'Create or get review period config' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Period config' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Period config')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/periods',
+    badRequest: 'Review period payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   ensurePeriod(@Body() body: CreateReviewPeriodConfigDto) {
     return this.ensurePeriodUseCase.execute(body);
   }
@@ -96,7 +108,12 @@ export class PerformanceController {
     roles: [PerformancePermissions.VIEW],
   })
   @ApiOperation({ summary: 'List performance reviews' })
-  @ApiOkResponse({ description: 'List of reviews' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'List of reviews')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listReviews(
     @Query('employeeId') employeeId?: string,
     @Query('periodConfigId') periodConfigId?: string,
@@ -117,7 +134,13 @@ export class PerformanceController {
   })
   @ApiOperation({ summary: 'Get performance review' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Performance review' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Performance review')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews/:id',
+    notFound: 'Performance review not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getReview(@Param('id') id: string) {
     return this.getReviewUseCase.execute(id);
   }
@@ -130,7 +153,13 @@ export class PerformanceController {
   })
   @ApiOperation({ summary: 'Create performance review' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created review' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created review')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews',
+    badRequest: 'Performance review payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   createReview(@Body() body: CreatePerformanceReviewDto) {
     return this.createReviewUseCase.execute(body);
   }
@@ -144,7 +173,14 @@ export class PerformanceController {
   @ApiOperation({ summary: 'Submit self assessment' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated review' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated review')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews/:id/self',
+    badRequest: 'Self assessment payload is invalid',
+    notFound: 'Performance review not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateSelf(@Param('id') id: string, @Body() body: UpdateSelfAssessmentDto) {
     return this.updateSelfUseCase.execute(id, body);
   }
@@ -158,7 +194,14 @@ export class PerformanceController {
   @ApiOperation({ summary: 'Submit manager review' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated review' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated review')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews/:id/manager',
+    badRequest: 'Manager review payload is invalid',
+    notFound: 'Performance review not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateManager(@Param('id') id: string, @Body() body: UpdateManagerReviewDto) {
     return this.updateManagerUseCase.execute(id, body);
   }
@@ -171,7 +214,13 @@ export class PerformanceController {
   })
   @ApiOperation({ summary: 'Complete review (compute rating and raise)' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Completed review' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Completed review')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews/:id/complete',
+    notFound: 'Performance review not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   completeReview(@Param('id') id: string) {
     return this.completeReviewUseCase.execute(id);
   }
@@ -184,7 +233,12 @@ export class PerformanceController {
   })
   @ApiOperation({ summary: 'List 360 performance feedback for a review' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'Feedback list' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Feedback list')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews/:id/feedback',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listFeedback(@Param('id') id: string) {
     return this.listFeedbackUseCase.execute(id);
   }
@@ -198,7 +252,13 @@ export class PerformanceController {
   @ApiOperation({ summary: 'Create or update 360 performance feedback' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Upserted feedback' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Upserted feedback')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/reviews/:id/feedback',
+    badRequest: 'Performance feedback payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   upsertFeedback(
     @Param('id') id: string,
     @Body() body: UpsertPerformanceReviewFeedbackDto,
@@ -213,7 +273,12 @@ export class PerformanceController {
     roles: [PerformancePermissions.VIEW, PerformancePermissions.CALIBRATE],
   })
   @ApiOperation({ summary: 'List performance calibrations' })
-  @ApiOkResponse({ description: 'Calibration list' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Calibration list')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/calibrations',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listCalibrations(
     @Query('periodId') periodId?: string,
     @Query('departmentId') departmentId?: string,
@@ -229,7 +294,13 @@ export class PerformanceController {
   })
   @ApiOperation({ summary: 'Create or update a calibration pack' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Calibration' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Calibration')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/calibrations',
+    badRequest: 'Performance calibration payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   upsertCalibration(@Body() body: UpsertPerformanceCalibrationDto) {
     return this.upsertCalibrationUseCase.execute(body);
   }
@@ -243,7 +314,13 @@ export class PerformanceController {
   @ApiOperation({ summary: 'Get annual performance summary' })
   @ApiParam({ name: 'employeeId' })
   @ApiParam({ name: 'year' })
-  @ApiOkResponse({ description: 'Annual summary' })
+  @ApiEnvelopeOkResponse(GenericMetricsResponseDto, 'Annual summary')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/performance/summary/:employeeId/:year',
+    notFound: 'Performance summary not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getSummary(
     @Param('employeeId') employeeId: string,
     @Param('year') year: string,

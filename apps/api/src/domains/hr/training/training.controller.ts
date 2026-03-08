@@ -21,6 +21,9 @@ import type {
   CreateTrainingCompletionDto,
   UpdateTrainingCompletionDto,
   CreateSkillGapAssessmentDto,
+  CreateTrainingNeedsAssessmentDto,
+  UpdateTrainingNeedsAssessmentDto,
+  ReviewTrainingNeedsAssessmentDto,
 } from '@repo/types';
 import { TrainingPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { ApiProtected } from '../../../shared/docs/openapi';
@@ -44,6 +47,7 @@ import { CreateSkillGapAssessmentUseCase } from './use-cases/create-skill-gap-as
 import { ListSkillGapAssessmentsUseCase } from './use-cases/list-skill-gap-assessments.usecase';
 import { GetSkillGapAssessmentUseCase } from './use-cases/get-skill-gap-assessment.usecase';
 import { GetIndividualSkillGapUseCase } from './use-cases/get-individual-skill-gap.usecase';
+import { TrainingNeedsAssessmentService } from './training-needs-assessment.service';
 
 @ApiTags('HR Training')
 @Controller('hr/training')
@@ -67,6 +71,7 @@ export class TrainingController {
     private readonly listSkillGaps: ListSkillGapAssessmentsUseCase,
     private readonly getSkillGap: GetSkillGapAssessmentUseCase,
     private readonly getIndividualGap: GetIndividualSkillGapUseCase,
+    private readonly trainingNeedsAssessments: TrainingNeedsAssessmentService,
   ) {}
 
   @Get('skills')
@@ -199,6 +204,93 @@ export class TrainingController {
   @ApiBody({ schema: { type: 'object' } })
   createCompletionHandler(@Body() body: CreateTrainingCompletionDto) {
     return this.createCompletion.execute(body);
+  }
+
+  @Post('needs-assessments')
+  @Roles(TrainingPermissions.ASSESS_NEEDS)
+  @ApiProtected({
+    path: '/api/v1/hr/training/needs-assessments',
+    roles: [TrainingPermissions.ASSESS_NEEDS],
+  })
+  @ApiOperation({ summary: 'Create training needs assessment' })
+  @ApiBody({ schema: { type: 'object' } })
+  createNeedsAssessmentHandler(@Body() body: CreateTrainingNeedsAssessmentDto) {
+    return this.trainingNeedsAssessments.create(body);
+  }
+
+  @Get('needs-assessments')
+  @Roles(TrainingPermissions.ASSESS_NEEDS, TrainingPermissions.VIEW)
+  @ApiProtected({
+    path: '/api/v1/hr/training/needs-assessments',
+    roles: [TrainingPermissions.ASSESS_NEEDS, TrainingPermissions.VIEW],
+  })
+  @ApiOperation({ summary: 'List training needs assessments' })
+  listNeedsAssessmentHandler(
+    @Query('employeeId') employeeId?: string,
+    @Query('periodYear') periodYear?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.trainingNeedsAssessments.list({
+      employeeId,
+      periodYear: periodYear != null ? parseInt(periodYear, 10) : undefined,
+      status,
+    });
+  }
+
+  @Get('needs-assessments/:id')
+  @Roles(TrainingPermissions.ASSESS_NEEDS, TrainingPermissions.VIEW)
+  @ApiProtected({
+    path: '/api/v1/hr/training/needs-assessments/:id',
+    roles: [TrainingPermissions.ASSESS_NEEDS, TrainingPermissions.VIEW],
+  })
+  @ApiParam({ name: 'id' })
+  @ApiOperation({ summary: 'Get training needs assessment' })
+  getNeedsAssessmentHandler(@Param('id') id: string) {
+    return this.trainingNeedsAssessments.get(id);
+  }
+
+  @Patch('needs-assessments/:id')
+  @Roles(TrainingPermissions.ASSESS_NEEDS)
+  @ApiProtected({
+    path: '/api/v1/hr/training/needs-assessments/:id',
+    roles: [TrainingPermissions.ASSESS_NEEDS],
+  })
+  @ApiParam({ name: 'id' })
+  @ApiOperation({ summary: 'Update draft training needs assessment' })
+  @ApiBody({ schema: { type: 'object' } })
+  updateNeedsAssessmentHandler(
+    @Param('id') id: string,
+    @Body() body: UpdateTrainingNeedsAssessmentDto,
+  ) {
+    return this.trainingNeedsAssessments.update(id, body);
+  }
+
+  @Post('needs-assessments/:id/submit')
+  @Roles(TrainingPermissions.ASSESS_NEEDS)
+  @ApiProtected({
+    path: '/api/v1/hr/training/needs-assessments/:id/submit',
+    roles: [TrainingPermissions.ASSESS_NEEDS],
+  })
+  @ApiParam({ name: 'id' })
+  @ApiOperation({ summary: 'Submit training needs assessment' })
+  submitNeedsAssessmentHandler(@Param('id') id: string) {
+    return this.trainingNeedsAssessments.submit(id);
+  }
+
+  @Post('needs-assessments/:id/review')
+  @Roles(TrainingPermissions.APPROVE)
+  @ApiProtected({
+    path: '/api/v1/hr/training/needs-assessments/:id/review',
+    roles: [TrainingPermissions.APPROVE],
+  })
+  @ApiParam({ name: 'id' })
+  @ApiOperation({ summary: 'Approve or reject training needs assessment' })
+  @ApiBody({ schema: { type: 'object' } })
+  reviewNeedsAssessmentHandler(
+    @Param('id') id: string,
+    @Body() body: ReviewTrainingNeedsAssessmentDto,
+  ) {
+    return this.trainingNeedsAssessments.review(id, body);
   }
 
   @Get('completions')

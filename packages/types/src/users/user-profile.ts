@@ -5,6 +5,15 @@ export type EmploymentType =
   | 'INTERN'
   | 'TEMPORARY';
 
+/** Const array for validation/Swagger (shared with recruitment job DTOs) */
+export const EMPLOYMENT_TYPES = [
+  'FULL_TIME',
+  'PART_TIME',
+  'CONTRACT',
+  'INTERN',
+  'TEMPORARY',
+] as const;
+
 export type PayFrequency = 'MONTHLY' | 'BIWEEKLY' | 'WEEKLY' | 'ANNUAL';
 
 export type CompensationComponentType =
@@ -122,6 +131,17 @@ export interface UserCompensationResponseDto {
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
   components?: CompensationComponentResponseDto[];
+  summary?: {
+    currency: string | null;
+    annualBaseSalary: number;
+    periodBaseSalary: number;
+    recurringAnnualComponents: number;
+    recurringPeriodComponents: number;
+    oneTimeComponentsTotal: number;
+    estimatedAnnualBonus: number | null;
+    totalAnnualCompensation: number;
+    totalPeriodCompensation: number;
+  } | null;
   createdAt: string;
   updatedAt: string;
 }

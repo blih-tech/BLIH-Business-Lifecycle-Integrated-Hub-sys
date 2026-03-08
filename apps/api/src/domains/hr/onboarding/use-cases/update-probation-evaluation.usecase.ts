@@ -14,50 +14,33 @@ export class UpdateProbationEvaluationUseCase {
     if (!existing)
       throw new NotFoundException('Probation evaluation not found');
 
+    const data: {
+      recommendation?: NonNullable<
+        UpdateProbationEvaluationDto['finalDecision']
+      >;
+      employeeComments?: string | null;
+      status?: 'APPROVED';
+    } = {};
+
+    if (dto.finalDecision) {
+      data.recommendation = dto.finalDecision;
+    }
+    if (dto.employeeAcknowledgedAt !== undefined) {
+      data.employeeComments = dto.employeeAcknowledgedAt
+        ? `Acknowledged at ${dto.employeeAcknowledgedAt}`
+        : null;
+    }
+    if (dto.employeeStatusUpdatedAt) {
+      data.status = 'APPROVED';
+    }
+
+    if (Object.keys(data).length === 0) {
+      return mapProbationEvaluationResponse(existing);
+    }
+
     const updated = await this.prisma.probationEvaluation.update({
       where: { id },
-      data: {
-        employeeAcknowledgedAt:
-          dto.employeeAcknowledgedAt === undefined
-            ? undefined
-            : dto.employeeAcknowledgedAt
-              ? new Date(dto.employeeAcknowledgedAt)
-              : null,
-        supervisorApprovedAt:
-          dto.supervisorApprovedAt === undefined
-            ? undefined
-            : dto.supervisorApprovedAt
-              ? new Date(dto.supervisorApprovedAt)
-              : null,
-        hrApprovedAt:
-          dto.hrApprovedAt === undefined
-            ? undefined
-            : dto.hrApprovedAt
-              ? new Date(dto.hrApprovedAt)
-              : null,
-        ceoApprovedAt:
-          dto.ceoApprovedAt === undefined
-            ? undefined
-            : dto.ceoApprovedAt
-              ? new Date(dto.ceoApprovedAt)
-              : null,
-        finalDecision:
-          dto.finalDecision === undefined ? undefined : dto.finalDecision,
-        extensionDays:
-          dto.extensionDays === undefined ? undefined : dto.extensionDays,
-        newEndDate:
-          dto.newEndDate === undefined
-            ? undefined
-            : dto.newEndDate
-              ? new Date(dto.newEndDate)
-              : null,
-        employeeStatusUpdatedAt:
-          dto.employeeStatusUpdatedAt === undefined
-            ? undefined
-            : dto.employeeStatusUpdatedAt
-              ? new Date(dto.employeeStatusUpdatedAt)
-              : null,
-      },
+      data,
     });
 
     return mapProbationEvaluationResponse(updated);

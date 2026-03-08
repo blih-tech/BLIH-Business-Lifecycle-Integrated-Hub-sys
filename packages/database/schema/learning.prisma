@@ -1,0 +1,176 @@
+// Learning and skills models
+// This file contains skills, training budgets, requests, completions, feedback, and gap assessments
+
+model Skill {
+  id                     String            @id @default(uuid()) @db.Uuid
+  name                   String            @unique @db.VarChar(255)
+  category               String?           @db.VarChar(128)
+  description            String?           @db.Text
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  employeeSkills         EmployeeSkill[]
+  trainingRequestsLinked TrainingRequest[]
+
+  @@index([category])
+}
+
+model EmployeeSkill {
+  id         String      @id @default(uuid()) @db.Uuid
+  employeeId String      @map("employee_id") @db.Uuid
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  skillId    String      @map("skill_id") @db.Uuid
+  skill      Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  level      SkillLevel
+  attestedAt DateTime?   @map("attested_at")
+  source     SkillSource @default(SELF)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([employeeId, skillId])
+  @@index([employeeId])
+  @@index([skillId])
+}
+
+model TrainingBudget {
+  id              String     @id @default(uuid()) @db.Uuid
+  departmentId    String     @map("department_id") @db.Uuid
+  department      Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  year            Int
+  totalBudget     Decimal    @map("total_budget") @db.Decimal(15, 2)
+  usedYtd         Decimal    @default(0) @map("used_ytd") @db.Decimal(15, 2)
+  perPersonAmount Decimal?   @map("per_person_amount") @db.Decimal(15, 2)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@unique([departmentId, year])
+  @@index([departmentId])
+  @@index([year])
+}
+
+model TrainingRequest {
+  id              String                @id @default(uuid()) @db.Uuid
+  employeeId      String                @map("employee_id") @db.Uuid
+  employee        Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  departmentId    String                @map("department_id") @db.Uuid
+  department      Department            @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  trainingType    TrainingType          @map("training_type")
+  title           String                @db.VarChar(512)
+  provider        String?               @db.VarChar(256)
+  startDate       DateTime?             @map("start_date") @db.Date
+  endDate         DateTime?             @map("end_date") @db.Date
+  durationHours   Int?                  @map("duration_hours")
+  justification   String?               @db.Text
+  skillGapLinkId  String?               @map("skill_gap_link_id") @db.Uuid
+  skillGapLink    Skill?                @relation(fields: [skillGapLinkId], references: [id], onDelete: SetNull)
+  cost            Decimal?              @db.Decimal(15, 2)
+  costPayer       CostPayer?            @map("cost_payer")
+  status          TrainingRequestStatus @default(DRAFT)
+  submittedAt     DateTime?             @map("submitted_at")
+  approvedById    String?               @map("approved_by_id") @db.Uuid
+  approvedBy      User?                 @relation("TrainingRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt      DateTime?             @map("approved_at")
+  rejectionReason String?               @map("rejection_reason") @db.Text
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  completions     TrainingCompletion[]
+
+  @@index([employeeId])
+  @@index([departmentId])
+  @@index([status])
+  @@index([submittedAt])
+}
+
+model TrainingCompletion {
+  id                String             @id @default(uuid()) @db.Uuid
+  employeeId        String             @map("employee_id") @db.Uuid
+  employee          Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  trainingRequestId String?            @map("training_request_id") @db.Uuid
+  trainingRequest   TrainingRequest?   @relation(fields: [trainingRequestId], references: [id], onDelete: SetNull)
+  title             String             @db.VarChar(512)
+  provider          String?            @db.VarChar(256)
+  startDate         DateTime?          @map("start_date") @db.Date
+  endDate           DateTime?          @map("end_date") @db.Date
+  completionStatus  CompletionStatus   @map("completion_status")
+  scoreOrGrade      String?            @map("score_or_grade") @db.VarChar(64)
+  certificateNumber String?            @map("certificate_number") @db.VarChar(128)
+  certificateUrl    String?            @map("certificate_url") @db.VarChar(1024)
+  expiryDate        DateTime?          @map("expiry_date") @db.Date
+  skillsAcquired    Json?              @map("skills_acquired") @db.JsonB
+  attestedAt        DateTime?          @map("attested_at")
+  syncedToProfile   Boolean            @default(false) @map("synced_to_profile")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  feedback          TrainingFeedback[]
+
+  @@index([employeeId])
+  @@index([trainingRequestId])
+  @@index([expiryDate])
+}
+
+model TrainingFeedbackTemplate {
+  id               String              @id @default(uuid()) @db.Uuid
+  name             String              @db.VarChar(256)
+  description      String?             @db.Text
+  feedbackType     FeedbackType        @map("feedback_type")
+  ratingScale      FeedbackRatingScale @map("rating_scale")
+  questions        Json                @db.JsonB
+  isActive         Boolean             @default(true) @map("is_active")
+  createdById      String              @map("created_by_id") @db.Uuid
+  createdBy        User                @relation("FeedbackTemplateCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  feedbackSessions TrainingFeedback[]
+
+  @@index([feedbackType])
+  @@index([isActive])
+  @@index([createdById])
+}
+
+model TrainingFeedback {
+  id                   String                   @id @default(uuid()) @db.Uuid
+  trainingCompletionId String                   @map("training_completion_id") @db.Uuid
+  trainingCompletion   TrainingCompletion       @relation(fields: [trainingCompletionId], references: [id], onDelete: Cascade)
+  templateId           String                   @map("template_id") @db.Uuid
+  template             TrainingFeedbackTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  participantId        String                   @map("participant_id") @db.Uuid
+  participant          Employee                 @relation("FeedbackParticipant", fields: [participantId], references: [id], onDelete: Cascade)
+  submissionType       FeedbackSubmissionType   @map("submission_type")
+  status               FeedbackStatus           @default(DRAFT)
+  responses            Json                     @db.JsonB
+  overallRating        Decimal?                 @map("overall_rating") @db.Decimal(3, 2)
+  comments             String?                  @db.Text
+  submittedAt          DateTime?                @map("submitted_at")
+  reviewedById         String?                  @map("reviewed_by_id") @db.Uuid
+  reviewedBy           User?                    @relation("TrainingFeedbackReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt           DateTime?                @map("reviewed_at")
+  actionTaken          String?                  @map("action_taken") @db.Text
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+
+  @@index([trainingCompletionId])
+  @@index([templateId])
+  @@index([participantId])
+  @@index([status])
+  @@index([submittedAt])
+}
+
+model SkillGapAssessment {
+  id                      String     @id @default(uuid()) @db.Uuid
+  departmentId            String     @map("department_id") @db.Uuid
+  department              Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  assessedById            String     @map("assessed_by_id") @db.Uuid
+  assessedBy              User       @relation("SkillGapAssessmentAssessor", fields: [assessedById], references: [id], onDelete: Restrict)
+  assessedAt              DateTime   @map("assessed_at")
+  requiredSkills          Json       @map("required_skills") @db.JsonB
+  currentState            Json       @map("current_state") @db.JsonB
+  criticalGapsSummary     String?    @map("critical_gaps_summary") @db.Text
+  trainingRecommendations Json?      @map("training_recommendations") @db.JsonB
+  hireRecommendations     Json?      @map("hire_recommendations") @db.JsonB
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+
+  @@index([departmentId])
+  @@index([assessedById])
+  @@index([assessedAt])
+}
+

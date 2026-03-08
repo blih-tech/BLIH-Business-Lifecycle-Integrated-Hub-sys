@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { Audit } from '../../shared/decorators/audit.decorator';
@@ -25,6 +27,7 @@ import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
 import { PositionPermissions } from '../rbac/constants/permissions.constants';
 import { CreatePositionDto } from './dto/create-position.dto';
+import { ListPositionsQueryDto } from './dto/list-positions-query.dto';
 import { PositionResponseDto } from './dto/position-response.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { CreatePositionUseCase } from './use-cases/create-position.usecase';
@@ -98,6 +101,18 @@ export class PositionsController {
     description:
       'Returns position catalog entries sorted alphabetically by title.',
   })
+  @ApiQuery({
+    name: 'departmentId',
+    required: false,
+    description: 'Filter positions by department id.',
+    schema: { type: 'string', format: 'uuid' },
+  })
+  @ApiQuery({
+    name: 'isActive',
+    required: false,
+    description: 'Filter positions by active status.',
+    schema: { type: 'boolean' },
+  })
   @ApiOkResponse({
     description: 'Position catalog entries.',
     type: PositionResponseDto,
@@ -109,8 +124,8 @@ export class PositionsController {
     forbidden: 'Required roles are missing',
   })
   @ResponseMessage('Positions retrieved successfully')
-  listPositions() {
-    return this.listPositionsUseCase.execute();
+  listPositions(@Query() query: ListPositionsQueryDto) {
+    return this.listPositionsUseCase.execute(query);
   }
 
   @Get(':positionId')

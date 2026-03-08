@@ -4,6 +4,7 @@ WORKDIR /workspace
 COPY package*.json ./
 COPY apps/api/package*.json apps/api/
 COPY apps/web/package*.json apps/web/
+COPY packages/database/package*.json packages/database/
 COPY packages/types/package*.json packages/types/
 COPY packages/typescript-config/package*.json packages/typescript-config/
 COPY packages/eslint-config/package*.json packages/eslint-config/
@@ -24,6 +25,7 @@ WORKDIR /workspace
 COPY package*.json ./
 COPY apps/api/package*.json apps/api/
 COPY apps/web/package*.json apps/web/
+COPY packages/database/package*.json packages/database/
 COPY packages/types/package*.json packages/types/
 COPY packages/typescript-config/package*.json packages/typescript-config/
 COPY packages/eslint-config/package*.json packages/eslint-config/
@@ -36,13 +38,14 @@ ENV NODE_ENV=production
 COPY --from=prod-deps /workspace/node_modules ./node_modules
 COPY --from=builder /workspace/apps/api/package*.json ./apps/api/
 COPY --from=builder /workspace/apps/api/dist ./apps/api/dist
-COPY --from=builder /workspace/apps/api/prisma/schema.prisma ./apps/api/prisma/schema.prisma
+COPY --from=builder /workspace/packages/database/package*.json ./packages/database/
+COPY --from=builder /workspace/packages/database/dist ./packages/database/dist
 
 WORKDIR /workspace/apps/api
 EXPOSE 5000
 CMD ["node", "dist/main"]
 
 FROM builder AS migrator
-WORKDIR /workspace/apps/api
+WORKDIR /workspace
 ENV NODE_ENV=production
-CMD ["npm", "run", "prisma:migrate:deploy"]
+CMD ["npm", "run", "prisma:migrate:deploy", "--workspace", "@repo/database"]

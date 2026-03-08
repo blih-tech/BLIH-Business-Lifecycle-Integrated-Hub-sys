@@ -22,24 +22,17 @@ type ProbationPlanRow = {
 
 type ProbationEvaluationRow = {
   id: string;
-  kpiPlanId: string;
+  probationPlanId: string;
   employeeId: string;
-  evaluationRound: 'DAY_30' | 'DAY_55' | 'DAY_60_FINAL';
+  round: 'DAY_30' | 'DAY_55' | 'DAY_60_FINAL';
   evaluationDate: Date;
-  goalReviews: unknown;
-  conduct: unknown;
-  averageRating: { toString(): string } | null;
-  supervisorRecommendation: 'CONFIRM' | 'EXTEND' | 'TERMINATE' | null;
-  hrRemarks: string | null;
-  hrVerdict: 'CONFIRM' | 'EXTEND' | 'TERMINATE' | null;
-  employeeAcknowledgedAt: Date | null;
-  supervisorApprovedAt: Date | null;
-  hrApprovedAt: Date | null;
-  ceoApprovedAt: Date | null;
-  finalDecision: 'CONFIRM' | 'EXTEND' | 'TERMINATE' | null;
-  extensionDays: number | null;
-  newEndDate: Date | null;
-  employeeStatusUpdatedAt: Date | null;
+  strengths: unknown;
+  improvements: unknown;
+  overallScore: { toString(): string } | null;
+  recommendation: 'CONFIRM' | 'EXTEND' | 'TERMINATE';
+  evaluatorComments: string | null;
+  employeeComments: string | null;
+  status: 'DRAFT' | 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
   createdAt: Date;
   updatedAt: Date;
 };
@@ -85,25 +78,26 @@ export function mapProbationEvaluationResponse(
 ): ProbationEvaluationResponseDto {
   return {
     id: row.id,
-    kpiPlanId: row.kpiPlanId,
+    kpiPlanId: row.probationPlanId,
     employeeId: row.employeeId,
-    evaluationRound: row.evaluationRound,
+    evaluationRound: row.round,
     evaluationDate: row.evaluationDate.toISOString().slice(0, 10),
-    goalReviews: row.goalReviews,
-    conduct: row.conduct,
+    goalReviews: row.strengths,
+    conduct: row.improvements,
     averageRating:
-      row.averageRating != null ? Number(row.averageRating.toString()) : null,
-    supervisorRecommendation: row.supervisorRecommendation,
-    hrRemarks: row.hrRemarks,
-    hrVerdict: row.hrVerdict,
-    employeeAcknowledgedAt: row.employeeAcknowledgedAt?.toISOString() ?? null,
-    supervisorApprovedAt: row.supervisorApprovedAt?.toISOString() ?? null,
-    hrApprovedAt: row.hrApprovedAt?.toISOString() ?? null,
-    ceoApprovedAt: row.ceoApprovedAt?.toISOString() ?? null,
-    finalDecision: row.finalDecision,
-    extensionDays: row.extensionDays,
-    newEndDate: row.newEndDate?.toISOString().slice(0, 10) ?? null,
-    employeeStatusUpdatedAt: row.employeeStatusUpdatedAt?.toISOString() ?? null,
+      row.overallScore != null ? Number(row.overallScore.toString()) : null,
+    supervisorRecommendation: row.recommendation,
+    hrRemarks: row.evaluatorComments,
+    hrVerdict: row.recommendation,
+    employeeAcknowledgedAt: null,
+    supervisorApprovedAt: null,
+    hrApprovedAt:
+      row.status === 'APPROVED' ? row.updatedAt.toISOString() : null,
+    ceoApprovedAt: null,
+    finalDecision: row.recommendation,
+    extensionDays: null,
+    newEndDate: null,
+    employeeStatusUpdatedAt: null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };

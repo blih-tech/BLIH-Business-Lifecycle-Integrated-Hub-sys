@@ -40,8 +40,8 @@ export class CreateProbationEvaluationUseCase {
 
     const existing = await this.prisma.probationEvaluation.findFirst({
       where: {
-        kpiPlanId: dto.kpiPlanId,
-        evaluationRound: dto.evaluationRound,
+        probationPlanId: dto.kpiPlanId,
+        round: dto.evaluationRound,
       },
       select: { id: true },
     });
@@ -72,22 +72,45 @@ export class CreateProbationEvaluationUseCase {
     const averageRating =
       dto.averageRating ??
       computeProbationAverageRating(dto.goalReviews, dto.conduct);
+    const performanceScore = this.averageToWholeNumber(
+      (dto.goalReviews ?? [])
+        .map((review) => review.rating)
+        .filter((value): value is number => typeof value === 'number'),
+    );
+    const attitudeScore = this.averageToWholeNumber(
+      dto.conduct
+        ? Object.values(dto.conduct).filter(
+            (value): value is number => typeof value === 'number',
+          )
+        : [],
+    );
 
     const created = await this.prisma.probationEvaluation.create({
       data: {
-        kpiPlanId: dto.kpiPlanId,
+        probationPlanId: dto.kpiPlanId,
         employeeId: dto.employeeId,
-        evaluationRound: dto.evaluationRound,
+        round: dto.evaluationRound,
         evaluationDate,
-        goalReviews: (dto.goalReviews ?? undefined) as never,
-        conduct: (dto.conduct ?? undefined) as never,
-        averageRating: averageRating ?? undefined,
-        supervisorRecommendation: dto.supervisorRecommendation ?? undefined,
-        hrRemarks: dto.hrRemarks ?? undefined,
-        hrVerdict: dto.hrVerdict ?? undefined,
+        strengths: (dto.goalReviews ?? undefined) as never,
+        improvements: (dto.conduct ?? undefined) as never,
+        overallScore: averageRating ?? undefined,
+        performanceScore,
+        attitudeScore,
+        potentialScore:
+          averageRating == null ? undefined : Math.round(averageRating),
+        recommendation:
+          dto.hrVerdict ?? dto.supervisorRecommendation ?? 'CONFIRM',
+        evaluatorComments: dto.hrRemarks ?? undefined,
       },
     });
 
     return mapProbationEvaluationResponse(created);
+  }
+
+  private averageToWholeNumber(values: number[]) {
+    if (values.length === 0) return undefined;
+    return Math.round(
+      values.reduce((sum, value) => sum + value, 0) / values.length,
+    );
   }
 }
