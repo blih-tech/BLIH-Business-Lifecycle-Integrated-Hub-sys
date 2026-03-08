@@ -1,13 +1,16 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApplicantPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
@@ -20,6 +23,7 @@ import {
 } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
+import type { AuthPrincipal } from '../../../shared/interfaces/auth-principal.interface';
 import {
   ApplicantListQueryDto,
   ApplicantResponseDto,
@@ -92,8 +96,14 @@ export class ApplicantsController {
     notFound: 'Job not found',
     conflict: 'Applicant already exists for this job and email',
   })
-  create(@Body() body: CreateApplicantDto) {
-    return this.createApplicant.execute(body);
+  create(
+    @Body() body: CreateApplicantDto,
+    @Req() req: Request & { user?: AuthPrincipal },
+  ) {
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.createApplicant.execute(body, user.userId ?? user.sub);
   }
 
   @Get()
@@ -190,7 +200,15 @@ export class ApplicantsController {
   updateStatus(
     @Param('id') id: string,
     @Body() body: UpdateApplicantStatusDto,
+    @Req() req: Request & { user?: AuthPrincipal },
   ) {
-    return this.updateApplicantStatusById.execute(id, body);
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.updateApplicantStatusById.execute(
+      id,
+      body,
+      user.userId ?? user.sub,
+    );
   }
 }

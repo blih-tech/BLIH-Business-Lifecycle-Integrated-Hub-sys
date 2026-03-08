@@ -551,7 +551,6 @@ export type ApplicantOrderByWithRelationInput = {
 export type ApplicantWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   jobId_emailNormalized?: Prisma.ApplicantJobIdEmailNormalizedCompoundUniqueInput
-  id_jobId?: Prisma.ApplicantIdJobIdCompoundUniqueInput
   AND?: Prisma.ApplicantWhereInput | Prisma.ApplicantWhereInput[]
   OR?: Prisma.ApplicantWhereInput[]
   NOT?: Prisma.ApplicantWhereInput | Prisma.ApplicantWhereInput[]
@@ -601,7 +600,7 @@ export type ApplicantWhereUniqueInput = Prisma.AtLeast<{
   interviews?: Prisma.InterviewListRelationFilter
   hiringDecisions?: Prisma.HiringDecisionListRelationFilter
   statusHistory?: Prisma.ApplicantStatusHistoryListRelationFilter
-}, "id" | "jobId_emailNormalized" | "id_jobId">
+}, "id" | "jobId_emailNormalized">
 
 export type ApplicantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -1019,11 +1018,6 @@ export type ApplicantOrderByRelationAggregateInput = {
 export type ApplicantJobIdEmailNormalizedCompoundUniqueInput = {
   jobId: string
   emailNormalized: string
-}
-
-export type ApplicantIdJobIdCompoundUniqueInput = {
-  id: string
-  jobId: string
 }
 
 export type ApplicantCountOrderByAggregateInput = {

@@ -163,6 +163,7 @@ export const applicantExample = {
   statusHistory: [
     {
       id: '9b6d4a2e-9f95-45a1-b66b-e8e08680d2b5',
+      changedById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
       fromStatus: 'APPLIED',
       toStatus: 'SHORTLISTED',
       notes: 'Strong profile for the role',

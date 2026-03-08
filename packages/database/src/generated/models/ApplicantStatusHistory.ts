@@ -27,6 +27,7 @@ export type AggregateApplicantStatusHistory = {
 export type ApplicantStatusHistoryMinAggregateOutputType = {
   id: string | null
   applicantId: string | null
+  changedById: string | null
   fromStatus: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus | null
   notes: string | null
@@ -37,6 +38,7 @@ export type ApplicantStatusHistoryMinAggregateOutputType = {
 export type ApplicantStatusHistoryMaxAggregateOutputType = {
   id: string | null
   applicantId: string | null
+  changedById: string | null
   fromStatus: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus | null
   notes: string | null
@@ -47,6 +49,7 @@ export type ApplicantStatusHistoryMaxAggregateOutputType = {
 export type ApplicantStatusHistoryCountAggregateOutputType = {
   id: number
   applicantId: number
+  changedById: number
   fromStatus: number
   toStatus: number
   notes: number
@@ -59,6 +62,7 @@ export type ApplicantStatusHistoryCountAggregateOutputType = {
 export type ApplicantStatusHistoryMinAggregateInputType = {
   id?: true
   applicantId?: true
+  changedById?: true
   fromStatus?: true
   toStatus?: true
   notes?: true
@@ -69,6 +73,7 @@ export type ApplicantStatusHistoryMinAggregateInputType = {
 export type ApplicantStatusHistoryMaxAggregateInputType = {
   id?: true
   applicantId?: true
+  changedById?: true
   fromStatus?: true
   toStatus?: true
   notes?: true
@@ -79,6 +84,7 @@ export type ApplicantStatusHistoryMaxAggregateInputType = {
 export type ApplicantStatusHistoryCountAggregateInputType = {
   id?: true
   applicantId?: true
+  changedById?: true
   fromStatus?: true
   toStatus?: true
   notes?: true
@@ -162,6 +168,7 @@ export type ApplicantStatusHistoryGroupByArgs<ExtArgs extends runtime.Types.Exte
 export type ApplicantStatusHistoryGroupByOutputType = {
   id: string
   applicantId: string
+  changedById: string | null
   fromStatus: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus
   notes: string | null
@@ -193,23 +200,27 @@ export type ApplicantStatusHistoryWhereInput = {
   NOT?: Prisma.ApplicantStatusHistoryWhereInput | Prisma.ApplicantStatusHistoryWhereInput[]
   id?: Prisma.UuidFilter<"ApplicantStatusHistory"> | string
   applicantId?: Prisma.UuidFilter<"ApplicantStatusHistory"> | string
+  changedById?: Prisma.UuidNullableFilter<"ApplicantStatusHistory"> | string | null
   fromStatus?: Prisma.EnumApplicantStatusNullableFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus
   notes?: Prisma.StringNullableFilter<"ApplicantStatusHistory"> | string | null
   changedAt?: Prisma.DateTimeFilter<"ApplicantStatusHistory"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ApplicantStatusHistory"> | Date | string
   applicant?: Prisma.XOR<Prisma.ApplicantScalarRelationFilter, Prisma.ApplicantWhereInput>
+  changedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type ApplicantStatusHistoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   applicantId?: Prisma.SortOrder
+  changedById?: Prisma.SortOrderInput | Prisma.SortOrder
   fromStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   toStatus?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   changedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   applicant?: Prisma.ApplicantOrderByWithRelationInput
+  changedBy?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ApplicantStatusHistoryWhereUniqueInput = Prisma.AtLeast<{
@@ -218,17 +229,20 @@ export type ApplicantStatusHistoryWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ApplicantStatusHistoryWhereInput[]
   NOT?: Prisma.ApplicantStatusHistoryWhereInput | Prisma.ApplicantStatusHistoryWhereInput[]
   applicantId?: Prisma.UuidFilter<"ApplicantStatusHistory"> | string
+  changedById?: Prisma.UuidNullableFilter<"ApplicantStatusHistory"> | string | null
   fromStatus?: Prisma.EnumApplicantStatusNullableFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus
   notes?: Prisma.StringNullableFilter<"ApplicantStatusHistory"> | string | null
   changedAt?: Prisma.DateTimeFilter<"ApplicantStatusHistory"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ApplicantStatusHistory"> | Date | string
   applicant?: Prisma.XOR<Prisma.ApplicantScalarRelationFilter, Prisma.ApplicantWhereInput>
+  changedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type ApplicantStatusHistoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   applicantId?: Prisma.SortOrder
+  changedById?: Prisma.SortOrderInput | Prisma.SortOrder
   fromStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   toStatus?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -245,6 +259,7 @@ export type ApplicantStatusHistoryScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ApplicantStatusHistoryScalarWhereWithAggregatesInput | Prisma.ApplicantStatusHistoryScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"ApplicantStatusHistory"> | string
   applicantId?: Prisma.UuidWithAggregatesFilter<"ApplicantStatusHistory"> | string
+  changedById?: Prisma.UuidNullableWithAggregatesFilter<"ApplicantStatusHistory"> | string | null
   fromStatus?: Prisma.EnumApplicantStatusNullableWithAggregatesFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusWithAggregatesFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus
   notes?: Prisma.StringNullableWithAggregatesFilter<"ApplicantStatusHistory"> | string | null
@@ -260,11 +275,13 @@ export type ApplicantStatusHistoryCreateInput = {
   changedAt?: Date | string
   createdAt?: Date | string
   applicant: Prisma.ApplicantCreateNestedOneWithoutStatusHistoryInput
+  changedBy?: Prisma.UserCreateNestedOneWithoutApplicantStatusChangesInput
 }
 
 export type ApplicantStatusHistoryUncheckedCreateInput = {
   id?: string
   applicantId: string
+  changedById?: string | null
   fromStatus?: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus
   notes?: string | null
@@ -280,11 +297,13 @@ export type ApplicantStatusHistoryUpdateInput = {
   changedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applicant?: Prisma.ApplicantUpdateOneRequiredWithoutStatusHistoryNestedInput
+  changedBy?: Prisma.UserUpdateOneWithoutApplicantStatusChangesNestedInput
 }
 
 export type ApplicantStatusHistoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   applicantId?: Prisma.StringFieldUpdateOperationsInput | string
+  changedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -295,6 +314,7 @@ export type ApplicantStatusHistoryUncheckedUpdateInput = {
 export type ApplicantStatusHistoryCreateManyInput = {
   id?: string
   applicantId: string
+  changedById?: string | null
   fromStatus?: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus
   notes?: string | null
@@ -314,6 +334,7 @@ export type ApplicantStatusHistoryUpdateManyMutationInput = {
 export type ApplicantStatusHistoryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   applicantId?: Prisma.StringFieldUpdateOperationsInput | string
+  changedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -334,6 +355,7 @@ export type ApplicantStatusHistoryOrderByRelationAggregateInput = {
 export type ApplicantStatusHistoryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   applicantId?: Prisma.SortOrder
+  changedById?: Prisma.SortOrder
   fromStatus?: Prisma.SortOrder
   toStatus?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -344,6 +366,7 @@ export type ApplicantStatusHistoryCountOrderByAggregateInput = {
 export type ApplicantStatusHistoryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   applicantId?: Prisma.SortOrder
+  changedById?: Prisma.SortOrder
   fromStatus?: Prisma.SortOrder
   toStatus?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -354,6 +377,7 @@ export type ApplicantStatusHistoryMaxOrderByAggregateInput = {
 export type ApplicantStatusHistoryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   applicantId?: Prisma.SortOrder
+  changedById?: Prisma.SortOrder
   fromStatus?: Prisma.SortOrder
   toStatus?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -407,6 +431,48 @@ export type NullableEnumApplicantStatusFieldUpdateOperationsInput = {
   set?: $Enums.ApplicantStatus | null
 }
 
+export type ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput = {
+  create?: Prisma.XOR<Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput> | Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput[] | Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput[]
+  connectOrCreate?: Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput | Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput[]
+  createMany?: Prisma.ApplicantStatusHistoryCreateManyChangedByInputEnvelope
+  connect?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+}
+
+export type ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput = {
+  create?: Prisma.XOR<Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput> | Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput[] | Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput[]
+  connectOrCreate?: Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput | Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput[]
+  createMany?: Prisma.ApplicantStatusHistoryCreateManyChangedByInputEnvelope
+  connect?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+}
+
+export type ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput> | Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput[] | Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput[]
+  connectOrCreate?: Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput | Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput[]
+  upsert?: Prisma.ApplicantStatusHistoryUpsertWithWhereUniqueWithoutChangedByInput | Prisma.ApplicantStatusHistoryUpsertWithWhereUniqueWithoutChangedByInput[]
+  createMany?: Prisma.ApplicantStatusHistoryCreateManyChangedByInputEnvelope
+  set?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  disconnect?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  delete?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  connect?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  update?: Prisma.ApplicantStatusHistoryUpdateWithWhereUniqueWithoutChangedByInput | Prisma.ApplicantStatusHistoryUpdateWithWhereUniqueWithoutChangedByInput[]
+  updateMany?: Prisma.ApplicantStatusHistoryUpdateManyWithWhereWithoutChangedByInput | Prisma.ApplicantStatusHistoryUpdateManyWithWhereWithoutChangedByInput[]
+  deleteMany?: Prisma.ApplicantStatusHistoryScalarWhereInput | Prisma.ApplicantStatusHistoryScalarWhereInput[]
+}
+
+export type ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput> | Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput[] | Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput[]
+  connectOrCreate?: Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput | Prisma.ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput[]
+  upsert?: Prisma.ApplicantStatusHistoryUpsertWithWhereUniqueWithoutChangedByInput | Prisma.ApplicantStatusHistoryUpsertWithWhereUniqueWithoutChangedByInput[]
+  createMany?: Prisma.ApplicantStatusHistoryCreateManyChangedByInputEnvelope
+  set?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  disconnect?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  delete?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  connect?: Prisma.ApplicantStatusHistoryWhereUniqueInput | Prisma.ApplicantStatusHistoryWhereUniqueInput[]
+  update?: Prisma.ApplicantStatusHistoryUpdateWithWhereUniqueWithoutChangedByInput | Prisma.ApplicantStatusHistoryUpdateWithWhereUniqueWithoutChangedByInput[]
+  updateMany?: Prisma.ApplicantStatusHistoryUpdateManyWithWhereWithoutChangedByInput | Prisma.ApplicantStatusHistoryUpdateManyWithWhereWithoutChangedByInput[]
+  deleteMany?: Prisma.ApplicantStatusHistoryScalarWhereInput | Prisma.ApplicantStatusHistoryScalarWhereInput[]
+}
+
 export type ApplicantStatusHistoryCreateWithoutApplicantInput = {
   id?: string
   fromStatus?: $Enums.ApplicantStatus | null
@@ -414,10 +480,12 @@ export type ApplicantStatusHistoryCreateWithoutApplicantInput = {
   notes?: string | null
   changedAt?: Date | string
   createdAt?: Date | string
+  changedBy?: Prisma.UserCreateNestedOneWithoutApplicantStatusChangesInput
 }
 
 export type ApplicantStatusHistoryUncheckedCreateWithoutApplicantInput = {
   id?: string
+  changedById?: string | null
   fromStatus?: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus
   notes?: string | null
@@ -457,6 +525,7 @@ export type ApplicantStatusHistoryScalarWhereInput = {
   NOT?: Prisma.ApplicantStatusHistoryScalarWhereInput | Prisma.ApplicantStatusHistoryScalarWhereInput[]
   id?: Prisma.UuidFilter<"ApplicantStatusHistory"> | string
   applicantId?: Prisma.UuidFilter<"ApplicantStatusHistory"> | string
+  changedById?: Prisma.UuidNullableFilter<"ApplicantStatusHistory"> | string | null
   fromStatus?: Prisma.EnumApplicantStatusNullableFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFilter<"ApplicantStatusHistory"> | $Enums.ApplicantStatus
   notes?: Prisma.StringNullableFilter<"ApplicantStatusHistory"> | string | null
@@ -464,8 +533,55 @@ export type ApplicantStatusHistoryScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ApplicantStatusHistory"> | Date | string
 }
 
+export type ApplicantStatusHistoryCreateWithoutChangedByInput = {
+  id?: string
+  fromStatus?: $Enums.ApplicantStatus | null
+  toStatus: $Enums.ApplicantStatus
+  notes?: string | null
+  changedAt?: Date | string
+  createdAt?: Date | string
+  applicant: Prisma.ApplicantCreateNestedOneWithoutStatusHistoryInput
+}
+
+export type ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput = {
+  id?: string
+  applicantId: string
+  fromStatus?: $Enums.ApplicantStatus | null
+  toStatus: $Enums.ApplicantStatus
+  notes?: string | null
+  changedAt?: Date | string
+  createdAt?: Date | string
+}
+
+export type ApplicantStatusHistoryCreateOrConnectWithoutChangedByInput = {
+  where: Prisma.ApplicantStatusHistoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput>
+}
+
+export type ApplicantStatusHistoryCreateManyChangedByInputEnvelope = {
+  data: Prisma.ApplicantStatusHistoryCreateManyChangedByInput | Prisma.ApplicantStatusHistoryCreateManyChangedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type ApplicantStatusHistoryUpsertWithWhereUniqueWithoutChangedByInput = {
+  where: Prisma.ApplicantStatusHistoryWhereUniqueInput
+  update: Prisma.XOR<Prisma.ApplicantStatusHistoryUpdateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedUpdateWithoutChangedByInput>
+  create: Prisma.XOR<Prisma.ApplicantStatusHistoryCreateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedCreateWithoutChangedByInput>
+}
+
+export type ApplicantStatusHistoryUpdateWithWhereUniqueWithoutChangedByInput = {
+  where: Prisma.ApplicantStatusHistoryWhereUniqueInput
+  data: Prisma.XOR<Prisma.ApplicantStatusHistoryUpdateWithoutChangedByInput, Prisma.ApplicantStatusHistoryUncheckedUpdateWithoutChangedByInput>
+}
+
+export type ApplicantStatusHistoryUpdateManyWithWhereWithoutChangedByInput = {
+  where: Prisma.ApplicantStatusHistoryScalarWhereInput
+  data: Prisma.XOR<Prisma.ApplicantStatusHistoryUpdateManyMutationInput, Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByInput>
+}
+
 export type ApplicantStatusHistoryCreateManyApplicantInput = {
   id?: string
+  changedById?: string | null
   fromStatus?: $Enums.ApplicantStatus | null
   toStatus: $Enums.ApplicantStatus
   notes?: string | null
@@ -480,10 +596,12 @@ export type ApplicantStatusHistoryUpdateWithoutApplicantInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   changedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  changedBy?: Prisma.UserUpdateOneWithoutApplicantStatusChangesNestedInput
 }
 
 export type ApplicantStatusHistoryUncheckedUpdateWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  changedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -493,6 +611,47 @@ export type ApplicantStatusHistoryUncheckedUpdateWithoutApplicantInput = {
 
 export type ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  changedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
+  toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  changedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApplicantStatusHistoryCreateManyChangedByInput = {
+  id?: string
+  applicantId: string
+  fromStatus?: $Enums.ApplicantStatus | null
+  toStatus: $Enums.ApplicantStatus
+  notes?: string | null
+  changedAt?: Date | string
+  createdAt?: Date | string
+}
+
+export type ApplicantStatusHistoryUpdateWithoutChangedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
+  toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  changedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutStatusHistoryNestedInput
+}
+
+export type ApplicantStatusHistoryUncheckedUpdateWithoutChangedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
+  fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
+  toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  changedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   fromStatus?: Prisma.NullableEnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus | null
   toStatus?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -505,39 +664,46 @@ export type ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantInput = {
 export type ApplicantStatusHistorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   applicantId?: boolean
+  changedById?: boolean
   fromStatus?: boolean
   toStatus?: boolean
   notes?: boolean
   changedAt?: boolean
   createdAt?: boolean
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
+  changedBy?: boolean | Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>
 }, ExtArgs["result"]["applicantStatusHistory"]>
 
 export type ApplicantStatusHistorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   applicantId?: boolean
+  changedById?: boolean
   fromStatus?: boolean
   toStatus?: boolean
   notes?: boolean
   changedAt?: boolean
   createdAt?: boolean
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
+  changedBy?: boolean | Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>
 }, ExtArgs["result"]["applicantStatusHistory"]>
 
 export type ApplicantStatusHistorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   applicantId?: boolean
+  changedById?: boolean
   fromStatus?: boolean
   toStatus?: boolean
   notes?: boolean
   changedAt?: boolean
   createdAt?: boolean
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
+  changedBy?: boolean | Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>
 }, ExtArgs["result"]["applicantStatusHistory"]>
 
 export type ApplicantStatusHistorySelectScalar = {
   id?: boolean
   applicantId?: boolean
+  changedById?: boolean
   fromStatus?: boolean
   toStatus?: boolean
   notes?: boolean
@@ -545,25 +711,30 @@ export type ApplicantStatusHistorySelectScalar = {
   createdAt?: boolean
 }
 
-export type ApplicantStatusHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicantId" | "fromStatus" | "toStatus" | "notes" | "changedAt" | "createdAt", ExtArgs["result"]["applicantStatusHistory"]>
+export type ApplicantStatusHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicantId" | "changedById" | "fromStatus" | "toStatus" | "notes" | "changedAt" | "createdAt", ExtArgs["result"]["applicantStatusHistory"]>
 export type ApplicantStatusHistoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
+  changedBy?: boolean | Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>
 }
 export type ApplicantStatusHistoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
+  changedBy?: boolean | Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>
 }
 export type ApplicantStatusHistoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
+  changedBy?: boolean | Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>
 }
 
 export type $ApplicantStatusHistoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ApplicantStatusHistory"
   objects: {
     applicant: Prisma.$ApplicantPayload<ExtArgs>
+    changedBy: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     applicantId: string
+    changedById: string | null
     fromStatus: $Enums.ApplicantStatus | null
     toStatus: $Enums.ApplicantStatus
     notes: string | null
@@ -964,6 +1135,7 @@ readonly fields: ApplicantStatusHistoryFieldRefs;
 export interface Prisma__ApplicantStatusHistoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   applicant<T extends Prisma.ApplicantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicantDefaultArgs<ExtArgs>>): Prisma.Prisma__ApplicantClient<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  changedBy<T extends Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicantStatusHistory$changedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -995,6 +1167,7 @@ export interface Prisma__ApplicantStatusHistoryClient<T, Null = never, ExtArgs e
 export interface ApplicantStatusHistoryFieldRefs {
   readonly id: Prisma.FieldRef<"ApplicantStatusHistory", 'String'>
   readonly applicantId: Prisma.FieldRef<"ApplicantStatusHistory", 'String'>
+  readonly changedById: Prisma.FieldRef<"ApplicantStatusHistory", 'String'>
   readonly fromStatus: Prisma.FieldRef<"ApplicantStatusHistory", 'ApplicantStatus'>
   readonly toStatus: Prisma.FieldRef<"ApplicantStatusHistory", 'ApplicantStatus'>
   readonly notes: Prisma.FieldRef<"ApplicantStatusHistory", 'String'>
@@ -1393,6 +1566,25 @@ export type ApplicantStatusHistoryDeleteManyArgs<ExtArgs extends runtime.Types.E
    * Limit how many ApplicantStatusHistories to delete.
    */
   limit?: number
+}
+
+/**
+ * ApplicantStatusHistory.changedBy
+ */
+export type ApplicantStatusHistory$changedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

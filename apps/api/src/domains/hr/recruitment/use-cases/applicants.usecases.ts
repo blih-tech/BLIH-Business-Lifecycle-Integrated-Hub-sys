@@ -37,7 +37,7 @@ export class CreateApplicantUseCase {
     private readonly notifications: RecruitmentNotificationService,
   ) {}
 
-  async execute(dto: CreateApplicantDto) {
+  async execute(dto: CreateApplicantDto, changedById?: string) {
     const submittedEmail = dto.email.trim();
     const normalizedEmail = normalizeEmail(submittedEmail);
     const [job, referredBy] = await Promise.all([
@@ -156,6 +156,7 @@ export class CreateApplicantUseCase {
             statusHistory: {
               create: {
                 toStatus: 'APPLIED',
+                changedById: changedById ?? undefined,
                 changedAt: now,
               },
             },
@@ -441,7 +442,11 @@ export class UpdateApplicantUseCase {
 export class UpdateApplicantStatusUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateApplicantStatusDto) {
+  async execute(
+    id: string,
+    dto: UpdateApplicantStatusDto,
+    changedById?: string,
+  ) {
     const existing = await this.prisma.applicant.findUnique({
       where: { id },
       select: { id: true, status: true, jobId: true },
@@ -476,6 +481,7 @@ export class UpdateApplicantStatusUseCase {
             fromStatus: existing.status,
             toStatus: dto.status,
             notes: dto.notes ?? undefined,
+            changedById: changedById ?? undefined,
             changedAt: now,
           },
         });

@@ -569,6 +569,7 @@ export function mapApplicant(applicant: any) {
       id: entry.id,
       fromStatus: entry.fromStatus ?? null,
       toStatus: entry.toStatus,
+      changedById: entry.changedById ?? null,
       notes: entry.notes ?? null,
       changedAt: dateToIso(entry.changedAt),
     })),

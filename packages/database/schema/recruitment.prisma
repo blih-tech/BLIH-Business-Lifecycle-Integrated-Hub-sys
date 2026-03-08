@@ -270,7 +270,6 @@ model Applicant {
   statusHistory     ApplicantStatusHistory[]
 
   @@unique([jobId, emailNormalized])
-  @@unique([id, jobId])
   @@index([jobId])
   @@index([status])
   @@index([email])
@@ -282,6 +281,8 @@ model ApplicantStatusHistory {
   id          String          @id @default(uuid()) @db.Uuid
   applicantId String          @map("applicant_id") @db.Uuid
   applicant   Applicant       @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  changedById String?         @map("changed_by_id") @db.Uuid
+  changedBy   User?           @relation("ApplicantStatusChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
   fromStatus  ApplicantStatus? @map("from_status")
   toStatus    ApplicantStatus  @map("to_status")
   notes       String?          @db.Text
@@ -290,6 +291,7 @@ model ApplicantStatusHistory {
 
   @@index([applicantId])
   @@index([applicantId, changedAt])
+  @@index([changedById])
 }
 
 model ApplicantEducation {
@@ -327,7 +329,7 @@ model Interview {
   jobId           String          @map("job_id") @db.Uuid
   job             Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
   applicantId     String          @map("applicant_id") @db.Uuid
-  applicant       Applicant       @relation(fields: [applicantId, jobId], references: [id, jobId], onDelete: Cascade)
+  applicant       Applicant       @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   type            InterviewType
   status          InterviewStatus @default(SCHEDULED)
   scheduledAt     DateTime?       @map("scheduled_at")

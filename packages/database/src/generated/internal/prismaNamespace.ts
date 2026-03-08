@@ -10190,6 +10190,7 @@ export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof t
 export const ApplicantStatusHistoryScalarFieldEnum = {
   id: 'id',
   applicantId: 'applicantId',
+  changedById: 'changedById',
   fromStatus: 'fromStatus',
   toStatus: 'toStatus',
   notes: 'notes',

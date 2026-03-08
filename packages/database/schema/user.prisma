@@ -24,6 +24,7 @@ model User {
   managedJobs                      Job[]                         @relation("JobHiringManager")
   jobReplacementRequests           JobRequestForm[]              @relation("JobRequestReplacementUser")
   referredApplicants               Applicant[]                   @relation("ApplicantReferral")
+  applicantStatusChanges           ApplicantStatusHistory[]      @relation("ApplicantStatusChangedBy")
   conductedInterviews              Interview[]                   @relation("InterviewInterviewer")
   submittedHiringDecisions         HiringDecision[]              @relation("HiringDecisionSubmittedBy")
   givenJobApprovals                JobApproval[]                 @relation("JobApprovalApprover")

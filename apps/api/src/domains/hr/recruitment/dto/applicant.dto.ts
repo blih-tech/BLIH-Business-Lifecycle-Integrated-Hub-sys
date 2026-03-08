@@ -272,6 +272,9 @@ export class ApplicantStatusHistoryResponseDto {
   @ApiProperty()
   id!: string;
 
+  @ApiPropertyOptional({ nullable: true })
+  changedById!: string | null;
+
   @ApiPropertyOptional({ nullable: true, enum: APPLICANT_STATUSES })
   fromStatus!: (typeof APPLICANT_STATUSES)[number] | null;
 

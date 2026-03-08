@@ -8,6 +8,7 @@ export type ApplicantStatus =
 
 export interface ApplicantStatusHistoryDto {
   id: string;
+  changedById: string | null;
   fromStatus: ApplicantStatus | null;
   toStatus: ApplicantStatus;
   notes: string | null;

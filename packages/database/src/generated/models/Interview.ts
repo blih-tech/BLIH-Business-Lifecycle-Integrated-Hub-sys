@@ -839,6 +839,7 @@ export type InterviewCreateWithoutApplicantInput = {
 
 export type InterviewUncheckedCreateWithoutApplicantInput = {
   id?: string
+  jobId: string
   type: $Enums.InterviewType
   status?: $Enums.InterviewStatus
   scheduledAt?: Date | string | null
@@ -1016,6 +1017,7 @@ export type InterviewUncheckedUpdateManyWithoutJobInput = {
 
 export type InterviewCreateManyApplicantInput = {
   id?: string
+  jobId: string
   type: $Enums.InterviewType
   status?: $Enums.InterviewStatus
   scheduledAt?: Date | string | null
@@ -1051,6 +1053,7 @@ export type InterviewUpdateWithoutApplicantInput = {
 
 export type InterviewUncheckedUpdateWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1068,6 +1071,7 @@ export type InterviewUncheckedUpdateWithoutApplicantInput = {
 
 export type InterviewUncheckedUpdateManyWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
