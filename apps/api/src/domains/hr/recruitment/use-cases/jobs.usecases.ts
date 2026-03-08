@@ -32,6 +32,7 @@ import {
   isApprovalStageActionable,
   jobInclude,
   mapJob,
+  normalizeStringArray,
   requiredRoleForStage,
 } from './recruitment.usecase-helpers';
 
@@ -87,12 +88,6 @@ const parseLocation = (
   if (parts.length === 1) return { city: parts[0], country: null };
   return { city: parts[0], country: parts[parts.length - 1] };
 };
-
-const splitLines = (value: string) =>
-  value
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
 
 const stageFieldPatch = (stage: ApprovalStage, value: StageStatus) => {
   if (stage === 'FINANCE') return { financeApprovalStatus: value };
@@ -223,13 +218,8 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       employmentType: job.requestForm.detailsForm.employmentType,
       jobSummary: job.requestForm.detailsForm.jobSummary,
       whyJoinUs: job.requestForm.detailsForm.whyJoinUs ?? undefined,
-      keyResponsibilities: job.requestForm.detailsForm.keyResponsibilities,
-      skills: (job.requestForm.detailsForm.skills ?? []).map((skill: any) => ({
-        name: skill.name,
-        level: skill.level ?? undefined,
-        required: skill.required,
-        order: skill.order ?? undefined,
-      })),
+      skills: job.requestForm.detailsForm.skills ?? [],
+      responsibilities: job.requestForm.detailsForm.responsibilities ?? [],
       preferredSkills: job.requestForm.detailsForm.preferredSkills ?? undefined,
       experienceLevel: job.requestForm.detailsForm.experienceLevel,
       salaryMin:
@@ -277,6 +267,9 @@ const mergeNestedPayload = (
     ...existing.jobDetailsForm,
     ...(incoming.jobDetailsForm ?? {}),
     skills: incoming.jobDetailsForm?.skills ?? existing.jobDetailsForm.skills,
+    responsibilities:
+      incoming.jobDetailsForm?.responsibilities ??
+      existing.jobDetailsForm.responsibilities,
   },
   applicationForm: {
     ...existing.applicationForm,
@@ -329,7 +322,10 @@ export class CreateJobUseCase {
       principal.roles?.includes(SYSTEM_ROLES.HR_MANAGER) ||
       false;
     const location = parseLocation(dto.jobDetailsForm.location);
-    const responsibilities = splitLines(dto.jobDetailsForm.keyResponsibilities);
+    const skills = normalizeStringArray(dto.jobDetailsForm.skills);
+    const responsibilities = normalizeStringArray(
+      dto.jobDetailsForm.responsibilities,
+    );
 
     const created = await this.prisma.job.create({
       data: {
@@ -354,6 +350,8 @@ export class CreateJobUseCase {
           currencyOrNull(dto.jobDetailsForm.salaryCurrency) ?? undefined,
         salaryMode: dto.jobDetailsForm.salaryMode,
         benefits: dto.jobDetailsForm.benefits ?? [],
+        skills,
+        responsibilities,
         creatorIsHr,
         priority: dto.priority ?? 'MEDIUM',
         hiringManagerId: dto.hiringManagerId ?? undefined,
@@ -387,7 +385,8 @@ export class CreateJobUseCase {
                 whyJoinUs:
                   (dto.jobDetailsForm
                     .whyJoinUs as Prisma.InputJsonValue | null) ?? undefined,
-                keyResponsibilities: dto.jobDetailsForm.keyResponsibilities,
+                skills,
+                responsibilities,
                 preferredSkills:
                   dto.jobDetailsForm.preferredSkills ?? undefined,
                 experienceLevel: dto.jobDetailsForm.experienceLevel,
@@ -402,14 +401,6 @@ export class CreateJobUseCase {
                 applicationDeadline: new Date(
                   dto.jobDetailsForm.applicationDeadline,
                 ),
-                skills: {
-                  create: dto.jobDetailsForm.skills.map((skill) => ({
-                    name: skill.name,
-                    level: skill.level ?? undefined,
-                    required: skill.required ?? true,
-                    order: skill.order ?? undefined,
-                  })),
-                },
                 applicationForm: {
                   create: {
                     predefinedFields: {
@@ -447,20 +438,6 @@ export class CreateJobUseCase {
               },
             },
           },
-        },
-        skills: {
-          create: dto.jobDetailsForm.skills.map((skill) => ({
-            name: skill.name,
-            level: skill.level ?? undefined,
-            required: skill.required ?? true,
-            order: skill.order ?? undefined,
-          })),
-        },
-        responsibilities: {
-          create: responsibilities.map((description, index) => ({
-            title: description,
-            order: index + 1,
-          })),
         },
       },
       include: jobInclude,
@@ -564,8 +541,9 @@ export class UpdateJobUseCase {
     );
 
     const location = parseLocation(merged.jobDetailsForm.location);
-    const responsibilities = splitLines(
-      merged.jobDetailsForm.keyResponsibilities,
+    const skills = normalizeStringArray(merged.jobDetailsForm.skills);
+    const responsibilities = normalizeStringArray(
+      merged.jobDetailsForm.responsibilities,
     );
 
     const updated = await this.prisma.$transaction(async (tx) => {
@@ -593,6 +571,8 @@ export class UpdateJobUseCase {
           currency: currencyOrNull(merged.jobDetailsForm.salaryCurrency),
           salaryMode: merged.jobDetailsForm.salaryMode,
           benefits: merged.jobDetailsForm.benefits ?? [],
+          skills,
+          responsibilities,
           applicationDeadline: new Date(
             merged.jobDetailsForm.applicationDeadline,
           ),
@@ -647,7 +627,8 @@ export class UpdateJobUseCase {
           whyJoinUs:
             (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
             undefined,
-          keyResponsibilities: merged.jobDetailsForm.keyResponsibilities,
+          skills,
+          responsibilities,
           preferredSkills: merged.jobDetailsForm.preferredSkills ?? undefined,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
           salaryMin: merged.jobDetailsForm.salaryMin ?? undefined,
@@ -670,7 +651,8 @@ export class UpdateJobUseCase {
           whyJoinUs:
             (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
             Prisma.DbNull,
-          keyResponsibilities: merged.jobDetailsForm.keyResponsibilities,
+          skills,
+          responsibilities,
           preferredSkills: merged.jobDetailsForm.preferredSkills ?? null,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
           salaryMin: merged.jobDetailsForm.salaryMin ?? null,
@@ -685,21 +667,6 @@ export class UpdateJobUseCase {
         },
         select: { id: true },
       });
-
-      await tx.jobDetailSkill.deleteMany({
-        where: { jobDetailsFormId: detailsForm.id },
-      });
-      if (merged.jobDetailsForm.skills.length > 0) {
-        await tx.jobDetailSkill.createMany({
-          data: merged.jobDetailsForm.skills.map((skill, index) => ({
-            jobDetailsFormId: detailsForm.id,
-            name: skill.name,
-            level: skill.level ?? undefined,
-            required: skill.required ?? true,
-            order: skill.order ?? index + 1,
-          })),
-        });
-      }
 
       const applicationForm = await tx.jobApplicationForm.upsert({
         where: { jobDetailsFormId: detailsForm.id },
@@ -747,30 +714,6 @@ export class UpdateJobUseCase {
         });
       }
 
-      await tx.jobSkill.deleteMany({ where: { jobId: id } });
-      if (merged.jobDetailsForm.skills.length > 0) {
-        await tx.jobSkill.createMany({
-          data: merged.jobDetailsForm.skills.map((skill, index) => ({
-            jobId: id,
-            name: skill.name,
-            level: skill.level ?? undefined,
-            required: skill.required ?? true,
-            order: skill.order ?? index + 1,
-          })),
-        });
-      }
-
-      await tx.jobResponsibility.deleteMany({ where: { jobId: id } });
-      if (responsibilities.length > 0) {
-        await tx.jobResponsibility.createMany({
-          data: responsibilities.map((description, index) => ({
-            jobId: id,
-            title: description,
-            order: index + 1,
-          })),
-        });
-      }
-
       return tx.job.findUniqueOrThrow({
         where: { id },
         include: jobInclude,
@@ -788,9 +731,23 @@ export class SubmitJobUseCase {
   async execute(id: string) {
     const existing = await this.prisma.job.findUnique({
       where: { id },
-      include: {
-        skills: { select: { id: true } },
-        responsibilities: { select: { id: true } },
+      select: {
+        id: true,
+        status: true,
+        title: true,
+        description: true,
+        departmentId: true,
+        positionId: true,
+        experienceLevel: true,
+        contractType: true,
+        workLocationType: true,
+        openings: true,
+        salaryMin: true,
+        salaryMax: true,
+        currency: true,
+        applicationDeadline: true,
+        skills: true,
+        responsibilities: true,
       },
     });
     if (!existing) throw new NotFoundException('Job not found');
@@ -1078,7 +1035,7 @@ export class UpsertJobSkillsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(id: string, dto: UpsertJobSkillsDto) {
-    const job = await this.prisma.job.findUniqueOrThrow({
+    const job = await this.prisma.job.findUnique({
       where: { id },
       include: {
         requestForm: {
@@ -1090,42 +1047,25 @@ export class UpsertJobSkillsUseCase {
         },
       },
     });
+    if (!job) throw new NotFoundException('Job not found');
+
+    const skills = normalizeStringArray(dto.skills);
     await this.prisma.$transaction(async (tx) => {
-      await tx.jobSkill.deleteMany({ where: { jobId: id } });
-      if (dto.skills.length > 0) {
-        await tx.jobSkill.createMany({
-          data: dto.skills.map((skill, index) => ({
-            jobId: id,
-            name: skill.name,
-            level: skill.level ?? undefined,
-            required: skill.required ?? true,
-            order: skill.order ?? index + 1,
-          })),
-        });
-      }
+      await tx.job.update({
+        where: { id },
+        data: { skills },
+      });
 
       const detailsFormId = job.requestForm?.detailsForm?.id;
       if (detailsFormId) {
-        await tx.jobDetailSkill.deleteMany({
-          where: { jobDetailsFormId: detailsFormId },
+        await tx.jobDetailsForm.update({
+          where: { id: detailsFormId },
+          data: { skills },
         });
-        if (dto.skills.length > 0) {
-          await tx.jobDetailSkill.createMany({
-            data: dto.skills.map((skill, index) => ({
-              jobDetailsFormId: detailsFormId,
-              name: skill.name,
-              level: skill.level ?? undefined,
-              required: skill.required ?? true,
-              order: skill.order ?? index + 1,
-            })),
-          });
-        }
       }
     });
-    return this.prisma.jobSkill.findMany({
-      where: { jobId: id },
-      orderBy: { order: 'asc' },
-    });
+
+    return skills;
   }
 }
 
@@ -1162,7 +1102,7 @@ export class UpsertJobResponsibilitiesUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(id: string, dto: UpsertJobResponsibilitiesDto) {
-    const job = await this.prisma.job.findUniqueOrThrow({
+    const job = await this.prisma.job.findUnique({
       where: { id },
       include: {
         requestForm: {
@@ -1174,34 +1114,24 @@ export class UpsertJobResponsibilitiesUseCase {
         },
       },
     });
+    if (!job) throw new NotFoundException('Job not found');
+
+    const responsibilities = normalizeStringArray(dto.responsibilities);
     await this.prisma.$transaction(async (tx) => {
-      await tx.jobResponsibility.deleteMany({ where: { jobId: id } });
-      if (dto.responsibilities.length > 0) {
-        await tx.jobResponsibility.createMany({
-          data: dto.responsibilities.map((responsibility, index) => ({
-            jobId: id,
-            title: responsibility.description,
-            order: responsibility.order ?? index + 1,
-          })),
-        });
-      }
+      await tx.job.update({
+        where: { id },
+        data: { responsibilities },
+      });
 
       const detailsFormId = job.requestForm?.detailsForm?.id;
       if (detailsFormId) {
         await tx.jobDetailsForm.update({
           where: { id: detailsFormId },
-          data: {
-            keyResponsibilities: dto.responsibilities
-              .map((responsibility) => responsibility.description.trim())
-              .filter(Boolean)
-              .join('\n'),
-          },
+          data: { responsibilities },
         });
       }
     });
-    return this.prisma.jobResponsibility.findMany({
-      where: { jobId: id },
-      orderBy: { order: 'asc' },
-    });
+
+    return responsibilities;
   }
 }

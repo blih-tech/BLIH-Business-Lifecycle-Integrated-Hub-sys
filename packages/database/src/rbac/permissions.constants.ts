@@ -283,6 +283,14 @@ export const JobApplicationPermissions = {
   ALL: 'job_application:*',
 } as const;
 
+export const ApplicantPermissions = {
+  VIEW: 'applicant:view',
+  CREATE: 'applicant:create',
+  UPDATE: 'applicant:update',
+  DELETE: 'applicant:delete',
+  ALL: 'applicant:*',
+} as const;
+
 export const InterviewPermissions = {
   VIEW: 'interview:view',
   CREATE: 'interview:create',
@@ -491,8 +499,7 @@ export const PermissionGroups = {
   brain_config: BrainConfigPermissions,
   job: JobPermissions,
   job_approval: JobApprovalPermissions,
-  candidate: CandidatePermissions,
-  job_application: JobApplicationPermissions,
+  applicant: ApplicantPermissions,
   interview: InterviewPermissions,
   onboarding_checklist: OnboardingChecklistPermissions,
   asset_provisioning: AssetProvisioningPermissions,

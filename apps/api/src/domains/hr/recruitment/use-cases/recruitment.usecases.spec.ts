@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 import { ApproveJobUseCase, SubmitJobUseCase } from './jobs.usecases';
-import { UpdateJobApplicationStatusUseCase } from './applications.usecases';
+import { UpdateApplicantStatusUseCase } from './applicants.usecases';
 import { UpdateInterviewUseCase } from './interviews.usecases';
 
 const approvalTemplate = [
@@ -52,7 +52,7 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   slug: 'senior-backend-engineer',
   departmentId: 'dept-1',
   positionId: 'pos-1',
-  description: 'Role description',
+  description: { type: 'doc', content: [{ type: 'paragraph', text: 'Role' }] },
   summary: null,
   experienceLevel: 'SENIOR',
   contractType: 'PERMANENT',
@@ -78,9 +78,9 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   createdAt: new Date('2026-03-05T10:00:00.000Z'),
   updatedAt: new Date('2026-03-05T10:00:00.000Z'),
   approvals: approvalTemplate,
-  skills: [{ id: 'skill-1' }],
+  skills: ['TypeScript'],
   tools: [],
-  responsibilities: [{ id: 'resp-1' }],
+  responsibilities: ['Own delivery'],
   ...overrides,
 });
 
@@ -307,14 +307,18 @@ describe('Recruitment UseCases', () => {
     ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
-  it('rejects invalid job application status transitions', async () => {
+  it('rejects invalid applicant status transitions', async () => {
     const prisma = {
-      jobApplication: {
-        findUnique: jest.fn().mockResolvedValue({ id: 'app-1', status: 'NEW' }),
+      applicant: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'app-1',
+          status: 'APPLIED',
+          jobId: 'job-1',
+        }),
         update: jest.fn(),
       },
     };
-    const usecase = new UpdateJobApplicationStatusUseCase(prisma as never);
+    const usecase = new UpdateApplicantStatusUseCase(prisma as never);
 
     await expect(
       usecase.execute('app-1', { status: 'HIRED' }),

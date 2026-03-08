@@ -1,5 +1,4 @@
-import type { SkillLevel } from '../hr/training/skill.js';
-import type { EmploymentType, Gender } from '../users/user-profile.js';
+import type { EmploymentType } from '../users/user-profile.js';
 
 export type JobWorkflowStatus =
   | 'DRAFT'
@@ -109,23 +108,9 @@ export const JOB_SALARY_MODES = [
   'COMPETITIVE',
 ] as const;
 
-export interface JobSkillDto {
-  id: string;
-  name: string;
-  level?: SkillLevel | null;
-  required: boolean;
-  order?: number | null;
-}
-
 export interface JobToolDto {
   id: string;
   name: string;
-  order?: number | null;
-}
-
-export interface JobResponsibilityDto {
-  id: string;
-  description: string;
   order?: number | null;
 }
 
@@ -166,13 +151,8 @@ export interface JobDetailsFormDto {
   employmentType: EmploymentType;
   jobSummary: RichTextJson;
   whyJoinUs?: RichTextJson | null;
-  keyResponsibilities: string;
-  skills: Array<{
-    name: string;
-    level?: SkillLevel | null;
-    required?: boolean;
-    order?: number | null;
-  }>;
+  skills: string[];
+  responsibilities: string[];
   preferredSkills?: string | null;
   experienceLevel: ExperienceLevel;
   salaryMin?: number | null;
@@ -225,12 +205,7 @@ export interface CloseJobDto {
 }
 
 export interface UpsertJobSkillsDto {
-  skills: Array<{
-    name: string;
-    level?: SkillLevel | null;
-    required?: boolean;
-    order?: number | null;
-  }>;
+  skills: string[];
 }
 
 export interface UpsertJobToolsDto {
@@ -241,10 +216,7 @@ export interface UpsertJobToolsDto {
 }
 
 export interface UpsertJobResponsibilitiesDto {
-  responsibilities: Array<{
-    description: string;
-    order?: number | null;
-  }>;
+  responsibilities: string[];
 }
 
 export interface JobResponseDto {
@@ -293,8 +265,8 @@ export interface JobResponseDto {
     employmentType: EmploymentType;
     jobSummary: RichTextJson;
     whyJoinUs: RichTextJson | null;
-    keyResponsibilities: string;
-    skills: JobSkillDto[];
+    skills: string[];
+    responsibilities: string[];
     preferredSkills: string | null;
     experienceLevel: ExperienceLevel;
     salaryMin: string | null;
@@ -325,19 +297,9 @@ export interface JobResponseDto {
     }>;
   } | null;
   approvals: JobApprovalDto[];
-  skills: JobSkillDto[];
+  skills: string[];
   tools: JobToolDto[];
-  responsibilities: JobResponsibilityDto[];
+  responsibilities: string[];
   createdAt: string;
   updatedAt: string;
-}
-
-export interface CandidateLiteDto {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string | null;
-  gender?: Gender | null;
-  yearsExperience?: number | null;
 }

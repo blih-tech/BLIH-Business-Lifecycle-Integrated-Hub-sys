@@ -59,12 +59,12 @@ export class InterviewsController {
   @ApiBody({
     type: CreateInterviewDto,
     description:
-      'Request body: applicationId (required, UUID), type (required), interviewerId (required UUID). Optional: round, status, scheduledAt, completedAt, interviewers, feedback, endorsement, score, nextAction.',
+      'Request body: applicantId (required, UUID), type (required), interviewerId (required UUID). Optional: round, status, scheduledAt, startedAt, completedAt, interviewers, feedback, endorsement, score, nextAction, notes.',
     examples: {
       createInterview: {
         summary: 'Schedule interview payload',
         value: {
-          applicationId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
+          applicantId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
           type: 'TECHNICAL',
           round: 1,
           status: 'SCHEDULED',
@@ -75,7 +75,7 @@ export class InterviewsController {
       createInterviewMinimal: {
         summary: 'Create interview (minimal)',
         value: {
-          applicationId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
+          applicantId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
           type: 'HR_SCREENING',
           interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
         },
@@ -90,7 +90,7 @@ export class InterviewsController {
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/interviews',
     badRequest: 'Interview payload is invalid',
-    notFound: 'Job application not found',
+    notFound: 'Applicant not found',
     conflict: 'Interview round already exists',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',

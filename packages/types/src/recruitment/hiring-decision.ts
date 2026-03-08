@@ -4,7 +4,8 @@ export type HiringDecisionOutcome =
   | 'SUSPENDED';
 
 export interface CreateHiringDecisionDto {
-  jobApplicationId: string;
+  jobId: string;
+  applicantId: string;
   candidateSummary?: Record<string, unknown> | null;
   offer?: Record<string, unknown> | null;
   selectionReasoning?: string | null;
@@ -29,22 +30,20 @@ export interface AcceptOfferDto {
 
 export interface HiringDecisionResponseDto {
   id: string;
-  decisionId: string;
-  jobApplicationId: string;
+  jobId: string;
+  applicantId: string;
   candidateSummary: unknown;
   offer: unknown;
   selectionReasoning: string | null;
   keyAssets: unknown;
   attachments: unknown;
   submittedById: string;
-  submittedAt: string | null;
-  finalDecision: HiringDecisionOutcome | null;
-  offerDocumentUrl: string | null;
-  candidateNotifiedAt: string | null;
-  offerAccepted: boolean;
-  acceptedAt: string | null;
-  offerExpiresAt: string | null;
-  employeeId: string | null;
+  outcome: HiringDecisionOutcome;
+  salaryOffered: string | null;
+  currency: string | null;
+  startDate: string | null;
+  decisionNotes: string | null;
+  decidedAt: string | null;
   onboardingId: string | null;
   createdAt: string;
   updatedAt: string;

@@ -3,30 +3,26 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
-import { JobsController } from './jobs.controller';
-import { CandidatesController } from './candidates.controller';
-import { JobApplicationsController } from './applications.controller';
+import { ApplicantsController } from './applicants.controller';
 import { InterviewsController } from './interviews.controller';
+import { JobsController } from './jobs.controller';
 import {
   ApproveJobUseCase,
   CloseJobUseCase,
-  CreateCandidateUseCase,
+  CreateApplicantUseCase,
   CreateInterviewUseCase,
-  CreateJobApplicationUseCase,
   CreateJobUseCase,
-  GetCandidateUseCase,
+  GetApplicantUseCase,
   GetInterviewUseCase,
-  GetJobApplicationUseCase,
   GetJobUseCase,
-  ListCandidatesUseCase,
+  ListApplicantsUseCase,
   ListInterviewsUseCase,
-  ListJobApplicationsUseCase,
   ListJobsUseCase,
   PublishJobUseCase,
   SubmitJobUseCase,
-  UpdateCandidateUseCase,
+  UpdateApplicantStatusUseCase,
+  UpdateApplicantUseCase,
   UpdateInterviewUseCase,
-  UpdateJobApplicationStatusUseCase,
   UpdateJobUseCase,
   UpsertJobResponsibilitiesUseCase,
   UpsertJobSkillsUseCase,
@@ -45,14 +41,11 @@ const useCaseTokens = [
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
   UpsertJobResponsibilitiesUseCase,
-  CreateCandidateUseCase,
-  ListCandidatesUseCase,
-  GetCandidateUseCase,
-  UpdateCandidateUseCase,
-  CreateJobApplicationUseCase,
-  ListJobApplicationsUseCase,
-  GetJobApplicationUseCase,
-  UpdateJobApplicationStatusUseCase,
+  CreateApplicantUseCase,
+  ListApplicantsUseCase,
+  GetApplicantUseCase,
+  UpdateApplicantUseCase,
+  UpdateApplicantStatusUseCase,
   CreateInterviewUseCase,
   ListInterviewsUseCase,
   GetInterviewUseCase,
@@ -105,35 +98,20 @@ const expectedOperations: Array<{
     method: 'post',
     expectsBody: true,
   },
-  { path: '/hr/recruitment/candidates', method: 'post', expectsBody: true },
-  { path: '/hr/recruitment/candidates', method: 'get', expectsBody: false },
+  { path: '/hr/recruitment/applicants', method: 'post', expectsBody: true },
+  { path: '/hr/recruitment/applicants', method: 'get', expectsBody: false },
   {
-    path: '/hr/recruitment/candidates/{id}',
+    path: '/hr/recruitment/applicants/{id}',
     method: 'get',
     expectsBody: false,
   },
   {
-    path: '/hr/recruitment/candidates/{id}',
+    path: '/hr/recruitment/applicants/{id}',
     method: 'patch',
     expectsBody: true,
   },
   {
-    path: '/hr/recruitment/applications',
-    method: 'post',
-    expectsBody: true,
-  },
-  {
-    path: '/hr/recruitment/applications',
-    method: 'get',
-    expectsBody: false,
-  },
-  {
-    path: '/hr/recruitment/applications/{id}',
-    method: 'get',
-    expectsBody: false,
-  },
-  {
-    path: '/hr/recruitment/applications/{id}/status',
+    path: '/hr/recruitment/applicants/{id}/status',
     method: 'post',
     expectsBody: true,
   },
@@ -161,12 +139,7 @@ describe('Recruitment Swagger Contract', () => {
     }));
 
     const moduleRef: TestingModule = await Test.createTestingModule({
-      controllers: [
-        JobsController,
-        CandidatesController,
-        JobApplicationsController,
-        InterviewsController,
-      ],
+      controllers: [JobsController, ApplicantsController, InterviewsController],
       providers,
     })
       .overrideGuard(KeycloakAuthGuard)
@@ -185,7 +158,7 @@ describe('Recruitment Swagger Contract', () => {
     }
   });
 
-  it('documents all canonical recruitment routes with body and response examples', () => {
+  it('documents all recruitment routes with body and response examples', () => {
     const doc = SwaggerModule.createDocument(
       app,
       new DocumentBuilder().setTitle('Recruitment').build(),

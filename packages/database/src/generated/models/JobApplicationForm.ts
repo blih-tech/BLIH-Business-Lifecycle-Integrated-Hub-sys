@@ -177,7 +177,7 @@ export type JobApplicationFormWhereInput = {
   jobDetailsForm?: Prisma.XOR<Prisma.JobDetailsFormScalarRelationFilter, Prisma.JobDetailsFormWhereInput>
   predefinedFields?: Prisma.JobApplicationPredefinedFieldListRelationFilter
   customFields?: Prisma.JobApplicationCustomFieldListRelationFilter
-  applications?: Prisma.JobApplicationListRelationFilter
+  applicants?: Prisma.ApplicantListRelationFilter
 }
 
 export type JobApplicationFormOrderByWithRelationInput = {
@@ -188,7 +188,7 @@ export type JobApplicationFormOrderByWithRelationInput = {
   jobDetailsForm?: Prisma.JobDetailsFormOrderByWithRelationInput
   predefinedFields?: Prisma.JobApplicationPredefinedFieldOrderByRelationAggregateInput
   customFields?: Prisma.JobApplicationCustomFieldOrderByRelationAggregateInput
-  applications?: Prisma.JobApplicationOrderByRelationAggregateInput
+  applicants?: Prisma.ApplicantOrderByRelationAggregateInput
 }
 
 export type JobApplicationFormWhereUniqueInput = Prisma.AtLeast<{
@@ -202,7 +202,7 @@ export type JobApplicationFormWhereUniqueInput = Prisma.AtLeast<{
   jobDetailsForm?: Prisma.XOR<Prisma.JobDetailsFormScalarRelationFilter, Prisma.JobDetailsFormWhereInput>
   predefinedFields?: Prisma.JobApplicationPredefinedFieldListRelationFilter
   customFields?: Prisma.JobApplicationCustomFieldListRelationFilter
-  applications?: Prisma.JobApplicationListRelationFilter
+  applicants?: Prisma.ApplicantListRelationFilter
 }, "id" | "jobDetailsFormId">
 
 export type JobApplicationFormOrderByWithAggregationInput = {
@@ -232,7 +232,7 @@ export type JobApplicationFormCreateInput = {
   jobDetailsForm: Prisma.JobDetailsFormCreateNestedOneWithoutApplicationFormInput
   predefinedFields?: Prisma.JobApplicationPredefinedFieldCreateNestedManyWithoutJobApplicationFormInput
   customFields?: Prisma.JobApplicationCustomFieldCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormUncheckedCreateInput = {
@@ -242,7 +242,7 @@ export type JobApplicationFormUncheckedCreateInput = {
   updatedAt?: Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
   customFields?: Prisma.JobApplicationCustomFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormUpdateInput = {
@@ -252,7 +252,7 @@ export type JobApplicationFormUpdateInput = {
   jobDetailsForm?: Prisma.JobDetailsFormUpdateOneRequiredWithoutApplicationFormNestedInput
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUpdateManyWithoutJobApplicationFormNestedInput
   customFields?: Prisma.JobApplicationCustomFieldUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormUncheckedUpdateInput = {
@@ -262,7 +262,7 @@ export type JobApplicationFormUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUncheckedUpdateManyWithoutJobApplicationFormNestedInput
   customFields?: Prisma.JobApplicationCustomFieldUncheckedUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormCreateManyInput = {
@@ -376,20 +376,20 @@ export type JobApplicationFormUpdateOneRequiredWithoutCustomFieldsNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobApplicationFormUpdateToOneWithWhereWithoutCustomFieldsInput, Prisma.JobApplicationFormUpdateWithoutCustomFieldsInput>, Prisma.JobApplicationFormUncheckedUpdateWithoutCustomFieldsInput>
 }
 
-export type JobApplicationFormCreateNestedOneWithoutApplicationsInput = {
-  create?: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicationsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicationsInput>
-  connectOrCreate?: Prisma.JobApplicationFormCreateOrConnectWithoutApplicationsInput
+export type JobApplicationFormCreateNestedOneWithoutApplicantsInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicantsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicantsInput>
+  connectOrCreate?: Prisma.JobApplicationFormCreateOrConnectWithoutApplicantsInput
   connect?: Prisma.JobApplicationFormWhereUniqueInput
 }
 
-export type JobApplicationFormUpdateOneWithoutApplicationsNestedInput = {
-  create?: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicationsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicationsInput>
-  connectOrCreate?: Prisma.JobApplicationFormCreateOrConnectWithoutApplicationsInput
-  upsert?: Prisma.JobApplicationFormUpsertWithoutApplicationsInput
+export type JobApplicationFormUpdateOneWithoutApplicantsNestedInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicantsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicantsInput>
+  connectOrCreate?: Prisma.JobApplicationFormCreateOrConnectWithoutApplicantsInput
+  upsert?: Prisma.JobApplicationFormUpsertWithoutApplicantsInput
   disconnect?: Prisma.JobApplicationFormWhereInput | boolean
   delete?: Prisma.JobApplicationFormWhereInput | boolean
   connect?: Prisma.JobApplicationFormWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobApplicationFormUpdateToOneWithWhereWithoutApplicationsInput, Prisma.JobApplicationFormUpdateWithoutApplicationsInput>, Prisma.JobApplicationFormUncheckedUpdateWithoutApplicationsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobApplicationFormUpdateToOneWithWhereWithoutApplicantsInput, Prisma.JobApplicationFormUpdateWithoutApplicantsInput>, Prisma.JobApplicationFormUncheckedUpdateWithoutApplicantsInput>
 }
 
 export type JobApplicationFormCreateWithoutJobDetailsFormInput = {
@@ -398,7 +398,7 @@ export type JobApplicationFormCreateWithoutJobDetailsFormInput = {
   updatedAt?: Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldCreateNestedManyWithoutJobApplicationFormInput
   customFields?: Prisma.JobApplicationCustomFieldCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormUncheckedCreateWithoutJobDetailsFormInput = {
@@ -407,7 +407,7 @@ export type JobApplicationFormUncheckedCreateWithoutJobDetailsFormInput = {
   updatedAt?: Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
   customFields?: Prisma.JobApplicationCustomFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormCreateOrConnectWithoutJobDetailsFormInput = {
@@ -432,7 +432,7 @@ export type JobApplicationFormUpdateWithoutJobDetailsFormInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUpdateManyWithoutJobApplicationFormNestedInput
   customFields?: Prisma.JobApplicationCustomFieldUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormUncheckedUpdateWithoutJobDetailsFormInput = {
@@ -441,7 +441,7 @@ export type JobApplicationFormUncheckedUpdateWithoutJobDetailsFormInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUncheckedUpdateManyWithoutJobApplicationFormNestedInput
   customFields?: Prisma.JobApplicationCustomFieldUncheckedUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormCreateWithoutPredefinedFieldsInput = {
@@ -450,7 +450,7 @@ export type JobApplicationFormCreateWithoutPredefinedFieldsInput = {
   updatedAt?: Date | string
   jobDetailsForm: Prisma.JobDetailsFormCreateNestedOneWithoutApplicationFormInput
   customFields?: Prisma.JobApplicationCustomFieldCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormUncheckedCreateWithoutPredefinedFieldsInput = {
@@ -459,7 +459,7 @@ export type JobApplicationFormUncheckedCreateWithoutPredefinedFieldsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   customFields?: Prisma.JobApplicationCustomFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormCreateOrConnectWithoutPredefinedFieldsInput = {
@@ -484,7 +484,7 @@ export type JobApplicationFormUpdateWithoutPredefinedFieldsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jobDetailsForm?: Prisma.JobDetailsFormUpdateOneRequiredWithoutApplicationFormNestedInput
   customFields?: Prisma.JobApplicationCustomFieldUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormUncheckedUpdateWithoutPredefinedFieldsInput = {
@@ -493,7 +493,7 @@ export type JobApplicationFormUncheckedUpdateWithoutPredefinedFieldsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customFields?: Prisma.JobApplicationCustomFieldUncheckedUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormCreateWithoutCustomFieldsInput = {
@@ -502,7 +502,7 @@ export type JobApplicationFormCreateWithoutCustomFieldsInput = {
   updatedAt?: Date | string
   jobDetailsForm: Prisma.JobDetailsFormCreateNestedOneWithoutApplicationFormInput
   predefinedFields?: Prisma.JobApplicationPredefinedFieldCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormUncheckedCreateWithoutCustomFieldsInput = {
@@ -511,7 +511,7 @@ export type JobApplicationFormUncheckedCreateWithoutCustomFieldsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutApplicationFormInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutApplicationFormInput
 }
 
 export type JobApplicationFormCreateOrConnectWithoutCustomFieldsInput = {
@@ -536,7 +536,7 @@ export type JobApplicationFormUpdateWithoutCustomFieldsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jobDetailsForm?: Prisma.JobDetailsFormUpdateOneRequiredWithoutApplicationFormNestedInput
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutApplicationFormNestedInput
 }
 
 export type JobApplicationFormUncheckedUpdateWithoutCustomFieldsInput = {
@@ -545,10 +545,10 @@ export type JobApplicationFormUncheckedUpdateWithoutCustomFieldsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   predefinedFields?: Prisma.JobApplicationPredefinedFieldUncheckedUpdateManyWithoutJobApplicationFormNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutApplicationFormNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutApplicationFormNestedInput
 }
 
-export type JobApplicationFormCreateWithoutApplicationsInput = {
+export type JobApplicationFormCreateWithoutApplicantsInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -557,7 +557,7 @@ export type JobApplicationFormCreateWithoutApplicationsInput = {
   customFields?: Prisma.JobApplicationCustomFieldCreateNestedManyWithoutJobApplicationFormInput
 }
 
-export type JobApplicationFormUncheckedCreateWithoutApplicationsInput = {
+export type JobApplicationFormUncheckedCreateWithoutApplicantsInput = {
   id?: string
   jobDetailsFormId: string
   createdAt?: Date | string
@@ -566,23 +566,23 @@ export type JobApplicationFormUncheckedCreateWithoutApplicationsInput = {
   customFields?: Prisma.JobApplicationCustomFieldUncheckedCreateNestedManyWithoutJobApplicationFormInput
 }
 
-export type JobApplicationFormCreateOrConnectWithoutApplicationsInput = {
+export type JobApplicationFormCreateOrConnectWithoutApplicantsInput = {
   where: Prisma.JobApplicationFormWhereUniqueInput
-  create: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicationsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicationsInput>
+  create: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicantsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicantsInput>
 }
 
-export type JobApplicationFormUpsertWithoutApplicationsInput = {
-  update: Prisma.XOR<Prisma.JobApplicationFormUpdateWithoutApplicationsInput, Prisma.JobApplicationFormUncheckedUpdateWithoutApplicationsInput>
-  create: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicationsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicationsInput>
+export type JobApplicationFormUpsertWithoutApplicantsInput = {
+  update: Prisma.XOR<Prisma.JobApplicationFormUpdateWithoutApplicantsInput, Prisma.JobApplicationFormUncheckedUpdateWithoutApplicantsInput>
+  create: Prisma.XOR<Prisma.JobApplicationFormCreateWithoutApplicantsInput, Prisma.JobApplicationFormUncheckedCreateWithoutApplicantsInput>
   where?: Prisma.JobApplicationFormWhereInput
 }
 
-export type JobApplicationFormUpdateToOneWithWhereWithoutApplicationsInput = {
+export type JobApplicationFormUpdateToOneWithWhereWithoutApplicantsInput = {
   where?: Prisma.JobApplicationFormWhereInput
-  data: Prisma.XOR<Prisma.JobApplicationFormUpdateWithoutApplicationsInput, Prisma.JobApplicationFormUncheckedUpdateWithoutApplicationsInput>
+  data: Prisma.XOR<Prisma.JobApplicationFormUpdateWithoutApplicantsInput, Prisma.JobApplicationFormUncheckedUpdateWithoutApplicantsInput>
 }
 
-export type JobApplicationFormUpdateWithoutApplicationsInput = {
+export type JobApplicationFormUpdateWithoutApplicantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -591,7 +591,7 @@ export type JobApplicationFormUpdateWithoutApplicationsInput = {
   customFields?: Prisma.JobApplicationCustomFieldUpdateManyWithoutJobApplicationFormNestedInput
 }
 
-export type JobApplicationFormUncheckedUpdateWithoutApplicationsInput = {
+export type JobApplicationFormUncheckedUpdateWithoutApplicantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobDetailsFormId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -608,13 +608,13 @@ export type JobApplicationFormUncheckedUpdateWithoutApplicationsInput = {
 export type JobApplicationFormCountOutputType = {
   predefinedFields: number
   customFields: number
-  applications: number
+  applicants: number
 }
 
 export type JobApplicationFormCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   predefinedFields?: boolean | JobApplicationFormCountOutputTypeCountPredefinedFieldsArgs
   customFields?: boolean | JobApplicationFormCountOutputTypeCountCustomFieldsArgs
-  applications?: boolean | JobApplicationFormCountOutputTypeCountApplicationsArgs
+  applicants?: boolean | JobApplicationFormCountOutputTypeCountApplicantsArgs
 }
 
 /**
@@ -644,8 +644,8 @@ export type JobApplicationFormCountOutputTypeCountCustomFieldsArgs<ExtArgs exten
 /**
  * JobApplicationFormCountOutputType without action
  */
-export type JobApplicationFormCountOutputTypeCountApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JobApplicationWhereInput
+export type JobApplicationFormCountOutputTypeCountApplicantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApplicantWhereInput
 }
 
 
@@ -657,7 +657,7 @@ export type JobApplicationFormSelect<ExtArgs extends runtime.Types.Extensions.In
   jobDetailsForm?: boolean | Prisma.JobDetailsFormDefaultArgs<ExtArgs>
   predefinedFields?: boolean | Prisma.JobApplicationForm$predefinedFieldsArgs<ExtArgs>
   customFields?: boolean | Prisma.JobApplicationForm$customFieldsArgs<ExtArgs>
-  applications?: boolean | Prisma.JobApplicationForm$applicationsArgs<ExtArgs>
+  applicants?: boolean | Prisma.JobApplicationForm$applicantsArgs<ExtArgs>
   _count?: boolean | Prisma.JobApplicationFormCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobApplicationForm"]>
 
@@ -689,7 +689,7 @@ export type JobApplicationFormInclude<ExtArgs extends runtime.Types.Extensions.I
   jobDetailsForm?: boolean | Prisma.JobDetailsFormDefaultArgs<ExtArgs>
   predefinedFields?: boolean | Prisma.JobApplicationForm$predefinedFieldsArgs<ExtArgs>
   customFields?: boolean | Prisma.JobApplicationForm$customFieldsArgs<ExtArgs>
-  applications?: boolean | Prisma.JobApplicationForm$applicationsArgs<ExtArgs>
+  applicants?: boolean | Prisma.JobApplicationForm$applicantsArgs<ExtArgs>
   _count?: boolean | Prisma.JobApplicationFormCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JobApplicationFormIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -705,7 +705,7 @@ export type $JobApplicationFormPayload<ExtArgs extends runtime.Types.Extensions.
     jobDetailsForm: Prisma.$JobDetailsFormPayload<ExtArgs>
     predefinedFields: Prisma.$JobApplicationPredefinedFieldPayload<ExtArgs>[]
     customFields: Prisma.$JobApplicationCustomFieldPayload<ExtArgs>[]
-    applications: Prisma.$JobApplicationPayload<ExtArgs>[]
+    applicants: Prisma.$ApplicantPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1109,7 +1109,7 @@ export interface Prisma__JobApplicationFormClient<T, Null = never, ExtArgs exten
   jobDetailsForm<T extends Prisma.JobDetailsFormDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobDetailsFormDefaultArgs<ExtArgs>>): Prisma.Prisma__JobDetailsFormClient<runtime.Types.Result.GetResult<Prisma.$JobDetailsFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   predefinedFields<T extends Prisma.JobApplicationForm$predefinedFieldsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplicationForm$predefinedFieldsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApplicationPredefinedFieldPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   customFields<T extends Prisma.JobApplicationForm$customFieldsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplicationForm$customFieldsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApplicationCustomFieldPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  applications<T extends Prisma.JobApplicationForm$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplicationForm$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  applicants<T extends Prisma.JobApplicationForm$applicantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplicationForm$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1587,27 +1587,27 @@ export type JobApplicationForm$customFieldsArgs<ExtArgs extends runtime.Types.Ex
 }
 
 /**
- * JobApplicationForm.applications
+ * JobApplicationForm.applicants
  */
-export type JobApplicationForm$applicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type JobApplicationForm$applicantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the JobApplication
+   * Select specific fields to fetch from the Applicant
    */
-  select?: Prisma.JobApplicationSelect<ExtArgs> | null
+  select?: Prisma.ApplicantSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the JobApplication
+   * Omit specific fields from the Applicant
    */
-  omit?: Prisma.JobApplicationOmit<ExtArgs> | null
+  omit?: Prisma.ApplicantOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.JobApplicationInclude<ExtArgs> | null
-  where?: Prisma.JobApplicationWhereInput
-  orderBy?: Prisma.JobApplicationOrderByWithRelationInput | Prisma.JobApplicationOrderByWithRelationInput[]
-  cursor?: Prisma.JobApplicationWhereUniqueInput
+  include?: Prisma.ApplicantInclude<ExtArgs> | null
+  where?: Prisma.ApplicantWhereInput
+  orderBy?: Prisma.ApplicantOrderByWithRelationInput | Prisma.ApplicantOrderByWithRelationInput[]
+  cursor?: Prisma.ApplicantWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.JobApplicationScalarFieldEnum | Prisma.JobApplicationScalarFieldEnum[]
+  distinct?: Prisma.ApplicantScalarFieldEnum | Prisma.ApplicantScalarFieldEnum[]
 }
 
 /**

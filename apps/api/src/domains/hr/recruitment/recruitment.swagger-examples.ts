@@ -75,30 +75,10 @@ export const jobExample = {
         },
       ],
     },
-    keyResponsibilities:
-      'Lead frontend delivery\\nCollaborate with product and design',
-    skills: [
-      {
-        id: '2af0f6be-019b-4d72-a660-49db7d05383f',
-        name: 'React',
-        level: 'ADVANCED',
-        required: true,
-        order: 1,
-      },
-      {
-        id: '6b350624-8f0d-40fc-a987-87d4bf8ec4c5',
-        name: 'TypeScript',
-        level: 'ADVANCED',
-        required: true,
-        order: 2,
-      },
-      {
-        id: '65bdb9e6-b7d5-48fa-9f59-bf343baea67b',
-        name: 'Next.js',
-        level: null,
-        required: false,
-        order: 3,
-      },
+    skills: ['React', 'TypeScript', 'Next.js'],
+    responsibilities: [
+      'Lead frontend delivery',
+      'Collaborate with product and design',
     ],
     preferredSkills: 'Design systems',
     experienceLevel: 'SENIOR',
@@ -121,92 +101,11 @@ export const jobExample = {
         enabled: true,
         required: true,
       },
-      {
-        id: '46566591-4afe-4d40-86ca-a46f3109864f',
-        key: 'email',
-        label: 'Email',
-        type: 'TEXT',
-        enabled: true,
-        required: true,
-      },
-      {
-        id: '00f97359-a45c-40f5-a8b0-5f672fa4dcf2',
-        key: 'resume',
-        label: 'Resume',
-        type: 'FILE',
-        enabled: true,
-        required: true,
-      },
     ],
-    customFields: [
-      {
-        id: 'custom-123',
-        label: 'Portfolio URL',
-        type: 'TEXT',
-        required: false,
-        helpText: null,
-        options: [],
-      },
-      {
-        id: 'custom-456',
-        label: 'Do you need visa sponsorship?',
-        type: 'SELECT',
-        required: true,
-        helpText: null,
-        options: ['Yes', 'No'],
-      },
-    ],
+    customFields: [],
   },
-  approvals: [
-    {
-      id: '3ecef240-7017-4efa-98b9-f731a1c8499a',
-      stage: 'FINANCE',
-      level: 1,
-      requiredRole: 'finance_manager',
-      approverId: null,
-      decision: 'PENDING',
-      autoApproved: false,
-      autoApprovalReason: null,
-      comments: null,
-      decidedAt: null,
-      createdAt: '2026-03-05T09:00:00.000Z',
-    },
-    {
-      id: 'f8fbbe1f-a163-4988-8ef2-77f62cf36f0b',
-      stage: 'GM',
-      level: 2,
-      requiredRole: 'superadmin',
-      approverId: null,
-      decision: 'PENDING',
-      autoApproved: false,
-      autoApprovalReason: null,
-      comments: null,
-      decidedAt: null,
-      createdAt: '2026-03-05T09:00:00.000Z',
-    },
-    {
-      id: '3d16f870-4f95-4937-887f-0e1d3cf115e9',
-      stage: 'HR_REVIEW',
-      level: 3,
-      requiredRole: 'hr_manager',
-      approverId: null,
-      decision: 'PENDING',
-      autoApproved: false,
-      autoApprovalReason: null,
-      comments: null,
-      decidedAt: null,
-      createdAt: '2026-03-05T09:00:00.000Z',
-    },
-  ],
-  skills: [
-    {
-      id: '2af0f6be-019b-4d72-a660-49db7d05383f',
-      name: 'TypeScript',
-      level: 'ADVANCED',
-      required: true,
-      order: 1,
-    },
-  ],
+  approvals: [],
+  skills: ['React', 'TypeScript', 'Next.js'],
   tools: [
     {
       id: 'da0a642e-c61a-4f8c-a89f-eb6b3f59615a',
@@ -215,45 +114,29 @@ export const jobExample = {
     },
   ],
   responsibilities: [
-    {
-      id: '8702dc22-4350-4498-bf8f-5a95122734c0',
-      description: 'Design backend architecture.',
-      order: 1,
-    },
+    'Lead frontend delivery',
+    'Collaborate with product and design',
   ],
   createdAt: '2026-03-05T09:00:00.000Z',
   updatedAt: '2026-03-05T09:00:00.000Z',
 };
 
-export const jobResponseEnvelope = envelope('Created job', jobExample);
-export const jobListResponseEnvelope = envelope('List of jobs', [jobExample]);
-export const jobSkillsResponseEnvelope = envelope(
-  'Updated job skills',
-  jobExample.skills,
-);
-export const jobToolsResponseEnvelope = envelope(
-  'Updated job tools',
-  jobExample.tools,
-);
-export const jobResponsibilitiesResponseEnvelope = envelope(
-  'Updated job responsibilities',
-  jobExample.responsibilities,
-);
-
-export const candidateExample = {
+export const applicantExample = {
   id: '7f4d5938-1031-4b42-9369-f64b5b3de2ca',
-  firstName: 'Abel',
-  lastName: 'Tesfaye',
+  jobId: jobExample.id,
+  applicationFormId: jobExample.applicationForm.id,
+  fullName: 'Abel Tesfaye',
   email: 'abel.tesfaye@example.com',
   phone: '+251912345678',
-  gender: 'MALE',
-  yearsExperience: 6,
+  resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
   linkedinUrl: 'https://linkedin.com/in/abeltesfaye',
   portfolioUrl: null,
   githubUrl: 'https://github.com/abeltesfaye',
   source: 'LINKEDIN',
   referredById: null,
-  resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+  currentCompany: 'TechCorp',
+  currentPosition: 'Senior Engineer',
+  yearsExperience: 6,
   location: 'Addis Ababa, Ethiopia',
   country: 'Ethiopia',
   city: 'Addis Ababa',
@@ -262,89 +145,70 @@ export const candidateExample = {
   currentSalary: '125000.00',
   educationLevel: 'BACHELOR',
   highestDegree: 'BSc Computer Science',
-  lastActivityAt: '2026-03-05T09:20:00.000Z',
+  skills: ['React', 'TypeScript', 'GraphQL'],
+  status: 'SHORTLISTED',
+  coverLetter: 'I have built high-scale APIs in TypeScript.',
+  sourceSnapshot: { source: 'LINKEDIN' },
+  customFieldValues: null,
+  appliedAt: '2026-03-05T09:05:00.000Z',
+  shortlistedAt: '2026-03-06T10:00:00.000Z',
+  interviewAt: null,
+  offerAt: null,
+  hiredAt: null,
+  rejectedAt: null,
+  lastActivityAt: '2026-03-06T10:00:00.000Z',
   profileScore: 70,
-  skills: [
-    {
-      id: '4f6ef96a-d69f-4233-96bf-a67d39f419ce',
-      name: 'NestJS',
-      level: 'ADVANCED',
-      years: 4,
-    },
-  ],
-  educations: [
-    {
-      id: '2fca8a53-848e-4f9b-a7b8-5f765f1e1d9d',
-      institution: 'Addis Ababa University',
-      degree: 'BSc',
-      field: 'Computer Science',
-      startDate: '2014-09-01T00:00:00.000Z',
-      endDate: '2018-07-01T00:00:00.000Z',
-    },
-  ],
-  experiences: [
-    {
-      id: '7154e15e-7ab1-4e2e-a719-9f2f8187b90d',
-      company: 'TechCorp',
-      title: 'Senior Engineer',
-      startDate: '2020-01-01T00:00:00.000Z',
-      endDate: null,
-      description: 'Built backend APIs and led integrations.',
-    },
-  ],
+  educations: [],
+  experiences: [],
   createdAt: '2026-03-05T09:00:00.000Z',
   updatedAt: '2026-03-05T09:00:00.000Z',
 };
 
-export const candidateResponseEnvelope = envelope(
-  'Created candidate',
-  candidateExample,
-);
-export const candidateListResponseEnvelope = envelope('List of candidates', [
-  candidateExample,
-]);
-
-export const applicationExample = {
-  id: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
-  jobId: jobExample.id,
-  candidateId: candidateExample.id,
-  status: 'SCREENING',
-  coverLetter: 'I have built high-scale APIs in NestJS.',
-  expectedSalary: '145000.00',
-  appliedAt: '2026-03-05T09:05:00.000Z',
-  sourceSnapshot: {
-    source: 'LINKEDIN',
-  },
-  createdAt: '2026-03-05T09:05:00.000Z',
-  updatedAt: '2026-03-05T09:10:00.000Z',
-};
-
-export const applicationResponseEnvelope = envelope(
-  'Created job application',
-  applicationExample,
-);
-export const applicationListResponseEnvelope = envelope(
-  'List of job applications',
-  [applicationExample],
-);
-
 export const interviewExample = {
   id: 'd85dc0db-d6dc-49b8-b91f-b6dd0ffea88a',
-  applicationId: applicationExample.id,
+  applicantId: applicantExample.id,
   type: 'TECHNICAL',
   round: 1,
   status: 'SCHEDULED',
   scheduledAt: '2026-03-10T10:00:00.000Z',
+  startedAt: null,
   completedAt: null,
+  durationMinutes: null,
   interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+  location: null,
+  meetingUrl: null,
   interviewers: [{ name: 'Tech Lead', role: 'Panelist' }],
   feedback: null,
   endorsement: null,
   score: null,
   nextAction: 'Submit feedback',
+  notes: null,
   createdAt: '2026-03-05T09:15:00.000Z',
   updatedAt: '2026-03-05T09:15:00.000Z',
 };
+
+export const jobResponseEnvelope = envelope('Created job', jobExample);
+export const jobListResponseEnvelope = envelope('List of jobs', [jobExample]);
+export const jobSkillsResponseEnvelope = envelope('Updated job skills', [
+  'TypeScript',
+  'PostgreSQL',
+]);
+export const jobToolsResponseEnvelope = envelope(
+  'Updated job tools',
+  jobExample.tools,
+);
+export const jobResponsibilitiesResponseEnvelope = envelope(
+  'Updated job responsibilities',
+  ['Design backend architecture.', 'Review pull requests.'],
+);
+
+export const applicantResponseEnvelope = envelope(
+  'Created applicant',
+  applicantExample,
+);
+export const applicantListResponseEnvelope = envelope('List of applicants', [
+  applicantExample,
+]);
 
 export const interviewResponseEnvelope = envelope(
   'Created interview',

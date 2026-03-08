@@ -21,14 +21,11 @@ const PREDEFINED_FIELD_METADATA: Record<
 
 export const jobInclude = {
   approvals: { orderBy: { level: 'asc' as const } },
-  skills: { orderBy: { order: 'asc' as const } },
   tools: { orderBy: { order: 'asc' as const } },
-  responsibilities: { orderBy: { order: 'asc' as const } },
   requestForm: {
     include: {
       detailsForm: {
         include: {
-          skills: { orderBy: { order: 'asc' as const } },
           applicationForm: {
             include: {
               predefinedFields: { orderBy: { order: 'asc' as const } },
@@ -42,6 +39,11 @@ export const jobInclude = {
       },
     },
   },
+};
+
+export const applicantInclude = {
+  educations: { orderBy: { startDate: 'desc' as const } },
+  experiences: { orderBy: { startDate: 'desc' as const } },
 };
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
@@ -70,15 +72,13 @@ interface SubmitReadinessPayload {
   responsibilities: unknown[];
 }
 
-const APPLICATION_TRANSITIONS: Record<string, string[]> = {
-  NEW: ['SCREENING', 'REJECTED', 'WITHDRAWN'],
-  SCREENING: ['SHORTLISTED', 'REJECTED', 'WITHDRAWN'],
-  SHORTLISTED: ['INTERVIEW_STAGE', 'REJECTED', 'WITHDRAWN'],
-  INTERVIEW_STAGE: ['OFFER_PENDING', 'REJECTED', 'WITHDRAWN'],
-  OFFER_PENDING: ['HIRED', 'REJECTED', 'WITHDRAWN'],
+const APPLICANT_TRANSITIONS: Record<string, string[]> = {
+  APPLIED: ['SHORTLISTED', 'REJECTED'],
+  SHORTLISTED: ['INTERVIEW', 'REJECTED'],
+  INTERVIEW: ['OFFER', 'REJECTED'],
+  OFFER: ['HIRED', 'REJECTED'],
   HIRED: [],
   REJECTED: [],
-  WITHDRAWN: [],
 };
 
 const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
@@ -159,15 +159,15 @@ export function approvalDecisionToStageStatus(decision: ApprovalDecision) {
   return 'PENDING_FOR_APPROVAL' as const;
 }
 
-export function assertApplicationTransition(
+export function assertApplicantTransition(
   currentStatus: string,
   nextStatus: string,
 ) {
   if (currentStatus === nextStatus) return;
-  const allowed = APPLICATION_TRANSITIONS[currentStatus] ?? [];
+  const allowed = APPLICANT_TRANSITIONS[currentStatus] ?? [];
   if (!allowed.includes(nextStatus)) {
     throw new BadRequestException(
-      `Job application status cannot transition from ${currentStatus} to ${nextStatus}`,
+      `Applicant status cannot transition from ${currentStatus} to ${nextStatus}`,
     );
   }
 }
@@ -277,19 +277,6 @@ export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
-export function splitFullName(fullName: string | null | undefined) {
-  const normalized = (fullName ?? '').trim();
-  if (!normalized) {
-    return { firstName: '', lastName: '' };
-  }
-
-  const parts = normalized.split(/\s+/);
-  return {
-    firstName: parts[0] ?? '',
-    lastName: parts.slice(1).join(' '),
-  };
-}
-
 export async function generateUniqueSlug(prisma: PrismaService, title: string) {
   const base = title
     .toLowerCase()
@@ -340,8 +327,22 @@ function isNonEmptyObject(value: unknown) {
   return Object.keys(value as Record<string, unknown>).length > 0;
 }
 
+export function normalizeStringArray(values: string[] | null | undefined) {
+  const seen = new Set<string>();
+  const normalized: string[] = [];
+  for (const value of values ?? []) {
+    const trimmed = value.trim();
+    if (!trimmed) continue;
+    const key = trimmed.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    normalized.push(trimmed);
+  }
+  return normalized;
+}
+
 export function buildInterviewMetadata(input: {
-  applicationId: string;
+  applicantId: string;
   round: number;
   interviewers?: unknown[] | null;
   feedback?: string | null;
@@ -350,7 +351,7 @@ export function buildInterviewMetadata(input: {
   nextAction?: string | null;
 }) {
   return {
-    applicationId: input.applicationId,
+    applicantId: input.applicantId,
     round: input.round,
     interviewers: input.interviewers ?? null,
     feedback: input.feedback ?? null,
@@ -364,8 +365,8 @@ export function parseInterviewMetadata(value: unknown) {
   const payload = toObjectRecord(value);
 
   return {
-    applicationId:
-      typeof payload?.applicationId === 'string' ? payload.applicationId : '',
+    applicantId:
+      typeof payload?.applicantId === 'string' ? payload.applicantId : '',
     round:
       typeof payload?.round === 'number' && Number.isInteger(payload.round)
         ? payload.round
@@ -436,14 +437,8 @@ export function mapJob(job: any) {
           employmentType: detailsForm.employmentType,
           jobSummary: detailsForm.jobSummary,
           whyJoinUs: detailsForm.whyJoinUs ?? null,
-          keyResponsibilities: detailsForm.keyResponsibilities,
-          skills: (detailsForm.skills ?? []).map((skill: any) => ({
-            id: skill.id,
-            name: skill.name,
-            level: skill.level ?? null,
-            required: skill.required,
-            order: skill.order ?? null,
-          })),
+          skills: detailsForm.skills ?? [],
+          responsibilities: detailsForm.responsibilities ?? [],
           preferredSkills: detailsForm.preferredSkills ?? null,
           experienceLevel: detailsForm.experienceLevel,
           salaryMin: decimalToString(detailsForm.salaryMin),
@@ -491,60 +486,56 @@ export function mapJob(job: any) {
       decidedAt: dateToIso(approval.decidedAt),
       createdAt: approval.createdAt.toISOString(),
     })),
-    skills: (job.skills ?? []).map((skill: any) => ({
-      ...skill,
-      level: skill.level ?? null,
-    })),
+    skills: job.skills ?? [],
     tools: job.tools ?? [],
-    responsibilities: (job.responsibilities ?? []).map(
-      (responsibility: any) => ({
-        id: responsibility.id,
-        description: responsibility.title,
-        order: responsibility.order ?? null,
-      }),
-    ),
+    responsibilities: job.responsibilities ?? [],
     createdAt: job.createdAt.toISOString(),
     updatedAt: job.updatedAt.toISOString(),
   };
 }
 
-export function mapCandidate(candidate: any) {
-  const { firstName, lastName } = splitFullName(candidate.fullName);
-
+export function mapApplicant(applicant: any) {
   return {
-    id: candidate.id,
-    firstName,
-    lastName,
-    email: candidate.email,
-    phone: candidate.phone ?? null,
-    gender: null,
-    yearsExperience: candidate.yearsExperience ?? null,
-    linkedinUrl: candidate.linkedinUrl ?? null,
-    portfolioUrl: candidate.portfolioUrl ?? null,
-    githubUrl: candidate.githubUrl ?? null,
-    source: candidate.source,
-    referredById: candidate.referredBy ?? null,
-    resumeUrl: candidate.cvUrl ?? null,
-    skills: (candidate.candidateSkills ?? []).map((skill: any) => ({
-      id: skill.id,
-      name: skill.name,
-      level: skill.level ?? null,
-      years: skill.years ?? null,
-    })),
-    location: candidate.location ?? null,
-    country: candidate.country ?? null,
-    city: candidate.city ?? null,
-    nationality: candidate.nationality ?? null,
-    expectedSalary: decimalToString(candidate.expectedSalary),
-    currentSalary: decimalToString(candidate.currentSalary),
-    educationLevel: candidate.educationLevel ?? null,
-    highestDegree: candidate.highestDegree ?? null,
-    lastActivityAt: dateToIso(candidate.lastActivityAt),
+    id: applicant.id,
+    jobId: applicant.jobId,
+    applicationFormId: applicant.applicationFormId ?? null,
+    fullName: applicant.fullName,
+    email: applicant.email,
+    phone: applicant.phone ?? null,
+    resumeUrl: applicant.resumeUrl ?? null,
+    linkedinUrl: applicant.linkedinUrl ?? null,
+    portfolioUrl: applicant.portfolioUrl ?? null,
+    githubUrl: applicant.githubUrl ?? null,
+    source: applicant.source,
+    referredById: applicant.referredById ?? null,
+    currentCompany: applicant.currentCompany ?? null,
+    currentPosition: applicant.currentPosition ?? null,
+    yearsExperience: applicant.yearsExperience ?? null,
+    location: applicant.location ?? null,
+    country: applicant.country ?? null,
+    city: applicant.city ?? null,
+    nationality: applicant.nationality ?? null,
+    expectedSalary: decimalToString(applicant.expectedSalary),
+    currentSalary: decimalToString(applicant.currentSalary),
+    educationLevel: applicant.educationLevel ?? null,
+    highestDegree: applicant.highestDegree ?? null,
+    skills: applicant.skills ?? [],
+    status: applicant.status,
+    coverLetter: applicant.coverLetter ?? null,
+    sourceSnapshot: toObjectRecord(applicant.sourceSnapshot),
+    customFieldValues: toObjectRecord(applicant.customFieldValues),
+    appliedAt: dateToIso(applicant.appliedAt),
+    shortlistedAt: dateToIso(applicant.shortlistedAt),
+    interviewAt: dateToIso(applicant.interviewAt),
+    offerAt: dateToIso(applicant.offerAt),
+    hiredAt: dateToIso(applicant.hiredAt),
+    rejectedAt: dateToIso(applicant.rejectedAt),
+    lastActivityAt: dateToIso(applicant.lastActivityAt),
     profileScore:
-      typeof candidate.profileScore === 'number'
-        ? candidate.profileScore
+      typeof applicant.profileScore === 'number'
+        ? applicant.profileScore
         : null,
-    educations: (candidate.educations ?? []).map((education: any) => ({
+    educations: (applicant.educations ?? []).map((education: any) => ({
       id: education.id,
       institution: education.institution,
       degree: education.degree,
@@ -552,7 +543,7 @@ export function mapCandidate(candidate: any) {
       startDate: dateToIso(education.startDate),
       endDate: dateToIso(education.endDate),
     })),
-    experiences: (candidate.experiences ?? []).map((experience: any) => ({
+    experiences: (applicant.experiences ?? []).map((experience: any) => ({
       id: experience.id,
       company: experience.company,
       title: experience.title,
@@ -560,27 +551,8 @@ export function mapCandidate(candidate: any) {
       endDate: dateToIso(experience.endDate),
       description: experience.description ?? null,
     })),
-    createdAt: candidate.createdAt.toISOString(),
-    updatedAt: candidate.updatedAt.toISOString(),
-  };
-}
-
-export function mapApplication(application: any) {
-  const payload = toObjectRecord(application.customFieldValues);
-  const sourceSnapshot = toObjectRecord(payload?.sourceSnapshot ?? null);
-
-  return {
-    id: application.id,
-    jobId: application.jobId,
-    candidateId: application.candidateId,
-    status: application.status,
-    coverLetter:
-      typeof payload?.coverLetter === 'string' ? payload.coverLetter : null,
-    expectedSalary: decimalToString(payload?.expectedSalary),
-    appliedAt: application.appliedAt.toISOString(),
-    sourceSnapshot,
-    createdAt: application.createdAt.toISOString(),
-    updatedAt: application.updatedAt.toISOString(),
+    createdAt: applicant.createdAt.toISOString(),
+    updatedAt: applicant.updatedAt.toISOString(),
   };
 }
 
@@ -589,35 +561,43 @@ export function mapInterview(interview: any) {
 
   return {
     id: interview.id,
-    applicationId: interview.applicationId ?? metadata.applicationId,
+    applicantId: interview.applicantId ?? metadata.applicantId,
     type: interview.type,
     round: metadata.round,
     status: interview.status,
     scheduledAt: interview.scheduledAt?.toISOString() ?? null,
+    startedAt: interview.startedAt?.toISOString() ?? null,
     completedAt: interview.completedAt?.toISOString() ?? null,
+    durationMinutes:
+      typeof interview.durationMinutes === 'number'
+        ? interview.durationMinutes
+        : null,
     interviewerId: interview.interviewerId ?? null,
+    location: interview.location ?? null,
+    meetingUrl: interview.meetingUrl ?? null,
     interviewers: metadata.interviewers,
     feedback: metadata.feedback,
     endorsement: metadata.endorsement,
     score: metadata.score == null ? null : String(metadata.score),
     nextAction: metadata.nextAction,
+    notes: interview.notes ?? null,
     createdAt: interview.createdAt.toISOString(),
     updatedAt: interview.updatedAt.toISOString(),
   };
 }
 
-export async function touchCandidateActivity(
-  prisma: Pick<PrismaService, 'candidate'>,
-  candidateId: string,
+export async function touchApplicantActivity(
+  prisma: Pick<PrismaService, 'applicant'>,
+  applicantId: string,
   at: Date,
 ) {
-  await prisma.candidate.update({
-    where: { id: candidateId },
+  await prisma.applicant.update({
+    where: { id: applicantId },
     data: { lastActivityAt: at },
   });
 }
 
-export function computeCandidateProfileScore(input: {
+export function computeApplicantProfileScore(input: {
   yearsExperience: number | null;
   hasResume: boolean;
   skillsCount: number | null;
@@ -656,7 +636,7 @@ export function computeCandidateProfileScore(input: {
 export async function recalculateJobMetrics(
   prisma: {
     job: PrismaService['job'];
-    jobApplication: PrismaService['jobApplication'];
+    applicant: PrismaService['applicant'];
     interview: PrismaService['interview'];
   },
   jobId: string,
@@ -668,22 +648,22 @@ export async function recalculateJobMetrics(
     hiresCount,
     interviewsCount,
   ] = await Promise.all([
-    prisma.jobApplication.count({
+    prisma.applicant.count({
       where: { jobId },
     }),
-    prisma.jobApplication.count({
+    prisma.applicant.count({
       where: {
         jobId,
         status: 'SHORTLISTED',
       },
     }),
-    prisma.jobApplication.count({
+    prisma.applicant.count({
       where: {
         jobId,
-        status: 'OFFER_PENDING',
+        status: 'OFFER',
       },
     }),
-    prisma.jobApplication.count({
+    prisma.applicant.count({
       where: {
         jobId,
         status: 'HIRED',

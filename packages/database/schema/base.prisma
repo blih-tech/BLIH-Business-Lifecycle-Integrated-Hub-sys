@@ -209,6 +209,15 @@ enum JobApplicationStatus {
   WITHDRAWN
 }
 
+enum ApplicantStatus {
+  APPLIED
+  SHORTLISTED
+  INTERVIEW
+  OFFER
+  HIRED
+  REJECTED
+}
+
 enum InterviewType {
   HR_SCREENING
   TECHNICAL

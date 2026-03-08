@@ -124,20 +124,15 @@ export const ModelName = {
   Job: 'Job',
   JobRequestForm: 'JobRequestForm',
   JobDetailsForm: 'JobDetailsForm',
-  JobDetailSkill: 'JobDetailSkill',
   JobApplicationForm: 'JobApplicationForm',
   JobApplicationPredefinedField: 'JobApplicationPredefinedField',
   JobApplicationCustomField: 'JobApplicationCustomField',
   JobApplicationCustomFieldOption: 'JobApplicationCustomFieldOption',
   JobApproval: 'JobApproval',
-  JobSkill: 'JobSkill',
   JobTool: 'JobTool',
-  JobResponsibility: 'JobResponsibility',
-  Candidate: 'Candidate',
-  CandidateSkill: 'CandidateSkill',
-  CandidateEducation: 'CandidateEducation',
-  CandidateExperience: 'CandidateExperience',
-  JobApplication: 'JobApplication',
+  Applicant: 'Applicant',
+  ApplicantEducation: 'ApplicantEducation',
+  ApplicantExperience: 'ApplicantExperience',
   Interview: 'Interview',
   HiringDecision: 'HiringDecision',
   AuditLog: 'AuditLog',
@@ -1396,6 +1391,8 @@ export const JobScalarFieldEnum = {
   currency: 'currency',
   salaryMode: 'salaryMode',
   benefits: 'benefits',
+  skills: 'skills',
+  responsibilities: 'responsibilities',
   status: 'status',
   priority: 'priority',
   financeApprovalStatus: 'financeApprovalStatus',
@@ -1455,7 +1452,8 @@ export const JobDetailsFormScalarFieldEnum = {
   employmentType: 'employmentType',
   jobSummary: 'jobSummary',
   whyJoinUs: 'whyJoinUs',
-  keyResponsibilities: 'keyResponsibilities',
+  skills: 'skills',
+  responsibilities: 'responsibilities',
   preferredSkills: 'preferredSkills',
   experienceLevel: 'experienceLevel',
   salaryMin: 'salaryMin',
@@ -1470,20 +1468,6 @@ export const JobDetailsFormScalarFieldEnum = {
 } as const
 
 export type JobDetailsFormScalarFieldEnum = (typeof JobDetailsFormScalarFieldEnum)[keyof typeof JobDetailsFormScalarFieldEnum]
-
-
-export const JobDetailSkillScalarFieldEnum = {
-  id: 'id',
-  jobDetailsFormId: 'jobDetailsFormId',
-  name: 'name',
-  level: 'level',
-  required: 'required',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobDetailSkillScalarFieldEnum = (typeof JobDetailSkillScalarFieldEnum)[keyof typeof JobDetailSkillScalarFieldEnum]
 
 
 export const JobApplicationFormScalarFieldEnum = {
@@ -1556,20 +1540,6 @@ export const JobApprovalScalarFieldEnum = {
 export type JobApprovalScalarFieldEnum = (typeof JobApprovalScalarFieldEnum)[keyof typeof JobApprovalScalarFieldEnum]
 
 
-export const JobSkillScalarFieldEnum = {
-  id: 'id',
-  jobId: 'jobId',
-  name: 'name',
-  level: 'level',
-  required: 'required',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobSkillScalarFieldEnum = (typeof JobSkillScalarFieldEnum)[keyof typeof JobSkillScalarFieldEnum]
-
-
 export const JobToolScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
@@ -1584,35 +1554,22 @@ export const JobToolScalarFieldEnum = {
 export type JobToolScalarFieldEnum = (typeof JobToolScalarFieldEnum)[keyof typeof JobToolScalarFieldEnum]
 
 
-export const JobResponsibilityScalarFieldEnum = {
+export const ApplicantScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
-  title: 'title',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobResponsibilityScalarFieldEnum = (typeof JobResponsibilityScalarFieldEnum)[keyof typeof JobResponsibilityScalarFieldEnum]
-
-
-export const CandidateScalarFieldEnum = {
-  id: 'id',
+  applicationFormId: 'applicationFormId',
   fullName: 'fullName',
   email: 'email',
   phone: 'phone',
-  cvUrl: 'cvUrl',
+  resumeUrl: 'resumeUrl',
   linkedinUrl: 'linkedinUrl',
   portfolioUrl: 'portfolioUrl',
   githubUrl: 'githubUrl',
   source: 'source',
-  referredBy: 'referredBy',
+  referredById: 'referredById',
   currentCompany: 'currentCompany',
   currentPosition: 'currentPosition',
   yearsExperience: 'yearsExperience',
-  salaryExpectation: 'salaryExpectation',
-  noticePeriod: 'noticePeriod',
-  availability: 'availability',
   location: 'location',
   country: 'country',
   city: 'city',
@@ -1621,33 +1578,29 @@ export const CandidateScalarFieldEnum = {
   currentSalary: 'currentSalary',
   educationLevel: 'educationLevel',
   highestDegree: 'highestDegree',
+  skills: 'skills',
   status: 'status',
+  coverLetter: 'coverLetter',
+  sourceSnapshot: 'sourceSnapshot',
+  customFieldValues: 'customFieldValues',
   appliedAt: 'appliedAt',
+  shortlistedAt: 'shortlistedAt',
+  interviewAt: 'interviewAt',
+  offerAt: 'offerAt',
+  hiredAt: 'hiredAt',
+  rejectedAt: 'rejectedAt',
   lastActivityAt: 'lastActivityAt',
   profileScore: 'profileScore',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
 
 
-export const CandidateSkillScalarFieldEnum = {
+export const ApplicantEducationScalarFieldEnum = {
   id: 'id',
-  candidateId: 'candidateId',
-  name: 'name',
-  level: 'level',
-  years: 'years',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CandidateSkillScalarFieldEnum = (typeof CandidateSkillScalarFieldEnum)[keyof typeof CandidateSkillScalarFieldEnum]
-
-
-export const CandidateEducationScalarFieldEnum = {
-  id: 'id',
-  candidateId: 'candidateId',
+  applicantId: 'applicantId',
   institution: 'institution',
   degree: 'degree',
   field: 'field',
@@ -1657,12 +1610,12 @@ export const CandidateEducationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type CandidateEducationScalarFieldEnum = (typeof CandidateEducationScalarFieldEnum)[keyof typeof CandidateEducationScalarFieldEnum]
+export type ApplicantEducationScalarFieldEnum = (typeof ApplicantEducationScalarFieldEnum)[keyof typeof ApplicantEducationScalarFieldEnum]
 
 
-export const CandidateExperienceScalarFieldEnum = {
+export const ApplicantExperienceScalarFieldEnum = {
   id: 'id',
-  candidateId: 'candidateId',
+  applicantId: 'applicantId',
   company: 'company',
   title: 'title',
   startDate: 'startDate',
@@ -1672,40 +1625,13 @@ export const CandidateExperienceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type CandidateExperienceScalarFieldEnum = (typeof CandidateExperienceScalarFieldEnum)[keyof typeof CandidateExperienceScalarFieldEnum]
-
-
-export const JobApplicationScalarFieldEnum = {
-  id: 'id',
-  jobId: 'jobId',
-  candidateId: 'candidateId',
-  applicationFormId: 'applicationFormId',
-  status: 'status',
-  appliedAt: 'appliedAt',
-  submittedAt: 'submittedAt',
-  reviewedAt: 'reviewedAt',
-  shortlistedAt: 'shortlistedAt',
-  interviewStage: 'interviewStage',
-  offerPendingAt: 'offerPendingAt',
-  offerExtendedAt: 'offerExtendedAt',
-  offerAcceptedAt: 'offerAcceptedAt',
-  rejectedAt: 'rejectedAt',
-  withdrawnAt: 'withdrawnAt',
-  hiredAt: 'hiredAt',
-  rejectionReason: 'rejectionReason',
-  withdrawalReason: 'withdrawalReason',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  customFieldValues: 'customFieldValues'
-} as const
-
-export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
+export type ApplicantExperienceScalarFieldEnum = (typeof ApplicantExperienceScalarFieldEnum)[keyof typeof ApplicantExperienceScalarFieldEnum]
 
 
 export const InterviewScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
-  candidateId: 'candidateId',
+  applicantId: 'applicantId',
   type: 'type',
   status: 'status',
   scheduledAt: 'scheduledAt',
@@ -1727,7 +1653,7 @@ export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof t
 export const HiringDecisionScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
-  candidateId: 'candidateId',
+  applicantId: 'applicantId',
   onboardingId: 'onboardingId',
   submittedById: 'submittedById',
   outcome: 'outcome',

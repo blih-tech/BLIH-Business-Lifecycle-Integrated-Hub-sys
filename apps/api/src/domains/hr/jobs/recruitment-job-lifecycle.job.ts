@@ -75,7 +75,7 @@ export class RecruitmentJobLifecycleJob {
         createdById: true,
         _count: {
           select: {
-            applications: {
+            applicants: {
               where: { status: 'HIRED' },
             },
           },
@@ -84,7 +84,7 @@ export class RecruitmentJobLifecycleJob {
     });
 
     const filledJobs = jobs.filter(
-      (job) => job.openings > 0 && job._count.applications >= job.openings,
+      (job) => job.openings > 0 && job._count.applicants >= job.openings,
     );
     if (filledJobs.length === 0) return 0;
 
@@ -105,7 +105,7 @@ export class RecruitmentJobLifecycleJob {
         payload: {
           jobId: job.id,
           reason: 'OPENINGS_FILLED',
-          hiredCount: job._count.applications,
+          hiredCount: job._count.applicants,
         },
       });
     }

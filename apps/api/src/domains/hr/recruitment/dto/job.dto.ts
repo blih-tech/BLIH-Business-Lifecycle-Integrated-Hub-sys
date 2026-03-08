@@ -81,12 +81,6 @@ const JOB_WORKFLOW_STATUSES = [
 ] as const;
 const JOB_PRIORITY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
 const SALARY_MODES = ['NOT_SPECIFIED', 'NEGOTIABLE', 'COMPETITIVE'] as const;
-const SKILL_LEVELS = [
-  'BEGINNER',
-  'INTERMEDIATE',
-  'ADVANCED',
-  'EXPERT',
-] as const;
 const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
@@ -99,54 +93,18 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
 
 const normalizePredefinedKey = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
-  const trimmed = value.trim();
-  const snake = trimmed
+  return value
+    .trim()
     .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
     .replace(/[\s-]+/g, '_')
     .toUpperCase();
-  return snake;
 };
-
-export class JobSkillInputDto {
-  @ApiProperty({ example: 'TypeScript' })
-  @IsString()
-  @IsNotEmpty()
-  name!: string;
-
-  @ApiPropertyOptional({ enum: SKILL_LEVELS })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(SKILL_LEVELS)
-  level?: (typeof SKILL_LEVELS)[number] | null;
-
-  @ApiPropertyOptional({ default: true })
-  @IsOptional()
-  @IsBoolean()
-  required?: boolean;
-
-  @ApiPropertyOptional({ example: 1 })
-  @IsOptional()
-  @IsInt()
-  order?: number | null;
-}
 
 export class JobToolInputDto {
   @ApiProperty({ example: 'PostgreSQL' })
   @IsString()
   @IsNotEmpty()
   name!: string;
-
-  @ApiPropertyOptional({ example: 1 })
-  @IsOptional()
-  @IsInt()
-  order?: number | null;
-}
-
-export class JobResponsibilityInputDto {
-  @ApiProperty({ example: 'Design and maintain backend services.' })
-  @IsString()
-  @IsNotEmpty()
-  description!: string;
 
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
@@ -266,16 +224,17 @@ export class JobDetailsFormInputDto {
   @IsObject()
   whyJoinUs?: Record<string, unknown> | null;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  keyResponsibilities!: string;
-
-  @ApiProperty({ type: [JobSkillInputDto] })
+  @ApiProperty({ type: [String] })
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => JobSkillInputDto)
-  skills!: JobSkillInputDto[];
+  @ArrayMaxSize(200)
+  @IsString({ each: true })
+  skills!: string[];
+
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @ArrayMaxSize(200)
+  @IsString({ each: true })
+  responsibilities!: string[];
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -469,11 +428,11 @@ export class CloseJobDto {
 }
 
 export class UpsertJobSkillsDto {
-  @ApiProperty({ type: [JobSkillInputDto] })
+  @ApiProperty({ type: [String] })
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => JobSkillInputDto)
-  skills!: JobSkillInputDto[];
+  @ArrayMaxSize(200)
+  @IsString({ each: true })
+  skills!: string[];
 }
 
 export class UpsertJobToolsDto {
@@ -485,11 +444,11 @@ export class UpsertJobToolsDto {
 }
 
 export class UpsertJobResponsibilitiesDto {
-  @ApiProperty({ type: [JobResponsibilityInputDto] })
+  @ApiProperty({ type: [String] })
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => JobResponsibilityInputDto)
-  responsibilities!: JobResponsibilityInputDto[];
+  @ArrayMaxSize(200)
+  @IsString({ each: true })
+  responsibilities!: string[];
 }
 
 export class JobApprovalResponseDto {
@@ -527,28 +486,19 @@ export class JobApprovalResponseDto {
   createdAt!: string;
 }
 
-export class JobSkillResponseDto extends OmitType(JobSkillInputDto, []) {
-  @ApiProperty()
-  id!: string;
-
-  @ApiProperty()
-  required!: boolean;
-
-  @ApiPropertyOptional({ nullable: true })
-  order!: number | null;
-}
-
 export class JobToolResponseDto extends OmitType(JobToolInputDto, []) {
   @ApiProperty()
   id!: string;
 }
 
-export class JobResponsibilityResponseDto extends OmitType(
-  JobResponsibilityInputDto,
-  [],
-) {
+export class JobSkillValueResponseDto {
   @ApiProperty()
-  id!: string;
+  value!: string;
+}
+
+export class JobResponsibilityValueResponseDto {
+  @ApiProperty()
+  value!: string;
 }
 
 export class JobRequestFormResponseDto extends OmitType(
@@ -698,26 +648,26 @@ export class JobResponseDto {
   @ApiPropertyOptional({ nullable: true })
   createdById!: string | null;
 
-  @ApiProperty({ type: JobRequestFormResponseDto })
-  requestForm!: JobRequestFormResponseDto;
+  @ApiProperty({ type: JobRequestFormResponseDto, nullable: true })
+  requestForm!: JobRequestFormResponseDto | null;
 
-  @ApiProperty({ type: JobDetailsFormResponseDto })
-  jobDetailsForm!: JobDetailsFormResponseDto;
+  @ApiProperty({ type: JobDetailsFormResponseDto, nullable: true })
+  jobDetailsForm!: JobDetailsFormResponseDto | null;
 
-  @ApiProperty({ type: JobApplicationFormResponseDto })
-  applicationForm!: JobApplicationFormResponseDto;
+  @ApiProperty({ type: JobApplicationFormResponseDto, nullable: true })
+  applicationForm!: JobApplicationFormResponseDto | null;
 
   @ApiProperty({ type: [JobApprovalResponseDto] })
   approvals!: JobApprovalResponseDto[];
 
-  @ApiProperty({ type: [JobSkillResponseDto] })
-  skills!: JobSkillResponseDto[];
+  @ApiProperty({ type: [String] })
+  skills!: string[];
 
   @ApiProperty({ type: [JobToolResponseDto] })
   tools!: JobToolResponseDto[];
 
-  @ApiProperty({ type: [JobResponsibilityResponseDto] })
-  responsibilities!: JobResponsibilityResponseDto[];
+  @ApiProperty({ type: [String] })
+  responsibilities!: string[];
 
   @ApiProperty()
   createdAt!: string;

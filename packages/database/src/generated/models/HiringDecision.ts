@@ -37,7 +37,7 @@ export type HiringDecisionSumAggregateOutputType = {
 export type HiringDecisionMinAggregateOutputType = {
   id: string | null
   jobId: string | null
-  candidateId: string | null
+  applicantId: string | null
   onboardingId: string | null
   submittedById: string | null
   outcome: $Enums.HiringDecisionOutcome | null
@@ -53,7 +53,7 @@ export type HiringDecisionMinAggregateOutputType = {
 export type HiringDecisionMaxAggregateOutputType = {
   id: string | null
   jobId: string | null
-  candidateId: string | null
+  applicantId: string | null
   onboardingId: string | null
   submittedById: string | null
   outcome: $Enums.HiringDecisionOutcome | null
@@ -69,7 +69,7 @@ export type HiringDecisionMaxAggregateOutputType = {
 export type HiringDecisionCountAggregateOutputType = {
   id: number
   jobId: number
-  candidateId: number
+  applicantId: number
   onboardingId: number
   submittedById: number
   outcome: number
@@ -95,7 +95,7 @@ export type HiringDecisionSumAggregateInputType = {
 export type HiringDecisionMinAggregateInputType = {
   id?: true
   jobId?: true
-  candidateId?: true
+  applicantId?: true
   onboardingId?: true
   submittedById?: true
   outcome?: true
@@ -111,7 +111,7 @@ export type HiringDecisionMinAggregateInputType = {
 export type HiringDecisionMaxAggregateInputType = {
   id?: true
   jobId?: true
-  candidateId?: true
+  applicantId?: true
   onboardingId?: true
   submittedById?: true
   outcome?: true
@@ -127,7 +127,7 @@ export type HiringDecisionMaxAggregateInputType = {
 export type HiringDecisionCountAggregateInputType = {
   id?: true
   jobId?: true
-  candidateId?: true
+  applicantId?: true
   onboardingId?: true
   submittedById?: true
   outcome?: true
@@ -230,7 +230,7 @@ export type HiringDecisionGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 export type HiringDecisionGroupByOutputType = {
   id: string
   jobId: string
-  candidateId: string
+  applicantId: string
   onboardingId: string | null
   submittedById: string
   outcome: $Enums.HiringDecisionOutcome
@@ -269,7 +269,7 @@ export type HiringDecisionWhereInput = {
   NOT?: Prisma.HiringDecisionWhereInput | Prisma.HiringDecisionWhereInput[]
   id?: Prisma.UuidFilter<"HiringDecision"> | string
   jobId?: Prisma.UuidFilter<"HiringDecision"> | string
-  candidateId?: Prisma.UuidFilter<"HiringDecision"> | string
+  applicantId?: Prisma.UuidFilter<"HiringDecision"> | string
   onboardingId?: Prisma.UuidNullableFilter<"HiringDecision"> | string | null
   submittedById?: Prisma.UuidFilter<"HiringDecision"> | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFilter<"HiringDecision"> | $Enums.HiringDecisionOutcome
@@ -281,7 +281,7 @@ export type HiringDecisionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"HiringDecision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"HiringDecision"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
-  candidate?: Prisma.XOR<Prisma.CandidateScalarRelationFilter, Prisma.CandidateWhereInput>
+  applicant?: Prisma.XOR<Prisma.ApplicantScalarRelationFilter, Prisma.ApplicantWhereInput>
   onboarding?: Prisma.XOR<Prisma.OnboardingNullableScalarRelationFilter, Prisma.OnboardingWhereInput> | null
   submittedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   onboardingChecklists?: Prisma.OnboardingChecklistListRelationFilter
@@ -290,7 +290,7 @@ export type HiringDecisionWhereInput = {
 export type HiringDecisionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedById?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
@@ -302,7 +302,7 @@ export type HiringDecisionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   job?: Prisma.JobOrderByWithRelationInput
-  candidate?: Prisma.CandidateOrderByWithRelationInput
+  applicant?: Prisma.ApplicantOrderByWithRelationInput
   onboarding?: Prisma.OnboardingOrderByWithRelationInput
   submittedBy?: Prisma.UserOrderByWithRelationInput
   onboardingChecklists?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
@@ -315,7 +315,7 @@ export type HiringDecisionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.HiringDecisionWhereInput[]
   NOT?: Prisma.HiringDecisionWhereInput | Prisma.HiringDecisionWhereInput[]
   jobId?: Prisma.UuidFilter<"HiringDecision"> | string
-  candidateId?: Prisma.UuidFilter<"HiringDecision"> | string
+  applicantId?: Prisma.UuidFilter<"HiringDecision"> | string
   submittedById?: Prisma.UuidFilter<"HiringDecision"> | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFilter<"HiringDecision"> | $Enums.HiringDecisionOutcome
   salaryOffered?: Prisma.DecimalNullableFilter<"HiringDecision"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -326,7 +326,7 @@ export type HiringDecisionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"HiringDecision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"HiringDecision"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
-  candidate?: Prisma.XOR<Prisma.CandidateScalarRelationFilter, Prisma.CandidateWhereInput>
+  applicant?: Prisma.XOR<Prisma.ApplicantScalarRelationFilter, Prisma.ApplicantWhereInput>
   onboarding?: Prisma.XOR<Prisma.OnboardingNullableScalarRelationFilter, Prisma.OnboardingWhereInput> | null
   submittedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   onboardingChecklists?: Prisma.OnboardingChecklistListRelationFilter
@@ -335,7 +335,7 @@ export type HiringDecisionWhereUniqueInput = Prisma.AtLeast<{
 export type HiringDecisionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedById?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
@@ -359,7 +359,7 @@ export type HiringDecisionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.HiringDecisionScalarWhereWithAggregatesInput | Prisma.HiringDecisionScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"HiringDecision"> | string
   jobId?: Prisma.UuidWithAggregatesFilter<"HiringDecision"> | string
-  candidateId?: Prisma.UuidWithAggregatesFilter<"HiringDecision"> | string
+  applicantId?: Prisma.UuidWithAggregatesFilter<"HiringDecision"> | string
   onboardingId?: Prisma.UuidNullableWithAggregatesFilter<"HiringDecision"> | string | null
   submittedById?: Prisma.UuidWithAggregatesFilter<"HiringDecision"> | string
   outcome?: Prisma.EnumHiringDecisionOutcomeWithAggregatesFilter<"HiringDecision"> | $Enums.HiringDecisionOutcome
@@ -383,7 +383,7 @@ export type HiringDecisionCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutHiringDecisionsInput
-  candidate: Prisma.CandidateCreateNestedOneWithoutHiringDecisionsInput
+  applicant: Prisma.ApplicantCreateNestedOneWithoutHiringDecisionsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutHiringDecisionInput
   submittedBy: Prisma.UserCreateNestedOneWithoutSubmittedHiringDecisionsInput
   onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutHiringDecisionInput
@@ -392,7 +392,7 @@ export type HiringDecisionCreateInput = {
 export type HiringDecisionUncheckedCreateInput = {
   id?: string
   jobId: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   submittedById: string
   outcome?: $Enums.HiringDecisionOutcome
@@ -417,7 +417,7 @@ export type HiringDecisionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutHiringDecisionsNestedInput
-  candidate?: Prisma.CandidateUpdateOneRequiredWithoutHiringDecisionsNestedInput
+  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutHiringDecisionsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutHiringDecisionNestedInput
   submittedBy?: Prisma.UserUpdateOneRequiredWithoutSubmittedHiringDecisionsNestedInput
   onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutHiringDecisionNestedInput
@@ -426,7 +426,7 @@ export type HiringDecisionUpdateInput = {
 export type HiringDecisionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedById?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
@@ -443,7 +443,7 @@ export type HiringDecisionUncheckedUpdateInput = {
 export type HiringDecisionCreateManyInput = {
   id?: string
   jobId: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   submittedById: string
   outcome?: $Enums.HiringDecisionOutcome
@@ -471,7 +471,7 @@ export type HiringDecisionUpdateManyMutationInput = {
 export type HiringDecisionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedById?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
@@ -502,7 +502,7 @@ export type HiringDecisionOrderByRelationAggregateInput = {
 export type HiringDecisionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrder
   submittedById?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
@@ -522,7 +522,7 @@ export type HiringDecisionAvgOrderByAggregateInput = {
 export type HiringDecisionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrder
   submittedById?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
@@ -538,7 +538,7 @@ export type HiringDecisionMaxOrderByAggregateInput = {
 export type HiringDecisionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrder
   submittedById?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
@@ -645,45 +645,45 @@ export type HiringDecisionUncheckedUpdateManyWithoutJobNestedInput = {
   deleteMany?: Prisma.HiringDecisionScalarWhereInput | Prisma.HiringDecisionScalarWhereInput[]
 }
 
-export type HiringDecisionCreateNestedManyWithoutCandidateInput = {
-  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutCandidateInput, Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput> | Prisma.HiringDecisionCreateWithoutCandidateInput[] | Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput[]
-  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput | Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput[]
-  createMany?: Prisma.HiringDecisionCreateManyCandidateInputEnvelope
+export type HiringDecisionCreateNestedManyWithoutApplicantInput = {
+  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutApplicantInput, Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput> | Prisma.HiringDecisionCreateWithoutApplicantInput[] | Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput[]
+  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput | Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput[]
+  createMany?: Prisma.HiringDecisionCreateManyApplicantInputEnvelope
   connect?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
 }
 
-export type HiringDecisionUncheckedCreateNestedManyWithoutCandidateInput = {
-  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutCandidateInput, Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput> | Prisma.HiringDecisionCreateWithoutCandidateInput[] | Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput[]
-  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput | Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput[]
-  createMany?: Prisma.HiringDecisionCreateManyCandidateInputEnvelope
+export type HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput = {
+  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutApplicantInput, Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput> | Prisma.HiringDecisionCreateWithoutApplicantInput[] | Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput[]
+  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput | Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput[]
+  createMany?: Prisma.HiringDecisionCreateManyApplicantInputEnvelope
   connect?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
 }
 
-export type HiringDecisionUpdateManyWithoutCandidateNestedInput = {
-  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutCandidateInput, Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput> | Prisma.HiringDecisionCreateWithoutCandidateInput[] | Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput[]
-  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput | Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput[]
-  upsert?: Prisma.HiringDecisionUpsertWithWhereUniqueWithoutCandidateInput | Prisma.HiringDecisionUpsertWithWhereUniqueWithoutCandidateInput[]
-  createMany?: Prisma.HiringDecisionCreateManyCandidateInputEnvelope
+export type HiringDecisionUpdateManyWithoutApplicantNestedInput = {
+  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutApplicantInput, Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput> | Prisma.HiringDecisionCreateWithoutApplicantInput[] | Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput[]
+  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput | Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput[]
+  upsert?: Prisma.HiringDecisionUpsertWithWhereUniqueWithoutApplicantInput | Prisma.HiringDecisionUpsertWithWhereUniqueWithoutApplicantInput[]
+  createMany?: Prisma.HiringDecisionCreateManyApplicantInputEnvelope
   set?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
   disconnect?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
   delete?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
   connect?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
-  update?: Prisma.HiringDecisionUpdateWithWhereUniqueWithoutCandidateInput | Prisma.HiringDecisionUpdateWithWhereUniqueWithoutCandidateInput[]
-  updateMany?: Prisma.HiringDecisionUpdateManyWithWhereWithoutCandidateInput | Prisma.HiringDecisionUpdateManyWithWhereWithoutCandidateInput[]
+  update?: Prisma.HiringDecisionUpdateWithWhereUniqueWithoutApplicantInput | Prisma.HiringDecisionUpdateWithWhereUniqueWithoutApplicantInput[]
+  updateMany?: Prisma.HiringDecisionUpdateManyWithWhereWithoutApplicantInput | Prisma.HiringDecisionUpdateManyWithWhereWithoutApplicantInput[]
   deleteMany?: Prisma.HiringDecisionScalarWhereInput | Prisma.HiringDecisionScalarWhereInput[]
 }
 
-export type HiringDecisionUncheckedUpdateManyWithoutCandidateNestedInput = {
-  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutCandidateInput, Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput> | Prisma.HiringDecisionCreateWithoutCandidateInput[] | Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput[]
-  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput | Prisma.HiringDecisionCreateOrConnectWithoutCandidateInput[]
-  upsert?: Prisma.HiringDecisionUpsertWithWhereUniqueWithoutCandidateInput | Prisma.HiringDecisionUpsertWithWhereUniqueWithoutCandidateInput[]
-  createMany?: Prisma.HiringDecisionCreateManyCandidateInputEnvelope
+export type HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput = {
+  create?: Prisma.XOR<Prisma.HiringDecisionCreateWithoutApplicantInput, Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput> | Prisma.HiringDecisionCreateWithoutApplicantInput[] | Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput[]
+  connectOrCreate?: Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput | Prisma.HiringDecisionCreateOrConnectWithoutApplicantInput[]
+  upsert?: Prisma.HiringDecisionUpsertWithWhereUniqueWithoutApplicantInput | Prisma.HiringDecisionUpsertWithWhereUniqueWithoutApplicantInput[]
+  createMany?: Prisma.HiringDecisionCreateManyApplicantInputEnvelope
   set?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
   disconnect?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
   delete?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
   connect?: Prisma.HiringDecisionWhereUniqueInput | Prisma.HiringDecisionWhereUniqueInput[]
-  update?: Prisma.HiringDecisionUpdateWithWhereUniqueWithoutCandidateInput | Prisma.HiringDecisionUpdateWithWhereUniqueWithoutCandidateInput[]
-  updateMany?: Prisma.HiringDecisionUpdateManyWithWhereWithoutCandidateInput | Prisma.HiringDecisionUpdateManyWithWhereWithoutCandidateInput[]
+  update?: Prisma.HiringDecisionUpdateWithWhereUniqueWithoutApplicantInput | Prisma.HiringDecisionUpdateWithWhereUniqueWithoutApplicantInput[]
+  updateMany?: Prisma.HiringDecisionUpdateManyWithWhereWithoutApplicantInput | Prisma.HiringDecisionUpdateManyWithWhereWithoutApplicantInput[]
   deleteMany?: Prisma.HiringDecisionScalarWhereInput | Prisma.HiringDecisionScalarWhereInput[]
 }
 
@@ -744,7 +744,7 @@ export type HiringDecisionCreateWithoutOnboardingInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutHiringDecisionsInput
-  candidate: Prisma.CandidateCreateNestedOneWithoutHiringDecisionsInput
+  applicant: Prisma.ApplicantCreateNestedOneWithoutHiringDecisionsInput
   submittedBy: Prisma.UserCreateNestedOneWithoutSubmittedHiringDecisionsInput
   onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutHiringDecisionInput
 }
@@ -752,7 +752,7 @@ export type HiringDecisionCreateWithoutOnboardingInput = {
 export type HiringDecisionUncheckedCreateWithoutOnboardingInput = {
   id?: string
   jobId: string
-  candidateId: string
+  applicantId: string
   submittedById: string
   outcome?: $Enums.HiringDecisionOutcome
   salaryOffered?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -792,7 +792,7 @@ export type HiringDecisionUpdateWithoutOnboardingInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutHiringDecisionsNestedInput
-  candidate?: Prisma.CandidateUpdateOneRequiredWithoutHiringDecisionsNestedInput
+  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutHiringDecisionsNestedInput
   submittedBy?: Prisma.UserUpdateOneRequiredWithoutSubmittedHiringDecisionsNestedInput
   onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutHiringDecisionNestedInput
 }
@@ -800,7 +800,7 @@ export type HiringDecisionUpdateWithoutOnboardingInput = {
 export type HiringDecisionUncheckedUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   submittedById?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
   salaryOffered?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -824,7 +824,7 @@ export type HiringDecisionCreateWithoutOnboardingChecklistsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutHiringDecisionsInput
-  candidate: Prisma.CandidateCreateNestedOneWithoutHiringDecisionsInput
+  applicant: Prisma.ApplicantCreateNestedOneWithoutHiringDecisionsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutHiringDecisionInput
   submittedBy: Prisma.UserCreateNestedOneWithoutSubmittedHiringDecisionsInput
 }
@@ -832,7 +832,7 @@ export type HiringDecisionCreateWithoutOnboardingChecklistsInput = {
 export type HiringDecisionUncheckedCreateWithoutOnboardingChecklistsInput = {
   id?: string
   jobId: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   submittedById: string
   outcome?: $Enums.HiringDecisionOutcome
@@ -872,7 +872,7 @@ export type HiringDecisionUpdateWithoutOnboardingChecklistsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutHiringDecisionsNestedInput
-  candidate?: Prisma.CandidateUpdateOneRequiredWithoutHiringDecisionsNestedInput
+  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutHiringDecisionsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutHiringDecisionNestedInput
   submittedBy?: Prisma.UserUpdateOneRequiredWithoutSubmittedHiringDecisionsNestedInput
 }
@@ -880,7 +880,7 @@ export type HiringDecisionUpdateWithoutOnboardingChecklistsInput = {
 export type HiringDecisionUncheckedUpdateWithoutOnboardingChecklistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedById?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
@@ -903,7 +903,7 @@ export type HiringDecisionCreateWithoutJobInput = {
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  candidate: Prisma.CandidateCreateNestedOneWithoutHiringDecisionsInput
+  applicant: Prisma.ApplicantCreateNestedOneWithoutHiringDecisionsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutHiringDecisionInput
   submittedBy: Prisma.UserCreateNestedOneWithoutSubmittedHiringDecisionsInput
   onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutHiringDecisionInput
@@ -911,7 +911,7 @@ export type HiringDecisionCreateWithoutJobInput = {
 
 export type HiringDecisionUncheckedCreateWithoutJobInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   submittedById: string
   outcome?: $Enums.HiringDecisionOutcome
@@ -957,7 +957,7 @@ export type HiringDecisionScalarWhereInput = {
   NOT?: Prisma.HiringDecisionScalarWhereInput | Prisma.HiringDecisionScalarWhereInput[]
   id?: Prisma.UuidFilter<"HiringDecision"> | string
   jobId?: Prisma.UuidFilter<"HiringDecision"> | string
-  candidateId?: Prisma.UuidFilter<"HiringDecision"> | string
+  applicantId?: Prisma.UuidFilter<"HiringDecision"> | string
   onboardingId?: Prisma.UuidNullableFilter<"HiringDecision"> | string | null
   submittedById?: Prisma.UuidFilter<"HiringDecision"> | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFilter<"HiringDecision"> | $Enums.HiringDecisionOutcome
@@ -970,7 +970,7 @@ export type HiringDecisionScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"HiringDecision"> | Date | string
 }
 
-export type HiringDecisionCreateWithoutCandidateInput = {
+export type HiringDecisionCreateWithoutApplicantInput = {
   id?: string
   outcome?: $Enums.HiringDecisionOutcome
   salaryOffered?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -986,7 +986,7 @@ export type HiringDecisionCreateWithoutCandidateInput = {
   onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutHiringDecisionInput
 }
 
-export type HiringDecisionUncheckedCreateWithoutCandidateInput = {
+export type HiringDecisionUncheckedCreateWithoutApplicantInput = {
   id?: string
   jobId: string
   onboardingId?: string | null
@@ -1002,30 +1002,30 @@ export type HiringDecisionUncheckedCreateWithoutCandidateInput = {
   onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutHiringDecisionInput
 }
 
-export type HiringDecisionCreateOrConnectWithoutCandidateInput = {
+export type HiringDecisionCreateOrConnectWithoutApplicantInput = {
   where: Prisma.HiringDecisionWhereUniqueInput
-  create: Prisma.XOR<Prisma.HiringDecisionCreateWithoutCandidateInput, Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput>
+  create: Prisma.XOR<Prisma.HiringDecisionCreateWithoutApplicantInput, Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput>
 }
 
-export type HiringDecisionCreateManyCandidateInputEnvelope = {
-  data: Prisma.HiringDecisionCreateManyCandidateInput | Prisma.HiringDecisionCreateManyCandidateInput[]
+export type HiringDecisionCreateManyApplicantInputEnvelope = {
+  data: Prisma.HiringDecisionCreateManyApplicantInput | Prisma.HiringDecisionCreateManyApplicantInput[]
   skipDuplicates?: boolean
 }
 
-export type HiringDecisionUpsertWithWhereUniqueWithoutCandidateInput = {
+export type HiringDecisionUpsertWithWhereUniqueWithoutApplicantInput = {
   where: Prisma.HiringDecisionWhereUniqueInput
-  update: Prisma.XOR<Prisma.HiringDecisionUpdateWithoutCandidateInput, Prisma.HiringDecisionUncheckedUpdateWithoutCandidateInput>
-  create: Prisma.XOR<Prisma.HiringDecisionCreateWithoutCandidateInput, Prisma.HiringDecisionUncheckedCreateWithoutCandidateInput>
+  update: Prisma.XOR<Prisma.HiringDecisionUpdateWithoutApplicantInput, Prisma.HiringDecisionUncheckedUpdateWithoutApplicantInput>
+  create: Prisma.XOR<Prisma.HiringDecisionCreateWithoutApplicantInput, Prisma.HiringDecisionUncheckedCreateWithoutApplicantInput>
 }
 
-export type HiringDecisionUpdateWithWhereUniqueWithoutCandidateInput = {
+export type HiringDecisionUpdateWithWhereUniqueWithoutApplicantInput = {
   where: Prisma.HiringDecisionWhereUniqueInput
-  data: Prisma.XOR<Prisma.HiringDecisionUpdateWithoutCandidateInput, Prisma.HiringDecisionUncheckedUpdateWithoutCandidateInput>
+  data: Prisma.XOR<Prisma.HiringDecisionUpdateWithoutApplicantInput, Prisma.HiringDecisionUncheckedUpdateWithoutApplicantInput>
 }
 
-export type HiringDecisionUpdateManyWithWhereWithoutCandidateInput = {
+export type HiringDecisionUpdateManyWithWhereWithoutApplicantInput = {
   where: Prisma.HiringDecisionScalarWhereInput
-  data: Prisma.XOR<Prisma.HiringDecisionUpdateManyMutationInput, Prisma.HiringDecisionUncheckedUpdateManyWithoutCandidateInput>
+  data: Prisma.XOR<Prisma.HiringDecisionUpdateManyMutationInput, Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantInput>
 }
 
 export type HiringDecisionCreateWithoutSubmittedByInput = {
@@ -1039,7 +1039,7 @@ export type HiringDecisionCreateWithoutSubmittedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutHiringDecisionsInput
-  candidate: Prisma.CandidateCreateNestedOneWithoutHiringDecisionsInput
+  applicant: Prisma.ApplicantCreateNestedOneWithoutHiringDecisionsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutHiringDecisionInput
   onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutHiringDecisionInput
 }
@@ -1047,7 +1047,7 @@ export type HiringDecisionCreateWithoutSubmittedByInput = {
 export type HiringDecisionUncheckedCreateWithoutSubmittedByInput = {
   id?: string
   jobId: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   outcome?: $Enums.HiringDecisionOutcome
   salaryOffered?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1088,7 +1088,7 @@ export type HiringDecisionUpdateManyWithWhereWithoutSubmittedByInput = {
 
 export type HiringDecisionCreateManyJobInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   submittedById: string
   outcome?: $Enums.HiringDecisionOutcome
@@ -1111,7 +1111,7 @@ export type HiringDecisionUpdateWithoutJobInput = {
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  candidate?: Prisma.CandidateUpdateOneRequiredWithoutHiringDecisionsNestedInput
+  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutHiringDecisionsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutHiringDecisionNestedInput
   submittedBy?: Prisma.UserUpdateOneRequiredWithoutSubmittedHiringDecisionsNestedInput
   onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutHiringDecisionNestedInput
@@ -1119,7 +1119,7 @@ export type HiringDecisionUpdateWithoutJobInput = {
 
 export type HiringDecisionUncheckedUpdateWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedById?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
@@ -1135,7 +1135,7 @@ export type HiringDecisionUncheckedUpdateWithoutJobInput = {
 
 export type HiringDecisionUncheckedUpdateManyWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedById?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
@@ -1148,7 +1148,7 @@ export type HiringDecisionUncheckedUpdateManyWithoutJobInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type HiringDecisionCreateManyCandidateInput = {
+export type HiringDecisionCreateManyApplicantInput = {
   id?: string
   jobId: string
   onboardingId?: string | null
@@ -1163,7 +1163,7 @@ export type HiringDecisionCreateManyCandidateInput = {
   updatedAt?: Date | string
 }
 
-export type HiringDecisionUpdateWithoutCandidateInput = {
+export type HiringDecisionUpdateWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
   salaryOffered?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1179,7 +1179,7 @@ export type HiringDecisionUpdateWithoutCandidateInput = {
   onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutHiringDecisionNestedInput
 }
 
-export type HiringDecisionUncheckedUpdateWithoutCandidateInput = {
+export type HiringDecisionUncheckedUpdateWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1195,7 +1195,7 @@ export type HiringDecisionUncheckedUpdateWithoutCandidateInput = {
   onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutHiringDecisionNestedInput
 }
 
-export type HiringDecisionUncheckedUpdateManyWithoutCandidateInput = {
+export type HiringDecisionUncheckedUpdateManyWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1213,7 +1213,7 @@ export type HiringDecisionUncheckedUpdateManyWithoutCandidateInput = {
 export type HiringDecisionCreateManySubmittedByInput = {
   id?: string
   jobId: string
-  candidateId: string
+  applicantId: string
   onboardingId?: string | null
   outcome?: $Enums.HiringDecisionOutcome
   salaryOffered?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1236,7 +1236,7 @@ export type HiringDecisionUpdateWithoutSubmittedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutHiringDecisionsNestedInput
-  candidate?: Prisma.CandidateUpdateOneRequiredWithoutHiringDecisionsNestedInput
+  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutHiringDecisionsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutHiringDecisionNestedInput
   onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutHiringDecisionNestedInput
 }
@@ -1244,7 +1244,7 @@ export type HiringDecisionUpdateWithoutSubmittedByInput = {
 export type HiringDecisionUncheckedUpdateWithoutSubmittedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
   salaryOffered?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1260,7 +1260,7 @@ export type HiringDecisionUncheckedUpdateWithoutSubmittedByInput = {
 export type HiringDecisionUncheckedUpdateManyWithoutSubmittedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outcome?: Prisma.EnumHiringDecisionOutcomeFieldUpdateOperationsInput | $Enums.HiringDecisionOutcome
   salaryOffered?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1306,7 +1306,7 @@ export type HiringDecisionCountOutputTypeCountOnboardingChecklistsArgs<ExtArgs e
 export type HiringDecisionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   jobId?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   onboardingId?: boolean
   submittedById?: boolean
   outcome?: boolean
@@ -1318,7 +1318,7 @@ export type HiringDecisionSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   updatedAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
-  candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
+  applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.HiringDecision$onboardingArgs<ExtArgs>
   submittedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   onboardingChecklists?: boolean | Prisma.HiringDecision$onboardingChecklistsArgs<ExtArgs>
@@ -1328,7 +1328,7 @@ export type HiringDecisionSelect<ExtArgs extends runtime.Types.Extensions.Intern
 export type HiringDecisionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   jobId?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   onboardingId?: boolean
   submittedById?: boolean
   outcome?: boolean
@@ -1340,7 +1340,7 @@ export type HiringDecisionSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   createdAt?: boolean
   updatedAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
-  candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
+  applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.HiringDecision$onboardingArgs<ExtArgs>
   submittedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["hiringDecision"]>
@@ -1348,7 +1348,7 @@ export type HiringDecisionSelectCreateManyAndReturn<ExtArgs extends runtime.Type
 export type HiringDecisionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   jobId?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   onboardingId?: boolean
   submittedById?: boolean
   outcome?: boolean
@@ -1360,7 +1360,7 @@ export type HiringDecisionSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   createdAt?: boolean
   updatedAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
-  candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
+  applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.HiringDecision$onboardingArgs<ExtArgs>
   submittedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["hiringDecision"]>
@@ -1368,7 +1368,7 @@ export type HiringDecisionSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
 export type HiringDecisionSelectScalar = {
   id?: boolean
   jobId?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   onboardingId?: boolean
   submittedById?: boolean
   outcome?: boolean
@@ -1381,10 +1381,10 @@ export type HiringDecisionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type HiringDecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "candidateId" | "onboardingId" | "submittedById" | "outcome" | "salaryOffered" | "currency" | "startDate" | "decisionNotes" | "decidedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["hiringDecision"]>
+export type HiringDecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "applicantId" | "onboardingId" | "submittedById" | "outcome" | "salaryOffered" | "currency" | "startDate" | "decisionNotes" | "decidedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["hiringDecision"]>
 export type HiringDecisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
-  candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
+  applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.HiringDecision$onboardingArgs<ExtArgs>
   submittedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   onboardingChecklists?: boolean | Prisma.HiringDecision$onboardingChecklistsArgs<ExtArgs>
@@ -1392,13 +1392,13 @@ export type HiringDecisionInclude<ExtArgs extends runtime.Types.Extensions.Inter
 }
 export type HiringDecisionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
-  candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
+  applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.HiringDecision$onboardingArgs<ExtArgs>
   submittedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type HiringDecisionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
-  candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
+  applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.HiringDecision$onboardingArgs<ExtArgs>
   submittedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1407,7 +1407,7 @@ export type $HiringDecisionPayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "HiringDecision"
   objects: {
     job: Prisma.$JobPayload<ExtArgs>
-    candidate: Prisma.$CandidatePayload<ExtArgs>
+    applicant: Prisma.$ApplicantPayload<ExtArgs>
     onboarding: Prisma.$OnboardingPayload<ExtArgs> | null
     submittedBy: Prisma.$UserPayload<ExtArgs>
     onboardingChecklists: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
@@ -1415,7 +1415,7 @@ export type $HiringDecisionPayload<ExtArgs extends runtime.Types.Extensions.Inte
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     jobId: string
-    candidateId: string
+    applicantId: string
     onboardingId: string | null
     submittedById: string
     outcome: $Enums.HiringDecisionOutcome
@@ -1821,7 +1821,7 @@ readonly fields: HiringDecisionFieldRefs;
 export interface Prisma__HiringDecisionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   job<T extends Prisma.JobDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobDefaultArgs<ExtArgs>>): Prisma.Prisma__JobClient<runtime.Types.Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  candidate<T extends Prisma.CandidateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CandidateDefaultArgs<ExtArgs>>): Prisma.Prisma__CandidateClient<runtime.Types.Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  applicant<T extends Prisma.ApplicantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicantDefaultArgs<ExtArgs>>): Prisma.Prisma__ApplicantClient<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   onboarding<T extends Prisma.HiringDecision$onboardingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HiringDecision$onboardingArgs<ExtArgs>>): Prisma.Prisma__OnboardingClient<runtime.Types.Result.GetResult<Prisma.$OnboardingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   submittedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   onboardingChecklists<T extends Prisma.HiringDecision$onboardingChecklistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HiringDecision$onboardingChecklistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1856,7 +1856,7 @@ export interface Prisma__HiringDecisionClient<T, Null = never, ExtArgs extends r
 export interface HiringDecisionFieldRefs {
   readonly id: Prisma.FieldRef<"HiringDecision", 'String'>
   readonly jobId: Prisma.FieldRef<"HiringDecision", 'String'>
-  readonly candidateId: Prisma.FieldRef<"HiringDecision", 'String'>
+  readonly applicantId: Prisma.FieldRef<"HiringDecision", 'String'>
   readonly onboardingId: Prisma.FieldRef<"HiringDecision", 'String'>
   readonly submittedById: Prisma.FieldRef<"HiringDecision", 'String'>
   readonly outcome: Prisma.FieldRef<"HiringDecision", 'HiringDecisionOutcome'>

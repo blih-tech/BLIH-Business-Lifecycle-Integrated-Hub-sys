@@ -159,6 +159,8 @@ export type JobCountAggregateOutputType = {
   currency: number
   salaryMode: number
   benefits: number
+  skills: number
+  responsibilities: number
   status: number
   priority: number
   financeApprovalStatus: number
@@ -320,6 +322,8 @@ export type JobCountAggregateInputType = {
   currency?: true
   salaryMode?: true
   benefits?: true
+  skills?: true
+  responsibilities?: true
   status?: true
   priority?: true
   financeApprovalStatus?: true
@@ -454,6 +458,8 @@ export type JobGroupByOutputType = {
   currency: string | null
   salaryMode: $Enums.JobSalaryMode
   benefits: string[]
+  skills: string[]
+  responsibilities: string[]
   status: $Enums.JobWorkflowStatus
   priority: $Enums.JobPriority
   financeApprovalStatus: $Enums.JobStageApprovalStatus
@@ -524,6 +530,8 @@ export type JobWhereInput = {
   currency?: Prisma.StringNullableFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
+  skills?: Prisma.StringNullableListFilter<"Job">
+  responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
@@ -553,10 +561,8 @@ export type JobWhereInput = {
   hiringManager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   approvals?: Prisma.JobApprovalListRelationFilter
-  skills?: Prisma.JobSkillListRelationFilter
   tools?: Prisma.JobToolListRelationFilter
-  responsibilities?: Prisma.JobResponsibilityListRelationFilter
-  applications?: Prisma.JobApplicationListRelationFilter
+  applicants?: Prisma.ApplicantListRelationFilter
   interviews?: Prisma.InterviewListRelationFilter
   hiringDecisions?: Prisma.HiringDecisionListRelationFilter
   requestForm?: Prisma.XOR<Prisma.JobRequestFormNullableScalarRelationFilter, Prisma.JobRequestFormWhereInput> | null
@@ -583,6 +589,8 @@ export type JobOrderByWithRelationInput = {
   currency?: Prisma.SortOrderInput | Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
   benefits?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
+  responsibilities?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   financeApprovalStatus?: Prisma.SortOrder
@@ -612,10 +620,8 @@ export type JobOrderByWithRelationInput = {
   hiringManager?: Prisma.UserOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   approvals?: Prisma.JobApprovalOrderByRelationAggregateInput
-  skills?: Prisma.JobSkillOrderByRelationAggregateInput
   tools?: Prisma.JobToolOrderByRelationAggregateInput
-  responsibilities?: Prisma.JobResponsibilityOrderByRelationAggregateInput
-  applications?: Prisma.JobApplicationOrderByRelationAggregateInput
+  applicants?: Prisma.ApplicantOrderByRelationAggregateInput
   interviews?: Prisma.InterviewOrderByRelationAggregateInput
   hiringDecisions?: Prisma.HiringDecisionOrderByRelationAggregateInput
   requestForm?: Prisma.JobRequestFormOrderByWithRelationInput
@@ -645,6 +651,8 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   currency?: Prisma.StringNullableFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
+  skills?: Prisma.StringNullableListFilter<"Job">
+  responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
@@ -674,10 +682,8 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   hiringManager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   approvals?: Prisma.JobApprovalListRelationFilter
-  skills?: Prisma.JobSkillListRelationFilter
   tools?: Prisma.JobToolListRelationFilter
-  responsibilities?: Prisma.JobResponsibilityListRelationFilter
-  applications?: Prisma.JobApplicationListRelationFilter
+  applicants?: Prisma.ApplicantListRelationFilter
   interviews?: Prisma.InterviewListRelationFilter
   hiringDecisions?: Prisma.HiringDecisionListRelationFilter
   requestForm?: Prisma.XOR<Prisma.JobRequestFormNullableScalarRelationFilter, Prisma.JobRequestFormWhereInput> | null
@@ -704,6 +710,8 @@ export type JobOrderByWithAggregationInput = {
   currency?: Prisma.SortOrderInput | Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
   benefits?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
+  responsibilities?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   financeApprovalStatus?: Prisma.SortOrder
@@ -759,6 +767,8 @@ export type JobScalarWhereWithAggregatesInput = {
   currency?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeWithAggregatesFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
+  skills?: Prisma.StringNullableListFilter<"Job">
+  responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusWithAggregatesFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityWithAggregatesFilter<"Job"> | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"Job"> | $Enums.JobStageApprovalStatus
@@ -804,6 +814,8 @@ export type JobCreateInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -831,10 +843,8 @@ export type JobCreateInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -861,6 +871,8 @@ export type JobUncheckedCreateInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -886,10 +898,8 @@ export type JobUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -914,6 +924,8 @@ export type JobUpdateInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -941,10 +953,8 @@ export type JobUpdateInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -971,6 +981,8 @@ export type JobUncheckedUpdateInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -996,10 +1008,8 @@ export type JobUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -1026,6 +1036,8 @@ export type JobCreateManyInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -1071,6 +1083,8 @@ export type JobUpdateManyMutationInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -1116,6 +1130,8 @@ export type JobUncheckedUpdateManyInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -1173,6 +1189,8 @@ export type JobCountOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
   benefits?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
+  responsibilities?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   financeApprovalStatus?: Prisma.SortOrder
@@ -1404,6 +1422,14 @@ export type JobCreatebenefitsInput = {
   set: string[]
 }
 
+export type JobCreateskillsInput = {
+  set: string[]
+}
+
+export type JobCreateresponsibilitiesInput = {
+  set: string[]
+}
+
 export type NullableEnumExperienceLevelFieldUpdateOperationsInput = {
   set?: $Enums.ExperienceLevel | null
 }
@@ -1429,6 +1455,16 @@ export type EnumJobSalaryModeFieldUpdateOperationsInput = {
 }
 
 export type JobUpdatebenefitsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type JobUpdateskillsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type JobUpdateresponsibilitiesInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -1473,20 +1509,6 @@ export type JobUpdateOneRequiredWithoutApprovalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutApprovalsInput, Prisma.JobUpdateWithoutApprovalsInput>, Prisma.JobUncheckedUpdateWithoutApprovalsInput>
 }
 
-export type JobCreateNestedOneWithoutSkillsInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutSkillsInput, Prisma.JobUncheckedCreateWithoutSkillsInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutSkillsInput
-  connect?: Prisma.JobWhereUniqueInput
-}
-
-export type JobUpdateOneRequiredWithoutSkillsNestedInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutSkillsInput, Prisma.JobUncheckedCreateWithoutSkillsInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutSkillsInput
-  upsert?: Prisma.JobUpsertWithoutSkillsInput
-  connect?: Prisma.JobWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutSkillsInput, Prisma.JobUpdateWithoutSkillsInput>, Prisma.JobUncheckedUpdateWithoutSkillsInput>
-}
-
 export type JobCreateNestedOneWithoutToolsInput = {
   create?: Prisma.XOR<Prisma.JobCreateWithoutToolsInput, Prisma.JobUncheckedCreateWithoutToolsInput>
   connectOrCreate?: Prisma.JobCreateOrConnectWithoutToolsInput
@@ -1501,32 +1523,18 @@ export type JobUpdateOneRequiredWithoutToolsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutToolsInput, Prisma.JobUpdateWithoutToolsInput>, Prisma.JobUncheckedUpdateWithoutToolsInput>
 }
 
-export type JobCreateNestedOneWithoutResponsibilitiesInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutResponsibilitiesInput, Prisma.JobUncheckedCreateWithoutResponsibilitiesInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutResponsibilitiesInput
+export type JobCreateNestedOneWithoutApplicantsInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutApplicantsInput, Prisma.JobUncheckedCreateWithoutApplicantsInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutApplicantsInput
   connect?: Prisma.JobWhereUniqueInput
 }
 
-export type JobUpdateOneRequiredWithoutResponsibilitiesNestedInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutResponsibilitiesInput, Prisma.JobUncheckedCreateWithoutResponsibilitiesInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutResponsibilitiesInput
-  upsert?: Prisma.JobUpsertWithoutResponsibilitiesInput
+export type JobUpdateOneRequiredWithoutApplicantsNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutApplicantsInput, Prisma.JobUncheckedCreateWithoutApplicantsInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutApplicantsInput
+  upsert?: Prisma.JobUpsertWithoutApplicantsInput
   connect?: Prisma.JobWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutResponsibilitiesInput, Prisma.JobUpdateWithoutResponsibilitiesInput>, Prisma.JobUncheckedUpdateWithoutResponsibilitiesInput>
-}
-
-export type JobCreateNestedOneWithoutApplicationsInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutApplicationsInput, Prisma.JobUncheckedCreateWithoutApplicationsInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutApplicationsInput
-  connect?: Prisma.JobWhereUniqueInput
-}
-
-export type JobUpdateOneRequiredWithoutApplicationsNestedInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutApplicationsInput, Prisma.JobUncheckedCreateWithoutApplicationsInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutApplicationsInput
-  upsert?: Prisma.JobUpsertWithoutApplicationsInput
-  connect?: Prisma.JobWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutApplicationsInput, Prisma.JobUpdateWithoutApplicationsInput>, Prisma.JobUncheckedUpdateWithoutApplicationsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutApplicantsInput, Prisma.JobUpdateWithoutApplicantsInput>, Prisma.JobUncheckedUpdateWithoutApplicantsInput>
 }
 
 export type JobCreateNestedOneWithoutInterviewsInput = {
@@ -1660,6 +1668,8 @@ export type JobCreateWithoutDepartmentInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -1686,10 +1696,8 @@ export type JobCreateWithoutDepartmentInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -1715,6 +1723,8 @@ export type JobUncheckedCreateWithoutDepartmentInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -1740,10 +1750,8 @@ export type JobUncheckedCreateWithoutDepartmentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -1799,6 +1807,8 @@ export type JobScalarWhereInput = {
   currency?: Prisma.StringNullableFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
+  skills?: Prisma.StringNullableListFilter<"Job">
+  responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
@@ -1844,6 +1854,8 @@ export type JobCreateWithoutPositionInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -1870,10 +1882,8 @@ export type JobCreateWithoutPositionInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -1899,6 +1909,8 @@ export type JobUncheckedCreateWithoutPositionInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -1924,10 +1936,8 @@ export type JobUncheckedCreateWithoutPositionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -1978,6 +1988,8 @@ export type JobCreateWithoutRequestFormInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2005,10 +2017,8 @@ export type JobCreateWithoutRequestFormInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
 }
@@ -2034,6 +2044,8 @@ export type JobUncheckedCreateWithoutRequestFormInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2059,10 +2071,8 @@ export type JobUncheckedCreateWithoutRequestFormInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
 }
@@ -2102,6 +2112,8 @@ export type JobUpdateWithoutRequestFormInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -2129,10 +2141,8 @@ export type JobUpdateWithoutRequestFormInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
 }
@@ -2158,6 +2168,8 @@ export type JobUncheckedUpdateWithoutRequestFormInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -2183,10 +2195,8 @@ export type JobUncheckedUpdateWithoutRequestFormInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2210,6 +2220,8 @@ export type JobCreateWithoutApprovalsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2236,10 +2248,8 @@ export type JobCreateWithoutApprovalsInput = {
   position: Prisma.PositionCreateNestedOneWithoutJobsInput
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -2266,6 +2276,8 @@ export type JobUncheckedCreateWithoutApprovalsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2290,10 +2302,8 @@ export type JobUncheckedCreateWithoutApprovalsInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -2334,6 +2344,8 @@ export type JobUpdateWithoutApprovalsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -2360,10 +2372,8 @@ export type JobUpdateWithoutApprovalsInput = {
   position?: Prisma.PositionUpdateOneRequiredWithoutJobsNestedInput
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -2390,6 +2400,8 @@ export type JobUncheckedUpdateWithoutApprovalsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -2414,242 +2426,8 @@ export type JobUncheckedUpdateWithoutApprovalsInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
-  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
-  requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
-}
-
-export type JobCreateWithoutSkillsInput = {
-  id?: string
-  title: string
-  slug: string
-  description: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: $Enums.ExperienceLevel | null
-  contractType: $Enums.JobContractType
-  employmentType?: $Enums.EmploymentType | null
-  workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
-  city?: string | null
-  country?: string | null
-  openings?: number
-  salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  salaryMode?: $Enums.JobSalaryMode
-  benefits?: Prisma.JobCreatebenefitsInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
-  creatorIsHr?: boolean
-  applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
-  publishedAt?: Date | string | null
-  closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
-  closingReason?: string | null
-  viewsCount?: number
-  applicationsCount?: number
-  shortlistedCount?: number
-  interviewsCount?: number
-  offersCount?: number
-  hiresCount?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  department: Prisma.DepartmentCreateNestedOneWithoutJobsInput
-  position: Prisma.PositionCreateNestedOneWithoutJobsInput
-  hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
-  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
-  approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
-  interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
-  requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
-}
-
-export type JobUncheckedCreateWithoutSkillsInput = {
-  id?: string
-  title: string
-  slug: string
-  departmentId: string
-  positionId: string
-  description: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: $Enums.ExperienceLevel | null
-  contractType: $Enums.JobContractType
-  employmentType?: $Enums.EmploymentType | null
-  workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
-  city?: string | null
-  country?: string | null
-  openings?: number
-  salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  salaryMode?: $Enums.JobSalaryMode
-  benefits?: Prisma.JobCreatebenefitsInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
-  creatorIsHr?: boolean
-  hiringManagerId?: string | null
-  applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
-  publishedAt?: Date | string | null
-  closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
-  closingReason?: string | null
-  viewsCount?: number
-  applicationsCount?: number
-  shortlistedCount?: number
-  interviewsCount?: number
-  offersCount?: number
-  hiresCount?: number
-  createdById?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
-  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
-  requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
-}
-
-export type JobCreateOrConnectWithoutSkillsInput = {
-  where: Prisma.JobWhereUniqueInput
-  create: Prisma.XOR<Prisma.JobCreateWithoutSkillsInput, Prisma.JobUncheckedCreateWithoutSkillsInput>
-}
-
-export type JobUpsertWithoutSkillsInput = {
-  update: Prisma.XOR<Prisma.JobUpdateWithoutSkillsInput, Prisma.JobUncheckedUpdateWithoutSkillsInput>
-  create: Prisma.XOR<Prisma.JobCreateWithoutSkillsInput, Prisma.JobUncheckedCreateWithoutSkillsInput>
-  where?: Prisma.JobWhereInput
-}
-
-export type JobUpdateToOneWithWhereWithoutSkillsInput = {
-  where?: Prisma.JobWhereInput
-  data: Prisma.XOR<Prisma.JobUpdateWithoutSkillsInput, Prisma.JobUncheckedUpdateWithoutSkillsInput>
-}
-
-export type JobUpdateWithoutSkillsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: Prisma.NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
-  contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  openings?: Prisma.IntFieldUpdateOperationsInput | number
-  salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
-  benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  shortlistedCount?: Prisma.IntFieldUpdateOperationsInput | number
-  interviewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  offersCount?: Prisma.IntFieldUpdateOperationsInput | number
-  hiresCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  department?: Prisma.DepartmentUpdateOneRequiredWithoutJobsNestedInput
-  position?: Prisma.PositionUpdateOneRequiredWithoutJobsNestedInput
-  hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
-  createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
-  approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
-  interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
-  requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
-}
-
-export type JobUncheckedUpdateWithoutSkillsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
-  positionId?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: Prisma.NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
-  contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  openings?: Prisma.IntFieldUpdateOperationsInput | number
-  salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
-  benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  shortlistedCount?: Prisma.IntFieldUpdateOperationsInput | number
-  interviewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  offersCount?: Prisma.IntFieldUpdateOperationsInput | number
-  hiresCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -2674,6 +2452,8 @@ export type JobCreateWithoutToolsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2701,9 +2481,7 @@ export type JobCreateWithoutToolsInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -2730,6 +2508,8 @@ export type JobUncheckedCreateWithoutToolsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2755,9 +2535,7 @@ export type JobUncheckedCreateWithoutToolsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -2798,6 +2576,8 @@ export type JobUpdateWithoutToolsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -2825,9 +2605,7 @@ export type JobUpdateWithoutToolsInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -2854,6 +2632,8 @@ export type JobUncheckedUpdateWithoutToolsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -2879,15 +2659,13 @@ export type JobUncheckedUpdateWithoutToolsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
 }
 
-export type JobCreateWithoutResponsibilitiesInput = {
+export type JobCreateWithoutApplicantsInput = {
   id?: string
   title: string
   slug: string
@@ -2906,6 +2684,8 @@ export type JobCreateWithoutResponsibilitiesInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2933,15 +2713,13 @@ export type JobCreateWithoutResponsibilitiesInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
 }
 
-export type JobUncheckedCreateWithoutResponsibilitiesInput = {
+export type JobUncheckedCreateWithoutApplicantsInput = {
   id?: string
   title: string
   slug: string
@@ -2962,6 +2740,8 @@ export type JobUncheckedCreateWithoutResponsibilitiesInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -2987,31 +2767,29 @@ export type JobUncheckedCreateWithoutResponsibilitiesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
 }
 
-export type JobCreateOrConnectWithoutResponsibilitiesInput = {
+export type JobCreateOrConnectWithoutApplicantsInput = {
   where: Prisma.JobWhereUniqueInput
-  create: Prisma.XOR<Prisma.JobCreateWithoutResponsibilitiesInput, Prisma.JobUncheckedCreateWithoutResponsibilitiesInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutApplicantsInput, Prisma.JobUncheckedCreateWithoutApplicantsInput>
 }
 
-export type JobUpsertWithoutResponsibilitiesInput = {
-  update: Prisma.XOR<Prisma.JobUpdateWithoutResponsibilitiesInput, Prisma.JobUncheckedUpdateWithoutResponsibilitiesInput>
-  create: Prisma.XOR<Prisma.JobCreateWithoutResponsibilitiesInput, Prisma.JobUncheckedCreateWithoutResponsibilitiesInput>
+export type JobUpsertWithoutApplicantsInput = {
+  update: Prisma.XOR<Prisma.JobUpdateWithoutApplicantsInput, Prisma.JobUncheckedUpdateWithoutApplicantsInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutApplicantsInput, Prisma.JobUncheckedCreateWithoutApplicantsInput>
   where?: Prisma.JobWhereInput
 }
 
-export type JobUpdateToOneWithWhereWithoutResponsibilitiesInput = {
+export type JobUpdateToOneWithWhereWithoutApplicantsInput = {
   where?: Prisma.JobWhereInput
-  data: Prisma.XOR<Prisma.JobUpdateWithoutResponsibilitiesInput, Prisma.JobUncheckedUpdateWithoutResponsibilitiesInput>
+  data: Prisma.XOR<Prisma.JobUpdateWithoutApplicantsInput, Prisma.JobUncheckedUpdateWithoutApplicantsInput>
 }
 
-export type JobUpdateWithoutResponsibilitiesInput = {
+export type JobUpdateWithoutApplicantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3030,6 +2808,8 @@ export type JobUpdateWithoutResponsibilitiesInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -3057,15 +2837,13 @@ export type JobUpdateWithoutResponsibilitiesInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
 }
 
-export type JobUncheckedUpdateWithoutResponsibilitiesInput = {
+export type JobUncheckedUpdateWithoutApplicantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3086,6 +2864,8 @@ export type JobUncheckedUpdateWithoutResponsibilitiesInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -3111,241 +2891,7 @@ export type JobUncheckedUpdateWithoutResponsibilitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
-  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
-  requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
-}
-
-export type JobCreateWithoutApplicationsInput = {
-  id?: string
-  title: string
-  slug: string
-  description: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: $Enums.ExperienceLevel | null
-  contractType: $Enums.JobContractType
-  employmentType?: $Enums.EmploymentType | null
-  workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
-  city?: string | null
-  country?: string | null
-  openings?: number
-  salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  salaryMode?: $Enums.JobSalaryMode
-  benefits?: Prisma.JobCreatebenefitsInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
-  creatorIsHr?: boolean
-  applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
-  publishedAt?: Date | string | null
-  closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
-  closingReason?: string | null
-  viewsCount?: number
-  applicationsCount?: number
-  shortlistedCount?: number
-  interviewsCount?: number
-  offersCount?: number
-  hiresCount?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  department: Prisma.DepartmentCreateNestedOneWithoutJobsInput
-  position: Prisma.PositionCreateNestedOneWithoutJobsInput
-  hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
-  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
-  approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
-  tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
-  requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
-}
-
-export type JobUncheckedCreateWithoutApplicationsInput = {
-  id?: string
-  title: string
-  slug: string
-  departmentId: string
-  positionId: string
-  description: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: $Enums.ExperienceLevel | null
-  contractType: $Enums.JobContractType
-  employmentType?: $Enums.EmploymentType | null
-  workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
-  city?: string | null
-  country?: string | null
-  openings?: number
-  salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  salaryMode?: $Enums.JobSalaryMode
-  benefits?: Prisma.JobCreatebenefitsInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
-  creatorIsHr?: boolean
-  hiringManagerId?: string | null
-  applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
-  publishedAt?: Date | string | null
-  closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
-  closingReason?: string | null
-  viewsCount?: number
-  applicationsCount?: number
-  shortlistedCount?: number
-  interviewsCount?: number
-  offersCount?: number
-  hiresCount?: number
-  createdById?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
-  tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
-  requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
-}
-
-export type JobCreateOrConnectWithoutApplicationsInput = {
-  where: Prisma.JobWhereUniqueInput
-  create: Prisma.XOR<Prisma.JobCreateWithoutApplicationsInput, Prisma.JobUncheckedCreateWithoutApplicationsInput>
-}
-
-export type JobUpsertWithoutApplicationsInput = {
-  update: Prisma.XOR<Prisma.JobUpdateWithoutApplicationsInput, Prisma.JobUncheckedUpdateWithoutApplicationsInput>
-  create: Prisma.XOR<Prisma.JobCreateWithoutApplicationsInput, Prisma.JobUncheckedCreateWithoutApplicationsInput>
-  where?: Prisma.JobWhereInput
-}
-
-export type JobUpdateToOneWithWhereWithoutApplicationsInput = {
-  where?: Prisma.JobWhereInput
-  data: Prisma.XOR<Prisma.JobUpdateWithoutApplicationsInput, Prisma.JobUncheckedUpdateWithoutApplicationsInput>
-}
-
-export type JobUpdateWithoutApplicationsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: Prisma.NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
-  contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  openings?: Prisma.IntFieldUpdateOperationsInput | number
-  salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
-  benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  shortlistedCount?: Prisma.IntFieldUpdateOperationsInput | number
-  interviewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  offersCount?: Prisma.IntFieldUpdateOperationsInput | number
-  hiresCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  department?: Prisma.DepartmentUpdateOneRequiredWithoutJobsNestedInput
-  position?: Prisma.PositionUpdateOneRequiredWithoutJobsNestedInput
-  hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
-  createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
-  approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
-  tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
-  requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
-}
-
-export type JobUncheckedUpdateWithoutApplicationsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
-  positionId?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  summary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  experienceLevel?: Prisma.NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
-  contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  openings?: Prisma.IntFieldUpdateOperationsInput | number
-  salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
-  benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  shortlistedCount?: Prisma.IntFieldUpdateOperationsInput | number
-  interviewsCount?: Prisma.IntFieldUpdateOperationsInput | number
-  offersCount?: Prisma.IntFieldUpdateOperationsInput | number
-  hiresCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
-  tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -3370,6 +2916,8 @@ export type JobCreateWithoutInterviewsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3397,10 +2945,8 @@ export type JobCreateWithoutInterviewsInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
 }
@@ -3426,6 +2972,8 @@ export type JobUncheckedCreateWithoutInterviewsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3451,10 +2999,8 @@ export type JobUncheckedCreateWithoutInterviewsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
 }
@@ -3494,6 +3040,8 @@ export type JobUpdateWithoutInterviewsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -3521,10 +3069,8 @@ export type JobUpdateWithoutInterviewsInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
 }
@@ -3550,6 +3096,8 @@ export type JobUncheckedUpdateWithoutInterviewsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -3575,10 +3123,8 @@ export type JobUncheckedUpdateWithoutInterviewsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
 }
@@ -3602,6 +3148,8 @@ export type JobCreateWithoutHiringDecisionsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3629,10 +3177,8 @@ export type JobCreateWithoutHiringDecisionsInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
 }
@@ -3658,6 +3204,8 @@ export type JobUncheckedCreateWithoutHiringDecisionsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3683,10 +3231,8 @@ export type JobUncheckedCreateWithoutHiringDecisionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
 }
@@ -3726,6 +3272,8 @@ export type JobUpdateWithoutHiringDecisionsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -3753,10 +3301,8 @@ export type JobUpdateWithoutHiringDecisionsInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
 }
@@ -3782,6 +3328,8 @@ export type JobUncheckedUpdateWithoutHiringDecisionsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -3807,10 +3355,8 @@ export type JobUncheckedUpdateWithoutHiringDecisionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
 }
@@ -3834,6 +3380,8 @@ export type JobCreateWithoutCreatedByInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3860,10 +3408,8 @@ export type JobCreateWithoutCreatedByInput = {
   position: Prisma.PositionCreateNestedOneWithoutJobsInput
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -3890,6 +3436,8 @@ export type JobUncheckedCreateWithoutCreatedByInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3914,10 +3462,8 @@ export type JobUncheckedCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -3952,6 +3498,8 @@ export type JobCreateWithoutHiringManagerInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -3978,10 +3526,8 @@ export type JobCreateWithoutHiringManagerInput = {
   position: Prisma.PositionCreateNestedOneWithoutJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   approvals?: Prisma.JobApprovalCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
@@ -4008,6 +3554,8 @@ export type JobUncheckedCreateWithoutHiringManagerInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -4032,10 +3580,8 @@ export type JobUncheckedCreateWithoutHiringManagerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvals?: Prisma.JobApprovalUncheckedCreateNestedManyWithoutJobInput
-  skills?: Prisma.JobSkillUncheckedCreateNestedManyWithoutJobInput
   tools?: Prisma.JobToolUncheckedCreateNestedManyWithoutJobInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedCreateNestedManyWithoutJobInput
-  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutJobInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
@@ -4103,6 +3649,8 @@ export type JobCreateManyDepartmentInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -4148,6 +3696,8 @@ export type JobUpdateWithoutDepartmentInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4174,10 +3724,8 @@ export type JobUpdateWithoutDepartmentInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -4203,6 +3751,8 @@ export type JobUncheckedUpdateWithoutDepartmentInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4228,10 +3778,8 @@ export type JobUncheckedUpdateWithoutDepartmentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -4257,6 +3805,8 @@ export type JobUncheckedUpdateManyWithoutDepartmentInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4303,6 +3853,8 @@ export type JobCreateManyPositionInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -4348,6 +3900,8 @@ export type JobUpdateWithoutPositionInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4374,10 +3928,8 @@ export type JobUpdateWithoutPositionInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -4403,6 +3955,8 @@ export type JobUncheckedUpdateWithoutPositionInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4428,10 +3982,8 @@ export type JobUncheckedUpdateWithoutPositionInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -4457,6 +4009,8 @@ export type JobUncheckedUpdateManyWithoutPositionInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4504,6 +4058,8 @@ export type JobCreateManyCreatedByInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -4550,6 +4106,8 @@ export type JobCreateManyHiringManagerInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
+  skills?: Prisma.JobCreateskillsInput | string[]
+  responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
   financeApprovalStatus?: $Enums.JobStageApprovalStatus
@@ -4594,6 +4152,8 @@ export type JobUpdateWithoutCreatedByInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4620,10 +4180,8 @@ export type JobUpdateWithoutCreatedByInput = {
   position?: Prisma.PositionUpdateOneRequiredWithoutJobsNestedInput
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -4650,6 +4208,8 @@ export type JobUncheckedUpdateWithoutCreatedByInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4674,10 +4234,8 @@ export type JobUncheckedUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -4704,6 +4262,8 @@ export type JobUncheckedUpdateManyWithoutCreatedByInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4748,6 +4308,8 @@ export type JobUpdateWithoutHiringManagerInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4774,10 +4336,8 @@ export type JobUpdateWithoutHiringManagerInput = {
   position?: Prisma.PositionUpdateOneRequiredWithoutJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   approvals?: Prisma.JobApprovalUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
@@ -4804,6 +4364,8 @@ export type JobUncheckedUpdateWithoutHiringManagerInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4828,10 +4390,8 @@ export type JobUncheckedUpdateWithoutHiringManagerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvals?: Prisma.JobApprovalUncheckedUpdateManyWithoutJobNestedInput
-  skills?: Prisma.JobSkillUncheckedUpdateManyWithoutJobNestedInput
   tools?: Prisma.JobToolUncheckedUpdateManyWithoutJobNestedInput
-  responsibilities?: Prisma.JobResponsibilityUncheckedUpdateManyWithoutJobNestedInput
-  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutJobNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
@@ -4858,6 +4418,8 @@ export type JobUncheckedUpdateManyWithoutHiringManagerInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
+  skills?: Prisma.JobUpdateskillsInput | string[]
+  responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
@@ -4890,20 +4452,16 @@ export type JobUncheckedUpdateManyWithoutHiringManagerInput = {
 
 export type JobCountOutputType = {
   approvals: number
-  skills: number
   tools: number
-  responsibilities: number
-  applications: number
+  applicants: number
   interviews: number
   hiringDecisions: number
 }
 
 export type JobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   approvals?: boolean | JobCountOutputTypeCountApprovalsArgs
-  skills?: boolean | JobCountOutputTypeCountSkillsArgs
   tools?: boolean | JobCountOutputTypeCountToolsArgs
-  responsibilities?: boolean | JobCountOutputTypeCountResponsibilitiesArgs
-  applications?: boolean | JobCountOutputTypeCountApplicationsArgs
+  applicants?: boolean | JobCountOutputTypeCountApplicantsArgs
   interviews?: boolean | JobCountOutputTypeCountInterviewsArgs
   hiringDecisions?: boolean | JobCountOutputTypeCountHiringDecisionsArgs
 }
@@ -4928,13 +4486,6 @@ export type JobCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.E
 /**
  * JobCountOutputType without action
  */
-export type JobCountOutputTypeCountSkillsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JobSkillWhereInput
-}
-
-/**
- * JobCountOutputType without action
- */
 export type JobCountOutputTypeCountToolsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.JobToolWhereInput
 }
@@ -4942,15 +4493,8 @@ export type JobCountOutputTypeCountToolsArgs<ExtArgs extends runtime.Types.Exten
 /**
  * JobCountOutputType without action
  */
-export type JobCountOutputTypeCountResponsibilitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JobResponsibilityWhereInput
-}
-
-/**
- * JobCountOutputType without action
- */
-export type JobCountOutputTypeCountApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JobApplicationWhereInput
+export type JobCountOutputTypeCountApplicantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApplicantWhereInput
 }
 
 /**
@@ -4989,6 +4533,8 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
+  skills?: boolean
+  responsibilities?: boolean
   status?: boolean
   priority?: boolean
   financeApprovalStatus?: boolean
@@ -5018,10 +4564,8 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   hiringManager?: boolean | Prisma.Job$hiringManagerArgs<ExtArgs>
   createdBy?: boolean | Prisma.Job$createdByArgs<ExtArgs>
   approvals?: boolean | Prisma.Job$approvalsArgs<ExtArgs>
-  skills?: boolean | Prisma.Job$skillsArgs<ExtArgs>
   tools?: boolean | Prisma.Job$toolsArgs<ExtArgs>
-  responsibilities?: boolean | Prisma.Job$responsibilitiesArgs<ExtArgs>
-  applications?: boolean | Prisma.Job$applicationsArgs<ExtArgs>
+  applicants?: boolean | Prisma.Job$applicantsArgs<ExtArgs>
   interviews?: boolean | Prisma.Job$interviewsArgs<ExtArgs>
   hiringDecisions?: boolean | Prisma.Job$hiringDecisionsArgs<ExtArgs>
   requestForm?: boolean | Prisma.Job$requestFormArgs<ExtArgs>
@@ -5049,6 +4593,8 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
+  skills?: boolean
+  responsibilities?: boolean
   status?: boolean
   priority?: boolean
   financeApprovalStatus?: boolean
@@ -5100,6 +4646,8 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
+  skills?: boolean
+  responsibilities?: boolean
   status?: boolean
   priority?: boolean
   financeApprovalStatus?: boolean
@@ -5151,6 +4699,8 @@ export type JobSelectScalar = {
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
+  skills?: boolean
+  responsibilities?: boolean
   status?: boolean
   priority?: boolean
   financeApprovalStatus?: boolean
@@ -5177,17 +4727,15 @@ export type JobSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "status" | "priority" | "financeApprovalStatus" | "gmApprovalStatus" | "hrApprovalStatus" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "publishedAt" | "closedAt" | "rejectedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "skills" | "responsibilities" | "status" | "priority" | "financeApprovalStatus" | "gmApprovalStatus" | "hrApprovalStatus" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "publishedAt" | "closedAt" | "rejectedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
   hiringManager?: boolean | Prisma.Job$hiringManagerArgs<ExtArgs>
   createdBy?: boolean | Prisma.Job$createdByArgs<ExtArgs>
   approvals?: boolean | Prisma.Job$approvalsArgs<ExtArgs>
-  skills?: boolean | Prisma.Job$skillsArgs<ExtArgs>
   tools?: boolean | Prisma.Job$toolsArgs<ExtArgs>
-  responsibilities?: boolean | Prisma.Job$responsibilitiesArgs<ExtArgs>
-  applications?: boolean | Prisma.Job$applicationsArgs<ExtArgs>
+  applicants?: boolean | Prisma.Job$applicantsArgs<ExtArgs>
   interviews?: boolean | Prisma.Job$interviewsArgs<ExtArgs>
   hiringDecisions?: boolean | Prisma.Job$hiringDecisionsArgs<ExtArgs>
   requestForm?: boolean | Prisma.Job$requestFormArgs<ExtArgs>
@@ -5214,10 +4762,8 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     hiringManager: Prisma.$UserPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs> | null
     approvals: Prisma.$JobApprovalPayload<ExtArgs>[]
-    skills: Prisma.$JobSkillPayload<ExtArgs>[]
     tools: Prisma.$JobToolPayload<ExtArgs>[]
-    responsibilities: Prisma.$JobResponsibilityPayload<ExtArgs>[]
-    applications: Prisma.$JobApplicationPayload<ExtArgs>[]
+    applicants: Prisma.$ApplicantPayload<ExtArgs>[]
     interviews: Prisma.$InterviewPayload<ExtArgs>[]
     hiringDecisions: Prisma.$HiringDecisionPayload<ExtArgs>[]
     requestForm: Prisma.$JobRequestFormPayload<ExtArgs> | null
@@ -5243,6 +4789,8 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     currency: string | null
     salaryMode: $Enums.JobSalaryMode
     benefits: string[]
+    skills: string[]
+    responsibilities: string[]
     status: $Enums.JobWorkflowStatus
     priority: $Enums.JobPriority
     financeApprovalStatus: $Enums.JobStageApprovalStatus
@@ -5666,10 +5214,8 @@ export interface Prisma__JobClient<T, Null = never, ExtArgs extends runtime.Type
   hiringManager<T extends Prisma.Job$hiringManagerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$hiringManagerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.Job$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   approvals<T extends Prisma.Job$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  skills<T extends Prisma.Job$skillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tools<T extends Prisma.Job$toolsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$toolsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobToolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  responsibilities<T extends Prisma.Job$responsibilitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$responsibilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobResponsibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  applications<T extends Prisma.Job$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  applicants<T extends Prisma.Job$applicantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   interviews<T extends Prisma.Job$interviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   hiringDecisions<T extends Prisma.Job$hiringDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$hiringDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HiringDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requestForm<T extends Prisma.Job$requestFormArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$requestFormArgs<ExtArgs>>): Prisma.Prisma__JobRequestFormClient<runtime.Types.Result.GetResult<Prisma.$JobRequestFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -5722,6 +5268,8 @@ export interface JobFieldRefs {
   readonly currency: Prisma.FieldRef<"Job", 'String'>
   readonly salaryMode: Prisma.FieldRef<"Job", 'JobSalaryMode'>
   readonly benefits: Prisma.FieldRef<"Job", 'String[]'>
+  readonly skills: Prisma.FieldRef<"Job", 'String[]'>
+  readonly responsibilities: Prisma.FieldRef<"Job", 'String[]'>
   readonly status: Prisma.FieldRef<"Job", 'JobWorkflowStatus'>
   readonly priority: Prisma.FieldRef<"Job", 'JobPriority'>
   readonly financeApprovalStatus: Prisma.FieldRef<"Job", 'JobStageApprovalStatus'>
@@ -6204,30 +5752,6 @@ export type Job$approvalsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * Job.skills
- */
-export type Job$skillsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the JobSkill
-   */
-  select?: Prisma.JobSkillSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the JobSkill
-   */
-  omit?: Prisma.JobSkillOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.JobSkillInclude<ExtArgs> | null
-  where?: Prisma.JobSkillWhereInput
-  orderBy?: Prisma.JobSkillOrderByWithRelationInput | Prisma.JobSkillOrderByWithRelationInput[]
-  cursor?: Prisma.JobSkillWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.JobSkillScalarFieldEnum | Prisma.JobSkillScalarFieldEnum[]
-}
-
-/**
  * Job.tools
  */
 export type Job$toolsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6252,51 +5776,27 @@ export type Job$toolsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 }
 
 /**
- * Job.responsibilities
+ * Job.applicants
  */
-export type Job$responsibilitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Job$applicantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the JobResponsibility
+   * Select specific fields to fetch from the Applicant
    */
-  select?: Prisma.JobResponsibilitySelect<ExtArgs> | null
+  select?: Prisma.ApplicantSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the JobResponsibility
+   * Omit specific fields from the Applicant
    */
-  omit?: Prisma.JobResponsibilityOmit<ExtArgs> | null
+  omit?: Prisma.ApplicantOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.JobResponsibilityInclude<ExtArgs> | null
-  where?: Prisma.JobResponsibilityWhereInput
-  orderBy?: Prisma.JobResponsibilityOrderByWithRelationInput | Prisma.JobResponsibilityOrderByWithRelationInput[]
-  cursor?: Prisma.JobResponsibilityWhereUniqueInput
+  include?: Prisma.ApplicantInclude<ExtArgs> | null
+  where?: Prisma.ApplicantWhereInput
+  orderBy?: Prisma.ApplicantOrderByWithRelationInput | Prisma.ApplicantOrderByWithRelationInput[]
+  cursor?: Prisma.ApplicantWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.JobResponsibilityScalarFieldEnum | Prisma.JobResponsibilityScalarFieldEnum[]
-}
-
-/**
- * Job.applications
- */
-export type Job$applicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the JobApplication
-   */
-  select?: Prisma.JobApplicationSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the JobApplication
-   */
-  omit?: Prisma.JobApplicationOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.JobApplicationInclude<ExtArgs> | null
-  where?: Prisma.JobApplicationWhereInput
-  orderBy?: Prisma.JobApplicationOrderByWithRelationInput | Prisma.JobApplicationOrderByWithRelationInput[]
-  cursor?: Prisma.JobApplicationWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.JobApplicationScalarFieldEnum | Prisma.JobApplicationScalarFieldEnum[]
+  distinct?: Prisma.ApplicantScalarFieldEnum | Prisma.ApplicantScalarFieldEnum[]
 }
 
 /**

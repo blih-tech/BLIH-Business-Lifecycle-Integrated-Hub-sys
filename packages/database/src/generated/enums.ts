@@ -295,6 +295,18 @@ export const JobApplicationStatus = {
 export type JobApplicationStatus = (typeof JobApplicationStatus)[keyof typeof JobApplicationStatus]
 
 
+export const ApplicantStatus = {
+  APPLIED: 'APPLIED',
+  SHORTLISTED: 'SHORTLISTED',
+  INTERVIEW: 'INTERVIEW',
+  OFFER: 'OFFER',
+  HIRED: 'HIRED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
+
+
 export const InterviewType = {
   HR_SCREENING: 'HR_SCREENING',
   TECHNICAL: 'TECHNICAL',

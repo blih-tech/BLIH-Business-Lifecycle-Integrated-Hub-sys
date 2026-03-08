@@ -33,8 +33,8 @@ import {
   CreateJobDto,
   JobListQueryDto,
   JobResponseDto,
-  JobResponsibilityResponseDto,
-  JobSkillResponseDto,
+  JobResponsibilityValueResponseDto,
+  JobSkillValueResponseDto,
   JobToolResponseDto,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
@@ -137,12 +137,10 @@ export class JobsController {
                 },
               ],
             },
-            keyResponsibilities:
-              'Lead frontend delivery\\nCollaborate with product and design',
-            skills: [
-              { name: 'React', level: 'ADVANCED', required: true },
-              { name: 'TypeScript', level: 'ADVANCED', required: true },
-              { name: 'Next.js', required: false },
+            skills: ['React', 'TypeScript', 'Next.js'],
+            responsibilities: [
+              'Lead frontend delivery',
+              'Collaborate with product and design',
             ],
             preferredSkills: 'Design systems',
             experienceLevel: 'senior',
@@ -280,8 +278,8 @@ export class JobsController {
               version: 1,
               content: [{ type: 'paragraph', text: 'Updated summary' }],
             },
-            keyResponsibilities: 'Lead team\\nShip product',
-            skills: [{ name: 'React', level: 'ADVANCED', required: true }],
+            skills: ['React'],
+            responsibilities: ['Lead team', 'Ship product'],
             experienceLevel: 'lead',
             salaryMode: 'negotiable',
             openings: 1,
@@ -478,26 +476,18 @@ export class JobsController {
   @ApiBody({
     type: UpsertJobSkillsDto,
     description:
-      'Request body: skills (required) â€” array of { name (required), level (optional: BEGINNER|INTERMEDIATE|ADVANCED|EXPERT), required (optional, default true), order (optional) }. Replaces all existing skills.',
+      'Request body: skills (required) as a string array. Replaces all existing skills.',
     examples: {
       upsertSkills: {
         summary: 'Skills payload',
         value: {
-          skills: [
-            { name: 'TypeScript', level: 'ADVANCED', required: true, order: 1 },
-            {
-              name: 'PostgreSQL',
-              level: 'INTERMEDIATE',
-              required: true,
-              order: 2,
-            },
-          ],
+          skills: ['TypeScript', 'PostgreSQL'],
         },
       },
     },
   })
   @ApiEnvelopeArrayResponse(
-    JobSkillResponseDto,
+    JobSkillValueResponseDto,
     'Updated job skills',
     jobSkillsResponseEnvelope,
   )
@@ -565,21 +555,21 @@ export class JobsController {
   @ApiBody({
     type: UpsertJobResponsibilitiesDto,
     description:
-      'Request body: responsibilities (required) â€” array of { description (required), order (optional) }. Replaces all existing responsibilities.',
+      'Request body: responsibilities (required) as a string array. Replaces all existing responsibilities.',
     examples: {
       upsertResponsibilities: {
         summary: 'Responsibilities payload',
         value: {
           responsibilities: [
-            { description: 'Design backend architecture.', order: 1 },
-            { description: 'Review pull requests.', order: 2 },
+            'Design backend architecture.',
+            'Review pull requests.',
           ],
         },
       },
     },
   })
   @ApiEnvelopeArrayResponse(
-    JobResponsibilityResponseDto,
+    JobResponsibilityValueResponseDto,
     'Updated job responsibilities',
     jobResponsibilitiesResponseEnvelope,
   )

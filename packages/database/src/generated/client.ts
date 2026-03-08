@@ -403,11 +403,6 @@ export type JobRequestForm = Prisma.JobRequestFormModel
  */
 export type JobDetailsForm = Prisma.JobDetailsFormModel
 /**
- * Model JobDetailSkill
- * 
- */
-export type JobDetailSkill = Prisma.JobDetailSkillModel
-/**
  * Model JobApplicationForm
  * 
  */
@@ -433,45 +428,25 @@ export type JobApplicationCustomFieldOption = Prisma.JobApplicationCustomFieldOp
  */
 export type JobApproval = Prisma.JobApprovalModel
 /**
- * Model JobSkill
- * 
- */
-export type JobSkill = Prisma.JobSkillModel
-/**
  * Model JobTool
  * 
  */
 export type JobTool = Prisma.JobToolModel
 /**
- * Model JobResponsibility
+ * Model Applicant
  * 
  */
-export type JobResponsibility = Prisma.JobResponsibilityModel
+export type Applicant = Prisma.ApplicantModel
 /**
- * Model Candidate
+ * Model ApplicantEducation
  * 
  */
-export type Candidate = Prisma.CandidateModel
+export type ApplicantEducation = Prisma.ApplicantEducationModel
 /**
- * Model CandidateSkill
+ * Model ApplicantExperience
  * 
  */
-export type CandidateSkill = Prisma.CandidateSkillModel
-/**
- * Model CandidateEducation
- * 
- */
-export type CandidateEducation = Prisma.CandidateEducationModel
-/**
- * Model CandidateExperience
- * 
- */
-export type CandidateExperience = Prisma.CandidateExperienceModel
-/**
- * Model JobApplication
- * 
- */
-export type JobApplication = Prisma.JobApplicationModel
+export type ApplicantExperience = Prisma.ApplicantExperienceModel
 /**
  * Model Interview
  * 
