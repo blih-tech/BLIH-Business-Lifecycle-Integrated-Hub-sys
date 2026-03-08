@@ -21,6 +21,7 @@ model User {
   roles                            UserRole[]
   verifiedDocuments                EmployeeDocument[]            @relation("EmployeeDocumentVerifiedBy")
   createdJobs                      Job[]                         @relation("JobCreatedBy")
+  managedJobs                      Job[]                         @relation("JobHiringManager")
   referredCandidates               Candidate[]                   @relation("CandidateReferral")
   conductedInterviews              Interview[]                   @relation("InterviewInterviewer")
   submittedHiringDecisions         HiringDecision[]              @relation("HiringDecisionSubmittedBy")
@@ -123,6 +124,7 @@ model Employee {
   finalSettlements            FinalSettlement[]
   assetReturns                AssetReturn[]
   complianceChecklists        ComplianceChecklist[]
+  jobReplacementRequests      JobRequestForm[]              @relation("JobRequestReplacementEmployee")
   createdAt                   DateTime                      @default(now())
   updatedAt                   DateTime                      @updatedAt
 

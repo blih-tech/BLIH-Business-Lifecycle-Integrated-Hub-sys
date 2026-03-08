@@ -438,6 +438,16 @@ export type Candidate = Prisma.CandidateModel
  */
 export type CandidateSkill = Prisma.CandidateSkillModel
 /**
+ * Model CandidateEducation
+ * 
+ */
+export type CandidateEducation = Prisma.CandidateEducationModel
+/**
+ * Model CandidateExperience
+ * 
+ */
+export type CandidateExperience = Prisma.CandidateExperienceModel
+/**
  * Model JobApplication
  * 
  */

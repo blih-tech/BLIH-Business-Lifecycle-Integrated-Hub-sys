@@ -102,6 +102,12 @@ enum JobWorkflowStatus {
   REJECTED
 }
 
+enum JobPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
 enum JobStageApprovalStatus {
   PENDING_FOR_APPROVAL
   APPROVED
@@ -118,6 +124,7 @@ enum JobSalaryMode {
   NOT_SPECIFIED
   NEGOTIABLE
   COMPETITIVE
+  FIXED
 }
 
 enum JobRequestType {

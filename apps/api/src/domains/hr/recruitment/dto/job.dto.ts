@@ -78,6 +78,7 @@ const JOB_WORKFLOW_STATUSES = [
   'CLOSED',
   'REJECTED',
 ] as const;
+const JOB_PRIORITY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
 const SALARY_MODES = ['NOT_SPECIFIED', 'NEGOTIABLE', 'COMPETITIVE'] as const;
 const SKILL_LEVELS = [
   'BEGINNER',
@@ -410,6 +411,17 @@ export class CreateJobDto {
   @ValidateNested()
   @Type(() => JobApplicationFormInputDto)
   applicationForm!: JobApplicationFormInputDto;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsUUID()
+  hiringManagerId?: string | null;
+
+  @ApiPropertyOptional({ enum: JOB_PRIORITY_LEVELS })
+  @IsOptional()
+  @Transform(normalizeEnumValue)
+  @IsEnum(JOB_PRIORITY_LEVELS)
+  priority?: (typeof JOB_PRIORITY_LEVELS)[number];
 }
 
 export class UpdateJobDto extends PartialType(CreateJobDto) {}
@@ -621,8 +633,50 @@ export class JobResponseDto {
   @ApiProperty()
   creatorIsHr!: boolean;
 
+  @ApiPropertyOptional({ enum: JOB_PRIORITY_LEVELS, nullable: true })
+  priority!: (typeof JOB_PRIORITY_LEVELS)[number] | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  hiringManagerId!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  draftedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  pendingApprovalAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  readyToPostAt!: string | null;
+
   @ApiPropertyOptional({ nullable: true })
   publishedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  closedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  rejectedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  closingReason!: string | null;
+
+  @ApiProperty()
+  viewsCount!: number;
+
+  @ApiProperty()
+  applicationsCount!: number;
+
+  @ApiProperty()
+  shortlistedCount!: number;
+
+  @ApiProperty()
+  interviewsCount!: number;
+
+  @ApiProperty()
+  offersCount!: number;
+
+  @ApiProperty()
+  hiresCount!: number;
 
   @ApiPropertyOptional({ nullable: true })
   createdById!: string | null;

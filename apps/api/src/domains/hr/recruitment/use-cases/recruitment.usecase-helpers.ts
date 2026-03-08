@@ -388,7 +388,21 @@ export function mapJob(job: any) {
     gmApprovalStatus: job.gmApprovalStatus,
     hrApprovalStatus: job.hrApprovalStatus,
     creatorIsHr: job.creatorIsHr,
+    priority: job.priority,
+    hiringManagerId: job.hiringManagerId ?? null,
+    draftedAt: dateToIso(job.draftedAt),
+    pendingApprovalAt: dateToIso(job.pendingApprovalAt),
+    readyToPostAt: dateToIso(job.readyToPostAt),
     publishedAt: dateToIso(job.publishedAt),
+    closedAt: dateToIso(job.closedAt),
+    rejectedAt: dateToIso(job.rejectedAt),
+    closingReason: job.closingReason ?? null,
+    viewsCount: job.viewsCount ?? 0,
+    applicationsCount: job.applicationsCount ?? 0,
+    shortlistedCount: job.shortlistedCount ?? 0,
+    interviewsCount: job.interviewsCount ?? 0,
+    offersCount: job.offersCount ?? 0,
+    hiresCount: job.hiresCount ?? 0,
     createdById: job.createdById ?? null,
     requestForm: requestForm
       ? {
@@ -510,6 +524,35 @@ export function mapCandidate(candidate: any) {
       level: skill.level ?? null,
       years: skill.years ?? null,
     })),
+    location: candidate.location ?? null,
+    country: candidate.country ?? null,
+    city: candidate.city ?? null,
+    nationality: candidate.nationality ?? null,
+    expectedSalary: decimalToString(candidate.expectedSalary),
+    currentSalary: decimalToString(candidate.currentSalary),
+    educationLevel: candidate.educationLevel ?? null,
+    highestDegree: candidate.highestDegree ?? null,
+    lastActivityAt: dateToIso(candidate.lastActivityAt),
+    profileScore:
+      typeof candidate.profileScore === 'number'
+        ? String(candidate.profileScore)
+        : null,
+    educations: (candidate.educations ?? []).map((education: any) => ({
+      id: education.id,
+      institution: education.institution,
+      degree: education.degree,
+      field: education.field,
+      startDate: dateToIso(education.startDate),
+      endDate: dateToIso(education.endDate),
+    })),
+    experiences: (candidate.experiences ?? []).map((experience: any) => ({
+      id: experience.id,
+      company: experience.company,
+      title: experience.title,
+      startDate: dateToIso(experience.startDate),
+      endDate: dateToIso(experience.endDate),
+      description: experience.description ?? null,
+    })),
     createdAt: candidate.createdAt.toISOString(),
     updatedAt: candidate.updatedAt.toISOString(),
   };
@@ -554,4 +597,106 @@ export function mapInterview(interview: any) {
     createdAt: interview.createdAt.toISOString(),
     updatedAt: interview.updatedAt.toISOString(),
   };
+}
+
+export async function touchCandidateActivity(
+  prisma: Pick<PrismaService, 'candidate'>,
+  candidateId: string,
+  at: Date,
+) {
+  await prisma.candidate.update({
+    where: { id: candidateId },
+    data: { lastActivityAt: at },
+  });
+}
+
+export function computeCandidateProfileScore(input: {
+  yearsExperience: number | null;
+  hasResume: boolean;
+  skillsCount: number | null;
+  hasLinks: boolean;
+}) {
+  let score = 0;
+
+  if (input.hasResume) {
+    score += 20;
+  }
+
+  const years = input.yearsExperience ?? 0;
+  if (years >= 5) {
+    score += 20;
+  } else if (years >= 1) {
+    score += 10;
+  }
+
+  const skills = input.skillsCount ?? 0;
+  if (skills >= 5) {
+    score += 20;
+  } else if (skills >= 1) {
+    score += 10;
+  }
+
+  if (input.hasLinks) {
+    score += 10;
+  }
+
+  if (score > 100) score = 100;
+  if (score < 0) score = 0;
+
+  return score;
+}
+
+export async function recalculateJobMetrics(
+  prisma: {
+    job: PrismaService['job'];
+    jobApplication: PrismaService['jobApplication'];
+    interview: PrismaService['interview'];
+  },
+  jobId: string,
+) {
+  const [
+    applicationsCount,
+    shortlistedCount,
+    offersCount,
+    hiresCount,
+    interviewsCount,
+  ] = await Promise.all([
+    prisma.jobApplication.count({
+      where: { jobId },
+    }),
+    prisma.jobApplication.count({
+      where: {
+        jobId,
+        status: {
+          in: ['SHORTLISTED', 'INTERVIEW_STAGE', 'OFFER_PENDING', 'HIRED'],
+        },
+      },
+    }),
+    prisma.jobApplication.count({
+      where: {
+        jobId,
+        status: { in: ['OFFER_PENDING', 'HIRED'] },
+      },
+    }),
+    prisma.jobApplication.count({
+      where: {
+        jobId,
+        status: 'HIRED',
+      },
+    }),
+    prisma.interview.count({
+      where: { jobId },
+    }),
+  ]);
+
+  await prisma.job.update({
+    where: { id: jobId },
+    data: {
+      applicationsCount,
+      shortlistedCount,
+      offersCount,
+      hiresCount,
+      interviewsCount,
+    },
+  });
 }

@@ -16,6 +16,10 @@ import {
   mapInterview,
   parseInterviewMetadata,
 } from './recruitment.usecase-helpers';
+import {
+  recalculateJobMetrics,
+  touchCandidateActivity,
+} from './recruitment.usecase-helpers';
 
 @Injectable()
 export class CreateInterviewUseCase {
@@ -44,25 +48,33 @@ export class CreateInterviewUseCase {
     if (duplicate)
       throw new ConflictException('Interview round already exists');
 
-    const created = await this.prisma.interview.create({
-      data: {
-        jobId: application.jobId,
-        candidateId: application.candidateId,
-        type: dto.type,
-        status: dto.status ?? 'SCHEDULED',
-        scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : undefined,
-        completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
-        interviewerId: dto.interviewerId,
-        feedback: buildInterviewMetadata({
-          applicationId: dto.applicationId,
-          round,
-          interviewers: dto.interviewers,
-          feedback: dto.feedback,
-          endorsement: dto.endorsement ?? null,
-          score: dto.score ?? null,
-          nextAction: dto.nextAction ?? null,
-        }) as Prisma.InputJsonValue,
-      },
+    const now = new Date();
+    const created = await this.prisma.$transaction(async (tx) => {
+      const row = await tx.interview.create({
+        data: {
+          jobId: application.jobId,
+          candidateId: application.candidateId,
+          type: dto.type,
+          status: dto.status ?? 'SCHEDULED',
+          scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : undefined,
+          completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
+          interviewerId: dto.interviewerId,
+          feedback: buildInterviewMetadata({
+            applicationId: dto.applicationId,
+            round,
+            interviewers: dto.interviewers,
+            feedback: dto.feedback,
+            endorsement: dto.endorsement ?? null,
+            score: dto.score ?? null,
+            nextAction: dto.nextAction ?? null,
+          }) as Prisma.InputJsonValue,
+        },
+      });
+
+      await touchCandidateActivity(tx, application.candidateId, now);
+      await recalculateJobMetrics(tx, application.jobId);
+
+      return row;
     });
     return mapInterview({ ...created, applicationId: dto.applicationId });
   }
@@ -183,26 +195,38 @@ export class UpdateInterviewUseCase {
           : dto.nextAction,
     });
 
-    const updated = await this.prisma.interview.update({
-      where: { id },
-      data: {
-        ...(application && {
-          jobId: application.jobId,
-          candidateId: application.candidateId,
-        }),
-        ...(dto.type !== undefined && { type: dto.type }),
-        ...(dto.status !== undefined && { status: dto.status }),
-        ...(dto.scheduledAt !== undefined && {
-          scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : null,
-        }),
-        ...(dto.completedAt !== undefined && {
-          completedAt: dto.completedAt ? new Date(dto.completedAt) : null,
-        }),
-        ...(dto.interviewerId !== undefined && {
-          interviewerId: dto.interviewerId,
-        }),
-        feedback: nextFeedbackPayload as Prisma.InputJsonValue,
-      },
+    const now = new Date();
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const row = await tx.interview.update({
+        where: { id },
+        data: {
+          ...(application && {
+            jobId: application.jobId,
+            candidateId: application.candidateId,
+          }),
+          ...(dto.type !== undefined && { type: dto.type }),
+          ...(dto.status !== undefined && { status: dto.status }),
+          ...(dto.scheduledAt !== undefined && {
+            scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : null,
+          }),
+          ...(dto.completedAt !== undefined && {
+            completedAt: dto.completedAt ? new Date(dto.completedAt) : null,
+          }),
+          ...(dto.interviewerId !== undefined && {
+            interviewerId: dto.interviewerId,
+          }),
+          feedback: nextFeedbackPayload as Prisma.InputJsonValue,
+        },
+      });
+
+      await touchCandidateActivity(
+        tx,
+        application?.candidateId ?? existing.candidateId,
+        now,
+      );
+      await recalculateJobMetrics(tx, application?.jobId ?? existing.jobId);
+
+      return row;
     });
     return mapInterview({ ...updated, applicationId: nextApplicationId });
   }

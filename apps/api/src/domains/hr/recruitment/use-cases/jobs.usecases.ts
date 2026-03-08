@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 import type { AuthPrincipal } from '../../../../shared/interfaces/auth-principal.interface';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
@@ -311,6 +312,17 @@ export class CreateJobUseCase {
         positionId: dto.requestForm.position,
         description: dto.jobDetailsForm.jobSummary,
         summary: dto.jobDetailsForm.whyJoinUs ?? undefined,
+        descriptionRich: {
+          kind: 'markdown',
+          value: dto.jobDetailsForm.jobSummary,
+        } as unknown as Prisma.InputJsonValue,
+        summaryRich:
+          dto.jobDetailsForm.whyJoinUs != null
+            ? ({
+                kind: 'markdown',
+                value: dto.jobDetailsForm.whyJoinUs,
+              } as unknown as Prisma.InputJsonValue)
+            : undefined,
         experienceLevel: dto.jobDetailsForm.experienceLevel,
         contractType: EMPLOYMENT_TO_CONTRACT[dto.requestForm.employmentType],
         employmentType: dto.requestForm.employmentType,
@@ -325,7 +337,10 @@ export class CreateJobUseCase {
         salaryMode: dto.jobDetailsForm.salaryMode,
         benefits: dto.jobDetailsForm.benefits ?? [],
         creatorIsHr,
+        priority: dto.priority ?? 'MEDIUM',
+        hiringManagerId: dto.hiringManagerId ?? undefined,
         applicationDeadline: new Date(dto.jobDetailsForm.applicationDeadline),
+        draftedAt: new Date(),
         createdById: creatorId,
         financeApprovalStatus: 'PENDING_FOR_APPROVAL',
         gmApprovalStatus: 'PENDING_FOR_APPROVAL',
@@ -519,6 +534,17 @@ export class UpdateJobUseCase {
           positionId: merged.requestForm.position,
           description: merged.jobDetailsForm.jobSummary,
           summary: merged.jobDetailsForm.whyJoinUs ?? null,
+          descriptionRich: {
+            kind: 'markdown',
+            value: merged.jobDetailsForm.jobSummary,
+          } as Prisma.InputJsonValue,
+          summaryRich:
+            merged.jobDetailsForm.whyJoinUs != null
+              ? ({
+                  kind: 'markdown',
+                  value: merged.jobDetailsForm.whyJoinUs,
+                } as Prisma.InputJsonValue)
+              : null,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
           contractType:
             EMPLOYMENT_TO_CONTRACT[merged.requestForm.employmentType],
@@ -535,6 +561,10 @@ export class UpdateJobUseCase {
           applicationDeadline: new Date(
             merged.jobDetailsForm.applicationDeadline,
           ),
+          ...(dto.priority !== undefined && { priority: dto.priority }),
+          ...(dto.hiringManagerId !== undefined && {
+            hiringManagerId: dto.hiringManagerId,
+          }),
         },
       });
 
@@ -783,6 +813,7 @@ export class SubmitJobUseCase {
         ],
       });
 
+      const now = new Date();
       return tx.job.update({
         where: { id },
         data: {
@@ -790,6 +821,7 @@ export class SubmitJobUseCase {
           financeApprovalStatus: 'PENDING_FOR_APPROVAL',
           gmApprovalStatus: 'PENDING_FOR_APPROVAL',
           hrApprovalStatus: 'PENDING_FOR_APPROVAL',
+          pendingApprovalAt: existing.pendingApprovalAt ?? now,
         },
         include: jobInclude,
       });
@@ -885,6 +917,7 @@ export class ApproveJobUseCase {
           data: {
             ...stageFieldPatch(target.stage, 'REJECTED'),
             status: 'REJECTED',
+            rejectedAt: existing.rejectedAt ?? decidedAt,
           },
           include: jobInclude,
         });
@@ -936,6 +969,8 @@ export class ApproveJobUseCase {
         data: {
           ...stageStatuses,
           status: nextStatus,
+          ...(nextStatus === 'READY_TO_POST' &&
+            existing.readyToPostAt == null && { readyToPostAt: decidedAt }),
         },
         include: jobInclude,
       });
@@ -987,7 +1022,11 @@ export class CloseJobUseCase {
     }
     const closed = await this.prisma.job.update({
       where: { id },
-      data: { status: 'CLOSED' },
+      data: {
+        status: 'CLOSED',
+        closedAt: new Date(),
+        closingReason: dto?.reason ?? null,
+      },
       include: jobInclude,
     });
     return mapJob(closed);

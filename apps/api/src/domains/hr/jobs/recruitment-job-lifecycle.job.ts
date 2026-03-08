@@ -41,7 +41,11 @@ export class RecruitmentJobLifecycleJob {
 
     await this.prisma.job.updateMany({
       where: { id: { in: jobs.map((job) => job.id) } },
-      data: { status: 'CLOSED' },
+      data: {
+        status: 'CLOSED',
+        closedAt: now,
+        closingReason: 'APPLICATION_DEADLINE_PASSED',
+      },
     });
 
     for (const job of jobs) {
@@ -86,7 +90,11 @@ export class RecruitmentJobLifecycleJob {
 
     await this.prisma.job.updateMany({
       where: { id: { in: filledJobs.map((job) => job.id) } },
-      data: { status: 'CLOSED' },
+      data: {
+        status: 'CLOSED',
+        closedAt: new Date(),
+        closingReason: 'OPENINGS_FILLED',
+      },
     });
 
     for (const job of filledJobs) {

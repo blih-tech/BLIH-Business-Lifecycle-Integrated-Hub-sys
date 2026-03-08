@@ -146,6 +146,15 @@ export const JobWorkflowStatus = {
 export type JobWorkflowStatus = (typeof JobWorkflowStatus)[keyof typeof JobWorkflowStatus]
 
 
+export const JobPriority = {
+  HIGH: 'HIGH',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW'
+} as const
+
+export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
+
+
 export const JobStageApprovalStatus = {
   PENDING_FOR_APPROVAL: 'PENDING_FOR_APPROVAL',
   APPROVED: 'APPROVED',

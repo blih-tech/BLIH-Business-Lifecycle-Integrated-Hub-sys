@@ -15,6 +15,8 @@ import { RecruitmentNotificationService } from '../recruitment-notification.serv
 import {
   assertApplicationTransition,
   mapApplication,
+  touchCandidateActivity,
+  recalculateJobMetrics,
 } from './recruitment.usecase-helpers';
 
 @Injectable()
@@ -53,18 +55,26 @@ export class CreateJobApplicationUseCase {
       throw new ConflictException('Candidate already applied to this job');
     }
 
-    const application = await this.prisma.jobApplication.create({
-      data: {
-        jobId: dto.jobId,
-        candidateId: dto.candidateId,
-        customFieldValues: {
-          coverLetter: dto.coverLetter ?? null,
-          expectedSalary: dto.expectedSalary ?? null,
-          sourceSnapshot: dto.sourceSnapshot ?? {
-            candidateSource: candidate.source,
-          },
-        } as Prisma.InputJsonValue,
-      },
+    const now = new Date();
+    const application = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.jobApplication.create({
+        data: {
+          jobId: dto.jobId,
+          candidateId: dto.candidateId,
+          customFieldValues: {
+            coverLetter: dto.coverLetter ?? null,
+            expectedSalary: dto.expectedSalary ?? null,
+            sourceSnapshot: dto.sourceSnapshot ?? {
+              candidateSource: candidate.source,
+            },
+          } as Prisma.InputJsonValue,
+        },
+      });
+
+      await touchCandidateActivity(tx, dto.candidateId, now);
+      await recalculateJobMetrics(tx, dto.jobId);
+
+      return created;
     });
 
     await this.notifications.notifyUsers({
@@ -119,14 +129,22 @@ export class UpdateJobApplicationStatusUseCase {
   async execute(id: string, dto: UpdateApplicationStatusDto) {
     const existing = await this.prisma.jobApplication.findUnique({
       where: { id },
-      select: { id: true, status: true },
+      select: { id: true, status: true, jobId: true, candidateId: true },
     });
     if (!existing) throw new NotFoundException('Job application not found');
     assertApplicationTransition(existing.status, dto.status);
 
-    const updated = await this.prisma.jobApplication.update({
-      where: { id },
-      data: { status: dto.status },
+    const now = new Date();
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const row = await tx.jobApplication.update({
+        where: { id },
+        data: { status: dto.status },
+      });
+
+      await touchCandidateActivity(tx, existing.candidateId, now);
+      await recalculateJobMetrics(tx, existing.jobId);
+
+      return row;
     });
     return mapApplication(updated);
   }

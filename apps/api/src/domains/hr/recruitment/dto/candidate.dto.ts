@@ -27,6 +27,8 @@ const SKILL_LEVELS = [
   'EXPERT',
 ] as const;
 
+const EDUCATION_LEVELS = ['HIGH_SCHOOL', 'BACHELOR', 'MASTER', 'PHD'] as const;
+
 export class CandidateSkillInputDto {
   @ApiProperty({ example: 'NestJS' })
   @IsString()
@@ -42,6 +44,60 @@ export class CandidateSkillInputDto {
   @IsOptional()
   @IsInt()
   years?: number | null;
+}
+
+export class CandidateEducationInputDto {
+  @ApiProperty({ example: 'Addis Ababa University' })
+  @IsString()
+  @IsNotEmpty()
+  institution!: string;
+
+  @ApiProperty({ example: 'BSc' })
+  @IsString()
+  @IsNotEmpty()
+  degree!: string;
+
+  @ApiProperty({ example: 'Computer Science' })
+  @IsString()
+  @IsNotEmpty()
+  field!: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  startDate?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  endDate?: string | null;
+}
+
+export class CandidateExperienceInputDto {
+  @ApiProperty({ example: 'TechCorp' })
+  @IsString()
+  @IsNotEmpty()
+  company!: string;
+
+  @ApiProperty({ example: 'Senior Engineer' })
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  startDate?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  endDate?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  description?: string | null;
 }
 
 export class CreateCandidateDto {
@@ -110,6 +166,60 @@ export class CreateCandidateDto {
   @ValidateNested({ each: true })
   @Type(() => CandidateSkillInputDto)
   skills?: CandidateSkillInputDto[];
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  location?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  country?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  city?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  nationality?: string | null;
+
+  @ApiPropertyOptional({ nullable: true, example: 150000 })
+  @IsOptional()
+  @IsInt()
+  expectedSalary?: number | null;
+
+  @ApiPropertyOptional({ nullable: true, example: 120000 })
+  @IsOptional()
+  @IsInt()
+  currentSalary?: number | null;
+
+  @ApiPropertyOptional({ enum: EDUCATION_LEVELS, nullable: true })
+  @IsOptional()
+  @IsEnum(EDUCATION_LEVELS)
+  educationLevel?: (typeof EDUCATION_LEVELS)[number] | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  highestDegree?: string | null;
+
+  @ApiPropertyOptional({ type: [CandidateEducationInputDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CandidateEducationInputDto)
+  educations?: CandidateEducationInputDto[];
+
+  @ApiPropertyOptional({ type: [CandidateExperienceInputDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CandidateExperienceInputDto)
+  experiences?: CandidateExperienceInputDto[];
 }
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
@@ -170,6 +280,48 @@ export class CandidateResponseDto {
 
   @ApiProperty({ type: [CandidateSkillResponseDto] })
   skills!: CandidateSkillResponseDto[];
+
+  @ApiPropertyOptional({ nullable: true })
+  location!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  country!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  city!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  nationality!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  expectedSalary!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  currentSalary!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  educationLevel!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  highestDegree!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  lastActivityAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  profileScore!: string | null;
+
+  @ApiProperty({
+    type: () => CandidateEducationInputDto,
+    isArray: true,
+  })
+  educations!: CandidateEducationInputDto[];
+
+  @ApiProperty({
+    type: () => CandidateExperienceInputDto,
+    isArray: true,
+  })
+  experiences!: CandidateExperienceInputDto[];
 
   @ApiProperty()
   createdAt!: string;
