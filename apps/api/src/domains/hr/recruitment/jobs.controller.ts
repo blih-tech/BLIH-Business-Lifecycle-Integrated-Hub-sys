@@ -160,28 +160,36 @@ export class JobsController {
           applicationForm: {
             applicantFields: [
               {
-                key: 'full_name',
+                key: 'PHONE',
                 enabled: true,
-                required: true,
+                required: false,
                 order: 1,
               },
               {
-                key: 'email',
+                key: 'LINKEDIN_URL',
                 enabled: true,
-                required: true,
+                required: false,
                 order: 2,
               },
               {
-                key: 'resume_url',
-                enabled: true,
-                required: true,
-                order: 3,
-              },
-              {
-                key: 'phone',
+                key: 'EXPECTED_SALARY',
                 enabled: true,
                 required: false,
-                order: 4,
+                order: 3,
+              },
+            ],
+            sections: [
+              {
+                key: 'EDUCATION',
+                enabled: true,
+                required: false,
+                order: 1,
+              },
+              {
+                key: 'EXPERIENCE',
+                enabled: true,
+                required: false,
+                order: 2,
               },
             ],
             customFields: [
@@ -317,28 +325,36 @@ export class JobsController {
           applicationForm: {
             applicantFields: [
               {
-                key: 'full_name',
+                key: 'PHONE',
+                enabled: true,
+                required: false,
+                order: 1,
+              },
+              {
+                key: 'GITHUB_URL',
+                enabled: true,
+                required: false,
+                order: 2,
+              },
+              {
+                key: 'COVER_LETTER',
+                enabled: true,
+                required: true,
+                order: 3,
+              },
+            ],
+            sections: [
+              {
+                key: 'EDUCATION',
                 enabled: true,
                 required: true,
                 order: 1,
               },
               {
-                key: 'email',
-                enabled: true,
-                required: true,
-                order: 2,
-              },
-              {
-                key: 'resume_url',
-                enabled: true,
-                required: true,
-                order: 3,
-              },
-              {
-                key: 'skills',
+                key: 'EXPERIENCE',
                 enabled: true,
                 required: false,
-                order: 4,
+                order: 2,
               },
             ],
             customFields: [],

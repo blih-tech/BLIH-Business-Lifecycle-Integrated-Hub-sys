@@ -125,6 +125,7 @@ export const ModelName = {
   Job: 'Job',
   JobApplicationForm: 'JobApplicationForm',
   JobApplicationFormField: 'JobApplicationFormField',
+  JobApplicationFormSection: 'JobApplicationFormSection',
   JobApplicationCustomField: 'JobApplicationCustomField',
   JobApplicationCustomFieldOption: 'JobApplicationCustomFieldOption',
   JobApproval: 'JobApproval',
@@ -1468,6 +1469,20 @@ export const JobApplicationFormFieldScalarFieldEnum = {
 export type JobApplicationFormFieldScalarFieldEnum = (typeof JobApplicationFormFieldScalarFieldEnum)[keyof typeof JobApplicationFormFieldScalarFieldEnum]
 
 
+export const JobApplicationFormSectionScalarFieldEnum = {
+  id: 'id',
+  jobApplicationFormId: 'jobApplicationFormId',
+  key: 'key',
+  enabled: 'enabled',
+  required: 'required',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobApplicationFormSectionScalarFieldEnum = (typeof JobApplicationFormSectionScalarFieldEnum)[keyof typeof JobApplicationFormSectionScalarFieldEnum]
+
+
 export const JobApplicationCustomFieldScalarFieldEnum = {
   id: 'id',
   jobApplicationFormId: 'jobApplicationFormId',
@@ -1518,7 +1533,8 @@ export const ApplicantScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
   applicationFormId: 'applicationFormId',
-  fullName: 'fullName',
+  firstName: 'firstName',
+  lastName: 'lastName',
   email: 'email',
   emailNormalized: 'emailNormalized',
   phone: 'phone',
@@ -1545,11 +1561,13 @@ export const ApplicantScalarFieldEnum = {
   sourceSnapshot: 'sourceSnapshot',
   customFieldValues: 'customFieldValues',
   appliedAt: 'appliedAt',
+  screeningAt: 'screeningAt',
   shortlistedAt: 'shortlistedAt',
   interviewAt: 'interviewAt',
   offerAt: 'offerAt',
   hiredAt: 'hiredAt',
   rejectedAt: 'rejectedAt',
+  withdrawnAt: 'withdrawnAt',
   lastActivityAt: 'lastActivityAt',
   profileScore: 'profileScore',
   createdAt: 'createdAt',

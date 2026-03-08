@@ -49,27 +49,15 @@ export type JobApplicationFieldType =
   | 'DATE'
   | 'CHECKBOX';
 
-export type JobApplicantFieldKey =
-  | 'FULL_NAME'
-  | 'EMAIL'
+export type JobApplicantOptionalFieldKey =
   | 'PHONE'
-  | 'RESUME_URL'
   | 'LINKEDIN_URL'
   | 'PORTFOLIO_URL'
   | 'GITHUB_URL'
-  | 'CURRENT_COMPANY'
-  | 'CURRENT_POSITION'
-  | 'YEARS_EXPERIENCE'
-  | 'LOCATION'
-  | 'COUNTRY'
-  | 'CITY'
-  | 'NATIONALITY'
   | 'EXPECTED_SALARY'
-  | 'CURRENT_SALARY'
-  | 'EDUCATION_LEVEL'
-  | 'HIGHEST_DEGREE'
-  | 'SKILLS'
   | 'COVER_LETTER';
+
+export type JobApplicationFormSectionKey = 'EDUCATION' | 'EXPERIENCE';
 
 export type CandidateSource =
   | 'COMPANY_SITE'
@@ -193,7 +181,14 @@ export interface JobApplicationCustomFieldDto {
 }
 
 export interface JobApplicationFormFieldDto {
-  key: JobApplicantFieldKey;
+  key: JobApplicantOptionalFieldKey;
+  enabled: boolean;
+  required: boolean;
+  order?: number | null;
+}
+
+export interface JobApplicationFormSectionDto {
+  key: JobApplicationFormSectionKey;
   enabled: boolean;
   required: boolean;
   order?: number | null;
@@ -201,6 +196,7 @@ export interface JobApplicationFormFieldDto {
 
 export interface JobApplicationFormDto {
   applicantFields: JobApplicationFormFieldDto[];
+  sections: JobApplicationFormSectionDto[];
   customFields: JobApplicationCustomFieldDto[];
 }
 
@@ -305,7 +301,14 @@ export interface JobResponseDto {
     jobId: string;
     applicantFields: Array<{
       id: string;
-      key: JobApplicantFieldKey;
+      key: JobApplicantOptionalFieldKey;
+      enabled: boolean;
+      required: boolean;
+      order: number | null;
+    }>;
+    sections: Array<{
+      id: string;
+      key: JobApplicationFormSectionKey;
       enabled: boolean;
       required: boolean;
       order: number | null;

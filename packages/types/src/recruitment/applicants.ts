@@ -1,10 +1,12 @@
 export type ApplicantStatus =
   | 'APPLIED'
+  | 'SCREENING'
   | 'SHORTLISTED'
   | 'INTERVIEW'
   | 'OFFER'
   | 'HIRED'
-  | 'REJECTED';
+  | 'REJECTED'
+  | 'WITHDRAWN';
 
 export interface ApplicantStatusHistoryDto {
   id: string;
@@ -34,10 +36,11 @@ export interface ApplicantExperienceDto {
 export interface CreateApplicantDto {
   jobId: string;
   applicationFormId?: string | null;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string | null;
-  resumeUrl?: string | null;
+  resumeUrl: string;
   linkedinUrl?: string | null;
   portfolioUrl?: string | null;
   githubUrl?: string | null;
@@ -73,7 +76,8 @@ export interface ApplicantResponseDto {
   id: string;
   jobId: string;
   applicationFormId: string | null;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string | null;
   resumeUrl: string | null;
@@ -99,11 +103,13 @@ export interface ApplicantResponseDto {
   sourceSnapshot: Record<string, unknown> | null;
   customFieldValues: Record<string, unknown> | null;
   appliedAt: string;
+  screeningAt: string | null;
   shortlistedAt: string | null;
   interviewAt: string | null;
   offerAt: string | null;
   hiredAt: string | null;
   rejectedAt: string | null;
+  withdrawnAt: string | null;
   lastActivityAt: string | null;
   profileScore: number | null;
   educations: Array<ApplicantEducationDto & { id: string }>;

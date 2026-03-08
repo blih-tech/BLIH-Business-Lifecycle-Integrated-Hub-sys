@@ -37,7 +37,7 @@ export type JobApplicationFormFieldSumAggregateOutputType = {
 export type JobApplicationFormFieldMinAggregateOutputType = {
   id: string | null
   jobApplicationFormId: string | null
-  key: $Enums.JobApplicantFieldKey | null
+  key: $Enums.JobApplicantOptionalFieldKey | null
   enabled: boolean | null
   required: boolean | null
   order: number | null
@@ -48,7 +48,7 @@ export type JobApplicationFormFieldMinAggregateOutputType = {
 export type JobApplicationFormFieldMaxAggregateOutputType = {
   id: string | null
   jobApplicationFormId: string | null
-  key: $Enums.JobApplicantFieldKey | null
+  key: $Enums.JobApplicantOptionalFieldKey | null
   enabled: boolean | null
   required: boolean | null
   order: number | null
@@ -200,7 +200,7 @@ export type JobApplicationFormFieldGroupByArgs<ExtArgs extends runtime.Types.Ext
 export type JobApplicationFormFieldGroupByOutputType = {
   id: string
   jobApplicationFormId: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled: boolean
   required: boolean
   order: number | null
@@ -234,7 +234,7 @@ export type JobApplicationFormFieldWhereInput = {
   NOT?: Prisma.JobApplicationFormFieldWhereInput | Prisma.JobApplicationFormFieldWhereInput[]
   id?: Prisma.UuidFilter<"JobApplicationFormField"> | string
   jobApplicationFormId?: Prisma.UuidFilter<"JobApplicationFormField"> | string
-  key?: Prisma.EnumJobApplicantFieldKeyFilter<"JobApplicationFormField"> | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFilter<"JobApplicationFormField"> | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFilter<"JobApplicationFormField"> | boolean
   required?: Prisma.BoolFilter<"JobApplicationFormField"> | boolean
   order?: Prisma.IntNullableFilter<"JobApplicationFormField"> | number | null
@@ -262,7 +262,7 @@ export type JobApplicationFormFieldWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.JobApplicationFormFieldWhereInput[]
   NOT?: Prisma.JobApplicationFormFieldWhereInput | Prisma.JobApplicationFormFieldWhereInput[]
   jobApplicationFormId?: Prisma.UuidFilter<"JobApplicationFormField"> | string
-  key?: Prisma.EnumJobApplicantFieldKeyFilter<"JobApplicationFormField"> | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFilter<"JobApplicationFormField"> | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFilter<"JobApplicationFormField"> | boolean
   required?: Prisma.BoolFilter<"JobApplicationFormField"> | boolean
   order?: Prisma.IntNullableFilter<"JobApplicationFormField"> | number | null
@@ -293,7 +293,7 @@ export type JobApplicationFormFieldScalarWhereWithAggregatesInput = {
   NOT?: Prisma.JobApplicationFormFieldScalarWhereWithAggregatesInput | Prisma.JobApplicationFormFieldScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"JobApplicationFormField"> | string
   jobApplicationFormId?: Prisma.UuidWithAggregatesFilter<"JobApplicationFormField"> | string
-  key?: Prisma.EnumJobApplicantFieldKeyWithAggregatesFilter<"JobApplicationFormField"> | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyWithAggregatesFilter<"JobApplicationFormField"> | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolWithAggregatesFilter<"JobApplicationFormField"> | boolean
   required?: Prisma.BoolWithAggregatesFilter<"JobApplicationFormField"> | boolean
   order?: Prisma.IntNullableWithAggregatesFilter<"JobApplicationFormField"> | number | null
@@ -303,7 +303,7 @@ export type JobApplicationFormFieldScalarWhereWithAggregatesInput = {
 
 export type JobApplicationFormFieldCreateInput = {
   id?: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled?: boolean
   required?: boolean
   order?: number | null
@@ -315,7 +315,7 @@ export type JobApplicationFormFieldCreateInput = {
 export type JobApplicationFormFieldUncheckedCreateInput = {
   id?: string
   jobApplicationFormId: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled?: boolean
   required?: boolean
   order?: number | null
@@ -325,7 +325,7 @@ export type JobApplicationFormFieldUncheckedCreateInput = {
 
 export type JobApplicationFormFieldUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -337,7 +337,7 @@ export type JobApplicationFormFieldUpdateInput = {
 export type JobApplicationFormFieldUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobApplicationFormId?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -348,7 +348,7 @@ export type JobApplicationFormFieldUncheckedUpdateInput = {
 export type JobApplicationFormFieldCreateManyInput = {
   id?: string
   jobApplicationFormId: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled?: boolean
   required?: boolean
   order?: number | null
@@ -358,7 +358,7 @@ export type JobApplicationFormFieldCreateManyInput = {
 
 export type JobApplicationFormFieldUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -369,7 +369,7 @@ export type JobApplicationFormFieldUpdateManyMutationInput = {
 export type JobApplicationFormFieldUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobApplicationFormId?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -389,7 +389,7 @@ export type JobApplicationFormFieldOrderByRelationAggregateInput = {
 
 export type JobApplicationFormFieldJobApplicationFormIdKeyCompoundUniqueInput = {
   jobApplicationFormId: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
 }
 
 export type JobApplicationFormFieldCountOrderByAggregateInput = {
@@ -475,13 +475,13 @@ export type JobApplicationFormFieldUncheckedUpdateManyWithoutJobApplicationFormN
   deleteMany?: Prisma.JobApplicationFormFieldScalarWhereInput | Prisma.JobApplicationFormFieldScalarWhereInput[]
 }
 
-export type EnumJobApplicantFieldKeyFieldUpdateOperationsInput = {
-  set?: $Enums.JobApplicantFieldKey
+export type EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput = {
+  set?: $Enums.JobApplicantOptionalFieldKey
 }
 
 export type JobApplicationFormFieldCreateWithoutJobApplicationFormInput = {
   id?: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled?: boolean
   required?: boolean
   order?: number | null
@@ -491,7 +491,7 @@ export type JobApplicationFormFieldCreateWithoutJobApplicationFormInput = {
 
 export type JobApplicationFormFieldUncheckedCreateWithoutJobApplicationFormInput = {
   id?: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled?: boolean
   required?: boolean
   order?: number | null
@@ -531,7 +531,7 @@ export type JobApplicationFormFieldScalarWhereInput = {
   NOT?: Prisma.JobApplicationFormFieldScalarWhereInput | Prisma.JobApplicationFormFieldScalarWhereInput[]
   id?: Prisma.UuidFilter<"JobApplicationFormField"> | string
   jobApplicationFormId?: Prisma.UuidFilter<"JobApplicationFormField"> | string
-  key?: Prisma.EnumJobApplicantFieldKeyFilter<"JobApplicationFormField"> | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFilter<"JobApplicationFormField"> | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFilter<"JobApplicationFormField"> | boolean
   required?: Prisma.BoolFilter<"JobApplicationFormField"> | boolean
   order?: Prisma.IntNullableFilter<"JobApplicationFormField"> | number | null
@@ -541,7 +541,7 @@ export type JobApplicationFormFieldScalarWhereInput = {
 
 export type JobApplicationFormFieldCreateManyJobApplicationFormInput = {
   id?: string
-  key: $Enums.JobApplicantFieldKey
+  key: $Enums.JobApplicantOptionalFieldKey
   enabled?: boolean
   required?: boolean
   order?: number | null
@@ -551,7 +551,7 @@ export type JobApplicationFormFieldCreateManyJobApplicationFormInput = {
 
 export type JobApplicationFormFieldUpdateWithoutJobApplicationFormInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -561,7 +561,7 @@ export type JobApplicationFormFieldUpdateWithoutJobApplicationFormInput = {
 
 export type JobApplicationFormFieldUncheckedUpdateWithoutJobApplicationFormInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -571,7 +571,7 @@ export type JobApplicationFormFieldUncheckedUpdateWithoutJobApplicationFormInput
 
 export type JobApplicationFormFieldUncheckedUpdateManyWithoutJobApplicationFormInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.EnumJobApplicantFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantFieldKey
+  key?: Prisma.EnumJobApplicantOptionalFieldKeyFieldUpdateOperationsInput | $Enums.JobApplicantOptionalFieldKey
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   required?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -647,7 +647,7 @@ export type $JobApplicationFormFieldPayload<ExtArgs extends runtime.Types.Extens
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     jobApplicationFormId: string
-    key: $Enums.JobApplicantFieldKey
+    key: $Enums.JobApplicantOptionalFieldKey
     enabled: boolean
     required: boolean
     order: number | null
@@ -1079,7 +1079,7 @@ export interface Prisma__JobApplicationFormFieldClient<T, Null = never, ExtArgs 
 export interface JobApplicationFormFieldFieldRefs {
   readonly id: Prisma.FieldRef<"JobApplicationFormField", 'String'>
   readonly jobApplicationFormId: Prisma.FieldRef<"JobApplicationFormField", 'String'>
-  readonly key: Prisma.FieldRef<"JobApplicationFormField", 'JobApplicantFieldKey'>
+  readonly key: Prisma.FieldRef<"JobApplicationFormField", 'JobApplicantOptionalFieldKey'>
   readonly enabled: Prisma.FieldRef<"JobApplicationFormField", 'Boolean'>
   readonly required: Prisma.FieldRef<"JobApplicationFormField", 'Boolean'>
   readonly order: Prisma.FieldRef<"JobApplicationFormField", 'Int'>

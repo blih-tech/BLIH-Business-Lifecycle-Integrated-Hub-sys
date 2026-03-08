@@ -15,6 +15,7 @@ import type {
   CreateJobDto,
   JobApplicationCustomFieldInputDto,
   JobApplicationFormFieldInputDto,
+  JobApplicationFormSectionInputDto,
   JobListQueryDto,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
@@ -126,14 +127,41 @@ const validateApplicantFieldConfig = (
   }
 };
 
+const validateFormSectionConfig = (
+  sections: JobApplicationFormSectionInputDto[],
+) => {
+  const seenKeys = new Set<string>();
+  for (const section of sections) {
+    if (seenKeys.has(section.key)) {
+      throw new BadRequestException(
+        `Duplicate application section key detected: ${section.key}`,
+      );
+    }
+    seenKeys.add(section.key);
+
+    if (section.required && !section.enabled) {
+      throw new BadRequestException(
+        `Application section ${section.key} cannot be required when disabled`,
+      );
+    }
+  }
+};
+
 const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
 
 const defaultApplicantFields = (): JobApplicationFormFieldInputDto[] => [
-  { key: 'FULL_NAME', enabled: true, required: true, order: 1 },
-  { key: 'EMAIL', enabled: true, required: true, order: 2 },
-  { key: 'RESUME_URL', enabled: true, required: true, order: 3 },
-  { key: 'PHONE', enabled: true, required: false, order: 4 },
+  { key: 'PHONE', enabled: true, required: false, order: 1 },
+  { key: 'LINKEDIN_URL', enabled: false, required: false, order: 2 },
+  { key: 'PORTFOLIO_URL', enabled: false, required: false, order: 3 },
+  { key: 'GITHUB_URL', enabled: false, required: false, order: 4 },
+  { key: 'EXPECTED_SALARY', enabled: false, required: false, order: 5 },
+  { key: 'COVER_LETTER', enabled: false, required: false, order: 6 },
+];
+
+const defaultFormSections = (): JobApplicationFormSectionInputDto[] => [
+  { key: 'EDUCATION', enabled: false, required: false, order: 1 },
+  { key: 'EXPERIENCE', enabled: false, required: false, order: 2 },
 ];
 
 const assertOptionalUserExists = async (
@@ -214,6 +242,15 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
               }),
             )
           : defaultApplicantFields(),
+      sections:
+        applicationForm?.sections?.length > 0
+          ? applicationForm.sections.map((section: any, index: number) => ({
+              key: section.key,
+              enabled: section.enabled,
+              required: section.required,
+              order: section.order ?? index + 1,
+            }))
+          : defaultFormSections(),
       customFields: (applicationForm?.customFields ?? []).map((field: any) => ({
         id: field.customFieldId,
         label: field.label,
@@ -251,6 +288,8 @@ const mergeNestedPayload = (
     applicantFields:
       incoming.applicationForm?.applicantFields ??
       existing.applicationForm.applicantFields,
+    sections:
+      incoming.applicationForm?.sections ?? existing.applicationForm.sections,
     customFields:
       incoming.applicationForm?.customFields ??
       existing.applicationForm.customFields,
@@ -264,6 +303,7 @@ export class CreateJobUseCase {
   async execute(dto: CreateJobDto, principal: AuthPrincipal) {
     validateApplicationCustomFieldOptions(dto.applicationForm.customFields);
     validateApplicantFieldConfig(dto.applicationForm.applicantFields);
+    validateFormSectionConfig(dto.applicationForm.sections);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -309,6 +349,12 @@ export class CreateJobUseCase {
         order: field.order ?? index + 1,
       }),
     );
+    const sections = dto.applicationForm.sections.map((section, index) => ({
+      key: section.key,
+      enabled: section.enabled,
+      required: section.required,
+      order: section.order ?? index + 1,
+    }));
 
     const created = await this.prisma.job.create({
       data: {
@@ -369,6 +415,14 @@ export class CreateJobUseCase {
                 enabled: field.enabled,
                 required: field.required,
                 order: field.order,
+              })),
+            },
+            sections: {
+              create: sections.map((section) => ({
+                key: section.key,
+                enabled: section.enabled,
+                required: section.required,
+                order: section.order,
               })),
             },
             customFields: {
@@ -468,6 +522,7 @@ export class UpdateJobUseCase {
     const merged = mergeNestedPayload(mapExistingJobToDtoShape(existing), dto);
     validateApplicationCustomFieldOptions(merged.applicationForm.customFields);
     validateApplicantFieldConfig(merged.applicationForm.applicantFields);
+    validateFormSectionConfig(merged.applicationForm.sections);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -506,6 +561,12 @@ export class UpdateJobUseCase {
         order: field.order ?? index + 1,
       }),
     );
+    const sections = merged.applicationForm.sections.map((section, index) => ({
+      key: section.key,
+      enabled: section.enabled,
+      required: section.required,
+      order: section.order ?? index + 1,
+    }));
 
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.job.update({
@@ -600,6 +661,21 @@ export class UpdateJobUseCase {
             enabled: field.enabled,
             required: field.required,
             order: field.order,
+          })),
+        });
+      }
+
+      await tx.jobApplicationFormSection.deleteMany({
+        where: { jobApplicationFormId: applicationForm.id },
+      });
+      if (sections.length > 0) {
+        await tx.jobApplicationFormSection.createMany({
+          data: sections.map((section) => ({
+            jobApplicationFormId: applicationForm.id,
+            key: section.key,
+            enabled: section.enabled,
+            required: section.required,
+            order: section.order,
           })),
         });
       }

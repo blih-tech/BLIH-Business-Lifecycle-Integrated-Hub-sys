@@ -36,6 +36,12 @@ type ApplicantFieldConfig = {
   required: boolean;
 };
 
+type ApplicantSectionConfig = {
+  key: string;
+  enabled: boolean;
+  required: boolean;
+};
+
 type CustomFieldConfig = {
   customFieldId: string;
   required: boolean;
@@ -54,67 +60,25 @@ const hasValue = (value: unknown) => {
 const applicantFieldValue = (
   key: string,
   payload: {
-    fullName: string | null | undefined;
-    email: string | null | undefined;
     phone: string | null | undefined;
-    resumeUrl: string | null | undefined;
     linkedinUrl: string | null | undefined;
     portfolioUrl: string | null | undefined;
     githubUrl: string | null | undefined;
-    currentCompany: string | null | undefined;
-    currentPosition: string | null | undefined;
-    yearsExperience: number | null | undefined;
-    location: string | null | undefined;
-    country: string | null | undefined;
-    city: string | null | undefined;
-    nationality: string | null | undefined;
     expectedSalary: number | null | undefined;
-    currentSalary: number | null | undefined;
-    educationLevel: string | null | undefined;
-    highestDegree: string | null | undefined;
-    skills: string[] | null | undefined;
     coverLetter: string | null | undefined;
   },
 ) => {
   switch (key) {
-    case 'FULL_NAME':
-      return payload.fullName;
-    case 'EMAIL':
-      return payload.email;
     case 'PHONE':
       return payload.phone;
-    case 'RESUME_URL':
-      return payload.resumeUrl;
     case 'LINKEDIN_URL':
       return payload.linkedinUrl;
     case 'PORTFOLIO_URL':
       return payload.portfolioUrl;
     case 'GITHUB_URL':
       return payload.githubUrl;
-    case 'CURRENT_COMPANY':
-      return payload.currentCompany;
-    case 'CURRENT_POSITION':
-      return payload.currentPosition;
-    case 'YEARS_EXPERIENCE':
-      return payload.yearsExperience;
-    case 'LOCATION':
-      return payload.location;
-    case 'COUNTRY':
-      return payload.country;
-    case 'CITY':
-      return payload.city;
-    case 'NATIONALITY':
-      return payload.nationality;
     case 'EXPECTED_SALARY':
       return payload.expectedSalary;
-    case 'CURRENT_SALARY':
-      return payload.currentSalary;
-    case 'EDUCATION_LEVEL':
-      return payload.educationLevel;
-    case 'HIGHEST_DEGREE':
-      return payload.highestDegree;
-    case 'SKILLS':
-      return payload.skills;
     case 'COVER_LETTER':
       return payload.coverLetter;
     default:
@@ -131,35 +95,48 @@ const toObject = (value: unknown): Record<string, unknown> | null => {
 
 const assertRequiredFormFields = (input: {
   applicantFields: ApplicantFieldConfig[];
+  sections: ApplicantSectionConfig[];
   customFields: CustomFieldConfig[];
   payload: {
-    fullName: string | null | undefined;
+    firstName: string | null | undefined;
+    lastName: string | null | undefined;
     email: string | null | undefined;
     phone: string | null | undefined;
     resumeUrl: string | null | undefined;
     linkedinUrl: string | null | undefined;
     portfolioUrl: string | null | undefined;
     githubUrl: string | null | undefined;
-    currentCompany: string | null | undefined;
-    currentPosition: string | null | undefined;
-    yearsExperience: number | null | undefined;
-    location: string | null | undefined;
-    country: string | null | undefined;
-    city: string | null | undefined;
-    nationality: string | null | undefined;
     expectedSalary: number | null | undefined;
-    currentSalary: number | null | undefined;
-    educationLevel: string | null | undefined;
-    highestDegree: string | null | undefined;
-    skills: string[] | null | undefined;
     coverLetter: string | null | undefined;
+    educationsCount: number;
+    experiencesCount: number;
+    skills: string[] | null | undefined;
     customFieldValues: unknown;
   };
 }) => {
+  const missingCoreFields = [
+    ['firstName', input.payload.firstName],
+    ['lastName', input.payload.lastName],
+    ['email', input.payload.email],
+    ['resumeUrl', input.payload.resumeUrl],
+  ]
+    .filter((entry) => !hasValue(entry[1]))
+    .map((entry) => entry[0]);
+
   const missingApplicantFields = input.applicantFields
     .filter((field) => field.enabled && field.required)
     .filter((field) => !hasValue(applicantFieldValue(field.key, input.payload)))
     .map((field) => field.key);
+
+  const missingSections = input.sections
+    .filter((section) => section.enabled && section.required)
+    .filter((section) => {
+      if (section.key === 'EDUCATION') return input.payload.educationsCount < 1;
+      if (section.key === 'EXPERIENCE')
+        return input.payload.experiencesCount < 1;
+      return false;
+    })
+    .map((section) => section.key);
 
   const customFieldValues = toObject(input.payload.customFieldValues) ?? {};
   const missingCustomFields = input.customFields
@@ -167,10 +144,21 @@ const assertRequiredFormFields = (input: {
     .filter((field) => !hasValue(customFieldValues[field.customFieldId]))
     .map((field) => field.customFieldId);
 
-  if (missingApplicantFields.length || missingCustomFields.length) {
+  if (
+    missingCoreFields.length ||
+    missingApplicantFields.length ||
+    missingSections.length ||
+    missingCustomFields.length
+  ) {
     const details = [
+      ...(missingCoreFields.length
+        ? [`coreFields: ${missingCoreFields.join(', ')}`]
+        : []),
       ...(missingApplicantFields.length
         ? [`applicantFields: ${missingApplicantFields.join(', ')}`]
+        : []),
+      ...(missingSections.length
+        ? [`sections: ${missingSections.join(', ')}`]
         : []),
       ...(missingCustomFields.length
         ? [`customFields: ${missingCustomFields.join(', ')}`]
@@ -204,6 +192,13 @@ export class CreateApplicantUseCase {
             select: {
               id: true,
               applicantFields: {
+                select: {
+                  key: true,
+                  enabled: true,
+                  required: true,
+                },
+              },
+              sections: {
                 select: {
                   key: true,
                   enabled: true,
@@ -248,35 +243,27 @@ export class CreateApplicantUseCase {
     }
 
     const skills = normalizeSkillArray(dto.skills);
-    if (job.applicationForm) {
-      assertRequiredFormFields({
-        applicantFields: job.applicationForm.applicantFields,
-        customFields: job.applicationForm.customFields,
-        payload: {
-          fullName: dto.fullName,
-          email: dto.email,
-          phone: dto.phone,
-          resumeUrl: dto.resumeUrl,
-          linkedinUrl: dto.linkedinUrl,
-          portfolioUrl: dto.portfolioUrl,
-          githubUrl: dto.githubUrl,
-          currentCompany: dto.currentCompany,
-          currentPosition: dto.currentPosition,
-          yearsExperience: dto.yearsExperience,
-          location: dto.location,
-          country: dto.country,
-          city: dto.city,
-          nationality: dto.nationality,
-          expectedSalary: dto.expectedSalary,
-          currentSalary: dto.currentSalary,
-          educationLevel: dto.educationLevel,
-          highestDegree: dto.highestDegree,
-          skills,
-          coverLetter: dto.coverLetter,
-          customFieldValues: dto.customFieldValues,
-        },
-      });
-    }
+    assertRequiredFormFields({
+      applicantFields: job.applicationForm?.applicantFields ?? [],
+      sections: job.applicationForm?.sections ?? [],
+      customFields: job.applicationForm?.customFields ?? [],
+      payload: {
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        email: dto.email,
+        phone: dto.phone,
+        resumeUrl: dto.resumeUrl,
+        linkedinUrl: dto.linkedinUrl,
+        portfolioUrl: dto.portfolioUrl,
+        githubUrl: dto.githubUrl,
+        expectedSalary: dto.expectedSalary,
+        coverLetter: dto.coverLetter,
+        educationsCount: dto.educations?.length ?? 0,
+        experiencesCount: dto.experiences?.length ?? 0,
+        skills,
+        customFieldValues: dto.customFieldValues,
+      },
+    });
 
     const now = new Date();
 
@@ -286,7 +273,8 @@ export class CreateApplicantUseCase {
           data: {
             jobId: dto.jobId,
             applicationFormId: dto.applicationFormId ?? fallbackFormId,
-            fullName: dto.fullName.trim(),
+            firstName: dto.firstName.trim(),
+            lastName: dto.lastName.trim(),
             email: submittedEmail,
             emailNormalized: normalizedEmail,
             phone: dto.phone ?? undefined,
@@ -376,7 +364,7 @@ export class CreateApplicantUseCase {
     await this.notifications.notifyUsers({
       userIds: [job.createdById],
       title: `New applicant for ${job.title}`,
-      body: `${applicant.fullName} submitted an application.`,
+      body: `${applicant.firstName} ${applicant.lastName} submitted an application.`,
       payload: {
         jobId: dto.jobId,
         applicantId: applicant.id,
@@ -433,7 +421,8 @@ export class UpdateApplicantUseCase {
         id: true,
         jobId: true,
         email: true,
-        fullName: true,
+        firstName: true,
+        lastName: true,
         phone: true,
         applicationFormId: true,
         currentCompany: true,
@@ -454,6 +443,12 @@ export class UpdateApplicantUseCase {
         skills: true,
         coverLetter: true,
         customFieldValues: true,
+        _count: {
+          select: {
+            educations: true,
+            experiences: true,
+          },
+        },
       },
     });
     if (!existing) throw new NotFoundException('Applicant not found');
@@ -497,6 +492,7 @@ export class UpdateApplicantUseCase {
       id: string;
       jobId: string;
       applicantFields: ApplicantFieldConfig[];
+      sections: ApplicantSectionConfig[];
       customFields: CustomFieldConfig[];
     } | null = null;
 
@@ -507,6 +503,13 @@ export class UpdateApplicantUseCase {
           id: true,
           jobId: true,
           applicantFields: {
+            select: {
+              key: true,
+              enabled: true,
+              required: true,
+            },
+          },
+          sections: {
             select: {
               key: true,
               enabled: true,
@@ -529,79 +532,50 @@ export class UpdateApplicantUseCase {
       resolvedForm = form;
     }
 
-    if (resolvedForm) {
-      const mergedPayload = {
-        fullName: dto.fullName ?? existing.fullName,
-        email: dto.email ?? existing.email,
-        phone: dto.phone !== undefined ? dto.phone : existing.phone,
-        resumeUrl:
-          dto.resumeUrl !== undefined ? dto.resumeUrl : existing.resumeUrl,
-        linkedinUrl:
-          dto.linkedinUrl !== undefined
-            ? dto.linkedinUrl
-            : existing.linkedinUrl,
-        portfolioUrl:
-          dto.portfolioUrl !== undefined
-            ? dto.portfolioUrl
-            : existing.portfolioUrl,
-        githubUrl:
-          dto.githubUrl !== undefined ? dto.githubUrl : existing.githubUrl,
-        currentCompany:
-          dto.currentCompany !== undefined
-            ? dto.currentCompany
-            : existing.currentCompany,
-        currentPosition:
-          dto.currentPosition !== undefined
-            ? dto.currentPosition
-            : existing.currentPosition,
-        yearsExperience:
-          dto.yearsExperience !== undefined
-            ? dto.yearsExperience
-            : existing.yearsExperience,
-        location: dto.location !== undefined ? dto.location : existing.location,
-        country: dto.country !== undefined ? dto.country : existing.country,
-        city: dto.city !== undefined ? dto.city : existing.city,
-        nationality:
-          dto.nationality !== undefined
-            ? dto.nationality
-            : existing.nationality,
-        expectedSalary:
-          dto.expectedSalary !== undefined
-            ? dto.expectedSalary
-            : existing.expectedSalary == null
-              ? null
-              : Number(existing.expectedSalary),
-        currentSalary:
-          dto.currentSalary !== undefined
-            ? dto.currentSalary
-            : existing.currentSalary == null
-              ? null
-              : Number(existing.currentSalary),
-        educationLevel:
-          dto.educationLevel !== undefined
-            ? dto.educationLevel
-            : existing.educationLevel,
-        highestDegree:
-          dto.highestDegree !== undefined
-            ? dto.highestDegree
-            : existing.highestDegree,
-        skills: normalizedSkills ?? existing.skills ?? [],
-        coverLetter:
-          dto.coverLetter !== undefined
-            ? dto.coverLetter
-            : existing.coverLetter,
-        customFieldValues:
-          dto.customFieldValues !== undefined
-            ? dto.customFieldValues
-            : existing.customFieldValues,
-      };
+    const mergedPayload = {
+      firstName: dto.firstName ?? existing.firstName,
+      lastName: dto.lastName ?? existing.lastName,
+      email: dto.email ?? existing.email,
+      phone: dto.phone !== undefined ? dto.phone : existing.phone,
+      resumeUrl:
+        dto.resumeUrl !== undefined ? dto.resumeUrl : existing.resumeUrl,
+      linkedinUrl:
+        dto.linkedinUrl !== undefined ? dto.linkedinUrl : existing.linkedinUrl,
+      portfolioUrl:
+        dto.portfolioUrl !== undefined
+          ? dto.portfolioUrl
+          : existing.portfolioUrl,
+      githubUrl:
+        dto.githubUrl !== undefined ? dto.githubUrl : existing.githubUrl,
+      expectedSalary:
+        dto.expectedSalary !== undefined
+          ? dto.expectedSalary
+          : existing.expectedSalary == null
+            ? null
+            : Number(existing.expectedSalary),
+      coverLetter:
+        dto.coverLetter !== undefined ? dto.coverLetter : existing.coverLetter,
+      educationsCount:
+        dto.educations !== undefined
+          ? dto.educations.length
+          : existing._count.educations,
+      experiencesCount:
+        dto.experiences !== undefined
+          ? dto.experiences.length
+          : existing._count.experiences,
+      skills: normalizedSkills ?? existing.skills ?? [],
+      customFieldValues:
+        dto.customFieldValues !== undefined
+          ? dto.customFieldValues
+          : existing.customFieldValues,
+    };
 
-      assertRequiredFormFields({
-        applicantFields: resolvedForm.applicantFields,
-        customFields: resolvedForm.customFields,
-        payload: mergedPayload,
-      });
-    }
+    assertRequiredFormFields({
+      applicantFields: resolvedForm?.applicantFields ?? [],
+      sections: resolvedForm?.sections ?? [],
+      customFields: resolvedForm?.customFields ?? [],
+      payload: mergedPayload,
+    });
 
     const now = new Date();
 
@@ -625,8 +599,11 @@ export class UpdateApplicantUseCase {
               dto.jobId !== undefined) && {
               applicationFormId: resolvedApplicationFormId,
             }),
-            ...(dto.fullName !== undefined && {
-              fullName: dto.fullName.trim(),
+            ...(dto.firstName !== undefined && {
+              firstName: dto.firstName.trim(),
+            }),
+            ...(dto.lastName !== undefined && {
+              lastName: dto.lastName.trim(),
             }),
             ...(dto.email !== undefined && {
               email: dto.email.trim(),
@@ -790,11 +767,13 @@ export class UpdateApplicantStatusUseCase {
         lastActivityAt: now,
       };
 
+      if (dto.status === 'SCREENING') data.screeningAt = now;
       if (dto.status === 'SHORTLISTED') data.shortlistedAt = now;
       if (dto.status === 'INTERVIEW') data.interviewAt = now;
       if (dto.status === 'OFFER') data.offerAt = now;
       if (dto.status === 'HIRED') data.hiredAt = now;
       if (dto.status === 'REJECTED') data.rejectedAt = now;
+      if (dto.status === 'WITHDRAWN') data.withdrawnAt = now;
 
       const row = await tx.applicant.update({
         where: { id },

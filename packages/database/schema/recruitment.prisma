@@ -107,6 +107,7 @@ model JobApplicationForm {
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
   applicantFields JobApplicationFormField[]
+  sections        JobApplicationFormSection[]
   customFields    JobApplicationCustomField[]
   applicants      Applicant[]               @relation("ApplicantForm")
 }
@@ -115,12 +116,28 @@ model JobApplicationFormField {
   id                   String             @id @default(uuid()) @db.Uuid
   jobApplicationFormId String             @map("job_application_form_id") @db.Uuid
   jobApplicationForm   JobApplicationForm @relation(fields: [jobApplicationFormId], references: [id], onDelete: Cascade)
-  key                  JobApplicantFieldKey
+  key                  JobApplicantOptionalFieldKey
   enabled              Boolean            @default(true)
   required             Boolean            @default(false)
   order                Int?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
+
+  @@unique([jobApplicationFormId, key])
+  @@index([jobApplicationFormId])
+  @@index([jobApplicationFormId, order])
+}
+
+model JobApplicationFormSection {
+  id                   String                       @id @default(uuid()) @db.Uuid
+  jobApplicationFormId String                       @map("job_application_form_id") @db.Uuid
+  jobApplicationForm   JobApplicationForm           @relation(fields: [jobApplicationFormId], references: [id], onDelete: Cascade)
+  key                  JobApplicationFormSectionKey
+  enabled              Boolean                      @default(false)
+  required             Boolean                      @default(false)
+  order                Int?
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
 
   @@unique([jobApplicationFormId, key])
   @@index([jobApplicationFormId])
@@ -187,7 +204,8 @@ model Applicant {
   job               Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
   applicationFormId String?         @map("application_form_id") @db.Uuid
   applicationForm   JobApplicationForm? @relation("ApplicantForm", fields: [applicationFormId], references: [id], onDelete: SetNull)
-  fullName          String          @map("full_name")
+  firstName         String          @map("first_name")
+  lastName          String          @map("last_name")
   email             String
   emailNormalized   String          @map("email_normalized")
   phone             String?
@@ -215,11 +233,13 @@ model Applicant {
   sourceSnapshot    Json?           @map("source_snapshot") @db.JsonB
   customFieldValues Json?           @map("custom_field_values") @db.JsonB
   appliedAt         DateTime        @default(now()) @map("applied_at")
+  screeningAt       DateTime?       @map("screening_at")
   shortlistedAt     DateTime?       @map("shortlisted_at")
   interviewAt       DateTime?       @map("interview_at")
   offerAt           DateTime?       @map("offer_at")
   hiredAt           DateTime?       @map("hired_at")
   rejectedAt        DateTime?       @map("rejected_at")
+  withdrawnAt       DateTime?       @map("withdrawn_at")
   lastActivityAt    DateTime?       @map("last_activity_at")
   profileScore      Float?          @map("profile_score")
   createdAt         DateTime        @default(now())

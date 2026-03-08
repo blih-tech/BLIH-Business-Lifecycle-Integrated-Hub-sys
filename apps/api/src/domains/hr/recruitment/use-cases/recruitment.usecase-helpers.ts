@@ -10,6 +10,9 @@ export const jobInclude = {
       applicantFields: {
         orderBy: { order: 'asc' as const },
       },
+      sections: {
+        orderBy: { order: 'asc' as const },
+      },
       customFields: {
         orderBy: { order: 'asc' as const },
         include: { options: { orderBy: { order: 'asc' as const } } },
@@ -51,12 +54,14 @@ interface SubmitReadinessPayload {
 }
 
 const APPLICANT_TRANSITIONS: Record<string, string[]> = {
-  APPLIED: ['SHORTLISTED', 'REJECTED'],
-  SHORTLISTED: ['INTERVIEW', 'REJECTED'],
-  INTERVIEW: ['OFFER', 'REJECTED'],
-  OFFER: ['HIRED', 'REJECTED'],
+  APPLIED: ['SCREENING'],
+  SCREENING: ['SHORTLISTED', 'REJECTED', 'WITHDRAWN'],
+  SHORTLISTED: ['INTERVIEW', 'REJECTED', 'WITHDRAWN'],
+  INTERVIEW: ['OFFER', 'REJECTED', 'WITHDRAWN'],
+  OFFER: ['HIRED', 'REJECTED', 'WITHDRAWN'],
   HIRED: [],
   REJECTED: [],
+  WITHDRAWN: [],
 };
 
 const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
@@ -454,6 +459,15 @@ export function mapJob(job: any) {
               order: field.order ?? index + 1,
             }),
           ),
+          sections: (applicationForm.sections ?? []).map(
+            (section: any, index: number) => ({
+              id: section.id,
+              key: section.key,
+              enabled: section.enabled,
+              required: section.required,
+              order: section.order ?? index + 1,
+            }),
+          ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
               id: field.customFieldId,
@@ -479,7 +493,8 @@ export function mapApplicant(applicant: any) {
     id: applicant.id,
     jobId: applicant.jobId,
     applicationFormId: applicant.applicationFormId ?? null,
-    fullName: applicant.fullName,
+    firstName: applicant.firstName,
+    lastName: applicant.lastName,
     email: applicant.email,
     phone: applicant.phone ?? null,
     resumeUrl: applicant.resumeUrl ?? null,
@@ -505,11 +520,13 @@ export function mapApplicant(applicant: any) {
     sourceSnapshot: toObjectRecord(applicant.sourceSnapshot),
     customFieldValues: toObjectRecord(applicant.customFieldValues),
     appliedAt: dateToIso(applicant.appliedAt),
+    screeningAt: dateToIso(applicant.screeningAt),
     shortlistedAt: dateToIso(applicant.shortlistedAt),
     interviewAt: dateToIso(applicant.interviewAt),
     offerAt: dateToIso(applicant.offerAt),
     hiredAt: dateToIso(applicant.hiredAt),
     rejectedAt: dateToIso(applicant.rejectedAt),
+    withdrawnAt: dateToIso(applicant.withdrawnAt),
     lastActivityAt: dateToIso(applicant.lastActivityAt),
     profileScore:
       typeof applicant.profileScore === 'number'

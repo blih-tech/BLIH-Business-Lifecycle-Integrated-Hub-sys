@@ -147,27 +147,18 @@ enum JobApplicationFieldType {
   CHECKBOX
 }
 
-enum JobApplicantFieldKey {
-  FULL_NAME
-  EMAIL
+enum JobApplicantOptionalFieldKey {
   PHONE
-  RESUME_URL
   LINKEDIN_URL
   PORTFOLIO_URL
   GITHUB_URL
-  CURRENT_COMPANY
-  CURRENT_POSITION
-  YEARS_EXPERIENCE
-  LOCATION
-  COUNTRY
-  CITY
-  NATIONALITY
   EXPECTED_SALARY
-  CURRENT_SALARY
-  EDUCATION_LEVEL
-  HIGHEST_DEGREE
-  SKILLS
   COVER_LETTER
+}
+
+enum JobApplicationFormSectionKey {
+  EDUCATION
+  EXPERIENCE
 }
 
 enum JobContractType {
@@ -207,24 +198,15 @@ enum CandidateSource {
   AGENCY
 }
 
-enum JobApplicationStatus {
-  NEW
-  SCREENING
-  SHORTLISTED
-  INTERVIEW_STAGE
-  OFFER_PENDING
-  HIRED
-  REJECTED
-  WITHDRAWN
-}
-
 enum ApplicantStatus {
   APPLIED
+  SCREENING
   SHORTLISTED
   INTERVIEW
   OFFER
   HIRED
   REJECTED
+  WITHDRAWN
 }
 
 enum InterviewType {

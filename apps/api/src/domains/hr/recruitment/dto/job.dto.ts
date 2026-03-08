@@ -50,28 +50,15 @@ const JOB_APPLICATION_FIELD_TYPES = [
   'DATE',
   'CHECKBOX',
 ] as const;
-const JOB_APPLICANT_FIELD_KEYS = [
-  'FULL_NAME',
-  'EMAIL',
+const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
   'PHONE',
-  'RESUME_URL',
   'LINKEDIN_URL',
   'PORTFOLIO_URL',
   'GITHUB_URL',
-  'CURRENT_COMPANY',
-  'CURRENT_POSITION',
-  'YEARS_EXPERIENCE',
-  'LOCATION',
-  'COUNTRY',
-  'CITY',
-  'NATIONALITY',
   'EXPECTED_SALARY',
-  'CURRENT_SALARY',
-  'EDUCATION_LEVEL',
-  'HIGHEST_DEGREE',
-  'SKILLS',
   'COVER_LETTER',
 ] as const;
+const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
 const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 const JOB_STAGE_STATUSES = [
   'PENDING_FOR_APPROVAL',
@@ -376,12 +363,33 @@ export class JobApplicationCustomFieldInputDto {
 }
 
 export class JobApplicationFormFieldInputDto {
-  @ApiProperty({ enum: JOB_APPLICANT_FIELD_KEYS })
+  @ApiProperty({ enum: JOB_APPLICANT_OPTIONAL_FIELD_KEYS })
   @Transform(normalizeEnumValue)
-  @IsEnum(JOB_APPLICANT_FIELD_KEYS)
-  key!: (typeof JOB_APPLICANT_FIELD_KEYS)[number];
+  @IsEnum(JOB_APPLICANT_OPTIONAL_FIELD_KEYS)
+  key!: (typeof JOB_APPLICANT_OPTIONAL_FIELD_KEYS)[number];
 
   @ApiProperty({ default: true })
+  @IsBoolean()
+  enabled!: boolean;
+
+  @ApiProperty({ default: false })
+  @IsBoolean()
+  required!: boolean;
+
+  @ApiPropertyOptional({ nullable: true, minimum: 1 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  order?: number | null;
+}
+
+export class JobApplicationFormSectionInputDto {
+  @ApiProperty({ enum: JOB_APPLICATION_FORM_SECTIONS })
+  @Transform(normalizeEnumValue)
+  @IsEnum(JOB_APPLICATION_FORM_SECTIONS)
+  key!: (typeof JOB_APPLICATION_FORM_SECTIONS)[number];
+
+  @ApiProperty({ default: false })
   @IsBoolean()
   enabled!: boolean;
 
@@ -402,6 +410,12 @@ export class JobApplicationFormInputDto {
   @ValidateNested({ each: true })
   @Type(() => JobApplicationFormFieldInputDto)
   applicantFields!: JobApplicationFormFieldInputDto[];
+
+  @ApiProperty({ type: [JobApplicationFormSectionInputDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => JobApplicationFormSectionInputDto)
+  sections!: JobApplicationFormSectionInputDto[];
 
   @ApiProperty({ type: [JobApplicationCustomFieldInputDto] })
   @IsArray()
@@ -661,6 +675,14 @@ export class JobApplicationFormFieldResponseDto extends OmitType(
   id!: string;
 }
 
+export class JobApplicationFormSectionResponseDto extends OmitType(
+  JobApplicationFormSectionInputDto,
+  [],
+) {
+  @ApiProperty()
+  id!: string;
+}
+
 export class JobApplicationFormResponseDto {
   @ApiProperty()
   id!: string;
@@ -670,6 +692,9 @@ export class JobApplicationFormResponseDto {
 
   @ApiProperty({ type: [JobApplicationFormFieldResponseDto] })
   applicantFields!: JobApplicationFormFieldResponseDto[];
+
+  @ApiProperty({ type: [JobApplicationFormSectionResponseDto] })
+  sections!: JobApplicationFormSectionResponseDto[];
 
   @ApiProperty({ type: [JobApplicationCustomFieldResponseDto] })
   customFields!: JobApplicationCustomFieldResponseDto[];

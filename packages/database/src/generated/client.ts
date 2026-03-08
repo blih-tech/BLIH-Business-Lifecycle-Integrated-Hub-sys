@@ -408,6 +408,11 @@ export type JobApplicationForm = Prisma.JobApplicationFormModel
  */
 export type JobApplicationFormField = Prisma.JobApplicationFormFieldModel
 /**
+ * Model JobApplicationFormSection
+ * 
+ */
+export type JobApplicationFormSection = Prisma.JobApplicationFormSectionModel
+/**
  * Model JobApplicationCustomField
  * 
  */

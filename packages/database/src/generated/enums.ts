@@ -212,30 +212,24 @@ export const JobApplicationFieldType = {
 export type JobApplicationFieldType = (typeof JobApplicationFieldType)[keyof typeof JobApplicationFieldType]
 
 
-export const JobApplicantFieldKey = {
-  FULL_NAME: 'FULL_NAME',
-  EMAIL: 'EMAIL',
+export const JobApplicantOptionalFieldKey = {
   PHONE: 'PHONE',
-  RESUME_URL: 'RESUME_URL',
   LINKEDIN_URL: 'LINKEDIN_URL',
   PORTFOLIO_URL: 'PORTFOLIO_URL',
   GITHUB_URL: 'GITHUB_URL',
-  CURRENT_COMPANY: 'CURRENT_COMPANY',
-  CURRENT_POSITION: 'CURRENT_POSITION',
-  YEARS_EXPERIENCE: 'YEARS_EXPERIENCE',
-  LOCATION: 'LOCATION',
-  COUNTRY: 'COUNTRY',
-  CITY: 'CITY',
-  NATIONALITY: 'NATIONALITY',
   EXPECTED_SALARY: 'EXPECTED_SALARY',
-  CURRENT_SALARY: 'CURRENT_SALARY',
-  EDUCATION_LEVEL: 'EDUCATION_LEVEL',
-  HIGHEST_DEGREE: 'HIGHEST_DEGREE',
-  SKILLS: 'SKILLS',
   COVER_LETTER: 'COVER_LETTER'
 } as const
 
-export type JobApplicantFieldKey = (typeof JobApplicantFieldKey)[keyof typeof JobApplicantFieldKey]
+export type JobApplicantOptionalFieldKey = (typeof JobApplicantOptionalFieldKey)[keyof typeof JobApplicantOptionalFieldKey]
+
+
+export const JobApplicationFormSectionKey = {
+  EDUCATION: 'EDUCATION',
+  EXPERIENCE: 'EXPERIENCE'
+} as const
+
+export type JobApplicationFormSectionKey = (typeof JobApplicationFormSectionKey)[keyof typeof JobApplicationFormSectionKey]
 
 
 export const JobContractType = {
@@ -290,27 +284,15 @@ export const CandidateSource = {
 export type CandidateSource = (typeof CandidateSource)[keyof typeof CandidateSource]
 
 
-export const JobApplicationStatus = {
-  NEW: 'NEW',
-  SCREENING: 'SCREENING',
-  SHORTLISTED: 'SHORTLISTED',
-  INTERVIEW_STAGE: 'INTERVIEW_STAGE',
-  OFFER_PENDING: 'OFFER_PENDING',
-  HIRED: 'HIRED',
-  REJECTED: 'REJECTED',
-  WITHDRAWN: 'WITHDRAWN'
-} as const
-
-export type JobApplicationStatus = (typeof JobApplicationStatus)[keyof typeof JobApplicationStatus]
-
-
 export const ApplicantStatus = {
   APPLIED: 'APPLIED',
+  SCREENING: 'SCREENING',
   SHORTLISTED: 'SHORTLISTED',
   INTERVIEW: 'INTERVIEW',
   OFFER: 'OFFER',
   HIRED: 'HIRED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  WITHDRAWN: 'WITHDRAWN'
 } as const
 
 export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
