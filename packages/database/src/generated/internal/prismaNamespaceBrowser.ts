@@ -125,7 +125,6 @@ export const ModelName = {
   JobRequestForm: 'JobRequestForm',
   JobDetailsForm: 'JobDetailsForm',
   JobApplicationForm: 'JobApplicationForm',
-  JobApplicationPredefinedField: 'JobApplicationPredefinedField',
   JobApplicationCustomField: 'JobApplicationCustomField',
   JobApplicationCustomFieldOption: 'JobApplicationCustomFieldOption',
   JobApproval: 'JobApproval',
@@ -1480,20 +1479,6 @@ export const JobApplicationFormScalarFieldEnum = {
 } as const
 
 export type JobApplicationFormScalarFieldEnum = (typeof JobApplicationFormScalarFieldEnum)[keyof typeof JobApplicationFormScalarFieldEnum]
-
-
-export const JobApplicationPredefinedFieldScalarFieldEnum = {
-  id: 'id',
-  jobApplicationFormId: 'jobApplicationFormId',
-  key: 'key',
-  enabled: 'enabled',
-  required: 'required',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobApplicationPredefinedFieldScalarFieldEnum = (typeof JobApplicationPredefinedFieldScalarFieldEnum)[keyof typeof JobApplicationPredefinedFieldScalarFieldEnum]
 
 
 export const JobApplicationCustomFieldScalarFieldEnum = {

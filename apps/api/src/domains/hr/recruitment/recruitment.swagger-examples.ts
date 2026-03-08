@@ -92,16 +92,6 @@ export const jobExample = {
   },
   applicationForm: {
     id: '9fe81a43-af25-4dea-a2d8-f1703a5f8de5',
-    predefinedFields: [
-      {
-        id: '6764a508-5502-406c-8605-ec1fb15139fd',
-        key: 'fullName',
-        label: 'Full Name',
-        type: 'TEXT',
-        enabled: true,
-        required: true,
-      },
-    ],
     customFields: [],
   },
   approvals: [],

@@ -157,20 +157,6 @@ const validateApplicationCustomFieldOptions = (
   }
 };
 
-const validatePredefinedFieldKeys = (
-  predefinedFields: Array<{ key: string }>,
-) => {
-  const seen = new Set<string>();
-  for (const field of predefinedFields) {
-    if (seen.has(field.key)) {
-      throw new BadRequestException(
-        `Duplicate predefined field key detected: ${field.key}`,
-      );
-    }
-    seen.add(field.key);
-  }
-};
-
 const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
 
@@ -235,13 +221,6 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
         job.requestForm.detailsForm.applicationDeadline.toISOString(),
     },
     applicationForm: {
-      predefinedFields: (
-        job.requestForm.detailsForm.applicationForm.predefinedFields ?? []
-      ).map((field: any) => ({
-        key: field.key,
-        enabled: field.enabled,
-        required: field.required,
-      })),
       customFields: (
         job.requestForm.detailsForm.applicationForm.customFields ?? []
       ).map((field: any) => ({
@@ -280,9 +259,6 @@ const mergeNestedPayload = (
   applicationForm: {
     ...existing.applicationForm,
     ...(incoming.applicationForm ?? {}),
-    predefinedFields:
-      incoming.applicationForm?.predefinedFields ??
-      existing.applicationForm.predefinedFields,
     customFields:
       incoming.applicationForm?.customFields ??
       existing.applicationForm.customFields,
@@ -296,7 +272,6 @@ export class CreateJobUseCase {
   async execute(dto: CreateJobDto, principal: AuthPrincipal) {
     validateFormConsistency(dto.requestForm, dto.jobDetailsForm);
     validateApplicationCustomFieldOptions(dto.applicationForm.customFields);
-    validatePredefinedFieldKeys(dto.applicationForm.predefinedFields);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -414,16 +389,6 @@ export class CreateJobUseCase {
                 ),
                 applicationForm: {
                   create: {
-                    predefinedFields: {
-                      create: dto.applicationForm.predefinedFields.map(
-                        (field, index) => ({
-                          key: field.key,
-                          enabled: field.enabled,
-                          required: field.required,
-                          order: index + 1,
-                        }),
-                      ),
-                    },
                     customFields: {
                       create: dto.applicationForm.customFields.map(
                         (field, index) => ({
@@ -529,7 +494,6 @@ export class UpdateJobUseCase {
     const merged = mergeNestedPayload(mapExistingJobToDtoShape(existing), dto);
     validateFormConsistency(merged.requestForm, merged.jobDetailsForm);
     validateApplicationCustomFieldOptions(merged.applicationForm.customFields);
-    validatePredefinedFieldKeys(merged.applicationForm.predefinedFields);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -691,21 +655,6 @@ export class UpdateJobUseCase {
         update: {},
         select: { id: true },
       });
-
-      await tx.jobApplicationPredefinedField.deleteMany({
-        where: { jobApplicationFormId: applicationForm.id },
-      });
-      if (merged.applicationForm.predefinedFields.length > 0) {
-        await tx.jobApplicationPredefinedField.createMany({
-          data: merged.applicationForm.predefinedFields.map((field, index) => ({
-            jobApplicationFormId: applicationForm.id,
-            key: field.key,
-            enabled: field.enabled,
-            required: field.required,
-            order: index + 1,
-          })),
-        });
-      }
 
       await tx.jobApplicationCustomField.deleteMany({
         where: { jobApplicationFormId: applicationForm.id },

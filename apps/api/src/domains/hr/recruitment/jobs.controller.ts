@@ -153,11 +153,6 @@ export class JobsController {
             applicationDeadline: '2026-04-30T23:59:59.000Z',
           },
           applicationForm: {
-            predefinedFields: [
-              { key: 'fullName', enabled: true, required: true },
-              { key: 'email', enabled: true, required: true },
-              { key: 'resume', enabled: true, required: true },
-            ],
             customFields: [
               {
                 id: 'custom-123',
@@ -287,10 +282,6 @@ export class JobsController {
             applicationDeadline: '2026-05-15T23:59:59.000Z',
           },
           applicationForm: {
-            predefinedFields: [
-              { key: 'fullName', enabled: true, required: true },
-              { key: 'email', enabled: true, required: true },
-            ],
             customFields: [],
           },
         },

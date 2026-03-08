@@ -41,19 +41,6 @@ export type JobApplicationFieldType =
   | 'DATE'
   | 'CHECKBOX';
 
-export type JobPredefinedFieldKey =
-  | 'fullName'
-  | 'email'
-  | 'phone'
-  | 'resume'
-  | 'coverLetter'
-  | 'linkedin'
-  | 'portfolio'
-  | 'github'
-  | 'currentCompany'
-  | 'currentPosition'
-  | 'yearsExperience';
-
 export type CandidateSource =
   | 'COMPANY_SITE'
   | 'LINKEDIN'
@@ -164,12 +151,6 @@ export interface JobDetailsFormDto {
   applicationDeadline: string;
 }
 
-export interface JobApplicationPredefinedFieldDto {
-  key: JobPredefinedFieldKey;
-  enabled: boolean;
-  required: boolean;
-}
-
 export interface JobApplicationCustomFieldDto {
   id: string;
   label: string;
@@ -180,7 +161,6 @@ export interface JobApplicationCustomFieldDto {
 }
 
 export interface JobApplicationFormDto {
-  predefinedFields: JobApplicationPredefinedFieldDto[];
   customFields: JobApplicationCustomFieldDto[];
 }
 
@@ -280,14 +260,6 @@ export interface JobResponseDto {
   } | null;
   applicationForm: {
     id: string;
-    predefinedFields: Array<{
-      id: string;
-      key: JobPredefinedFieldKey;
-      label: string;
-      type: JobApplicationFieldType;
-      enabled: boolean;
-      required: boolean;
-    }>;
     customFields: Array<{
       id: string;
       label: string;

@@ -388,11 +388,6 @@ export type JobDetailsForm = Prisma.JobDetailsFormModel
  */
 export type JobApplicationForm = Prisma.JobApplicationFormModel
 /**
- * Model JobApplicationPredefinedField
- * 
- */
-export type JobApplicationPredefinedField = Prisma.JobApplicationPredefinedFieldModel
-/**
  * Model JobApplicationCustomField
  * 
  */

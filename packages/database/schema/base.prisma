@@ -147,20 +147,6 @@ enum JobApplicationFieldType {
   CHECKBOX
 }
 
-enum JobPredefinedFieldKey {
-  FULL_NAME
-  EMAIL
-  PHONE
-  RESUME
-  COVER_LETTER
-  LINKEDIN
-  PORTFOLIO
-  GITHUB
-  CURRENT_COMPANY
-  CURRENT_POSITION
-  YEARS_EXPERIENCE
-}
-
 enum JobContractType {
   PERMANENT
   CONTRACT

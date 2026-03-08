@@ -51,19 +51,6 @@ const JOB_APPLICATION_FIELD_TYPES = [
   'DATE',
   'CHECKBOX',
 ] as const;
-const JOB_PREDEFINED_FIELD_KEYS = [
-  'FULL_NAME',
-  'EMAIL',
-  'PHONE',
-  'RESUME',
-  'COVER_LETTER',
-  'LINKEDIN',
-  'PORTFOLIO',
-  'GITHUB',
-  'CURRENT_COMPANY',
-  'CURRENT_POSITION',
-  'YEARS_EXPERIENCE',
-] as const;
 const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 const JOB_STAGE_STATUSES = [
   'PENDING_FOR_APPROVAL',
@@ -87,15 +74,6 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
   return value
     .trim()
-    .replace(/[\s-]+/g, '_')
-    .toUpperCase();
-};
-
-const normalizePredefinedKey = ({ value }: { value: unknown }) => {
-  if (typeof value !== 'string') return value;
-  return value
-    .trim()
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
     .replace(/[\s-]+/g, '_')
     .toUpperCase();
 };
@@ -292,35 +270,6 @@ export class JobDetailsFormInputDto {
   applicationDeadline!: string;
 }
 
-export class JobApplicationPredefinedFieldInputDto {
-  @ApiProperty({
-    enum: [
-      'fullName',
-      'email',
-      'phone',
-      'resume',
-      'coverLetter',
-      'linkedin',
-      'portfolio',
-      'github',
-      'currentCompany',
-      'currentPosition',
-      'yearsExperience',
-    ],
-  })
-  @Transform(normalizePredefinedKey)
-  @IsEnum(JOB_PREDEFINED_FIELD_KEYS)
-  key!: (typeof JOB_PREDEFINED_FIELD_KEYS)[number];
-
-  @ApiProperty()
-  @IsBoolean()
-  enabled!: boolean;
-
-  @ApiProperty()
-  @IsBoolean()
-  required!: boolean;
-}
-
 export class JobApplicationCustomFieldInputDto {
   @ApiProperty({ example: 'custom-123' })
   @IsString()
@@ -361,12 +310,6 @@ export class JobApplicationCustomFieldInputDto {
 }
 
 export class JobApplicationFormInputDto {
-  @ApiProperty({ type: [JobApplicationPredefinedFieldInputDto] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => JobApplicationPredefinedFieldInputDto)
-  predefinedFields!: JobApplicationPredefinedFieldInputDto[];
-
   @ApiProperty({ type: [JobApplicationCustomFieldInputDto] })
   @IsArray()
   @ValidateNested({ each: true })
@@ -542,27 +485,6 @@ export class JobDetailsFormResponseDto extends OmitType(
 
   @ApiPropertyOptional({ nullable: true })
   salaryCurrency!: string | null;
-}
-
-export class JobApplicationPredefinedFieldResponseDto extends OmitType(
-  JobApplicationPredefinedFieldInputDto,
-  [],
-) {
-  @ApiProperty()
-  id!: string;
-
-  @ApiProperty()
-  label!: string;
-
-  @ApiProperty({ enum: JOB_APPLICATION_FIELD_TYPES })
-  type!:
-    | 'TEXT'
-    | 'TEXTAREA'
-    | 'NUMBER'
-    | 'SELECT'
-    | 'FILE'
-    | 'DATE'
-    | 'CHECKBOX';
 }
 
 export class JobApplicationCustomFieldResponseDto extends OmitType(
