@@ -268,6 +268,23 @@ export class ApplicantExperienceResponseDto extends ApplicantExperienceInputDto 
   id!: string;
 }
 
+export class ApplicantStatusHistoryResponseDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiPropertyOptional({ nullable: true, enum: APPLICANT_STATUSES })
+  fromStatus!: (typeof APPLICANT_STATUSES)[number] | null;
+
+  @ApiProperty({ enum: APPLICANT_STATUSES })
+  toStatus!: (typeof APPLICANT_STATUSES)[number];
+
+  @ApiPropertyOptional({ nullable: true })
+  notes!: string | null;
+
+  @ApiProperty()
+  changedAt!: string;
+}
+
 export class ApplicantResponseDto {
   @ApiProperty()
   id!: string;
@@ -382,6 +399,9 @@ export class ApplicantResponseDto {
 
   @ApiProperty({ type: [ApplicantExperienceResponseDto] })
   experiences!: ApplicantExperienceResponseDto[];
+
+  @ApiProperty({ type: [ApplicantStatusHistoryResponseDto] })
+  statusHistory!: ApplicantStatusHistoryResponseDto[];
 
   @ApiProperty()
   createdAt!: string;

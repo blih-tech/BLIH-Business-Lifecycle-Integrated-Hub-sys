@@ -131,6 +131,7 @@ export const ModelName = {
   JobApproval: 'JobApproval',
   JobTool: 'JobTool',
   Applicant: 'Applicant',
+  ApplicantStatusHistory: 'ApplicantStatusHistory',
   ApplicantEducation: 'ApplicantEducation',
   ApplicantExperience: 'ApplicantExperience',
   Interview: 'Interview',
@@ -1560,6 +1561,7 @@ export const ApplicantScalarFieldEnum = {
   applicationFormId: 'applicationFormId',
   fullName: 'fullName',
   email: 'email',
+  emailNormalized: 'emailNormalized',
   phone: 'phone',
   resumeUrl: 'resumeUrl',
   linkedinUrl: 'linkedinUrl',
@@ -1596,6 +1598,19 @@ export const ApplicantScalarFieldEnum = {
 } as const
 
 export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
+
+
+export const ApplicantStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  notes: 'notes',
+  changedAt: 'changedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicantStatusHistoryScalarFieldEnum = (typeof ApplicantStatusHistoryScalarFieldEnum)[keyof typeof ApplicantStatusHistoryScalarFieldEnum]
 
 
 export const ApplicantEducationScalarFieldEnum = {

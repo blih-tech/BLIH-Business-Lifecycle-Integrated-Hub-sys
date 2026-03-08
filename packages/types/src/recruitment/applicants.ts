@@ -1,11 +1,18 @@
 export type ApplicantStatus =
   | 'APPLIED'
   | 'SHORTLISTED'
-  | 'SCREENING'
   | 'INTERVIEW'
   | 'OFFER'
   | 'HIRED'
   | 'REJECTED';
+
+export interface ApplicantStatusHistoryDto {
+  id: string;
+  fromStatus: ApplicantStatus | null;
+  toStatus: ApplicantStatus;
+  notes: string | null;
+  changedAt: string;
+}
 
 export interface ApplicantEducationDto {
   institution: string;
@@ -100,6 +107,7 @@ export interface ApplicantResponseDto {
   profileScore: number | null;
   educations: Array<ApplicantEducationDto & { id: string }>;
   experiences: Array<ApplicantExperienceDto & { id: string }>;
+  statusHistory: ApplicantStatusHistoryDto[];
   createdAt: string;
   updatedAt: string;
 }

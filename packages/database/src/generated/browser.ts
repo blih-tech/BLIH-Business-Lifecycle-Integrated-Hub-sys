@@ -418,6 +418,11 @@ export type JobTool = Prisma.JobToolModel
  */
 export type Applicant = Prisma.ApplicantModel
 /**
+ * Model ApplicantStatusHistory
+ * 
+ */
+export type ApplicantStatusHistory = Prisma.ApplicantStatusHistoryModel
+/**
  * Model ApplicantEducation
  * 
  */

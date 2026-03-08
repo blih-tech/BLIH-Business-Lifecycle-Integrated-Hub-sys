@@ -32,6 +32,7 @@ import {
   isApprovalStageActionable,
   jobInclude,
   mapJob,
+  normalizeSkillArray,
   normalizeStringArray,
   requiredRoleForStage,
 } from './recruitment.usecase-helpers';
@@ -322,7 +323,7 @@ export class CreateJobUseCase {
       principal.roles?.includes(SYSTEM_ROLES.HR_MANAGER) ||
       false;
     const location = parseLocation(dto.jobDetailsForm.location);
-    const skills = normalizeStringArray(dto.jobDetailsForm.skills);
+    const skills = normalizeSkillArray(dto.jobDetailsForm.skills);
     const responsibilities = normalizeStringArray(
       dto.jobDetailsForm.responsibilities,
     );
@@ -541,7 +542,7 @@ export class UpdateJobUseCase {
     );
 
     const location = parseLocation(merged.jobDetailsForm.location);
-    const skills = normalizeStringArray(merged.jobDetailsForm.skills);
+    const skills = normalizeSkillArray(merged.jobDetailsForm.skills);
     const responsibilities = normalizeStringArray(
       merged.jobDetailsForm.responsibilities,
     );
@@ -1049,7 +1050,7 @@ export class UpsertJobSkillsUseCase {
     });
     if (!job) throw new NotFoundException('Job not found');
 
-    const skills = normalizeStringArray(dto.skills);
+    const skills = normalizeSkillArray(dto.skills);
     await this.prisma.$transaction(async (tx) => {
       await tx.job.update({
         where: { id },

@@ -75,7 +75,7 @@ export const jobExample = {
         },
       ],
     },
-    skills: ['React', 'TypeScript', 'Next.js'],
+    skills: ['react', 'typescript', 'next.js'],
     responsibilities: [
       'Lead frontend delivery',
       'Collaborate with product and design',
@@ -105,7 +105,7 @@ export const jobExample = {
     customFields: [],
   },
   approvals: [],
-  skills: ['React', 'TypeScript', 'Next.js'],
+  skills: ['react', 'typescript', 'next.js'],
   tools: [
     {
       id: 'da0a642e-c61a-4f8c-a89f-eb6b3f59615a',
@@ -145,7 +145,7 @@ export const applicantExample = {
   currentSalary: '125000.00',
   educationLevel: 'BACHELOR',
   highestDegree: 'BSc Computer Science',
-  skills: ['React', 'TypeScript', 'GraphQL'],
+  skills: ['react', 'typescript', 'graphql'],
   status: 'SHORTLISTED',
   coverLetter: 'I have built high-scale APIs in TypeScript.',
   sourceSnapshot: { source: 'LINKEDIN' },
@@ -160,6 +160,15 @@ export const applicantExample = {
   profileScore: 70,
   educations: [],
   experiences: [],
+  statusHistory: [
+    {
+      id: '9b6d4a2e-9f95-45a1-b66b-e8e08680d2b5',
+      fromStatus: 'APPLIED',
+      toStatus: 'SHORTLISTED',
+      notes: 'Strong profile for the role',
+      changedAt: '2026-03-06T10:00:00.000Z',
+    },
+  ],
   createdAt: '2026-03-05T09:00:00.000Z',
   updatedAt: '2026-03-05T09:00:00.000Z',
 };
@@ -190,8 +199,8 @@ export const interviewExample = {
 export const jobResponseEnvelope = envelope('Created job', jobExample);
 export const jobListResponseEnvelope = envelope('List of jobs', [jobExample]);
 export const jobSkillsResponseEnvelope = envelope('Updated job skills', [
-  'TypeScript',
-  'PostgreSQL',
+  'typescript',
+  'postgresql',
 ]);
 export const jobToolsResponseEnvelope = envelope(
   'Updated job tools',

@@ -228,6 +228,7 @@ model Applicant {
   applicationForm   JobApplicationForm? @relation("ApplicantForm", fields: [applicationFormId], references: [id], onDelete: SetNull)
   fullName          String          @map("full_name")
   email             String
+  emailNormalized   String          @map("email_normalized")
   phone             String?
   resumeUrl         String?         @map("resume_url")
   linkedinUrl       String?         @map("linkedin_url")
@@ -266,12 +267,29 @@ model Applicant {
   experiences       ApplicantExperience[]
   interviews        Interview[]
   hiringDecisions   HiringDecision[] @relation("HiringDecisionApplicant")
+  statusHistory     ApplicantStatusHistory[]
 
-  @@unique([jobId, email])
+  @@unique([jobId, emailNormalized])
+  @@unique([id, jobId])
   @@index([jobId])
   @@index([status])
   @@index([email])
+  @@index([emailNormalized])
   @@index([referredById])
+}
+
+model ApplicantStatusHistory {
+  id          String          @id @default(uuid()) @db.Uuid
+  applicantId String          @map("applicant_id") @db.Uuid
+  applicant   Applicant       @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  fromStatus  ApplicantStatus? @map("from_status")
+  toStatus    ApplicantStatus  @map("to_status")
+  notes       String?          @db.Text
+  changedAt   DateTime         @default(now()) @map("changed_at")
+  createdAt   DateTime         @default(now())
+
+  @@index([applicantId])
+  @@index([applicantId, changedAt])
 }
 
 model ApplicantEducation {
@@ -309,7 +327,7 @@ model Interview {
   jobId           String          @map("job_id") @db.Uuid
   job             Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
   applicantId     String          @map("applicant_id") @db.Uuid
-  applicant       Applicant       @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicant       Applicant       @relation(fields: [applicantId, jobId], references: [id, jobId], onDelete: Cascade)
   type            InterviewType
   status          InterviewStatus @default(SCHEDULED)
   scheduledAt     DateTime?       @map("scheduled_at")
@@ -327,6 +345,7 @@ model Interview {
 
   @@index([jobId])
   @@index([applicantId])
+  @@index([applicantId, jobId])
   @@index([interviewerId])
   @@index([status])
 }

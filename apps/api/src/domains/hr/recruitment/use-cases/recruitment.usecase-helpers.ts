@@ -44,6 +44,7 @@ export const jobInclude = {
 export const applicantInclude = {
   educations: { orderBy: { startDate: 'desc' as const } },
   experiences: { orderBy: { startDate: 'desc' as const } },
+  statusHistory: { orderBy: { changedAt: 'desc' as const } },
 };
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
@@ -341,6 +342,19 @@ export function normalizeStringArray(values: string[] | null | undefined) {
   return normalized;
 }
 
+export function normalizeSkillArray(values: string[] | null | undefined) {
+  const seen = new Set<string>();
+  const normalized: string[] = [];
+  for (const value of values ?? []) {
+    const trimmed = value.trim().toLowerCase();
+    if (!trimmed) continue;
+    if (seen.has(trimmed)) continue;
+    seen.add(trimmed);
+    normalized.push(trimmed);
+  }
+  return normalized;
+}
+
 export function buildInterviewMetadata(input: {
   applicantId: string;
   round: number;
@@ -550,6 +564,13 @@ export function mapApplicant(applicant: any) {
       startDate: dateToIso(experience.startDate),
       endDate: dateToIso(experience.endDate),
       description: experience.description ?? null,
+    })),
+    statusHistory: (applicant.statusHistory ?? []).map((entry: any) => ({
+      id: entry.id,
+      fromStatus: entry.fromStatus ?? null,
+      toStatus: entry.toStatus,
+      notes: entry.notes ?? null,
+      changedAt: dateToIso(entry.changedAt),
     })),
     createdAt: applicant.createdAt.toISOString(),
     updatedAt: applicant.updatedAt.toISOString(),

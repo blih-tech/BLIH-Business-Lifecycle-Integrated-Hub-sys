@@ -464,6 +464,7 @@ export const ModelName = {
   JobApproval: 'JobApproval',
   JobTool: 'JobTool',
   Applicant: 'Applicant',
+  ApplicantStatusHistory: 'ApplicantStatusHistory',
   ApplicantEducation: 'ApplicantEducation',
   ApplicantExperience: 'ApplicantExperience',
   Interview: 'Interview',
@@ -509,7 +510,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "job" | "jobRequestForm" | "jobDetailsForm" | "jobApplicationForm" | "jobApplicationPredefinedField" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApproval" | "jobTool" | "applicant" | "applicantEducation" | "applicantExperience" | "interview" | "hiringDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
+    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "job" | "jobRequestForm" | "jobDetailsForm" | "jobApplicationForm" | "jobApplicationPredefinedField" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApproval" | "jobTool" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interview" | "hiringDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6433,6 +6434,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ApplicantStatusHistory: {
+      payload: Prisma.$ApplicantStatusHistoryPayload<ExtArgs>
+      fields: Prisma.ApplicantStatusHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApplicantStatusHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApplicantStatusHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.ApplicantStatusHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApplicantStatusHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.ApplicantStatusHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.ApplicantStatusHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.ApplicantStatusHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApplicantStatusHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.ApplicantStatusHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>
+        }
+        update: {
+          args: Prisma.ApplicantStatusHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.ApplicantStatusHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApplicantStatusHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApplicantStatusHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.ApplicantStatusHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicantStatusHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.ApplicantStatusHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApplicantStatusHistory>
+        }
+        groupBy: {
+          args: Prisma.ApplicantStatusHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApplicantStatusHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApplicantStatusHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApplicantStatusHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
     ApplicantEducation: {
       payload: Prisma.$ApplicantEducationPayload<ExtArgs>
       fields: Prisma.ApplicantEducationFieldRefs
@@ -10073,6 +10148,7 @@ export const ApplicantScalarFieldEnum = {
   applicationFormId: 'applicationFormId',
   fullName: 'fullName',
   email: 'email',
+  emailNormalized: 'emailNormalized',
   phone: 'phone',
   resumeUrl: 'resumeUrl',
   linkedinUrl: 'linkedinUrl',
@@ -10109,6 +10185,19 @@ export const ApplicantScalarFieldEnum = {
 } as const
 
 export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
+
+
+export const ApplicantStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  notes: 'notes',
+  changedAt: 'changedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicantStatusHistoryScalarFieldEnum = (typeof ApplicantStatusHistoryScalarFieldEnum)[keyof typeof ApplicantStatusHistoryScalarFieldEnum]
 
 
 export const ApplicantEducationScalarFieldEnum = {
@@ -12236,6 +12325,7 @@ export type GlobalOmitConfig = {
   jobApproval?: Prisma.JobApprovalOmit
   jobTool?: Prisma.JobToolOmit
   applicant?: Prisma.ApplicantOmit
+  applicantStatusHistory?: Prisma.ApplicantStatusHistoryOmit
   applicantEducation?: Prisma.ApplicantEducationOmit
   applicantExperience?: Prisma.ApplicantExperienceOmit
   interview?: Prisma.InterviewOmit

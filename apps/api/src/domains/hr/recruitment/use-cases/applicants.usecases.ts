@@ -19,7 +19,7 @@ import {
   computeApplicantProfileScore,
   mapApplicant,
   normalizeEmail,
-  normalizeStringArray,
+  normalizeSkillArray,
   recalculateJobMetrics,
   touchApplicantActivity,
 } from './recruitment.usecase-helpers';
@@ -38,7 +38,8 @@ export class CreateApplicantUseCase {
   ) {}
 
   async execute(dto: CreateApplicantDto) {
-    const normalizedEmail = normalizeEmail(dto.email);
+    const submittedEmail = dto.email.trim();
+    const normalizedEmail = normalizeEmail(submittedEmail);
     const [job, referredBy] = await Promise.all([
       this.prisma.job.findUnique({
         where: { id: dto.jobId },
@@ -85,7 +86,7 @@ export class CreateApplicantUseCase {
       );
     }
 
-    const skills = normalizeStringArray(dto.skills);
+    const skills = normalizeSkillArray(dto.skills);
     const now = new Date();
 
     const applicant = await this.prisma
@@ -95,7 +96,8 @@ export class CreateApplicantUseCase {
             jobId: dto.jobId,
             applicationFormId: dto.applicationFormId ?? fallbackFormId,
             fullName: dto.fullName.trim(),
-            email: normalizedEmail,
+            email: submittedEmail,
+            emailNormalized: normalizedEmail,
             phone: dto.phone ?? undefined,
             resumeUrl: dto.resumeUrl ?? undefined,
             linkedinUrl: dto.linkedinUrl ?? undefined,
@@ -151,6 +153,12 @@ export class CreateApplicantUseCase {
                   })),
                 }
               : undefined,
+            statusHistory: {
+              create: {
+                toStatus: 'APPLIED',
+                changedAt: now,
+              },
+            },
           },
           include: applicantInclude,
         });
@@ -196,7 +204,9 @@ export class ListApplicantsUseCase {
       where: {
         ...(query.status ? { status: query.status } : {}),
         ...(query.jobId ? { jobId: query.jobId } : {}),
-        ...(query.email ? { email: normalizeEmail(query.email) } : {}),
+        ...(query.email
+          ? { emailNormalized: normalizeEmail(query.email) }
+          : {}),
       },
       include: applicantInclude,
       orderBy: { createdAt: 'desc' },
@@ -273,127 +283,150 @@ export class UpdateApplicantUseCase {
     }
 
     const normalizedSkills =
-      dto.skills === undefined ? undefined : normalizeStringArray(dto.skills);
+      dto.skills === undefined ? undefined : normalizeSkillArray(dto.skills);
     const now = new Date();
 
-    await this.prisma.$transaction(async (tx) => {
-      await tx.applicant.update({
-        where: { id },
-        data: {
-          ...(dto.jobId !== undefined && { jobId: dto.jobId }),
-          ...(dto.applicationFormId !== undefined && {
-            applicationFormId: dto.applicationFormId,
-          }),
-          ...(dto.fullName !== undefined && { fullName: dto.fullName.trim() }),
-          ...(dto.email !== undefined && { email: normalizeEmail(dto.email) }),
-          ...(dto.phone !== undefined && { phone: dto.phone }),
-          ...(dto.resumeUrl !== undefined && { resumeUrl: dto.resumeUrl }),
-          ...(dto.linkedinUrl !== undefined && {
-            linkedinUrl: dto.linkedinUrl,
-          }),
-          ...(dto.portfolioUrl !== undefined && {
-            portfolioUrl: dto.portfolioUrl,
-          }),
-          ...(dto.githubUrl !== undefined && { githubUrl: dto.githubUrl }),
-          ...(dto.source !== undefined && { source: dto.source }),
-          ...(dto.referredById !== undefined && {
-            referredById: dto.referredById,
-          }),
-          ...(dto.currentCompany !== undefined && {
-            currentCompany: dto.currentCompany,
-          }),
-          ...(dto.currentPosition !== undefined && {
-            currentPosition: dto.currentPosition,
-          }),
-          ...(dto.yearsExperience !== undefined && {
-            yearsExperience: dto.yearsExperience,
-          }),
-          ...(dto.location !== undefined && { location: dto.location }),
-          ...(dto.country !== undefined && { country: dto.country }),
-          ...(dto.city !== undefined && { city: dto.city }),
-          ...(dto.nationality !== undefined && {
-            nationality: dto.nationality,
-          }),
-          ...(dto.expectedSalary !== undefined && {
-            expectedSalary: decimalOrUndefined(dto.expectedSalary),
-          }),
-          ...(dto.currentSalary !== undefined && {
-            currentSalary: decimalOrUndefined(dto.currentSalary),
-          }),
-          ...(dto.educationLevel !== undefined && {
-            educationLevel: dto.educationLevel,
-          }),
-          ...(dto.highestDegree !== undefined && {
-            highestDegree: dto.highestDegree,
-          }),
-          ...(normalizedSkills !== undefined && { skills: normalizedSkills }),
-          ...(dto.coverLetter !== undefined && {
-            coverLetter: dto.coverLetter,
-          }),
-          ...(dto.sourceSnapshot !== undefined && {
-            sourceSnapshot:
-              (dto.sourceSnapshot as Prisma.InputJsonValue | null) ??
-              Prisma.DbNull,
-          }),
-          ...(dto.customFieldValues !== undefined && {
-            customFieldValues:
-              (dto.customFieldValues as Prisma.InputJsonValue | null) ??
-              Prisma.DbNull,
-          }),
-          lastActivityAt: now,
-          profileScore: computeApplicantProfileScore({
-            yearsExperience:
-              dto.yearsExperience ?? existing.yearsExperience ?? null,
-            hasResume:
-              dto.resumeUrl !== undefined
-                ? !!dto.resumeUrl
-                : !!existing.resumeUrl,
-            skillsCount:
-              normalizedSkills?.length ?? existing.skills?.length ?? 0,
-            hasLinks:
-              dto.linkedinUrl !== undefined ||
-              dto.portfolioUrl !== undefined ||
-              dto.githubUrl !== undefined
-                ? !!dto.linkedinUrl || !!dto.portfolioUrl || !!dto.githubUrl
-                : !!existing.linkedinUrl ||
-                  !!existing.portfolioUrl ||
-                  !!existing.githubUrl,
-          }),
-        },
+    await this.prisma
+      .$transaction(async (tx) => {
+        await tx.applicant.update({
+          where: { id },
+          data: {
+            ...(dto.jobId !== undefined && { jobId: dto.jobId }),
+            ...(dto.applicationFormId !== undefined && {
+              applicationFormId: dto.applicationFormId,
+            }),
+            ...(dto.fullName !== undefined && {
+              fullName: dto.fullName.trim(),
+            }),
+            ...(dto.email !== undefined && {
+              email: dto.email.trim(),
+              emailNormalized: normalizeEmail(dto.email),
+            }),
+            ...(dto.phone !== undefined && { phone: dto.phone }),
+            ...(dto.resumeUrl !== undefined && { resumeUrl: dto.resumeUrl }),
+            ...(dto.linkedinUrl !== undefined && {
+              linkedinUrl: dto.linkedinUrl,
+            }),
+            ...(dto.portfolioUrl !== undefined && {
+              portfolioUrl: dto.portfolioUrl,
+            }),
+            ...(dto.githubUrl !== undefined && { githubUrl: dto.githubUrl }),
+            ...(dto.source !== undefined && { source: dto.source }),
+            ...(dto.referredById !== undefined && {
+              referredById: dto.referredById,
+            }),
+            ...(dto.currentCompany !== undefined && {
+              currentCompany: dto.currentCompany,
+            }),
+            ...(dto.currentPosition !== undefined && {
+              currentPosition: dto.currentPosition,
+            }),
+            ...(dto.yearsExperience !== undefined && {
+              yearsExperience: dto.yearsExperience,
+            }),
+            ...(dto.location !== undefined && { location: dto.location }),
+            ...(dto.country !== undefined && { country: dto.country }),
+            ...(dto.city !== undefined && { city: dto.city }),
+            ...(dto.nationality !== undefined && {
+              nationality: dto.nationality,
+            }),
+            ...(dto.expectedSalary !== undefined && {
+              expectedSalary: decimalOrUndefined(dto.expectedSalary),
+            }),
+            ...(dto.currentSalary !== undefined && {
+              currentSalary: decimalOrUndefined(dto.currentSalary),
+            }),
+            ...(dto.educationLevel !== undefined && {
+              educationLevel: dto.educationLevel,
+            }),
+            ...(dto.highestDegree !== undefined && {
+              highestDegree: dto.highestDegree,
+            }),
+            ...(normalizedSkills !== undefined && { skills: normalizedSkills }),
+            ...(dto.coverLetter !== undefined && {
+              coverLetter: dto.coverLetter,
+            }),
+            ...(dto.sourceSnapshot !== undefined && {
+              sourceSnapshot:
+                (dto.sourceSnapshot as Prisma.InputJsonValue | null) ??
+                Prisma.DbNull,
+            }),
+            ...(dto.customFieldValues !== undefined && {
+              customFieldValues:
+                (dto.customFieldValues as Prisma.InputJsonValue | null) ??
+                Prisma.DbNull,
+            }),
+            lastActivityAt: now,
+            profileScore: computeApplicantProfileScore({
+              yearsExperience:
+                dto.yearsExperience ?? existing.yearsExperience ?? null,
+              hasResume:
+                dto.resumeUrl !== undefined
+                  ? !!dto.resumeUrl
+                  : !!existing.resumeUrl,
+              skillsCount:
+                normalizedSkills?.length ?? existing.skills?.length ?? 0,
+              hasLinks:
+                dto.linkedinUrl !== undefined ||
+                dto.portfolioUrl !== undefined ||
+                dto.githubUrl !== undefined
+                  ? !!dto.linkedinUrl || !!dto.portfolioUrl || !!dto.githubUrl
+                  : !!existing.linkedinUrl ||
+                    !!existing.portfolioUrl ||
+                    !!existing.githubUrl,
+            }),
+          },
+        });
+
+        if (dto.educations !== undefined) {
+          await tx.applicantEducation.deleteMany({
+            where: { applicantId: id },
+          });
+          if (dto.educations.length > 0) {
+            await tx.applicantEducation.createMany({
+              data: dto.educations.map((education) => ({
+                applicantId: id,
+                institution: education.institution,
+                degree: education.degree,
+                field: education.field,
+                startDate: dateOrUndefined(education.startDate),
+                endDate: dateOrUndefined(education.endDate),
+              })),
+            });
+          }
+        }
+
+        if (dto.experiences !== undefined) {
+          await tx.applicantExperience.deleteMany({
+            where: { applicantId: id },
+          });
+          if (dto.experiences.length > 0) {
+            await tx.applicantExperience.createMany({
+              data: dto.experiences.map((experience) => ({
+                applicantId: id,
+                company: experience.company,
+                title: experience.title,
+                startDate: dateOrUndefined(experience.startDate),
+                endDate: dateOrUndefined(experience.endDate),
+                description: experience.description ?? undefined,
+              })),
+            });
+          }
+        }
+      })
+      .catch((error: unknown) => {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'code' in error &&
+          (error as { code?: string }).code === 'P2002'
+        ) {
+          throw new ConflictException(
+            'Applicant already exists for this job and email',
+          );
+        }
+        throw error;
       });
-
-      if (dto.educations !== undefined) {
-        await tx.applicantEducation.deleteMany({ where: { applicantId: id } });
-        if (dto.educations.length > 0) {
-          await tx.applicantEducation.createMany({
-            data: dto.educations.map((education) => ({
-              applicantId: id,
-              institution: education.institution,
-              degree: education.degree,
-              field: education.field,
-              startDate: dateOrUndefined(education.startDate),
-              endDate: dateOrUndefined(education.endDate),
-            })),
-          });
-        }
-      }
-
-      if (dto.experiences !== undefined) {
-        await tx.applicantExperience.deleteMany({ where: { applicantId: id } });
-        if (dto.experiences.length > 0) {
-          await tx.applicantExperience.createMany({
-            data: dto.experiences.map((experience) => ({
-              applicantId: id,
-              company: experience.company,
-              title: experience.title,
-              startDate: dateOrUndefined(experience.startDate),
-              endDate: dateOrUndefined(experience.endDate),
-              description: experience.description ?? undefined,
-            })),
-          });
-        }
-      }
-    });
 
     const updated = await this.prisma.applicant.findUniqueOrThrow({
       where: { id },
@@ -417,6 +450,7 @@ export class UpdateApplicantStatusUseCase {
     assertApplicantTransition(existing.status, dto.status);
 
     const now = new Date();
+    const statusChanged = existing.status !== dto.status;
     const updated = await this.prisma.$transaction(async (tx) => {
       const data: Prisma.ApplicantUpdateInput = {
         status: dto.status,
@@ -434,6 +468,18 @@ export class UpdateApplicantStatusUseCase {
         data,
         include: applicantInclude,
       });
+
+      if (statusChanged) {
+        await tx.applicantStatusHistory.create({
+          data: {
+            applicantId: id,
+            fromStatus: existing.status,
+            toStatus: dto.status,
+            notes: dto.notes ?? undefined,
+            changedAt: now,
+          },
+        });
+      }
 
       await touchApplicantActivity(tx, id, now);
       await recalculateJobMetrics(tx, existing.jobId);
