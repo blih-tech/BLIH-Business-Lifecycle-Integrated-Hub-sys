@@ -28,11 +28,11 @@ export const ENDORSEMENT_LEVELS = [
 export interface CreateInterviewDto {
   applicationId: string;
   type: InterviewType;
+  interviewerId: string;
   round?: number;
   status?: InterviewStatus;
   scheduledAt?: string | null;
   completedAt?: string | null;
-  interviewerId?: string | null;
   interviewers?: unknown[] | null;
   feedback?: string | null;
   endorsement?: EndorsementLevel | null;

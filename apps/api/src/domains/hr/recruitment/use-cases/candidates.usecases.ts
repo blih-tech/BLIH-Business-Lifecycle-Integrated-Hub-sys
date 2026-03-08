@@ -161,6 +161,11 @@ export class UpdateCandidateUseCase {
     const now = new Date();
 
     const updated = await this.prisma.$transaction(async (tx) => {
+      const persistedSkillsCount =
+        dto.skills === undefined
+          ? await tx.candidateSkill.count({ where: { candidateId: id } })
+          : null;
+
       const row = await tx.candidate.update({
         where: { id },
         data: {
@@ -210,7 +215,7 @@ export class UpdateCandidateUseCase {
               dto.yearsExperience ?? existing.yearsExperience ?? null,
             hasResume:
               dto.resumeUrl !== undefined ? !!dto.resumeUrl : !!existing.cvUrl,
-            skillsCount: dto.skills?.length ?? null,
+            skillsCount: dto.skills?.length ?? persistedSkillsCount ?? 0,
             hasLinks:
               dto.linkedinUrl !== undefined ||
               dto.portfolioUrl !== undefined ||

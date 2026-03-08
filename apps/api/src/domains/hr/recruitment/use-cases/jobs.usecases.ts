@@ -178,6 +178,23 @@ const validatePredefinedFieldKeys = (
 const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
 
+const assertOptionalUserExists = async (
+  prisma: PrismaService,
+  userId: string | null | undefined,
+  field: string,
+) => {
+  if (!userId) return;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true },
+  });
+  if (!user) {
+    throw new BadRequestException(
+      `${field} does not reference an existing user`,
+    );
+  }
+};
+
 const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
   if (!job.requestForm?.detailsForm?.applicationForm) {
     throw new BadRequestException(
@@ -192,7 +209,7 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       requestedBy: job.requestForm.requestedBy,
       position: job.requestForm.positionId,
       requestType: job.requestForm.requestType,
-      replaceFor: job.requestForm.replaceFor ?? undefined,
+      replaceForUserId: job.requestForm.replaceForUserId ?? undefined,
       businessJustification: job.requestForm.businessJustification,
       employmentType: job.requestForm.employmentType,
       workMode: job.requestForm.workMode,
@@ -287,6 +304,16 @@ export class CreateJobUseCase {
       dto.requestForm.department,
       dto.requestForm.position,
     );
+    await assertOptionalUserExists(
+      this.prisma,
+      dto.hiringManagerId,
+      'hiringManagerId',
+    );
+    await assertOptionalUserExists(
+      this.prisma,
+      dto.requestForm.replaceForUserId,
+      'requestForm.replaceForUserId',
+    );
     assertSalaryRange(
       dto.jobDetailsForm.salaryMin ?? null,
       dto.jobDetailsForm.salaryMax ?? null,
@@ -310,19 +337,10 @@ export class CreateJobUseCase {
         slug,
         departmentId: dto.requestForm.department,
         positionId: dto.requestForm.position,
-        description: dto.jobDetailsForm.jobSummary,
-        summary: dto.jobDetailsForm.whyJoinUs ?? undefined,
-        descriptionRich: {
-          kind: 'markdown',
-          value: dto.jobDetailsForm.jobSummary,
-        } as unknown as Prisma.InputJsonValue,
-        summaryRich:
-          dto.jobDetailsForm.whyJoinUs != null
-            ? ({
-                kind: 'markdown',
-                value: dto.jobDetailsForm.whyJoinUs,
-              } as unknown as Prisma.InputJsonValue)
-            : undefined,
+        description: dto.jobDetailsForm.jobSummary as Prisma.InputJsonValue,
+        summary:
+          (dto.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
+          undefined,
         experienceLevel: dto.jobDetailsForm.experienceLevel,
         contractType: EMPLOYMENT_TO_CONTRACT[dto.requestForm.employmentType],
         employmentType: dto.requestForm.employmentType,
@@ -352,7 +370,7 @@ export class CreateJobUseCase {
             requestedBy: dto.requestForm.requestedBy,
             positionId: dto.requestForm.position,
             requestType: dto.requestForm.requestType,
-            replaceFor: dto.requestForm.replaceFor ?? undefined,
+            replaceForUserId: dto.requestForm.replaceForUserId ?? undefined,
             businessJustification: dto.requestForm.businessJustification,
             employmentType: dto.requestForm.employmentType,
             workMode: dto.requestForm.workMode,
@@ -364,8 +382,11 @@ export class CreateJobUseCase {
                 location: dto.jobDetailsForm.location,
                 workMode: dto.jobDetailsForm.workMode,
                 employmentType: dto.jobDetailsForm.employmentType,
-                jobSummary: dto.jobDetailsForm.jobSummary,
-                whyJoinUs: dto.jobDetailsForm.whyJoinUs ?? undefined,
+                jobSummary: dto.jobDetailsForm
+                  .jobSummary as Prisma.InputJsonValue,
+                whyJoinUs:
+                  (dto.jobDetailsForm
+                    .whyJoinUs as Prisma.InputJsonValue | null) ?? undefined,
                 keyResponsibilities: dto.jobDetailsForm.keyResponsibilities,
                 preferredSkills:
                   dto.jobDetailsForm.preferredSkills ?? undefined,
@@ -480,11 +501,23 @@ export class GetJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(id: string) {
-    const job = await this.prisma.job.findUnique({
-      where: { id },
-      include: jobInclude,
-    });
-    if (!job) throw new NotFoundException('Job not found');
+    const job = await this.prisma.job
+      .update({
+        where: { id },
+        data: { viewsCount: { increment: 1 } },
+        include: jobInclude,
+      })
+      .catch((error: unknown) => {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'code' in error &&
+          (error as { code?: string }).code === 'P2025'
+        ) {
+          throw new NotFoundException('Job not found');
+        }
+        throw error;
+      });
     return mapJob(job);
   }
 }
@@ -515,6 +548,16 @@ export class UpdateJobUseCase {
       merged.requestForm.department,
       merged.requestForm.position,
     );
+    await assertOptionalUserExists(
+      this.prisma,
+      dto.hiringManagerId,
+      'hiringManagerId',
+    );
+    await assertOptionalUserExists(
+      this.prisma,
+      merged.requestForm.replaceForUserId,
+      'requestForm.replaceForUserId',
+    );
     assertSalaryRange(
       merged.jobDetailsForm.salaryMin ?? null,
       merged.jobDetailsForm.salaryMax ?? null,
@@ -532,19 +575,11 @@ export class UpdateJobUseCase {
           title: merged.requestForm.jobTitle,
           departmentId: merged.requestForm.department,
           positionId: merged.requestForm.position,
-          description: merged.jobDetailsForm.jobSummary,
-          summary: merged.jobDetailsForm.whyJoinUs ?? null,
-          descriptionRich: {
-            kind: 'markdown',
-            value: merged.jobDetailsForm.jobSummary,
-          } as Prisma.InputJsonValue,
-          summaryRich:
-            merged.jobDetailsForm.whyJoinUs != null
-              ? ({
-                  kind: 'markdown',
-                  value: merged.jobDetailsForm.whyJoinUs,
-                } as Prisma.InputJsonValue)
-              : null,
+          description: merged.jobDetailsForm
+            .jobSummary as Prisma.InputJsonValue,
+          summary:
+            (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
+            Prisma.DbNull,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
           contractType:
             EMPLOYMENT_TO_CONTRACT[merged.requestForm.employmentType],
@@ -577,7 +612,7 @@ export class UpdateJobUseCase {
           requestedBy: merged.requestForm.requestedBy,
           positionId: merged.requestForm.position,
           requestType: merged.requestForm.requestType,
-          replaceFor: merged.requestForm.replaceFor ?? undefined,
+          replaceForUserId: merged.requestForm.replaceForUserId ?? undefined,
           businessJustification: merged.requestForm.businessJustification,
           employmentType: merged.requestForm.employmentType,
           workMode: merged.requestForm.workMode,
@@ -590,7 +625,7 @@ export class UpdateJobUseCase {
           requestedBy: merged.requestForm.requestedBy,
           positionId: merged.requestForm.position,
           requestType: merged.requestForm.requestType,
-          replaceFor: merged.requestForm.replaceFor ?? null,
+          replaceForUserId: merged.requestForm.replaceForUserId ?? null,
           businessJustification: merged.requestForm.businessJustification,
           employmentType: merged.requestForm.employmentType,
           workMode: merged.requestForm.workMode,
@@ -608,8 +643,10 @@ export class UpdateJobUseCase {
           location: merged.jobDetailsForm.location,
           workMode: merged.jobDetailsForm.workMode,
           employmentType: merged.jobDetailsForm.employmentType,
-          jobSummary: merged.jobDetailsForm.jobSummary,
-          whyJoinUs: merged.jobDetailsForm.whyJoinUs ?? undefined,
+          jobSummary: merged.jobDetailsForm.jobSummary as Prisma.InputJsonValue,
+          whyJoinUs:
+            (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
+            undefined,
           keyResponsibilities: merged.jobDetailsForm.keyResponsibilities,
           preferredSkills: merged.jobDetailsForm.preferredSkills ?? undefined,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
@@ -629,8 +666,10 @@ export class UpdateJobUseCase {
           location: merged.jobDetailsForm.location,
           workMode: merged.jobDetailsForm.workMode,
           employmentType: merged.jobDetailsForm.employmentType,
-          jobSummary: merged.jobDetailsForm.jobSummary,
-          whyJoinUs: merged.jobDetailsForm.whyJoinUs ?? null,
+          jobSummary: merged.jobDetailsForm.jobSummary as Prisma.InputJsonValue,
+          whyJoinUs:
+            (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
+            Prisma.DbNull,
           keyResponsibilities: merged.jobDetailsForm.keyResponsibilities,
           preferredSkills: merged.jobDetailsForm.preferredSkills ?? null,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
@@ -821,7 +860,7 @@ export class SubmitJobUseCase {
           financeApprovalStatus: 'PENDING_FOR_APPROVAL',
           gmApprovalStatus: 'PENDING_FOR_APPROVAL',
           hrApprovalStatus: 'PENDING_FOR_APPROVAL',
-          pendingApprovalAt: existing.pendingApprovalAt ?? now,
+          pendingApprovalAt: now,
         },
         include: jobInclude,
       });
@@ -917,7 +956,7 @@ export class ApproveJobUseCase {
           data: {
             ...stageFieldPatch(target.stage, 'REJECTED'),
             status: 'REJECTED',
-            rejectedAt: existing.rejectedAt ?? decidedAt,
+            rejectedAt: decidedAt,
           },
           include: jobInclude,
         });
@@ -969,8 +1008,9 @@ export class ApproveJobUseCase {
         data: {
           ...stageStatuses,
           status: nextStatus,
-          ...(nextStatus === 'READY_TO_POST' &&
-            existing.readyToPostAt == null && { readyToPostAt: decidedAt }),
+          ...(nextStatus === 'READY_TO_POST'
+            ? { readyToPostAt: decidedAt }
+            : {}),
         },
         include: jobInclude,
       });

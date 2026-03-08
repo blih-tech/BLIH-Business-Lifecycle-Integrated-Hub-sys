@@ -55,7 +55,7 @@ export interface ApprovalState {
 
 interface SubmitReadinessPayload {
   title: string;
-  description: string;
+  description: unknown;
   departmentId: string | null;
   positionId: string | null;
   experienceLevel: string | null;
@@ -199,7 +199,7 @@ export function assertSubmitReadiness(job: SubmitReadinessPayload) {
   if (!job.title?.trim()) {
     throw new BadRequestException('title is required before submit');
   }
-  if (!job.description?.trim()) {
+  if (!isNonEmptyObject(job.description)) {
     throw new BadRequestException('description is required before submit');
   }
   if (!job.departmentId) {
@@ -333,6 +333,13 @@ function toObjectRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
+function isNonEmptyObject(value: unknown) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  return Object.keys(value as Record<string, unknown>).length > 0;
+}
+
 export function buildInterviewMetadata(input: {
   applicationId: string;
   round: number;
@@ -412,7 +419,7 @@ export function mapJob(job: any) {
           requestedBy: requestForm.requestedBy,
           position: requestForm.positionId,
           requestType: requestForm.requestType,
-          replaceFor: requestForm.replaceFor ?? null,
+          replaceForUserId: requestForm.replaceForUserId ?? null,
           businessJustification: requestForm.businessJustification,
           employmentType: requestForm.employmentType,
           workMode: requestForm.workMode,
@@ -535,7 +542,7 @@ export function mapCandidate(candidate: any) {
     lastActivityAt: dateToIso(candidate.lastActivityAt),
     profileScore:
       typeof candidate.profileScore === 'number'
-        ? String(candidate.profileScore)
+        ? candidate.profileScore
         : null,
     educations: (candidate.educations ?? []).map((education: any) => ({
       id: education.id,
@@ -667,15 +674,13 @@ export async function recalculateJobMetrics(
     prisma.jobApplication.count({
       where: {
         jobId,
-        status: {
-          in: ['SHORTLISTED', 'INTERVIEW_STAGE', 'OFFER_PENDING', 'HIRED'],
-        },
+        status: 'SHORTLISTED',
       },
     }),
     prisma.jobApplication.count({
       where: {
         jobId,
-        status: { in: ['OFFER_PENDING', 'HIRED'] },
+        status: 'OFFER_PENDING',
       },
     }),
     prisma.jobApplication.count({

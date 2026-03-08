@@ -96,13 +96,15 @@ export class JobsController {
       createJob: {
         summary: 'Create job payload (nested)',
         value: {
+          priority: 'medium',
+          hiringManagerId: '6e40348d-4fda-47a7-b267-13ed7b6fca68',
           requestForm: {
             jobTitle: 'Senior Frontend Engineer',
             department: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
             requestedBy: 'Alice Njeri',
             position: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
             requestType: 'replacement',
-            replaceFor: 'Frontend Engineer II',
+            replaceForUserId: '9f95c89f-3dcb-4fd7-a78d-33e5f1e8f12b',
             businessJustification:
               'We need to backfill a critical delivery role.',
             employmentType: 'full_time',
@@ -115,8 +117,26 @@ export class JobsController {
             location: 'Addis Ababa, Ethiopia',
             workMode: 'hybrid',
             employmentType: 'full_time',
-            jobSummary: 'Lead frontend delivery for customer-facing products.',
-            whyJoinUs: 'Join a fast-moving product team with strong ownership.',
+            jobSummary: {
+              type: 'doc',
+              version: 1,
+              content: [
+                {
+                  type: 'paragraph',
+                  text: 'Lead frontend delivery for customer-facing products.',
+                },
+              ],
+            },
+            whyJoinUs: {
+              type: 'doc',
+              version: 1,
+              content: [
+                {
+                  type: 'paragraph',
+                  text: 'Join a fast-moving product team with strong ownership.',
+                },
+              ],
+            },
             keyResponsibilities:
               'Lead frontend delivery\\nCollaborate with product and design',
             skills: [
@@ -237,6 +257,7 @@ export class JobsController {
       updateJob: {
         summary: 'Update job payload',
         value: {
+          priority: 'high',
           requestForm: {
             jobTitle: 'Lead Frontend Engineer',
             department: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
@@ -254,7 +275,11 @@ export class JobsController {
             location: 'Addis Ababa, Ethiopia',
             workMode: 'hybrid',
             employmentType: 'full_time',
-            jobSummary: 'Updated summary',
+            jobSummary: {
+              type: 'doc',
+              version: 1,
+              content: [{ type: 'paragraph', text: 'Updated summary' }],
+            },
             keyResponsibilities: 'Lead team\\nShip product',
             skills: [{ name: 'React', level: 'ADVANCED', required: true }],
             experienceLevel: 'lead',

@@ -10,15 +10,12 @@ model Job {
   department            Department            @relation(fields: [departmentId], references: [id])
   positionId            String                @map("position_id") @db.Uuid
   position              Position              @relation(fields: [positionId], references: [id])
-  description           String                @db.Text
-  summary               String?               @db.Text
-  descriptionRich       Json?                 @map("description_rich") @db.JsonB
-  summaryRich           Json?                 @map("summary_rich") @db.JsonB
+  description           Json                  @db.JsonB
+  summary               Json?                 @db.JsonB
   experienceLevel       ExperienceLevel?      @map("experience_level")
   contractType          JobContractType       @map("contract_type")
   employmentType        EmploymentType?       @map("employment_type")
   workLocationType      WorkLocationType      @map("work_location_type")
-  //TODO: remote scope should be removed 
   remoteScope           RemoteScope?          @map("remote_scope")
   city                  String?               @db.VarChar(128)
   country               String?               @db.VarChar(128)
@@ -26,7 +23,6 @@ model Job {
   salaryMin             Decimal?              @map("salary_min") @db.Decimal(12, 2)
   salaryMax             Decimal?              @map("salary_max") @db.Decimal(12, 2)
   currency              String?               @db.VarChar(8)
-  //TODO: add fixed enum to salary mode and also handle the logic 
   salaryMode            JobSalaryMode         @default(NOT_SPECIFIED) @map("salary_mode")
   benefits              String[]              @default([])
   status                JobWorkflowStatus     @default(DRAFT)
@@ -86,9 +82,8 @@ model JobRequestForm {
   positionId            String          @map("position_id") @db.Uuid
   position              Position        @relation("JobRequestPosition", fields: [positionId], references: [id], onDelete: Restrict)
   requestType           JobRequestType  @map("request_type")
-  replaceFor            String?         @map("replace_for") @db.VarChar(255)
-  replaceForEmployeeId  String?         @map("replace_for_employee_id") @db.Uuid
-  replaceForEmployee    Employee?       @relation("JobRequestReplacementEmployee", fields: [replaceForEmployeeId], references: [id], onDelete: SetNull)
+  replaceForUserId      String?         @map("replace_for_user_id") @db.Uuid
+  replaceForUser        User?           @relation("JobRequestReplacementUser", fields: [replaceForUserId], references: [id], onDelete: SetNull)
   businessJustification String          @map("business_justification") @db.Text
   employmentType        EmploymentType  @map("employment_type")
   workMode              WorkLocationType @map("work_mode")
@@ -100,7 +95,7 @@ model JobRequestForm {
 
   @@index([departmentId])
   @@index([positionId])
-  @@index([replaceForEmployeeId])
+  @@index([replaceForUserId])
 }
 
 model JobDetailsForm {
@@ -111,8 +106,8 @@ model JobDetailsForm {
   location            String            @db.VarChar(255)
   workMode            WorkLocationType  @map("work_mode")
   employmentType      EmploymentType    @map("employment_type")
-  jobSummary          String            @map("job_summary") @db.Text
-  whyJoinUs           String?           @map("why_join_us") @db.Text
+  jobSummary          Json              @map("job_summary") @db.JsonB
+  whyJoinUs           Json?             @map("why_join_us") @db.JsonB
   keyResponsibilities String            @map("key_responsibilities") @db.Text
   preferredSkills     String?           @map("preferred_skills") @db.Text
   experienceLevel     ExperienceLevel   @map("experience_level")

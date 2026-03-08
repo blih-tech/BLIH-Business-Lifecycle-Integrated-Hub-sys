@@ -53,10 +53,9 @@ export class CreateInterviewDto {
   @IsDateString()
   completedAt?: string | null;
 
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
+  @ApiProperty()
   @IsUUID()
-  interviewerId?: string | null;
+  interviewerId!: string;
 
   @ApiPropertyOptional({ nullable: true, type: () => [Object] })
   @IsOptional()

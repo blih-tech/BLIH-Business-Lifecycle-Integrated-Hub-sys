@@ -124,7 +124,6 @@ enum JobSalaryMode {
   NOT_SPECIFIED
   NEGOTIABLE
   COMPETITIVE
-  FIXED
 }
 
 enum JobRequestType {

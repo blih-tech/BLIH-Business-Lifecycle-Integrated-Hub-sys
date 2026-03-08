@@ -29,6 +29,16 @@ export interface CreateCandidateDto {
     level?: SkillLevel | null;
     years?: number | null;
   }>;
+  location?: string | null;
+  country?: string | null;
+  city?: string | null;
+  nationality?: string | null;
+  expectedSalary?: number | null;
+  currentSalary?: number | null;
+  educationLevel?: string | null;
+  highestDegree?: string | null;
+  educations?: CandidateEducationDto[];
+  experiences?: CandidateExperienceDto[];
 }
 
 export type UpdateCandidateDto = Partial<CreateCandidateDto>;
@@ -38,6 +48,24 @@ export interface CandidateSkillDto {
   name: string;
   level: SkillLevel | null;
   years: number | null;
+}
+
+export interface CandidateEducationDto {
+  id?: string;
+  institution: string;
+  degree: string;
+  field: string;
+  startDate: string | null;
+  endDate: string | null;
+}
+
+export interface CandidateExperienceDto {
+  id?: string;
+  company: string;
+  title: string;
+  startDate: string | null;
+  endDate: string | null;
+  description: string | null;
 }
 
 export interface CandidateResponseDto {
@@ -55,6 +83,18 @@ export interface CandidateResponseDto {
   referredById: string | null;
   resumeUrl: string | null;
   skills: CandidateSkillDto[];
+  location: string | null;
+  country: string | null;
+  city: string | null;
+  nationality: string | null;
+  expectedSalary: string | null;
+  currentSalary: string | null;
+  educationLevel: string | null;
+  highestDegree: string | null;
+  lastActivityAt: string | null;
+  profileScore: number | null;
+  educations: CandidateEducationDto[];
+  experiences: CandidateExperienceDto[];
   createdAt: string;
   updatedAt: string;
 }

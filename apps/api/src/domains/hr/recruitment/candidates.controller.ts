@@ -59,7 +59,7 @@ export class CandidatesController {
   @ApiBody({
     type: CreateCandidateDto,
     description:
-      'Request body: firstName (required), lastName (required), email (required). Optional: phone, gender, yearsExperience, linkedinUrl, portfolioUrl, githubUrl, source, referredById, resumeUrl, skills (array of { name, level, years }).',
+      'Request body: firstName (required), lastName (required), email (required). Optional: profile links, location/salary/education fields, skills, and nested educations/experiences arrays.',
     examples: {
       createCandidate: {
         summary: 'Create candidate payload (minimal)',
@@ -86,9 +86,35 @@ export class CandidatesController {
           githubUrl: 'https://github.com/abeltesfaye',
           source: 'LINKEDIN',
           resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+          location: 'Addis Ababa, Ethiopia',
+          country: 'Ethiopia',
+          city: 'Addis Ababa',
+          nationality: 'Ethiopian',
+          expectedSalary: 145000,
+          currentSalary: 125000,
+          educationLevel: 'BACHELOR',
+          highestDegree: 'BSc Computer Science',
           skills: [
             { name: 'NestJS', level: 'ADVANCED', years: 4 },
             { name: 'PostgreSQL', level: 'INTERMEDIATE', years: 3 },
+          ],
+          educations: [
+            {
+              institution: 'Addis Ababa University',
+              degree: 'BSc',
+              field: 'Computer Science',
+              startDate: '2014-09-01',
+              endDate: '2018-07-01',
+            },
+          ],
+          experiences: [
+            {
+              company: 'TechCorp',
+              title: 'Senior Engineer',
+              startDate: '2020-01-01',
+              endDate: null,
+              description: 'Built backend APIs and led integrations.',
+            },
           ],
         },
       },
@@ -168,7 +194,7 @@ export class CandidatesController {
   @ApiBody({
     type: UpdateCandidateDto,
     description:
-      'Request body: partial candidate fields (all optional). Same structure as create; send only fields to update.',
+      'Request body: partial candidate fields (all optional). Same structure as create, including skills, educations, and experiences.',
     examples: {
       updateCandidate: {
         summary: 'Update candidate payload',
@@ -184,6 +210,15 @@ export class CandidatesController {
           yearsExperience: 7,
           linkedinUrl: 'https://linkedin.com/in/abeltesfaye-updated',
           resumeUrl: 'https://cdn.example.com/cv/abel-v2.pdf',
+          educations: [
+            {
+              institution: 'AASTU',
+              degree: 'MSc',
+              field: 'Software Engineering',
+              startDate: '2019-09-01',
+              endDate: '2021-07-01',
+            },
+          ],
         },
       },
     },

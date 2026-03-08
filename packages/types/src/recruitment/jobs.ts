@@ -31,6 +31,7 @@ export type JobRequestType = 'NEW' | 'REPLACEMENT';
 export type JobUrgency = 'HIGH' | 'MEDIUM' | 'LOW';
 
 export type JobSalaryMode = 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
+export type JobPriority = 'HIGH' | 'MEDIUM' | 'LOW';
 
 export type JobApplicationFieldType =
   | 'TEXT'
@@ -148,7 +149,7 @@ export interface JobRequestFormDto {
   requestedBy: string;
   position: string;
   requestType: JobRequestType;
-  replaceFor?: string | null;
+  replaceForUserId?: string | null;
   businessJustification: string;
   employmentType: EmploymentType;
   workMode: WorkLocationType;
@@ -156,13 +157,15 @@ export interface JobRequestFormDto {
   neededByDate: string;
 }
 
+export type RichTextJson = Record<string, unknown>;
+
 export interface JobDetailsFormDto {
   jobTitle: string;
   location: string;
   workMode: WorkLocationType;
   employmentType: EmploymentType;
-  jobSummary: string;
-  whyJoinUs?: string | null;
+  jobSummary: RichTextJson;
+  whyJoinUs?: RichTextJson | null;
   keyResponsibilities: string;
   skills: Array<{
     name: string;
@@ -205,6 +208,8 @@ export interface CreateJobDto {
   requestForm: JobRequestFormDto;
   jobDetailsForm: JobDetailsFormDto;
   applicationForm: JobApplicationFormDto;
+  hiringManagerId?: string | null;
+  priority?: JobPriority | null;
 }
 
 export type UpdateJobDto = Partial<CreateJobDto>;
@@ -250,7 +255,21 @@ export interface JobResponseDto {
   gmApprovalStatus: JobStageApprovalStatus;
   hrApprovalStatus: JobStageApprovalStatus;
   creatorIsHr: boolean;
+  priority: JobPriority | null;
+  hiringManagerId: string | null;
+  draftedAt: string | null;
+  pendingApprovalAt: string | null;
+  readyToPostAt: string | null;
   publishedAt: string | null;
+  closedAt: string | null;
+  rejectedAt: string | null;
+  closingReason: string | null;
+  viewsCount: number;
+  applicationsCount: number;
+  shortlistedCount: number;
+  interviewsCount: number;
+  offersCount: number;
+  hiresCount: number;
   createdById: string | null;
   requestForm: {
     id: string;
@@ -259,7 +278,7 @@ export interface JobResponseDto {
     requestedBy: string;
     position: string;
     requestType: JobRequestType;
-    replaceFor: string | null;
+    replaceForUserId: string | null;
     businessJustification: string;
     employmentType: EmploymentType;
     workMode: WorkLocationType;
@@ -272,8 +291,8 @@ export interface JobResponseDto {
     location: string;
     workMode: WorkLocationType;
     employmentType: EmploymentType;
-    jobSummary: string;
-    whyJoinUs: string | null;
+    jobSummary: RichTextJson;
+    whyJoinUs: RichTextJson | null;
     keyResponsibilities: string;
     skills: JobSkillDto[];
     preferredSkills: string | null;

@@ -15,6 +15,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -179,8 +180,8 @@ export class JobRequestFormInputDto {
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
-  @IsString()
-  replaceFor?: string | null;
+  @IsUUID()
+  replaceForUserId?: string | null;
 
   @ApiProperty()
   @IsString()
@@ -239,15 +240,31 @@ export class JobDetailsFormInputDto {
     | 'INTERN'
     | 'TEMPORARY';
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  jobSummary!: string;
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    example: {
+      type: 'doc',
+      version: 1,
+      content: [{ type: 'paragraph', text: 'Lead frontend delivery.' }],
+    },
+  })
+  @IsObject()
+  jobSummary!: Record<string, unknown>;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({
+    nullable: true,
+    type: 'object',
+    additionalProperties: true,
+    example: {
+      type: 'doc',
+      version: 1,
+      content: [{ type: 'paragraph', text: 'Join a strong ownership team.' }],
+    },
+  })
   @IsOptional()
-  @IsString()
-  whyJoinUs?: string | null;
+  @IsObject()
+  whyJoinUs?: Record<string, unknown> | null;
 
   @ApiProperty()
   @IsString()

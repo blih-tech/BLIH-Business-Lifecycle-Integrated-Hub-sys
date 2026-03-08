@@ -30,7 +30,8 @@ export class CreateInterviewUseCase {
       where: { id: dto.applicationId },
       select: { id: true, jobId: true, candidateId: true },
     });
-    if (!dto.interviewerId) {
+    const interviewerId = dto.interviewerId;
+    if (!interviewerId) {
       throw new ConflictException('interviewerId is required');
     }
 
@@ -58,7 +59,7 @@ export class CreateInterviewUseCase {
           status: dto.status ?? 'SCHEDULED',
           scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : undefined,
           completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
-          interviewerId: dto.interviewerId,
+          interviewerId,
           feedback: buildInterviewMetadata({
             applicationId: dto.applicationId,
             round,
@@ -164,6 +165,8 @@ export class UpdateInterviewUseCase {
     if (dto.interviewerId === null) {
       throw new ConflictException('interviewerId cannot be null');
     }
+    const interviewerIdForUpdate =
+      dto.interviewerId === undefined ? undefined : dto.interviewerId;
 
     const currentMetadata = parseInterviewMetadata(existing.feedback);
     const application = dto.applicationId
@@ -197,26 +200,37 @@ export class UpdateInterviewUseCase {
 
     const now = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
+      const updateData: Prisma.InterviewUncheckedUpdateInput = {
+        feedback: nextFeedbackPayload as Prisma.InputJsonValue,
+      };
+
+      if (application) {
+        updateData.jobId = application.jobId;
+        updateData.candidateId = application.candidateId;
+      }
+      if (dto.type !== undefined) {
+        updateData.type = dto.type;
+      }
+      if (dto.status !== undefined) {
+        updateData.status = dto.status;
+      }
+      if (dto.scheduledAt !== undefined) {
+        updateData.scheduledAt = dto.scheduledAt
+          ? new Date(dto.scheduledAt)
+          : null;
+      }
+      if (dto.completedAt !== undefined) {
+        updateData.completedAt = dto.completedAt
+          ? new Date(dto.completedAt)
+          : null;
+      }
+      if (interviewerIdForUpdate !== undefined) {
+        updateData.interviewerId = interviewerIdForUpdate;
+      }
+
       const row = await tx.interview.update({
         where: { id },
-        data: {
-          ...(application && {
-            jobId: application.jobId,
-            candidateId: application.candidateId,
-          }),
-          ...(dto.type !== undefined && { type: dto.type }),
-          ...(dto.status !== undefined && { status: dto.status }),
-          ...(dto.scheduledAt !== undefined && {
-            scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : null,
-          }),
-          ...(dto.completedAt !== undefined && {
-            completedAt: dto.completedAt ? new Date(dto.completedAt) : null,
-          }),
-          ...(dto.interviewerId !== undefined && {
-            interviewerId: dto.interviewerId,
-          }),
-          feedback: nextFeedbackPayload as Prisma.InputJsonValue,
-        },
+        data: updateData,
       });
 
       await touchCandidateActivity(

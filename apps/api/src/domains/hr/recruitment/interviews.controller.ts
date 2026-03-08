@@ -59,7 +59,7 @@ export class InterviewsController {
   @ApiBody({
     type: CreateInterviewDto,
     description:
-      'Request body: applicationId (required, UUID), type (required) — HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, or FINAL. Optional: round, status, scheduledAt, completedAt, interviewerId, interviewers, feedback, endorsement, score, nextAction.',
+      'Request body: applicationId (required, UUID), type (required), interviewerId (required UUID). Optional: round, status, scheduledAt, completedAt, interviewers, feedback, endorsement, score, nextAction.',
     examples: {
       createInterview: {
         summary: 'Schedule interview payload',
@@ -77,6 +77,7 @@ export class InterviewsController {
         value: {
           applicationId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
           type: 'HR_SCREENING',
+          interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
         },
       },
     },

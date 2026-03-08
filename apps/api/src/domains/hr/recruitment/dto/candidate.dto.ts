@@ -309,7 +309,7 @@ export class CandidateResponseDto {
   lastActivityAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
-  profileScore!: string | null;
+  profileScore!: number | null;
 
   @ApiProperty({
     type: () => CandidateEducationInputDto,
