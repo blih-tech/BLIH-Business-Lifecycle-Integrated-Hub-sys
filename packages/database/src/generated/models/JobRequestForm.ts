@@ -266,7 +266,6 @@ export type JobRequestFormWhereInput = {
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   position?: Prisma.XOR<Prisma.PositionScalarRelationFilter, Prisma.PositionWhereInput>
   replaceForUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  detailsForm?: Prisma.XOR<Prisma.JobDetailsFormNullableScalarRelationFilter, Prisma.JobDetailsFormWhereInput> | null
 }
 
 export type JobRequestFormOrderByWithRelationInput = {
@@ -289,7 +288,6 @@ export type JobRequestFormOrderByWithRelationInput = {
   department?: Prisma.DepartmentOrderByWithRelationInput
   position?: Prisma.PositionOrderByWithRelationInput
   replaceForUser?: Prisma.UserOrderByWithRelationInput
-  detailsForm?: Prisma.JobDetailsFormOrderByWithRelationInput
 }
 
 export type JobRequestFormWhereUniqueInput = Prisma.AtLeast<{
@@ -315,7 +313,6 @@ export type JobRequestFormWhereUniqueInput = Prisma.AtLeast<{
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   position?: Prisma.XOR<Prisma.PositionScalarRelationFilter, Prisma.PositionWhereInput>
   replaceForUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  detailsForm?: Prisma.XOR<Prisma.JobDetailsFormNullableScalarRelationFilter, Prisma.JobDetailsFormWhereInput> | null
 }, "id" | "jobId">
 
 export type JobRequestFormOrderByWithAggregationInput = {
@@ -376,7 +373,6 @@ export type JobRequestFormCreateInput = {
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
-  detailsForm?: Prisma.JobDetailsFormCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateInput = {
@@ -395,7 +391,6 @@ export type JobRequestFormUncheckedCreateInput = {
   neededByDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormUpdateInput = {
@@ -414,7 +409,6 @@ export type JobRequestFormUpdateInput = {
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
-  detailsForm?: Prisma.JobDetailsFormUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateInput = {
@@ -433,7 +427,6 @@ export type JobRequestFormUncheckedUpdateInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormCreateManyInput = {
@@ -553,11 +546,6 @@ export type JobRequestFormMinOrderByAggregateInput = {
   neededByDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type JobRequestFormScalarRelationFilter = {
-  is?: Prisma.JobRequestFormWhereInput
-  isNot?: Prisma.JobRequestFormWhereInput
 }
 
 export type JobRequestFormCreateNestedManyWithoutDepartmentInput = {
@@ -688,20 +676,6 @@ export type EnumJobUrgencyFieldUpdateOperationsInput = {
   set?: $Enums.JobUrgency
 }
 
-export type JobRequestFormCreateNestedOneWithoutDetailsFormInput = {
-  create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutDetailsFormInput, Prisma.JobRequestFormUncheckedCreateWithoutDetailsFormInput>
-  connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutDetailsFormInput
-  connect?: Prisma.JobRequestFormWhereUniqueInput
-}
-
-export type JobRequestFormUpdateOneRequiredWithoutDetailsFormNestedInput = {
-  create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutDetailsFormInput, Prisma.JobRequestFormUncheckedCreateWithoutDetailsFormInput>
-  connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutDetailsFormInput
-  upsert?: Prisma.JobRequestFormUpsertWithoutDetailsFormInput
-  connect?: Prisma.JobRequestFormWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobRequestFormUpdateToOneWithWhereWithoutDetailsFormInput, Prisma.JobRequestFormUpdateWithoutDetailsFormInput>, Prisma.JobRequestFormUncheckedUpdateWithoutDetailsFormInput>
-}
-
 export type JobRequestFormCreateNestedManyWithoutReplaceForUserInput = {
   create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutReplaceForUserInput, Prisma.JobRequestFormUncheckedCreateWithoutReplaceForUserInput> | Prisma.JobRequestFormCreateWithoutReplaceForUserInput[] | Prisma.JobRequestFormUncheckedCreateWithoutReplaceForUserInput[]
   connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutReplaceForUserInput | Prisma.JobRequestFormCreateOrConnectWithoutReplaceForUserInput[]
@@ -759,7 +733,6 @@ export type JobRequestFormCreateWithoutDepartmentInput = {
   job: Prisma.JobCreateNestedOneWithoutRequestFormInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
-  detailsForm?: Prisma.JobDetailsFormCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutDepartmentInput = {
@@ -777,7 +750,6 @@ export type JobRequestFormUncheckedCreateWithoutDepartmentInput = {
   neededByDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutDepartmentInput = {
@@ -842,7 +814,6 @@ export type JobRequestFormCreateWithoutPositionInput = {
   job: Prisma.JobCreateNestedOneWithoutRequestFormInput
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
-  detailsForm?: Prisma.JobDetailsFormCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutPositionInput = {
@@ -860,7 +831,6 @@ export type JobRequestFormUncheckedCreateWithoutPositionInput = {
   neededByDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutPositionInput = {
@@ -904,7 +874,6 @@ export type JobRequestFormCreateWithoutJobInput = {
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
-  detailsForm?: Prisma.JobDetailsFormCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutJobInput = {
@@ -922,7 +891,6 @@ export type JobRequestFormUncheckedCreateWithoutJobInput = {
   neededByDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutJobInput = {
@@ -956,100 +924,10 @@ export type JobRequestFormUpdateWithoutJobInput = {
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
-  detailsForm?: Prisma.JobDetailsFormUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
-  requestedBy?: Prisma.StringFieldUpdateOperationsInput | string
-  positionId?: Prisma.StringFieldUpdateOperationsInput | string
-  requestType?: Prisma.EnumJobRequestTypeFieldUpdateOperationsInput | $Enums.JobRequestType
-  replaceForUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  businessJustification?: Prisma.StringFieldUpdateOperationsInput | string
-  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  workMode?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  urgency?: Prisma.EnumJobUrgencyFieldUpdateOperationsInput | $Enums.JobUrgency
-  neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedUpdateOneWithoutRequestFormNestedInput
-}
-
-export type JobRequestFormCreateWithoutDetailsFormInput = {
-  id?: string
-  jobTitle: string
-  requestedBy: string
-  requestType: $Enums.JobRequestType
-  businessJustification: string
-  employmentType: $Enums.EmploymentType
-  workMode: $Enums.WorkLocationType
-  urgency: $Enums.JobUrgency
-  neededByDate: Date | string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  job: Prisma.JobCreateNestedOneWithoutRequestFormInput
-  department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
-  position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
-  replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
-}
-
-export type JobRequestFormUncheckedCreateWithoutDetailsFormInput = {
-  id?: string
-  jobId: string
-  jobTitle: string
-  departmentId: string
-  requestedBy: string
-  positionId: string
-  requestType: $Enums.JobRequestType
-  replaceForUserId?: string | null
-  businessJustification: string
-  employmentType: $Enums.EmploymentType
-  workMode: $Enums.WorkLocationType
-  urgency: $Enums.JobUrgency
-  neededByDate: Date | string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type JobRequestFormCreateOrConnectWithoutDetailsFormInput = {
-  where: Prisma.JobRequestFormWhereUniqueInput
-  create: Prisma.XOR<Prisma.JobRequestFormCreateWithoutDetailsFormInput, Prisma.JobRequestFormUncheckedCreateWithoutDetailsFormInput>
-}
-
-export type JobRequestFormUpsertWithoutDetailsFormInput = {
-  update: Prisma.XOR<Prisma.JobRequestFormUpdateWithoutDetailsFormInput, Prisma.JobRequestFormUncheckedUpdateWithoutDetailsFormInput>
-  create: Prisma.XOR<Prisma.JobRequestFormCreateWithoutDetailsFormInput, Prisma.JobRequestFormUncheckedCreateWithoutDetailsFormInput>
-  where?: Prisma.JobRequestFormWhereInput
-}
-
-export type JobRequestFormUpdateToOneWithWhereWithoutDetailsFormInput = {
-  where?: Prisma.JobRequestFormWhereInput
-  data: Prisma.XOR<Prisma.JobRequestFormUpdateWithoutDetailsFormInput, Prisma.JobRequestFormUncheckedUpdateWithoutDetailsFormInput>
-}
-
-export type JobRequestFormUpdateWithoutDetailsFormInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
-  requestedBy?: Prisma.StringFieldUpdateOperationsInput | string
-  requestType?: Prisma.EnumJobRequestTypeFieldUpdateOperationsInput | $Enums.JobRequestType
-  businessJustification?: Prisma.StringFieldUpdateOperationsInput | string
-  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  workMode?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  urgency?: Prisma.EnumJobUrgencyFieldUpdateOperationsInput | $Enums.JobUrgency
-  neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
-  department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
-  position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
-  replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
-}
-
-export type JobRequestFormUncheckedUpdateWithoutDetailsFormInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  jobId?: Prisma.StringFieldUpdateOperationsInput | string
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   requestedBy?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1080,7 +958,6 @@ export type JobRequestFormCreateWithoutReplaceForUserInput = {
   job: Prisma.JobCreateNestedOneWithoutRequestFormInput
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
-  detailsForm?: Prisma.JobDetailsFormCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutReplaceForUserInput = {
@@ -1098,7 +975,6 @@ export type JobRequestFormUncheckedCreateWithoutReplaceForUserInput = {
   neededByDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedCreateNestedOneWithoutRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutReplaceForUserInput = {
@@ -1159,7 +1035,6 @@ export type JobRequestFormUpdateWithoutDepartmentInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
-  detailsForm?: Prisma.JobDetailsFormUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutDepartmentInput = {
@@ -1177,7 +1052,6 @@ export type JobRequestFormUncheckedUpdateWithoutDepartmentInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateManyWithoutDepartmentInput = {
@@ -1229,7 +1103,6 @@ export type JobRequestFormUpdateWithoutPositionInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
-  detailsForm?: Prisma.JobDetailsFormUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutPositionInput = {
@@ -1247,7 +1120,6 @@ export type JobRequestFormUncheckedUpdateWithoutPositionInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateManyWithoutPositionInput = {
@@ -1299,7 +1171,6 @@ export type JobRequestFormUpdateWithoutReplaceForUserInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
-  detailsForm?: Prisma.JobDetailsFormUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutReplaceForUserInput = {
@@ -1317,7 +1188,6 @@ export type JobRequestFormUncheckedUpdateWithoutReplaceForUserInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detailsForm?: Prisma.JobDetailsFormUncheckedUpdateOneWithoutRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateManyWithoutReplaceForUserInput = {
@@ -1359,7 +1229,6 @@ export type JobRequestFormSelect<ExtArgs extends runtime.Types.Extensions.Intern
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
   replaceForUser?: boolean | Prisma.JobRequestForm$replaceForUserArgs<ExtArgs>
-  detailsForm?: boolean | Prisma.JobRequestForm$detailsFormArgs<ExtArgs>
 }, ExtArgs["result"]["jobRequestForm"]>
 
 export type JobRequestFormSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1430,7 +1299,6 @@ export type JobRequestFormInclude<ExtArgs extends runtime.Types.Extensions.Inter
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
   replaceForUser?: boolean | Prisma.JobRequestForm$replaceForUserArgs<ExtArgs>
-  detailsForm?: boolean | Prisma.JobRequestForm$detailsFormArgs<ExtArgs>
 }
 export type JobRequestFormIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
@@ -1452,7 +1320,6 @@ export type $JobRequestFormPayload<ExtArgs extends runtime.Types.Extensions.Inte
     department: Prisma.$DepartmentPayload<ExtArgs>
     position: Prisma.$PositionPayload<ExtArgs>
     replaceForUser: Prisma.$UserPayload<ExtArgs> | null
-    detailsForm: Prisma.$JobDetailsFormPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1868,7 +1735,6 @@ export interface Prisma__JobRequestFormClient<T, Null = never, ExtArgs extends r
   department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   position<T extends Prisma.PositionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PositionDefaultArgs<ExtArgs>>): Prisma.Prisma__PositionClient<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   replaceForUser<T extends Prisma.JobRequestForm$replaceForUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobRequestForm$replaceForUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  detailsForm<T extends Prisma.JobRequestForm$detailsFormArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobRequestForm$detailsFormArgs<ExtArgs>>): Prisma.Prisma__JobDetailsFormClient<runtime.Types.Result.GetResult<Prisma.$JobDetailsFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2325,25 +2191,6 @@ export type JobRequestForm$replaceForUserArgs<ExtArgs extends runtime.Types.Exte
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
-}
-
-/**
- * JobRequestForm.detailsForm
- */
-export type JobRequestForm$detailsFormArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the JobDetailsForm
-   */
-  select?: Prisma.JobDetailsFormSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the JobDetailsForm
-   */
-  omit?: Prisma.JobDetailsFormOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.JobDetailsFormInclude<ExtArgs> | null
-  where?: Prisma.JobDetailsFormWhereInput
 }
 
 /**

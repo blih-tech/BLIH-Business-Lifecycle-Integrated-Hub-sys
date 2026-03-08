@@ -114,7 +114,7 @@ describe('Recruitment UseCases', () => {
     const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
-    expect(result.status).toBe('PENDING_FOR_APPROVAL');
+    expect(result.job.status).toBe('PENDING_FOR_APPROVAL');
     expect(tx.jobApproval.createMany).toHaveBeenCalledWith({
       data: [
         expect.objectContaining({ stage: 'FINANCE', level: 1 }),
@@ -185,7 +185,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.status).toBe('PENDING_FOR_APPROVAL');
+    expect(result.job.status).toBe('PENDING_FOR_APPROVAL');
   });
 
   it('auto-approves HR after second parallel approval when creator is HR', async () => {
@@ -240,7 +240,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.status).toBe('READY_TO_POST');
+    expect(result.job.status).toBe('READY_TO_POST');
     expect(tx.jobApproval.update).toHaveBeenCalledTimes(2);
     expect(tx.jobApproval.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -285,7 +285,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.status).toBe('REJECTED');
+    expect(result.job.status).toBe('REJECTED');
   });
 
   it('enforces stage role before approving a job', async () => {

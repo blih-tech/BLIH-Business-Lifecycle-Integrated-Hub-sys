@@ -48,14 +48,8 @@ export class CreateApplicantUseCase {
           title: true,
           status: true,
           createdById: true,
-          requestForm: {
-            select: {
-              detailsForm: {
-                select: {
-                  applicationForm: { select: { id: true } },
-                },
-              },
-            },
+          applicationForm: {
+            select: { id: true },
           },
         },
       }),
@@ -79,7 +73,7 @@ export class CreateApplicantUseCase {
       );
     }
 
-    const fallbackFormId = job.requestForm?.detailsForm?.applicationForm?.id;
+    const fallbackFormId = job.applicationForm?.id;
     if (dto.applicationFormId && dto.applicationFormId !== fallbackFormId) {
       throw new BadRequestException(
         'applicationFormId does not belong to the selected job',
@@ -270,12 +264,10 @@ export class UpdateApplicantUseCase {
         where: { id: dto.applicationFormId },
         select: {
           id: true,
-          jobDetailsForm: {
-            select: { requestForm: { select: { jobId: true } } },
-          },
+          jobId: true,
         },
       });
-      const formJobId = form?.jobDetailsForm.requestForm.jobId;
+      const formJobId = form?.jobId;
       if (!form || formJobId !== existing.jobId) {
         throw new BadRequestException(
           'applicationFormId does not belong to the selected job',

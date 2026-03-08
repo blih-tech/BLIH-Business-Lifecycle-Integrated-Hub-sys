@@ -4,20 +4,12 @@ import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant
 
 export const jobInclude = {
   approvals: { orderBy: { level: 'asc' as const } },
-  tools: { orderBy: { order: 'asc' as const } },
-  requestForm: {
+  requestForm: true,
+  applicationForm: {
     include: {
-      detailsForm: {
-        include: {
-          applicationForm: {
-            include: {
-              customFields: {
-                orderBy: { order: 'asc' as const },
-                include: { options: { orderBy: { order: 'asc' as const } } },
-              },
-            },
-          },
-        },
+      customFields: {
+        orderBy: { order: 'asc' as const },
+        include: { options: { orderBy: { order: 'asc' as const } } },
       },
     },
   },
@@ -377,33 +369,9 @@ export function parseInterviewMetadata(value: unknown) {
 
 export function mapJob(job: any) {
   const requestForm = job.requestForm;
-  const detailsForm = requestForm?.detailsForm;
-  const applicationForm = detailsForm?.applicationForm;
+  const applicationForm = job.applicationForm;
 
   return {
-    id: job.id,
-    slug: job.slug,
-    status: job.status,
-    financeApprovalStatus: job.financeApprovalStatus,
-    gmApprovalStatus: job.gmApprovalStatus,
-    hrApprovalStatus: job.hrApprovalStatus,
-    creatorIsHr: job.creatorIsHr,
-    priority: job.priority,
-    hiringManagerId: job.hiringManagerId ?? null,
-    draftedAt: dateToIso(job.draftedAt),
-    pendingApprovalAt: dateToIso(job.pendingApprovalAt),
-    readyToPostAt: dateToIso(job.readyToPostAt),
-    publishedAt: dateToIso(job.publishedAt),
-    closedAt: dateToIso(job.closedAt),
-    rejectedAt: dateToIso(job.rejectedAt),
-    closingReason: job.closingReason ?? null,
-    viewsCount: job.viewsCount ?? 0,
-    applicationsCount: job.applicationsCount ?? 0,
-    shortlistedCount: job.shortlistedCount ?? 0,
-    interviewsCount: job.interviewsCount ?? 0,
-    offersCount: job.offersCount ?? 0,
-    hiresCount: job.hiresCount ?? 0,
-    createdById: job.createdById ?? null,
     requestForm: requestForm
       ? {
           id: requestForm.id,
@@ -420,31 +388,77 @@ export function mapJob(job: any) {
           neededByDate: dateToIso(requestForm.neededByDate),
         }
       : null,
-    jobDetailsForm: detailsForm
-      ? {
-          id: detailsForm.id,
-          jobTitle: detailsForm.jobTitle,
-          location: detailsForm.location,
-          workMode: detailsForm.workMode,
-          employmentType: detailsForm.employmentType,
-          jobSummary: detailsForm.jobSummary,
-          whyJoinUs: detailsForm.whyJoinUs ?? null,
-          requiredSkills: detailsForm.requiredSkills ?? [],
-          responsibilities: detailsForm.responsibilities ?? [],
-          preferredSkills: detailsForm.preferredSkills ?? [],
-          experienceLevel: detailsForm.experienceLevel,
-          salaryMin: decimalToString(detailsForm.salaryMin),
-          salaryMax: decimalToString(detailsForm.salaryMax),
-          salaryCurrency: detailsForm.salaryCurrency ?? null,
-          salaryMode: detailsForm.salaryMode,
-          benefits: detailsForm.benefits ?? [],
-          openings: detailsForm.openings,
-          applicationDeadline: dateToIso(detailsForm.applicationDeadline),
-        }
-      : null,
+    job: {
+      id: job.id,
+      title: job.title,
+      slug: job.slug,
+      departmentId: job.departmentId,
+      positionId: job.positionId,
+      description: job.description,
+      summary: toObjectRecord(job.summary),
+      experienceLevel: job.experienceLevel ?? null,
+      contractType: job.contractType,
+      employmentType: job.employmentType ?? null,
+      workLocationType: job.workLocationType,
+      remoteScope: job.remoteScope ?? null,
+      city: job.city ?? null,
+      country: job.country ?? null,
+      openings: job.openings,
+      salaryMin: decimalToString(job.salaryMin),
+      salaryMax: decimalToString(job.salaryMax),
+      currency: job.currency ?? null,
+      salaryMode: job.salaryMode,
+      benefits: job.benefits ?? [],
+      requiredSkills: job.requiredSkills ?? [],
+      preferredSkills: job.preferredSkills ?? [],
+      responsibilities: job.responsibilities ?? [],
+      tools: job.tools ?? [],
+      priority: job.priority,
+      hiringManagerId: job.hiringManagerId ?? null,
+      applicationDeadline: dateToIso(job.applicationDeadline),
+      status: job.status,
+      financeApprovalStatus: job.financeApprovalStatus,
+      gmApprovalStatus: job.gmApprovalStatus,
+      hrApprovalStatus: job.hrApprovalStatus,
+      creatorIsHr: job.creatorIsHr,
+      draftedAt: dateToIso(job.draftedAt),
+      pendingApprovalAt: dateToIso(job.pendingApprovalAt),
+      readyToPostAt: dateToIso(job.readyToPostAt),
+      publishedAt: dateToIso(job.publishedAt),
+      closedAt: dateToIso(job.closedAt),
+      rejectedAt: dateToIso(job.rejectedAt),
+      closingReason: job.closingReason ?? null,
+      viewsCount: job.viewsCount ?? 0,
+      applicationsCount: job.applicationsCount ?? 0,
+      shortlistedCount: job.shortlistedCount ?? 0,
+      interviewsCount: job.interviewsCount ?? 0,
+      offersCount: job.offersCount ?? 0,
+      hiresCount: job.hiresCount ?? 0,
+      createdById: job.createdById ?? null,
+      createdAt: job.createdAt.toISOString(),
+      updatedAt: job.updatedAt.toISOString(),
+    },
     applicationForm: applicationForm
       ? {
           id: applicationForm.id,
+          jobId: applicationForm.jobId,
+          jobTitle: applicationForm.jobTitle,
+          location: applicationForm.location,
+          workMode: applicationForm.workMode,
+          employmentType: applicationForm.employmentType,
+          jobSummary: applicationForm.jobSummary,
+          whyJoinUs: applicationForm.whyJoinUs ?? null,
+          requiredSkills: applicationForm.requiredSkills ?? [],
+          preferredSkills: applicationForm.preferredSkills ?? [],
+          responsibilities: applicationForm.responsibilities ?? [],
+          experienceLevel: applicationForm.experienceLevel,
+          salaryMin: decimalToString(applicationForm.salaryMin),
+          salaryMax: decimalToString(applicationForm.salaryMax),
+          salaryCurrency: applicationForm.salaryCurrency ?? null,
+          salaryMode: applicationForm.salaryMode,
+          benefits: applicationForm.benefits ?? [],
+          openings: applicationForm.openings,
+          applicationDeadline: dateToIso(applicationForm.applicationDeadline),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
               id: field.customFieldId,
@@ -462,12 +476,6 @@ export function mapJob(job: any) {
       decidedAt: dateToIso(approval.decidedAt),
       createdAt: approval.createdAt.toISOString(),
     })),
-    requiredSkills: job.requiredSkills ?? [],
-    preferredSkills: job.preferredSkills ?? [],
-    tools: job.tools ?? [],
-    responsibilities: job.responsibilities ?? [],
-    createdAt: job.createdAt.toISOString(),
-    updatedAt: job.updatedAt.toISOString(),
   };
 }
 

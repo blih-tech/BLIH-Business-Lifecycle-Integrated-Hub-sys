@@ -32,6 +32,14 @@ export type JobUrgency = 'HIGH' | 'MEDIUM' | 'LOW';
 export type JobSalaryMode = 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
 export type JobPriority = 'HIGH' | 'MEDIUM' | 'LOW';
 
+export type JobContractType =
+  | 'PERMANENT'
+  | 'CONTRACT'
+  | 'INTERNSHIP'
+  | 'FREELANCE';
+
+export type RemoteScope = 'CITY' | 'COUNTRY' | 'REGION' | 'GLOBAL';
+
 export type JobApplicationFieldType =
   | 'TEXT'
   | 'TEXTAREA'
@@ -95,12 +103,6 @@ export const JOB_SALARY_MODES = [
   'COMPETITIVE',
 ] as const;
 
-export interface JobToolDto {
-  id: string;
-  name: string;
-  order?: number | null;
-}
-
 export interface JobApprovalDto {
   id: string;
   stage: JobApprovalStage;
@@ -131,7 +133,44 @@ export interface JobRequestFormDto {
 
 export type RichTextJson = Record<string, unknown>;
 
-export interface JobDetailsFormDto {
+export interface JobInputDto {
+  title: string;
+  departmentId: string;
+  positionId: string;
+  description: RichTextJson;
+  summary?: RichTextJson | null;
+  experienceLevel?: ExperienceLevel | null;
+  contractType: JobContractType;
+  employmentType?: EmploymentType | null;
+  workLocationType: WorkLocationType;
+  remoteScope?: RemoteScope | null;
+  city?: string | null;
+  country?: string | null;
+  openings?: number;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  currency?: string | null;
+  salaryMode?: JobSalaryMode;
+  benefits?: string[];
+  requiredSkills?: string[];
+  preferredSkills?: string[];
+  responsibilities?: string[];
+  tools?: string[];
+  priority?: JobPriority;
+  hiringManagerId?: string | null;
+  applicationDeadline?: string | null;
+}
+
+export interface JobApplicationCustomFieldDto {
+  id: string;
+  label: string;
+  type: JobApplicationFieldType;
+  required: boolean;
+  helpText?: string | null;
+  options?: string[];
+}
+
+export interface JobApplicationFormDto {
   jobTitle: string;
   location: string;
   workMode: WorkLocationType;
@@ -149,27 +188,13 @@ export interface JobDetailsFormDto {
   benefits?: string[];
   openings: number;
   applicationDeadline: string;
-}
-
-export interface JobApplicationCustomFieldDto {
-  id: string;
-  label: string;
-  type: JobApplicationFieldType;
-  required: boolean;
-  helpText?: string | null;
-  options?: string[];
-}
-
-export interface JobApplicationFormDto {
   customFields: JobApplicationCustomFieldDto[];
 }
 
 export interface CreateJobDto {
   requestForm: JobRequestFormDto;
-  jobDetailsForm: JobDetailsFormDto;
+  job: JobInputDto;
   applicationForm: JobApplicationFormDto;
-  hiringManagerId?: string | null;
-  priority?: JobPriority | null;
 }
 
 export type UpdateJobDto = Partial<CreateJobDto>;
@@ -190,10 +215,7 @@ export interface UpsertJobSkillsDto {
 }
 
 export interface UpsertJobToolsDto {
-  tools: Array<{
-    name: string;
-    order?: number | null;
-  }>;
+  tools: string[];
 }
 
 export interface UpsertJobResponsibilitiesDto {
@@ -201,29 +223,6 @@ export interface UpsertJobResponsibilitiesDto {
 }
 
 export interface JobResponseDto {
-  id: string;
-  slug: string;
-  status: JobWorkflowStatus;
-  financeApprovalStatus: JobStageApprovalStatus;
-  gmApprovalStatus: JobStageApprovalStatus;
-  hrApprovalStatus: JobStageApprovalStatus;
-  creatorIsHr: boolean;
-  priority: JobPriority | null;
-  hiringManagerId: string | null;
-  draftedAt: string | null;
-  pendingApprovalAt: string | null;
-  readyToPostAt: string | null;
-  publishedAt: string | null;
-  closedAt: string | null;
-  rejectedAt: string | null;
-  closingReason: string | null;
-  viewsCount: number;
-  applicationsCount: number;
-  shortlistedCount: number;
-  interviewsCount: number;
-  offersCount: number;
-  hiresCount: number;
-  createdById: string | null;
   requestForm: {
     id: string;
     jobTitle: string;
@@ -238,8 +237,59 @@ export interface JobResponseDto {
     urgency: JobUrgency;
     neededByDate: string | null;
   } | null;
-  jobDetailsForm: {
+  job: {
     id: string;
+    title: string;
+    slug: string;
+    departmentId: string;
+    positionId: string;
+    description: RichTextJson;
+    summary: RichTextJson | null;
+    experienceLevel: ExperienceLevel | null;
+    contractType: JobContractType;
+    employmentType: EmploymentType | null;
+    workLocationType: WorkLocationType;
+    remoteScope: RemoteScope | null;
+    city: string | null;
+    country: string | null;
+    openings: number;
+    salaryMin: string | null;
+    salaryMax: string | null;
+    currency: string | null;
+    salaryMode: JobSalaryMode;
+    benefits: string[];
+    requiredSkills: string[];
+    preferredSkills: string[];
+    responsibilities: string[];
+    tools: string[];
+    priority: JobPriority | null;
+    hiringManagerId: string | null;
+    applicationDeadline: string | null;
+    status: JobWorkflowStatus;
+    financeApprovalStatus: JobStageApprovalStatus;
+    gmApprovalStatus: JobStageApprovalStatus;
+    hrApprovalStatus: JobStageApprovalStatus;
+    creatorIsHr: boolean;
+    draftedAt: string | null;
+    pendingApprovalAt: string | null;
+    readyToPostAt: string | null;
+    publishedAt: string | null;
+    closedAt: string | null;
+    rejectedAt: string | null;
+    closingReason: string | null;
+    viewsCount: number;
+    applicationsCount: number;
+    shortlistedCount: number;
+    interviewsCount: number;
+    offersCount: number;
+    hiresCount: number;
+    createdById: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+  applicationForm: {
+    id: string;
+    jobId: string;
     jobTitle: string;
     location: string;
     workMode: WorkLocationType;
@@ -247,8 +297,8 @@ export interface JobResponseDto {
     jobSummary: RichTextJson;
     whyJoinUs: RichTextJson | null;
     requiredSkills: string[];
-    responsibilities: string[];
     preferredSkills: string[];
+    responsibilities: string[];
     experienceLevel: ExperienceLevel;
     salaryMin: string | null;
     salaryMax: string | null;
@@ -257,9 +307,6 @@ export interface JobResponseDto {
     benefits: string[];
     openings: number;
     applicationDeadline: string | null;
-  } | null;
-  applicationForm: {
-    id: string;
     customFields: Array<{
       id: string;
       label: string;
@@ -270,10 +317,4 @@ export interface JobResponseDto {
     }>;
   } | null;
   approvals: JobApprovalDto[];
-  requiredSkills: string[];
-  preferredSkills: string[];
-  tools: JobToolDto[];
-  responsibilities: string[];
-  createdAt: string;
-  updatedAt: string;
 }

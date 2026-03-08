@@ -456,12 +456,10 @@ export const ModelName = {
   OkrManagerReview: 'OkrManagerReview',
   Job: 'Job',
   JobRequestForm: 'JobRequestForm',
-  JobDetailsForm: 'JobDetailsForm',
   JobApplicationForm: 'JobApplicationForm',
   JobApplicationCustomField: 'JobApplicationCustomField',
   JobApplicationCustomFieldOption: 'JobApplicationCustomFieldOption',
   JobApproval: 'JobApproval',
-  JobTool: 'JobTool',
   Applicant: 'Applicant',
   ApplicantStatusHistory: 'ApplicantStatusHistory',
   ApplicantEducation: 'ApplicantEducation',
@@ -509,7 +507,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "job" | "jobRequestForm" | "jobDetailsForm" | "jobApplicationForm" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApproval" | "jobTool" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interview" | "hiringDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
+    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "job" | "jobRequestForm" | "jobApplicationForm" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApproval" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interview" | "hiringDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5841,80 +5839,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    JobDetailsForm: {
-      payload: Prisma.$JobDetailsFormPayload<ExtArgs>
-      fields: Prisma.JobDetailsFormFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.JobDetailsFormFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.JobDetailsFormFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>
-        }
-        findFirst: {
-          args: Prisma.JobDetailsFormFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.JobDetailsFormFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>
-        }
-        findMany: {
-          args: Prisma.JobDetailsFormFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>[]
-        }
-        create: {
-          args: Prisma.JobDetailsFormCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>
-        }
-        createMany: {
-          args: Prisma.JobDetailsFormCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.JobDetailsFormCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>[]
-        }
-        delete: {
-          args: Prisma.JobDetailsFormDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>
-        }
-        update: {
-          args: Prisma.JobDetailsFormUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>
-        }
-        deleteMany: {
-          args: Prisma.JobDetailsFormDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.JobDetailsFormUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.JobDetailsFormUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>[]
-        }
-        upsert: {
-          args: Prisma.JobDetailsFormUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobDetailsFormPayload>
-        }
-        aggregate: {
-          args: Prisma.JobDetailsFormAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateJobDetailsForm>
-        }
-        groupBy: {
-          args: Prisma.JobDetailsFormGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobDetailsFormGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.JobDetailsFormCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobDetailsFormCountAggregateOutputType> | number
-        }
-      }
-    }
     JobApplicationForm: {
       payload: Prisma.$JobApplicationFormPayload<ExtArgs>
       fields: Prisma.JobApplicationFormFieldRefs
@@ -6208,80 +6132,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.JobApprovalCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.JobApprovalCountAggregateOutputType> | number
-        }
-      }
-    }
-    JobTool: {
-      payload: Prisma.$JobToolPayload<ExtArgs>
-      fields: Prisma.JobToolFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.JobToolFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.JobToolFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>
-        }
-        findFirst: {
-          args: Prisma.JobToolFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.JobToolFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>
-        }
-        findMany: {
-          args: Prisma.JobToolFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>[]
-        }
-        create: {
-          args: Prisma.JobToolCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>
-        }
-        createMany: {
-          args: Prisma.JobToolCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.JobToolCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>[]
-        }
-        delete: {
-          args: Prisma.JobToolDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>
-        }
-        update: {
-          args: Prisma.JobToolUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>
-        }
-        deleteMany: {
-          args: Prisma.JobToolDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.JobToolUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.JobToolUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>[]
-        }
-        upsert: {
-          args: Prisma.JobToolUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobToolPayload>
-        }
-        aggregate: {
-          args: Prisma.JobToolAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateJobTool>
-        }
-        groupBy: {
-          args: Prisma.JobToolGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobToolGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.JobToolCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobToolCountAggregateOutputType> | number
         }
       }
     }
@@ -9930,7 +9780,8 @@ export const JobScalarFieldEnum = {
   hiresCount: 'hiresCount',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  tools: 'tools'
 } as const
 
 export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
@@ -9957,9 +9808,9 @@ export const JobRequestFormScalarFieldEnum = {
 export type JobRequestFormScalarFieldEnum = (typeof JobRequestFormScalarFieldEnum)[keyof typeof JobRequestFormScalarFieldEnum]
 
 
-export const JobDetailsFormScalarFieldEnum = {
+export const JobApplicationFormScalarFieldEnum = {
   id: 'id',
-  requestFormId: 'requestFormId',
+  jobId: 'jobId',
   jobTitle: 'jobTitle',
   location: 'location',
   workMode: 'workMode',
@@ -9977,16 +9828,6 @@ export const JobDetailsFormScalarFieldEnum = {
   benefits: 'benefits',
   openings: 'openings',
   applicationDeadline: 'applicationDeadline',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobDetailsFormScalarFieldEnum = (typeof JobDetailsFormScalarFieldEnum)[keyof typeof JobDetailsFormScalarFieldEnum]
-
-
-export const JobApplicationFormScalarFieldEnum = {
-  id: 'id',
-  jobDetailsFormId: 'jobDetailsFormId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -10038,20 +9879,6 @@ export const JobApprovalScalarFieldEnum = {
 } as const
 
 export type JobApprovalScalarFieldEnum = (typeof JobApprovalScalarFieldEnum)[keyof typeof JobApprovalScalarFieldEnum]
-
-
-export const JobToolScalarFieldEnum = {
-  id: 'id',
-  jobId: 'jobId',
-  name: 'name',
-  category: 'category',
-  required: 'required',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobToolScalarFieldEnum = (typeof JobToolScalarFieldEnum)[keyof typeof JobToolScalarFieldEnum]
 
 
 export const ApplicantScalarFieldEnum = {
@@ -12216,12 +12043,10 @@ export type GlobalOmitConfig = {
   okrManagerReview?: Prisma.OkrManagerReviewOmit
   job?: Prisma.JobOmit
   jobRequestForm?: Prisma.JobRequestFormOmit
-  jobDetailsForm?: Prisma.JobDetailsFormOmit
   jobApplicationForm?: Prisma.JobApplicationFormOmit
   jobApplicationCustomField?: Prisma.JobApplicationCustomFieldOmit
   jobApplicationCustomFieldOption?: Prisma.JobApplicationCustomFieldOptionOmit
   jobApproval?: Prisma.JobApprovalOmit
-  jobTool?: Prisma.JobToolOmit
   applicant?: Prisma.ApplicantOmit
   applicantStatusHistory?: Prisma.ApplicantStatusHistoryOmit
   applicantEducation?: Prisma.ApplicantEducationOmit

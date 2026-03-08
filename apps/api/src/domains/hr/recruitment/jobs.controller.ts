@@ -35,7 +35,7 @@ import {
   JobResponseDto,
   JobResponsibilityValueResponseDto,
   JobSkillsResponseDto,
-  JobToolResponseDto,
+  JobToolsResponseDto,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
   UpsertJobSkillsDto,
@@ -91,13 +91,11 @@ export class JobsController {
   @ApiBody({
     type: CreateJobDto,
     description:
-      'Request body uses nested-only contract: requestForm, jobDetailsForm, applicationForm.',
+      'Request body uses nested-only contract: requestForm, job, applicationForm.',
     examples: {
       createJob: {
         summary: 'Create job payload (nested)',
         value: {
-          priority: 'medium',
-          hiringManagerId: '6e40348d-4fda-47a7-b267-13ed7b6fca68',
           requestForm: {
             jobTitle: 'Senior Frontend Engineer',
             department: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
@@ -112,7 +110,54 @@ export class JobsController {
             urgency: 'high',
             neededByDate: '2026-03-30',
           },
-          jobDetailsForm: {
+          job: {
+            title: 'Senior Frontend Engineer',
+            departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+            positionId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
+            description: {
+              type: 'doc',
+              version: 1,
+              content: [
+                {
+                  type: 'paragraph',
+                  text: 'Drive frontend architecture and delivery.',
+                },
+              ],
+            },
+            summary: {
+              type: 'doc',
+              version: 1,
+              content: [
+                {
+                  type: 'paragraph',
+                  text: 'Join a high-ownership product team.',
+                },
+              ],
+            },
+            experienceLevel: 'senior',
+            contractType: 'permanent',
+            employmentType: 'full_time',
+            workLocationType: 'hybrid',
+            city: 'Addis Ababa',
+            country: 'Ethiopia',
+            openings: 2,
+            salaryMin: 2000,
+            salaryMax: 3000,
+            currency: 'USD',
+            salaryMode: 'competitive',
+            benefits: ['Health insurance', 'Learning budget'],
+            requiredSkills: ['React', 'TypeScript'],
+            preferredSkills: ['Next.js'],
+            responsibilities: [
+              'Lead frontend delivery',
+              'Collaborate with product and design',
+            ],
+            tools: ['Docker', 'GitHub Actions'],
+            priority: 'medium',
+            hiringManagerId: '6e40348d-4fda-47a7-b267-13ed7b6fca68',
+            applicationDeadline: '2026-04-30T23:59:59.000Z',
+          },
+          applicationForm: {
             jobTitle: 'Senior Frontend Engineer',
             location: 'Addis Ababa, Ethiopia',
             workMode: 'hybrid',
@@ -151,8 +196,6 @@ export class JobsController {
             benefits: ['Health insurance', 'Learning budget'],
             openings: 2,
             applicationDeadline: '2026-04-30T23:59:59.000Z',
-          },
-          applicationForm: {
             customFields: [
               {
                 id: 'custom-123',
@@ -245,12 +288,11 @@ export class JobsController {
   @ApiBody({
     type: UpdateJobDto,
     description:
-      'Request body: nested job contract (requestForm, jobDetailsForm, applicationForm). Only draft or rejected jobs can be updated.',
+      'Request body: nested job contract (requestForm, job, applicationForm). Only draft or rejected jobs can be updated.',
     examples: {
       updateJob: {
         summary: 'Update job payload',
         value: {
-          priority: 'high',
           requestForm: {
             jobTitle: 'Lead Frontend Engineer',
             department: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
@@ -263,7 +305,28 @@ export class JobsController {
             urgency: 'medium',
             neededByDate: '2026-04-15',
           },
-          jobDetailsForm: {
+          job: {
+            title: 'Lead Frontend Engineer',
+            departmentId: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+            positionId: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
+            description: {
+              type: 'doc',
+              version: 1,
+              content: [{ type: 'paragraph', text: 'Updated summary' }],
+            },
+            contractType: 'permanent',
+            workLocationType: 'hybrid',
+            requiredSkills: ['React'],
+            preferredSkills: ['TypeScript'],
+            responsibilities: ['Lead team', 'Ship product'],
+            tools: ['Docker', 'GitHub Actions'],
+            experienceLevel: 'lead',
+            priority: 'high',
+            salaryMode: 'negotiable',
+            openings: 1,
+            applicationDeadline: '2026-05-15T23:59:59.000Z',
+          },
+          applicationForm: {
             jobTitle: 'Lead Frontend Engineer',
             location: 'Addis Ababa, Ethiopia',
             workMode: 'hybrid',
@@ -280,8 +343,6 @@ export class JobsController {
             salaryMode: 'negotiable',
             openings: 1,
             applicationDeadline: '2026-05-15T23:59:59.000Z',
-          },
-          applicationForm: {
             customFields: [],
           },
         },
@@ -507,21 +568,18 @@ export class JobsController {
   @ApiBody({
     type: UpsertJobToolsDto,
     description:
-      'Request body: tools (required) â€” array of { name (required), order (optional) }. Replaces all existing tools.',
+      'Request body: tools (required) as string array. Replaces all existing tools.',
     examples: {
       upsertTools: {
         summary: 'Tools payload',
         value: {
-          tools: [
-            { name: 'Docker', order: 1 },
-            { name: 'GitHub Actions', order: 2 },
-          ],
+          tools: ['Docker', 'GitHub Actions'],
         },
       },
     },
   })
-  @ApiEnvelopeArrayResponse(
-    JobToolResponseDto,
+  @ApiEnvelopeOkResponse(
+    JobToolsResponseDto,
     'Updated job tools',
     jobToolsResponseEnvelope,
   )

@@ -378,11 +378,6 @@ export type Job = Prisma.JobModel
  */
 export type JobRequestForm = Prisma.JobRequestFormModel
 /**
- * Model JobDetailsForm
- * 
- */
-export type JobDetailsForm = Prisma.JobDetailsFormModel
-/**
  * Model JobApplicationForm
  * 
  */
@@ -402,11 +397,6 @@ export type JobApplicationCustomFieldOption = Prisma.JobApplicationCustomFieldOp
  * 
  */
 export type JobApproval = Prisma.JobApprovalModel
-/**
- * Model JobTool
- * 
- */
-export type JobTool = Prisma.JobToolModel
 /**
  * Model Applicant
  * 

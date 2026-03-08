@@ -123,12 +123,10 @@ export const ModelName = {
   OkrManagerReview: 'OkrManagerReview',
   Job: 'Job',
   JobRequestForm: 'JobRequestForm',
-  JobDetailsForm: 'JobDetailsForm',
   JobApplicationForm: 'JobApplicationForm',
   JobApplicationCustomField: 'JobApplicationCustomField',
   JobApplicationCustomFieldOption: 'JobApplicationCustomFieldOption',
   JobApproval: 'JobApproval',
-  JobTool: 'JobTool',
   Applicant: 'Applicant',
   ApplicantStatusHistory: 'ApplicantStatusHistory',
   ApplicantEducation: 'ApplicantEducation',
@@ -1417,7 +1415,8 @@ export const JobScalarFieldEnum = {
   hiresCount: 'hiresCount',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  tools: 'tools'
 } as const
 
 export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
@@ -1444,9 +1443,9 @@ export const JobRequestFormScalarFieldEnum = {
 export type JobRequestFormScalarFieldEnum = (typeof JobRequestFormScalarFieldEnum)[keyof typeof JobRequestFormScalarFieldEnum]
 
 
-export const JobDetailsFormScalarFieldEnum = {
+export const JobApplicationFormScalarFieldEnum = {
   id: 'id',
-  requestFormId: 'requestFormId',
+  jobId: 'jobId',
   jobTitle: 'jobTitle',
   location: 'location',
   workMode: 'workMode',
@@ -1464,16 +1463,6 @@ export const JobDetailsFormScalarFieldEnum = {
   benefits: 'benefits',
   openings: 'openings',
   applicationDeadline: 'applicationDeadline',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobDetailsFormScalarFieldEnum = (typeof JobDetailsFormScalarFieldEnum)[keyof typeof JobDetailsFormScalarFieldEnum]
-
-
-export const JobApplicationFormScalarFieldEnum = {
-  id: 'id',
-  jobDetailsFormId: 'jobDetailsFormId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1525,20 +1514,6 @@ export const JobApprovalScalarFieldEnum = {
 } as const
 
 export type JobApprovalScalarFieldEnum = (typeof JobApprovalScalarFieldEnum)[keyof typeof JobApprovalScalarFieldEnum]
-
-
-export const JobToolScalarFieldEnum = {
-  id: 'id',
-  jobId: 'jobId',
-  name: 'name',
-  category: 'category',
-  required: 'required',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobToolScalarFieldEnum = (typeof JobToolScalarFieldEnum)[keyof typeof JobToolScalarFieldEnum]
 
 
 export const ApplicantScalarFieldEnum = {

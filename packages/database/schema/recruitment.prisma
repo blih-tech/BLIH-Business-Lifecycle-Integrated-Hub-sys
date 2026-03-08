@@ -55,11 +55,12 @@ model Job {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   approvals             JobApproval[]
-  tools                 JobTool[]
+  tools                 String[]               @default([])
   applicants            Applicant[]
   interviews            Interview[]
   hiringDecisions       HiringDecision[]
   requestForm           JobRequestForm?
+  applicationForm       JobApplicationForm?
 
   @@index([departmentId])
   @@index([positionId])
@@ -91,47 +92,37 @@ model JobRequestForm {
   neededByDate          DateTime         @map("needed_by_date") @db.Date
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
-  detailsForm           JobDetailsForm?
 
   @@index([departmentId])
   @@index([positionId])
   @@index([replaceForUserId])
 }
 
-model JobDetailsForm {
-  id                  String           @id @default(uuid()) @db.Uuid
-  requestFormId       String           @unique @map("request_form_id") @db.Uuid
-  requestForm         JobRequestForm   @relation(fields: [requestFormId], references: [id], onDelete: Cascade)
-  jobTitle            String           @map("job_title")
-  location            String           @db.VarChar(255)
-  workMode            WorkLocationType @map("work_mode")
-  employmentType      EmploymentType   @map("employment_type")
-  jobSummary          Json             @map("job_summary") @db.JsonB
-  whyJoinUs           Json?            @map("why_join_us") @db.JsonB
-  requiredSkills      String[]         @default([]) @map("required_skills")
-  responsibilities    String[]         @default([])
-  preferredSkills     String[]         @default([]) @map("preferred_skills")
-  experienceLevel     ExperienceLevel  @map("experience_level")
-  salaryMin           Decimal?         @map("salary_min") @db.Decimal(12, 2)
-  salaryMax           Decimal?         @map("salary_max") @db.Decimal(12, 2)
-  salaryCurrency      String?          @map("salary_currency") @db.VarChar(8)
-  salaryMode          JobSalaryMode    @default(NOT_SPECIFIED) @map("salary_mode")
-  benefits            String[]         @default([])
-  openings            Int              @default(1)
-  applicationDeadline DateTime         @map("application_deadline")
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
-  applicationForm     JobApplicationForm?
-}
-
 model JobApplicationForm {
-  id               String                         @id @default(uuid()) @db.Uuid
-  jobDetailsFormId String                         @unique @map("job_details_form_id") @db.Uuid
-  jobDetailsForm   JobDetailsForm                 @relation(fields: [jobDetailsFormId], references: [id], onDelete: Cascade)
-  createdAt        DateTime                       @default(now())
-  updatedAt        DateTime                       @updatedAt
+  id                  String                           @id @default(uuid()) @db.Uuid
+  jobId               String                           @unique @map("job_id") @db.Uuid
+  job                 Job                              @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobTitle            String                           @map("job_title")
+  location            String                           @db.VarChar(255)
+  workMode            WorkLocationType                 @map("work_mode")
+  employmentType      EmploymentType                   @map("employment_type")
+  jobSummary          Json                             @map("job_summary") @db.JsonB
+  whyJoinUs           Json?                            @map("why_join_us") @db.JsonB
+  requiredSkills      String[]                         @default([]) @map("required_skills")
+  responsibilities    String[]                         @default([])
+  preferredSkills     String[]                         @default([]) @map("preferred_skills")
+  experienceLevel     ExperienceLevel                  @map("experience_level")
+  salaryMin           Decimal?                         @map("salary_min") @db.Decimal(12, 2)
+  salaryMax           Decimal?                         @map("salary_max") @db.Decimal(12, 2)
+  salaryCurrency      String?                          @map("salary_currency") @db.VarChar(8)
+  salaryMode          JobSalaryMode                    @default(NOT_SPECIFIED) @map("salary_mode")
+  benefits            String[]                         @default([])
+  openings            Int                              @default(1)
+  applicationDeadline DateTime                         @map("application_deadline")
+  createdAt           DateTime                         @default(now())
+  updatedAt           DateTime                         @updatedAt
   customFields     JobApplicationCustomField[]
-  applicants       Applicant[]                    @relation("ApplicantForm")
+  applicants       Applicant[]                        @relation("ApplicantForm")
 }
 
 model JobApplicationCustomField {
@@ -186,22 +177,6 @@ model JobApproval {
   @@unique([jobId, level])
   @@index([jobId])
   @@index([approverId])
-}
-
-model JobTool {
-  id        String   @id @default(uuid()) @db.Uuid
-  jobId     String   @map("job_id") @db.Uuid
-  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  name      String   @db.VarChar(128)
-  category  String?  @db.VarChar(64)
-  required  Boolean  @default(true)
-  order     Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([jobId, name])
-  @@index([jobId])
-  @@index([jobId, order])
 }
 
 model Applicant {
