@@ -228,7 +228,7 @@ export class JobDetailsFormInputDto {
   @IsArray()
   @ArrayMaxSize(200)
   @IsString({ each: true })
-  skills!: string[];
+  requiredSkills!: string[];
 
   @ApiProperty({ type: [String] })
   @IsArray()
@@ -236,10 +236,12 @@ export class JobDetailsFormInputDto {
   @IsString({ each: true })
   responsibilities!: string[];
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ type: [String], default: [] })
   @IsOptional()
-  @IsString()
-  preferredSkills?: string | null;
+  @IsArray()
+  @ArrayMaxSize(200)
+  @IsString({ each: true })
+  preferredSkills?: string[];
 
   @ApiProperty({ enum: EXPERIENCE_LEVELS })
   @Transform(normalizeEnumValue)
@@ -432,7 +434,14 @@ export class UpsertJobSkillsDto {
   @IsArray()
   @ArrayMaxSize(200)
   @IsString({ each: true })
-  skills!: string[];
+  requiredSkills!: string[];
+
+  @ApiPropertyOptional({ type: [String], default: [] })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(200)
+  @IsString({ each: true })
+  preferredSkills?: string[];
 }
 
 export class UpsertJobToolsDto {
@@ -491,9 +500,12 @@ export class JobToolResponseDto extends OmitType(JobToolInputDto, []) {
   id!: string;
 }
 
-export class JobSkillValueResponseDto {
-  @ApiProperty()
-  value!: string;
+export class JobSkillsResponseDto {
+  @ApiProperty({ type: [String] })
+  requiredSkills!: string[];
+
+  @ApiProperty({ type: [String] })
+  preferredSkills!: string[];
 }
 
 export class JobResponsibilityValueResponseDto {
@@ -661,7 +673,10 @@ export class JobResponseDto {
   approvals!: JobApprovalResponseDto[];
 
   @ApiProperty({ type: [String] })
-  skills!: string[];
+  requiredSkills!: string[];
+
+  @ApiProperty({ type: [String] })
+  preferredSkills!: string[];
 
   @ApiProperty({ type: [JobToolResponseDto] })
   tools!: JobToolResponseDto[];

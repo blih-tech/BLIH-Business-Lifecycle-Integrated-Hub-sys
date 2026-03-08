@@ -45,7 +45,6 @@ export type JobDetailsFormMinAggregateOutputType = {
   location: string | null
   workMode: $Enums.WorkLocationType | null
   employmentType: $Enums.EmploymentType | null
-  preferredSkills: string | null
   experienceLevel: $Enums.ExperienceLevel | null
   salaryMin: runtime.Decimal | null
   salaryMax: runtime.Decimal | null
@@ -64,7 +63,6 @@ export type JobDetailsFormMaxAggregateOutputType = {
   location: string | null
   workMode: $Enums.WorkLocationType | null
   employmentType: $Enums.EmploymentType | null
-  preferredSkills: string | null
   experienceLevel: $Enums.ExperienceLevel | null
   salaryMin: runtime.Decimal | null
   salaryMax: runtime.Decimal | null
@@ -85,7 +83,7 @@ export type JobDetailsFormCountAggregateOutputType = {
   employmentType: number
   jobSummary: number
   whyJoinUs: number
-  skills: number
+  requiredSkills: number
   responsibilities: number
   preferredSkills: number
   experienceLevel: number
@@ -121,7 +119,6 @@ export type JobDetailsFormMinAggregateInputType = {
   location?: true
   workMode?: true
   employmentType?: true
-  preferredSkills?: true
   experienceLevel?: true
   salaryMin?: true
   salaryMax?: true
@@ -140,7 +137,6 @@ export type JobDetailsFormMaxAggregateInputType = {
   location?: true
   workMode?: true
   employmentType?: true
-  preferredSkills?: true
   experienceLevel?: true
   salaryMin?: true
   salaryMax?: true
@@ -161,7 +157,7 @@ export type JobDetailsFormCountAggregateInputType = {
   employmentType?: true
   jobSummary?: true
   whyJoinUs?: true
-  skills?: true
+  requiredSkills?: true
   responsibilities?: true
   preferredSkills?: true
   experienceLevel?: true
@@ -272,9 +268,9 @@ export type JobDetailsFormGroupByOutputType = {
   employmentType: $Enums.EmploymentType
   jobSummary: runtime.JsonValue
   whyJoinUs: runtime.JsonValue | null
-  skills: string[]
+  requiredSkills: string[]
   responsibilities: string[]
-  preferredSkills: string | null
+  preferredSkills: string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin: runtime.Decimal | null
   salaryMax: runtime.Decimal | null
@@ -319,9 +315,9 @@ export type JobDetailsFormWhereInput = {
   employmentType?: Prisma.EnumEmploymentTypeFilter<"JobDetailsForm"> | $Enums.EmploymentType
   jobSummary?: Prisma.JsonFilter<"JobDetailsForm">
   whyJoinUs?: Prisma.JsonNullableFilter<"JobDetailsForm">
-  skills?: Prisma.StringNullableListFilter<"JobDetailsForm">
+  requiredSkills?: Prisma.StringNullableListFilter<"JobDetailsForm">
   responsibilities?: Prisma.StringNullableListFilter<"JobDetailsForm">
-  preferredSkills?: Prisma.StringNullableFilter<"JobDetailsForm"> | string | null
+  preferredSkills?: Prisma.StringNullableListFilter<"JobDetailsForm">
   experienceLevel?: Prisma.EnumExperienceLevelFilter<"JobDetailsForm"> | $Enums.ExperienceLevel
   salaryMin?: Prisma.DecimalNullableFilter<"JobDetailsForm"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.DecimalNullableFilter<"JobDetailsForm"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -345,9 +341,9 @@ export type JobDetailsFormOrderByWithRelationInput = {
   employmentType?: Prisma.SortOrder
   jobSummary?: Prisma.SortOrder
   whyJoinUs?: Prisma.SortOrderInput | Prisma.SortOrder
-  skills?: Prisma.SortOrder
+  requiredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
-  preferredSkills?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredSkills?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
   salaryMin?: Prisma.SortOrderInput | Prisma.SortOrder
   salaryMax?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -374,9 +370,9 @@ export type JobDetailsFormWhereUniqueInput = Prisma.AtLeast<{
   employmentType?: Prisma.EnumEmploymentTypeFilter<"JobDetailsForm"> | $Enums.EmploymentType
   jobSummary?: Prisma.JsonFilter<"JobDetailsForm">
   whyJoinUs?: Prisma.JsonNullableFilter<"JobDetailsForm">
-  skills?: Prisma.StringNullableListFilter<"JobDetailsForm">
+  requiredSkills?: Prisma.StringNullableListFilter<"JobDetailsForm">
   responsibilities?: Prisma.StringNullableListFilter<"JobDetailsForm">
-  preferredSkills?: Prisma.StringNullableFilter<"JobDetailsForm"> | string | null
+  preferredSkills?: Prisma.StringNullableListFilter<"JobDetailsForm">
   experienceLevel?: Prisma.EnumExperienceLevelFilter<"JobDetailsForm"> | $Enums.ExperienceLevel
   salaryMin?: Prisma.DecimalNullableFilter<"JobDetailsForm"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.DecimalNullableFilter<"JobDetailsForm"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -400,9 +396,9 @@ export type JobDetailsFormOrderByWithAggregationInput = {
   employmentType?: Prisma.SortOrder
   jobSummary?: Prisma.SortOrder
   whyJoinUs?: Prisma.SortOrderInput | Prisma.SortOrder
-  skills?: Prisma.SortOrder
+  requiredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
-  preferredSkills?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredSkills?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
   salaryMin?: Prisma.SortOrderInput | Prisma.SortOrder
   salaryMax?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -432,9 +428,9 @@ export type JobDetailsFormScalarWhereWithAggregatesInput = {
   employmentType?: Prisma.EnumEmploymentTypeWithAggregatesFilter<"JobDetailsForm"> | $Enums.EmploymentType
   jobSummary?: Prisma.JsonWithAggregatesFilter<"JobDetailsForm">
   whyJoinUs?: Prisma.JsonNullableWithAggregatesFilter<"JobDetailsForm">
-  skills?: Prisma.StringNullableListFilter<"JobDetailsForm">
+  requiredSkills?: Prisma.StringNullableListFilter<"JobDetailsForm">
   responsibilities?: Prisma.StringNullableListFilter<"JobDetailsForm">
-  preferredSkills?: Prisma.StringNullableWithAggregatesFilter<"JobDetailsForm"> | string | null
+  preferredSkills?: Prisma.StringNullableListFilter<"JobDetailsForm">
   experienceLevel?: Prisma.EnumExperienceLevelWithAggregatesFilter<"JobDetailsForm"> | $Enums.ExperienceLevel
   salaryMin?: Prisma.DecimalNullableWithAggregatesFilter<"JobDetailsForm"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.DecimalNullableWithAggregatesFilter<"JobDetailsForm"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -455,9 +451,9 @@ export type JobDetailsFormCreateInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -481,9 +477,9 @@ export type JobDetailsFormUncheckedCreateInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -505,9 +501,9 @@ export type JobDetailsFormUpdateInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -531,9 +527,9 @@ export type JobDetailsFormUncheckedUpdateInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -556,9 +552,9 @@ export type JobDetailsFormCreateManyInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -579,9 +575,9 @@ export type JobDetailsFormUpdateManyMutationInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -603,9 +599,9 @@ export type JobDetailsFormUncheckedUpdateManyInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -632,7 +628,7 @@ export type JobDetailsFormCountOrderByAggregateInput = {
   employmentType?: Prisma.SortOrder
   jobSummary?: Prisma.SortOrder
   whyJoinUs?: Prisma.SortOrder
-  skills?: Prisma.SortOrder
+  requiredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
   preferredSkills?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
@@ -660,7 +656,6 @@ export type JobDetailsFormMaxOrderByAggregateInput = {
   location?: Prisma.SortOrder
   workMode?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
-  preferredSkills?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
   salaryMin?: Prisma.SortOrder
   salaryMax?: Prisma.SortOrder
@@ -679,7 +674,6 @@ export type JobDetailsFormMinOrderByAggregateInput = {
   location?: Prisma.SortOrder
   workMode?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
-  preferredSkills?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
   salaryMin?: Prisma.SortOrder
   salaryMax?: Prisma.SortOrder
@@ -734,7 +728,7 @@ export type JobDetailsFormUncheckedUpdateOneWithoutRequestFormNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobDetailsFormUpdateToOneWithWhereWithoutRequestFormInput, Prisma.JobDetailsFormUpdateWithoutRequestFormInput>, Prisma.JobDetailsFormUncheckedUpdateWithoutRequestFormInput>
 }
 
-export type JobDetailsFormCreateskillsInput = {
+export type JobDetailsFormCreaterequiredSkillsInput = {
   set: string[]
 }
 
@@ -742,16 +736,25 @@ export type JobDetailsFormCreateresponsibilitiesInput = {
   set: string[]
 }
 
+export type JobDetailsFormCreatepreferredSkillsInput = {
+  set: string[]
+}
+
 export type JobDetailsFormCreatebenefitsInput = {
   set: string[]
 }
 
-export type JobDetailsFormUpdateskillsInput = {
+export type JobDetailsFormUpdaterequiredSkillsInput = {
   set?: string[]
   push?: string | string[]
 }
 
 export type JobDetailsFormUpdateresponsibilitiesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type JobDetailsFormUpdatepreferredSkillsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -787,9 +790,9 @@ export type JobDetailsFormCreateWithoutRequestFormInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -811,9 +814,9 @@ export type JobDetailsFormUncheckedCreateWithoutRequestFormInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -851,9 +854,9 @@ export type JobDetailsFormUpdateWithoutRequestFormInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -875,9 +878,9 @@ export type JobDetailsFormUncheckedUpdateWithoutRequestFormInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -899,9 +902,9 @@ export type JobDetailsFormCreateWithoutApplicationFormInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -924,9 +927,9 @@ export type JobDetailsFormUncheckedCreateWithoutApplicationFormInput = {
   employmentType: $Enums.EmploymentType
   jobSummary: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormCreaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormCreateresponsibilitiesInput | string[]
-  preferredSkills?: string | null
+  preferredSkills?: Prisma.JobDetailsFormCreatepreferredSkillsInput | string[]
   experienceLevel: $Enums.ExperienceLevel
   salaryMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -963,9 +966,9 @@ export type JobDetailsFormUpdateWithoutApplicationFormInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -988,9 +991,9 @@ export type JobDetailsFormUncheckedUpdateWithoutApplicationFormInput = {
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   jobSummary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   whyJoinUs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  skills?: Prisma.JobDetailsFormUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobDetailsFormUpdaterequiredSkillsInput | string[]
   responsibilities?: Prisma.JobDetailsFormUpdateresponsibilitiesInput | string[]
-  preferredSkills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredSkills?: Prisma.JobDetailsFormUpdatepreferredSkillsInput | string[]
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
   salaryMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   salaryMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1014,7 +1017,7 @@ export type JobDetailsFormSelect<ExtArgs extends runtime.Types.Extensions.Intern
   employmentType?: boolean
   jobSummary?: boolean
   whyJoinUs?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
   responsibilities?: boolean
   preferredSkills?: boolean
   experienceLevel?: boolean
@@ -1040,7 +1043,7 @@ export type JobDetailsFormSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   employmentType?: boolean
   jobSummary?: boolean
   whyJoinUs?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
   responsibilities?: boolean
   preferredSkills?: boolean
   experienceLevel?: boolean
@@ -1065,7 +1068,7 @@ export type JobDetailsFormSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   employmentType?: boolean
   jobSummary?: boolean
   whyJoinUs?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
   responsibilities?: boolean
   preferredSkills?: boolean
   experienceLevel?: boolean
@@ -1090,7 +1093,7 @@ export type JobDetailsFormSelectScalar = {
   employmentType?: boolean
   jobSummary?: boolean
   whyJoinUs?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
   responsibilities?: boolean
   preferredSkills?: boolean
   experienceLevel?: boolean
@@ -1105,7 +1108,7 @@ export type JobDetailsFormSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobDetailsFormOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestFormId" | "jobTitle" | "location" | "workMode" | "employmentType" | "jobSummary" | "whyJoinUs" | "skills" | "responsibilities" | "preferredSkills" | "experienceLevel" | "salaryMin" | "salaryMax" | "salaryCurrency" | "salaryMode" | "benefits" | "openings" | "applicationDeadline" | "createdAt" | "updatedAt", ExtArgs["result"]["jobDetailsForm"]>
+export type JobDetailsFormOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestFormId" | "jobTitle" | "location" | "workMode" | "employmentType" | "jobSummary" | "whyJoinUs" | "requiredSkills" | "responsibilities" | "preferredSkills" | "experienceLevel" | "salaryMin" | "salaryMax" | "salaryCurrency" | "salaryMode" | "benefits" | "openings" | "applicationDeadline" | "createdAt" | "updatedAt", ExtArgs["result"]["jobDetailsForm"]>
 export type JobDetailsFormInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   requestForm?: boolean | Prisma.JobRequestFormDefaultArgs<ExtArgs>
   applicationForm?: boolean | Prisma.JobDetailsForm$applicationFormArgs<ExtArgs>
@@ -1132,9 +1135,9 @@ export type $JobDetailsFormPayload<ExtArgs extends runtime.Types.Extensions.Inte
     employmentType: $Enums.EmploymentType
     jobSummary: runtime.JsonValue
     whyJoinUs: runtime.JsonValue | null
-    skills: string[]
+    requiredSkills: string[]
     responsibilities: string[]
-    preferredSkills: string | null
+    preferredSkills: string[]
     experienceLevel: $Enums.ExperienceLevel
     salaryMin: runtime.Decimal | null
     salaryMax: runtime.Decimal | null
@@ -1578,9 +1581,9 @@ export interface JobDetailsFormFieldRefs {
   readonly employmentType: Prisma.FieldRef<"JobDetailsForm", 'EmploymentType'>
   readonly jobSummary: Prisma.FieldRef<"JobDetailsForm", 'Json'>
   readonly whyJoinUs: Prisma.FieldRef<"JobDetailsForm", 'Json'>
-  readonly skills: Prisma.FieldRef<"JobDetailsForm", 'String[]'>
+  readonly requiredSkills: Prisma.FieldRef<"JobDetailsForm", 'String[]'>
   readonly responsibilities: Prisma.FieldRef<"JobDetailsForm", 'String[]'>
-  readonly preferredSkills: Prisma.FieldRef<"JobDetailsForm", 'String'>
+  readonly preferredSkills: Prisma.FieldRef<"JobDetailsForm", 'String[]'>
   readonly experienceLevel: Prisma.FieldRef<"JobDetailsForm", 'ExperienceLevel'>
   readonly salaryMin: Prisma.FieldRef<"JobDetailsForm", 'Decimal'>
   readonly salaryMax: Prisma.FieldRef<"JobDetailsForm", 'Decimal'>

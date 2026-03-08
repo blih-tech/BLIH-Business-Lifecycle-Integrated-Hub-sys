@@ -151,9 +151,9 @@ export interface JobDetailsFormDto {
   employmentType: EmploymentType;
   jobSummary: RichTextJson;
   whyJoinUs?: RichTextJson | null;
-  skills: string[];
+  requiredSkills: string[];
   responsibilities: string[];
-  preferredSkills?: string | null;
+  preferredSkills?: string[];
   experienceLevel: ExperienceLevel;
   salaryMin?: number | null;
   salaryMax?: number | null;
@@ -205,7 +205,8 @@ export interface CloseJobDto {
 }
 
 export interface UpsertJobSkillsDto {
-  skills: string[];
+  requiredSkills: string[];
+  preferredSkills?: string[];
 }
 
 export interface UpsertJobToolsDto {
@@ -265,9 +266,9 @@ export interface JobResponseDto {
     employmentType: EmploymentType;
     jobSummary: RichTextJson;
     whyJoinUs: RichTextJson | null;
-    skills: string[];
+    requiredSkills: string[];
     responsibilities: string[];
-    preferredSkills: string | null;
+    preferredSkills: string[];
     experienceLevel: ExperienceLevel;
     salaryMin: string | null;
     salaryMax: string | null;
@@ -297,7 +298,8 @@ export interface JobResponseDto {
     }>;
   } | null;
   approvals: JobApprovalDto[];
-  skills: string[];
+  requiredSkills: string[];
+  preferredSkills: string[];
   tools: JobToolDto[];
   responsibilities: string[];
   createdAt: string;

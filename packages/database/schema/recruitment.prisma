@@ -25,7 +25,8 @@ model Job {
   currency              String?                @db.VarChar(8)
   salaryMode            JobSalaryMode          @default(NOT_SPECIFIED) @map("salary_mode")
   benefits              String[]               @default([])
-  skills                String[]               @default([])
+  requiredSkills        String[]               @default([]) @map("required_skills")
+  preferredSkills       String[]               @default([]) @map("preferred_skills")
   responsibilities      String[]               @default([])
   status                JobWorkflowStatus      @default(DRAFT)
   priority              JobPriority            @default(MEDIUM)
@@ -107,9 +108,9 @@ model JobDetailsForm {
   employmentType      EmploymentType   @map("employment_type")
   jobSummary          Json             @map("job_summary") @db.JsonB
   whyJoinUs           Json?            @map("why_join_us") @db.JsonB
-  skills              String[]         @default([])
+  requiredSkills      String[]         @default([]) @map("required_skills")
   responsibilities    String[]         @default([])
-  preferredSkills     String?          @map("preferred_skills") @db.Text
+  preferredSkills     String[]         @default([]) @map("preferred_skills")
   experienceLevel     ExperienceLevel  @map("experience_level")
   salaryMin           Decimal?         @map("salary_min") @db.Decimal(12, 2)
   salaryMax           Decimal?         @map("salary_max") @db.Decimal(12, 2)

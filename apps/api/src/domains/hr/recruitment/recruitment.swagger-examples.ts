@@ -75,12 +75,12 @@ export const jobExample = {
         },
       ],
     },
-    skills: ['react', 'typescript', 'next.js'],
+    requiredSkills: ['react', 'typescript'],
+    preferredSkills: ['next.js'],
     responsibilities: [
       'Lead frontend delivery',
       'Collaborate with product and design',
     ],
-    preferredSkills: 'Design systems',
     experienceLevel: 'SENIOR',
     salaryMin: '2000.00',
     salaryMax: '3000.00',
@@ -105,7 +105,8 @@ export const jobExample = {
     customFields: [],
   },
   approvals: [],
-  skills: ['react', 'typescript', 'next.js'],
+  requiredSkills: ['react', 'typescript'],
+  preferredSkills: ['next.js'],
   tools: [
     {
       id: 'da0a642e-c61a-4f8c-a89f-eb6b3f59615a',
@@ -199,10 +200,10 @@ export const interviewExample = {
 
 export const jobResponseEnvelope = envelope('Created job', jobExample);
 export const jobListResponseEnvelope = envelope('List of jobs', [jobExample]);
-export const jobSkillsResponseEnvelope = envelope('Updated job skills', [
-  'typescript',
-  'postgresql',
-]);
+export const jobSkillsResponseEnvelope = envelope('Updated job skills', {
+  requiredSkills: ['typescript', 'postgresql'],
+  preferredSkills: ['aws'],
+});
 export const jobToolsResponseEnvelope = envelope(
   'Updated job tools',
   jobExample.tools,

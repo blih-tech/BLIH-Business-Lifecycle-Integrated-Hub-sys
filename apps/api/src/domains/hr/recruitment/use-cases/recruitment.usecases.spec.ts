@@ -78,7 +78,8 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   createdAt: new Date('2026-03-05T10:00:00.000Z'),
   updatedAt: new Date('2026-03-05T10:00:00.000Z'),
   approvals: approvalTemplate,
-  skills: ['TypeScript'],
+  requiredSkills: ['TypeScript'],
+  preferredSkills: [],
   tools: [],
   responsibilities: ['Own delivery'],
   ...overrides,
@@ -128,7 +129,7 @@ describe('Recruitment UseCases', () => {
       job: {
         findUnique: jest
           .fn()
-          .mockResolvedValue(buildJob('DRAFT', { skills: [] })),
+          .mockResolvedValue(buildJob('DRAFT', { requiredSkills: [] })),
       },
       department: {
         findUnique: jest.fn().mockResolvedValue({ id: 'dept-1' }),

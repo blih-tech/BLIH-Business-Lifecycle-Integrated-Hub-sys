@@ -219,9 +219,9 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       employmentType: job.requestForm.detailsForm.employmentType,
       jobSummary: job.requestForm.detailsForm.jobSummary,
       whyJoinUs: job.requestForm.detailsForm.whyJoinUs ?? undefined,
-      skills: job.requestForm.detailsForm.skills ?? [],
+      requiredSkills: job.requestForm.detailsForm.requiredSkills ?? [],
       responsibilities: job.requestForm.detailsForm.responsibilities ?? [],
-      preferredSkills: job.requestForm.detailsForm.preferredSkills ?? undefined,
+      preferredSkills: job.requestForm.detailsForm.preferredSkills ?? [],
       experienceLevel: job.requestForm.detailsForm.experienceLevel,
       salaryMin:
         toNumberOrNull(job.requestForm.detailsForm.salaryMin) ?? undefined,
@@ -267,7 +267,12 @@ const mergeNestedPayload = (
   jobDetailsForm: {
     ...existing.jobDetailsForm,
     ...(incoming.jobDetailsForm ?? {}),
-    skills: incoming.jobDetailsForm?.skills ?? existing.jobDetailsForm.skills,
+    requiredSkills:
+      incoming.jobDetailsForm?.requiredSkills ??
+      existing.jobDetailsForm.requiredSkills,
+    preferredSkills:
+      incoming.jobDetailsForm?.preferredSkills ??
+      existing.jobDetailsForm.preferredSkills,
     responsibilities:
       incoming.jobDetailsForm?.responsibilities ??
       existing.jobDetailsForm.responsibilities,
@@ -323,7 +328,12 @@ export class CreateJobUseCase {
       principal.roles?.includes(SYSTEM_ROLES.HR_MANAGER) ||
       false;
     const location = parseLocation(dto.jobDetailsForm.location);
-    const skills = normalizeSkillArray(dto.jobDetailsForm.skills);
+    const requiredSkills = normalizeSkillArray(
+      dto.jobDetailsForm.requiredSkills,
+    );
+    const preferredSkills = normalizeSkillArray(
+      dto.jobDetailsForm.preferredSkills,
+    );
     const responsibilities = normalizeStringArray(
       dto.jobDetailsForm.responsibilities,
     );
@@ -351,7 +361,8 @@ export class CreateJobUseCase {
           currencyOrNull(dto.jobDetailsForm.salaryCurrency) ?? undefined,
         salaryMode: dto.jobDetailsForm.salaryMode,
         benefits: dto.jobDetailsForm.benefits ?? [],
-        skills,
+        requiredSkills,
+        preferredSkills,
         responsibilities,
         creatorIsHr,
         priority: dto.priority ?? 'MEDIUM',
@@ -386,10 +397,9 @@ export class CreateJobUseCase {
                 whyJoinUs:
                   (dto.jobDetailsForm
                     .whyJoinUs as Prisma.InputJsonValue | null) ?? undefined,
-                skills,
+                requiredSkills,
+                preferredSkills,
                 responsibilities,
-                preferredSkills:
-                  dto.jobDetailsForm.preferredSkills ?? undefined,
                 experienceLevel: dto.jobDetailsForm.experienceLevel,
                 salaryMin: dto.jobDetailsForm.salaryMin ?? undefined,
                 salaryMax: dto.jobDetailsForm.salaryMax ?? undefined,
@@ -542,7 +552,12 @@ export class UpdateJobUseCase {
     );
 
     const location = parseLocation(merged.jobDetailsForm.location);
-    const skills = normalizeSkillArray(merged.jobDetailsForm.skills);
+    const requiredSkills = normalizeSkillArray(
+      merged.jobDetailsForm.requiredSkills,
+    );
+    const preferredSkills = normalizeSkillArray(
+      merged.jobDetailsForm.preferredSkills,
+    );
     const responsibilities = normalizeStringArray(
       merged.jobDetailsForm.responsibilities,
     );
@@ -572,7 +587,8 @@ export class UpdateJobUseCase {
           currency: currencyOrNull(merged.jobDetailsForm.salaryCurrency),
           salaryMode: merged.jobDetailsForm.salaryMode,
           benefits: merged.jobDetailsForm.benefits ?? [],
-          skills,
+          requiredSkills,
+          preferredSkills,
           responsibilities,
           applicationDeadline: new Date(
             merged.jobDetailsForm.applicationDeadline,
@@ -628,9 +644,9 @@ export class UpdateJobUseCase {
           whyJoinUs:
             (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
             undefined,
-          skills,
+          requiredSkills,
+          preferredSkills,
           responsibilities,
-          preferredSkills: merged.jobDetailsForm.preferredSkills ?? undefined,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
           salaryMin: merged.jobDetailsForm.salaryMin ?? undefined,
           salaryMax: merged.jobDetailsForm.salaryMax ?? undefined,
@@ -652,9 +668,9 @@ export class UpdateJobUseCase {
           whyJoinUs:
             (merged.jobDetailsForm.whyJoinUs as Prisma.InputJsonValue | null) ??
             Prisma.DbNull,
-          skills,
+          requiredSkills,
+          preferredSkills,
           responsibilities,
-          preferredSkills: merged.jobDetailsForm.preferredSkills ?? null,
           experienceLevel: merged.jobDetailsForm.experienceLevel,
           salaryMin: merged.jobDetailsForm.salaryMin ?? null,
           salaryMax: merged.jobDetailsForm.salaryMax ?? null,
@@ -747,7 +763,7 @@ export class SubmitJobUseCase {
         salaryMax: true,
         currency: true,
         applicationDeadline: true,
-        skills: true,
+        requiredSkills: true,
         responsibilities: true,
       },
     });
@@ -781,7 +797,7 @@ export class SubmitJobUseCase {
       salaryMax: toNumberOrNull(existing.salaryMax),
       currency: existing.currency,
       applicationDeadline: existing.applicationDeadline,
-      skills: existing.skills,
+      requiredSkills: existing.requiredSkills,
       responsibilities: existing.responsibilities,
     });
 
@@ -1050,23 +1066,33 @@ export class UpsertJobSkillsUseCase {
     });
     if (!job) throw new NotFoundException('Job not found');
 
-    const skills = normalizeSkillArray(dto.skills);
+    const requiredSkills = normalizeSkillArray(dto.requiredSkills);
+    const preferredSkills =
+      dto.preferredSkills === undefined
+        ? (job.preferredSkills ?? [])
+        : normalizeSkillArray(dto.preferredSkills);
     await this.prisma.$transaction(async (tx) => {
       await tx.job.update({
         where: { id },
-        data: { skills },
+        data: {
+          requiredSkills,
+          preferredSkills,
+        },
       });
 
       const detailsFormId = job.requestForm?.detailsForm?.id;
       if (detailsFormId) {
         await tx.jobDetailsForm.update({
           where: { id: detailsFormId },
-          data: { skills },
+          data: {
+            requiredSkills,
+            preferredSkills,
+          },
         });
       }
     });
 
-    return skills;
+    return { requiredSkills, preferredSkills };
   }
 }
 

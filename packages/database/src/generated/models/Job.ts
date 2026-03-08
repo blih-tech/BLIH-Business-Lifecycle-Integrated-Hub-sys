@@ -159,7 +159,8 @@ export type JobCountAggregateOutputType = {
   currency: number
   salaryMode: number
   benefits: number
-  skills: number
+  requiredSkills: number
+  preferredSkills: number
   responsibilities: number
   status: number
   priority: number
@@ -322,7 +323,8 @@ export type JobCountAggregateInputType = {
   currency?: true
   salaryMode?: true
   benefits?: true
-  skills?: true
+  requiredSkills?: true
+  preferredSkills?: true
   responsibilities?: true
   status?: true
   priority?: true
@@ -458,7 +460,8 @@ export type JobGroupByOutputType = {
   currency: string | null
   salaryMode: $Enums.JobSalaryMode
   benefits: string[]
-  skills: string[]
+  requiredSkills: string[]
+  preferredSkills: string[]
   responsibilities: string[]
   status: $Enums.JobWorkflowStatus
   priority: $Enums.JobPriority
@@ -530,7 +533,8 @@ export type JobWhereInput = {
   currency?: Prisma.StringNullableFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
-  skills?: Prisma.StringNullableListFilter<"Job">
+  requiredSkills?: Prisma.StringNullableListFilter<"Job">
+  preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
@@ -589,7 +593,8 @@ export type JobOrderByWithRelationInput = {
   currency?: Prisma.SortOrderInput | Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
   benefits?: Prisma.SortOrder
-  skills?: Prisma.SortOrder
+  requiredSkills?: Prisma.SortOrder
+  preferredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -651,7 +656,8 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   currency?: Prisma.StringNullableFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
-  skills?: Prisma.StringNullableListFilter<"Job">
+  requiredSkills?: Prisma.StringNullableListFilter<"Job">
+  preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
@@ -710,7 +716,8 @@ export type JobOrderByWithAggregationInput = {
   currency?: Prisma.SortOrderInput | Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
   benefits?: Prisma.SortOrder
-  skills?: Prisma.SortOrder
+  requiredSkills?: Prisma.SortOrder
+  preferredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -767,7 +774,8 @@ export type JobScalarWhereWithAggregatesInput = {
   currency?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeWithAggregatesFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
-  skills?: Prisma.StringNullableListFilter<"Job">
+  requiredSkills?: Prisma.StringNullableListFilter<"Job">
+  preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusWithAggregatesFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityWithAggregatesFilter<"Job"> | $Enums.JobPriority
@@ -814,7 +822,8 @@ export type JobCreateInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -871,7 +880,8 @@ export type JobUncheckedCreateInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -924,7 +934,8 @@ export type JobUpdateInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -981,7 +992,8 @@ export type JobUncheckedUpdateInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -1036,7 +1048,8 @@ export type JobCreateManyInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -1083,7 +1096,8 @@ export type JobUpdateManyMutationInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -1130,7 +1144,8 @@ export type JobUncheckedUpdateManyInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -1189,7 +1204,8 @@ export type JobCountOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
   benefits?: Prisma.SortOrder
-  skills?: Prisma.SortOrder
+  requiredSkills?: Prisma.SortOrder
+  preferredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -1422,7 +1438,11 @@ export type JobCreatebenefitsInput = {
   set: string[]
 }
 
-export type JobCreateskillsInput = {
+export type JobCreaterequiredSkillsInput = {
+  set: string[]
+}
+
+export type JobCreatepreferredSkillsInput = {
   set: string[]
 }
 
@@ -1459,7 +1479,12 @@ export type JobUpdatebenefitsInput = {
   push?: string | string[]
 }
 
-export type JobUpdateskillsInput = {
+export type JobUpdaterequiredSkillsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type JobUpdatepreferredSkillsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -1668,7 +1693,8 @@ export type JobCreateWithoutDepartmentInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -1723,7 +1749,8 @@ export type JobUncheckedCreateWithoutDepartmentInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -1807,7 +1834,8 @@ export type JobScalarWhereInput = {
   currency?: Prisma.StringNullableFilter<"Job"> | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFilter<"Job"> | $Enums.JobSalaryMode
   benefits?: Prisma.StringNullableListFilter<"Job">
-  skills?: Prisma.StringNullableListFilter<"Job">
+  requiredSkills?: Prisma.StringNullableListFilter<"Job">
+  preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
   status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
@@ -1854,7 +1882,8 @@ export type JobCreateWithoutPositionInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -1909,7 +1938,8 @@ export type JobUncheckedCreateWithoutPositionInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -1988,7 +2018,8 @@ export type JobCreateWithoutRequestFormInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2044,7 +2075,8 @@ export type JobUncheckedCreateWithoutRequestFormInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2112,7 +2144,8 @@ export type JobUpdateWithoutRequestFormInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2168,7 +2201,8 @@ export type JobUncheckedUpdateWithoutRequestFormInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2220,7 +2254,8 @@ export type JobCreateWithoutApprovalsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2276,7 +2311,8 @@ export type JobUncheckedCreateWithoutApprovalsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2344,7 +2380,8 @@ export type JobUpdateWithoutApprovalsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2400,7 +2437,8 @@ export type JobUncheckedUpdateWithoutApprovalsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2452,7 +2490,8 @@ export type JobCreateWithoutToolsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2508,7 +2547,8 @@ export type JobUncheckedCreateWithoutToolsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2576,7 +2616,8 @@ export type JobUpdateWithoutToolsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2632,7 +2673,8 @@ export type JobUncheckedUpdateWithoutToolsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2684,7 +2726,8 @@ export type JobCreateWithoutApplicantsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2740,7 +2783,8 @@ export type JobUncheckedCreateWithoutApplicantsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2808,7 +2852,8 @@ export type JobUpdateWithoutApplicantsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2864,7 +2909,8 @@ export type JobUncheckedUpdateWithoutApplicantsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -2916,7 +2962,8 @@ export type JobCreateWithoutInterviewsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -2972,7 +3019,8 @@ export type JobUncheckedCreateWithoutInterviewsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3040,7 +3088,8 @@ export type JobUpdateWithoutInterviewsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3096,7 +3145,8 @@ export type JobUncheckedUpdateWithoutInterviewsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3148,7 +3198,8 @@ export type JobCreateWithoutHiringDecisionsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3204,7 +3255,8 @@ export type JobUncheckedCreateWithoutHiringDecisionsInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3272,7 +3324,8 @@ export type JobUpdateWithoutHiringDecisionsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3328,7 +3381,8 @@ export type JobUncheckedUpdateWithoutHiringDecisionsInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3380,7 +3434,8 @@ export type JobCreateWithoutCreatedByInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3436,7 +3491,8 @@ export type JobUncheckedCreateWithoutCreatedByInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3498,7 +3554,8 @@ export type JobCreateWithoutHiringManagerInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3554,7 +3611,8 @@ export type JobUncheckedCreateWithoutHiringManagerInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3649,7 +3707,8 @@ export type JobCreateManyDepartmentInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3696,7 +3755,8 @@ export type JobUpdateWithoutDepartmentInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3751,7 +3811,8 @@ export type JobUncheckedUpdateWithoutDepartmentInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3805,7 +3866,8 @@ export type JobUncheckedUpdateManyWithoutDepartmentInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3853,7 +3915,8 @@ export type JobCreateManyPositionInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -3900,7 +3963,8 @@ export type JobUpdateWithoutPositionInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -3955,7 +4019,8 @@ export type JobUncheckedUpdateWithoutPositionInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4009,7 +4074,8 @@ export type JobUncheckedUpdateManyWithoutPositionInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4058,7 +4124,8 @@ export type JobCreateManyCreatedByInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -4106,7 +4173,8 @@ export type JobCreateManyHiringManagerInput = {
   currency?: string | null
   salaryMode?: $Enums.JobSalaryMode
   benefits?: Prisma.JobCreatebenefitsInput | string[]
-  skills?: Prisma.JobCreateskillsInput | string[]
+  requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
@@ -4152,7 +4220,8 @@ export type JobUpdateWithoutCreatedByInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4208,7 +4277,8 @@ export type JobUncheckedUpdateWithoutCreatedByInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4262,7 +4332,8 @@ export type JobUncheckedUpdateManyWithoutCreatedByInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4308,7 +4379,8 @@ export type JobUpdateWithoutHiringManagerInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4364,7 +4436,8 @@ export type JobUncheckedUpdateWithoutHiringManagerInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4418,7 +4491,8 @@ export type JobUncheckedUpdateManyWithoutHiringManagerInput = {
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salaryMode?: Prisma.EnumJobSalaryModeFieldUpdateOperationsInput | $Enums.JobSalaryMode
   benefits?: Prisma.JobUpdatebenefitsInput | string[]
-  skills?: Prisma.JobUpdateskillsInput | string[]
+  requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
+  preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
@@ -4533,7 +4607,8 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
+  preferredSkills?: boolean
   responsibilities?: boolean
   status?: boolean
   priority?: boolean
@@ -4593,7 +4668,8 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
+  preferredSkills?: boolean
   responsibilities?: boolean
   status?: boolean
   priority?: boolean
@@ -4646,7 +4722,8 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
+  preferredSkills?: boolean
   responsibilities?: boolean
   status?: boolean
   priority?: boolean
@@ -4699,7 +4776,8 @@ export type JobSelectScalar = {
   currency?: boolean
   salaryMode?: boolean
   benefits?: boolean
-  skills?: boolean
+  requiredSkills?: boolean
+  preferredSkills?: boolean
   responsibilities?: boolean
   status?: boolean
   priority?: boolean
@@ -4727,7 +4805,7 @@ export type JobSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "skills" | "responsibilities" | "status" | "priority" | "financeApprovalStatus" | "gmApprovalStatus" | "hrApprovalStatus" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "publishedAt" | "closedAt" | "rejectedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "requiredSkills" | "preferredSkills" | "responsibilities" | "status" | "priority" | "financeApprovalStatus" | "gmApprovalStatus" | "hrApprovalStatus" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "publishedAt" | "closedAt" | "rejectedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
@@ -4789,7 +4867,8 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     currency: string | null
     salaryMode: $Enums.JobSalaryMode
     benefits: string[]
-    skills: string[]
+    requiredSkills: string[]
+    preferredSkills: string[]
     responsibilities: string[]
     status: $Enums.JobWorkflowStatus
     priority: $Enums.JobPriority
@@ -5268,7 +5347,8 @@ export interface JobFieldRefs {
   readonly currency: Prisma.FieldRef<"Job", 'String'>
   readonly salaryMode: Prisma.FieldRef<"Job", 'JobSalaryMode'>
   readonly benefits: Prisma.FieldRef<"Job", 'String[]'>
-  readonly skills: Prisma.FieldRef<"Job", 'String[]'>
+  readonly requiredSkills: Prisma.FieldRef<"Job", 'String[]'>
+  readonly preferredSkills: Prisma.FieldRef<"Job", 'String[]'>
   readonly responsibilities: Prisma.FieldRef<"Job", 'String[]'>
   readonly status: Prisma.FieldRef<"Job", 'JobWorkflowStatus'>
   readonly priority: Prisma.FieldRef<"Job", 'JobPriority'>

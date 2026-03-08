@@ -2,23 +2,6 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 
-const PREDEFINED_FIELD_METADATA: Record<
-  string,
-  { label: string; type: 'TEXT' | 'TEXTAREA' | 'NUMBER' | 'FILE' }
-> = {
-  FULL_NAME: { label: 'Full Name', type: 'TEXT' },
-  EMAIL: { label: 'Email', type: 'TEXT' },
-  PHONE: { label: 'Phone', type: 'TEXT' },
-  RESUME: { label: 'Resume', type: 'FILE' },
-  COVER_LETTER: { label: 'Cover Letter', type: 'TEXTAREA' },
-  LINKEDIN: { label: 'LinkedIn', type: 'TEXT' },
-  PORTFOLIO: { label: 'Portfolio', type: 'TEXT' },
-  GITHUB: { label: 'GitHub', type: 'TEXT' },
-  CURRENT_COMPANY: { label: 'Current Company', type: 'TEXT' },
-  CURRENT_POSITION: { label: 'Current Position', type: 'TEXT' },
-  YEARS_EXPERIENCE: { label: 'Years of Experience', type: 'NUMBER' },
-};
-
 export const jobInclude = {
   approvals: { orderBy: { level: 'asc' as const } },
   tools: { orderBy: { order: 'asc' as const } },
@@ -28,7 +11,6 @@ export const jobInclude = {
         include: {
           applicationForm: {
             include: {
-              predefinedFields: { orderBy: { order: 'asc' as const } },
               customFields: {
                 orderBy: { order: 'asc' as const },
                 include: { options: { orderBy: { order: 'asc' as const } } },
@@ -69,7 +51,7 @@ interface SubmitReadinessPayload {
   salaryMax: number | null;
   currency: string | null;
   applicationDeadline: Date | null;
-  skills: unknown[];
+  requiredSkills: unknown[];
   responsibilities: unknown[];
 }
 
@@ -223,9 +205,9 @@ export function assertSubmitReadiness(job: SubmitReadinessPayload) {
   }
   assertSalaryRange(job.salaryMin, job.salaryMax);
 
-  if ((job.skills?.length ?? 0) < 1) {
+  if ((job.requiredSkills?.length ?? 0) < 1) {
     throw new BadRequestException(
-      'At least one skill is required before submit',
+      'At least one required skill is required before submit',
     );
   }
   if ((job.responsibilities?.length ?? 0) < 1) {
@@ -307,10 +289,6 @@ function decimalToString(value: unknown) {
 function dateToIso(value: Date | null | undefined) {
   if (!value) return null;
   return value.toISOString();
-}
-
-function snakeToCamel(key: string) {
-  return key.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
 }
 
 function toObjectRecord(value: unknown): Record<string, unknown> | null {
@@ -451,9 +429,9 @@ export function mapJob(job: any) {
           employmentType: detailsForm.employmentType,
           jobSummary: detailsForm.jobSummary,
           whyJoinUs: detailsForm.whyJoinUs ?? null,
-          skills: detailsForm.skills ?? [],
+          requiredSkills: detailsForm.requiredSkills ?? [],
           responsibilities: detailsForm.responsibilities ?? [],
-          preferredSkills: detailsForm.preferredSkills ?? null,
+          preferredSkills: detailsForm.preferredSkills ?? [],
           experienceLevel: detailsForm.experienceLevel,
           salaryMin: decimalToString(detailsForm.salaryMin),
           salaryMax: decimalToString(detailsForm.salaryMax),
@@ -467,22 +445,6 @@ export function mapJob(job: any) {
     applicationForm: applicationForm
       ? {
           id: applicationForm.id,
-          predefinedFields: (applicationForm.predefinedFields ?? []).map(
-            (field: any) => {
-              const meta = PREDEFINED_FIELD_METADATA[field.key] ?? {
-                label: field.key,
-                type: 'TEXT' as const,
-              };
-              return {
-                id: field.id,
-                key: snakeToCamel(field.key),
-                label: meta.label,
-                type: meta.type,
-                enabled: field.enabled,
-                required: field.required,
-              };
-            },
-          ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
               id: field.customFieldId,
@@ -500,7 +462,8 @@ export function mapJob(job: any) {
       decidedAt: dateToIso(approval.decidedAt),
       createdAt: approval.createdAt.toISOString(),
     })),
-    skills: job.skills ?? [],
+    requiredSkills: job.requiredSkills ?? [],
+    preferredSkills: job.preferredSkills ?? [],
     tools: job.tools ?? [],
     responsibilities: job.responsibilities ?? [],
     createdAt: job.createdAt.toISOString(),

@@ -34,7 +34,7 @@ import {
   JobListQueryDto,
   JobResponseDto,
   JobResponsibilityValueResponseDto,
-  JobSkillValueResponseDto,
+  JobSkillsResponseDto,
   JobToolResponseDto,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
@@ -137,12 +137,12 @@ export class JobsController {
                 },
               ],
             },
-            skills: ['React', 'TypeScript', 'Next.js'],
+            requiredSkills: ['React', 'TypeScript'],
+            preferredSkills: ['Next.js'],
             responsibilities: [
               'Lead frontend delivery',
               'Collaborate with product and design',
             ],
-            preferredSkills: 'Design systems',
             experienceLevel: 'senior',
             salaryMin: 2000,
             salaryMax: 3000,
@@ -278,7 +278,8 @@ export class JobsController {
               version: 1,
               content: [{ type: 'paragraph', text: 'Updated summary' }],
             },
-            skills: ['React'],
+            requiredSkills: ['React'],
+            preferredSkills: ['TypeScript'],
             responsibilities: ['Lead team', 'Ship product'],
             experienceLevel: 'lead',
             salaryMode: 'negotiable',
@@ -471,23 +472,24 @@ export class JobsController {
     path: '/api/v1/hr/recruitment/jobs/:id/skills',
     roles: [JobPermissions.MANAGE_SKILLS],
   })
-  @ApiOperation({ summary: 'Replace job skills list' })
+  @ApiOperation({ summary: 'Replace job required/preferred skills' })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: UpsertJobSkillsDto,
     description:
-      'Request body: skills (required) as a string array. Replaces all existing skills.',
+      'Request body: requiredSkills (required) and preferredSkills (optional) as string arrays. Replaces existing job skill sets.',
     examples: {
       upsertSkills: {
         summary: 'Skills payload',
         value: {
-          skills: ['TypeScript', 'PostgreSQL'],
+          requiredSkills: ['TypeScript', 'PostgreSQL'],
+          preferredSkills: ['AWS'],
         },
       },
     },
   })
-  @ApiEnvelopeArrayResponse(
-    JobSkillValueResponseDto,
+  @ApiEnvelopeOkResponse(
+    JobSkillsResponseDto,
     'Updated job skills',
     jobSkillsResponseEnvelope,
   )
