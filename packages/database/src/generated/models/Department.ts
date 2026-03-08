@@ -565,20 +565,6 @@ export type DepartmentUpdateOneWithoutOkrsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutOkrsInput, Prisma.DepartmentUpdateWithoutOkrsInput>, Prisma.DepartmentUncheckedUpdateWithoutOkrsInput>
 }
 
-export type DepartmentCreateNestedOneWithoutJobsInput = {
-  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
-  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutJobsInput
-  connect?: Prisma.DepartmentWhereUniqueInput
-}
-
-export type DepartmentUpdateOneRequiredWithoutJobsNestedInput = {
-  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
-  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutJobsInput
-  upsert?: Prisma.DepartmentUpsertWithoutJobsInput
-  connect?: Prisma.DepartmentWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutJobsInput, Prisma.DepartmentUpdateWithoutJobsInput>, Prisma.DepartmentUncheckedUpdateWithoutJobsInput>
-}
-
 export type DepartmentCreateNestedOneWithoutJobRequestFormsInput = {
   create?: Prisma.XOR<Prisma.DepartmentCreateWithoutJobRequestFormsInput, Prisma.DepartmentUncheckedCreateWithoutJobRequestFormsInput>
   connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutJobRequestFormsInput
@@ -591,6 +577,20 @@ export type DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput = {
   upsert?: Prisma.DepartmentUpsertWithoutJobRequestFormsInput
   connect?: Prisma.DepartmentWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutJobRequestFormsInput, Prisma.DepartmentUpdateWithoutJobRequestFormsInput>, Prisma.DepartmentUncheckedUpdateWithoutJobRequestFormsInput>
+}
+
+export type DepartmentCreateNestedOneWithoutJobsInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutJobsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneRequiredWithoutJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutJobsInput
+  upsert?: Prisma.DepartmentUpsertWithoutJobsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutJobsInput, Prisma.DepartmentUpdateWithoutJobsInput>, Prisma.DepartmentUncheckedUpdateWithoutJobsInput>
 }
 
 export type DepartmentCreateNestedOneWithoutEmploymentHistoryInput = {
@@ -1299,94 +1299,6 @@ export type DepartmentUncheckedUpdateWithoutOkrsInput = {
   skillGapAssessments?: Prisma.SkillGapAssessmentUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
-export type DepartmentCreateWithoutJobsInput = {
-  id?: string
-  name: string
-  description?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  parent?: Prisma.DepartmentCreateNestedOneWithoutChildrenInput
-  children?: Prisma.DepartmentCreateNestedManyWithoutParentInput
-  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
-  employmentHistory?: Prisma.UserEmploymentHistoryCreateNestedManyWithoutDepartmentInput
-  jobRequestForms?: Prisma.JobRequestFormCreateNestedManyWithoutDepartmentInput
-  okrs?: Prisma.OkrCreateNestedManyWithoutDepartmentInput
-  performanceCalibrations?: Prisma.PerformanceCalibrationCreateNestedManyWithoutDepartmentInput
-  trainingBudgets?: Prisma.TrainingBudgetCreateNestedManyWithoutDepartmentInput
-  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutDepartmentInput
-  skillGapAssessments?: Prisma.SkillGapAssessmentCreateNestedManyWithoutDepartmentInput
-}
-
-export type DepartmentUncheckedCreateWithoutJobsInput = {
-  id?: string
-  name: string
-  description?: string | null
-  parentId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  children?: Prisma.DepartmentUncheckedCreateNestedManyWithoutParentInput
-  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
-  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedCreateNestedManyWithoutDepartmentInput
-  jobRequestForms?: Prisma.JobRequestFormUncheckedCreateNestedManyWithoutDepartmentInput
-  okrs?: Prisma.OkrUncheckedCreateNestedManyWithoutDepartmentInput
-  performanceCalibrations?: Prisma.PerformanceCalibrationUncheckedCreateNestedManyWithoutDepartmentInput
-  trainingBudgets?: Prisma.TrainingBudgetUncheckedCreateNestedManyWithoutDepartmentInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutDepartmentInput
-  skillGapAssessments?: Prisma.SkillGapAssessmentUncheckedCreateNestedManyWithoutDepartmentInput
-}
-
-export type DepartmentCreateOrConnectWithoutJobsInput = {
-  where: Prisma.DepartmentWhereUniqueInput
-  create: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
-}
-
-export type DepartmentUpsertWithoutJobsInput = {
-  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutJobsInput, Prisma.DepartmentUncheckedUpdateWithoutJobsInput>
-  create: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
-  where?: Prisma.DepartmentWhereInput
-}
-
-export type DepartmentUpdateToOneWithWhereWithoutJobsInput = {
-  where?: Prisma.DepartmentWhereInput
-  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutJobsInput, Prisma.DepartmentUncheckedUpdateWithoutJobsInput>
-}
-
-export type DepartmentUpdateWithoutJobsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  parent?: Prisma.DepartmentUpdateOneWithoutChildrenNestedInput
-  children?: Prisma.DepartmentUpdateManyWithoutParentNestedInput
-  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
-  employmentHistory?: Prisma.UserEmploymentHistoryUpdateManyWithoutDepartmentNestedInput
-  jobRequestForms?: Prisma.JobRequestFormUpdateManyWithoutDepartmentNestedInput
-  okrs?: Prisma.OkrUpdateManyWithoutDepartmentNestedInput
-  performanceCalibrations?: Prisma.PerformanceCalibrationUpdateManyWithoutDepartmentNestedInput
-  trainingBudgets?: Prisma.TrainingBudgetUpdateManyWithoutDepartmentNestedInput
-  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutDepartmentNestedInput
-  skillGapAssessments?: Prisma.SkillGapAssessmentUpdateManyWithoutDepartmentNestedInput
-}
-
-export type DepartmentUncheckedUpdateWithoutJobsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  children?: Prisma.DepartmentUncheckedUpdateManyWithoutParentNestedInput
-  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
-  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
-  jobRequestForms?: Prisma.JobRequestFormUncheckedUpdateManyWithoutDepartmentNestedInput
-  okrs?: Prisma.OkrUncheckedUpdateManyWithoutDepartmentNestedInput
-  performanceCalibrations?: Prisma.PerformanceCalibrationUncheckedUpdateManyWithoutDepartmentNestedInput
-  trainingBudgets?: Prisma.TrainingBudgetUncheckedUpdateManyWithoutDepartmentNestedInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutDepartmentNestedInput
-  skillGapAssessments?: Prisma.SkillGapAssessmentUncheckedUpdateManyWithoutDepartmentNestedInput
-}
-
 export type DepartmentCreateWithoutJobRequestFormsInput = {
   id?: string
   name: string
@@ -1468,6 +1380,94 @@ export type DepartmentUncheckedUpdateWithoutJobRequestFormsInput = {
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   employmentHistory?: Prisma.UserEmploymentHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutDepartmentNestedInput
+  okrs?: Prisma.OkrUncheckedUpdateManyWithoutDepartmentNestedInput
+  performanceCalibrations?: Prisma.PerformanceCalibrationUncheckedUpdateManyWithoutDepartmentNestedInput
+  trainingBudgets?: Prisma.TrainingBudgetUncheckedUpdateManyWithoutDepartmentNestedInput
+  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutDepartmentNestedInput
+  skillGapAssessments?: Prisma.SkillGapAssessmentUncheckedUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutJobsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.DepartmentCreateNestedOneWithoutChildrenInput
+  children?: Prisma.DepartmentCreateNestedManyWithoutParentInput
+  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  employmentHistory?: Prisma.UserEmploymentHistoryCreateNestedManyWithoutDepartmentInput
+  jobRequestForms?: Prisma.JobRequestFormCreateNestedManyWithoutDepartmentInput
+  okrs?: Prisma.OkrCreateNestedManyWithoutDepartmentInput
+  performanceCalibrations?: Prisma.PerformanceCalibrationCreateNestedManyWithoutDepartmentInput
+  trainingBudgets?: Prisma.TrainingBudgetCreateNestedManyWithoutDepartmentInput
+  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutDepartmentInput
+  skillGapAssessments?: Prisma.SkillGapAssessmentCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutJobsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.DepartmentUncheckedCreateNestedManyWithoutParentInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedCreateNestedManyWithoutDepartmentInput
+  jobRequestForms?: Prisma.JobRequestFormUncheckedCreateNestedManyWithoutDepartmentInput
+  okrs?: Prisma.OkrUncheckedCreateNestedManyWithoutDepartmentInput
+  performanceCalibrations?: Prisma.PerformanceCalibrationUncheckedCreateNestedManyWithoutDepartmentInput
+  trainingBudgets?: Prisma.TrainingBudgetUncheckedCreateNestedManyWithoutDepartmentInput
+  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutDepartmentInput
+  skillGapAssessments?: Prisma.SkillGapAssessmentUncheckedCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutJobsInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
+}
+
+export type DepartmentUpsertWithoutJobsInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutJobsInput, Prisma.DepartmentUncheckedUpdateWithoutJobsInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutJobsInput, Prisma.DepartmentUncheckedCreateWithoutJobsInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutJobsInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutJobsInput, Prisma.DepartmentUncheckedUpdateWithoutJobsInput>
+}
+
+export type DepartmentUpdateWithoutJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.DepartmentUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.DepartmentUpdateManyWithoutParentNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  employmentHistory?: Prisma.UserEmploymentHistoryUpdateManyWithoutDepartmentNestedInput
+  jobRequestForms?: Prisma.JobRequestFormUpdateManyWithoutDepartmentNestedInput
+  okrs?: Prisma.OkrUpdateManyWithoutDepartmentNestedInput
+  performanceCalibrations?: Prisma.PerformanceCalibrationUpdateManyWithoutDepartmentNestedInput
+  trainingBudgets?: Prisma.TrainingBudgetUpdateManyWithoutDepartmentNestedInput
+  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutDepartmentNestedInput
+  skillGapAssessments?: Prisma.SkillGapAssessmentUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.DepartmentUncheckedUpdateManyWithoutParentNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
+  jobRequestForms?: Prisma.JobRequestFormUncheckedUpdateManyWithoutDepartmentNestedInput
   okrs?: Prisma.OkrUncheckedUpdateManyWithoutDepartmentNestedInput
   performanceCalibrations?: Prisma.PerformanceCalibrationUncheckedUpdateManyWithoutDepartmentNestedInput
   trainingBudgets?: Prisma.TrainingBudgetUncheckedUpdateManyWithoutDepartmentNestedInput

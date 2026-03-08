@@ -158,44 +158,32 @@ export class JobsController {
             applicationDeadline: '2026-04-30T23:59:59.000Z',
           },
           applicationForm: {
-            jobTitle: 'Senior Frontend Engineer',
-            location: 'Addis Ababa, Ethiopia',
-            workMode: 'hybrid',
-            employmentType: 'full_time',
-            jobSummary: {
-              type: 'doc',
-              version: 1,
-              content: [
-                {
-                  type: 'paragraph',
-                  text: 'Lead frontend delivery for customer-facing products.',
-                },
-              ],
-            },
-            whyJoinUs: {
-              type: 'doc',
-              version: 1,
-              content: [
-                {
-                  type: 'paragraph',
-                  text: 'Join a fast-moving product team with strong ownership.',
-                },
-              ],
-            },
-            requiredSkills: ['React', 'TypeScript'],
-            preferredSkills: ['Next.js'],
-            responsibilities: [
-              'Lead frontend delivery',
-              'Collaborate with product and design',
+            applicantFields: [
+              {
+                key: 'full_name',
+                enabled: true,
+                required: true,
+                order: 1,
+              },
+              {
+                key: 'email',
+                enabled: true,
+                required: true,
+                order: 2,
+              },
+              {
+                key: 'resume_url',
+                enabled: true,
+                required: true,
+                order: 3,
+              },
+              {
+                key: 'phone',
+                enabled: true,
+                required: false,
+                order: 4,
+              },
             ],
-            experienceLevel: 'senior',
-            salaryMin: 2000,
-            salaryMax: 3000,
-            salaryCurrency: 'USD',
-            salaryMode: 'competitive',
-            benefits: ['Health insurance', 'Learning budget'],
-            openings: 2,
-            applicationDeadline: '2026-04-30T23:59:59.000Z',
             customFields: [
               {
                 id: 'custom-123',
@@ -327,22 +315,32 @@ export class JobsController {
             applicationDeadline: '2026-05-15T23:59:59.000Z',
           },
           applicationForm: {
-            jobTitle: 'Lead Frontend Engineer',
-            location: 'Addis Ababa, Ethiopia',
-            workMode: 'hybrid',
-            employmentType: 'full_time',
-            jobSummary: {
-              type: 'doc',
-              version: 1,
-              content: [{ type: 'paragraph', text: 'Updated summary' }],
-            },
-            requiredSkills: ['React'],
-            preferredSkills: ['TypeScript'],
-            responsibilities: ['Lead team', 'Ship product'],
-            experienceLevel: 'lead',
-            salaryMode: 'negotiable',
-            openings: 1,
-            applicationDeadline: '2026-05-15T23:59:59.000Z',
+            applicantFields: [
+              {
+                key: 'full_name',
+                enabled: true,
+                required: true,
+                order: 1,
+              },
+              {
+                key: 'email',
+                enabled: true,
+                required: true,
+                order: 2,
+              },
+              {
+                key: 'resume_url',
+                enabled: true,
+                required: true,
+                order: 3,
+              },
+              {
+                key: 'skills',
+                enabled: true,
+                required: false,
+                order: 4,
+              },
+            ],
             customFields: [],
           },
         },

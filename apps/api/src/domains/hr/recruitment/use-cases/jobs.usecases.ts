@@ -14,6 +14,7 @@ import type {
   CloseJobDto,
   CreateJobDto,
   JobApplicationCustomFieldInputDto,
+  JobApplicationFormFieldInputDto,
   JobListQueryDto,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
@@ -105,8 +106,35 @@ const validateApplicationCustomFieldOptions = (
   }
 };
 
+const validateApplicantFieldConfig = (
+  applicantFields: JobApplicationFormFieldInputDto[],
+) => {
+  const seenKeys = new Set<string>();
+  for (const field of applicantFields) {
+    if (seenKeys.has(field.key)) {
+      throw new BadRequestException(
+        `Duplicate applicant field key detected: ${field.key}`,
+      );
+    }
+    seenKeys.add(field.key);
+
+    if (field.required && !field.enabled) {
+      throw new BadRequestException(
+        `Applicant field ${field.key} cannot be required when disabled`,
+      );
+    }
+  }
+};
+
 const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
+
+const defaultApplicantFields = (): JobApplicationFormFieldInputDto[] => [
+  { key: 'FULL_NAME', enabled: true, required: true, order: 1 },
+  { key: 'EMAIL', enabled: true, required: true, order: 2 },
+  { key: 'RESUME_URL', enabled: true, required: true, order: 3 },
+  { key: 'PHONE', enabled: true, required: false, order: 4 },
+];
 
 const assertOptionalUserExists = async (
   prisma: PrismaService,
@@ -126,25 +154,24 @@ const assertOptionalUserExists = async (
 };
 
 const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
-  if (!job.requestForm || !job.applicationForm) {
-    throw new BadRequestException(
-      'Job is missing form records required for nested updates',
-    );
-  }
+  const requestForm = job.requestForm;
+  const applicationForm = job.applicationForm;
 
   return {
     requestForm: {
-      jobTitle: job.requestForm.jobTitle,
-      department: job.requestForm.departmentId,
-      requestedBy: job.requestForm.requestedBy,
-      position: job.requestForm.positionId,
-      requestType: job.requestForm.requestType,
-      replaceForUserId: job.requestForm.replaceForUserId ?? undefined,
-      businessJustification: job.requestForm.businessJustification,
-      employmentType: job.requestForm.employmentType,
-      workMode: job.requestForm.workMode,
-      urgency: job.requestForm.urgency,
-      neededByDate: job.requestForm.neededByDate.toISOString(),
+      jobTitle: requestForm?.jobTitle ?? job.title,
+      department: requestForm?.departmentId ?? job.departmentId,
+      requestedBy: requestForm?.requestedBy ?? 'System',
+      position: requestForm?.positionId ?? job.positionId,
+      requestType: requestForm?.requestType ?? 'NEW',
+      replaceForUserId: requestForm?.replaceForUserId ?? undefined,
+      businessJustification:
+        requestForm?.businessJustification ?? 'Auto-generated request form',
+      employmentType:
+        requestForm?.employmentType ?? job.employmentType ?? 'FULL_TIME',
+      workMode: requestForm?.workMode ?? job.workLocationType,
+      urgency: requestForm?.urgency ?? 'MEDIUM',
+      neededByDate: (requestForm?.neededByDate ?? new Date()).toISOString(),
     },
     job: {
       title: job.title,
@@ -176,34 +203,25 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
         : undefined,
     },
     applicationForm: {
-      jobTitle: job.applicationForm.jobTitle,
-      location: job.applicationForm.location,
-      workMode: job.applicationForm.workMode,
-      employmentType: job.applicationForm.employmentType,
-      jobSummary: job.applicationForm.jobSummary,
-      whyJoinUs: job.applicationForm.whyJoinUs ?? undefined,
-      requiredSkills: job.applicationForm.requiredSkills ?? [],
-      responsibilities: job.applicationForm.responsibilities ?? [],
-      preferredSkills: job.applicationForm.preferredSkills ?? [],
-      experienceLevel: job.applicationForm.experienceLevel,
-      salaryMin: toNumberOrNull(job.applicationForm.salaryMin) ?? undefined,
-      salaryMax: toNumberOrNull(job.applicationForm.salaryMax) ?? undefined,
-      salaryCurrency: job.applicationForm.salaryCurrency ?? undefined,
-      salaryMode: job.applicationForm.salaryMode,
-      benefits: job.applicationForm.benefits ?? [],
-      openings: job.applicationForm.openings,
-      applicationDeadline:
-        job.applicationForm.applicationDeadline.toISOString(),
-      customFields: (job.applicationForm.customFields ?? []).map(
-        (field: any) => ({
-          id: field.customFieldId,
-          label: field.label,
-          type: field.type,
-          required: field.required,
-          helpText: field.helpText ?? undefined,
-          options: (field.options ?? []).map((option: any) => option.value),
-        }),
-      ),
+      applicantFields:
+        applicationForm?.applicantFields?.length > 0
+          ? applicationForm.applicantFields.map(
+              (field: any, index: number) => ({
+                key: field.key,
+                enabled: field.enabled,
+                required: field.required,
+                order: field.order ?? index + 1,
+              }),
+            )
+          : defaultApplicantFields(),
+      customFields: (applicationForm?.customFields ?? []).map((field: any) => ({
+        id: field.customFieldId,
+        label: field.label,
+        type: field.type,
+        required: field.required,
+        helpText: field.helpText ?? undefined,
+        options: (field.options ?? []).map((option: any) => option.value),
+      })),
     },
   };
 };
@@ -230,17 +248,9 @@ const mergeNestedPayload = (
   applicationForm: {
     ...existing.applicationForm,
     ...(incoming.applicationForm ?? {}),
-    requiredSkills:
-      incoming.applicationForm?.requiredSkills ??
-      existing.applicationForm.requiredSkills,
-    preferredSkills:
-      incoming.applicationForm?.preferredSkills ??
-      existing.applicationForm.preferredSkills,
-    responsibilities:
-      incoming.applicationForm?.responsibilities ??
-      existing.applicationForm.responsibilities,
-    benefits:
-      incoming.applicationForm?.benefits ?? existing.applicationForm.benefits,
+    applicantFields:
+      incoming.applicationForm?.applicantFields ??
+      existing.applicationForm.applicantFields,
     customFields:
       incoming.applicationForm?.customFields ??
       existing.applicationForm.customFields,
@@ -253,6 +263,7 @@ export class CreateJobUseCase {
 
   async execute(dto: CreateJobDto, principal: AuthPrincipal) {
     validateApplicationCustomFieldOptions(dto.applicationForm.customFields);
+    validateApplicantFieldConfig(dto.applicationForm.applicantFields);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -275,10 +286,6 @@ export class CreateJobUseCase {
       'requestForm.replaceForUserId',
     );
     assertSalaryRange(dto.job.salaryMin ?? null, dto.job.salaryMax ?? null);
-    assertSalaryRange(
-      dto.applicationForm.salaryMin ?? null,
-      dto.applicationForm.salaryMax ?? null,
-    );
 
     const slug = await generateUniqueSlug(this.prisma, dto.job.title);
     const creatorId = principal.userId ?? principal.sub;
@@ -294,14 +301,13 @@ export class CreateJobUseCase {
       dto.job.responsibilities ?? [],
     );
     const jobTools = normalizeStringArray(dto.job.tools ?? []);
-    const applicationRequiredSkills = normalizeSkillArray(
-      dto.applicationForm.requiredSkills,
-    );
-    const applicationPreferredSkills = normalizeSkillArray(
-      dto.applicationForm.preferredSkills ?? [],
-    );
-    const applicationResponsibilities = normalizeStringArray(
-      dto.applicationForm.responsibilities,
+    const applicantFields = dto.applicationForm.applicantFields.map(
+      (field, index) => ({
+        key: field.key,
+        enabled: field.enabled,
+        required: field.required,
+        order: field.order ?? index + 1,
+      }),
     );
 
     const created = await this.prisma.job.create({
@@ -357,28 +363,14 @@ export class CreateJobUseCase {
         },
         applicationForm: {
           create: {
-            jobTitle: dto.applicationForm.jobTitle,
-            location: dto.applicationForm.location,
-            workMode: dto.applicationForm.workMode,
-            employmentType: dto.applicationForm.employmentType,
-            jobSummary: dto.applicationForm.jobSummary as Prisma.InputJsonValue,
-            whyJoinUs:
-              (dto.applicationForm.whyJoinUs as Prisma.InputJsonValue | null) ??
-              undefined,
-            requiredSkills: applicationRequiredSkills,
-            preferredSkills: applicationPreferredSkills,
-            responsibilities: applicationResponsibilities,
-            experienceLevel: dto.applicationForm.experienceLevel,
-            salaryMin: dto.applicationForm.salaryMin ?? undefined,
-            salaryMax: dto.applicationForm.salaryMax ?? undefined,
-            salaryCurrency:
-              currencyOrNull(dto.applicationForm.salaryCurrency) ?? undefined,
-            salaryMode: dto.applicationForm.salaryMode,
-            benefits: dto.applicationForm.benefits ?? [],
-            openings: dto.applicationForm.openings,
-            applicationDeadline: new Date(
-              dto.applicationForm.applicationDeadline,
-            ),
+            applicantFields: {
+              create: applicantFields.map((field) => ({
+                key: field.key,
+                enabled: field.enabled,
+                required: field.required,
+                order: field.order,
+              })),
+            },
             customFields: {
               create: dto.applicationForm.customFields.map((field, index) => ({
                 customFieldId: field.id,
@@ -475,6 +467,7 @@ export class UpdateJobUseCase {
 
     const merged = mergeNestedPayload(mapExistingJobToDtoShape(existing), dto);
     validateApplicationCustomFieldOptions(merged.applicationForm.customFields);
+    validateApplicantFieldConfig(merged.applicationForm.applicantFields);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -500,23 +493,18 @@ export class UpdateJobUseCase {
       merged.job.salaryMin ?? null,
       merged.job.salaryMax ?? null,
     );
-    assertSalaryRange(
-      merged.applicationForm.salaryMin ?? null,
-      merged.applicationForm.salaryMax ?? null,
-    );
 
     const requiredSkills = normalizeSkillArray(merged.job.requiredSkills);
     const preferredSkills = normalizeSkillArray(merged.job.preferredSkills);
     const responsibilities = normalizeStringArray(merged.job.responsibilities);
     const tools = normalizeStringArray(merged.job.tools);
-    const appRequiredSkills = normalizeSkillArray(
-      merged.applicationForm.requiredSkills,
-    );
-    const appPreferredSkills = normalizeSkillArray(
-      merged.applicationForm.preferredSkills,
-    );
-    const appResponsibilities = normalizeStringArray(
-      merged.applicationForm.responsibilities,
+    const applicantFields = merged.applicationForm.applicantFields.map(
+      (field, index) => ({
+        key: field.key,
+        enabled: field.enabled,
+        required: field.required,
+        order: field.order ?? index + 1,
+      }),
     );
 
     const updated = await this.prisma.$transaction(async (tx) => {
@@ -594,56 +582,27 @@ export class UpdateJobUseCase {
         where: { jobId: id },
         create: {
           jobId: id,
-          jobTitle: merged.applicationForm.jobTitle,
-          location: merged.applicationForm.location,
-          workMode: merged.applicationForm.workMode,
-          employmentType: merged.applicationForm.employmentType,
-          jobSummary: merged.applicationForm
-            .jobSummary as Prisma.InputJsonValue,
-          whyJoinUs:
-            (merged.applicationForm
-              .whyJoinUs as Prisma.InputJsonValue | null) ?? undefined,
-          requiredSkills: appRequiredSkills,
-          preferredSkills: appPreferredSkills,
-          responsibilities: appResponsibilities,
-          experienceLevel: merged.applicationForm.experienceLevel,
-          salaryMin: merged.applicationForm.salaryMin ?? undefined,
-          salaryMax: merged.applicationForm.salaryMax ?? undefined,
-          salaryCurrency:
-            currencyOrNull(merged.applicationForm.salaryCurrency) ?? undefined,
-          salaryMode: merged.applicationForm.salaryMode,
-          benefits: merged.applicationForm.benefits ?? [],
-          openings: merged.applicationForm.openings,
-          applicationDeadline: new Date(
-            merged.applicationForm.applicationDeadline,
-          ),
         },
         update: {
-          jobTitle: merged.applicationForm.jobTitle,
-          location: merged.applicationForm.location,
-          workMode: merged.applicationForm.workMode,
-          employmentType: merged.applicationForm.employmentType,
-          jobSummary: merged.applicationForm
-            .jobSummary as Prisma.InputJsonValue,
-          whyJoinUs:
-            (merged.applicationForm
-              .whyJoinUs as Prisma.InputJsonValue | null) ?? Prisma.DbNull,
-          requiredSkills: appRequiredSkills,
-          preferredSkills: appPreferredSkills,
-          responsibilities: appResponsibilities,
-          experienceLevel: merged.applicationForm.experienceLevel,
-          salaryMin: merged.applicationForm.salaryMin ?? null,
-          salaryMax: merged.applicationForm.salaryMax ?? null,
-          salaryCurrency: currencyOrNull(merged.applicationForm.salaryCurrency),
-          salaryMode: merged.applicationForm.salaryMode,
-          benefits: merged.applicationForm.benefits ?? [],
-          openings: merged.applicationForm.openings,
-          applicationDeadline: new Date(
-            merged.applicationForm.applicationDeadline,
-          ),
+          updatedAt: new Date(),
         },
         select: { id: true },
       });
+
+      await tx.jobApplicationFormField.deleteMany({
+        where: { jobApplicationFormId: applicationForm.id },
+      });
+      if (applicantFields.length > 0) {
+        await tx.jobApplicationFormField.createMany({
+          data: applicantFields.map((field) => ({
+            jobApplicationFormId: applicationForm.id,
+            key: field.key,
+            enabled: field.enabled,
+            required: field.required,
+            order: field.order,
+          })),
+        });
+      }
 
       await tx.jobApplicationCustomField.deleteMany({
         where: { jobApplicationFormId: applicationForm.id },

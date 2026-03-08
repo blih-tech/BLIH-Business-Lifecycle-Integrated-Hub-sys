@@ -489,11 +489,6 @@ export type JobRequestFormOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type JobRequestFormNullableScalarRelationFilter = {
-  is?: Prisma.JobRequestFormWhereInput | null
-  isNot?: Prisma.JobRequestFormWhereInput | null
-}
-
 export type JobRequestFormCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
@@ -546,6 +541,11 @@ export type JobRequestFormMinOrderByAggregateInput = {
   neededByDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type JobRequestFormNullableScalarRelationFilter = {
+  is?: Prisma.JobRequestFormWhereInput | null
+  isNot?: Prisma.JobRequestFormWhereInput | null
 }
 
 export type JobRequestFormCreateNestedManyWithoutDepartmentInput = {
@@ -632,6 +632,22 @@ export type JobRequestFormUncheckedUpdateManyWithoutPositionNestedInput = {
   deleteMany?: Prisma.JobRequestFormScalarWhereInput | Prisma.JobRequestFormScalarWhereInput[]
 }
 
+export type EnumJobRequestTypeFieldUpdateOperationsInput = {
+  set?: $Enums.JobRequestType
+}
+
+export type EnumEmploymentTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentType
+}
+
+export type EnumWorkLocationTypeFieldUpdateOperationsInput = {
+  set?: $Enums.WorkLocationType
+}
+
+export type EnumJobUrgencyFieldUpdateOperationsInput = {
+  set?: $Enums.JobUrgency
+}
+
 export type JobRequestFormCreateNestedOneWithoutJobInput = {
   create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutJobInput, Prisma.JobRequestFormUncheckedCreateWithoutJobInput>
   connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutJobInput
@@ -662,18 +678,6 @@ export type JobRequestFormUncheckedUpdateOneWithoutJobNestedInput = {
   delete?: Prisma.JobRequestFormWhereInput | boolean
   connect?: Prisma.JobRequestFormWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobRequestFormUpdateToOneWithWhereWithoutJobInput, Prisma.JobRequestFormUpdateWithoutJobInput>, Prisma.JobRequestFormUncheckedUpdateWithoutJobInput>
-}
-
-export type EnumJobRequestTypeFieldUpdateOperationsInput = {
-  set?: $Enums.JobRequestType
-}
-
-export type EnumEmploymentTypeFieldUpdateOperationsInput = {
-  set?: $Enums.EmploymentType
-}
-
-export type EnumJobUrgencyFieldUpdateOperationsInput = {
-  set?: $Enums.JobUrgency
 }
 
 export type JobRequestFormCreateNestedManyWithoutReplaceForUserInput = {

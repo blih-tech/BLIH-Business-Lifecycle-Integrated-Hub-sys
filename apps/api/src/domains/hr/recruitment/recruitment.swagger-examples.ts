@@ -100,45 +100,46 @@ export const jobExample = {
   applicationForm: {
     id: '9fe81a43-af25-4dea-a2d8-f1703a5f8de5',
     jobId: 'a4b8e6cc-3df0-4e38-8a6d-40d6e8b1ea2f',
-    jobTitle: 'Senior Frontend Engineer',
-    location: 'Addis Ababa, Ethiopia',
-    workMode: 'HYBRID',
-    employmentType: 'FULL_TIME',
-    jobSummary: {
-      type: 'doc',
-      version: 1,
-      content: [
-        {
-          type: 'paragraph',
-          text: 'Lead frontend delivery for customer-facing products.',
-        },
-      ],
-    },
-    whyJoinUs: {
-      type: 'doc',
-      version: 1,
-      content: [
-        {
-          type: 'paragraph',
-          text: 'Join a fast-moving product team with strong ownership.',
-        },
-      ],
-    },
-    requiredSkills: ['react', 'typescript'],
-    preferredSkills: ['next.js'],
-    responsibilities: [
-      'Lead frontend delivery',
-      'Collaborate with product and design',
+    applicantFields: [
+      {
+        id: '8f9f5f06-09db-4c74-ad79-3527cfbfed8f',
+        key: 'FULL_NAME',
+        enabled: true,
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'f6e1afc2-bf26-45a9-9fb8-f4fc6bf0f9f0',
+        key: 'EMAIL',
+        enabled: true,
+        required: true,
+        order: 2,
+      },
+      {
+        id: 'd8e0cf72-90b2-4f7f-8704-7f91bf6bcc5e',
+        key: 'RESUME_URL',
+        enabled: true,
+        required: true,
+        order: 3,
+      },
+      {
+        id: 'cc7f621f-b6cd-4916-a5fd-bf61b2abf5c4',
+        key: 'PHONE',
+        enabled: true,
+        required: false,
+        order: 4,
+      },
     ],
-    experienceLevel: 'SENIOR',
-    salaryMin: '2000.00',
-    salaryMax: '3000.00',
-    salaryCurrency: 'USD',
-    salaryMode: 'COMPETITIVE',
-    benefits: ['Health insurance', 'Learning budget'],
-    openings: 2,
-    applicationDeadline: '2026-04-30T23:59:59.000Z',
-    customFields: [],
+    customFields: [
+      {
+        id: 'custom-456',
+        label: 'Do you need visa sponsorship?',
+        type: 'SELECT',
+        required: true,
+        helpText: null,
+        options: ['Yes', 'No'],
+      },
+    ],
   },
   approvals: [],
 };

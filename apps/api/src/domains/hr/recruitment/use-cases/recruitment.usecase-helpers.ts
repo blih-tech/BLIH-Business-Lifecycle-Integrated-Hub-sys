@@ -7,6 +7,9 @@ export const jobInclude = {
   requestForm: true,
   applicationForm: {
     include: {
+      applicantFields: {
+        orderBy: { order: 'asc' as const },
+      },
       customFields: {
         orderBy: { order: 'asc' as const },
         include: { options: { orderBy: { order: 'asc' as const } } },
@@ -442,23 +445,15 @@ export function mapJob(job: any) {
       ? {
           id: applicationForm.id,
           jobId: applicationForm.jobId,
-          jobTitle: applicationForm.jobTitle,
-          location: applicationForm.location,
-          workMode: applicationForm.workMode,
-          employmentType: applicationForm.employmentType,
-          jobSummary: applicationForm.jobSummary,
-          whyJoinUs: applicationForm.whyJoinUs ?? null,
-          requiredSkills: applicationForm.requiredSkills ?? [],
-          preferredSkills: applicationForm.preferredSkills ?? [],
-          responsibilities: applicationForm.responsibilities ?? [],
-          experienceLevel: applicationForm.experienceLevel,
-          salaryMin: decimalToString(applicationForm.salaryMin),
-          salaryMax: decimalToString(applicationForm.salaryMax),
-          salaryCurrency: applicationForm.salaryCurrency ?? null,
-          salaryMode: applicationForm.salaryMode,
-          benefits: applicationForm.benefits ?? [],
-          openings: applicationForm.openings,
-          applicationDeadline: dateToIso(applicationForm.applicationDeadline),
+          applicantFields: (applicationForm.applicantFields ?? []).map(
+            (field: any, index: number) => ({
+              id: field.id,
+              key: field.key,
+              enabled: field.enabled,
+              required: field.required,
+              order: field.order ?? index + 1,
+            }),
+          ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
               id: field.customFieldId,

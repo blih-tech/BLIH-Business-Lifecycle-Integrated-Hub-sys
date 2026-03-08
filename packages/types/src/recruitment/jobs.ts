@@ -49,6 +49,28 @@ export type JobApplicationFieldType =
   | 'DATE'
   | 'CHECKBOX';
 
+export type JobApplicantFieldKey =
+  | 'FULL_NAME'
+  | 'EMAIL'
+  | 'PHONE'
+  | 'RESUME_URL'
+  | 'LINKEDIN_URL'
+  | 'PORTFOLIO_URL'
+  | 'GITHUB_URL'
+  | 'CURRENT_COMPANY'
+  | 'CURRENT_POSITION'
+  | 'YEARS_EXPERIENCE'
+  | 'LOCATION'
+  | 'COUNTRY'
+  | 'CITY'
+  | 'NATIONALITY'
+  | 'EXPECTED_SALARY'
+  | 'CURRENT_SALARY'
+  | 'EDUCATION_LEVEL'
+  | 'HIGHEST_DEGREE'
+  | 'SKILLS'
+  | 'COVER_LETTER';
+
 export type CandidateSource =
   | 'COMPANY_SITE'
   | 'LINKEDIN'
@@ -170,24 +192,15 @@ export interface JobApplicationCustomFieldDto {
   options?: string[];
 }
 
+export interface JobApplicationFormFieldDto {
+  key: JobApplicantFieldKey;
+  enabled: boolean;
+  required: boolean;
+  order?: number | null;
+}
+
 export interface JobApplicationFormDto {
-  jobTitle: string;
-  location: string;
-  workMode: WorkLocationType;
-  employmentType: EmploymentType;
-  jobSummary: RichTextJson;
-  whyJoinUs?: RichTextJson | null;
-  requiredSkills: string[];
-  responsibilities: string[];
-  preferredSkills?: string[];
-  experienceLevel: ExperienceLevel;
-  salaryMin?: number | null;
-  salaryMax?: number | null;
-  salaryCurrency?: string | null;
-  salaryMode: JobSalaryMode;
-  benefits?: string[];
-  openings: number;
-  applicationDeadline: string;
+  applicantFields: JobApplicationFormFieldDto[];
   customFields: JobApplicationCustomFieldDto[];
 }
 
@@ -290,23 +303,13 @@ export interface JobResponseDto {
   applicationForm: {
     id: string;
     jobId: string;
-    jobTitle: string;
-    location: string;
-    workMode: WorkLocationType;
-    employmentType: EmploymentType;
-    jobSummary: RichTextJson;
-    whyJoinUs: RichTextJson | null;
-    requiredSkills: string[];
-    preferredSkills: string[];
-    responsibilities: string[];
-    experienceLevel: ExperienceLevel;
-    salaryMin: string | null;
-    salaryMax: string | null;
-    salaryCurrency: string | null;
-    salaryMode: JobSalaryMode;
-    benefits: string[];
-    openings: number;
-    applicationDeadline: string | null;
+    applicantFields: Array<{
+      id: string;
+      key: JobApplicantFieldKey;
+      enabled: boolean;
+      required: boolean;
+      order: number | null;
+    }>;
     customFields: Array<{
       id: string;
       label: string;

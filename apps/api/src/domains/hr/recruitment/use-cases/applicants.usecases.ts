@@ -30,6 +30,158 @@ const dateOrUndefined = (value: string | null | undefined) =>
 const decimalOrUndefined = (value: number | null | undefined) =>
   value == null ? undefined : value;
 
+type ApplicantFieldConfig = {
+  key: string;
+  enabled: boolean;
+  required: boolean;
+};
+
+type CustomFieldConfig = {
+  customFieldId: string;
+  required: boolean;
+};
+
+const hasValue = (value: unknown) => {
+  if (value == null) return false;
+  if (typeof value === 'string') return value.trim().length > 0;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === 'number') return Number.isFinite(value);
+  if (typeof value === 'boolean') return true;
+  if (typeof value === 'object') return Object.keys(value).length > 0;
+  return false;
+};
+
+const applicantFieldValue = (
+  key: string,
+  payload: {
+    fullName: string | null | undefined;
+    email: string | null | undefined;
+    phone: string | null | undefined;
+    resumeUrl: string | null | undefined;
+    linkedinUrl: string | null | undefined;
+    portfolioUrl: string | null | undefined;
+    githubUrl: string | null | undefined;
+    currentCompany: string | null | undefined;
+    currentPosition: string | null | undefined;
+    yearsExperience: number | null | undefined;
+    location: string | null | undefined;
+    country: string | null | undefined;
+    city: string | null | undefined;
+    nationality: string | null | undefined;
+    expectedSalary: number | null | undefined;
+    currentSalary: number | null | undefined;
+    educationLevel: string | null | undefined;
+    highestDegree: string | null | undefined;
+    skills: string[] | null | undefined;
+    coverLetter: string | null | undefined;
+  },
+) => {
+  switch (key) {
+    case 'FULL_NAME':
+      return payload.fullName;
+    case 'EMAIL':
+      return payload.email;
+    case 'PHONE':
+      return payload.phone;
+    case 'RESUME_URL':
+      return payload.resumeUrl;
+    case 'LINKEDIN_URL':
+      return payload.linkedinUrl;
+    case 'PORTFOLIO_URL':
+      return payload.portfolioUrl;
+    case 'GITHUB_URL':
+      return payload.githubUrl;
+    case 'CURRENT_COMPANY':
+      return payload.currentCompany;
+    case 'CURRENT_POSITION':
+      return payload.currentPosition;
+    case 'YEARS_EXPERIENCE':
+      return payload.yearsExperience;
+    case 'LOCATION':
+      return payload.location;
+    case 'COUNTRY':
+      return payload.country;
+    case 'CITY':
+      return payload.city;
+    case 'NATIONALITY':
+      return payload.nationality;
+    case 'EXPECTED_SALARY':
+      return payload.expectedSalary;
+    case 'CURRENT_SALARY':
+      return payload.currentSalary;
+    case 'EDUCATION_LEVEL':
+      return payload.educationLevel;
+    case 'HIGHEST_DEGREE':
+      return payload.highestDegree;
+    case 'SKILLS':
+      return payload.skills;
+    case 'COVER_LETTER':
+      return payload.coverLetter;
+    default:
+      return undefined;
+  }
+};
+
+const toObject = (value: unknown): Record<string, unknown> | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+  return value as Record<string, unknown>;
+};
+
+const assertRequiredFormFields = (input: {
+  applicantFields: ApplicantFieldConfig[];
+  customFields: CustomFieldConfig[];
+  payload: {
+    fullName: string | null | undefined;
+    email: string | null | undefined;
+    phone: string | null | undefined;
+    resumeUrl: string | null | undefined;
+    linkedinUrl: string | null | undefined;
+    portfolioUrl: string | null | undefined;
+    githubUrl: string | null | undefined;
+    currentCompany: string | null | undefined;
+    currentPosition: string | null | undefined;
+    yearsExperience: number | null | undefined;
+    location: string | null | undefined;
+    country: string | null | undefined;
+    city: string | null | undefined;
+    nationality: string | null | undefined;
+    expectedSalary: number | null | undefined;
+    currentSalary: number | null | undefined;
+    educationLevel: string | null | undefined;
+    highestDegree: string | null | undefined;
+    skills: string[] | null | undefined;
+    coverLetter: string | null | undefined;
+    customFieldValues: unknown;
+  };
+}) => {
+  const missingApplicantFields = input.applicantFields
+    .filter((field) => field.enabled && field.required)
+    .filter((field) => !hasValue(applicantFieldValue(field.key, input.payload)))
+    .map((field) => field.key);
+
+  const customFieldValues = toObject(input.payload.customFieldValues) ?? {};
+  const missingCustomFields = input.customFields
+    .filter((field) => field.required)
+    .filter((field) => !hasValue(customFieldValues[field.customFieldId]))
+    .map((field) => field.customFieldId);
+
+  if (missingApplicantFields.length || missingCustomFields.length) {
+    const details = [
+      ...(missingApplicantFields.length
+        ? [`applicantFields: ${missingApplicantFields.join(', ')}`]
+        : []),
+      ...(missingCustomFields.length
+        ? [`customFields: ${missingCustomFields.join(', ')}`]
+        : []),
+    ].join('; ');
+    throw new BadRequestException(
+      `Missing required application fields (${details})`,
+    );
+  }
+};
+
 @Injectable()
 export class CreateApplicantUseCase {
   constructor(
@@ -49,7 +201,22 @@ export class CreateApplicantUseCase {
           status: true,
           createdById: true,
           applicationForm: {
-            select: { id: true },
+            select: {
+              id: true,
+              applicantFields: {
+                select: {
+                  key: true,
+                  enabled: true,
+                  required: true,
+                },
+              },
+              customFields: {
+                select: {
+                  customFieldId: true,
+                  required: true,
+                },
+              },
+            },
           },
         },
       }),
@@ -81,6 +248,36 @@ export class CreateApplicantUseCase {
     }
 
     const skills = normalizeSkillArray(dto.skills);
+    if (job.applicationForm) {
+      assertRequiredFormFields({
+        applicantFields: job.applicationForm.applicantFields,
+        customFields: job.applicationForm.customFields,
+        payload: {
+          fullName: dto.fullName,
+          email: dto.email,
+          phone: dto.phone,
+          resumeUrl: dto.resumeUrl,
+          linkedinUrl: dto.linkedinUrl,
+          portfolioUrl: dto.portfolioUrl,
+          githubUrl: dto.githubUrl,
+          currentCompany: dto.currentCompany,
+          currentPosition: dto.currentPosition,
+          yearsExperience: dto.yearsExperience,
+          location: dto.location,
+          country: dto.country,
+          city: dto.city,
+          nationality: dto.nationality,
+          expectedSalary: dto.expectedSalary,
+          currentSalary: dto.currentSalary,
+          educationLevel: dto.educationLevel,
+          highestDegree: dto.highestDegree,
+          skills,
+          coverLetter: dto.coverLetter,
+          customFieldValues: dto.customFieldValues,
+        },
+      });
+    }
+
     const now = new Date();
 
     const applicant = await this.prisma
@@ -236,13 +433,27 @@ export class UpdateApplicantUseCase {
         id: true,
         jobId: true,
         email: true,
+        fullName: true,
+        phone: true,
         applicationFormId: true,
+        currentCompany: true,
+        currentPosition: true,
         yearsExperience: true,
+        location: true,
+        country: true,
+        city: true,
+        nationality: true,
+        expectedSalary: true,
+        currentSalary: true,
+        educationLevel: true,
+        highestDegree: true,
         resumeUrl: true,
         linkedinUrl: true,
         portfolioUrl: true,
         githubUrl: true,
         skills: true,
+        coverLetter: true,
+        customFieldValues: true,
       },
     });
     if (!existing) throw new NotFoundException('Applicant not found');
@@ -259,34 +470,160 @@ export class UpdateApplicantUseCase {
       }
     }
 
-    if (dto.applicationFormId !== undefined && dto.applicationFormId !== null) {
+    const normalizedSkills =
+      dto.skills === undefined ? undefined : normalizeSkillArray(dto.skills);
+    const targetJobId = dto.jobId ?? existing.jobId;
+    const targetJob = await this.prisma.job.findUnique({
+      where: { id: targetJobId },
+      select: {
+        id: true,
+        applicationForm: {
+          select: { id: true },
+        },
+      },
+    });
+    if (!targetJob) {
+      throw new BadRequestException('jobId does not reference an existing job');
+    }
+
+    let resolvedApplicationFormId = existing.applicationFormId;
+    if (dto.applicationFormId !== undefined) {
+      resolvedApplicationFormId = dto.applicationFormId;
+    } else if (dto.jobId !== undefined) {
+      resolvedApplicationFormId = targetJob.applicationForm?.id ?? null;
+    }
+
+    let resolvedForm: {
+      id: string;
+      jobId: string;
+      applicantFields: ApplicantFieldConfig[];
+      customFields: CustomFieldConfig[];
+    } | null = null;
+
+    if (resolvedApplicationFormId) {
       const form = await this.prisma.jobApplicationForm.findUnique({
-        where: { id: dto.applicationFormId },
+        where: { id: resolvedApplicationFormId },
         select: {
           id: true,
           jobId: true,
+          applicantFields: {
+            select: {
+              key: true,
+              enabled: true,
+              required: true,
+            },
+          },
+          customFields: {
+            select: {
+              customFieldId: true,
+              required: true,
+            },
+          },
         },
       });
-      const formJobId = form?.jobId;
-      if (!form || formJobId !== existing.jobId) {
+      if (!form || form.jobId !== targetJobId) {
         throw new BadRequestException(
           'applicationFormId does not belong to the selected job',
         );
       }
+      resolvedForm = form;
     }
 
-    const normalizedSkills =
-      dto.skills === undefined ? undefined : normalizeSkillArray(dto.skills);
+    if (resolvedForm) {
+      const mergedPayload = {
+        fullName: dto.fullName ?? existing.fullName,
+        email: dto.email ?? existing.email,
+        phone: dto.phone !== undefined ? dto.phone : existing.phone,
+        resumeUrl:
+          dto.resumeUrl !== undefined ? dto.resumeUrl : existing.resumeUrl,
+        linkedinUrl:
+          dto.linkedinUrl !== undefined
+            ? dto.linkedinUrl
+            : existing.linkedinUrl,
+        portfolioUrl:
+          dto.portfolioUrl !== undefined
+            ? dto.portfolioUrl
+            : existing.portfolioUrl,
+        githubUrl:
+          dto.githubUrl !== undefined ? dto.githubUrl : existing.githubUrl,
+        currentCompany:
+          dto.currentCompany !== undefined
+            ? dto.currentCompany
+            : existing.currentCompany,
+        currentPosition:
+          dto.currentPosition !== undefined
+            ? dto.currentPosition
+            : existing.currentPosition,
+        yearsExperience:
+          dto.yearsExperience !== undefined
+            ? dto.yearsExperience
+            : existing.yearsExperience,
+        location: dto.location !== undefined ? dto.location : existing.location,
+        country: dto.country !== undefined ? dto.country : existing.country,
+        city: dto.city !== undefined ? dto.city : existing.city,
+        nationality:
+          dto.nationality !== undefined
+            ? dto.nationality
+            : existing.nationality,
+        expectedSalary:
+          dto.expectedSalary !== undefined
+            ? dto.expectedSalary
+            : existing.expectedSalary == null
+              ? null
+              : Number(existing.expectedSalary),
+        currentSalary:
+          dto.currentSalary !== undefined
+            ? dto.currentSalary
+            : existing.currentSalary == null
+              ? null
+              : Number(existing.currentSalary),
+        educationLevel:
+          dto.educationLevel !== undefined
+            ? dto.educationLevel
+            : existing.educationLevel,
+        highestDegree:
+          dto.highestDegree !== undefined
+            ? dto.highestDegree
+            : existing.highestDegree,
+        skills: normalizedSkills ?? existing.skills ?? [],
+        coverLetter:
+          dto.coverLetter !== undefined
+            ? dto.coverLetter
+            : existing.coverLetter,
+        customFieldValues:
+          dto.customFieldValues !== undefined
+            ? dto.customFieldValues
+            : existing.customFieldValues,
+      };
+
+      assertRequiredFormFields({
+        applicantFields: resolvedForm.applicantFields,
+        customFields: resolvedForm.customFields,
+        payload: mergedPayload,
+      });
+    }
+
     const now = new Date();
 
     await this.prisma
       .$transaction(async (tx) => {
+        const persistedSkillCount =
+          normalizedSkills?.length ??
+          (Array.isArray(existing.skills) ? existing.skills.length : null) ??
+          (await tx.applicant
+            .findUnique({
+              where: { id },
+              select: { skills: true },
+            })
+            .then((row) => row?.skills?.length ?? 0));
+
         await tx.applicant.update({
           where: { id },
           data: {
-            ...(dto.jobId !== undefined && { jobId: dto.jobId }),
-            ...(dto.applicationFormId !== undefined && {
-              applicationFormId: dto.applicationFormId,
+            ...(dto.jobId !== undefined && { jobId: targetJobId }),
+            ...((dto.applicationFormId !== undefined ||
+              dto.jobId !== undefined) && {
+              applicationFormId: resolvedApplicationFormId,
             }),
             ...(dto.fullName !== undefined && {
               fullName: dto.fullName.trim(),
@@ -357,8 +694,7 @@ export class UpdateApplicantUseCase {
                 dto.resumeUrl !== undefined
                   ? !!dto.resumeUrl
                   : !!existing.resumeUrl,
-              skillsCount:
-                normalizedSkills?.length ?? existing.skills?.length ?? 0,
+              skillsCount: persistedSkillCount,
               hasLinks:
                 dto.linkedinUrl !== undefined ||
                 dto.portfolioUrl !== undefined ||

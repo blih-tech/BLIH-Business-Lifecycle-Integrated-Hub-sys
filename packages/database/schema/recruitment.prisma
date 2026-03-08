@@ -2,6 +2,34 @@
 // Simplified recruitment flow: Job -> Applicant -> Interview/HiringDecision
 
 // Job workflow: DRAFT -> PENDING_FOR_APPROVAL -> READY_TO_POST -> PUBLISHED -> CLOSED (or REJECTED on rejection)
+
+
+model JobRequestForm {
+  id                    String           @id @default(uuid()) @db.Uuid
+  jobId                 String           @unique @map("job_id") @db.Uuid
+  job                   Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobTitle              String           @map("job_title")
+  departmentId          String           @map("department_id") @db.Uuid
+  department            Department       @relation("JobRequestDepartment", fields: [departmentId], references: [id], onDelete: Restrict)
+  requestedBy           String           @map("requested_by") @db.VarChar(255)
+  positionId            String           @map("position_id") @db.Uuid
+  position              Position         @relation("JobRequestPosition", fields: [positionId], references: [id], onDelete: Restrict)
+  requestType           JobRequestType   @map("request_type")
+  replaceForUserId      String?          @map("replace_for_user_id") @db.Uuid
+  replaceForUser        User?            @relation("JobRequestReplacementUser", fields: [replaceForUserId], references: [id], onDelete: SetNull)
+  businessJustification String           @map("business_justification") @db.Text
+  employmentType        EmploymentType   @map("employment_type")
+  workMode              WorkLocationType @map("work_mode")
+  urgency               JobUrgency
+  neededByDate          DateTime         @map("needed_by_date") @db.Date
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@index([departmentId])
+  @@index([positionId])
+  @@index([replaceForUserId])
+}
+
 model Job {
   id                    String                 @id @default(uuid()) @db.Uuid
   title                 String
@@ -72,57 +100,31 @@ model Job {
   @@index([hiringManagerId])
 }
 
-model JobRequestForm {
-  id                    String           @id @default(uuid()) @db.Uuid
-  jobId                 String           @unique @map("job_id") @db.Uuid
-  job                   Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobTitle              String           @map("job_title")
-  departmentId          String           @map("department_id") @db.Uuid
-  department            Department       @relation("JobRequestDepartment", fields: [departmentId], references: [id], onDelete: Restrict)
-  requestedBy           String           @map("requested_by") @db.VarChar(255)
-  positionId            String           @map("position_id") @db.Uuid
-  position              Position         @relation("JobRequestPosition", fields: [positionId], references: [id], onDelete: Restrict)
-  requestType           JobRequestType   @map("request_type")
-  replaceForUserId      String?          @map("replace_for_user_id") @db.Uuid
-  replaceForUser        User?            @relation("JobRequestReplacementUser", fields: [replaceForUserId], references: [id], onDelete: SetNull)
-  businessJustification String           @map("business_justification") @db.Text
-  employmentType        EmploymentType   @map("employment_type")
-  workMode              WorkLocationType @map("work_mode")
-  urgency               JobUrgency
-  neededByDate          DateTime         @map("needed_by_date") @db.Date
-  createdAt             DateTime         @default(now())
-  updatedAt             DateTime         @updatedAt
-
-  @@index([departmentId])
-  @@index([positionId])
-  @@index([replaceForUserId])
+model JobApplicationForm {
+  id              String                    @id @default(uuid()) @db.Uuid
+  jobId           String                    @unique @map("job_id") @db.Uuid
+  job             Job                       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  applicantFields JobApplicationFormField[]
+  customFields    JobApplicationCustomField[]
+  applicants      Applicant[]               @relation("ApplicantForm")
 }
 
-model JobApplicationForm {
-  id                  String                           @id @default(uuid()) @db.Uuid
-  jobId               String                           @unique @map("job_id") @db.Uuid
-  job                 Job                              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobTitle            String                           @map("job_title")
-  location            String                           @db.VarChar(255)
-  workMode            WorkLocationType                 @map("work_mode")
-  employmentType      EmploymentType                   @map("employment_type")
-  jobSummary          Json                             @map("job_summary") @db.JsonB
-  whyJoinUs           Json?                            @map("why_join_us") @db.JsonB
-  requiredSkills      String[]                         @default([]) @map("required_skills")
-  responsibilities    String[]                         @default([])
-  preferredSkills     String[]                         @default([]) @map("preferred_skills")
-  experienceLevel     ExperienceLevel                  @map("experience_level")
-  salaryMin           Decimal?                         @map("salary_min") @db.Decimal(12, 2)
-  salaryMax           Decimal?                         @map("salary_max") @db.Decimal(12, 2)
-  salaryCurrency      String?                          @map("salary_currency") @db.VarChar(8)
-  salaryMode          JobSalaryMode                    @default(NOT_SPECIFIED) @map("salary_mode")
-  benefits            String[]                         @default([])
-  openings            Int                              @default(1)
-  applicationDeadline DateTime                         @map("application_deadline")
-  createdAt           DateTime                         @default(now())
-  updatedAt           DateTime                         @updatedAt
-  customFields     JobApplicationCustomField[]
-  applicants       Applicant[]                        @relation("ApplicantForm")
+model JobApplicationFormField {
+  id                   String             @id @default(uuid()) @db.Uuid
+  jobApplicationFormId String             @map("job_application_form_id") @db.Uuid
+  jobApplicationForm   JobApplicationForm @relation(fields: [jobApplicationFormId], references: [id], onDelete: Cascade)
+  key                  JobApplicantFieldKey
+  enabled              Boolean            @default(true)
+  required             Boolean            @default(false)
+  order                Int?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@unique([jobApplicationFormId, key])
+  @@index([jobApplicationFormId])
+  @@index([jobApplicationFormId, order])
 }
 
 model JobApplicationCustomField {

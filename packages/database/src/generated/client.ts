@@ -388,20 +388,25 @@ export type KeyResultUpdate = Prisma.KeyResultUpdateModel
  */
 export type OkrManagerReview = Prisma.OkrManagerReviewModel
 /**
- * Model Job
- * 
- */
-export type Job = Prisma.JobModel
-/**
  * Model JobRequestForm
  * 
  */
 export type JobRequestForm = Prisma.JobRequestFormModel
 /**
+ * Model Job
+ * 
+ */
+export type Job = Prisma.JobModel
+/**
  * Model JobApplicationForm
  * 
  */
 export type JobApplicationForm = Prisma.JobApplicationFormModel
+/**
+ * Model JobApplicationFormField
+ * 
+ */
+export type JobApplicationFormField = Prisma.JobApplicationFormFieldModel
 /**
  * Model JobApplicationCustomField
  * 

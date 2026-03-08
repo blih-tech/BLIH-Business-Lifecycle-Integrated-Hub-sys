@@ -212,6 +212,32 @@ export const JobApplicationFieldType = {
 export type JobApplicationFieldType = (typeof JobApplicationFieldType)[keyof typeof JobApplicationFieldType]
 
 
+export const JobApplicantFieldKey = {
+  FULL_NAME: 'FULL_NAME',
+  EMAIL: 'EMAIL',
+  PHONE: 'PHONE',
+  RESUME_URL: 'RESUME_URL',
+  LINKEDIN_URL: 'LINKEDIN_URL',
+  PORTFOLIO_URL: 'PORTFOLIO_URL',
+  GITHUB_URL: 'GITHUB_URL',
+  CURRENT_COMPANY: 'CURRENT_COMPANY',
+  CURRENT_POSITION: 'CURRENT_POSITION',
+  YEARS_EXPERIENCE: 'YEARS_EXPERIENCE',
+  LOCATION: 'LOCATION',
+  COUNTRY: 'COUNTRY',
+  CITY: 'CITY',
+  NATIONALITY: 'NATIONALITY',
+  EXPECTED_SALARY: 'EXPECTED_SALARY',
+  CURRENT_SALARY: 'CURRENT_SALARY',
+  EDUCATION_LEVEL: 'EDUCATION_LEVEL',
+  HIGHEST_DEGREE: 'HIGHEST_DEGREE',
+  SKILLS: 'SKILLS',
+  COVER_LETTER: 'COVER_LETTER'
+} as const
+
+export type JobApplicantFieldKey = (typeof JobApplicantFieldKey)[keyof typeof JobApplicantFieldKey]
+
+
 export const JobContractType = {
   PERMANENT: 'PERMANENT',
   CONTRACT: 'CONTRACT',

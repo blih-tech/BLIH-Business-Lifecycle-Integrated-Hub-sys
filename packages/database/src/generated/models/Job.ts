@@ -1198,6 +1198,11 @@ export type JobOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type JobScalarRelationFilter = {
+  is?: Prisma.JobWhereInput
+  isNot?: Prisma.JobWhereInput
+}
+
 export type JobCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -1361,11 +1366,6 @@ export type JobSumOrderByAggregateInput = {
   hiresCount?: Prisma.SortOrder
 }
 
-export type JobScalarRelationFilter = {
-  is?: Prisma.JobWhereInput
-  isNot?: Prisma.JobWhereInput
-}
-
 export type JobCreateNestedManyWithoutDepartmentInput = {
   create?: Prisma.XOR<Prisma.JobCreateWithoutDepartmentInput, Prisma.JobUncheckedCreateWithoutDepartmentInput> | Prisma.JobCreateWithoutDepartmentInput[] | Prisma.JobUncheckedCreateWithoutDepartmentInput[]
   connectOrCreate?: Prisma.JobCreateOrConnectWithoutDepartmentInput | Prisma.JobCreateOrConnectWithoutDepartmentInput[]
@@ -1450,6 +1450,20 @@ export type JobUncheckedUpdateManyWithoutPositionNestedInput = {
   deleteMany?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
 }
 
+export type JobCreateNestedOneWithoutRequestFormInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutRequestFormInput, Prisma.JobUncheckedCreateWithoutRequestFormInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutRequestFormInput
+  connect?: Prisma.JobWhereUniqueInput
+}
+
+export type JobUpdateOneRequiredWithoutRequestFormNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutRequestFormInput, Prisma.JobUncheckedCreateWithoutRequestFormInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutRequestFormInput
+  upsert?: Prisma.JobUpsertWithoutRequestFormInput
+  connect?: Prisma.JobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutRequestFormInput, Prisma.JobUpdateWithoutRequestFormInput>, Prisma.JobUncheckedUpdateWithoutRequestFormInput>
+}
+
 export type JobCreatebenefitsInput = {
   set: string[]
 }
@@ -1480,10 +1494,6 @@ export type EnumJobContractTypeFieldUpdateOperationsInput = {
 
 export type NullableEnumEmploymentTypeFieldUpdateOperationsInput = {
   set?: $Enums.EmploymentType | null
-}
-
-export type EnumWorkLocationTypeFieldUpdateOperationsInput = {
-  set?: $Enums.WorkLocationType
 }
 
 export type NullableEnumRemoteScopeFieldUpdateOperationsInput = {
@@ -1529,20 +1539,6 @@ export type EnumJobStageApprovalStatusFieldUpdateOperationsInput = {
 export type JobUpdatetoolsInput = {
   set?: string[]
   push?: string | string[]
-}
-
-export type JobCreateNestedOneWithoutRequestFormInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutRequestFormInput, Prisma.JobUncheckedCreateWithoutRequestFormInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutRequestFormInput
-  connect?: Prisma.JobWhereUniqueInput
-}
-
-export type JobUpdateOneRequiredWithoutRequestFormNestedInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutRequestFormInput, Prisma.JobUncheckedCreateWithoutRequestFormInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutRequestFormInput
-  upsert?: Prisma.JobUpsertWithoutRequestFormInput
-  connect?: Prisma.JobWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutRequestFormInput, Prisma.JobUpdateWithoutRequestFormInput>, Prisma.JobUncheckedUpdateWithoutRequestFormInput>
 }
 
 export type JobCreateNestedOneWithoutApplicationFormInput = {
