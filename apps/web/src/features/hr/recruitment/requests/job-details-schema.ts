@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const salaryModeValues = ["not_specified", "range", "negotiable", "competitive"] as const;
+export const salaryModeValues = ["not_specified", "fixed", "range", "negotiable", "competitive"] as const;
 
 function toVisibleText(value: string) {
   return value
@@ -40,15 +40,18 @@ export const jobDetailsFormSchema = z
     benefits: z.string().trim().optional(),
   })
   .superRefine((values, ctx) => {
-    if (values.salaryMode === "range") {
+    if (values.salaryMode === "fixed" || values.salaryMode === "range") {
       if (!values.salaryRangeMin?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["salaryRangeMin"],
-          message: "Minimum salary is required for salary range",
+          message:
+            values.salaryMode === "fixed"
+              ? "Salary amount is required for fixed salary"
+              : "Minimum salary is required for salary range",
         });
       }
-      if (!values.salaryRangeMax?.trim()) {
+      if (values.salaryMode === "range" && !values.salaryRangeMax?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["salaryRangeMax"],
@@ -59,7 +62,10 @@ export const jobDetailsFormSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["salaryCurrency"],
-          message: "Salary currency is required for salary range",
+          message:
+            values.salaryMode === "fixed"
+              ? "Salary currency is required for fixed salary"
+              : "Salary currency is required for salary range",
         });
       }
     }

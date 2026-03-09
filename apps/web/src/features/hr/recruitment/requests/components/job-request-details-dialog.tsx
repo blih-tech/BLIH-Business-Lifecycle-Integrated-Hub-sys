@@ -111,6 +111,7 @@ function salaryLabel(request: FullJobRequest) {
   const { salaryMode, salaryRangeMin, salaryRangeMax, salaryCurrency } = request.jobDetailsForm;
   if (salaryMode === "negotiable") return "Negotiable";
   if (salaryMode === "competitive") return "Competitive";
+  if (salaryMode === "fixed") return `${salaryCurrency} ${salaryRangeMin}`;
   if (salaryMode === "range") return `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`;
   return "Not specified";
 }

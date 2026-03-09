@@ -72,6 +72,7 @@ const salaryCurrencyOptions = [
 
 const salaryModeOptions = [
   { value: 'not_specified', label: 'Not Specified' },
+  { value: 'fixed', label: 'Fixed Salary' },
   { value: 'range', label: 'Salary Range' },
   { value: 'negotiable', label: 'Negotiable' },
   { value: 'competitive', label: 'Competitive' },
@@ -177,6 +178,8 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
   const requirementsPreview = listPreview(requirements);
   const preferredSkillsPreview = listPreview(preferredSkills);
   const benefitsPreview = listPreview(benefits);
+  const isVariableSalary = salaryMode === 'range';
+  const hasStructuredSalary = salaryMode === 'fixed' || salaryMode === 'range';
 
   return (
     <div className="space-y-4 p-4">
@@ -477,45 +480,47 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                 control={form.control}
                 name="salaryRangeMin"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className={isVariableSalary ? '' : 'md:col-span-2'}>
                     <FormLabel className="ui-meta text-muted-foreground">
-                      Salary From
+                      {salaryMode === 'fixed' ? 'Salary Amount' : 'Salary From'}
                     </FormLabel>
                     <FormControl>
-                      <Input inputMode="numeric" disabled={salaryMode !== 'range'} {...field} />
+                      <Input inputMode="numeric" disabled={!hasStructuredSalary} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="salaryRangeMax"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="ui-meta text-muted-foreground">
-                      Salary To
-                    </FormLabel>
-                    <FormControl>
-                      <Input inputMode="numeric" disabled={salaryMode !== 'range'} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {isVariableSalary ? (
+                <FormField
+                  control={form.control}
+                  name="salaryRangeMax"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="ui-meta text-muted-foreground">
+                        Salary To
+                      </FormLabel>
+                      <FormControl>
+                        <Input inputMode="numeric" disabled={!isVariableSalary} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : null}
 
               <FormField
                 control={form.control}
                 name="salaryCurrency"
                 render={({ field }) => (
-                  <FormItem className="md:col-span-2">
+                  <FormItem className={isVariableSalary ? 'md:col-span-2' : ''}>
                     <FormLabel className="ui-meta text-muted-foreground">
                       Salary Currency
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="w-full bg-background" disabled={salaryMode !== 'range'}>
+                        <SelectTrigger className="w-full bg-background" disabled={!hasStructuredSalary}>
                           <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
                       </FormControl>
@@ -610,10 +615,14 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                 <SummaryItem
                   label="Salary"
                   value={
-                    salaryMode === 'range' &&
+                    salaryMode === 'fixed' &&
                     salaryRangeMin?.trim() &&
-                    salaryRangeMax?.trim() &&
                     salaryCurrency?.trim()
+                      ? `${salaryCurrency} ${salaryRangeMin}`
+                      : salaryMode === 'range' &&
+                          salaryRangeMin?.trim() &&
+                          salaryRangeMax?.trim() &&
+                          salaryCurrency?.trim()
                       ? `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`
                       : optionLabel(salaryMode, salaryModeOptions)
                   }
