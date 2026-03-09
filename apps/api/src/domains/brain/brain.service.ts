@@ -2,7 +2,14 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../platform/prisma/prisma.service';
-import * as pdf from 'pdf-parse';
+import { parseCv } from './utils/cv-parser';
+import { ScreeningRecommendation } from "../../platform/prisma/generated/client";
+
+const recommendationMap = {
+  SHORTLIST: ScreeningRecommendation.SELECT,
+  REVIEW: ScreeningRecommendation.PAUSE,
+  REJECT: ScreeningRecommendation.DECLINE
+};
 
 @Injectable()
 export class BrainService {
@@ -23,8 +30,7 @@ export class BrainService {
 
     try {
 
-      const data = await (pdf as any)(fileBuffer);
-      const extractedText = data.text;
+      const extractedText = await parseCv(fileBuffer);
 
       const response = await firstValueFrom(
         this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
@@ -57,8 +63,7 @@ export class BrainService {
 
   async processCvUpload(fileBuffer: Buffer, candidateId: string, jobPostingId: string) {
 
-    const data = await (pdf as any)(fileBuffer);
-    const extractedText = data.text;
+    const extractedText = await parseCv(fileBuffer);
 
     this.logger.log(`CV parsed for candidate ${candidateId}. Starting auto-score...`);
 
@@ -154,6 +159,9 @@ export class BrainService {
 
     const result = aiResponse.data;
 
+    const finalRecommendation =
+    recommendationMap[result.recommendation] ||
+    ScreeningRecommendation.PAUSE;
 
     await this.prisma.cvScreening.upsert({
 
@@ -165,16 +173,16 @@ export class BrainService {
       },
 
       update: {
-        aggregateRating: result.score,
-        recommendation: result.recommendation,
+        aggregateRating: result.score || 0,
+        recommendation: finalRecommendation,
         assessments: result
       },
 
       create: {
         candidateId,
         jobPostingId,
-        aggregateRating: result.score,
-        recommendation: result.recommendation,
+        aggregateRating: result.score || 0,
+        recommendation: finalRecommendation,
         assessments: result,
         screenedById: "00000000-0000-0000-0000-000000000000",
         screenedAt: new Date()
@@ -207,14 +215,18 @@ export class BrainService {
       
       const result = aiResponse.data;
 
+      const finalRecommendation =
+      recommendationMap[result.recommendation] ||
+      ScreeningRecommendation.PAUSE;
+
       await this.prisma.cvScreening.upsert({
         where: { candidateId_jobPostingId: { candidateId: candidate.id, jobPostingId } },
-        update: { aggregateRating: result.score, recommendation: result.recommendation, assessments: result },
+        update: { aggregateRating: result.score, recommendation: finalRecommendation, assessments: result },
         create: { 
           candidateId: candidate.id, 
           jobPostingId, 
-          aggregateRating: result.score, 
-          recommendation: result.recommendation, 
+          aggregateRating: result.score || 0, 
+          recommendation: finalRecommendation, 
           assessments: result,
           screenedById: "00000000-0000-0000-0000-000000000000",
           screenedAt: new Date()

@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { BrainService } from './brain.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Controller('brain')
 export class BrainController {
@@ -12,7 +13,7 @@ async chat(@Body() body: {userId: string; question: string; module: string}) {
 }
 
 @Post('analyze-cv')
-async analyzeCv(@Body() body: { cvText: string; jobDescription: string }) {
+async analyzeCv(@Body() body: { cvText: string; jobDescription: string}) {
   return this.brainService.runCvAnalysis(body.cvText, body.jobDescription);
 }
 
@@ -27,11 +28,14 @@ async uploadCv(
   @UploadedFile() file: Express.Multer.File,
   @Body('candidateId') candidateId: string,
   @Body('jobPostingId') jobPostingId: string
+  
     ) {
+
+     
     const result = await this.brainService.processCvUpload(
         file.buffer,
         candidateId,
-        jobPostingId,
+        jobPostingId
     );
 
     return result;
