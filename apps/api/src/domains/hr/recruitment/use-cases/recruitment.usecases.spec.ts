@@ -67,10 +67,6 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   currency: 'USD',
   salaryMode: 'NOT_SPECIFIED',
   benefits: [],
-  status,
-  financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-  gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-  hrApprovalStatus: 'PENDING_FOR_APPROVAL',
   creatorIsHr: false,
   applicationDeadline: new Date('2026-10-01T00:00:00.000Z'),
   publishedAt: null,
@@ -78,6 +74,30 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   createdAt: new Date('2026-03-05T10:00:00.000Z'),
   updatedAt: new Date('2026-03-05T10:00:00.000Z'),
   approvals: approvalTemplate,
+  requestForm: {
+    id: 'request-1',
+    jobId: 'job-1',
+    status,
+    priority: 'MEDIUM',
+    financeApprovalStatus: 'PENDING_FOR_APPROVAL',
+    gmApprovalStatus: 'PENDING_FOR_APPROVAL',
+    hrApprovalStatus: 'PENDING_FOR_APPROVAL',
+    draftedAt: new Date('2026-03-05T10:00:00.000Z'),
+    pendingApprovalAt: null,
+    readyToPostAt: null,
+    rejectedAt: null,
+    jobTitle: 'Senior Backend Engineer',
+    departmentId: 'dept-1',
+    requestedBy: 'System',
+    positionId: 'pos-1',
+    requestType: 'NEW',
+    replaceForUserId: null,
+    businessJustification: 'Need backfill',
+    employmentType: 'FULL_TIME',
+    workMode: 'HYBRID',
+    urgency: 'MEDIUM',
+    neededByDate: new Date('2026-10-01T00:00:00.000Z'),
+  },
   requiredSkills: ['TypeScript'],
   preferredSkills: [],
   tools: [],
@@ -114,7 +134,7 @@ describe('Recruitment UseCases', () => {
     const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
-    expect(result.job.status).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
     expect(tx.jobApproval.createMany).toHaveBeenCalledWith({
       data: [
         expect.objectContaining({ stage: 'FINANCE', level: 1 }),
@@ -185,7 +205,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.job.status).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
   });
 
   it('auto-approves HR after second parallel approval when creator is HR', async () => {
@@ -240,7 +260,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.job.status).toBe('READY_TO_POST');
+    expect(result.requestForm?.status).toBe('READY_TO_POST');
     expect(tx.jobApproval.update).toHaveBeenCalledTimes(2);
     expect(tx.jobApproval.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -260,9 +280,7 @@ describe('Recruitment UseCases', () => {
         update: jest.fn().mockResolvedValue(undefined),
       },
       job: {
-        update: jest
-          .fn()
-          .mockResolvedValue(buildJob('REJECTED', { status: 'REJECTED' })),
+        update: jest.fn().mockResolvedValue(buildJob('REJECTED')),
       },
     };
     const prisma = {
@@ -285,7 +303,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(result.job.status).toBe('REJECTED');
+    expect(result.requestForm?.status).toBe('REJECTED');
   });
 
   it('enforces stage role before approving a job', async () => {

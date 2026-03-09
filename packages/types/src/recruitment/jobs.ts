@@ -139,6 +139,7 @@ export interface JobRequestFormDto {
   workMode: WorkLocationType;
   urgency: JobUrgency;
   neededByDate: string;
+  priority?: JobPriority;
 }
 
 export type RichTextJson = Record<string, unknown>;
@@ -166,7 +167,6 @@ export interface JobInputDto {
   preferredSkills?: string[];
   responsibilities?: string[];
   tools?: string[];
-  priority?: JobPriority;
   hiringManagerId?: string | null;
   applicationDeadline?: string | null;
 }
@@ -245,6 +245,15 @@ export interface JobResponseDto {
     workMode: WorkLocationType;
     urgency: JobUrgency;
     neededByDate: string | null;
+    status: JobWorkflowStatus;
+    priority: JobPriority;
+    financeApprovalStatus: JobStageApprovalStatus;
+    gmApprovalStatus: JobStageApprovalStatus;
+    hrApprovalStatus: JobStageApprovalStatus;
+    draftedAt: string | null;
+    pendingApprovalAt: string | null;
+    readyToPostAt: string | null;
+    rejectedAt: string | null;
   } | null;
   job: {
     id: string;
@@ -271,20 +280,11 @@ export interface JobResponseDto {
     preferredSkills: string[];
     responsibilities: string[];
     tools: string[];
-    priority: JobPriority | null;
     hiringManagerId: string | null;
     applicationDeadline: string | null;
-    status: JobWorkflowStatus;
-    financeApprovalStatus: JobStageApprovalStatus;
-    gmApprovalStatus: JobStageApprovalStatus;
-    hrApprovalStatus: JobStageApprovalStatus;
     creatorIsHr: boolean;
-    draftedAt: string | null;
-    pendingApprovalAt: string | null;
-    readyToPostAt: string | null;
     publishedAt: string | null;
     closedAt: string | null;
-    rejectedAt: string | null;
     closingReason: string | null;
     viewsCount: number;
     applicationsCount: number;

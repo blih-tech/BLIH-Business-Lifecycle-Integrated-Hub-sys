@@ -109,6 +109,7 @@ export class JobsController {
             workMode: 'hybrid',
             urgency: 'high',
             neededByDate: '2026-03-30',
+            priority: 'medium',
           },
           job: {
             title: 'Senior Frontend Engineer',
@@ -153,7 +154,6 @@ export class JobsController {
               'Collaborate with product and design',
             ],
             tools: ['Docker', 'GitHub Actions'],
-            priority: 'medium',
             hiringManagerId: '6e40348d-4fda-47a7-b267-13ed7b6fca68',
             applicationDeadline: '2026-04-30T23:59:59.000Z',
           },
@@ -300,6 +300,7 @@ export class JobsController {
             workMode: 'hybrid',
             urgency: 'medium',
             neededByDate: '2026-04-15',
+            priority: 'high',
           },
           job: {
             title: 'Lead Frontend Engineer',
@@ -317,7 +318,6 @@ export class JobsController {
             responsibilities: ['Lead team', 'Ship product'],
             tools: ['Docker', 'GitHub Actions'],
             experienceLevel: 'lead',
-            priority: 'high',
             salaryMode: 'negotiable',
             openings: 1,
             applicationDeadline: '2026-05-15T23:59:59.000Z',

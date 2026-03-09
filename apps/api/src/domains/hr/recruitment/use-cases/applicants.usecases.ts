@@ -186,8 +186,12 @@ export class CreateApplicantUseCase {
         select: {
           id: true,
           title: true,
-          status: true,
           createdById: true,
+          requestForm: {
+            select: {
+              status: true,
+            },
+          },
           applicationForm: {
             select: {
               id: true,
@@ -224,7 +228,7 @@ export class CreateApplicantUseCase {
     ]);
 
     if (!job) throw new NotFoundException('Job not found');
-    if (job.status !== 'PUBLISHED') {
+    if (job.requestForm?.status !== 'PUBLISHED') {
       throw new BadRequestException(
         'Applications are allowed only for published jobs',
       );

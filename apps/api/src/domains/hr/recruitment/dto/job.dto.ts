@@ -150,6 +150,12 @@ export class JobRequestFormInputDto {
   @ApiProperty()
   @IsDateString()
   neededByDate!: string;
+
+  @ApiPropertyOptional({ enum: JOB_PRIORITY_LEVELS })
+  @IsOptional()
+  @Transform(normalizeEnumValue)
+  @IsEnum(JOB_PRIORITY_LEVELS)
+  priority?: (typeof JOB_PRIORITY_LEVELS)[number];
 }
 
 export class JobInputDto {
@@ -305,12 +311,6 @@ export class JobInputDto {
   @ArrayMaxSize(200)
   @IsString({ each: true })
   tools?: string[];
-
-  @ApiPropertyOptional({ enum: JOB_PRIORITY_LEVELS })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(JOB_PRIORITY_LEVELS)
-  priority?: (typeof JOB_PRIORITY_LEVELS)[number];
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -564,6 +564,39 @@ export class JobRequestFormResponseDto extends OmitType(
 
   @ApiProperty()
   position!: string;
+
+  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
+  status!:
+    | 'DRAFT'
+    | 'PENDING_FOR_APPROVAL'
+    | 'READY_TO_POST'
+    | 'PUBLISHED'
+    | 'CLOSED'
+    | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_PRIORITY_LEVELS })
+  priority!: (typeof JOB_PRIORITY_LEVELS)[number];
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  financeApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  gmApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  hrApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiPropertyOptional({ nullable: true })
+  draftedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  pendingApprovalAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  readyToPostAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  rejectedAt!: string | null;
 }
 
 export class JobDataResponseDto extends OmitType(JobInputDto, [
@@ -577,44 +610,14 @@ export class JobDataResponseDto extends OmitType(JobInputDto, [
   @ApiProperty()
   slug!: string;
 
-  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
-  status!:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  financeApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  gmApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  hrApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
   @ApiProperty()
   creatorIsHr!: boolean;
-
-  @ApiPropertyOptional({ nullable: true })
-  draftedAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  pendingApprovalAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  readyToPostAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   publishedAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   closedAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  rejectedAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   closingReason!: string | null;

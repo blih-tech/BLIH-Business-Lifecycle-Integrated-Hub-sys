@@ -26,7 +26,9 @@ export class RecruitmentJobLifecycleJob {
   private async closeJobsByDeadline(now: Date): Promise<number> {
     const jobs = await this.prisma.job.findMany({
       where: {
-        status: 'PUBLISHED',
+        requestForm: {
+          is: { status: 'PUBLISHED' },
+        },
         applicationDeadline: { lte: now },
       },
       select: {
@@ -39,14 +41,20 @@ export class RecruitmentJobLifecycleJob {
 
     if (jobs.length === 0) return 0;
 
-    await this.prisma.job.updateMany({
-      where: { id: { in: jobs.map((job) => job.id) } },
-      data: {
-        status: 'CLOSED',
-        closedAt: now,
-        closingReason: 'APPLICATION_DEADLINE_PASSED',
-      },
-    });
+    const jobIds = jobs.map((job) => job.id);
+    await this.prisma.$transaction([
+      this.prisma.job.updateMany({
+        where: { id: { in: jobIds } },
+        data: {
+          closedAt: now,
+          closingReason: 'APPLICATION_DEADLINE_PASSED',
+        },
+      }),
+      this.prisma.jobRequestForm.updateMany({
+        where: { jobId: { in: jobIds } },
+        data: { status: 'CLOSED' },
+      }),
+    ]);
 
     for (const job of jobs) {
       await this.notifications.notifyUsers({
@@ -67,7 +75,11 @@ export class RecruitmentJobLifecycleJob {
 
   private async closeFilledJobs(): Promise<number> {
     const jobs = await this.prisma.job.findMany({
-      where: { status: 'PUBLISHED' },
+      where: {
+        requestForm: {
+          is: { status: 'PUBLISHED' },
+        },
+      },
       select: {
         id: true,
         title: true,
@@ -88,14 +100,21 @@ export class RecruitmentJobLifecycleJob {
     );
     if (filledJobs.length === 0) return 0;
 
-    await this.prisma.job.updateMany({
-      where: { id: { in: filledJobs.map((job) => job.id) } },
-      data: {
-        status: 'CLOSED',
-        closedAt: new Date(),
-        closingReason: 'OPENINGS_FILLED',
-      },
-    });
+    const closedAt = new Date();
+    const jobIds = filledJobs.map((job) => job.id);
+    await this.prisma.$transaction([
+      this.prisma.job.updateMany({
+        where: { id: { in: jobIds } },
+        data: {
+          closedAt,
+          closingReason: 'OPENINGS_FILLED',
+        },
+      }),
+      this.prisma.jobRequestForm.updateMany({
+        where: { jobId: { in: jobIds } },
+        data: { status: 'CLOSED' },
+      }),
+    ]);
 
     for (const job of filledJobs) {
       await this.notifications.notifyUsers({

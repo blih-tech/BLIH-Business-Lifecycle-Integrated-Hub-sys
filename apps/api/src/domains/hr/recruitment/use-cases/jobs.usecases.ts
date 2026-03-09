@@ -46,6 +46,24 @@ interface ApprovalState {
   decision: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
+interface RequestWorkflowState {
+  status:
+    | 'DRAFT'
+    | 'PENDING_FOR_APPROVAL'
+    | 'READY_TO_POST'
+    | 'PUBLISHED'
+    | 'CLOSED'
+    | 'REJECTED';
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  financeApprovalStatus: StageStatus;
+  gmApprovalStatus: StageStatus;
+  hrApprovalStatus: StageStatus;
+  draftedAt: Date | null;
+  pendingApprovalAt: Date | null;
+  readyToPostAt: Date | null;
+  rejectedAt: Date | null;
+}
+
 const toNumberOrNull = (value: unknown): number | null => {
   if (value == null) return null;
   return Number(value);
@@ -181,6 +199,15 @@ const assertOptionalUserExists = async (
   }
 };
 
+const getRequestFormOrThrow = (job: {
+  requestForm?: RequestWorkflowState | null;
+}) => {
+  if (!job.requestForm) {
+    throw new BadRequestException('Job request form is missing');
+  }
+  return job.requestForm;
+};
+
 const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
   const requestForm = job.requestForm;
   const applicationForm = job.applicationForm;
@@ -200,6 +227,7 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       workMode: requestForm?.workMode ?? job.workLocationType,
       urgency: requestForm?.urgency ?? 'MEDIUM',
       neededByDate: (requestForm?.neededByDate ?? new Date()).toISOString(),
+      priority: requestForm?.priority ?? 'MEDIUM',
     },
     job: {
       title: job.title,
@@ -224,7 +252,6 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       preferredSkills: job.preferredSkills ?? [],
       responsibilities: job.responsibilities ?? [],
       tools: job.tools ?? [],
-      priority: job.priority ?? undefined,
       hiringManagerId: job.hiringManagerId ?? undefined,
       applicationDeadline: job.applicationDeadline
         ? job.applicationDeadline.toISOString()
@@ -355,6 +382,7 @@ export class CreateJobUseCase {
       required: section.required,
       order: section.order ?? index + 1,
     }));
+    const draftedAt = new Date();
 
     const created = await this.prisma.job.create({
       data: {
@@ -382,16 +410,11 @@ export class CreateJobUseCase {
         responsibilities: jobResponsibilities,
         tools: jobTools,
         creatorIsHr,
-        priority: dto.job.priority ?? 'MEDIUM',
         hiringManagerId: dto.job.hiringManagerId ?? undefined,
         applicationDeadline: dto.job.applicationDeadline
           ? new Date(dto.job.applicationDeadline)
           : undefined,
-        draftedAt: new Date(),
         createdById: creatorId,
-        financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-        gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-        hrApprovalStatus: 'PENDING_FOR_APPROVAL',
         requestForm: {
           create: {
             jobTitle: dto.requestForm.jobTitle,
@@ -405,6 +428,12 @@ export class CreateJobUseCase {
             workMode: dto.requestForm.workMode,
             urgency: dto.requestForm.urgency,
             neededByDate: new Date(dto.requestForm.neededByDate),
+            status: 'DRAFT',
+            priority: dto.requestForm.priority ?? 'MEDIUM',
+            financeApprovalStatus: 'PENDING_FOR_APPROVAL',
+            gmApprovalStatus: 'PENDING_FOR_APPROVAL',
+            hrApprovalStatus: 'PENDING_FOR_APPROVAL',
+            draftedAt,
           },
         },
         applicationForm: {
@@ -456,18 +485,24 @@ export class ListJobsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: JobListQueryDto) {
+    const requestFormFilters = {
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.financeApprovalStatus
+        ? { financeApprovalStatus: query.financeApprovalStatus }
+        : {}),
+      ...(query.gmApprovalStatus
+        ? { gmApprovalStatus: query.gmApprovalStatus }
+        : {}),
+      ...(query.hrApprovalStatus
+        ? { hrApprovalStatus: query.hrApprovalStatus }
+        : {}),
+    };
+
     const jobs = await this.prisma.job.findMany({
       where: {
-        ...(query.status ? { status: query.status } : {}),
         ...(query.departmentId ? { departmentId: query.departmentId } : {}),
-        ...(query.financeApprovalStatus
-          ? { financeApprovalStatus: query.financeApprovalStatus }
-          : {}),
-        ...(query.gmApprovalStatus
-          ? { gmApprovalStatus: query.gmApprovalStatus }
-          : {}),
-        ...(query.hrApprovalStatus
-          ? { hrApprovalStatus: query.hrApprovalStatus }
+        ...(Object.keys(requestFormFilters).length > 0
+          ? { requestForm: { is: requestFormFilters } }
           : {}),
       },
       include: jobInclude,
@@ -513,7 +548,8 @@ export class UpdateJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (!['DRAFT', 'REJECTED'].includes(existing.status)) {
+    const requestFormState = getRequestFormOrThrow(existing);
+    if (!['DRAFT', 'REJECTED'].includes(requestFormState.status)) {
       throw new BadRequestException(
         'Only draft or rejected jobs can be updated',
       );
@@ -599,9 +635,6 @@ export class UpdateJobUseCase {
           applicationDeadline: merged.job.applicationDeadline
             ? new Date(merged.job.applicationDeadline)
             : null,
-          ...(dto.job?.priority !== undefined && {
-            priority: dto.job.priority,
-          }),
           ...(dto.job?.hiringManagerId !== undefined && {
             hiringManagerId: dto.job.hiringManagerId,
           }),
@@ -623,6 +656,15 @@ export class UpdateJobUseCase {
           workMode: merged.requestForm.workMode,
           urgency: merged.requestForm.urgency,
           neededByDate: new Date(merged.requestForm.neededByDate),
+          status: requestFormState.status,
+          priority: merged.requestForm.priority ?? requestFormState.priority,
+          financeApprovalStatus: requestFormState.financeApprovalStatus,
+          gmApprovalStatus: requestFormState.gmApprovalStatus,
+          hrApprovalStatus: requestFormState.hrApprovalStatus,
+          draftedAt: requestFormState.draftedAt,
+          pendingApprovalAt: requestFormState.pendingApprovalAt,
+          readyToPostAt: requestFormState.readyToPostAt,
+          rejectedAt: requestFormState.rejectedAt,
         },
         update: {
           jobTitle: merged.requestForm.jobTitle,
@@ -636,6 +678,9 @@ export class UpdateJobUseCase {
           workMode: merged.requestForm.workMode,
           urgency: merged.requestForm.urgency,
           neededByDate: new Date(merged.requestForm.neededByDate),
+          ...(dto.requestForm?.priority !== undefined && {
+            priority: merged.requestForm.priority,
+          }),
         },
       });
 
@@ -723,7 +768,6 @@ export class SubmitJobUseCase {
       where: { id },
       select: {
         id: true,
-        status: true,
         title: true,
         description: true,
         departmentId: true,
@@ -738,10 +782,18 @@ export class SubmitJobUseCase {
         applicationDeadline: true,
         requiredSkills: true,
         responsibilities: true,
+        requestForm: {
+          select: {
+            status: true,
+          },
+        },
       },
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (!['DRAFT', 'REJECTED'].includes(existing.status)) {
+    if (!existing.requestForm) {
+      throw new BadRequestException('Job request form is missing');
+    }
+    if (!['DRAFT', 'REJECTED'].includes(existing.requestForm.status)) {
       throw new BadRequestException(
         'Only draft or rejected jobs can be submitted',
       );
@@ -803,11 +855,17 @@ export class SubmitJobUseCase {
       return tx.job.update({
         where: { id },
         data: {
-          status: 'PENDING_FOR_APPROVAL',
-          financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-          gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-          hrApprovalStatus: 'PENDING_FOR_APPROVAL',
-          pendingApprovalAt: now,
+          requestForm: {
+            update: {
+              status: 'PENDING_FOR_APPROVAL',
+              financeApprovalStatus: 'PENDING_FOR_APPROVAL',
+              gmApprovalStatus: 'PENDING_FOR_APPROVAL',
+              hrApprovalStatus: 'PENDING_FOR_APPROVAL',
+              pendingApprovalAt: now,
+              readyToPostAt: null,
+              rejectedAt: null,
+            },
+          },
         },
         include: jobInclude,
       });
@@ -901,9 +959,13 @@ export class ApproveJobUseCase {
         return tx.job.update({
           where: { id },
           data: {
-            ...stageFieldPatch(target.stage, 'REJECTED'),
-            status: 'REJECTED',
-            rejectedAt: decidedAt,
+            requestForm: {
+              update: {
+                ...stageFieldPatch(target.stage, 'REJECTED'),
+                status: 'REJECTED',
+                rejectedAt: decidedAt,
+              },
+            },
           },
           include: jobInclude,
         });
@@ -953,11 +1015,15 @@ export class ApproveJobUseCase {
       return tx.job.update({
         where: { id },
         data: {
-          ...stageStatuses,
-          status: nextStatus,
-          ...(nextStatus === 'READY_TO_POST'
-            ? { readyToPostAt: decidedAt }
-            : {}),
+          requestForm: {
+            update: {
+              ...stageStatuses,
+              status: nextStatus,
+              ...(nextStatus === 'READY_TO_POST'
+                ? { readyToPostAt: decidedAt }
+                : {}),
+            },
+          },
         },
         include: jobInclude,
       });
@@ -977,12 +1043,18 @@ export class PublishJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (existing.status !== 'READY_TO_POST') {
+    const requestFormState = getRequestFormOrThrow(existing);
+    if (requestFormState.status !== 'READY_TO_POST') {
       throw new BadRequestException('Only ready-to-post jobs can be published');
     }
     const published = await this.prisma.job.update({
       where: { id },
-      data: { status: 'PUBLISHED', publishedAt: new Date() },
+      data: {
+        publishedAt: new Date(),
+        requestForm: {
+          update: { status: 'PUBLISHED' },
+        },
+      },
       include: jobInclude,
     });
     return mapJob(published);
@@ -999,20 +1071,23 @@ export class CloseJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
+    const requestFormState = getRequestFormOrThrow(existing);
     if ((dto?.reason?.length ?? 0) > 500) {
       throw new BadRequestException(
         'Close reason must be 500 characters or less',
       );
     }
-    if (!['READY_TO_POST', 'PUBLISHED'].includes(existing.status)) {
+    if (!['READY_TO_POST', 'PUBLISHED'].includes(requestFormState.status)) {
       throw new BadRequestException('Job cannot be closed from current status');
     }
     const closed = await this.prisma.job.update({
       where: { id },
       data: {
-        status: 'CLOSED',
         closedAt: new Date(),
         closingReason: dto?.reason ?? null,
+        requestForm: {
+          update: { status: 'CLOSED' },
+        },
       },
       include: jobInclude,
     });
