@@ -23,15 +23,15 @@ export class ApproveProbationEvaluationUseCase {
     });
     if (!evaluation)
       throw new NotFoundException('Probation evaluation not found');
-    if (!evaluation.finalDecision) {
+    if (!evaluation.recommendation) {
       throw new BadRequestException(
         'Set a final decision before running the approval chain',
       );
     }
 
     const required = getRequiredProbationApprovals({
-      finalDecision: evaluation.finalDecision,
-      extensionDays: evaluation.extensionDays,
+      finalDecision: evaluation.recommendation,
+      extensionDays: null,
     });
     const role = normalizeProbationApprovalRole(body.role);
     if (!required.includes(role)) {
@@ -44,9 +44,11 @@ export class ApproveProbationEvaluationUseCase {
     const updated = await this.prisma.probationEvaluation.update({
       where: { id },
       data: {
-        ...(role === 'SUPERVISOR' && { supervisorApprovedAt: approvedAt }),
-        ...(role === 'HR_MANAGER' && { hrApprovedAt: approvedAt }),
-        ...(role === 'CEO' && { ceoApprovedAt: approvedAt }),
+        status:
+          role === required[required.length - 1]
+            ? 'APPROVED'
+            : 'PENDING_REVIEW',
+        evaluatorComments: `Approved by ${role} at ${approvedAt.toISOString()}`,
       },
     });
 

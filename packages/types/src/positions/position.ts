@@ -13,6 +13,11 @@ export interface PositionResponseDto {
   updatedAt: string;
 }
 
+export interface ListPositionsQueryDto {
+  departmentId?: string;
+  isActive?: boolean;
+}
+
 export interface CreatePositionDto {
   title: string;
   description?: string;

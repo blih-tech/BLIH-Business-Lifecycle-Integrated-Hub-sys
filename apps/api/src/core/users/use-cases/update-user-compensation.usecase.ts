@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { mapCompensationComponent } from '../compensation-component.mapper';
+import { buildCompensationSummary } from '../compensation.utils';
 import { UpdateUserCompensationDto } from '../dto/update-user-compensation.dto';
 import {
   ensureEmployeeForUser,
@@ -127,13 +128,25 @@ export class UpdateUserCompensationUseCase {
       orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }],
     });
 
+    const mappedComponents = components.map(mapCompensationComponent);
+
     return {
       ...compensation,
       baseSalary: compensation.baseSalary?.toString() ?? null,
       bonusRate: compensation.bonusRate?.toString() ?? null,
       effectiveFrom: compensation.effectiveFrom?.toISOString() ?? null,
       effectiveTo: compensation.effectiveTo?.toISOString() ?? null,
-      components: components.map(mapCompensationComponent),
+      components: mappedComponents,
+      summary: buildCompensationSummary(
+        {
+          baseSalary: compensation.baseSalary?.toString() ?? null,
+          currency: compensation.currency ?? null,
+          payFrequency: compensation.payFrequency,
+          bonusEligible: compensation.bonusEligible,
+          bonusRate: compensation.bonusRate?.toString() ?? null,
+        },
+        mappedComponents,
+      ),
       createdAt: compensation.createdAt.toISOString(),
       updatedAt: compensation.updatedAt.toISOString(),
     };

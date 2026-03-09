@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
+import { mapCompensationComponent } from '../../../../core/users/compensation-component.mapper';
+import { buildCompensationSummary } from '../../../../core/users/compensation.utils';
 import { resolveEmployeeSubjectOrThrow } from '../employee-subject.utils';
 
 const employeeDetailsInclude = {
@@ -33,6 +35,7 @@ const employeeDetailsInclude = {
     },
   },
   compensation: true,
+  compensationComponents: true,
   lifecycle: true,
   _count: {
     select: { employeeDocuments: true, contracts: true },
@@ -119,10 +122,22 @@ export class GetEmployeeFullUseCase {
             currency: employee.compensation.currency ?? null,
             payFrequency: employee.compensation.payFrequency,
             bonusEligible: employee.compensation.bonusEligible,
+            bonusRate: employee.compensation.bonusRate?.toString() ?? null,
             effectiveFrom:
               employee.compensation.effectiveFrom?.toISOString() ?? null,
             effectiveTo:
               employee.compensation.effectiveTo?.toISOString() ?? null,
+            summary: buildCompensationSummary(
+              {
+                baseSalary:
+                  employee.compensation.baseSalary?.toString() ?? null,
+                currency: employee.compensation.currency ?? null,
+                payFrequency: employee.compensation.payFrequency,
+                bonusEligible: employee.compensation.bonusEligible,
+                bonusRate: employee.compensation.bonusRate?.toString() ?? null,
+              },
+              employee.compensationComponents.map(mapCompensationComponent),
+            ),
           }
         : null,
       lifecycle: employee.lifecycle

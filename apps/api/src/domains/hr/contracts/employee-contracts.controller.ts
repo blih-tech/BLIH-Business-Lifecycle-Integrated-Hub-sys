@@ -7,14 +7,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ApiProtected } from '../../../shared/docs/openapi';
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import {
@@ -44,7 +44,13 @@ export class EmployeeContractsController {
   })
   @ApiOperation({ summary: 'List employee contracts' })
   @ApiParam({ name: 'employeeId' })
-  @ApiOkResponse({ description: 'List of contracts' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'List of contracts')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/contracts',
+    notFound: 'Employee contracts not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(@Param('employeeId') employeeId: string) {
     return this.listEmployeeContractsUseCase.execute(employeeId);
   }
@@ -63,7 +69,14 @@ export class EmployeeContractsController {
       required: ['contractType', 'sequenceNumber', 'startDate'],
     },
   })
-  @ApiOkResponse({ description: 'Created contract' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created contract')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/contracts',
+    badRequest: 'Contract payload is invalid',
+    notFound: 'Employee not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(
     @Param('employeeId') employeeId: string,
     @Body() body: Record<string, unknown>,
@@ -81,7 +94,14 @@ export class EmployeeContractsController {
   @ApiParam({ name: 'employeeId' })
   @ApiParam({ name: 'contractId' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated contract' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated contract')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/employees/:employeeId/contracts/:contractId',
+    badRequest: 'Contract payload is invalid',
+    notFound: 'Employee contract not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(
     @Param('employeeId') employeeId: string,
     @Param('contractId') contractId: string,

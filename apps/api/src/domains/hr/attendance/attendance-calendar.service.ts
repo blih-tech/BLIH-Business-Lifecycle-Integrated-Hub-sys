@@ -42,6 +42,12 @@ export type AttendanceCalendarContext = {
     startHalfDay: boolean;
     endHalfDay: boolean;
   } | null;
+  approvedFlexRequest: {
+    id: string;
+    requestType: string;
+    requestedStartMinute: number | null;
+    requestedEndMinute: number | null;
+  } | null;
 };
 
 @Injectable()
@@ -70,34 +76,56 @@ export class AttendanceCalendarService {
       throw new NotFoundException('Employee not found');
     }
 
-    const [schedule, holiday, approvedLeave] = await Promise.all([
-      this.resolveSchedule(employee.id, date),
-      this.resolveHoliday(employee.profile?.countryId ?? null, date),
-      this.prisma.leaveRequest.findFirst({
-        where: {
-          employeeId: employee.id,
-          status: 'APPROVED',
-          startDate: { lte: date },
-          endDate: { gte: date },
-        },
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          leaveType: true,
-          startHalfDay: true,
-          endHalfDay: true,
-        },
-      }),
-    ]);
+    const [schedule, holiday, approvedLeave, approvedFlexRequest] =
+      await Promise.all([
+        this.resolveSchedule(employee.id, date),
+        this.resolveHoliday(employee.profile?.countryId ?? null, date),
+        this.prisma.leaveRequest.findFirst({
+          where: {
+            employeeId: employee.id,
+            status: 'APPROVED',
+            startDate: { lte: date },
+            endDate: { gte: date },
+          },
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            leaveType: true,
+            startHalfDay: true,
+            endHalfDay: true,
+          },
+        }),
+        this.prisma.flexWorkRequest.findFirst({
+          where: {
+            employeeId: employee.id,
+            status: 'APPROVED',
+            startDate: { lte: date },
+            endDate: { gte: date },
+          },
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            requestType: true,
+            requestedStartMinute: true,
+            requestedEndMinute: true,
+          },
+        }),
+      ]);
+
+    const adjustedSchedule =
+      approvedFlexRequest?.requestType === 'FLEX_TIME'
+        ? this.applyFlexScheduleOverride(schedule, approvedFlexRequest)
+        : schedule;
 
     return {
       employeeId: employee.id,
       lifecycleStatus: employee.lifecycle?.status ?? null,
       countryId: employee.profile?.countryId ?? null,
       date,
-      schedule,
+      schedule: adjustedSchedule,
       holiday,
       approvedLeave,
+      approvedFlexRequest,
     };
   }
 
@@ -241,6 +269,29 @@ export class AttendanceCalendarService {
         endMinute: isWeekend ? null : 17 * 60,
         expectedMinutes: isWeekend ? null : 480,
         remoteAllowed: true,
+      },
+    };
+  }
+
+  private applyFlexScheduleOverride(
+    schedule: ResolvedSchedule,
+    approvedFlexRequest: {
+      requestedStartMinute: number | null;
+      requestedEndMinute: number | null;
+    },
+  ): ResolvedSchedule {
+    if (!schedule.day) {
+      return schedule;
+    }
+
+    return {
+      ...schedule,
+      day: {
+        ...schedule.day,
+        startMinute:
+          approvedFlexRequest.requestedStartMinute ?? schedule.day.startMinute,
+        endMinute:
+          approvedFlexRequest.requestedEndMinute ?? schedule.day.endMinute,
       },
     };
   }

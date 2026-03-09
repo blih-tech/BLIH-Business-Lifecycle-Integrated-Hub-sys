@@ -434,4 +434,114 @@ describe('enforceUnifiedSchemas', () => {
     expect(json403.example?.message).toBe('Forbidden');
     expect(json403.example?.error?.code).toBe('FORBIDDEN');
   });
+
+  it('creates fallback success and validation responses when an operation has no explicit responses', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/hr/leave/requests': {
+          post: {
+            summary: 'Create leave request',
+            responses: {},
+            requestBody: {
+              required: true,
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      employeeId: { type: 'string' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    enforceUnifiedSchemas(doc);
+
+    const success = getJsonMedia(
+      doc,
+      '/api/v1/hr/leave/requests',
+      'post',
+      '201',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+    const badRequest = getJsonMedia(
+      doc,
+      '/api/v1/hr/leave/requests',
+      'post',
+      '400',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+
+    expect(success).toBeDefined();
+    expect(hasEnvelopeProperties(success?.schema)).toBe(true);
+    expect(isEnvelopeExample(success?.example)).toBe(true);
+    expect(
+      (success?.example as { data?: { resource?: string } })?.data?.resource,
+    ).toBe('request');
+
+    expect(badRequest).toBeDefined();
+    expect(hasEnvelopeProperties(badRequest?.schema)).toBe(true);
+    expect(isEnvelopeExample(badRequest?.example)).toBe(true);
+    expect(
+      (badRequest?.example as { error?: { code?: string } })?.error?.code,
+    ).toBe('VALIDATION_ERROR');
+  });
+
+  it('creates fallback not-found responses for path-based resource lookups', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/hr/employees/{id}': {
+          get: {
+            summary: 'Get full employee record',
+            responses: {},
+            parameters: [
+              {
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: { type: 'string' },
+              },
+            ],
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    enforceUnifiedSchemas(doc);
+
+    const success = getJsonMedia(
+      doc,
+      '/api/v1/hr/employees/{id}',
+      'get',
+      '200',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+    const notFound = getJsonMedia(
+      doc,
+      '/api/v1/hr/employees/{id}',
+      'get',
+      '404',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+
+    expect(success).toBeDefined();
+    expect(hasEnvelopeProperties(success?.schema)).toBe(true);
+    expect(isEnvelopeExample(success?.example)).toBe(true);
+
+    expect(notFound).toBeDefined();
+    expect(hasEnvelopeProperties(notFound?.schema)).toBe(true);
+    expect(isEnvelopeExample(notFound?.example)).toBe(true);
+    expect(
+      (notFound?.example as { error?: { code?: string } })?.error?.code,
+    ).toBe('NOT_FOUND');
+  });
 });

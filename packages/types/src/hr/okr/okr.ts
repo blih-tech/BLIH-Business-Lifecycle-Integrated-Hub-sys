@@ -112,6 +112,34 @@ export interface ReweightKeyResultsDto {
   }>;
 }
 
+export type OkrManagerReviewDecision = 'APPROVED' | 'CHANGES_REQUESTED';
+
+export interface OkrManagerReviewResponseDto {
+  id: string;
+  okrId: string;
+  reviewerId: string;
+  decision: OkrManagerReviewDecision;
+  overallConfidence: number | null;
+  comments: string | null;
+  strengths: string[] | null;
+  risks: string[] | null;
+  supportActions: string[] | null;
+  reviewedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpsertOkrManagerReviewDto {
+  reviewerId: string;
+  decision: OkrManagerReviewDecision;
+  overallConfidence?: number | null;
+  comments?: string | null;
+  strengths?: string[] | null;
+  risks?: string[] | null;
+  supportActions?: string[] | null;
+  reviewedAt?: string | null;
+}
+
 export interface OkrProgressResponseDto {
   okrId: string;
   overallProgress: number;

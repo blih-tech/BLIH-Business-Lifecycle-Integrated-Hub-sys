@@ -8,21 +8,23 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   CreateOkrDto,
   ReweightKeyResultsDto,
+  UpsertOkrManagerReviewDto,
   UpdateKeyResultDto,
   UpdateOkrDto,
 } from '@repo/types';
 import { OkrPermissions } from '../../../core/rbac/constants/permissions.constants';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+  GenericMetricsResponseDto,
+} from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
@@ -34,6 +36,7 @@ import { UpdateKeyResultUseCase } from './use-cases/update-key-result.usecase';
 import { GetOkrProgressUseCase } from './use-cases/get-okr-progress.usecase';
 import { ListKeyResultUpdatesUseCase } from './use-cases/list-key-result-updates.usecase';
 import { ReweightKeyResultsUseCase } from './use-cases/reweight-key-results.usecase';
+import { OkrManagerReviewService } from './okr-manager-review.service';
 
 @ApiTags('HR OKRs')
 @Controller('hr/okrs')
@@ -48,6 +51,7 @@ export class OkrController {
     private readonly getProgressUseCase: GetOkrProgressUseCase,
     private readonly listKeyResultUpdatesUseCase: ListKeyResultUpdatesUseCase,
     private readonly reweightKeyResultsUseCase: ReweightKeyResultsUseCase,
+    private readonly managerReviewService: OkrManagerReviewService,
   ) {}
 
   @Post()
@@ -55,7 +59,13 @@ export class OkrController {
   @ApiProtected({ path: '/api/v1/hr/okrs', roles: [OkrPermissions.CREATE] })
   @ApiOperation({ summary: 'Create OKR with optional key results' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created OKR' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created OKR')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs',
+    badRequest: 'OKR payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateOkrDto) {
     return this.createUseCase.execute(body);
   }
@@ -64,7 +74,12 @@ export class OkrController {
   @Roles(OkrPermissions.VIEW)
   @ApiProtected({ path: '/api/v1/hr/okrs', roles: [OkrPermissions.VIEW] })
   @ApiOperation({ summary: 'List OKRs' })
-  @ApiOkResponse({ description: 'List of OKRs' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'List of OKRs')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('employeeId') employeeId?: string,
     @Query('scope') scope?: string,
@@ -92,7 +107,13 @@ export class OkrController {
   })
   @ApiOperation({ summary: 'Get OKR progress' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'OKR progress' })
+  @ApiEnvelopeOkResponse(GenericMetricsResponseDto, 'OKR progress')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id/progress',
+    notFound: 'OKR not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   getProgress(@Param('id') id: string) {
     return this.getProgressUseCase.execute(id);
   }
@@ -102,7 +123,13 @@ export class OkrController {
   @ApiProtected({ path: '/api/v1/hr/okrs/:id', roles: [OkrPermissions.VIEW] })
   @ApiOperation({ summary: 'Get OKR' })
   @ApiParam({ name: 'id' })
-  @ApiOkResponse({ description: 'OKR' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'OKR')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id',
+    notFound: 'OKR not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   get(@Param('id') id: string) {
     return this.getUseCase.execute(id);
   }
@@ -113,7 +140,14 @@ export class OkrController {
   @ApiOperation({ summary: 'Update OKR' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated OKR' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated OKR')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id',
+    badRequest: 'OKR payload is invalid',
+    notFound: 'OKR not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(@Param('id') id: string, @Body() body: UpdateOkrDto) {
     return this.updateUseCase.execute(id, body);
   }
@@ -128,7 +162,14 @@ export class OkrController {
   @ApiParam({ name: 'id', description: 'OKR id' })
   @ApiParam({ name: 'krId', description: 'Key result id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated key result' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated key result')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id/key-results/:krId',
+    badRequest: 'Key result payload is invalid',
+    notFound: 'OKR or key result not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   updateKeyResult(
     @Param('id') okrId: string,
     @Param('krId') krId: string,
@@ -146,7 +187,16 @@ export class OkrController {
   @ApiOperation({ summary: 'List key result check-in history' })
   @ApiParam({ name: 'id', description: 'OKR id' })
   @ApiParam({ name: 'krId', description: 'Key result id' })
-  @ApiOkResponse({ description: 'Key result update history' })
+  @ApiEnvelopeArrayResponse(
+    GenericEntityResponseDto,
+    'Key result update history',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id/key-results/:krId/updates',
+    notFound: 'Key result not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   listKeyResultUpdates(
     @Param('id') okrId: string,
     @Param('krId') krId: string,
@@ -165,11 +215,62 @@ export class OkrController {
   })
   @ApiParam({ name: 'id', description: 'OKR id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated OKR with normalized weights' })
+  @ApiEnvelopeOkResponse(
+    GenericEntityResponseDto,
+    'Updated OKR with normalized weights',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id/key-results/weights',
+    badRequest: 'Key result weights payload is invalid',
+    notFound: 'OKR not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   reweightKeyResults(
     @Param('id') okrId: string,
     @Body() body: ReweightKeyResultsDto,
   ) {
     return this.reweightKeyResultsUseCase.execute(okrId, body);
+  }
+
+  @Get(':id/manager-reviews')
+  @Roles(OkrPermissions.VIEW)
+  @ApiProtected({
+    path: '/api/v1/hr/okrs/:id/manager-reviews',
+    roles: [OkrPermissions.VIEW],
+  })
+  @ApiOperation({ summary: 'List manager reviews for an OKR' })
+  @ApiParam({ name: 'id', description: 'OKR id' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Manager review history')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id/manager-reviews',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
+  listManagerReviews(@Param('id') okrId: string) {
+    return this.managerReviewService.list(okrId);
+  }
+
+  @Post(':id/manager-reviews')
+  @Roles(OkrPermissions.MANAGER_REVIEW)
+  @ApiProtected({
+    path: '/api/v1/hr/okrs/:id/manager-reviews',
+    roles: [OkrPermissions.MANAGER_REVIEW],
+  })
+  @ApiOperation({ summary: 'Create or update manager OKR review' })
+  @ApiParam({ name: 'id', description: 'OKR id' })
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Manager review upserted')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/okrs/:id/manager-reviews',
+    badRequest: 'Manager review payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
+  upsertManagerReview(
+    @Param('id') okrId: string,
+    @Body() body: UpsertOkrManagerReviewDto,
+  ) {
+    return this.managerReviewService.upsert(okrId, body);
   }
 }

@@ -52,6 +52,9 @@ export class AttendanceReconciliationService {
     const status = this.computeStatus({
       shouldTrackWorkingDay,
       hasApprovedLeave: Boolean(context.approvedLeave) && shouldTrackWorkingDay,
+      hasApprovedRemoteWork:
+        context.approvedFlexRequest?.requestType === 'WORK_FROM_HOME' &&
+        shouldTrackWorkingDay,
       checkInAt,
       checkOutAt,
       totalMinutes,
@@ -110,6 +113,7 @@ export class AttendanceReconciliationService {
   private computeStatus(params: {
     shouldTrackWorkingDay: boolean;
     hasApprovedLeave: boolean;
+    hasApprovedRemoteWork: boolean;
     checkInAt: Date | null;
     checkOutAt: Date | null;
     totalMinutes: number | null;
@@ -121,6 +125,10 @@ export class AttendanceReconciliationService {
   }): AttendanceStatus {
     if (params.hasApprovedLeave) {
       return 'ON_LEAVE';
+    }
+
+    if (params.hasApprovedRemoteWork) {
+      return 'REMOTE';
     }
 
     if (!params.shouldTrackWorkingDay) {

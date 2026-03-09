@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { UpdateOkrDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { OkrStatus } from '../../../../platform/prisma/generated/enums';
+import type { OkrStatus } from '../../../../platform/prisma/prisma-client';
 import { assertOkrDateRange } from '../okr-policy.utils';
 import { mapOkrResponse } from '../okr.mapper';
 
