@@ -46,6 +46,17 @@ type ListSectionProps = {
   items: string[];
 };
 
+function formatRichText(value: string) {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
+  if (/<[a-z][\s\S]*>/i.test(trimmedValue)) return trimmedValue;
+
+  return trimmedValue
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br />")}</p>`)
+    .join("");
+}
+
 function departmentLabel(department: JobRequestDepartment) {
   if (department === "technical") return "TECHNICAL DEPT.";
   if (department === "creative") return "CREATIVE DEPT.";
@@ -266,9 +277,12 @@ export function JobRequestDetailsDialog({
                       <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
                         Job Summary
                       </p>
-                      <p className="mt-2 text-sm leading-6 text-foreground">
-                        {request.jobDetailsForm.jobSummary}
-                      </p>
+                      <div
+                        className="mt-2 space-y-2 text-sm leading-6 text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5"
+                        dangerouslySetInnerHTML={{
+                          __html: formatRichText(request.jobDetailsForm.jobSummary),
+                        }}
+                      />
                     </div>
 
                     {request.jobDetailsForm.whyJoinUs ? (

@@ -2,6 +2,14 @@ import { z } from "zod";
 
 export const salaryModeValues = ["not_specified", "range", "negotiable", "competitive"] as const;
 
+function toVisibleText(value: string) {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export const jobDetailsFormSchema = z
   .object({
     jobTitle: z.string().trim().min(1, "Job title is required"),
@@ -12,7 +20,10 @@ export const jobDetailsFormSchema = z
     employmentType: z.enum(["full_time", "part_time", "contract", "intern"], {
       error: () => "Employment type is required",
     }),
-    jobSummary: z.string().trim().min(40, "Job summary must be at least 40 characters"),
+    jobSummary: z
+      .string()
+      .trim()
+      .refine((value) => toVisibleText(value).length >= 40, "Job summary must be at least 40 characters"),
     whyJoinUs: z.string().trim().optional(),
     keyResponsibilities: z.string().trim().min(1, "Key responsibilities are required"),
     requirements: z.string().trim().min(1, "Requirements are required"),

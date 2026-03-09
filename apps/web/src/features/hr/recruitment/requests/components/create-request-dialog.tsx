@@ -1,18 +1,27 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Check } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { applicationFormSchema, type ApplicationFormValues } from "@/features/hr/recruitment/requests/application-form-schema";
-import { jobDetailsFormSchema, type JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
-import { createRequestFormSchema, type CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
-import type { SubmittedJobRequest } from "@/features/hr/recruitment/requests/types";
-import { ApplicationFormStep } from "@/features/hr/recruitment/requests/components/application-form-step";
-import { JobDetailsStep } from "@/features/hr/recruitment/requests/components/job-details-step";
-import { RequestFormStep } from "@/features/hr/recruitment/requests/components/request-form-step";
-import { Button } from "@/shared/components/ui/button";
+import {
+  applicationFormSchema,
+  type ApplicationFormValues,
+} from '@/features/hr/recruitment/requests/application-form-schema';
+import {
+  jobDetailsFormSchema,
+  type JobDetailsFormValues,
+} from '@/features/hr/recruitment/requests/job-details-schema';
+import {
+  createRequestFormSchema,
+  type CreateRequestFormValues,
+} from '@/features/hr/recruitment/requests/form-schema';
+import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/types';
+import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
+import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
+import { RequestFormStep } from '@/features/hr/recruitment/requests/components/request-form-step';
+import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -21,8 +30,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
-import { Form } from "@/shared/components/ui/form";
+} from '@/shared/components/ui/dialog';
+import { Form } from '@/shared/components/ui/form';
 
 type CreateRequestDialogProps = {
   open: boolean;
@@ -33,74 +42,138 @@ type CreateRequestDialogProps = {
 const steps = [
   {
     id: 1,
-    title: "Request Form",
-    description: "Internal hiring request details",
+    title: 'Request Form',
+    description: 'Internal hiring request details',
   },
   {
     id: 2,
-    title: "Job Details",
-    description: "Public job board information",
+    title: 'Job Details',
+    description: 'Public job board information',
   },
   {
     id: 3,
-    title: "Application Form",
-    description: "Candidate application questions",
+    title: 'Application Form',
+    description: 'Candidate application questions',
   },
 ] as const;
 
 const defaultValues: CreateRequestFormValues = {
-  jobTitle: "",
-  department: "",
-  requestedBy: "User",
-  position: "",
-  requestType: "new",
-  replaceFor: "",
-  businessJustification: "",
-  employmentType: "full_time",
-  workMode: "on_site",
-  urgency: "medium",
-  neededByDate: "",
+  jobTitle: '',
+  department: '',
+  requestedBy: 'User',
+  position: '',
+  requestType: 'new',
+  replaceFor: '',
+  businessJustification: '',
+  employmentType: 'full_time',
+  workMode: 'on_site',
+  urgency: 'medium',
+  neededByDate: '',
 };
 
 const defaultJobDetailsValues: JobDetailsFormValues = {
-  jobTitle: "",
-  location: "",
-  workMode: "on_site",
-  employmentType: "full_time",
-  jobSummary: "",
-  whyJoinUs: "",
-  keyResponsibilities: "",
-  requirements: "",
-  preferredSkills: "",
-  experienceLevel: "mid",
-  salaryMode: "not_specified",
-  salaryRangeMin: "",
-  salaryRangeMax: "",
-  salaryCurrency: "",
-  benefits: "",
+  jobTitle: '',
+  location: '',
+  workMode: 'on_site',
+  employmentType: 'full_time',
+  jobSummary: '',
+  whyJoinUs: '',
+  keyResponsibilities: '',
+  requirements: '',
+  preferredSkills: '',
+  experienceLevel: 'mid',
+  salaryMode: 'not_specified',
+  salaryRangeMin: '',
+  salaryRangeMax: '',
+  salaryCurrency: '',
+  benefits: '',
 };
 
 const defaultApplicationValues: ApplicationFormValues = {
   predefinedFields: [
-    { key: "full_name", label: "Full Name", type: "text", enabled: true, required: true },
-    { key: "email", label: "Email Address", type: "text", enabled: true, required: true },
-    { key: "phone", label: "Phone Number", type: "text", enabled: true, required: true },
-    { key: "resume", label: "Resume / CV", type: "file", enabled: true, required: true },
-    { key: "cover_letter", label: "Cover Letter", type: "textarea", enabled: false, required: false },
-    { key: "portfolio", label: "Portfolio Link", type: "text", enabled: false, required: false },
-    { key: "linkedin", label: "LinkedIn Profile", type: "text", enabled: false, required: false },
-    { key: "current_location", label: "Current Location", type: "text", enabled: false, required: false },
-    { key: "notice_period", label: "Notice Period", type: "text", enabled: false, required: false },
-    { key: "salary_expectation", label: "Salary Expectation", type: "number", enabled: false, required: false },
+    {
+      key: 'full_name',
+      label: 'Full Name',
+      type: 'text',
+      enabled: true,
+      required: true,
+    },
+    {
+      key: 'email',
+      label: 'Email Address',
+      type: 'text',
+      enabled: true,
+      required: true,
+    },
+    {
+      key: 'phone',
+      label: 'Phone Number',
+      type: 'text',
+      enabled: true,
+      required: true,
+    },
+    {
+      key: 'resume',
+      label: 'Resume / CV',
+      type: 'file',
+      enabled: true,
+      required: true,
+    },
+    {
+      key: 'cover_letter',
+      label: 'Cover Letter',
+      type: 'textarea',
+      enabled: false,
+      required: false,
+    },
+    {
+      key: 'portfolio',
+      label: 'Portfolio Link',
+      type: 'text',
+      enabled: false,
+      required: false,
+    },
+    {
+      key: 'linkedin',
+      label: 'LinkedIn Profile',
+      type: 'text',
+      enabled: false,
+      required: false,
+    },
+    {
+      key: 'current_location',
+      label: 'Current Location',
+      type: 'text',
+      enabled: false,
+      required: false,
+    },
+    {
+      key: 'notice_period',
+      label: 'Notice Period',
+      type: 'text',
+      enabled: false,
+      required: false,
+    },
+    {
+      key: 'salary_expectation',
+      label: 'Salary Expectation',
+      type: 'number',
+      enabled: false,
+      required: false,
+    },
   ],
   customFields: [],
 };
 
-export function CreateRequestDialog({ open, onOpenChange, currentUserName }: CreateRequestDialogProps) {
+export function CreateRequestDialog({
+  open,
+  onOpenChange,
+  currentUserName,
+}: CreateRequestDialogProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const requestForm = useForm<CreateRequestFormValues>({
     resolver: zodResolver(createRequestFormSchema),
-    mode: "onSubmit",
+    mode: 'onSubmit',
     defaultValues: {
       ...defaultValues,
       requestedBy: currentUserName,
@@ -108,12 +181,12 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
   });
   const jobDetailsForm = useForm<JobDetailsFormValues>({
     resolver: zodResolver(jobDetailsFormSchema),
-    mode: "onSubmit",
+    mode: 'onSubmit',
     defaultValues: defaultJobDetailsValues,
   });
   const applicationForm = useForm<ApplicationFormValues>({
     resolver: zodResolver(applicationFormSchema),
-    mode: "onSubmit",
+    mode: 'onSubmit',
     defaultValues: defaultApplicationValues,
   });
 
@@ -135,7 +208,7 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
   }, [applicationForm, currentUserName, jobDetailsForm, open, requestForm]);
 
   useEffect(() => {
-    requestForm.setValue("requestedBy", currentUserName, {
+    requestForm.setValue('requestedBy', currentUserName, {
       shouldDirty: false,
       shouldTouch: false,
       shouldValidate: false,
@@ -146,9 +219,15 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
     const isValid = await requestForm.trigger();
     if (!isValid) return;
     const requestValues = requestForm.getValues();
-    jobDetailsForm.setValue("jobTitle", requestValues.jobTitle, { shouldDirty: false });
-    jobDetailsForm.setValue("workMode", requestValues.workMode, { shouldDirty: false });
-    jobDetailsForm.setValue("employmentType", requestValues.employmentType, { shouldDirty: false });
+    jobDetailsForm.setValue('jobTitle', requestValues.jobTitle, {
+      shouldDirty: false,
+    });
+    jobDetailsForm.setValue('workMode', requestValues.workMode, {
+      shouldDirty: false,
+    });
+    jobDetailsForm.setValue('employmentType', requestValues.employmentType, {
+      shouldDirty: false,
+    });
     setCurrentStep(2);
   }
 
@@ -164,7 +243,7 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
     const jobDetailsValues = jobDetailsForm.getValues();
     const toList = (value: string) =>
       value
-        .split("\n")
+        .split('\n')
         .map((item) => item.trim())
         .filter(Boolean);
 
@@ -174,13 +253,13 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
         ...jobDetailsValues,
         keyResponsibilities: toList(jobDetailsValues.keyResponsibilities),
         requirements: toList(jobDetailsValues.requirements),
-        preferredSkills: toList(jobDetailsValues.preferredSkills ?? ""),
-        benefits: toList(jobDetailsValues.benefits ?? ""),
+        preferredSkills: toList(jobDetailsValues.preferredSkills ?? ''),
+        benefits: toList(jobDetailsValues.benefits ?? ''),
       },
       applicationForm: applicationForm.getValues(),
     };
 
-    console.log("newRequestPayload", payload);
+    console.log('newRequestPayload', payload);
     handleClose();
   }
 
@@ -197,7 +276,9 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
               <div className="mb-2 inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                 Step {currentStep} of 3
               </div>
-              <DialogTitle className="ui-section-title text-foreground">Create Hiring Request</DialogTitle>
+              <DialogTitle className="ui-section-title text-foreground">
+                Create Hiring Request
+              </DialogTitle>
               <DialogDescription className="ui-body text-muted-foreground">
                 {stepMeta.description}
               </DialogDescription>
@@ -212,18 +293,18 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
                 return (
                   <div
                     key={step.id}
-                    className={`flex min-w-0 items-start ${isLast ? "flex-none" : "flex-1"}`}
-                    aria-current={isActive ? "step" : undefined}
+                    className={`flex min-w-0 items-start ${isLast ? 'flex-none' : 'flex-1'}`}
+                    aria-current={isActive ? 'step' : undefined}
                   >
                     <div className="flex min-w-0 items-start gap-3">
                       <div className="flex flex-col items-center pt-0.5">
                         <div
                           className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold ${
                             isActive
-                              ? "border-primary bg-primary text-primary-foreground"
+                              ? 'border-primary bg-primary text-primary-foreground'
                               : isComplete
-                                ? "border-primary bg-[rgba(30,102,247,0.12)] text-primary"
-                                : "border-border bg-background text-muted-foreground"
+                                ? 'border-primary bg-[rgba(30,102,247,0.12)] text-primary'
+                                : 'border-border bg-background text-muted-foreground'
                           }`}
                         >
                           {isComplete ? <Check className="h-4 w-4" /> : step.id}
@@ -233,12 +314,16 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
                       <div className="min-w-0">
                         <p
                           className={`text-sm font-semibold ${
-                            isActive || isComplete ? "text-foreground" : "text-muted-foreground"
+                            isActive || isComplete
+                              ? 'text-foreground'
+                              : 'text-muted-foreground'
                           }`}
                         >
                           {step.title}
                         </p>
-                        <p className="mt-0.5 text-xs text-muted-foreground">{step.description}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {step.description}
+                        </p>
                       </div>
                     </div>
 
@@ -246,7 +331,9 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
                       <div className="mx-3 mt-4 h-px flex-1 bg-border">
                         <div
                           className={`h-px ${
-                            isComplete ? "w-full bg-primary" : "w-full bg-border"
+                            isComplete
+                              ? 'w-full bg-primary'
+                              : 'w-full bg-border'
                           }`}
                         />
                       </div>
@@ -260,16 +347,28 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
 
         {currentStep === 1 ? (
           <Form {...requestForm}>
-            <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+            <form
+              className="space-y-0"
+              onSubmit={(event) => event.preventDefault()}
+            >
               <RequestFormStep form={requestForm} />
 
               <DialogFooter className="border-t border-border p-4">
                 <DialogClose asChild>
-                  <Button type="button" variant="outline" className="cursor-pointer" onClick={handleClose}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="cursor-pointer"
+                    onClick={handleClose}
+                  >
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button type="button" className="cursor-pointer" onClick={handleRequestContinue}>
+                <Button
+                  type="button"
+                  className="cursor-pointer"
+                  onClick={handleRequestContinue}
+                >
                   Continue to Job Details
                 </Button>
               </DialogFooter>
@@ -279,7 +378,10 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
 
         {currentStep === 2 ? (
           <Form {...jobDetailsForm}>
-            <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+            <form
+              className="space-y-0"
+              onSubmit={(event) => event.preventDefault()}
+            >
               <JobDetailsStep form={jobDetailsForm} />
 
               <DialogFooter className="border-t border-border p-4">
@@ -291,7 +393,11 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
                 >
                   Back
                 </Button>
-                <Button type="button" className="cursor-pointer" onClick={handleJobDetailsContinue}>
+                <Button
+                  type="button"
+                  className="cursor-pointer"
+                  onClick={handleJobDetailsContinue}
+                >
                   Continue to Application Form
                 </Button>
               </DialogFooter>
@@ -301,7 +407,10 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
 
         {currentStep === 3 ? (
           <Form {...applicationForm}>
-            <form className="space-y-0" onSubmit={(event) => event.preventDefault()}>
+            <form
+              className="space-y-0"
+              onSubmit={(event) => event.preventDefault()}
+            >
               <ApplicationFormStep form={applicationForm} />
 
               <DialogFooter className="border-t border-border p-4">
@@ -313,7 +422,11 @@ export function CreateRequestDialog({ open, onOpenChange, currentUserName }: Cre
                 >
                   Back
                 </Button>
-                <Button type="button" className="cursor-pointer" onClick={handleApplicationComplete}>
+                <Button
+                  type="button"
+                  className="cursor-pointer"
+                  onClick={handleApplicationComplete}
+                >
                   Create
                 </Button>
               </DialogFooter>

@@ -7,6 +7,7 @@ import {
   salaryModeValues,
   type JobDetailsFormValues,
 } from '@/features/hr/recruitment/requests/job-details-schema';
+import { JobSummaryRichTextEditor } from '@/features/hr/recruitment/requests/components/job-summary-rich-text-editor';
 import {
   FormControl,
   FormDescription,
@@ -317,14 +318,14 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                       Job Summary
                     </FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Describe the role, the team, and the main impact this person will make."
-                        className="min-h-[140px] max-h-[140px] rounded-[10px] border-border bg-background text-sm"
+                      <JobSummaryRichTextEditor
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
                       />
                     </FormControl>
                     <FormDescription className="text-xs">
-                      Keep it clear and candidate-facing.
+                      Keep it clear, candidate-facing, and easy to scan.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
