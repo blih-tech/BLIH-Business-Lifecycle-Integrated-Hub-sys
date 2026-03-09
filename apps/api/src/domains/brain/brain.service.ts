@@ -1,4 +1,4 @@
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../platform/prisma/prisma.service';
@@ -61,7 +61,7 @@ export class BrainService {
   CV UPLOAD + PARSE
   */
 
-  async processCvUpload(fileBuffer: Buffer, candidateId: string, jobPostingId: string) {
+  async processCvUpload(fileBuffer: Buffer, candidateId: string, jobPostingId: string, keycloakId: string) {
 
     const extractedText = await parseCv(fileBuffer);
 
@@ -78,7 +78,7 @@ export class BrainService {
     });
 
     try {
-      const aiResult = await this.runCvAnalysis(candidateId, jobPostingId);
+      const aiResult = await this.runCvAnalysis(candidateId, jobPostingId, keycloakId);
 
       return {
         candidateId,
@@ -125,8 +125,10 @@ export class BrainService {
   SINGLE CV ANALYSIS
   */
 
-  async runCvAnalysis(candidateId: string, jobPostingId: string) {
-
+  async runCvAnalysis(candidateId: string, jobPostingId: string, keycloakId: string) {
+    
+    const dbUserId = await this.getInternalUserId(keycloakId);
+    
     const candidate = await this.prisma.candidate.findUnique({
       where: { id: candidateId }
     });
@@ -158,6 +160,7 @@ export class BrainService {
     );
 
     const result = aiResponse.data;
+    this.logger.debug(`Raw AI Output: ${JSON.stringify(result)}`);
 
     const finalRecommendation =
     recommendationMap[result.recommendation] ||
@@ -175,7 +178,8 @@ export class BrainService {
       update: {
         aggregateRating: result.score || 0,
         recommendation: finalRecommendation,
-        assessments: result
+        assessments: result,
+        screenedById: dbUserId
       },
 
       create: {
@@ -184,7 +188,7 @@ export class BrainService {
         aggregateRating: result.score || 0,
         recommendation: finalRecommendation,
         assessments: result,
-        screenedById: "00000000-0000-0000-0000-000000000000",
+        screenedById: dbUserId,
         screenedAt: new Date()
       }
 
@@ -194,12 +198,14 @@ export class BrainService {
     return result;
 
   }
-
   /*
   MASS CV SCREENING (100+ CANDIDATES)
   */
 
-  async screenCandidatesForJob(jobPostingId: string) {
+  async screenCandidatesForJob(jobPostingId: string, keycloakId: string) {
+
+  const dbUserId = await this.getInternalUserId(keycloakId);  
+
   const job = await this.prisma.jobPosting.findUnique({ where: { id: jobPostingId } });
   if (!job) throw new BadRequestException('Job not found');
 
@@ -214,6 +220,7 @@ export class BrainService {
       );
       
       const result = aiResponse.data;
+      this.logger.debug(`Raw AI Output: ${JSON.stringify(result)}`);
 
       const finalRecommendation =
       recommendationMap[result.recommendation] ||
@@ -221,14 +228,19 @@ export class BrainService {
 
       await this.prisma.cvScreening.upsert({
         where: { candidateId_jobPostingId: { candidateId: candidate.id, jobPostingId } },
-        update: { aggregateRating: result.score, recommendation: finalRecommendation, assessments: result },
+        update: { 
+          aggregateRating: result.score, 
+          recommendation: finalRecommendation, 
+          assessments: result,
+          screenedById: dbUserId 
+        },
         create: { 
           candidateId: candidate.id, 
           jobPostingId, 
           aggregateRating: result.score || 0, 
           recommendation: finalRecommendation, 
           assessments: result,
-          screenedById: "00000000-0000-0000-0000-000000000000",
+          screenedById: dbUserId,
           screenedAt: new Date()
         }
       });
@@ -285,5 +297,19 @@ export class BrainService {
     };
 
   }
+
+  private async getInternalUserId(keycloakId: string): Promise<string> {
+  const user = await this.prisma.user.findUnique({
+    where: { keycloakId },
+    select: { id: true }
+  });
+
+  if (!user) {
+    throw new UnauthorizedException(`User with Keycloak ID ${keycloakId} not found in local DB`);
+  }
+
+  return user.id;
+}
+
 
 }

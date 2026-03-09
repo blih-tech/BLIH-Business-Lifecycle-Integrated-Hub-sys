@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile, Request, UseGuards } from '@nestjs/common';
 import { BrainService } from './brain.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -12,8 +12,8 @@ async chat(@Body() body: {userId: string; question: string; module: string}) {
 }
 
 @Post('analyze-cv')
-async analyzeCv(@Body() body: { cvText: string; jobDescription: string}) {
-  return this.brainService.runCvAnalysis(body.cvText, body.jobDescription);
+async analyzeCv(@Body() body: { cvText: string; jobDescription: string, keycloakId: string}) {
+  return this.brainService.runCvAnalysis(body.cvText, body.jobDescription, body.keycloakId);
 }
 
 @Get('insights/performance/:employeeId')
@@ -26,25 +26,31 @@ async getPerformanceInsights(@Param('employeeId') employeeId: string) {
 async uploadCv(
   @UploadedFile() file: Express.Multer.File,
   @Body('candidateId') candidateId: string,
-  @Body('jobPostingId') jobPostingId: string
-    ) {
+  @Body('jobPostingId') jobPostingId: string,
+  @Request() req: any
+) {
+  const keycloakId = req.user.sub;
+    
+  const result = await this.brainService.processCvUpload(
+    file.buffer,
+    candidateId,
+    jobPostingId,
+    keycloakId
+  );
 
-     
-    const result = await this.brainService.processCvUpload(
-        file.buffer,
-        candidateId,
-        jobPostingId
-    );
-
-    return result;
+  return result;
 }
 
 @Post('screen-candidates')
 async screenCandidates(
-  @Body() body: { jobPostingId: string; candidates: any[] }
+  @Body() body: { jobPostingId: string; candidates: any[] },
+  @Request() req: any 
 ) {
+  const keycloakId = req.user.sub;
+
   return this.brainService.screenCandidatesForJob(
-    body.jobPostingId
+    body.jobPostingId,
+    keycloakId
   );
 }
 }

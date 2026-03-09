@@ -18,7 +18,8 @@ export class RagService {
       baseUrl: process.env.OLLAMA_BASE_URL,
       model: 'llama3.2',
       numPredict: 1024,
-      temperature: 0.3,
+      temperature: 0.1,
+      format: 'json',
     });
 
     this.embeddings = new OllamaEmbeddings({
@@ -154,11 +155,10 @@ You are a senior HR recruiter specializing in candidate evaluation.
 
 Your task is to compare a candidate CV with a job description and evaluate suitability.
 
-SCORING RULES:
-- 90-100 = Excellent match
-- 70-89 = Good match
-- 50-69 = Partial match
-- 0-49 = Poor match
+RECOMMENDATION LOGIC:
+- If score > 70: SELECT
+- If score 50-70: PAUSE
+- If score < 50: DECLINE
 
 Return ONLY valid JSON in this format:
 
@@ -166,7 +166,7 @@ Return ONLY valid JSON in this format:
  "score": number,
  "strengths": ["..."],
  "weaknesses": ["..."],
- "recommendation": "SHORTLIST | REJECT | REVIEW",
+ "recommendation": "SELECT | DECLINE | PAUSE",
  "summary": "short explanation"
 }
 
