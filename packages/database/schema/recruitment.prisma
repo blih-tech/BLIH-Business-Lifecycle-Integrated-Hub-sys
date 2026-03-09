@@ -91,6 +91,9 @@ model Job {
   hiringDecisions     HiringDecision[]
   requestForm         JobRequestForm?
   applicationForm     JobApplicationForm?
+  cvScreenings        CvScreening[]            @relation("JobScreening")
+  screeningCriteria   CvScreeningCriteria[]    @relation("JobScreeningCriteria")
+  screeningWorkflows  CvScreeningWorkflow[]    @relation("JobScreeningWorkflow")
 
   @@index([departmentId])
   @@index([positionId])
@@ -247,6 +250,7 @@ model Applicant {
   interviews        Interview[]
   hiringDecisions   HiringDecision[]         @relation("HiringDecisionApplicant")
   statusHistory     ApplicantStatusHistory[]
+  cvScreenings      CvScreening[]            @relation("ApplicantScreening")
 
   @@unique([jobId, emailNormalized])
   @@index([jobId])
@@ -355,4 +359,154 @@ model HiringDecision {
   @@index([applicantId])
   @@index([onboardingId])
   @@index([submittedById])
+}
+
+// CV Screening Models
+model CvScreening {
+  id                String            @id @default(uuid()) @db.Uuid
+  applicantId       String            @map("applicant_id") @db.Uuid
+  applicant         Applicant         @relation("ApplicantScreening", fields: [applicantId], references: [id], onDelete: Cascade)
+  jobId             String            @map("job_id") @db.Uuid
+  job               Job               @relation("JobScreening", fields: [jobId], references: [id], onDelete: Cascade)
+  screenedById      String            @map("screened_by_id") @db.Uuid
+  screenedBy        User              @relation("CvScreeningReviewer", fields: [screenedById], references: [id], onDelete: Restrict)
+  overallScore      Float             @map("overall_score")
+  recommendation    CvScreeningRecommendation
+  skillsMatch       Float?            @map("skills_match")
+  experienceMatch   Float?            @map("experience_match")
+  educationMatch    Float?            @map("education_match")
+  qualifications    String[]          @default([])
+  disqualifications  String[]          @default([])
+  strengths         String[]          @default([])
+  weaknesses        String[]          @default([])
+  screeningNotes    String?           @map("screening_notes") @db.Text
+  aiAssisted        Boolean           @default(false) @map("ai_assisted")
+  aiConfidence      Float?            @map("ai_confidence")
+  status            CvScreeningStatus @default(PENDING)
+  screeningDuration Int?              @map("screening_duration") // in minutes
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@unique([applicantId, jobId])
+  @@index([applicantId])
+  @@index([jobId])
+  @@index([screenedById])
+  @@index([status])
+  @@index([recommendation])
+}
+
+model CvScreeningCriteria {
+  id                String                  @id @default(uuid()) @db.Uuid
+  jobId             String                  @map("job_id") @db.Uuid
+  job               Job                     @relation("JobScreeningCriteria", fields: [jobId], references: [id], onDelete: Cascade)
+  category          CvScreeningCriteriaType
+  name              String
+  description       String?                 @db.Text
+  weight            Float                   @default(1.0)
+  required         Boolean                 @default(false)
+  minValue         Int?                    @map("min_value")
+  maxValue         Int?                    @map("max_value")
+  acceptableValues String[]                @default([]) @map("acceptable_values")
+  scoringMethod    CvScoringMethod         @default(MANUAL)
+  active           Boolean                 @default(true)
+  order            Int?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  @@index([jobId])
+  @@index([category])
+  @@index([jobId, category])
+  @@index([jobId, order])
+}
+
+model CvScreeningQuestion {
+  id                String                    @id @default(uuid()) @db.Uuid
+  criteriaId        String                    @map("criteria_id") @db.Uuid
+  criteria          CvScreeningCriteria       @relation(fields: [criteriaId], references: [id], onDelete: Cascade)
+  question          String
+  questionType      CvScreeningQuestionType
+  options           String[]                  @default([])
+  required          Boolean                   @default(false)
+  order             Int?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([criteriaId])
+  @@index([criteriaId, order])
+}
+
+model CvScreeningResponse {
+  id                String            @id @default(uuid()) @db.Uuid
+  screeningId       String            @map("screening_id") @db.Uuid
+  screening         CvScreening       @relation("ScreeningResponses", fields: [screeningId], references: [id], onDelete: Cascade)
+  questionId        String            @map("question_id") @db.Uuid
+  question          CvScreeningQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  response          String
+  score             Float?
+  notes             String?           @db.Text
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@unique([screeningId, questionId])
+  @@index([screeningId])
+  @@index([questionId])
+}
+
+model CvScreeningWorkflow {
+  id                String                    @id @default(uuid()) @db.Uuid
+  jobId             String                    @map("job_id") @db.Uuid
+  job               Job                       @relation("JobScreeningWorkflow", fields: [jobId], references: [id], onDelete: Cascade)
+  name              String
+  description       String?                   @db.Text
+  stages            CvScreeningWorkflowStage[]
+  isActive          Boolean                   @default(true) @map("is_active")
+  createdBy         String                    @map("created_by_id") @db.Uuid
+  creator           User                      @relation("CvScreeningWorkflowCreator", fields: [createdBy], references: [id], onDelete: Restrict)
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([jobId])
+  @@index([createdBy])
+  @@index([isActive])
+}
+
+model CvScreeningWorkflowStage {
+  id                String                  @id @default(uuid()) @db.Uuid
+  workflowId        String                  @map("workflow_id") @db.Uuid
+  workflow          CvScreeningWorkflow    @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  name              String
+  description       String?                 @db.Text
+  stageType         CvScreeningStageType
+  requiredRole      String                  @map("required_role") @db.VarChar(64)
+  approverId        String?                 @map("approver_id") @db.Uuid
+  approver          User?                   @relation("CvScreeningStageApprover", fields: [approverId], references: [id], onDelete: SetNull)
+  order             Int
+  autoApprove       Boolean                 @default(false) @map("auto_approve")
+  autoApproveRules  Json?                   @map("auto_approve_rules") @db.JsonB
+  timeLimitHours    Int?                    @map("time_limit_hours")
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  @@index([workflowId])
+  @@index([approverId])
+  @@index([workflowId, order])
+}
+
+model CvScreeningDecision {
+  id                String                    @id @default(uuid()) @db.Uuid
+  screeningId       String                    @map("screening_id") @db.Uuid
+  screening         CvScreening               @relation("ScreeningDecisions", fields: [screeningId], references: [id], onDelete: Cascade)
+  stageId           String                    @map("stage_id") @db.Uuid
+  stage             CvScreeningWorkflowStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  decision          CvScreeningDecisionType
+  decisionMakerId   String                    @map("decision_maker_id") @db.Uuid
+  decisionMaker     User                      @relation("CvScreeningDecisionMaker", fields: [decisionMakerId], references: [id], onDelete: Restrict)
+  comments          String?                   @db.Text
+  decidedAt         DateTime                  @default(now()) @map("decided_at")
+  createdAt         DateTime                  @default(now())
+
+  @@unique([screeningId, stageId])
+  @@index([screeningId])
+  @@index([stageId])
+  @@index([decisionMakerId])
 }

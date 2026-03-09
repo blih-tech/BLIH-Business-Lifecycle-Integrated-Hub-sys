@@ -9888,8 +9888,8 @@ export const JobRequestFormScalarFieldEnum = {
   jobId: 'jobId',
   jobTitle: 'jobTitle',
   departmentId: 'departmentId',
-  requestedBy: 'requestedBy',
   positionId: 'positionId',
+  requestedBy: 'requestedBy',
   requestType: 'requestType',
   replaceForUserId: 'replaceForUserId',
   businessJustification: 'businessJustification',
@@ -9897,6 +9897,15 @@ export const JobRequestFormScalarFieldEnum = {
   workMode: 'workMode',
   urgency: 'urgency',
   neededByDate: 'neededByDate',
+  status: 'status',
+  priority: 'priority',
+  financeApprovalStatus: 'financeApprovalStatus',
+  gmApprovalStatus: 'gmApprovalStatus',
+  hrApprovalStatus: 'hrApprovalStatus',
+  draftedAt: 'draftedAt',
+  pendingApprovalAt: 'pendingApprovalAt',
+  readyToPostAt: 'readyToPostAt',
+  rejectedAt: 'rejectedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -9928,20 +9937,11 @@ export const JobScalarFieldEnum = {
   requiredSkills: 'requiredSkills',
   preferredSkills: 'preferredSkills',
   responsibilities: 'responsibilities',
-  status: 'status',
-  priority: 'priority',
-  financeApprovalStatus: 'financeApprovalStatus',
-  gmApprovalStatus: 'gmApprovalStatus',
-  hrApprovalStatus: 'hrApprovalStatus',
   creatorIsHr: 'creatorIsHr',
   hiringManagerId: 'hiringManagerId',
   applicationDeadline: 'applicationDeadline',
-  draftedAt: 'draftedAt',
-  pendingApprovalAt: 'pendingApprovalAt',
-  readyToPostAt: 'readyToPostAt',
   publishedAt: 'publishedAt',
   closedAt: 'closedAt',
-  rejectedAt: 'rejectedAt',
   closingReason: 'closingReason',
   viewsCount: 'viewsCount',
   applicationsCount: 'applicationsCount',
@@ -11622,6 +11622,48 @@ export type ListEnumJobUrgencyFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'JobWorkflowStatus'
+ */
+export type EnumJobWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobWorkflowStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JobWorkflowStatus[]'
+ */
+export type ListEnumJobWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobWorkflowStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JobPriority'
+ */
+export type EnumJobPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobPriority'>
+    
+
+
+/**
+ * Reference to a field of type 'JobPriority[]'
+ */
+export type ListEnumJobPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobPriority[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JobStageApprovalStatus'
+ */
+export type EnumJobStageApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStageApprovalStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JobStageApprovalStatus[]'
+ */
+export type ListEnumJobStageApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStageApprovalStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ExperienceLevel'
  */
 export type EnumExperienceLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExperienceLevel'>
@@ -11674,48 +11716,6 @@ export type EnumJobSalaryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'JobSalaryMode[]'
  */
 export type ListEnumJobSalaryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobSalaryMode[]'>
-    
-
-
-/**
- * Reference to a field of type 'JobWorkflowStatus'
- */
-export type EnumJobWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobWorkflowStatus'>
-    
-
-
-/**
- * Reference to a field of type 'JobWorkflowStatus[]'
- */
-export type ListEnumJobWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobWorkflowStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'JobPriority'
- */
-export type EnumJobPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobPriority'>
-    
-
-
-/**
- * Reference to a field of type 'JobPriority[]'
- */
-export type ListEnumJobPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobPriority[]'>
-    
-
-
-/**
- * Reference to a field of type 'JobStageApprovalStatus'
- */
-export type EnumJobStageApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStageApprovalStatus'>
-    
-
-
-/**
- * Reference to a field of type 'JobStageApprovalStatus[]'
- */
-export type ListEnumJobStageApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStageApprovalStatus[]'>
     
 
 

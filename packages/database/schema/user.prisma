@@ -70,6 +70,10 @@ model User {
   finalSettlementsApproved         FinalSettlement[]             @relation("FinalSettlementApprover")
   complianceChecklistsVerified     ComplianceChecklist[]         @relation("ComplianceChecklistVerifiedBy")
   userLifecycleVerifications        UserLifecycle[]               @relation("UserLifecycleVerifiedBy")
+  cvScreeningsConducted             CvScreening[]                 @relation("CvScreeningReviewer")
+  cvScreeningWorkflowsCreated      CvScreeningWorkflow[]         @relation("CvScreeningWorkflowCreator")
+  cvScreeningStagesApproved         CvScreeningWorkflowStage[]    @relation("CvScreeningStageApprover")
+  cvScreeningDecisionsMade         CvScreeningDecision[]          @relation("CvScreeningDecisionMaker")
 
   @@index([status])
 }

@@ -68,20 +68,11 @@ export type JobMinAggregateOutputType = {
   salaryMax: runtime.Decimal | null
   currency: string | null
   salaryMode: $Enums.JobSalaryMode | null
-  status: $Enums.JobWorkflowStatus | null
-  priority: $Enums.JobPriority | null
-  financeApprovalStatus: $Enums.JobStageApprovalStatus | null
-  gmApprovalStatus: $Enums.JobStageApprovalStatus | null
-  hrApprovalStatus: $Enums.JobStageApprovalStatus | null
   creatorIsHr: boolean | null
   hiringManagerId: string | null
   applicationDeadline: Date | null
-  draftedAt: Date | null
-  pendingApprovalAt: Date | null
-  readyToPostAt: Date | null
   publishedAt: Date | null
   closedAt: Date | null
-  rejectedAt: Date | null
   closingReason: string | null
   viewsCount: number | null
   applicationsCount: number | null
@@ -112,20 +103,11 @@ export type JobMaxAggregateOutputType = {
   salaryMax: runtime.Decimal | null
   currency: string | null
   salaryMode: $Enums.JobSalaryMode | null
-  status: $Enums.JobWorkflowStatus | null
-  priority: $Enums.JobPriority | null
-  financeApprovalStatus: $Enums.JobStageApprovalStatus | null
-  gmApprovalStatus: $Enums.JobStageApprovalStatus | null
-  hrApprovalStatus: $Enums.JobStageApprovalStatus | null
   creatorIsHr: boolean | null
   hiringManagerId: string | null
   applicationDeadline: Date | null
-  draftedAt: Date | null
-  pendingApprovalAt: Date | null
-  readyToPostAt: Date | null
   publishedAt: Date | null
   closedAt: Date | null
-  rejectedAt: Date | null
   closingReason: string | null
   viewsCount: number | null
   applicationsCount: number | null
@@ -162,20 +144,11 @@ export type JobCountAggregateOutputType = {
   requiredSkills: number
   preferredSkills: number
   responsibilities: number
-  status: number
-  priority: number
-  financeApprovalStatus: number
-  gmApprovalStatus: number
-  hrApprovalStatus: number
   creatorIsHr: number
   hiringManagerId: number
   applicationDeadline: number
-  draftedAt: number
-  pendingApprovalAt: number
-  readyToPostAt: number
   publishedAt: number
   closedAt: number
-  rejectedAt: number
   closingReason: number
   viewsCount: number
   applicationsCount: number
@@ -233,20 +206,11 @@ export type JobMinAggregateInputType = {
   salaryMax?: true
   currency?: true
   salaryMode?: true
-  status?: true
-  priority?: true
-  financeApprovalStatus?: true
-  gmApprovalStatus?: true
-  hrApprovalStatus?: true
   creatorIsHr?: true
   hiringManagerId?: true
   applicationDeadline?: true
-  draftedAt?: true
-  pendingApprovalAt?: true
-  readyToPostAt?: true
   publishedAt?: true
   closedAt?: true
-  rejectedAt?: true
   closingReason?: true
   viewsCount?: true
   applicationsCount?: true
@@ -277,20 +241,11 @@ export type JobMaxAggregateInputType = {
   salaryMax?: true
   currency?: true
   salaryMode?: true
-  status?: true
-  priority?: true
-  financeApprovalStatus?: true
-  gmApprovalStatus?: true
-  hrApprovalStatus?: true
   creatorIsHr?: true
   hiringManagerId?: true
   applicationDeadline?: true
-  draftedAt?: true
-  pendingApprovalAt?: true
-  readyToPostAt?: true
   publishedAt?: true
   closedAt?: true
-  rejectedAt?: true
   closingReason?: true
   viewsCount?: true
   applicationsCount?: true
@@ -327,20 +282,11 @@ export type JobCountAggregateInputType = {
   requiredSkills?: true
   preferredSkills?: true
   responsibilities?: true
-  status?: true
-  priority?: true
-  financeApprovalStatus?: true
-  gmApprovalStatus?: true
-  hrApprovalStatus?: true
   creatorIsHr?: true
   hiringManagerId?: true
   applicationDeadline?: true
-  draftedAt?: true
-  pendingApprovalAt?: true
-  readyToPostAt?: true
   publishedAt?: true
   closedAt?: true
-  rejectedAt?: true
   closingReason?: true
   viewsCount?: true
   applicationsCount?: true
@@ -465,20 +411,11 @@ export type JobGroupByOutputType = {
   requiredSkills: string[]
   preferredSkills: string[]
   responsibilities: string[]
-  status: $Enums.JobWorkflowStatus
-  priority: $Enums.JobPriority
-  financeApprovalStatus: $Enums.JobStageApprovalStatus
-  gmApprovalStatus: $Enums.JobStageApprovalStatus
-  hrApprovalStatus: $Enums.JobStageApprovalStatus
   creatorIsHr: boolean
   hiringManagerId: string | null
   applicationDeadline: Date | null
-  draftedAt: Date | null
-  pendingApprovalAt: Date | null
-  readyToPostAt: Date | null
   publishedAt: Date | null
   closedAt: Date | null
-  rejectedAt: Date | null
   closingReason: string | null
   viewsCount: number
   applicationsCount: number
@@ -539,20 +476,11 @@ export type JobWhereInput = {
   requiredSkills?: Prisma.StringNullableListFilter<"Job">
   preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
-  status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFilter<"Job"> | boolean
   hiringManagerId?: Prisma.UuidNullableFilter<"Job"> | string | null
   applicationDeadline?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  draftedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  pendingApprovalAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  readyToPostAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  rejectedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   closingReason?: Prisma.StringNullableFilter<"Job"> | string | null
   viewsCount?: Prisma.IntFilter<"Job"> | number
   applicationsCount?: Prisma.IntFilter<"Job"> | number
@@ -600,20 +528,11 @@ export type JobOrderByWithRelationInput = {
   requiredSkills?: Prisma.SortOrder
   preferredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   creatorIsHr?: Prisma.SortOrder
   hiringManagerId?: Prisma.SortOrderInput | Prisma.SortOrder
   applicationDeadline?: Prisma.SortOrderInput | Prisma.SortOrder
-  draftedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  pendingApprovalAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  readyToPostAt?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   closingReason?: Prisma.SortOrderInput | Prisma.SortOrder
   viewsCount?: Prisma.SortOrder
   applicationsCount?: Prisma.SortOrder
@@ -664,20 +583,11 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   requiredSkills?: Prisma.StringNullableListFilter<"Job">
   preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
-  status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFilter<"Job"> | boolean
   hiringManagerId?: Prisma.UuidNullableFilter<"Job"> | string | null
   applicationDeadline?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  draftedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  pendingApprovalAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  readyToPostAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  rejectedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   closingReason?: Prisma.StringNullableFilter<"Job"> | string | null
   viewsCount?: Prisma.IntFilter<"Job"> | number
   applicationsCount?: Prisma.IntFilter<"Job"> | number
@@ -725,20 +635,11 @@ export type JobOrderByWithAggregationInput = {
   requiredSkills?: Prisma.SortOrder
   preferredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   creatorIsHr?: Prisma.SortOrder
   hiringManagerId?: Prisma.SortOrderInput | Prisma.SortOrder
   applicationDeadline?: Prisma.SortOrderInput | Prisma.SortOrder
-  draftedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  pendingApprovalAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  readyToPostAt?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   closingReason?: Prisma.SortOrderInput | Prisma.SortOrder
   viewsCount?: Prisma.SortOrder
   applicationsCount?: Prisma.SortOrder
@@ -784,20 +685,11 @@ export type JobScalarWhereWithAggregatesInput = {
   requiredSkills?: Prisma.StringNullableListFilter<"Job">
   preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
-  status?: Prisma.EnumJobWorkflowStatusWithAggregatesFilter<"Job"> | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityWithAggregatesFilter<"Job"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"Job"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"Job"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"Job"> | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolWithAggregatesFilter<"Job"> | boolean
   hiringManagerId?: Prisma.UuidNullableWithAggregatesFilter<"Job"> | string | null
   applicationDeadline?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
-  draftedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
-  pendingApprovalAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
-  readyToPostAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
-  rejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   closingReason?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   viewsCount?: Prisma.IntWithAggregatesFilter<"Job"> | number
   applicationsCount?: Prisma.IntWithAggregatesFilter<"Job"> | number
@@ -833,19 +725,10 @@ export type JobCreateInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -892,20 +775,11 @@ export type JobUncheckedCreateInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -947,19 +821,10 @@ export type JobUpdateInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1006,20 +871,11 @@ export type JobUncheckedUpdateInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1063,20 +919,11 @@ export type JobCreateManyInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -1112,19 +959,10 @@ export type JobUpdateManyMutationInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1161,20 +999,11 @@ export type JobUncheckedUpdateManyInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1227,20 +1056,11 @@ export type JobCountOrderByAggregateInput = {
   requiredSkills?: Prisma.SortOrder
   preferredSkills?: Prisma.SortOrder
   responsibilities?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   creatorIsHr?: Prisma.SortOrder
   hiringManagerId?: Prisma.SortOrder
   applicationDeadline?: Prisma.SortOrder
-  draftedAt?: Prisma.SortOrder
-  pendingApprovalAt?: Prisma.SortOrder
-  readyToPostAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
-  rejectedAt?: Prisma.SortOrder
   closingReason?: Prisma.SortOrder
   viewsCount?: Prisma.SortOrder
   applicationsCount?: Prisma.SortOrder
@@ -1284,20 +1104,11 @@ export type JobMaxOrderByAggregateInput = {
   salaryMax?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   creatorIsHr?: Prisma.SortOrder
   hiringManagerId?: Prisma.SortOrder
   applicationDeadline?: Prisma.SortOrder
-  draftedAt?: Prisma.SortOrder
-  pendingApprovalAt?: Prisma.SortOrder
-  readyToPostAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
-  rejectedAt?: Prisma.SortOrder
   closingReason?: Prisma.SortOrder
   viewsCount?: Prisma.SortOrder
   applicationsCount?: Prisma.SortOrder
@@ -1328,20 +1139,11 @@ export type JobMinOrderByAggregateInput = {
   salaryMax?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   salaryMode?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   creatorIsHr?: Prisma.SortOrder
   hiringManagerId?: Prisma.SortOrder
   applicationDeadline?: Prisma.SortOrder
-  draftedAt?: Prisma.SortOrder
-  pendingApprovalAt?: Prisma.SortOrder
-  readyToPostAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
-  rejectedAt?: Prisma.SortOrder
   closingReason?: Prisma.SortOrder
   viewsCount?: Prisma.SortOrder
   applicationsCount?: Prisma.SortOrder
@@ -1522,18 +1324,6 @@ export type JobUpdatepreferredSkillsInput = {
 export type JobUpdateresponsibilitiesInput = {
   set?: string[]
   push?: string | string[]
-}
-
-export type EnumJobWorkflowStatusFieldUpdateOperationsInput = {
-  set?: $Enums.JobWorkflowStatus
-}
-
-export type EnumJobPriorityFieldUpdateOperationsInput = {
-  set?: $Enums.JobPriority
-}
-
-export type EnumJobStageApprovalStatusFieldUpdateOperationsInput = {
-  set?: $Enums.JobStageApprovalStatus
 }
 
 export type JobUpdatetoolsInput = {
@@ -1717,19 +1507,10 @@ export type JobCreateWithoutDepartmentInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -1774,20 +1555,11 @@ export type JobUncheckedCreateWithoutDepartmentInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -1860,20 +1632,11 @@ export type JobScalarWhereInput = {
   requiredSkills?: Prisma.StringNullableListFilter<"Job">
   preferredSkills?: Prisma.StringNullableListFilter<"Job">
   responsibilities?: Prisma.StringNullableListFilter<"Job">
-  status?: Prisma.EnumJobWorkflowStatusFilter<"Job"> | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"Job"> | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFilter<"Job"> | boolean
   hiringManagerId?: Prisma.UuidNullableFilter<"Job"> | string | null
   applicationDeadline?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  draftedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  pendingApprovalAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  readyToPostAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-  rejectedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   closingReason?: Prisma.StringNullableFilter<"Job"> | string | null
   viewsCount?: Prisma.IntFilter<"Job"> | number
   applicationsCount?: Prisma.IntFilter<"Job"> | number
@@ -1909,19 +1672,10 @@ export type JobCreateWithoutPositionInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -1966,20 +1720,11 @@ export type JobUncheckedCreateWithoutPositionInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2047,19 +1792,10 @@ export type JobCreateWithoutRequestFormInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2105,20 +1841,11 @@ export type JobUncheckedCreateWithoutRequestFormInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2175,19 +1902,10 @@ export type JobUpdateWithoutRequestFormInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2233,20 +1951,11 @@ export type JobUncheckedUpdateWithoutRequestFormInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2287,19 +1996,10 @@ export type JobCreateWithoutApplicationFormInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2345,20 +2045,11 @@ export type JobUncheckedCreateWithoutApplicationFormInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2415,19 +2106,10 @@ export type JobUpdateWithoutApplicationFormInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2473,20 +2155,11 @@ export type JobUncheckedUpdateWithoutApplicationFormInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2527,19 +2200,10 @@ export type JobCreateWithoutApprovalsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2585,20 +2249,11 @@ export type JobUncheckedCreateWithoutApprovalsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2655,19 +2310,10 @@ export type JobUpdateWithoutApprovalsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2713,20 +2359,11 @@ export type JobUncheckedUpdateWithoutApprovalsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2767,19 +2404,10 @@ export type JobCreateWithoutApplicantsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2825,20 +2453,11 @@ export type JobUncheckedCreateWithoutApplicantsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -2895,19 +2514,10 @@ export type JobUpdateWithoutApplicantsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2953,20 +2563,11 @@ export type JobUncheckedUpdateWithoutApplicantsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3007,19 +2608,10 @@ export type JobCreateWithoutInterviewsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3065,20 +2657,11 @@ export type JobUncheckedCreateWithoutInterviewsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3135,19 +2718,10 @@ export type JobUpdateWithoutInterviewsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3193,20 +2767,11 @@ export type JobUncheckedUpdateWithoutInterviewsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3247,19 +2812,10 @@ export type JobCreateWithoutHiringDecisionsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3305,20 +2861,11 @@ export type JobUncheckedCreateWithoutHiringDecisionsInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3375,19 +2922,10 @@ export type JobUpdateWithoutHiringDecisionsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3433,20 +2971,11 @@ export type JobUncheckedUpdateWithoutHiringDecisionsInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3487,19 +3016,10 @@ export type JobCreateWithoutCreatedByInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3545,20 +3065,11 @@ export type JobUncheckedCreateWithoutCreatedByInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3609,19 +3120,10 @@ export type JobCreateWithoutHiringManagerInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3667,19 +3169,10 @@ export type JobUncheckedCreateWithoutHiringManagerInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3764,20 +3257,11 @@ export type JobCreateManyDepartmentInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -3813,19 +3297,10 @@ export type JobUpdateWithoutDepartmentInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3870,20 +3345,11 @@ export type JobUncheckedUpdateWithoutDepartmentInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3926,20 +3392,11 @@ export type JobUncheckedUpdateManyWithoutDepartmentInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3976,20 +3433,11 @@ export type JobCreateManyPositionInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -4025,19 +3473,10 @@ export type JobUpdateWithoutPositionInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4082,20 +3521,11 @@ export type JobUncheckedUpdateWithoutPositionInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4138,20 +3568,11 @@ export type JobUncheckedUpdateManyWithoutPositionInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4189,20 +3610,11 @@ export type JobCreateManyCreatedByInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   hiringManagerId?: string | null
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -4239,19 +3651,10 @@ export type JobCreateManyHiringManagerInput = {
   requiredSkills?: Prisma.JobCreaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobCreatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobCreateresponsibilitiesInput | string[]
-  status?: $Enums.JobWorkflowStatus
-  priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   creatorIsHr?: boolean
   applicationDeadline?: Date | string | null
-  draftedAt?: Date | string | null
-  pendingApprovalAt?: Date | string | null
-  readyToPostAt?: Date | string | null
   publishedAt?: Date | string | null
   closedAt?: Date | string | null
-  rejectedAt?: Date | string | null
   closingReason?: string | null
   viewsCount?: number
   applicationsCount?: number
@@ -4287,19 +3690,10 @@ export type JobUpdateWithoutCreatedByInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4345,20 +3739,11 @@ export type JobUncheckedUpdateWithoutCreatedByInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4401,20 +3786,11 @@ export type JobUncheckedUpdateManyWithoutCreatedByInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   hiringManagerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4449,19 +3825,10 @@ export type JobUpdateWithoutHiringManagerInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4507,19 +3874,10 @@ export type JobUncheckedUpdateWithoutHiringManagerInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4563,19 +3921,10 @@ export type JobUncheckedUpdateManyWithoutHiringManagerInput = {
   requiredSkills?: Prisma.JobUpdaterequiredSkillsInput | string[]
   preferredSkills?: Prisma.JobUpdatepreferredSkillsInput | string[]
   responsibilities?: Prisma.JobUpdateresponsibilitiesInput | string[]
-  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
-  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   creatorIsHr?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applicationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewsCount?: Prisma.IntFieldUpdateOperationsInput | number
   applicationsCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4671,20 +4020,11 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   requiredSkills?: boolean
   preferredSkills?: boolean
   responsibilities?: boolean
-  status?: boolean
-  priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   creatorIsHr?: boolean
   hiringManagerId?: boolean
   applicationDeadline?: boolean
-  draftedAt?: boolean
-  pendingApprovalAt?: boolean
-  readyToPostAt?: boolean
   publishedAt?: boolean
   closedAt?: boolean
-  rejectedAt?: boolean
   closingReason?: boolean
   viewsCount?: boolean
   applicationsCount?: boolean
@@ -4733,20 +4073,11 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   requiredSkills?: boolean
   preferredSkills?: boolean
   responsibilities?: boolean
-  status?: boolean
-  priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   creatorIsHr?: boolean
   hiringManagerId?: boolean
   applicationDeadline?: boolean
-  draftedAt?: boolean
-  pendingApprovalAt?: boolean
-  readyToPostAt?: boolean
   publishedAt?: boolean
   closedAt?: boolean
-  rejectedAt?: boolean
   closingReason?: boolean
   viewsCount?: boolean
   applicationsCount?: boolean
@@ -4788,20 +4119,11 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   requiredSkills?: boolean
   preferredSkills?: boolean
   responsibilities?: boolean
-  status?: boolean
-  priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   creatorIsHr?: boolean
   hiringManagerId?: boolean
   applicationDeadline?: boolean
-  draftedAt?: boolean
-  pendingApprovalAt?: boolean
-  readyToPostAt?: boolean
   publishedAt?: boolean
   closedAt?: boolean
-  rejectedAt?: boolean
   closingReason?: boolean
   viewsCount?: boolean
   applicationsCount?: boolean
@@ -4843,20 +4165,11 @@ export type JobSelectScalar = {
   requiredSkills?: boolean
   preferredSkills?: boolean
   responsibilities?: boolean
-  status?: boolean
-  priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   creatorIsHr?: boolean
   hiringManagerId?: boolean
   applicationDeadline?: boolean
-  draftedAt?: boolean
-  pendingApprovalAt?: boolean
-  readyToPostAt?: boolean
   publishedAt?: boolean
   closedAt?: boolean
-  rejectedAt?: boolean
   closingReason?: boolean
   viewsCount?: boolean
   applicationsCount?: boolean
@@ -4870,7 +4183,7 @@ export type JobSelectScalar = {
   tools?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "requiredSkills" | "preferredSkills" | "responsibilities" | "status" | "priority" | "financeApprovalStatus" | "gmApprovalStatus" | "hrApprovalStatus" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "publishedAt" | "closedAt" | "rejectedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt" | "tools", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "requiredSkills" | "preferredSkills" | "responsibilities" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "publishedAt" | "closedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt" | "tools", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
@@ -4935,20 +4248,11 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     requiredSkills: string[]
     preferredSkills: string[]
     responsibilities: string[]
-    status: $Enums.JobWorkflowStatus
-    priority: $Enums.JobPriority
-    financeApprovalStatus: $Enums.JobStageApprovalStatus
-    gmApprovalStatus: $Enums.JobStageApprovalStatus
-    hrApprovalStatus: $Enums.JobStageApprovalStatus
     creatorIsHr: boolean
     hiringManagerId: string | null
     applicationDeadline: Date | null
-    draftedAt: Date | null
-    pendingApprovalAt: Date | null
-    readyToPostAt: Date | null
     publishedAt: Date | null
     closedAt: Date | null
-    rejectedAt: Date | null
     closingReason: string | null
     viewsCount: number
     applicationsCount: number
@@ -5416,20 +4720,11 @@ export interface JobFieldRefs {
   readonly requiredSkills: Prisma.FieldRef<"Job", 'String[]'>
   readonly preferredSkills: Prisma.FieldRef<"Job", 'String[]'>
   readonly responsibilities: Prisma.FieldRef<"Job", 'String[]'>
-  readonly status: Prisma.FieldRef<"Job", 'JobWorkflowStatus'>
-  readonly priority: Prisma.FieldRef<"Job", 'JobPriority'>
-  readonly financeApprovalStatus: Prisma.FieldRef<"Job", 'JobStageApprovalStatus'>
-  readonly gmApprovalStatus: Prisma.FieldRef<"Job", 'JobStageApprovalStatus'>
-  readonly hrApprovalStatus: Prisma.FieldRef<"Job", 'JobStageApprovalStatus'>
   readonly creatorIsHr: Prisma.FieldRef<"Job", 'Boolean'>
   readonly hiringManagerId: Prisma.FieldRef<"Job", 'String'>
   readonly applicationDeadline: Prisma.FieldRef<"Job", 'DateTime'>
-  readonly draftedAt: Prisma.FieldRef<"Job", 'DateTime'>
-  readonly pendingApprovalAt: Prisma.FieldRef<"Job", 'DateTime'>
-  readonly readyToPostAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly publishedAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly closedAt: Prisma.FieldRef<"Job", 'DateTime'>
-  readonly rejectedAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly closingReason: Prisma.FieldRef<"Job", 'String'>
   readonly viewsCount: Prisma.FieldRef<"Job", 'Int'>
   readonly applicationsCount: Prisma.FieldRef<"Job", 'Int'>
