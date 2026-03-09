@@ -127,7 +127,7 @@ export class BrainService {
 
   async runCvAnalysis(candidateId: string, jobPostingId: string, keycloakId: string) {
     
-    const dbUserId = await this.getInternalUserId(keycloakId);
+    const dbUserId = await this.getInternalUserId(keycloakId || 'ai-system');
     
     const candidate = await this.prisma.candidate.findUnique({
       where: { id: candidateId }
@@ -204,7 +204,7 @@ export class BrainService {
 
   async screenCandidatesForJob(jobPostingId: string, keycloakId: string) {
 
-  const dbUserId = await this.getInternalUserId(keycloakId);  
+  const dbUserId = await this.getInternalUserId(keycloakId || 'ai-system');  
 
   const job = await this.prisma.jobPosting.findUnique({ where: { id: jobPostingId } });
   if (!job) throw new BadRequestException('Job not found');
@@ -299,17 +299,28 @@ export class BrainService {
   }
 
   private async getInternalUserId(keycloakId: string): Promise<string> {
+ 
   const user = await this.prisma.user.findUnique({
     where: { keycloakId },
     select: { id: true }
   });
 
-  if (!user) {
-    throw new UnauthorizedException(`User with Keycloak ID ${keycloakId} not found in local DB`);
+  if (user) {
+    return user.id;
   }
 
-  return user.id;
-}
+  const aiUser = await this.prisma.user.findUnique({
+    where: { keycloakId: 'ai-system' },
+    select: { id: true }
+  });
 
+  if (!aiUser) {
+    throw new UnauthorizedException(
+      `User ${keycloakId} not found and fallback 'ai-system' is missing. Please seed the database.`
+    );
+  }
+
+  return aiUser.id;
+}
 
 }

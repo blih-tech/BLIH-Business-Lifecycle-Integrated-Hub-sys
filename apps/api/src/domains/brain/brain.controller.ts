@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile, Request, UseGuards, BadRequestException } from '@nestjs/common';
 import { BrainService } from './brain.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -29,7 +29,11 @@ async uploadCv(
   @Body('jobPostingId') jobPostingId: string,
   @Request() req: any
 ) {
-  const keycloakId = req.user.sub;
+
+  if(!file){
+    throw new BadRequestException('CV file is required')
+  }
+  const keycloakId = req?.user?.sub?? 'ai-system';
     
   const result = await this.brainService.processCvUpload(
     file.buffer,
@@ -46,7 +50,8 @@ async screenCandidates(
   @Body() body: { jobPostingId: string; candidates: any[] },
   @Request() req: any 
 ) {
-  const keycloakId = req.user.sub;
+
+  const keycloakId = req?.user?.sub?? 'ai-system';
 
   return this.brainService.screenCandidatesForJob(
     body.jobPostingId,
