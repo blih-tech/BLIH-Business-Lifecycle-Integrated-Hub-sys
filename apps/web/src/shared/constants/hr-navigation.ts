@@ -28,7 +28,6 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
       { id: 'active-posting', label: 'Active Posting', href: '/dashboard/hr/recruitment/active-posting' },
       { id: 'ongoing-recruitment', label: 'Interview and Shortlist', href: '/dashboard/hr/recruitment/ongoing-recruitment' },
       { id: 'closed-posts', label: 'History', href: '/dashboard/hr/recruitment/closed-posts' },
-      { id: 'applicant-forms', label: 'Applicant Forms', href: '/dashboard/hr/recruitment/applicant-forms' },
     ],
   },
   {
