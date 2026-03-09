@@ -22,9 +22,7 @@ model JobRequestForm {
   neededByDate          DateTime               @map("needed_by_date") @db.Date
   status                JobWorkflowStatus      @default(DRAFT)
   priority              JobPriority            @default(MEDIUM)
-  financeApprovalStatus JobStageApprovalStatus @default(PENDING_FOR_APPROVAL) @map("finance_approval_status")
-  gmApprovalStatus      JobStageApprovalStatus @default(PENDING_FOR_APPROVAL) @map("gm_approval_status")
-  hrApprovalStatus      JobStageApprovalStatus @default(PENDING_FOR_APPROVAL) @map("hr_approval_status")
+  approvals             JobApprovalStep[]
   draftedAt             DateTime?              @map("drafted_at")
   pendingApprovalAt     DateTime?              @map("pending_approval_at")
   readyToPostAt         DateTime?              @map("ready_to_post_at")
@@ -36,9 +34,6 @@ model JobRequestForm {
   @@index([positionId])
   @@index([replaceForUserId])
   @@index([status])
-  @@index([financeApprovalStatus])
-  @@index([gmApprovalStatus])
-  @@index([hrApprovalStatus])
 }
 
 model Job {
@@ -84,7 +79,6 @@ model Job {
   createdBy           User?               @relation("JobCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
-  approvals           JobApproval[]
   tools               String[]            @default([])
   applicants          Applicant[]
   interviews          Interview[]
@@ -177,26 +171,39 @@ model JobApplicationCustomFieldOption {
   @@index([customFieldRowId, order])
 }
 
-model JobApproval {
-  id                 String           @id @default(uuid()) @db.Uuid
-  jobId              String           @map("job_id") @db.Uuid
-  job                Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  stage              JobApprovalStage
-  requiredRole       String           @map("required_role") @db.VarChar(64)
-  approverId         String?          @map("approver_id") @db.Uuid
-  approver           User?            @relation("JobApprovalApprover", fields: [approverId], references: [id], onDelete: SetNull)
-  decision           ApprovalDecision @default(PENDING)
-  autoApproved       Boolean          @default(false) @map("auto_approved")
-  autoApprovalReason String?          @map("auto_approval_reason") @db.VarChar(128)
-  comments           String?          @db.Text
-  decidedAt          DateTime?        @map("decided_at")
-  level              Int
-  createdAt          DateTime         @default(now())
+model JobApprovalStep {
+  id               String                 @id @default(uuid()) @db.Uuid
+  jobRequestFormId String                 @map("job_request_form_id") @db.Uuid
+  jobRequestForm   JobRequestForm         @relation(fields: [jobRequestFormId], references: [id], onDelete: Cascade)
+  department       JobApprovalDepartment
+  level            Int
+  status           JobStageApprovalStatus @default(PENDING_FOR_APPROVAL)
+  approverId       String?                @map("approver_id") @db.Uuid
+  approver         User?                  @relation("JobApprovalStepApprover", fields: [approverId], references: [id])
+  currentNote      String?                @db.Text
+  decidedAt        DateTime?              @map("decided_at")
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  history          JobApprovalHistory[]
 
-  @@unique([jobId, stage])
-  @@unique([jobId, level])
-  @@index([jobId])
+  @@unique([jobRequestFormId, department])
+  @@index([jobRequestFormId])
   @@index([approverId])
+}
+
+model JobApprovalHistory {
+  id             String                 @id @default(uuid()) @db.Uuid
+  approvalStepId String                 @map("approval_step_id") @db.Uuid
+  approvalStep   JobApprovalStep        @relation(fields: [approvalStepId], references: [id], onDelete: Cascade)
+  fromStatus     JobStageApprovalStatus?
+  toStatus       JobStageApprovalStatus
+  changedById    String?                @map("changed_by_id") @db.Uuid
+  changedBy      User?                  @relation("JobApprovalHistoryUser", fields: [changedById], references: [id])
+  reason         String?                @db.Text
+  createdAt      DateTime               @default(now())
+
+  @@index([approvalStepId])
+  @@index([changedById])
 }
 
 model Applicant {

@@ -110,8 +110,15 @@ enum JobPriority {
 
 enum JobStageApprovalStatus {
   PENDING_FOR_APPROVAL
+  REQUEST_REVIEW
   APPROVED
   REJECTED
+}
+
+enum JobApprovalDepartment {
+  FINANCE
+  GM
+  HR
 }
 
 enum JobApprovalStage {
