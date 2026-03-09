@@ -1,7 +1,6 @@
-import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { BrainService } from './brain.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UnauthorizedException } from '@nestjs/common';
 
 @Controller('brain')
 export class BrainController {
@@ -28,7 +27,6 @@ async uploadCv(
   @UploadedFile() file: Express.Multer.File,
   @Body('candidateId') candidateId: string,
   @Body('jobPostingId') jobPostingId: string
-  
     ) {
 
      
