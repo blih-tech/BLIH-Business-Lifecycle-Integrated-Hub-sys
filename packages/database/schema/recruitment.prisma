@@ -393,6 +393,8 @@ model CvScreening {
   screeningDuration Int?              @map("screening_duration") // in minutes
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  responses         CvScreeningResponse[]       @relation("ScreeningResponses")
+  decisions         CvScreeningDecision[]       @relation("ScreeningDecisions")
 
   @@unique([applicantId, jobId])
   @@index([applicantId])
@@ -419,6 +421,7 @@ model CvScreeningCriteria {
   order            Int?
   createdAt        DateTime                @default(now())
   updatedAt        DateTime                @updatedAt
+  questions         CvScreeningQuestion[]
 
   @@index([jobId])
   @@index([category])
@@ -437,6 +440,7 @@ model CvScreeningQuestion {
   order             Int?
   createdAt         DateTime                  @default(now())
   updatedAt         DateTime                  @updatedAt
+  responses         CvScreeningResponse[]
 
   @@index([criteriaId])
   @@index([criteriaId, order])
@@ -493,6 +497,7 @@ model CvScreeningWorkflowStage {
   timeLimitHours    Int?                    @map("time_limit_hours")
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
+  decisions         CvScreeningDecision[]
 
   @@index([workflowId])
   @@index([approverId])
