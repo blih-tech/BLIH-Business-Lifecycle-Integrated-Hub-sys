@@ -478,10 +478,25 @@ export type ApplicantEducation = Prisma.ApplicantEducationModel
  */
 export type ApplicantExperience = Prisma.ApplicantExperienceModel
 /**
- * Model Interview
+ * Model InterviewSession
  * 
  */
-export type Interview = Prisma.InterviewModel
+export type InterviewSession = Prisma.InterviewSessionModel
+/**
+ * Model InterviewParticipant
+ * 
+ */
+export type InterviewParticipant = Prisma.InterviewParticipantModel
+/**
+ * Model InterviewerAssignment
+ * 
+ */
+export type InterviewerAssignment = Prisma.InterviewerAssignmentModel
+/**
+ * Model InterviewFeedback
+ * 
+ */
+export type InterviewFeedback = Prisma.InterviewFeedbackModel
 /**
  * Model HiringDecision
  * 

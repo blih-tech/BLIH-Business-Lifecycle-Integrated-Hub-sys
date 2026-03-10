@@ -6,7 +6,12 @@ import {
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 import { ApproveJobUseCase, SubmitJobUseCase } from './jobs.usecases';
 import { UpdateApplicantStatusUseCase } from './applicants.usecases';
-import { UpdateInterviewUseCase } from './interviews.usecases';
+import {
+  CreateInterviewUseCase,
+  UpdateInterviewParticipantAttendanceUseCase,
+  UpdateInterviewUseCase,
+  UpsertInterviewFeedbackUseCase,
+} from './interviews.usecases';
 
 type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
 type ApprovalStatus = 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
@@ -486,11 +491,15 @@ describe('Recruitment UseCases', () => {
 
   it('rejects invalid interview status transitions', async () => {
     const prisma = {
-      interview: {
-        findUniqueOrThrow: jest
-          .fn()
-          .mockResolvedValue({ id: 'int-1', status: 'COMPLETED' }),
-        update: jest.fn(),
+      interviewSession: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'int-1',
+          status: 'COMPLETED',
+          jobId: 'job-1',
+          round: 1,
+          participants: [],
+          interviewers: [],
+        }),
       },
     };
     const usecase = new UpdateInterviewUseCase(prisma as never);
@@ -498,5 +507,277 @@ describe('Recruitment UseCases', () => {
     await expect(
       usecase.execute('int-1', { status: 'SCHEDULED' }),
     ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('creates participants with default scheduled attendance', async () => {
+    const now = new Date('2026-03-10T10:00:00.000Z');
+    const tx = {
+      interviewSession: {
+        create: jest.fn().mockResolvedValue({
+          id: 'session-1',
+          jobId: 'job-1',
+          type: 'TECHNICAL',
+          round: 1,
+          status: 'SCHEDULED',
+          scheduledAt: now,
+          durationMinutes: 60,
+          location: null,
+          meetingUrl: null,
+          createdById: 'hr-1',
+          createdAt: now,
+          updatedAt: now,
+          participants: [
+            {
+              id: 'participant-1',
+              sessionId: 'session-1',
+              applicantId: 'applicant-1',
+              attendanceStatus: 'SCHEDULED',
+              createdAt: now,
+              applicant: {
+                id: 'applicant-1',
+                firstName: 'Abel',
+                lastName: 'Tesfaye',
+                email: 'abel@example.com',
+                status: 'SHORTLISTED',
+              },
+            },
+          ],
+          interviewers: [
+            {
+              id: 'assignment-1',
+              sessionId: 'session-1',
+              interviewerId: 'user-1',
+              role: 'Panelist',
+              createdAt: now,
+              interviewer: {
+                id: 'user-1',
+                firstName: 'Liya',
+                lastName: 'Tekle',
+                email: 'liya@example.com',
+                status: 'ACTIVE',
+              },
+            },
+          ],
+          feedbacks: [],
+        }),
+      },
+      applicant: {
+        update: jest.fn().mockResolvedValue(undefined),
+        count: jest.fn().mockResolvedValue(1),
+      },
+      interviewParticipant: {
+        count: jest.fn().mockResolvedValue(1),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+    };
+    const prisma = {
+      job: {
+        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'job-1' }),
+      },
+      applicant: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'applicant-1',
+            jobId: 'job-1',
+          },
+        ]),
+      },
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue(null),
+      },
+      user: {
+        findMany: jest.fn().mockResolvedValue([{ id: 'user-1' }]),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+
+    const usecase = new CreateInterviewUseCase(prisma as never);
+
+    const result = await usecase.execute(
+      {
+        jobId: 'job-1',
+        type: 'TECHNICAL',
+        round: 1,
+        scheduledAt: now.toISOString(),
+        durationMinutes: 60,
+        applicantIds: ['applicant-1'],
+        interviewers: [{ interviewerId: 'user-1', role: 'Panelist' }],
+      },
+      'hr-1',
+    );
+
+    expect(result.participants[0]?.attendanceStatus).toBe('SCHEDULED');
+    expect(tx.interviewSession.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          participants: {
+            create: [
+              expect.objectContaining({ attendanceStatus: 'SCHEDULED' }),
+            ],
+          },
+        }),
+      }),
+    );
+  });
+
+  it('blocks duplicate active applicant-round entries', async () => {
+    const prisma = {
+      job: {
+        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'job-1' }),
+      },
+      applicant: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'applicant-1',
+            jobId: 'job-1',
+          },
+        ]),
+      },
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({ id: 'existing-participant' }),
+      },
+      user: {
+        findMany: jest.fn(),
+      },
+      $transaction: jest.fn(),
+    };
+
+    const usecase = new CreateInterviewUseCase(prisma as never);
+
+    await expect(
+      usecase.execute(
+        {
+          jobId: 'job-1',
+          type: 'TECHNICAL',
+          round: 1,
+          scheduledAt: '2026-03-10T10:00:00.000Z',
+          applicantIds: ['applicant-1'],
+          interviewers: [{ interviewerId: 'user-1' }],
+        },
+        'hr-1',
+      ),
+    ).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  it('rejects invalid participant attendance transitions', async () => {
+    const prisma = {
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'participant-1',
+          sessionId: 'session-1',
+          applicantId: 'applicant-1',
+          attendanceStatus: 'COMPLETED',
+          session: { id: 'session-1', jobId: 'job-1' },
+        }),
+      },
+    };
+    const usecase = new UpdateInterviewParticipantAttendanceUseCase(
+      prisma as never,
+    );
+
+    await expect(
+      usecase.execute('session-1', 'participant-1', {
+        attendanceStatus: 'ATTENDING',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('allows valid participant attendance transitions', async () => {
+    const now = new Date('2026-03-10T11:00:00.000Z');
+    const tx = {
+      interviewParticipant: {
+        update: jest.fn().mockResolvedValue(undefined),
+        count: jest.fn().mockResolvedValue(1),
+      },
+      applicant: {
+        update: jest.fn().mockResolvedValue(undefined),
+        count: jest.fn().mockResolvedValue(1),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+      interviewSession: {
+        findUniqueOrThrow: jest.fn().mockResolvedValue({
+          id: 'session-1',
+          jobId: 'job-1',
+          type: 'TECHNICAL',
+          round: 1,
+          status: 'SCHEDULED',
+          scheduledAt: now,
+          durationMinutes: 60,
+          location: null,
+          meetingUrl: null,
+          createdById: 'hr-1',
+          createdAt: now,
+          updatedAt: now,
+          participants: [
+            {
+              id: 'participant-1',
+              sessionId: 'session-1',
+              applicantId: 'applicant-1',
+              attendanceStatus: 'ATTENDING',
+              createdAt: now,
+              applicant: {
+                id: 'applicant-1',
+                firstName: 'Abel',
+                lastName: 'Tesfaye',
+                email: 'abel@example.com',
+                status: 'INTERVIEW',
+              },
+            },
+          ],
+          interviewers: [],
+          feedbacks: [],
+        }),
+      },
+    };
+    const prisma = {
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'participant-1',
+          sessionId: 'session-1',
+          applicantId: 'applicant-1',
+          attendanceStatus: 'SCHEDULED',
+          session: { id: 'session-1', jobId: 'job-1' },
+        }),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+    const usecase = new UpdateInterviewParticipantAttendanceUseCase(
+      prisma as never,
+    );
+
+    const result = await usecase.execute('session-1', 'participant-1', {
+      attendanceStatus: 'ATTENDING',
+    });
+
+    expect(result.participants[0]?.attendanceStatus).toBe('ATTENDING');
+    expect(tx.interviewParticipant.update).toHaveBeenCalledWith({
+      where: { id: 'participant-1' },
+      data: { attendanceStatus: 'ATTENDING' },
+    });
+  });
+
+  it('blocks feedback from non-assigned interviewer', async () => {
+    const prisma = {
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'participant-1',
+          applicantId: 'applicant-1',
+        }),
+      },
+      interviewerAssignment: {
+        findUnique: jest.fn().mockResolvedValue(null),
+      },
+    };
+    const usecase = new UpsertInterviewFeedbackUseCase(prisma as never);
+
+    await expect(
+      usecase.execute('session-1', 'participant-1', 'user-1', {
+        score: 78,
+      }),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 });

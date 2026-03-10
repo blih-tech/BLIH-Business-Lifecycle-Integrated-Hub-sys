@@ -1,13 +1,16 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { InterviewPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
@@ -20,21 +23,30 @@ import {
 } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
+import type { AuthPrincipal } from '../../../shared/interfaces/auth-principal.interface';
 import {
   CreateInterviewDto,
+  InterviewFeedbackResponseDto,
   InterviewListQueryDto,
   InterviewResponseDto,
   UpdateInterviewDto,
+  UpdateInterviewParticipantAttendanceDto,
+  UpsertInterviewFeedbackDto,
 } from './dto/interview.dto';
 import {
+  interviewFeedbackListResponseEnvelope,
+  interviewFeedbackResponseEnvelope,
   interviewListResponseEnvelope,
   interviewResponseEnvelope,
 } from './recruitment.swagger-examples';
 import {
   CreateInterviewUseCase,
   GetInterviewUseCase,
+  ListInterviewParticipantFeedbackUseCase,
   ListInterviewsUseCase,
+  UpdateInterviewParticipantAttendanceUseCase,
   UpdateInterviewUseCase,
+  UpsertInterviewFeedbackUseCase,
 } from './use-cases/interviews.usecases';
 
 @ApiTags('HR Recruitment Interviews')
@@ -46,6 +58,9 @@ export class InterviewsController {
     private readonly listInterviews: ListInterviewsUseCase,
     private readonly getInterviewById: GetInterviewUseCase,
     private readonly updateInterviewById: UpdateInterviewUseCase,
+    private readonly updateParticipantAttendance: UpdateInterviewParticipantAttendanceUseCase,
+    private readonly upsertFeedback: UpsertInterviewFeedbackUseCase,
+    private readonly listFeedback: ListInterviewParticipantFeedbackUseCase,
   ) {}
 
   @Post()
@@ -55,48 +70,28 @@ export class InterviewsController {
     path: '/api/v1/hr/recruitment/interviews',
     roles: [InterviewPermissions.CREATE],
   })
-  @ApiOperation({ summary: 'Create interview' })
-  @ApiBody({
-    type: CreateInterviewDto,
-    description:
-      'Request body: applicantId (required, UUID), type (required), interviewerId (required UUID). Optional: round, status, scheduledAt, startedAt, completedAt, interviewers, feedback, endorsement, score, nextAction, notes.',
-    examples: {
-      createInterview: {
-        summary: 'Schedule interview payload',
-        value: {
-          applicantId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
-          type: 'TECHNICAL',
-          round: 1,
-          status: 'SCHEDULED',
-          scheduledAt: '2026-03-10T10:00:00.000Z',
-          interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
-        },
-      },
-      createInterviewMinimal: {
-        summary: 'Create interview (minimal)',
-        value: {
-          applicantId: '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
-          type: 'HR_SCREENING',
-          interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
-        },
-      },
-    },
-  })
+  @ApiOperation({ summary: 'Create interview session' })
+  @ApiBody({ type: CreateInterviewDto })
   @ApiEnvelopeOkResponse(
     InterviewResponseDto,
-    'Created interview',
+    'Created interview session',
     interviewResponseEnvelope,
   )
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/interviews',
     badRequest: 'Interview payload is invalid',
-    notFound: 'Applicant not found',
-    conflict: 'Interview round already exists',
+    notFound: 'Referenced job, applicant, or interviewer not found',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  create(@Body() body: CreateInterviewDto) {
-    return this.createInterview.execute(body);
+  create(
+    @Body() body: CreateInterviewDto,
+    @Req() req: Request & { user?: AuthPrincipal },
+  ) {
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.createInterview.execute(body, user.userId ?? user.sub);
   }
 
   @Get()
@@ -106,10 +101,10 @@ export class InterviewsController {
     path: '/api/v1/hr/recruitment/interviews',
     roles: [InterviewPermissions.VIEW],
   })
-  @ApiOperation({ summary: 'List interviews' })
+  @ApiOperation({ summary: 'List interview sessions' })
   @ApiEnvelopeArrayResponse(
     InterviewResponseDto,
-    'List of interviews',
+    'List of interview sessions',
     interviewListResponseEnvelope,
   )
   @ApiDefaultErrors({
@@ -128,16 +123,16 @@ export class InterviewsController {
     path: '/api/v1/hr/recruitment/interviews/:id',
     roles: [InterviewPermissions.VIEW],
   })
-  @ApiOperation({ summary: 'Get interview' })
-  @ApiParam({ name: 'id', description: 'Interview id' })
+  @ApiOperation({ summary: 'Get interview session' })
+  @ApiParam({ name: 'id', description: 'Interview session id' })
   @ApiEnvelopeOkResponse(
     InterviewResponseDto,
-    'Interview details',
+    'Interview session details',
     interviewResponseEnvelope,
   )
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/interviews/:id',
-    notFound: 'Interview not found',
+    notFound: 'Interview session not found',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
@@ -152,46 +147,121 @@ export class InterviewsController {
     path: '/api/v1/hr/recruitment/interviews/:id',
     roles: [InterviewPermissions.UPDATE],
   })
-  @ApiOperation({ summary: 'Update interview' })
-  @ApiParam({ name: 'id', description: 'Interview id' })
-  @ApiBody({
-    type: UpdateInterviewDto,
-    description:
-      'Request body: partial interview fields (all optional). Same structure as create; send only fields to update. Common: status, completedAt, feedback, endorsement (STRONG_YES|YES|UNCERTAIN|NO), score, nextAction.',
-    examples: {
-      updateInterview: {
-        summary: 'Submit interview feedback',
-        value: {
-          status: 'COMPLETED',
-          completedAt: '2026-03-10T11:00:00.000Z',
-          feedback: 'Strong backend architecture knowledge.',
-          endorsement: 'YES',
-          score: 4.5,
-          nextAction: 'Proceed to final round',
-        },
-      },
-      updateInterviewReschedule: {
-        summary: 'Reschedule interview',
-        value: {
-          scheduledAt: '2026-03-15T14:00:00.000Z',
-          status: 'SCHEDULED',
-        },
-      },
-    },
-  })
+  @ApiOperation({ summary: 'Update interview session' })
+  @ApiParam({ name: 'id', description: 'Interview session id' })
+  @ApiBody({ type: UpdateInterviewDto })
   @ApiEnvelopeOkResponse(
     InterviewResponseDto,
-    'Updated interview',
+    'Updated interview session',
     interviewResponseEnvelope,
   )
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/interviews/:id',
     badRequest: 'Interview payload is invalid',
-    notFound: 'Interview not found',
+    notFound: 'Interview session not found',
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
   update(@Param('id') id: string, @Body() body: UpdateInterviewDto) {
     return this.updateInterviewById.execute(id, body);
+  }
+
+  @Patch(':id/participants/:participantId/attendance')
+  @Roles(InterviewPermissions.UPDATE)
+  @Audit('recruitment.interview.attendance.update', 'hr.interview')
+  @ApiProtected({
+    path: '/api/v1/hr/recruitment/interviews/:id/participants/:participantId/attendance',
+    roles: [InterviewPermissions.UPDATE],
+  })
+  @ApiOperation({ summary: 'Update interview participant attendance' })
+  @ApiParam({ name: 'id', description: 'Interview session id' })
+  @ApiParam({ name: 'participantId', description: 'Interview participant id' })
+  @ApiBody({ type: UpdateInterviewParticipantAttendanceDto })
+  @ApiEnvelopeOkResponse(
+    InterviewResponseDto,
+    'Updated interview participant attendance',
+    interviewResponseEnvelope,
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/interviews/:id/participants/:participantId/attendance',
+    badRequest: 'Attendance transition is invalid',
+    notFound: 'Interview participant not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
+  updateAttendance(
+    @Param('id') id: string,
+    @Param('participantId') participantId: string,
+    @Body() body: UpdateInterviewParticipantAttendanceDto,
+  ) {
+    return this.updateParticipantAttendance.execute(id, participantId, body);
+  }
+
+  @Post(':id/participants/:participantId/feedback')
+  @Roles(InterviewPermissions.SUBMIT_FEEDBACK)
+  @Audit('recruitment.interview.feedback.submit', 'hr.interview')
+  @ApiProtected({
+    path: '/api/v1/hr/recruitment/interviews/:id/participants/:participantId/feedback',
+    roles: [InterviewPermissions.SUBMIT_FEEDBACK],
+  })
+  @ApiOperation({ summary: 'Submit or update interview feedback' })
+  @ApiParam({ name: 'id', description: 'Interview session id' })
+  @ApiParam({ name: 'participantId', description: 'Interview participant id' })
+  @ApiBody({ type: UpsertInterviewFeedbackDto })
+  @ApiEnvelopeOkResponse(
+    InterviewFeedbackResponseDto,
+    'Upserted interview feedback',
+    interviewFeedbackResponseEnvelope,
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/interviews/:id/participants/:participantId/feedback',
+    badRequest: 'Feedback payload is invalid',
+    notFound: 'Interview participant not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing or interviewer is not assigned',
+  })
+  submitFeedback(
+    @Param('id') id: string,
+    @Param('participantId') participantId: string,
+    @Body() body: UpsertInterviewFeedbackDto,
+    @Req() req: Request & { user?: AuthPrincipal },
+  ) {
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.upsertFeedback.execute(
+      id,
+      participantId,
+      user.userId ?? user.sub,
+      body,
+    );
+  }
+
+  @Get(':id/participants/:participantId/feedback')
+  @Roles(InterviewPermissions.VIEW)
+  @Audit('recruitment.interview.feedback.list', 'hr.interview')
+  @ApiProtected({
+    path: '/api/v1/hr/recruitment/interviews/:id/participants/:participantId/feedback',
+    roles: [InterviewPermissions.VIEW],
+  })
+  @ApiOperation({ summary: 'List interview participant feedback' })
+  @ApiParam({ name: 'id', description: 'Interview session id' })
+  @ApiParam({ name: 'participantId', description: 'Interview participant id' })
+  @ApiEnvelopeArrayResponse(
+    InterviewFeedbackResponseDto,
+    'List interview participant feedback',
+    interviewFeedbackListResponseEnvelope,
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/interviews/:id/participants/:participantId/feedback',
+    notFound: 'Interview participant not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
+  listParticipantFeedback(
+    @Param('id') id: string,
+    @Param('participantId') participantId: string,
+  ) {
+    return this.listFeedback.execute(id, participantId);
   }
 }

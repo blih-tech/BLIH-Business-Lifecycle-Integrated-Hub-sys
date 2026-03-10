@@ -139,7 +139,10 @@ export const ModelName = {
   ApplicantStatusHistory: 'ApplicantStatusHistory',
   ApplicantEducation: 'ApplicantEducation',
   ApplicantExperience: 'ApplicantExperience',
-  Interview: 'Interview',
+  InterviewSession: 'InterviewSession',
+  InterviewParticipant: 'InterviewParticipant',
+  InterviewerAssignment: 'InterviewerAssignment',
+  InterviewFeedback: 'InterviewFeedback',
   HiringDecision: 'HiringDecision',
   CvScreening: 'CvScreening',
   CvScreeningCriteria: 'CvScreeningCriteria',
@@ -1750,26 +1753,62 @@ export const ApplicantExperienceScalarFieldEnum = {
 export type ApplicantExperienceScalarFieldEnum = (typeof ApplicantExperienceScalarFieldEnum)[keyof typeof ApplicantExperienceScalarFieldEnum]
 
 
-export const InterviewScalarFieldEnum = {
+export const InterviewSessionScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
-  applicantId: 'applicantId',
   type: 'type',
+  round: 'round',
   status: 'status',
   scheduledAt: 'scheduledAt',
-  startedAt: 'startedAt',
-  completedAt: 'completedAt',
   durationMinutes: 'durationMinutes',
-  interviewerId: 'interviewerId',
   location: 'location',
   meetingUrl: 'meetingUrl',
-  notes: 'notes',
-  feedback: 'feedback',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof typeof InterviewScalarFieldEnum]
+export type InterviewSessionScalarFieldEnum = (typeof InterviewSessionScalarFieldEnum)[keyof typeof InterviewSessionScalarFieldEnum]
+
+
+export const InterviewParticipantScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  applicantId: 'applicantId',
+  attendanceStatus: 'attendanceStatus',
+  createdAt: 'createdAt'
+} as const
+
+export type InterviewParticipantScalarFieldEnum = (typeof InterviewParticipantScalarFieldEnum)[keyof typeof InterviewParticipantScalarFieldEnum]
+
+
+export const InterviewerAssignmentScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  interviewerId: 'interviewerId',
+  role: 'role',
+  createdAt: 'createdAt'
+} as const
+
+export type InterviewerAssignmentScalarFieldEnum = (typeof InterviewerAssignmentScalarFieldEnum)[keyof typeof InterviewerAssignmentScalarFieldEnum]
+
+
+export const InterviewFeedbackScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  assignmentId: 'assignmentId',
+  score: 'score',
+  endorsement: 'endorsement',
+  strengths: 'strengths',
+  weaknesses: 'weaknesses',
+  notes: 'notes',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InterviewFeedbackScalarFieldEnum = (typeof InterviewFeedbackScalarFieldEnum)[keyof typeof InterviewFeedbackScalarFieldEnum]
 
 
 export const HiringDecisionScalarFieldEnum = {

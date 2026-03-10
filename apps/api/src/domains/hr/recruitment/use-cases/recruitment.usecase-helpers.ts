@@ -126,6 +126,14 @@ const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
   NO_SHOW: [],
 };
 
+const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<string, string[]> = {
+  SCHEDULED: ['ATTENDING', 'NO_SHOW', 'CANCELLED'],
+  ATTENDING: ['COMPLETED', 'CANCELLED'],
+  NO_SHOW: [],
+  COMPLETED: [],
+  CANCELLED: [],
+};
+
 export function currentApprovalStage(status: string) {
   if (status !== 'PENDING_FOR_APPROVAL') return null;
   return 'FINANCE';
@@ -205,6 +213,19 @@ export function assertInterviewTransition(
   if (!allowed.includes(nextStatus)) {
     throw new BadRequestException(
       `Interview status cannot transition from ${currentStatus} to ${nextStatus}`,
+    );
+  }
+}
+
+export function assertInterviewAttendanceTransition(
+  currentStatus: string,
+  nextStatus: string,
+) {
+  if (currentStatus === nextStatus) return;
+  const allowed = INTERVIEW_ATTENDANCE_TRANSITIONS[currentStatus] ?? [];
+  if (!allowed.includes(nextStatus)) {
+    throw new BadRequestException(
+      `Interview attendance cannot transition from ${currentStatus} to ${nextStatus}`,
     );
   }
 }
@@ -372,48 +393,6 @@ export function normalizeSkillArray(values: string[] | null | undefined) {
     normalized.push(trimmed);
   }
   return normalized;
-}
-
-export function buildInterviewMetadata(input: {
-  applicantId: string;
-  round: number;
-  interviewers?: unknown[] | null;
-  feedback?: string | null;
-  endorsement?: string | null;
-  score?: number | null;
-  nextAction?: string | null;
-}) {
-  return {
-    applicantId: input.applicantId,
-    round: input.round,
-    interviewers: input.interviewers ?? null,
-    feedback: input.feedback ?? null,
-    endorsement: input.endorsement ?? null,
-    score: input.score ?? null,
-    nextAction: input.nextAction ?? null,
-  };
-}
-
-export function parseInterviewMetadata(value: unknown) {
-  const payload = toObjectRecord(value);
-
-  return {
-    applicantId:
-      typeof payload?.applicantId === 'string' ? payload.applicantId : '',
-    round:
-      typeof payload?.round === 'number' && Number.isInteger(payload.round)
-        ? payload.round
-        : 1,
-    interviewers: Array.isArray(payload?.interviewers)
-      ? payload.interviewers
-      : null,
-    feedback: typeof payload?.feedback === 'string' ? payload.feedback : null,
-    endorsement:
-      typeof payload?.endorsement === 'string' ? payload.endorsement : null,
-    score: typeof payload?.score === 'number' ? payload.score : null,
-    nextAction:
-      typeof payload?.nextAction === 'string' ? payload.nextAction : null,
-  };
 }
 
 export function mapJob(job: any) {
@@ -621,33 +600,93 @@ export function mapApplicant(applicant: any) {
   };
 }
 
-export function mapInterview(interview: any) {
-  const metadata = parseInterviewMetadata(interview.feedback);
+function mapInterviewParticipant(participant: any) {
+  return {
+    id: participant.id,
+    sessionId: participant.sessionId,
+    applicantId: participant.applicantId,
+    attendanceStatus: participant.attendanceStatus,
+    createdAt: participant.createdAt.toISOString(),
+    applicant: participant.applicant
+      ? {
+          id: participant.applicant.id,
+          firstName: participant.applicant.firstName,
+          lastName: participant.applicant.lastName,
+          email: participant.applicant.email,
+          status: participant.applicant.status,
+        }
+      : null,
+  };
+}
+
+function mapInterviewerAssignment(assignment: any) {
+  return {
+    id: assignment.id,
+    sessionId: assignment.sessionId,
+    interviewerId: assignment.interviewerId,
+    role: assignment.role ?? null,
+    createdAt: assignment.createdAt.toISOString(),
+    interviewer: assignment.interviewer
+      ? {
+          id: assignment.interviewer.id,
+          firstName: assignment.interviewer.firstName,
+          lastName: assignment.interviewer.lastName,
+          email: assignment.interviewer.email,
+          status: assignment.interviewer.status,
+        }
+      : null,
+  };
+}
+
+export function mapInterviewFeedback(feedback: any) {
+  const score =
+    typeof feedback.score === 'number' && Number.isFinite(feedback.score)
+      ? feedback.score
+      : null;
 
   return {
-    id: interview.id,
-    applicantId: interview.applicantId ?? metadata.applicantId,
-    type: interview.type,
-    round: metadata.round,
-    status: interview.status,
-    scheduledAt: interview.scheduledAt?.toISOString() ?? null,
-    startedAt: interview.startedAt?.toISOString() ?? null,
-    completedAt: interview.completedAt?.toISOString() ?? null,
+    id: feedback.id,
+    sessionId: feedback.sessionId,
+    participantId: feedback.participantId,
+    assignmentId: feedback.assignmentId,
+    interviewerId: feedback.assignment?.interviewerId ?? null,
+    score,
+    endorsement: feedback.endorsement ?? null,
+    strengths: feedback.strengths ?? [],
+    weaknesses: feedback.weaknesses ?? [],
+    notes: feedback.notes ?? null,
+    submittedAt: dateToIso(feedback.submittedAt),
+    createdAt: feedback.createdAt.toISOString(),
+    updatedAt: feedback.updatedAt.toISOString(),
+  };
+}
+
+export function mapInterview(session: any) {
+  return {
+    id: session.id,
+    jobId: session.jobId,
+    type: session.type,
+    round: session.round,
+    status: session.status,
+    scheduledAt: session.scheduledAt.toISOString(),
     durationMinutes:
-      typeof interview.durationMinutes === 'number'
-        ? interview.durationMinutes
+      typeof session.durationMinutes === 'number'
+        ? session.durationMinutes
         : null,
-    interviewerId: interview.interviewerId ?? null,
-    location: interview.location ?? null,
-    meetingUrl: interview.meetingUrl ?? null,
-    interviewers: metadata.interviewers,
-    feedback: metadata.feedback,
-    endorsement: metadata.endorsement,
-    score: metadata.score == null ? null : String(metadata.score),
-    nextAction: metadata.nextAction,
-    notes: interview.notes ?? null,
-    createdAt: interview.createdAt.toISOString(),
-    updatedAt: interview.updatedAt.toISOString(),
+    location: session.location ?? null,
+    meetingUrl: session.meetingUrl ?? null,
+    createdById: session.createdById,
+    createdAt: session.createdAt.toISOString(),
+    updatedAt: session.updatedAt.toISOString(),
+    participants: (session.participants ?? []).map((participant: any) =>
+      mapInterviewParticipant(participant),
+    ),
+    interviewers: (session.interviewers ?? []).map((assignment: any) =>
+      mapInterviewerAssignment(assignment),
+    ),
+    feedbacks: (session.feedbacks ?? []).map((feedback: any) =>
+      mapInterviewFeedback(feedback),
+    ),
   };
 }
 
@@ -702,7 +741,7 @@ export async function recalculateJobMetrics(
   prisma: {
     job: PrismaService['job'];
     applicant: PrismaService['applicant'];
-    interview: PrismaService['interview'];
+    interviewParticipant: PrismaService['interviewParticipant'];
   },
   jobId: string,
 ) {
@@ -734,8 +773,11 @@ export async function recalculateJobMetrics(
         status: 'HIRED',
       },
     }),
-    prisma.interview.count({
-      where: { jobId },
+    prisma.interviewParticipant.count({
+      where: {
+        session: { jobId },
+        attendanceStatus: { not: 'CANCELLED' },
+      },
     }),
   ]);
 
