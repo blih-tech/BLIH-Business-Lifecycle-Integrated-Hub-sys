@@ -59,8 +59,6 @@ export type ApplicantMinAggregateOutputType = {
   currentPosition: string | null
   yearsExperience: number | null
   location: string | null
-  country: string | null
-  city: string | null
   nationality: string | null
   expectedSalary: runtime.Decimal | null
   currentSalary: runtime.Decimal | null
@@ -101,8 +99,6 @@ export type ApplicantMaxAggregateOutputType = {
   currentPosition: string | null
   yearsExperience: number | null
   location: string | null
-  country: string | null
-  city: string | null
   nationality: string | null
   expectedSalary: runtime.Decimal | null
   currentSalary: runtime.Decimal | null
@@ -143,8 +139,6 @@ export type ApplicantCountAggregateOutputType = {
   currentPosition: number
   yearsExperience: number
   location: number
-  country: number
-  city: number
   nationality: number
   expectedSalary: number
   currentSalary: number
@@ -204,8 +198,6 @@ export type ApplicantMinAggregateInputType = {
   currentPosition?: true
   yearsExperience?: true
   location?: true
-  country?: true
-  city?: true
   nationality?: true
   expectedSalary?: true
   currentSalary?: true
@@ -246,8 +238,6 @@ export type ApplicantMaxAggregateInputType = {
   currentPosition?: true
   yearsExperience?: true
   location?: true
-  country?: true
-  city?: true
   nationality?: true
   expectedSalary?: true
   currentSalary?: true
@@ -288,8 +278,6 @@ export type ApplicantCountAggregateInputType = {
   currentPosition?: true
   yearsExperience?: true
   location?: true
-  country?: true
-  city?: true
   nationality?: true
   expectedSalary?: true
   currentSalary?: true
@@ -420,8 +408,6 @@ export type ApplicantGroupByOutputType = {
   currentPosition: string | null
   yearsExperience: number | null
   location: string | null
-  country: string | null
-  city: string | null
   nationality: string | null
   expectedSalary: runtime.Decimal | null
   currentSalary: runtime.Decimal | null
@@ -488,8 +474,6 @@ export type ApplicantWhereInput = {
   currentPosition?: Prisma.StringNullableFilter<"Applicant"> | string | null
   yearsExperience?: Prisma.IntNullableFilter<"Applicant"> | number | null
   location?: Prisma.StringNullableFilter<"Applicant"> | string | null
-  country?: Prisma.StringNullableFilter<"Applicant"> | string | null
-  city?: Prisma.StringNullableFilter<"Applicant"> | string | null
   nationality?: Prisma.StringNullableFilter<"Applicant"> | string | null
   expectedSalary?: Prisma.DecimalNullableFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.DecimalNullableFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -542,8 +526,6 @@ export type ApplicantOrderByWithRelationInput = {
   currentPosition?: Prisma.SortOrderInput | Prisma.SortOrder
   yearsExperience?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
-  country?: Prisma.SortOrderInput | Prisma.SortOrder
-  city?: Prisma.SortOrderInput | Prisma.SortOrder
   nationality?: Prisma.SortOrderInput | Prisma.SortOrder
   expectedSalary?: Prisma.SortOrderInput | Prisma.SortOrder
   currentSalary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -600,8 +582,6 @@ export type ApplicantWhereUniqueInput = Prisma.AtLeast<{
   currentPosition?: Prisma.StringNullableFilter<"Applicant"> | string | null
   yearsExperience?: Prisma.IntNullableFilter<"Applicant"> | number | null
   location?: Prisma.StringNullableFilter<"Applicant"> | string | null
-  country?: Prisma.StringNullableFilter<"Applicant"> | string | null
-  city?: Prisma.StringNullableFilter<"Applicant"> | string | null
   nationality?: Prisma.StringNullableFilter<"Applicant"> | string | null
   expectedSalary?: Prisma.DecimalNullableFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.DecimalNullableFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -654,8 +634,6 @@ export type ApplicantOrderByWithAggregationInput = {
   currentPosition?: Prisma.SortOrderInput | Prisma.SortOrder
   yearsExperience?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
-  country?: Prisma.SortOrderInput | Prisma.SortOrder
-  city?: Prisma.SortOrderInput | Prisma.SortOrder
   nationality?: Prisma.SortOrderInput | Prisma.SortOrder
   expectedSalary?: Prisma.SortOrderInput | Prisma.SortOrder
   currentSalary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -707,8 +685,6 @@ export type ApplicantScalarWhereWithAggregatesInput = {
   currentPosition?: Prisma.StringNullableWithAggregatesFilter<"Applicant"> | string | null
   yearsExperience?: Prisma.IntNullableWithAggregatesFilter<"Applicant"> | number | null
   location?: Prisma.StringNullableWithAggregatesFilter<"Applicant"> | string | null
-  country?: Prisma.StringNullableWithAggregatesFilter<"Applicant"> | string | null
-  city?: Prisma.StringNullableWithAggregatesFilter<"Applicant"> | string | null
   nationality?: Prisma.StringNullableWithAggregatesFilter<"Applicant"> | string | null
   expectedSalary?: Prisma.DecimalNullableWithAggregatesFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.DecimalNullableWithAggregatesFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -749,8 +725,6 @@ export type ApplicantCreateInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -803,8 +777,6 @@ export type ApplicantUncheckedCreateInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -851,8 +823,6 @@ export type ApplicantUpdateInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -905,8 +875,6 @@ export type ApplicantUncheckedUpdateInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -956,8 +924,6 @@ export type ApplicantCreateManyInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -998,8 +964,6 @@ export type ApplicantUpdateManyMutationInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1043,8 +1007,6 @@ export type ApplicantUncheckedUpdateManyInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1103,8 +1065,6 @@ export type ApplicantCountOrderByAggregateInput = {
   currentPosition?: Prisma.SortOrder
   yearsExperience?: Prisma.SortOrder
   location?: Prisma.SortOrder
-  country?: Prisma.SortOrder
-  city?: Prisma.SortOrder
   nationality?: Prisma.SortOrder
   expectedSalary?: Prisma.SortOrder
   currentSalary?: Prisma.SortOrder
@@ -1155,8 +1115,6 @@ export type ApplicantMaxOrderByAggregateInput = {
   currentPosition?: Prisma.SortOrder
   yearsExperience?: Prisma.SortOrder
   location?: Prisma.SortOrder
-  country?: Prisma.SortOrder
-  city?: Prisma.SortOrder
   nationality?: Prisma.SortOrder
   expectedSalary?: Prisma.SortOrder
   currentSalary?: Prisma.SortOrder
@@ -1197,8 +1155,6 @@ export type ApplicantMinOrderByAggregateInput = {
   currentPosition?: Prisma.SortOrder
   yearsExperience?: Prisma.SortOrder
   location?: Prisma.SortOrder
-  country?: Prisma.SortOrder
-  city?: Prisma.SortOrder
   nationality?: Prisma.SortOrder
   expectedSalary?: Prisma.SortOrder
   currentSalary?: Prisma.SortOrder
@@ -1475,8 +1431,6 @@ export type ApplicantCreateWithoutJobInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1527,8 +1481,6 @@ export type ApplicantUncheckedCreateWithoutJobInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1607,8 +1559,6 @@ export type ApplicantScalarWhereInput = {
   currentPosition?: Prisma.StringNullableFilter<"Applicant"> | string | null
   yearsExperience?: Prisma.IntNullableFilter<"Applicant"> | number | null
   location?: Prisma.StringNullableFilter<"Applicant"> | string | null
-  country?: Prisma.StringNullableFilter<"Applicant"> | string | null
-  city?: Prisma.StringNullableFilter<"Applicant"> | string | null
   nationality?: Prisma.StringNullableFilter<"Applicant"> | string | null
   expectedSalary?: Prisma.DecimalNullableFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.DecimalNullableFilter<"Applicant"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1649,8 +1599,6 @@ export type ApplicantCreateWithoutApplicationFormInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1701,8 +1649,6 @@ export type ApplicantUncheckedCreateWithoutApplicationFormInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1775,8 +1721,6 @@ export type ApplicantCreateWithoutStatusHistoryInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1828,8 +1772,6 @@ export type ApplicantUncheckedCreateWithoutStatusHistoryInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1891,8 +1833,6 @@ export type ApplicantUpdateWithoutStatusHistoryInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1944,8 +1884,6 @@ export type ApplicantUncheckedUpdateWithoutStatusHistoryInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1991,8 +1929,6 @@ export type ApplicantCreateWithoutEducationsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2044,8 +1980,6 @@ export type ApplicantUncheckedCreateWithoutEducationsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2107,8 +2041,6 @@ export type ApplicantUpdateWithoutEducationsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2160,8 +2092,6 @@ export type ApplicantUncheckedUpdateWithoutEducationsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2207,8 +2137,6 @@ export type ApplicantCreateWithoutExperiencesInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2260,8 +2188,6 @@ export type ApplicantUncheckedCreateWithoutExperiencesInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2323,8 +2249,6 @@ export type ApplicantUpdateWithoutExperiencesInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2376,8 +2300,6 @@ export type ApplicantUncheckedUpdateWithoutExperiencesInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2423,8 +2345,6 @@ export type ApplicantCreateWithoutInterviewParticipantsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2476,8 +2396,6 @@ export type ApplicantUncheckedCreateWithoutInterviewParticipantsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2539,8 +2457,6 @@ export type ApplicantUpdateWithoutInterviewParticipantsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2592,8 +2508,6 @@ export type ApplicantUncheckedUpdateWithoutInterviewParticipantsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2639,8 +2553,6 @@ export type ApplicantCreateWithoutHiringDecisionsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2692,8 +2604,6 @@ export type ApplicantUncheckedCreateWithoutHiringDecisionsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2755,8 +2665,6 @@ export type ApplicantUpdateWithoutHiringDecisionsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2808,8 +2716,6 @@ export type ApplicantUncheckedUpdateWithoutHiringDecisionsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2855,8 +2761,6 @@ export type ApplicantCreateWithoutCvScreeningsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2908,8 +2812,6 @@ export type ApplicantUncheckedCreateWithoutCvScreeningsInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2971,8 +2873,6 @@ export type ApplicantUpdateWithoutCvScreeningsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3024,8 +2924,6 @@ export type ApplicantUncheckedUpdateWithoutCvScreeningsInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3071,8 +2969,6 @@ export type ApplicantCreateWithoutReferredByInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3123,8 +3019,6 @@ export type ApplicantUncheckedCreateWithoutReferredByInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3199,8 +3093,6 @@ export type ApplicantCreateManyJobInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3241,8 +3133,6 @@ export type ApplicantUpdateWithoutJobInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3293,8 +3183,6 @@ export type ApplicantUncheckedUpdateWithoutJobInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3343,8 +3231,6 @@ export type ApplicantUncheckedUpdateManyWithoutJobInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3387,8 +3273,6 @@ export type ApplicantCreateManyApplicationFormInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3429,8 +3313,6 @@ export type ApplicantUpdateWithoutApplicationFormInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3481,8 +3363,6 @@ export type ApplicantUncheckedUpdateWithoutApplicationFormInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3531,8 +3411,6 @@ export type ApplicantUncheckedUpdateManyWithoutApplicationFormInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3575,8 +3453,6 @@ export type ApplicantCreateManyReferredByInput = {
   currentPosition?: string | null
   yearsExperience?: number | null
   location?: string | null
-  country?: string | null
-  city?: string | null
   nationality?: string | null
   expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3617,8 +3493,6 @@ export type ApplicantUpdateWithoutReferredByInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3669,8 +3543,6 @@ export type ApplicantUncheckedUpdateWithoutReferredByInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3719,8 +3591,6 @@ export type ApplicantUncheckedUpdateManyWithoutReferredByInput = {
   currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3840,8 +3710,6 @@ export type ApplicantSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   currentPosition?: boolean
   yearsExperience?: boolean
   location?: boolean
-  country?: boolean
-  city?: boolean
   nationality?: boolean
   expectedSalary?: boolean
   currentSalary?: boolean
@@ -3895,8 +3763,6 @@ export type ApplicantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   currentPosition?: boolean
   yearsExperience?: boolean
   location?: boolean
-  country?: boolean
-  city?: boolean
   nationality?: boolean
   expectedSalary?: boolean
   currentSalary?: boolean
@@ -3943,8 +3809,6 @@ export type ApplicantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   currentPosition?: boolean
   yearsExperience?: boolean
   location?: boolean
-  country?: boolean
-  city?: boolean
   nationality?: boolean
   expectedSalary?: boolean
   currentSalary?: boolean
@@ -3991,8 +3855,6 @@ export type ApplicantSelectScalar = {
   currentPosition?: boolean
   yearsExperience?: boolean
   location?: boolean
-  country?: boolean
-  city?: boolean
   nationality?: boolean
   expectedSalary?: boolean
   currentSalary?: boolean
@@ -4017,7 +3879,7 @@ export type ApplicantSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ApplicantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "applicationFormId" | "firstName" | "lastName" | "email" | "emailNormalized" | "phone" | "resumeUrl" | "linkedinUrl" | "portfolioUrl" | "githubUrl" | "source" | "referredById" | "currentCompany" | "currentPosition" | "yearsExperience" | "location" | "country" | "city" | "nationality" | "expectedSalary" | "currentSalary" | "educationLevel" | "highestDegree" | "skills" | "status" | "coverLetter" | "sourceSnapshot" | "customFieldValues" | "appliedAt" | "screeningAt" | "shortlistedAt" | "interviewAt" | "offerAt" | "hiredAt" | "rejectedAt" | "withdrawnAt" | "lastActivityAt" | "profileScore" | "createdAt" | "updatedAt", ExtArgs["result"]["applicant"]>
+export type ApplicantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "applicationFormId" | "firstName" | "lastName" | "email" | "emailNormalized" | "phone" | "resumeUrl" | "linkedinUrl" | "portfolioUrl" | "githubUrl" | "source" | "referredById" | "currentCompany" | "currentPosition" | "yearsExperience" | "location" | "nationality" | "expectedSalary" | "currentSalary" | "educationLevel" | "highestDegree" | "skills" | "status" | "coverLetter" | "sourceSnapshot" | "customFieldValues" | "appliedAt" | "screeningAt" | "shortlistedAt" | "interviewAt" | "offerAt" | "hiredAt" | "rejectedAt" | "withdrawnAt" | "lastActivityAt" | "profileScore" | "createdAt" | "updatedAt", ExtArgs["result"]["applicant"]>
 export type ApplicantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicationForm?: boolean | Prisma.Applicant$applicationFormArgs<ExtArgs>
@@ -4073,8 +3935,6 @@ export type $ApplicantPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     currentPosition: string | null
     yearsExperience: number | null
     location: string | null
-    country: string | null
-    city: string | null
     nationality: string | null
     expectedSalary: runtime.Decimal | null
     currentSalary: runtime.Decimal | null
@@ -4547,8 +4407,6 @@ export interface ApplicantFieldRefs {
   readonly currentPosition: Prisma.FieldRef<"Applicant", 'String'>
   readonly yearsExperience: Prisma.FieldRef<"Applicant", 'Int'>
   readonly location: Prisma.FieldRef<"Applicant", 'String'>
-  readonly country: Prisma.FieldRef<"Applicant", 'String'>
-  readonly city: Prisma.FieldRef<"Applicant", 'String'>
   readonly nationality: Prisma.FieldRef<"Applicant", 'String'>
   readonly expectedSalary: Prisma.FieldRef<"Applicant", 'Decimal'>
   readonly currentSalary: Prisma.FieldRef<"Applicant", 'Decimal'>

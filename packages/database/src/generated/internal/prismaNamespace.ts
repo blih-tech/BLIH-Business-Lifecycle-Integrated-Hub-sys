@@ -11377,8 +11377,6 @@ export const ApplicantScalarFieldEnum = {
   currentPosition: 'currentPosition',
   yearsExperience: 'yearsExperience',
   location: 'location',
-  country: 'country',
-  city: 'city',
   nationality: 'nationality',
   expectedSalary: 'expectedSalary',
   currentSalary: 'currentSalary',

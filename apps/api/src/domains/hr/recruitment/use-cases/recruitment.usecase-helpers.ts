@@ -546,8 +546,6 @@ export function mapApplicant(applicant: any) {
     currentPosition: applicant.currentPosition ?? null,
     yearsExperience: applicant.yearsExperience ?? null,
     location: applicant.location ?? null,
-    country: applicant.country ?? null,
-    city: applicant.city ?? null,
     nationality: applicant.nationality ?? null,
     expectedSalary: decimalToString(applicant.expectedSalary),
     currentSalary: decimalToString(applicant.currentSalary),

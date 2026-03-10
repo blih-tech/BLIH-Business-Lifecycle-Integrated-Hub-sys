@@ -170,8 +170,6 @@ export const applicantExample = {
   currentPosition: 'Senior Engineer',
   yearsExperience: 6,
   location: 'Addis Ababa, Ethiopia',
-  country: 'Ethiopia',
-  city: 'Addis Ababa',
   nationality: 'Ethiopian',
   expectedSalary: '145000.00',
   currentSalary: '125000.00',
