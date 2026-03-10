@@ -19,11 +19,13 @@ import {
 
 const APPLICANT_STATUSES = [
   'APPLIED',
+  'SCREENING',
   'SHORTLISTED',
   'INTERVIEW',
   'OFFER',
   'HIRED',
   'REJECTED',
+  'WITHDRAWN',
 ] as const;
 
 const CANDIDATE_SOURCES = [
@@ -106,10 +108,15 @@ export class CreateApplicantDto {
   @IsUUID()
   applicationFormId?: string | null;
 
-  @ApiProperty({ example: 'Abel Tesfaye' })
+  @ApiProperty({ example: 'Abel' })
   @IsString()
   @IsNotEmpty()
-  fullName!: string;
+  firstName!: string;
+
+  @ApiProperty({ example: 'Tesfaye' })
+  @IsString()
+  @IsNotEmpty()
+  lastName!: string;
 
   @ApiProperty({ example: 'abel.tesfaye@example.com' })
   @IsEmail()
@@ -120,10 +127,10 @@ export class CreateApplicantDto {
   @IsString()
   phone?: string | null;
 
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
+  @ApiProperty({ example: 'https://cdn.example.com/cv/abel.pdf' })
   @IsString()
-  resumeUrl?: string | null;
+  @IsNotEmpty()
+  resumeUrl!: string;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -299,7 +306,10 @@ export class ApplicantResponseDto {
   applicationFormId!: string | null;
 
   @ApiProperty()
-  fullName!: string;
+  firstName!: string;
+
+  @ApiProperty()
+  lastName!: string;
 
   @ApiProperty()
   email!: string;
@@ -377,6 +387,9 @@ export class ApplicantResponseDto {
   appliedAt!: string;
 
   @ApiPropertyOptional({ nullable: true })
+  screeningAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
   shortlistedAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
@@ -390,6 +403,9 @@ export class ApplicantResponseDto {
 
   @ApiPropertyOptional({ nullable: true })
   rejectedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  withdrawnAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   lastActivityAt!: string | null;

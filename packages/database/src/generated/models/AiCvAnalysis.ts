@@ -28,84 +28,126 @@ export type AggregateAiCvAnalysis = {
 
 export type AiCvAnalysisAvgAggregateOutputType = {
   score: number | null
+  confidence: number | null
 }
 
 export type AiCvAnalysisSumAggregateOutputType = {
   score: number | null
+  confidence: number | null
 }
 
 export type AiCvAnalysisMinAggregateOutputType = {
   id: string | null
-  candidateId: string | null
+  applicantId: string | null
   jobId: string | null
+  screeningId: string | null
   score: number | null
   recommendation: $Enums.ScreeningRecommendation | null
   aiSummary: string | null
+  confidence: number | null
+  modelVersion: string | null
+  processedAt: Date | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type AiCvAnalysisMaxAggregateOutputType = {
   id: string | null
-  candidateId: string | null
+  applicantId: string | null
   jobId: string | null
+  screeningId: string | null
   score: number | null
   recommendation: $Enums.ScreeningRecommendation | null
   aiSummary: string | null
+  confidence: number | null
+  modelVersion: string | null
+  processedAt: Date | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type AiCvAnalysisCountAggregateOutputType = {
   id: number
-  candidateId: number
+  applicantId: number
   jobId: number
+  screeningId: number
   score: number
   recommendation: number
   strengths: number
   weaknesses: number
   aiSummary: number
+  detailedAnalysis: number
+  skillMatches: number
+  experienceMatches: number
+  educationMatches: number
+  confidence: number
+  modelVersion: number
+  processedAt: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
 
 export type AiCvAnalysisAvgAggregateInputType = {
   score?: true
+  confidence?: true
 }
 
 export type AiCvAnalysisSumAggregateInputType = {
   score?: true
+  confidence?: true
 }
 
 export type AiCvAnalysisMinAggregateInputType = {
   id?: true
-  candidateId?: true
+  applicantId?: true
   jobId?: true
+  screeningId?: true
   score?: true
   recommendation?: true
   aiSummary?: true
+  confidence?: true
+  modelVersion?: true
+  processedAt?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type AiCvAnalysisMaxAggregateInputType = {
   id?: true
-  candidateId?: true
+  applicantId?: true
   jobId?: true
+  screeningId?: true
   score?: true
   recommendation?: true
   aiSummary?: true
+  confidence?: true
+  modelVersion?: true
+  processedAt?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type AiCvAnalysisCountAggregateInputType = {
   id?: true
-  candidateId?: true
+  applicantId?: true
   jobId?: true
+  screeningId?: true
   score?: true
   recommendation?: true
   strengths?: true
   weaknesses?: true
   aiSummary?: true
+  detailedAnalysis?: true
+  skillMatches?: true
+  experienceMatches?: true
+  educationMatches?: true
+  confidence?: true
+  modelVersion?: true
+  processedAt?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -197,14 +239,23 @@ export type AiCvAnalysisGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type AiCvAnalysisGroupByOutputType = {
   id: string
-  candidateId: string
+  applicantId: string
   jobId: string
+  screeningId: string | null
   score: number
   recommendation: $Enums.ScreeningRecommendation
   strengths: string[]
   weaknesses: string[]
   aiSummary: string
+  detailedAnalysis: runtime.JsonValue | null
+  skillMatches: runtime.JsonValue | null
+  experienceMatches: runtime.JsonValue | null
+  educationMatches: runtime.JsonValue | null
+  confidence: number
+  modelVersion: string
+  processedAt: Date
   createdAt: Date
+  updatedAt: Date
   _count: AiCvAnalysisCountAggregateOutputType | null
   _avg: AiCvAnalysisAvgAggregateOutputType | null
   _sum: AiCvAnalysisSumAggregateOutputType | null
@@ -232,26 +283,44 @@ export type AiCvAnalysisWhereInput = {
   OR?: Prisma.AiCvAnalysisWhereInput[]
   NOT?: Prisma.AiCvAnalysisWhereInput | Prisma.AiCvAnalysisWhereInput[]
   id?: Prisma.UuidFilter<"AiCvAnalysis"> | string
-  candidateId?: Prisma.UuidFilter<"AiCvAnalysis"> | string
+  applicantId?: Prisma.UuidFilter<"AiCvAnalysis"> | string
   jobId?: Prisma.UuidFilter<"AiCvAnalysis"> | string
+  screeningId?: Prisma.UuidNullableFilter<"AiCvAnalysis"> | string | null
   score?: Prisma.FloatFilter<"AiCvAnalysis"> | number
   recommendation?: Prisma.EnumScreeningRecommendationFilter<"AiCvAnalysis"> | $Enums.ScreeningRecommendation
   strengths?: Prisma.StringNullableListFilter<"AiCvAnalysis">
   weaknesses?: Prisma.StringNullableListFilter<"AiCvAnalysis">
   aiSummary?: Prisma.StringFilter<"AiCvAnalysis"> | string
+  detailedAnalysis?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  skillMatches?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  experienceMatches?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  educationMatches?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  confidence?: Prisma.FloatFilter<"AiCvAnalysis"> | number
+  modelVersion?: Prisma.StringFilter<"AiCvAnalysis"> | string
+  processedAt?: Prisma.DateTimeFilter<"AiCvAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AiCvAnalysis"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AiCvAnalysis"> | Date | string
 }
 
 export type AiCvAnalysisOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  screeningId?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrder
   recommendation?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
   aiSummary?: Prisma.SortOrder
+  detailedAnalysis?: Prisma.SortOrderInput | Prisma.SortOrder
+  skillMatches?: Prisma.SortOrderInput | Prisma.SortOrder
+  experienceMatches?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationMatches?: Prisma.SortOrderInput | Prisma.SortOrder
+  confidence?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiCvAnalysisWhereUniqueInput = Prisma.AtLeast<{
@@ -259,26 +328,44 @@ export type AiCvAnalysisWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AiCvAnalysisWhereInput | Prisma.AiCvAnalysisWhereInput[]
   OR?: Prisma.AiCvAnalysisWhereInput[]
   NOT?: Prisma.AiCvAnalysisWhereInput | Prisma.AiCvAnalysisWhereInput[]
-  candidateId?: Prisma.UuidFilter<"AiCvAnalysis"> | string
+  applicantId?: Prisma.UuidFilter<"AiCvAnalysis"> | string
   jobId?: Prisma.UuidFilter<"AiCvAnalysis"> | string
+  screeningId?: Prisma.UuidNullableFilter<"AiCvAnalysis"> | string | null
   score?: Prisma.FloatFilter<"AiCvAnalysis"> | number
   recommendation?: Prisma.EnumScreeningRecommendationFilter<"AiCvAnalysis"> | $Enums.ScreeningRecommendation
   strengths?: Prisma.StringNullableListFilter<"AiCvAnalysis">
   weaknesses?: Prisma.StringNullableListFilter<"AiCvAnalysis">
   aiSummary?: Prisma.StringFilter<"AiCvAnalysis"> | string
+  detailedAnalysis?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  skillMatches?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  experienceMatches?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  educationMatches?: Prisma.JsonNullableFilter<"AiCvAnalysis">
+  confidence?: Prisma.FloatFilter<"AiCvAnalysis"> | number
+  modelVersion?: Prisma.StringFilter<"AiCvAnalysis"> | string
+  processedAt?: Prisma.DateTimeFilter<"AiCvAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AiCvAnalysis"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AiCvAnalysis"> | Date | string
 }, "id">
 
 export type AiCvAnalysisOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  screeningId?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrder
   recommendation?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
   aiSummary?: Prisma.SortOrder
+  detailedAnalysis?: Prisma.SortOrderInput | Prisma.SortOrder
+  skillMatches?: Prisma.SortOrderInput | Prisma.SortOrder
+  experienceMatches?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationMatches?: Prisma.SortOrderInput | Prisma.SortOrder
+  confidence?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.AiCvAnalysisCountOrderByAggregateInput
   _avg?: Prisma.AiCvAnalysisAvgOrderByAggregateInput
   _max?: Prisma.AiCvAnalysisMaxOrderByAggregateInput
@@ -291,98 +378,170 @@ export type AiCvAnalysisScalarWhereWithAggregatesInput = {
   OR?: Prisma.AiCvAnalysisScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AiCvAnalysisScalarWhereWithAggregatesInput | Prisma.AiCvAnalysisScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"AiCvAnalysis"> | string
-  candidateId?: Prisma.UuidWithAggregatesFilter<"AiCvAnalysis"> | string
+  applicantId?: Prisma.UuidWithAggregatesFilter<"AiCvAnalysis"> | string
   jobId?: Prisma.UuidWithAggregatesFilter<"AiCvAnalysis"> | string
+  screeningId?: Prisma.UuidNullableWithAggregatesFilter<"AiCvAnalysis"> | string | null
   score?: Prisma.FloatWithAggregatesFilter<"AiCvAnalysis"> | number
   recommendation?: Prisma.EnumScreeningRecommendationWithAggregatesFilter<"AiCvAnalysis"> | $Enums.ScreeningRecommendation
   strengths?: Prisma.StringNullableListFilter<"AiCvAnalysis">
   weaknesses?: Prisma.StringNullableListFilter<"AiCvAnalysis">
   aiSummary?: Prisma.StringWithAggregatesFilter<"AiCvAnalysis"> | string
+  detailedAnalysis?: Prisma.JsonNullableWithAggregatesFilter<"AiCvAnalysis">
+  skillMatches?: Prisma.JsonNullableWithAggregatesFilter<"AiCvAnalysis">
+  experienceMatches?: Prisma.JsonNullableWithAggregatesFilter<"AiCvAnalysis">
+  educationMatches?: Prisma.JsonNullableWithAggregatesFilter<"AiCvAnalysis">
+  confidence?: Prisma.FloatWithAggregatesFilter<"AiCvAnalysis"> | number
+  modelVersion?: Prisma.StringWithAggregatesFilter<"AiCvAnalysis"> | string
+  processedAt?: Prisma.DateTimeWithAggregatesFilter<"AiCvAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AiCvAnalysis"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AiCvAnalysis"> | Date | string
 }
 
 export type AiCvAnalysisCreateInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   jobId: string
+  screeningId?: string | null
   score: number
   recommendation: $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisCreatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisCreateweaknessesInput | string[]
   aiSummary: string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence: number
+  modelVersion: string
+  processedAt?: Date | string
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type AiCvAnalysisUncheckedCreateInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   jobId: string
+  screeningId?: string | null
   score: number
   recommendation: $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisCreatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisCreateweaknessesInput | string[]
   aiSummary: string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence: number
+  modelVersion: string
+  processedAt?: Date | string
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type AiCvAnalysisUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  screeningId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   recommendation?: Prisma.EnumScreeningRecommendationFieldUpdateOperationsInput | $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisUpdatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisUpdateweaknessesInput | string[]
   aiSummary?: Prisma.StringFieldUpdateOperationsInput | string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  modelVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiCvAnalysisUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  screeningId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   recommendation?: Prisma.EnumScreeningRecommendationFieldUpdateOperationsInput | $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisUpdatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisUpdateweaknessesInput | string[]
   aiSummary?: Prisma.StringFieldUpdateOperationsInput | string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  modelVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiCvAnalysisCreateManyInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   jobId: string
+  screeningId?: string | null
   score: number
   recommendation: $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisCreatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisCreateweaknessesInput | string[]
   aiSummary: string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence: number
+  modelVersion: string
+  processedAt?: Date | string
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type AiCvAnalysisUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  screeningId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   recommendation?: Prisma.EnumScreeningRecommendationFieldUpdateOperationsInput | $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisUpdatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisUpdateweaknessesInput | string[]
   aiSummary?: Prisma.StringFieldUpdateOperationsInput | string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  modelVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiCvAnalysisUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  screeningId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   recommendation?: Prisma.EnumScreeningRecommendationFieldUpdateOperationsInput | $Enums.ScreeningRecommendation
   strengths?: Prisma.AiCvAnalysisUpdatestrengthsInput | string[]
   weaknesses?: Prisma.AiCvAnalysisUpdateweaknessesInput | string[]
   aiSummary?: Prisma.StringFieldUpdateOperationsInput | string
+  detailedAnalysis?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  skillMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  experienceMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  educationMatches?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  modelVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -395,42 +554,63 @@ export type StringNullableListFilter<$PrismaModel = never> = {
 
 export type AiCvAnalysisCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  screeningId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   recommendation?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
   aiSummary?: Prisma.SortOrder
+  detailedAnalysis?: Prisma.SortOrder
+  skillMatches?: Prisma.SortOrder
+  experienceMatches?: Prisma.SortOrder
+  educationMatches?: Prisma.SortOrder
+  confidence?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiCvAnalysisAvgOrderByAggregateInput = {
   score?: Prisma.SortOrder
+  confidence?: Prisma.SortOrder
 }
 
 export type AiCvAnalysisMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  screeningId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   recommendation?: Prisma.SortOrder
   aiSummary?: Prisma.SortOrder
+  confidence?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiCvAnalysisMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  screeningId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   recommendation?: Prisma.SortOrder
   aiSummary?: Prisma.SortOrder
+  confidence?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiCvAnalysisSumOrderByAggregateInput = {
   score?: Prisma.SortOrder
+  confidence?: Prisma.SortOrder
 }
 
 export type AiCvAnalysisCreatestrengthsInput = {
@@ -467,67 +647,112 @@ export type AiCvAnalysisUpdateweaknessesInput = {
 
 export type AiCvAnalysisSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   jobId?: boolean
+  screeningId?: boolean
   score?: boolean
   recommendation?: boolean
   strengths?: boolean
   weaknesses?: boolean
   aiSummary?: boolean
+  detailedAnalysis?: boolean
+  skillMatches?: boolean
+  experienceMatches?: boolean
+  educationMatches?: boolean
+  confidence?: boolean
+  modelVersion?: boolean
+  processedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["aiCvAnalysis"]>
 
 export type AiCvAnalysisSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   jobId?: boolean
+  screeningId?: boolean
   score?: boolean
   recommendation?: boolean
   strengths?: boolean
   weaknesses?: boolean
   aiSummary?: boolean
+  detailedAnalysis?: boolean
+  skillMatches?: boolean
+  experienceMatches?: boolean
+  educationMatches?: boolean
+  confidence?: boolean
+  modelVersion?: boolean
+  processedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["aiCvAnalysis"]>
 
 export type AiCvAnalysisSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   jobId?: boolean
+  screeningId?: boolean
   score?: boolean
   recommendation?: boolean
   strengths?: boolean
   weaknesses?: boolean
   aiSummary?: boolean
+  detailedAnalysis?: boolean
+  skillMatches?: boolean
+  experienceMatches?: boolean
+  educationMatches?: boolean
+  confidence?: boolean
+  modelVersion?: boolean
+  processedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["aiCvAnalysis"]>
 
 export type AiCvAnalysisSelectScalar = {
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   jobId?: boolean
+  screeningId?: boolean
   score?: boolean
   recommendation?: boolean
   strengths?: boolean
   weaknesses?: boolean
   aiSummary?: boolean
+  detailedAnalysis?: boolean
+  skillMatches?: boolean
+  experienceMatches?: boolean
+  educationMatches?: boolean
+  confidence?: boolean
+  modelVersion?: boolean
+  processedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type AiCvAnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "candidateId" | "jobId" | "score" | "recommendation" | "strengths" | "weaknesses" | "aiSummary" | "createdAt", ExtArgs["result"]["aiCvAnalysis"]>
+export type AiCvAnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicantId" | "jobId" | "screeningId" | "score" | "recommendation" | "strengths" | "weaknesses" | "aiSummary" | "detailedAnalysis" | "skillMatches" | "experienceMatches" | "educationMatches" | "confidence" | "modelVersion" | "processedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["aiCvAnalysis"]>
 
 export type $AiCvAnalysisPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AiCvAnalysis"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    candidateId: string
+    applicantId: string
     jobId: string
+    screeningId: string | null
     score: number
     recommendation: $Enums.ScreeningRecommendation
     strengths: string[]
     weaknesses: string[]
     aiSummary: string
+    detailedAnalysis: runtime.JsonValue | null
+    skillMatches: runtime.JsonValue | null
+    experienceMatches: runtime.JsonValue | null
+    educationMatches: runtime.JsonValue | null
+    confidence: number
+    modelVersion: string
+    processedAt: Date
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["aiCvAnalysis"]>
   composites: {}
 }
@@ -952,14 +1177,23 @@ export interface Prisma__AiCvAnalysisClient<T, Null = never, ExtArgs extends run
  */
 export interface AiCvAnalysisFieldRefs {
   readonly id: Prisma.FieldRef<"AiCvAnalysis", 'String'>
-  readonly candidateId: Prisma.FieldRef<"AiCvAnalysis", 'String'>
+  readonly applicantId: Prisma.FieldRef<"AiCvAnalysis", 'String'>
   readonly jobId: Prisma.FieldRef<"AiCvAnalysis", 'String'>
+  readonly screeningId: Prisma.FieldRef<"AiCvAnalysis", 'String'>
   readonly score: Prisma.FieldRef<"AiCvAnalysis", 'Float'>
   readonly recommendation: Prisma.FieldRef<"AiCvAnalysis", 'ScreeningRecommendation'>
   readonly strengths: Prisma.FieldRef<"AiCvAnalysis", 'String[]'>
   readonly weaknesses: Prisma.FieldRef<"AiCvAnalysis", 'String[]'>
   readonly aiSummary: Prisma.FieldRef<"AiCvAnalysis", 'String'>
+  readonly detailedAnalysis: Prisma.FieldRef<"AiCvAnalysis", 'Json'>
+  readonly skillMatches: Prisma.FieldRef<"AiCvAnalysis", 'Json'>
+  readonly experienceMatches: Prisma.FieldRef<"AiCvAnalysis", 'Json'>
+  readonly educationMatches: Prisma.FieldRef<"AiCvAnalysis", 'Json'>
+  readonly confidence: Prisma.FieldRef<"AiCvAnalysis", 'Float'>
+  readonly modelVersion: Prisma.FieldRef<"AiCvAnalysis", 'String'>
+  readonly processedAt: Prisma.FieldRef<"AiCvAnalysis", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AiCvAnalysis", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"AiCvAnalysis", 'DateTime'>
 }
     
 

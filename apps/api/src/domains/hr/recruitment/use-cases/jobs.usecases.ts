@@ -14,6 +14,8 @@ import type {
   CloseJobDto,
   CreateJobDto,
   JobApplicationCustomFieldInputDto,
+  JobApplicationFormFieldInputDto,
+  JobApplicationFormSectionInputDto,
   JobListQueryDto,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
@@ -21,7 +23,6 @@ import type {
   UpsertJobToolsDto,
 } from '../dto/job.dto';
 import {
-  approvalDecisionToStageStatus,
   assertDepartmentPositionIntegrity,
   assertSalaryRange,
   assertSubmitReadiness,
@@ -36,12 +37,34 @@ import {
 } from './recruitment.usecase-helpers';
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
+type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
+type ApprovalStepStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'REQUEST_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED';
 type StageStatus = 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
 
 interface ApprovalState {
   id: string;
+  level: number;
   stage: ApprovalStage;
   decision: 'PENDING' | 'APPROVED' | 'REJECTED';
+}
+
+interface RequestWorkflowState {
+  status:
+    | 'DRAFT'
+    | 'PENDING_FOR_APPROVAL'
+    | 'READY_TO_POST'
+    | 'PUBLISHED'
+    | 'CLOSED'
+    | 'REJECTED';
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  draftedAt: Date | null;
+  pendingApprovalAt: Date | null;
+  readyToPostAt: Date | null;
+  rejectedAt: Date | null;
 }
 
 const toNumberOrNull = (value: unknown): number | null => {
@@ -49,35 +72,55 @@ const toNumberOrNull = (value: unknown): number | null => {
   return Number(value);
 };
 
-const toApprovalState = (approval: {
-  id: string;
-  stage: string;
-  decision: string;
-}): ApprovalState => ({
-  id: approval.id,
-  stage: approval.stage as ApprovalStage,
-  decision: approval.decision as ApprovalState['decision'],
+const departmentToStage = (department: ApprovalDepartment): ApprovalStage => {
+  if (department === 'HR') return 'HR_REVIEW';
+  return department;
+};
+
+const stageToDepartment = (stage: ApprovalStage): ApprovalDepartment => {
+  if (stage === 'HR_REVIEW') return 'HR';
+  return stage;
+};
+
+const stepStatusToDecision = (
+  status: ApprovalStepStatus | string,
+): ApprovalState['decision'] => {
+  if (status === 'APPROVED') return 'APPROVED';
+  if (status === 'REJECTED') return 'REJECTED';
+  return 'PENDING';
+};
+
+const decisionToStepStatus = (
+  decision: Exclude<ApprovalState['decision'], 'PENDING'>,
+): ApprovalStepStatus => (decision === 'APPROVED' ? 'APPROVED' : 'REJECTED');
+
+const stageStatusToStepStatuses = (
+  status: StageStatus,
+): ApprovalStepStatus[] => {
+  if (status === 'APPROVED') return ['APPROVED'];
+  if (status === 'REJECTED') return ['REJECTED'];
+  return ['PENDING_FOR_APPROVAL', 'REQUEST_REVIEW'];
+};
+
+const approvalWhereForStageStatus = (
+  stage: ApprovalStage,
+  status: StageStatus,
+): Prisma.JobApprovalStepWhereInput => ({
+  department: stageToDepartment(stage),
+  status: { in: stageStatusToStepStatuses(status) },
 });
 
-const stageFieldPatch = (stage: ApprovalStage, value: StageStatus) => {
-  if (stage === 'FINANCE') return { financeApprovalStatus: value };
-  if (stage === 'GM') return { gmApprovalStatus: value };
-  return { hrApprovalStatus: value };
-};
-
-const buildStageStatusesFromApprovals = (approvals: ApprovalState[]) => {
-  const finance = approvals.find((approval) => approval.stage === 'FINANCE');
-  const gm = approvals.find((approval) => approval.stage === 'GM');
-  const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
-  if (!finance || !gm || !hr) {
-    throw new BadRequestException('Missing approval stage configuration');
-  }
-  return {
-    financeApprovalStatus: approvalDecisionToStageStatus(finance.decision),
-    gmApprovalStatus: approvalDecisionToStageStatus(gm.decision),
-    hrApprovalStatus: approvalDecisionToStageStatus(hr.decision),
-  };
-};
+const toApprovalState = (approval: {
+  id: string;
+  department: ApprovalDepartment;
+  status: ApprovalStepStatus;
+  level: number;
+}): ApprovalState => ({
+  id: approval.id,
+  level: approval.level,
+  stage: departmentToStage(approval.department),
+  decision: stepStatusToDecision(approval.status),
+});
 
 const validateApplicationCustomFieldOptions = (
   customFields: JobApplicationCustomFieldInputDto[],
@@ -105,8 +148,62 @@ const validateApplicationCustomFieldOptions = (
   }
 };
 
+const validateApplicantFieldConfig = (
+  applicantFields: JobApplicationFormFieldInputDto[],
+) => {
+  const seenKeys = new Set<string>();
+  for (const field of applicantFields) {
+    if (seenKeys.has(field.key)) {
+      throw new BadRequestException(
+        `Duplicate applicant field key detected: ${field.key}`,
+      );
+    }
+    seenKeys.add(field.key);
+
+    if (field.required && !field.enabled) {
+      throw new BadRequestException(
+        `Applicant field ${field.key} cannot be required when disabled`,
+      );
+    }
+  }
+};
+
+const validateFormSectionConfig = (
+  sections: JobApplicationFormSectionInputDto[],
+) => {
+  const seenKeys = new Set<string>();
+  for (const section of sections) {
+    if (seenKeys.has(section.key)) {
+      throw new BadRequestException(
+        `Duplicate application section key detected: ${section.key}`,
+      );
+    }
+    seenKeys.add(section.key);
+
+    if (section.required && !section.enabled) {
+      throw new BadRequestException(
+        `Application section ${section.key} cannot be required when disabled`,
+      );
+    }
+  }
+};
+
 const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
+
+const defaultApplicantFields = (): JobApplicationFormFieldInputDto[] => [
+  { key: 'PHONE', enabled: true, required: false, order: 1 },
+  { key: 'LINKEDIN_URL', enabled: false, required: false, order: 2 },
+  { key: 'PORTFOLIO_URL', enabled: false, required: false, order: 3 },
+  { key: 'GITHUB_URL', enabled: false, required: false, order: 4 },
+  { key: 'EXPECTED_SALARY', enabled: false, required: false, order: 5 },
+  { key: 'COVER_LETTER', enabled: false, required: false, order: 6 },
+];
+
+const defaultFormSections = (): JobApplicationFormSectionInputDto[] => [
+  { key: 'EDUCATION', enabled: false, required: false, order: 1 },
+  { key: 'EXPERIENCE', enabled: false, required: false, order: 2 },
+];
 
 const assertOptionalUserExists = async (
   prisma: PrismaService,
@@ -125,26 +222,35 @@ const assertOptionalUserExists = async (
   }
 };
 
-const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
-  if (!job.requestForm || !job.applicationForm) {
-    throw new BadRequestException(
-      'Job is missing form records required for nested updates',
-    );
+const getRequestFormOrThrow = (job: {
+  requestForm?: RequestWorkflowState | null;
+}) => {
+  if (!job.requestForm) {
+    throw new BadRequestException('Job request form is missing');
   }
+  return job.requestForm;
+};
+
+const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
+  const requestForm = job.requestForm;
+  const applicationForm = job.applicationForm;
 
   return {
     requestForm: {
-      jobTitle: job.requestForm.jobTitle,
-      department: job.requestForm.departmentId,
-      requestedBy: job.requestForm.requestedBy,
-      position: job.requestForm.positionId,
-      requestType: job.requestForm.requestType,
-      replaceForUserId: job.requestForm.replaceForUserId ?? undefined,
-      businessJustification: job.requestForm.businessJustification,
-      employmentType: job.requestForm.employmentType,
-      workMode: job.requestForm.workMode,
-      urgency: job.requestForm.urgency,
-      neededByDate: job.requestForm.neededByDate.toISOString(),
+      jobTitle: requestForm?.jobTitle ?? job.title,
+      department: requestForm?.departmentId ?? job.departmentId,
+      requestedBy: requestForm?.requestedBy ?? 'System',
+      position: requestForm?.positionId ?? job.positionId,
+      requestType: requestForm?.requestType ?? 'NEW',
+      replaceForUserId: requestForm?.replaceForUserId ?? undefined,
+      businessJustification:
+        requestForm?.businessJustification ?? 'Auto-generated request form',
+      employmentType:
+        requestForm?.employmentType ?? job.employmentType ?? 'FULL_TIME',
+      workMode: requestForm?.workMode ?? job.workLocationType,
+      urgency: requestForm?.urgency ?? 'MEDIUM',
+      neededByDate: (requestForm?.neededByDate ?? new Date()).toISOString(),
+      priority: requestForm?.priority ?? 'MEDIUM',
     },
     job: {
       title: job.title,
@@ -156,7 +262,6 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       contractType: job.contractType,
       employmentType: job.employmentType ?? undefined,
       workLocationType: job.workLocationType,
-      remoteScope: job.remoteScope ?? undefined,
       city: job.city ?? undefined,
       country: job.country ?? undefined,
       openings: job.openings,
@@ -169,41 +274,40 @@ const mapExistingJobToDtoShape = (job: any): CreateJobDto => {
       preferredSkills: job.preferredSkills ?? [],
       responsibilities: job.responsibilities ?? [],
       tools: job.tools ?? [],
-      priority: job.priority ?? undefined,
       hiringManagerId: job.hiringManagerId ?? undefined,
       applicationDeadline: job.applicationDeadline
         ? job.applicationDeadline.toISOString()
         : undefined,
     },
     applicationForm: {
-      jobTitle: job.applicationForm.jobTitle,
-      location: job.applicationForm.location,
-      workMode: job.applicationForm.workMode,
-      employmentType: job.applicationForm.employmentType,
-      jobSummary: job.applicationForm.jobSummary,
-      whyJoinUs: job.applicationForm.whyJoinUs ?? undefined,
-      requiredSkills: job.applicationForm.requiredSkills ?? [],
-      responsibilities: job.applicationForm.responsibilities ?? [],
-      preferredSkills: job.applicationForm.preferredSkills ?? [],
-      experienceLevel: job.applicationForm.experienceLevel,
-      salaryMin: toNumberOrNull(job.applicationForm.salaryMin) ?? undefined,
-      salaryMax: toNumberOrNull(job.applicationForm.salaryMax) ?? undefined,
-      salaryCurrency: job.applicationForm.salaryCurrency ?? undefined,
-      salaryMode: job.applicationForm.salaryMode,
-      benefits: job.applicationForm.benefits ?? [],
-      openings: job.applicationForm.openings,
-      applicationDeadline:
-        job.applicationForm.applicationDeadline.toISOString(),
-      customFields: (job.applicationForm.customFields ?? []).map(
-        (field: any) => ({
-          id: field.customFieldId,
-          label: field.label,
-          type: field.type,
-          required: field.required,
-          helpText: field.helpText ?? undefined,
-          options: (field.options ?? []).map((option: any) => option.value),
-        }),
-      ),
+      applicantFields:
+        applicationForm?.applicantFields?.length > 0
+          ? applicationForm.applicantFields.map(
+              (field: any, index: number) => ({
+                key: field.key,
+                enabled: field.enabled,
+                required: field.required,
+                order: field.order ?? index + 1,
+              }),
+            )
+          : defaultApplicantFields(),
+      sections:
+        applicationForm?.sections?.length > 0
+          ? applicationForm.sections.map((section: any, index: number) => ({
+              key: section.key,
+              enabled: section.enabled,
+              required: section.required,
+              order: section.order ?? index + 1,
+            }))
+          : defaultFormSections(),
+      customFields: (applicationForm?.customFields ?? []).map((field: any) => ({
+        id: field.customFieldId,
+        label: field.label,
+        type: field.type,
+        required: field.required,
+        helpText: field.helpText ?? undefined,
+        options: (field.options ?? []).map((option: any) => option.value),
+      })),
     },
   };
 };
@@ -230,17 +334,11 @@ const mergeNestedPayload = (
   applicationForm: {
     ...existing.applicationForm,
     ...(incoming.applicationForm ?? {}),
-    requiredSkills:
-      incoming.applicationForm?.requiredSkills ??
-      existing.applicationForm.requiredSkills,
-    preferredSkills:
-      incoming.applicationForm?.preferredSkills ??
-      existing.applicationForm.preferredSkills,
-    responsibilities:
-      incoming.applicationForm?.responsibilities ??
-      existing.applicationForm.responsibilities,
-    benefits:
-      incoming.applicationForm?.benefits ?? existing.applicationForm.benefits,
+    applicantFields:
+      incoming.applicationForm?.applicantFields ??
+      existing.applicationForm.applicantFields,
+    sections:
+      incoming.applicationForm?.sections ?? existing.applicationForm.sections,
     customFields:
       incoming.applicationForm?.customFields ??
       existing.applicationForm.customFields,
@@ -253,6 +351,8 @@ export class CreateJobUseCase {
 
   async execute(dto: CreateJobDto, principal: AuthPrincipal) {
     validateApplicationCustomFieldOptions(dto.applicationForm.customFields);
+    validateApplicantFieldConfig(dto.applicationForm.applicantFields);
+    validateFormSectionConfig(dto.applicationForm.sections);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -275,10 +375,6 @@ export class CreateJobUseCase {
       'requestForm.replaceForUserId',
     );
     assertSalaryRange(dto.job.salaryMin ?? null, dto.job.salaryMax ?? null);
-    assertSalaryRange(
-      dto.applicationForm.salaryMin ?? null,
-      dto.applicationForm.salaryMax ?? null,
-    );
 
     const slug = await generateUniqueSlug(this.prisma, dto.job.title);
     const creatorId = principal.userId ?? principal.sub;
@@ -294,15 +390,21 @@ export class CreateJobUseCase {
       dto.job.responsibilities ?? [],
     );
     const jobTools = normalizeStringArray(dto.job.tools ?? []);
-    const applicationRequiredSkills = normalizeSkillArray(
-      dto.applicationForm.requiredSkills,
+    const applicantFields = dto.applicationForm.applicantFields.map(
+      (field, index) => ({
+        key: field.key,
+        enabled: field.enabled,
+        required: field.required,
+        order: field.order ?? index + 1,
+      }),
     );
-    const applicationPreferredSkills = normalizeSkillArray(
-      dto.applicationForm.preferredSkills ?? [],
-    );
-    const applicationResponsibilities = normalizeStringArray(
-      dto.applicationForm.responsibilities,
-    );
+    const sections = dto.applicationForm.sections.map((section, index) => ({
+      key: section.key,
+      enabled: section.enabled,
+      required: section.required,
+      order: section.order ?? index + 1,
+    }));
+    const draftedAt = new Date();
 
     const created = await this.prisma.job.create({
       data: {
@@ -316,7 +418,6 @@ export class CreateJobUseCase {
         contractType: dto.job.contractType,
         employmentType: dto.job.employmentType ?? undefined,
         workLocationType: dto.job.workLocationType,
-        remoteScope: dto.job.remoteScope ?? undefined,
         city: dto.job.city ?? undefined,
         country: dto.job.country ?? undefined,
         openings: dto.job.openings ?? 1,
@@ -330,16 +431,11 @@ export class CreateJobUseCase {
         responsibilities: jobResponsibilities,
         tools: jobTools,
         creatorIsHr,
-        priority: dto.job.priority ?? 'MEDIUM',
         hiringManagerId: dto.job.hiringManagerId ?? undefined,
         applicationDeadline: dto.job.applicationDeadline
           ? new Date(dto.job.applicationDeadline)
           : undefined,
-        draftedAt: new Date(),
         createdById: creatorId,
-        financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-        gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-        hrApprovalStatus: 'PENDING_FOR_APPROVAL',
         requestForm: {
           create: {
             jobTitle: dto.requestForm.jobTitle,
@@ -353,32 +449,29 @@ export class CreateJobUseCase {
             workMode: dto.requestForm.workMode,
             urgency: dto.requestForm.urgency,
             neededByDate: new Date(dto.requestForm.neededByDate),
+            status: 'DRAFT',
+            priority: dto.requestForm.priority ?? 'MEDIUM',
+            draftedAt,
           },
         },
         applicationForm: {
           create: {
-            jobTitle: dto.applicationForm.jobTitle,
-            location: dto.applicationForm.location,
-            workMode: dto.applicationForm.workMode,
-            employmentType: dto.applicationForm.employmentType,
-            jobSummary: dto.applicationForm.jobSummary as Prisma.InputJsonValue,
-            whyJoinUs:
-              (dto.applicationForm.whyJoinUs as Prisma.InputJsonValue | null) ??
-              undefined,
-            requiredSkills: applicationRequiredSkills,
-            preferredSkills: applicationPreferredSkills,
-            responsibilities: applicationResponsibilities,
-            experienceLevel: dto.applicationForm.experienceLevel,
-            salaryMin: dto.applicationForm.salaryMin ?? undefined,
-            salaryMax: dto.applicationForm.salaryMax ?? undefined,
-            salaryCurrency:
-              currencyOrNull(dto.applicationForm.salaryCurrency) ?? undefined,
-            salaryMode: dto.applicationForm.salaryMode,
-            benefits: dto.applicationForm.benefits ?? [],
-            openings: dto.applicationForm.openings,
-            applicationDeadline: new Date(
-              dto.applicationForm.applicationDeadline,
-            ),
+            applicantFields: {
+              create: applicantFields.map((field) => ({
+                key: field.key,
+                enabled: field.enabled,
+                required: field.required,
+                order: field.order,
+              })),
+            },
+            sections: {
+              create: sections.map((section) => ({
+                key: section.key,
+                enabled: section.enabled,
+                required: section.required,
+                order: section.order,
+              })),
+            },
             customFields: {
               create: dto.applicationForm.customFields.map((field, index) => ({
                 customFieldId: field.id,
@@ -410,18 +503,43 @@ export class ListJobsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: JobListQueryDto) {
+    const requestFormAnd: Prisma.JobRequestFormWhereInput[] = [];
+    if (query.status) {
+      requestFormAnd.push({ status: query.status });
+    }
+    if (query.financeApprovalStatus) {
+      requestFormAnd.push({
+        approvals: {
+          some: approvalWhereForStageStatus(
+            'FINANCE',
+            query.financeApprovalStatus,
+          ),
+        },
+      });
+    }
+    if (query.gmApprovalStatus) {
+      requestFormAnd.push({
+        approvals: {
+          some: approvalWhereForStageStatus('GM', query.gmApprovalStatus),
+        },
+      });
+    }
+    if (query.hrApprovalStatus) {
+      requestFormAnd.push({
+        approvals: {
+          some: approvalWhereForStageStatus(
+            'HR_REVIEW',
+            query.hrApprovalStatus,
+          ),
+        },
+      });
+    }
+
     const jobs = await this.prisma.job.findMany({
       where: {
-        ...(query.status ? { status: query.status } : {}),
         ...(query.departmentId ? { departmentId: query.departmentId } : {}),
-        ...(query.financeApprovalStatus
-          ? { financeApprovalStatus: query.financeApprovalStatus }
-          : {}),
-        ...(query.gmApprovalStatus
-          ? { gmApprovalStatus: query.gmApprovalStatus }
-          : {}),
-        ...(query.hrApprovalStatus
-          ? { hrApprovalStatus: query.hrApprovalStatus }
+        ...(requestFormAnd.length > 0
+          ? { requestForm: { is: { AND: requestFormAnd } } }
           : {}),
       },
       include: jobInclude,
@@ -467,7 +585,8 @@ export class UpdateJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (!['DRAFT', 'REJECTED'].includes(existing.status)) {
+    const requestFormState = getRequestFormOrThrow(existing);
+    if (!['DRAFT', 'REJECTED'].includes(requestFormState.status)) {
       throw new BadRequestException(
         'Only draft or rejected jobs can be updated',
       );
@@ -475,6 +594,8 @@ export class UpdateJobUseCase {
 
     const merged = mergeNestedPayload(mapExistingJobToDtoShape(existing), dto);
     validateApplicationCustomFieldOptions(merged.applicationForm.customFields);
+    validateApplicantFieldConfig(merged.applicationForm.applicantFields);
+    validateFormSectionConfig(merged.applicationForm.sections);
 
     await assertDepartmentPositionIntegrity(
       this.prisma,
@@ -500,24 +621,25 @@ export class UpdateJobUseCase {
       merged.job.salaryMin ?? null,
       merged.job.salaryMax ?? null,
     );
-    assertSalaryRange(
-      merged.applicationForm.salaryMin ?? null,
-      merged.applicationForm.salaryMax ?? null,
-    );
 
     const requiredSkills = normalizeSkillArray(merged.job.requiredSkills);
     const preferredSkills = normalizeSkillArray(merged.job.preferredSkills);
     const responsibilities = normalizeStringArray(merged.job.responsibilities);
     const tools = normalizeStringArray(merged.job.tools);
-    const appRequiredSkills = normalizeSkillArray(
-      merged.applicationForm.requiredSkills,
+    const applicantFields = merged.applicationForm.applicantFields.map(
+      (field, index) => ({
+        key: field.key,
+        enabled: field.enabled,
+        required: field.required,
+        order: field.order ?? index + 1,
+      }),
     );
-    const appPreferredSkills = normalizeSkillArray(
-      merged.applicationForm.preferredSkills,
-    );
-    const appResponsibilities = normalizeStringArray(
-      merged.applicationForm.responsibilities,
-    );
+    const sections = merged.applicationForm.sections.map((section, index) => ({
+      key: section.key,
+      enabled: section.enabled,
+      required: section.required,
+      order: section.order ?? index + 1,
+    }));
 
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.job.update({
@@ -534,7 +656,6 @@ export class UpdateJobUseCase {
           contractType: merged.job.contractType,
           employmentType: merged.job.employmentType ?? null,
           workLocationType: merged.job.workLocationType,
-          remoteScope: merged.job.remoteScope ?? null,
           city: merged.job.city ?? null,
           country: merged.job.country ?? null,
           openings: merged.job.openings,
@@ -550,9 +671,6 @@ export class UpdateJobUseCase {
           applicationDeadline: merged.job.applicationDeadline
             ? new Date(merged.job.applicationDeadline)
             : null,
-          ...(dto.job?.priority !== undefined && {
-            priority: dto.job.priority,
-          }),
           ...(dto.job?.hiringManagerId !== undefined && {
             hiringManagerId: dto.job.hiringManagerId,
           }),
@@ -574,6 +692,12 @@ export class UpdateJobUseCase {
           workMode: merged.requestForm.workMode,
           urgency: merged.requestForm.urgency,
           neededByDate: new Date(merged.requestForm.neededByDate),
+          status: requestFormState.status,
+          priority: merged.requestForm.priority ?? requestFormState.priority,
+          draftedAt: requestFormState.draftedAt,
+          pendingApprovalAt: requestFormState.pendingApprovalAt,
+          readyToPostAt: requestFormState.readyToPostAt,
+          rejectedAt: requestFormState.rejectedAt,
         },
         update: {
           jobTitle: merged.requestForm.jobTitle,
@@ -587,6 +711,9 @@ export class UpdateJobUseCase {
           workMode: merged.requestForm.workMode,
           urgency: merged.requestForm.urgency,
           neededByDate: new Date(merged.requestForm.neededByDate),
+          ...(dto.requestForm?.priority !== undefined && {
+            priority: merged.requestForm.priority,
+          }),
         },
       });
 
@@ -594,56 +721,42 @@ export class UpdateJobUseCase {
         where: { jobId: id },
         create: {
           jobId: id,
-          jobTitle: merged.applicationForm.jobTitle,
-          location: merged.applicationForm.location,
-          workMode: merged.applicationForm.workMode,
-          employmentType: merged.applicationForm.employmentType,
-          jobSummary: merged.applicationForm
-            .jobSummary as Prisma.InputJsonValue,
-          whyJoinUs:
-            (merged.applicationForm
-              .whyJoinUs as Prisma.InputJsonValue | null) ?? undefined,
-          requiredSkills: appRequiredSkills,
-          preferredSkills: appPreferredSkills,
-          responsibilities: appResponsibilities,
-          experienceLevel: merged.applicationForm.experienceLevel,
-          salaryMin: merged.applicationForm.salaryMin ?? undefined,
-          salaryMax: merged.applicationForm.salaryMax ?? undefined,
-          salaryCurrency:
-            currencyOrNull(merged.applicationForm.salaryCurrency) ?? undefined,
-          salaryMode: merged.applicationForm.salaryMode,
-          benefits: merged.applicationForm.benefits ?? [],
-          openings: merged.applicationForm.openings,
-          applicationDeadline: new Date(
-            merged.applicationForm.applicationDeadline,
-          ),
         },
         update: {
-          jobTitle: merged.applicationForm.jobTitle,
-          location: merged.applicationForm.location,
-          workMode: merged.applicationForm.workMode,
-          employmentType: merged.applicationForm.employmentType,
-          jobSummary: merged.applicationForm
-            .jobSummary as Prisma.InputJsonValue,
-          whyJoinUs:
-            (merged.applicationForm
-              .whyJoinUs as Prisma.InputJsonValue | null) ?? Prisma.DbNull,
-          requiredSkills: appRequiredSkills,
-          preferredSkills: appPreferredSkills,
-          responsibilities: appResponsibilities,
-          experienceLevel: merged.applicationForm.experienceLevel,
-          salaryMin: merged.applicationForm.salaryMin ?? null,
-          salaryMax: merged.applicationForm.salaryMax ?? null,
-          salaryCurrency: currencyOrNull(merged.applicationForm.salaryCurrency),
-          salaryMode: merged.applicationForm.salaryMode,
-          benefits: merged.applicationForm.benefits ?? [],
-          openings: merged.applicationForm.openings,
-          applicationDeadline: new Date(
-            merged.applicationForm.applicationDeadline,
-          ),
+          updatedAt: new Date(),
         },
         select: { id: true },
       });
+
+      await tx.jobApplicationFormField.deleteMany({
+        where: { jobApplicationFormId: applicationForm.id },
+      });
+      if (applicantFields.length > 0) {
+        await tx.jobApplicationFormField.createMany({
+          data: applicantFields.map((field) => ({
+            jobApplicationFormId: applicationForm.id,
+            key: field.key,
+            enabled: field.enabled,
+            required: field.required,
+            order: field.order,
+          })),
+        });
+      }
+
+      await tx.jobApplicationFormSection.deleteMany({
+        where: { jobApplicationFormId: applicationForm.id },
+      });
+      if (sections.length > 0) {
+        await tx.jobApplicationFormSection.createMany({
+          data: sections.map((section) => ({
+            jobApplicationFormId: applicationForm.id,
+            key: section.key,
+            enabled: section.enabled,
+            required: section.required,
+            order: section.order,
+          })),
+        });
+      }
 
       await tx.jobApplicationCustomField.deleteMany({
         where: { jobApplicationFormId: applicationForm.id },
@@ -688,7 +801,6 @@ export class SubmitJobUseCase {
       where: { id },
       select: {
         id: true,
-        status: true,
         title: true,
         description: true,
         departmentId: true,
@@ -703,10 +815,21 @@ export class SubmitJobUseCase {
         applicationDeadline: true,
         requiredSkills: true,
         responsibilities: true,
+        creatorIsHr: true,
+        createdById: true,
+        requestForm: {
+          select: {
+            id: true,
+            status: true,
+          },
+        },
       },
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (!['DRAFT', 'REJECTED'].includes(existing.status)) {
+    if (!existing.requestForm) {
+      throw new BadRequestException('Job request form is missing');
+    }
+    if (!['DRAFT', 'REJECTED'].includes(existing.requestForm.status)) {
       throw new BadRequestException(
         'Only draft or rejected jobs can be submitted',
       );
@@ -739,40 +862,77 @@ export class SubmitJobUseCase {
       responsibilities: existing.responsibilities,
     });
 
+    const requestFormId = existing.requestForm.id;
     const submitted = await this.prisma.$transaction(async (tx) => {
-      await tx.jobApproval.deleteMany({ where: { jobId: id } });
-      await tx.jobApproval.createMany({
+      await tx.jobApprovalStep.deleteMany({
+        where: { jobRequestFormId: requestFormId },
+      });
+      await tx.jobApprovalStep.createMany({
         data: [
           {
-            jobId: id,
-            stage: 'FINANCE',
+            jobRequestFormId: requestFormId,
+            department: 'FINANCE',
             level: 1,
-            requiredRole: SYSTEM_ROLES.FINANCE_MANAGER,
+            status: 'PENDING_FOR_APPROVAL',
           },
           {
-            jobId: id,
-            stage: 'GM',
+            jobRequestFormId: requestFormId,
+            department: 'GM',
             level: 2,
-            requiredRole: SYSTEM_ROLES.SUPERADMIN,
+            status: 'PENDING_FOR_APPROVAL',
           },
           {
-            jobId: id,
-            stage: 'HR_REVIEW',
+            jobRequestFormId: requestFormId,
+            department: 'HR',
             level: 3,
-            requiredRole: SYSTEM_ROLES.HR_MANAGER,
+            status: 'PENDING_FOR_APPROVAL',
           },
         ],
       });
 
       const now = new Date();
+      if (existing.creatorIsHr && existing.createdById) {
+        const hrStep = await tx.jobApprovalStep.findFirst({
+          where: {
+            jobRequestFormId: requestFormId,
+            department: 'HR',
+          },
+          select: { id: true },
+        });
+        if (!hrStep) {
+          throw new BadRequestException('Missing approval stage configuration');
+        }
+
+        await tx.jobApprovalStep.update({
+          where: { id: hrStep.id },
+          data: {
+            approverId: existing.createdById,
+            status: 'APPROVED',
+            currentNote: 'Auto-approved because creator has HR role',
+            decidedAt: now,
+          },
+        });
+        await tx.jobApprovalHistory.create({
+          data: {
+            approvalStepId: hrStep.id,
+            toStatus: 'APPROVED',
+            changedById: existing.createdById,
+            reason: 'CREATOR_HAS_HR_ROLE',
+          },
+        });
+      }
+
       return tx.job.update({
         where: { id },
         data: {
-          status: 'PENDING_FOR_APPROVAL',
-          financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-          gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-          hrApprovalStatus: 'PENDING_FOR_APPROVAL',
-          pendingApprovalAt: now,
+          requestForm: {
+            update: {
+              status: 'PENDING_FOR_APPROVAL',
+              pendingApprovalAt: now,
+              readyToPostAt: null,
+              rejectedAt: null,
+            },
+          },
         },
         include: jobInclude,
       });
@@ -797,8 +957,18 @@ export class ApproveJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
+    if (!existing.requestForm) {
+      throw new BadRequestException('Job request form is missing');
+    }
 
-    const approvals = existing.approvals.map(toApprovalState);
+    const approvals = existing.requestForm.approvals.map((approval) =>
+      toApprovalState({
+        id: approval.id,
+        department: approval.department,
+        status: approval.status,
+        level: approval.level,
+      }),
+    );
     if (approvals.length === 0) {
       throw new BadRequestException('Missing approval stage configuration');
     }
@@ -808,57 +978,52 @@ export class ApproveJobUseCase {
         approval.decision === 'PENDING' &&
         isApprovalStageActionable(approval.stage, approvals),
     );
-
-    let target = pendingActionable[0];
-    if (dto.stage !== undefined) {
-      const stageApproval = approvals.find(
-        (approval) => approval.stage === dto.stage,
-      );
-      if (!stageApproval) {
-        throw new BadRequestException('Invalid approval stage');
+    if (pendingActionable.length === 0) {
+      if (approvals.some((approval) => approval.decision === 'REJECTED')) {
+        throw new ConflictException('Job approval workflow already rejected');
       }
-      if (stageApproval.decision !== 'PENDING') {
-        throw new ConflictException('Approval already decided');
-      }
-      if (!isApprovalStageActionable(dto.stage!, approvals)) {
-        throw new BadRequestException('Approval stage is not actionable');
-      }
-      target = stageApproval;
-    }
-
-    if (!target) {
       throw new BadRequestException('No pending approval stage available');
     }
 
+    const eligibleStages = pendingActionable
+      .map((approval, index) => ({ approval, index }))
+      .filter(({ approval }) =>
+        principal.roles?.includes(requiredRoleForStage(approval.stage)),
+      )
+      .sort(
+        (left, right) =>
+          left.approval.level - right.approval.level ||
+          left.index - right.index,
+      );
+
+    if (eligibleStages.length === 0) {
+      throw new ForbiddenException('Required approval role is missing');
+    }
+
+    const target = eligibleStages[0].approval;
     const requiredRole = requiredRoleForStage(target.stage);
     if (!principal.roles?.includes(requiredRole)) {
       throw new ForbiddenException(`Role ${requiredRole} is required`);
     }
 
-    if (!dto.stage) {
-      const eligibleStages = pendingActionable.filter((approval) =>
-        principal.roles?.includes(requiredRoleForStage(approval.stage)),
-      );
-      if (eligibleStages.length === 0) {
-        throw new ForbiddenException('Required approval role is missing');
-      }
-      if (eligibleStages.length > 1) {
-        throw new BadRequestException(
-          'Multiple approval stages are available; specify stage',
-        );
-      }
-      target = eligibleStages[0];
-    }
-
     const decidedAt = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
-      await tx.jobApproval.update({
+      const targetStatus = decisionToStepStatus(dto.decision);
+      await tx.jobApprovalStep.update({
         where: { id: target.id },
         data: {
           approverId,
-          decision: dto.decision,
-          comments: dto.comments ?? undefined,
+          status: targetStatus,
+          currentNote: dto.comments ?? undefined,
           decidedAt,
+        },
+      });
+      await tx.jobApprovalHistory.create({
+        data: {
+          approvalStepId: target.id,
+          toStatus: targetStatus,
+          changedById: approverId,
+          reason: dto.comments ?? undefined,
         },
       });
 
@@ -866,9 +1031,13 @@ export class ApproveJobUseCase {
         return tx.job.update({
           where: { id },
           data: {
-            ...stageFieldPatch(target.stage, 'REJECTED'),
-            status: 'REJECTED',
-            rejectedAt: decidedAt,
+            requestForm: {
+              update: {
+                status: 'REJECTED',
+                rejectedAt: decidedAt,
+                readyToPostAt: null,
+              },
+            },
           },
           include: jobInclude,
         });
@@ -876,53 +1045,22 @@ export class ApproveJobUseCase {
 
       const nextApprovals: ApprovalState[] = approvals.map((approval) =>
         approval.id === target.id
-          ? { ...approval, decision: 'APPROVED' }
+          ? { ...approval, decision: dto.decision }
           : approval,
       );
 
-      const finance = nextApprovals.find(
-        (approval) => approval.stage === 'FINANCE',
-      );
-      const gm = nextApprovals.find((approval) => approval.stage === 'GM');
-      const hr = nextApprovals.find(
-        (approval) => approval.stage === 'HR_REVIEW',
-      );
-
-      if (!finance || !gm || !hr) {
-        throw new BadRequestException('Missing approval stage configuration');
-      }
-
-      if (
-        existing.creatorIsHr &&
-        existing.createdById &&
-        finance.decision === 'APPROVED' &&
-        gm.decision === 'APPROVED' &&
-        hr.decision === 'PENDING'
-      ) {
-        await tx.jobApproval.update({
-          where: { id: hr.id },
-          data: {
-            approverId: existing.createdById,
-            decision: 'APPROVED',
-            autoApproved: true,
-            autoApprovalReason: 'CREATOR_HAS_HR_ROLE',
-            comments: 'Auto-approved because creator has HR role',
-            decidedAt,
-          },
-        });
-        hr.decision = 'APPROVED';
-      }
-
       const nextStatus = computeJobStatusFromApprovals(nextApprovals);
-      const stageStatuses = buildStageStatusesFromApprovals(nextApprovals);
       return tx.job.update({
         where: { id },
         data: {
-          ...stageStatuses,
-          status: nextStatus,
-          ...(nextStatus === 'READY_TO_POST'
-            ? { readyToPostAt: decidedAt }
-            : {}),
+          requestForm: {
+            update: {
+              status: nextStatus,
+              ...(nextStatus === 'READY_TO_POST'
+                ? { readyToPostAt: decidedAt, rejectedAt: null }
+                : { readyToPostAt: null, rejectedAt: null }),
+            },
+          },
         },
         include: jobInclude,
       });
@@ -942,12 +1080,18 @@ export class PublishJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (existing.status !== 'READY_TO_POST') {
+    const requestFormState = getRequestFormOrThrow(existing);
+    if (requestFormState.status !== 'READY_TO_POST') {
       throw new BadRequestException('Only ready-to-post jobs can be published');
     }
     const published = await this.prisma.job.update({
       where: { id },
-      data: { status: 'PUBLISHED', publishedAt: new Date() },
+      data: {
+        publishedAt: new Date(),
+        requestForm: {
+          update: { status: 'PUBLISHED' },
+        },
+      },
       include: jobInclude,
     });
     return mapJob(published);
@@ -964,20 +1108,23 @@ export class CloseJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
+    const requestFormState = getRequestFormOrThrow(existing);
     if ((dto?.reason?.length ?? 0) > 500) {
       throw new BadRequestException(
         'Close reason must be 500 characters or less',
       );
     }
-    if (!['READY_TO_POST', 'PUBLISHED'].includes(existing.status)) {
+    if (!['READY_TO_POST', 'PUBLISHED'].includes(requestFormState.status)) {
       throw new BadRequestException('Job cannot be closed from current status');
     }
     const closed = await this.prisma.job.update({
       where: { id },
       data: {
-        status: 'CLOSED',
         closedAt: new Date(),
         closingReason: dto?.reason ?? null,
+        requestForm: {
+          update: { status: 'CLOSED' },
+        },
       },
       include: jobInclude,
     });

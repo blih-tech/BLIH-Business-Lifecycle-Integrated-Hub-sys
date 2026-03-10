@@ -1,19 +1,37 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import type { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 
 export const jobInclude = {
-  approvals: { orderBy: { level: 'asc' as const } },
-  requestForm: true,
+  requestForm: {
+    include: {
+      approvals: {
+        orderBy: { level: 'asc' as const },
+        include: {
+          history: {
+            orderBy: { createdAt: 'desc' as const },
+            take: 1,
+          },
+        },
+      },
+    },
+  },
   applicationForm: {
     include: {
+      applicantFields: {
+        orderBy: { order: 'asc' as const },
+      },
+      sections: {
+        orderBy: { order: 'asc' as const },
+      },
       customFields: {
         orderBy: { order: 'asc' as const },
         include: { options: { orderBy: { order: 'asc' as const } } },
       },
     },
   },
-};
+} satisfies Prisma.JobInclude;
 
 export const applicantInclude = {
   educations: { orderBy: { startDate: 'desc' as const } },
@@ -23,6 +41,12 @@ export const applicantInclude = {
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
 type ApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
+type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
+type ApprovalStepStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'REQUEST_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED';
 
 export interface ApprovalState {
   id: string;
@@ -47,13 +71,52 @@ interface SubmitReadinessPayload {
   responsibilities: unknown[];
 }
 
+function departmentToStage(department: string): ApprovalStage {
+  if (department === 'FINANCE') return 'FINANCE';
+  if (department === 'GM') return 'GM';
+  return 'HR_REVIEW';
+}
+
+function stepStatusToDecision(status: string): ApprovalDecision {
+  if (status === 'APPROVED') return 'APPROVED';
+  if (status === 'REJECTED') return 'REJECTED';
+  return 'PENDING';
+}
+
+function buildStageStatusSnapshot(approvals: any[]) {
+  const decisions: Record<ApprovalStage, ApprovalDecision> = {
+    FINANCE: 'PENDING',
+    GM: 'PENDING',
+    HR_REVIEW: 'PENDING',
+  };
+
+  for (const approval of approvals ?? []) {
+    const stage = departmentToStage(
+      (approval.department as ApprovalDepartment | undefined) ?? 'HR',
+    );
+    const decision = stepStatusToDecision(
+      (approval.status as ApprovalStepStatus | undefined) ??
+        'PENDING_FOR_APPROVAL',
+    );
+    decisions[stage] = decision;
+  }
+
+  return {
+    financeApprovalStatus: approvalDecisionToStageStatus(decisions.FINANCE),
+    gmApprovalStatus: approvalDecisionToStageStatus(decisions.GM),
+    hrApprovalStatus: approvalDecisionToStageStatus(decisions.HR_REVIEW),
+  };
+}
+
 const APPLICANT_TRANSITIONS: Record<string, string[]> = {
-  APPLIED: ['SHORTLISTED', 'REJECTED'],
-  SHORTLISTED: ['INTERVIEW', 'REJECTED'],
-  INTERVIEW: ['OFFER', 'REJECTED'],
-  OFFER: ['HIRED', 'REJECTED'],
+  APPLIED: ['SCREENING'],
+  SCREENING: ['SHORTLISTED', 'REJECTED', 'WITHDRAWN'],
+  SHORTLISTED: ['INTERVIEW', 'REJECTED', 'WITHDRAWN'],
+  INTERVIEW: ['OFFER', 'REJECTED', 'WITHDRAWN'],
+  OFFER: ['HIRED', 'REJECTED', 'WITHDRAWN'],
   HIRED: [],
   REJECTED: [],
+  WITHDRAWN: [],
 };
 
 const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
@@ -82,26 +145,12 @@ export function isApprovalStageActionable(
     return false;
   }
 
-  const finance = approvals.find((approval) => approval.stage === 'FINANCE');
-  const gm = approvals.find((approval) => approval.stage === 'GM');
-  const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
-
-  if (!finance || !gm || !hr) {
+  const current = approvals.find((approval) => approval.stage === stage);
+  if (!current) {
     throw new BadRequestException('Missing approval stage configuration');
   }
 
-  if (stage === 'FINANCE') {
-    return finance.decision === 'PENDING';
-  }
-  if (stage === 'GM') {
-    return gm.decision === 'PENDING';
-  }
-
-  return (
-    finance.decision === 'APPROVED' &&
-    gm.decision === 'APPROVED' &&
-    hr.decision === 'PENDING'
-  );
+  return current.decision === 'PENDING';
 }
 
 export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {
@@ -369,6 +418,8 @@ export function parseInterviewMetadata(value: unknown) {
 
 export function mapJob(job: any) {
   const requestForm = job.requestForm;
+  const requestApprovals = requestForm?.approvals ?? [];
+  const stageStatuses = buildStageStatusSnapshot(requestApprovals);
   const applicationForm = job.applicationForm;
 
   return {
@@ -386,6 +437,15 @@ export function mapJob(job: any) {
           workMode: requestForm.workMode,
           urgency: requestForm.urgency,
           neededByDate: dateToIso(requestForm.neededByDate),
+          status: requestForm.status,
+          priority: requestForm.priority,
+          financeApprovalStatus: stageStatuses.financeApprovalStatus,
+          gmApprovalStatus: stageStatuses.gmApprovalStatus,
+          hrApprovalStatus: stageStatuses.hrApprovalStatus,
+          draftedAt: dateToIso(requestForm.draftedAt),
+          pendingApprovalAt: dateToIso(requestForm.pendingApprovalAt),
+          readyToPostAt: dateToIso(requestForm.readyToPostAt),
+          rejectedAt: dateToIso(requestForm.rejectedAt),
         }
       : null,
     job: {
@@ -400,7 +460,6 @@ export function mapJob(job: any) {
       contractType: job.contractType,
       employmentType: job.employmentType ?? null,
       workLocationType: job.workLocationType,
-      remoteScope: job.remoteScope ?? null,
       city: job.city ?? null,
       country: job.country ?? null,
       openings: job.openings,
@@ -413,20 +472,11 @@ export function mapJob(job: any) {
       preferredSkills: job.preferredSkills ?? [],
       responsibilities: job.responsibilities ?? [],
       tools: job.tools ?? [],
-      priority: job.priority,
       hiringManagerId: job.hiringManagerId ?? null,
       applicationDeadline: dateToIso(job.applicationDeadline),
-      status: job.status,
-      financeApprovalStatus: job.financeApprovalStatus,
-      gmApprovalStatus: job.gmApprovalStatus,
-      hrApprovalStatus: job.hrApprovalStatus,
       creatorIsHr: job.creatorIsHr,
-      draftedAt: dateToIso(job.draftedAt),
-      pendingApprovalAt: dateToIso(job.pendingApprovalAt),
-      readyToPostAt: dateToIso(job.readyToPostAt),
       publishedAt: dateToIso(job.publishedAt),
       closedAt: dateToIso(job.closedAt),
-      rejectedAt: dateToIso(job.rejectedAt),
       closingReason: job.closingReason ?? null,
       viewsCount: job.viewsCount ?? 0,
       applicationsCount: job.applicationsCount ?? 0,
@@ -442,23 +492,24 @@ export function mapJob(job: any) {
       ? {
           id: applicationForm.id,
           jobId: applicationForm.jobId,
-          jobTitle: applicationForm.jobTitle,
-          location: applicationForm.location,
-          workMode: applicationForm.workMode,
-          employmentType: applicationForm.employmentType,
-          jobSummary: applicationForm.jobSummary,
-          whyJoinUs: applicationForm.whyJoinUs ?? null,
-          requiredSkills: applicationForm.requiredSkills ?? [],
-          preferredSkills: applicationForm.preferredSkills ?? [],
-          responsibilities: applicationForm.responsibilities ?? [],
-          experienceLevel: applicationForm.experienceLevel,
-          salaryMin: decimalToString(applicationForm.salaryMin),
-          salaryMax: decimalToString(applicationForm.salaryMax),
-          salaryCurrency: applicationForm.salaryCurrency ?? null,
-          salaryMode: applicationForm.salaryMode,
-          benefits: applicationForm.benefits ?? [],
-          openings: applicationForm.openings,
-          applicationDeadline: dateToIso(applicationForm.applicationDeadline),
+          applicantFields: (applicationForm.applicantFields ?? []).map(
+            (field: any, index: number) => ({
+              id: field.id,
+              key: field.key,
+              enabled: field.enabled,
+              required: field.required,
+              order: field.order ?? index + 1,
+            }),
+          ),
+          sections: (applicationForm.sections ?? []).map(
+            (section: any, index: number) => ({
+              id: section.id,
+              key: section.key,
+              enabled: section.enabled,
+              required: section.required,
+              order: section.order ?? index + 1,
+            }),
+          ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
               id: field.customFieldId,
@@ -471,11 +522,29 @@ export function mapJob(job: any) {
           ),
         }
       : null,
-    approvals: (job.approvals ?? []).map((approval: any) => ({
-      ...approval,
-      decidedAt: dateToIso(approval.decidedAt),
-      createdAt: approval.createdAt.toISOString(),
-    })),
+    approvals: requestApprovals.map((approval: any) => {
+      const stage = departmentToStage(approval.department);
+      const decision = stepStatusToDecision(approval.status);
+      const latestHistory = approval.history?.[0];
+      const autoApprovalReason =
+        latestHistory?.reason === 'CREATOR_HAS_HR_ROLE'
+          ? latestHistory.reason
+          : null;
+
+      return {
+        id: approval.id,
+        stage,
+        level: approval.level,
+        requiredRole: requiredRoleForStage(stage),
+        approverId: approval.approverId ?? null,
+        decision,
+        autoApproved: autoApprovalReason !== null,
+        autoApprovalReason,
+        comments: approval.currentNote ?? null,
+        decidedAt: dateToIso(approval.decidedAt),
+        createdAt: approval.createdAt.toISOString(),
+      };
+    }),
   };
 }
 
@@ -484,7 +553,8 @@ export function mapApplicant(applicant: any) {
     id: applicant.id,
     jobId: applicant.jobId,
     applicationFormId: applicant.applicationFormId ?? null,
-    fullName: applicant.fullName,
+    firstName: applicant.firstName,
+    lastName: applicant.lastName,
     email: applicant.email,
     phone: applicant.phone ?? null,
     resumeUrl: applicant.resumeUrl ?? null,
@@ -510,11 +580,13 @@ export function mapApplicant(applicant: any) {
     sourceSnapshot: toObjectRecord(applicant.sourceSnapshot),
     customFieldValues: toObjectRecord(applicant.customFieldValues),
     appliedAt: dateToIso(applicant.appliedAt),
+    screeningAt: dateToIso(applicant.screeningAt),
     shortlistedAt: dateToIso(applicant.shortlistedAt),
     interviewAt: dateToIso(applicant.interviewAt),
     offerAt: dateToIso(applicant.offerAt),
     hiredAt: dateToIso(applicant.hiredAt),
     rejectedAt: dateToIso(applicant.rejectedAt),
+    withdrawnAt: dateToIso(applicant.withdrawnAt),
     lastActivityAt: dateToIso(applicant.lastActivityAt),
     profileScore:
       typeof applicant.profileScore === 'number'

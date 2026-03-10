@@ -72,7 +72,8 @@ export class ApplicantsController {
         summary: 'Create applicant payload',
         value: {
           jobId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
-          fullName: 'Abel Tesfaye',
+          firstName: 'Abel',
+          lastName: 'Tesfaye',
           email: 'abel.tesfaye@example.com',
           phone: '+251912345678',
           resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
@@ -185,7 +186,7 @@ export class ApplicantsController {
   @ApiBody({
     type: UpdateApplicantStatusDto,
     description:
-      'Status flow: APPLIED -> SHORTLISTED -> INTERVIEW -> OFFER -> HIRED, with REJECTED allowed from active states.',
+      'Status flow: APPLIED -> SCREENING -> SHORTLISTED -> INTERVIEW -> OFFER -> HIRED, with REJECTED/WITHDRAWN allowed from active states.',
   })
   @ApiEnvelopeOkResponse(
     ApplicantResponseDto,

@@ -651,20 +651,6 @@ export type PositionUncheckedUpdateManyWithoutGradeNestedInput = {
   deleteMany?: Prisma.PositionScalarWhereInput | Prisma.PositionScalarWhereInput[]
 }
 
-export type PositionCreateNestedOneWithoutJobsInput = {
-  create?: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
-  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobsInput
-  connect?: Prisma.PositionWhereUniqueInput
-}
-
-export type PositionUpdateOneRequiredWithoutJobsNestedInput = {
-  create?: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
-  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobsInput
-  upsert?: Prisma.PositionUpsertWithoutJobsInput
-  connect?: Prisma.PositionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutJobsInput, Prisma.PositionUpdateWithoutJobsInput>, Prisma.PositionUncheckedUpdateWithoutJobsInput>
-}
-
 export type PositionCreateNestedOneWithoutJobRequestFormsInput = {
   create?: Prisma.XOR<Prisma.PositionCreateWithoutJobRequestFormsInput, Prisma.PositionUncheckedCreateWithoutJobRequestFormsInput>
   connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobRequestFormsInput
@@ -677,6 +663,20 @@ export type PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput = {
   upsert?: Prisma.PositionUpsertWithoutJobRequestFormsInput
   connect?: Prisma.PositionWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutJobRequestFormsInput, Prisma.PositionUpdateWithoutJobRequestFormsInput>, Prisma.PositionUncheckedUpdateWithoutJobRequestFormsInput>
+}
+
+export type PositionCreateNestedOneWithoutJobsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneRequiredWithoutJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobsInput
+  upsert?: Prisma.PositionUpsertWithoutJobsInput
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutJobsInput, Prisma.PositionUpdateWithoutJobsInput>, Prisma.PositionUncheckedUpdateWithoutJobsInput>
 }
 
 export type PositionCreateNestedOneWithoutSuccessionPlansInput = {
@@ -1086,114 +1086,6 @@ export type PositionUpdateManyWithWhereWithoutGradeInput = {
   data: Prisma.XOR<Prisma.PositionUpdateManyMutationInput, Prisma.PositionUncheckedUpdateManyWithoutGradeInput>
 }
 
-export type PositionCreateWithoutJobsInput = {
-  id?: string
-  title: string
-  description?: string | null
-  headcountLimit?: number | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
-  grade?: Prisma.JobGradeCreateNestedOneWithoutPositionsInput
-  employments?: Prisma.UserEmploymentCreateNestedManyWithoutPositionInput
-  jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutPositionInput
-  employmentHistory?: Prisma.UserEmploymentHistoryCreateNestedManyWithoutPositionInput
-  jobRequestForms?: Prisma.JobRequestFormCreateNestedManyWithoutPositionInput
-  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutPositionInput
-  promotionSourceFor?: Prisma.PromotionProposalCreateNestedManyWithoutFromPositionInput
-  promotionTargetFor?: Prisma.PromotionProposalCreateNestedManyWithoutToPositionInput
-  careerPlansCurrent?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutCurrentPositionInput
-  careerPlansTarget?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutTargetPositionInput
-  transferRequestsFrom?: Prisma.InternalTransferRequestCreateNestedManyWithoutCurrentPositionInput
-  transferRequestsTo?: Prisma.InternalTransferRequestCreateNestedManyWithoutTargetPositionInput
-}
-
-export type PositionUncheckedCreateWithoutJobsInput = {
-  id?: string
-  title: string
-  description?: string | null
-  departmentId: string
-  gradeId?: string | null
-  headcountLimit?: number | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  employments?: Prisma.UserEmploymentUncheckedCreateNestedManyWithoutPositionInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutPositionInput
-  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedCreateNestedManyWithoutPositionInput
-  jobRequestForms?: Prisma.JobRequestFormUncheckedCreateNestedManyWithoutPositionInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutPositionInput
-  promotionSourceFor?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutFromPositionInput
-  promotionTargetFor?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutToPositionInput
-  careerPlansCurrent?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutCurrentPositionInput
-  careerPlansTarget?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutTargetPositionInput
-  transferRequestsFrom?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutCurrentPositionInput
-  transferRequestsTo?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutTargetPositionInput
-}
-
-export type PositionCreateOrConnectWithoutJobsInput = {
-  where: Prisma.PositionWhereUniqueInput
-  create: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
-}
-
-export type PositionUpsertWithoutJobsInput = {
-  update: Prisma.XOR<Prisma.PositionUpdateWithoutJobsInput, Prisma.PositionUncheckedUpdateWithoutJobsInput>
-  create: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
-  where?: Prisma.PositionWhereInput
-}
-
-export type PositionUpdateToOneWithWhereWithoutJobsInput = {
-  where?: Prisma.PositionWhereInput
-  data: Prisma.XOR<Prisma.PositionUpdateWithoutJobsInput, Prisma.PositionUncheckedUpdateWithoutJobsInput>
-}
-
-export type PositionUpdateWithoutJobsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  headcountLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
-  grade?: Prisma.JobGradeUpdateOneWithoutPositionsNestedInput
-  employments?: Prisma.UserEmploymentUpdateManyWithoutPositionNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutPositionNestedInput
-  employmentHistory?: Prisma.UserEmploymentHistoryUpdateManyWithoutPositionNestedInput
-  jobRequestForms?: Prisma.JobRequestFormUpdateManyWithoutPositionNestedInput
-  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutPositionNestedInput
-  promotionSourceFor?: Prisma.PromotionProposalUpdateManyWithoutFromPositionNestedInput
-  promotionTargetFor?: Prisma.PromotionProposalUpdateManyWithoutToPositionNestedInput
-  careerPlansCurrent?: Prisma.CareerDevelopmentPlanUpdateManyWithoutCurrentPositionNestedInput
-  careerPlansTarget?: Prisma.CareerDevelopmentPlanUpdateManyWithoutTargetPositionNestedInput
-  transferRequestsFrom?: Prisma.InternalTransferRequestUpdateManyWithoutCurrentPositionNestedInput
-  transferRequestsTo?: Prisma.InternalTransferRequestUpdateManyWithoutTargetPositionNestedInput
-}
-
-export type PositionUncheckedUpdateWithoutJobsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  headcountLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employments?: Prisma.UserEmploymentUncheckedUpdateManyWithoutPositionNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
-  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedUpdateManyWithoutPositionNestedInput
-  jobRequestForms?: Prisma.JobRequestFormUncheckedUpdateManyWithoutPositionNestedInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutPositionNestedInput
-  promotionSourceFor?: Prisma.PromotionProposalUncheckedUpdateManyWithoutFromPositionNestedInput
-  promotionTargetFor?: Prisma.PromotionProposalUncheckedUpdateManyWithoutToPositionNestedInput
-  careerPlansCurrent?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutCurrentPositionNestedInput
-  careerPlansTarget?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutTargetPositionNestedInput
-  transferRequestsFrom?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutCurrentPositionNestedInput
-  transferRequestsTo?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutTargetPositionNestedInput
-}
-
 export type PositionCreateWithoutJobRequestFormsInput = {
   id?: string
   title: string
@@ -1293,6 +1185,114 @@ export type PositionUncheckedUpdateWithoutJobRequestFormsInput = {
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
   employmentHistory?: Prisma.UserEmploymentHistoryUncheckedUpdateManyWithoutPositionNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutPositionNestedInput
+  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutPositionNestedInput
+  promotionSourceFor?: Prisma.PromotionProposalUncheckedUpdateManyWithoutFromPositionNestedInput
+  promotionTargetFor?: Prisma.PromotionProposalUncheckedUpdateManyWithoutToPositionNestedInput
+  careerPlansCurrent?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutCurrentPositionNestedInput
+  careerPlansTarget?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutTargetPositionNestedInput
+  transferRequestsFrom?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutCurrentPositionNestedInput
+  transferRequestsTo?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutTargetPositionNestedInput
+}
+
+export type PositionCreateWithoutJobsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  headcountLimit?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  grade?: Prisma.JobGradeCreateNestedOneWithoutPositionsInput
+  employments?: Prisma.UserEmploymentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutPositionInput
+  employmentHistory?: Prisma.UserEmploymentHistoryCreateNestedManyWithoutPositionInput
+  jobRequestForms?: Prisma.JobRequestFormCreateNestedManyWithoutPositionInput
+  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutPositionInput
+  promotionSourceFor?: Prisma.PromotionProposalCreateNestedManyWithoutFromPositionInput
+  promotionTargetFor?: Prisma.PromotionProposalCreateNestedManyWithoutToPositionInput
+  careerPlansCurrent?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutCurrentPositionInput
+  careerPlansTarget?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutTargetPositionInput
+  transferRequestsFrom?: Prisma.InternalTransferRequestCreateNestedManyWithoutCurrentPositionInput
+  transferRequestsTo?: Prisma.InternalTransferRequestCreateNestedManyWithoutTargetPositionInput
+}
+
+export type PositionUncheckedCreateWithoutJobsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  departmentId: string
+  gradeId?: string | null
+  headcountLimit?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employments?: Prisma.UserEmploymentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedCreateNestedManyWithoutPositionInput
+  jobRequestForms?: Prisma.JobRequestFormUncheckedCreateNestedManyWithoutPositionInput
+  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutPositionInput
+  promotionSourceFor?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutFromPositionInput
+  promotionTargetFor?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutToPositionInput
+  careerPlansCurrent?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutCurrentPositionInput
+  careerPlansTarget?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutTargetPositionInput
+  transferRequestsFrom?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutCurrentPositionInput
+  transferRequestsTo?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutTargetPositionInput
+}
+
+export type PositionCreateOrConnectWithoutJobsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
+}
+
+export type PositionUpsertWithoutJobsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutJobsInput, Prisma.PositionUncheckedUpdateWithoutJobsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutJobsInput, Prisma.PositionUncheckedCreateWithoutJobsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutJobsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutJobsInput, Prisma.PositionUncheckedUpdateWithoutJobsInput>
+}
+
+export type PositionUpdateWithoutJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headcountLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  grade?: Prisma.JobGradeUpdateOneWithoutPositionsNestedInput
+  employments?: Prisma.UserEmploymentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutPositionNestedInput
+  employmentHistory?: Prisma.UserEmploymentHistoryUpdateManyWithoutPositionNestedInput
+  jobRequestForms?: Prisma.JobRequestFormUpdateManyWithoutPositionNestedInput
+  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutPositionNestedInput
+  promotionSourceFor?: Prisma.PromotionProposalUpdateManyWithoutFromPositionNestedInput
+  promotionTargetFor?: Prisma.PromotionProposalUpdateManyWithoutToPositionNestedInput
+  careerPlansCurrent?: Prisma.CareerDevelopmentPlanUpdateManyWithoutCurrentPositionNestedInput
+  careerPlansTarget?: Prisma.CareerDevelopmentPlanUpdateManyWithoutTargetPositionNestedInput
+  transferRequestsFrom?: Prisma.InternalTransferRequestUpdateManyWithoutCurrentPositionNestedInput
+  transferRequestsTo?: Prisma.InternalTransferRequestUpdateManyWithoutTargetPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headcountLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employments?: Prisma.UserEmploymentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  employmentHistory?: Prisma.UserEmploymentHistoryUncheckedUpdateManyWithoutPositionNestedInput
+  jobRequestForms?: Prisma.JobRequestFormUncheckedUpdateManyWithoutPositionNestedInput
   successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutPositionNestedInput
   promotionSourceFor?: Prisma.PromotionProposalUncheckedUpdateManyWithoutFromPositionNestedInput
   promotionTargetFor?: Prisma.PromotionProposalUncheckedUpdateManyWithoutToPositionNestedInput

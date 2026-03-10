@@ -20,7 +20,6 @@ import {
   IsString,
   IsUUID,
   Matches,
-  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -51,6 +50,15 @@ const JOB_APPLICATION_FIELD_TYPES = [
   'DATE',
   'CHECKBOX',
 ] as const;
+const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
+  'PHONE',
+  'LINKEDIN_URL',
+  'PORTFOLIO_URL',
+  'GITHUB_URL',
+  'EXPECTED_SALARY',
+  'COVER_LETTER',
+] as const;
+const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
 const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 const JOB_STAGE_STATUSES = [
   'PENDING_FOR_APPROVAL',
@@ -73,8 +81,12 @@ const JOB_CONTRACT_TYPES = [
   'INTERNSHIP',
   'FREELANCE',
 ] as const;
-const REMOTE_SCOPES = ['CITY', 'COUNTRY', 'REGION', 'GLOBAL'] as const;
-const SALARY_MODES = ['NOT_SPECIFIED', 'NEGOTIABLE', 'COMPETITIVE'] as const;
+const SALARY_MODES = [
+  'NOT_SPECIFIED',
+  'FIXED',
+  'NEGOTIABLE',
+  'COMPETITIVE',
+] as const;
 const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
@@ -142,6 +154,12 @@ export class JobRequestFormInputDto {
   @ApiProperty()
   @IsDateString()
   neededByDate!: string;
+
+  @ApiPropertyOptional({ enum: JOB_PRIORITY_LEVELS })
+  @IsOptional()
+  @Transform(normalizeEnumValue)
+  @IsEnum(JOB_PRIORITY_LEVELS)
+  priority?: (typeof JOB_PRIORITY_LEVELS)[number];
 }
 
 export class JobInputDto {
@@ -219,12 +237,6 @@ export class JobInputDto {
   @IsEnum(WORK_LOCATION_TYPES)
   workLocationType!: 'ON_SITE' | 'HYBRID' | 'REMOTE';
 
-  @ApiPropertyOptional({ enum: REMOTE_SCOPES, nullable: true })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(REMOTE_SCOPES)
-  remoteScope?: 'CITY' | 'COUNTRY' | 'REGION' | 'GLOBAL' | null;
-
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
@@ -261,7 +273,7 @@ export class JobInputDto {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(SALARY_MODES)
-  salaryMode?: 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
+  salaryMode?: 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
 
   @ApiPropertyOptional({ type: [String], default: [] })
   @IsOptional()
@@ -297,12 +309,6 @@ export class JobInputDto {
   @ArrayMaxSize(200)
   @IsString({ each: true })
   tools?: string[];
-
-  @ApiPropertyOptional({ enum: JOB_PRIORITY_LEVELS })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(JOB_PRIORITY_LEVELS)
-  priority?: (typeof JOB_PRIORITY_LEVELS)[number];
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -354,125 +360,60 @@ export class JobApplicationCustomFieldInputDto {
   options?: string[];
 }
 
-export class JobApplicationFormInputDto {
-  @ApiProperty({ example: 'Senior Frontend Engineer' })
-  @IsString()
-  @IsNotEmpty()
-  jobTitle!: string;
-
-  @ApiProperty({ example: 'Addis Ababa, Ethiopia' })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
-  location!: string;
-
-  @ApiProperty({ enum: WORK_LOCATION_TYPES })
+export class JobApplicationFormFieldInputDto {
+  @ApiProperty({ enum: JOB_APPLICANT_OPTIONAL_FIELD_KEYS })
   @Transform(normalizeEnumValue)
-  @IsEnum(WORK_LOCATION_TYPES)
-  workMode!: 'ON_SITE' | 'HYBRID' | 'REMOTE';
+  @IsEnum(JOB_APPLICANT_OPTIONAL_FIELD_KEYS)
+  key!: (typeof JOB_APPLICANT_OPTIONAL_FIELD_KEYS)[number];
 
-  @ApiProperty({ enum: EMPLOYMENT_TYPES })
-  @Transform(normalizeEnumValue)
-  @IsEnum(EMPLOYMENT_TYPES)
-  employmentType!:
-    | 'FULL_TIME'
-    | 'PART_TIME'
-    | 'CONTRACT'
-    | 'INTERN'
-    | 'TEMPORARY';
+  @ApiProperty({ default: true })
+  @IsBoolean()
+  enabled!: boolean;
 
-  @ApiProperty({
-    type: 'object',
-    additionalProperties: true,
-    example: {
-      type: 'doc',
-      version: 1,
-      content: [{ type: 'paragraph', text: 'Lead frontend delivery.' }],
-    },
-  })
-  @IsObject()
-  jobSummary!: Record<string, unknown>;
+  @ApiProperty({ default: false })
+  @IsBoolean()
+  required!: boolean;
 
-  @ApiPropertyOptional({
-    nullable: true,
-    type: 'object',
-    additionalProperties: true,
-    example: {
-      type: 'doc',
-      version: 1,
-      content: [{ type: 'paragraph', text: 'Join a strong ownership team.' }],
-    },
-  })
+  @ApiPropertyOptional({ nullable: true, minimum: 1 })
   @IsOptional()
-  @IsObject()
-  whyJoinUs?: Record<string, unknown> | null;
-
-  @ApiProperty({ type: [String] })
-  @IsArray()
-  @ArrayMaxSize(200)
-  @IsString({ each: true })
-  requiredSkills!: string[];
-
-  @ApiProperty({ type: [String] })
-  @IsArray()
-  @ArrayMaxSize(200)
-  @IsString({ each: true })
-  responsibilities!: string[];
-
-  @ApiPropertyOptional({ type: [String], default: [] })
-  @IsOptional()
-  @IsArray()
-  @ArrayMaxSize(200)
-  @IsString({ each: true })
-  preferredSkills?: string[];
-
-  @ApiProperty({ enum: EXPERIENCE_LEVELS })
-  @Transform(normalizeEnumValue)
-  @IsEnum(EXPERIENCE_LEVELS)
-  experienceLevel!:
-    | 'ENTRY'
-    | 'JUNIOR'
-    | 'MID'
-    | 'SENIOR'
-    | 'LEAD'
-    | 'PRINCIPAL';
-
-  @ApiPropertyOptional({ nullable: true, example: 2000 })
-  @IsOptional()
-  @IsNumber({ maxDecimalPlaces: 2 })
-  salaryMin?: number | null;
-
-  @ApiPropertyOptional({ nullable: true, example: 3000 })
-  @IsOptional()
-  @IsNumber({ maxDecimalPlaces: 2 })
-  salaryMax?: number | null;
-
-  @ApiPropertyOptional({ nullable: true, example: 'USD' })
-  @IsOptional()
-  @IsString()
-  @Matches(/^[A-Za-z]{3}$/)
-  salaryCurrency?: string | null;
-
-  @ApiProperty({ enum: SALARY_MODES })
-  @Transform(normalizeEnumValue)
-  @IsEnum(SALARY_MODES)
-  salaryMode!: 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
-
-  @ApiPropertyOptional({ type: [String], default: [] })
-  @IsOptional()
-  @IsArray()
-  @ArrayMaxSize(30)
-  @IsString({ each: true })
-  benefits?: string[];
-
-  @ApiProperty({ default: 1, minimum: 1 })
   @IsInt()
   @Min(1)
-  openings!: number;
+  order?: number | null;
+}
 
-  @ApiProperty()
-  @IsDateString()
-  applicationDeadline!: string;
+export class JobApplicationFormSectionInputDto {
+  @ApiProperty({ enum: JOB_APPLICATION_FORM_SECTIONS })
+  @Transform(normalizeEnumValue)
+  @IsEnum(JOB_APPLICATION_FORM_SECTIONS)
+  key!: (typeof JOB_APPLICATION_FORM_SECTIONS)[number];
+
+  @ApiProperty({ default: false })
+  @IsBoolean()
+  enabled!: boolean;
+
+  @ApiProperty({ default: false })
+  @IsBoolean()
+  required!: boolean;
+
+  @ApiPropertyOptional({ nullable: true, minimum: 1 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  order?: number | null;
+}
+
+export class JobApplicationFormInputDto {
+  @ApiProperty({ type: [JobApplicationFormFieldInputDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => JobApplicationFormFieldInputDto)
+  applicantFields!: JobApplicationFormFieldInputDto[];
+
+  @ApiProperty({ type: [JobApplicationFormSectionInputDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => JobApplicationFormSectionInputDto)
+  sections!: JobApplicationFormSectionInputDto[];
 
   @ApiProperty({ type: [JobApplicationCustomFieldInputDto] })
   @IsArray()
@@ -505,12 +446,6 @@ export class ApproveJobDto {
   @Transform(normalizeEnumValue)
   @IsEnum(['APPROVED', 'REJECTED'])
   decision!: 'APPROVED' | 'REJECTED';
-
-  @ApiPropertyOptional({ enum: JOB_APPROVAL_STAGES, nullable: true })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(JOB_APPROVAL_STAGES)
-  stage?: 'FINANCE' | 'GM' | 'HR_REVIEW' | null;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -621,6 +556,39 @@ export class JobRequestFormResponseDto extends OmitType(
 
   @ApiProperty()
   position!: string;
+
+  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
+  status!:
+    | 'DRAFT'
+    | 'PENDING_FOR_APPROVAL'
+    | 'READY_TO_POST'
+    | 'PUBLISHED'
+    | 'CLOSED'
+    | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_PRIORITY_LEVELS })
+  priority!: (typeof JOB_PRIORITY_LEVELS)[number];
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  financeApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  gmApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  hrApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiPropertyOptional({ nullable: true })
+  draftedAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  pendingApprovalAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  readyToPostAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  rejectedAt!: string | null;
 }
 
 export class JobDataResponseDto extends OmitType(JobInputDto, [
@@ -634,44 +602,14 @@ export class JobDataResponseDto extends OmitType(JobInputDto, [
   @ApiProperty()
   slug!: string;
 
-  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
-  status!:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  financeApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  gmApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  hrApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
   @ApiProperty()
   creatorIsHr!: boolean;
-
-  @ApiPropertyOptional({ nullable: true })
-  draftedAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  pendingApprovalAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  readyToPostAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   publishedAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   closedAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  rejectedAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   closingReason!: string | null;
@@ -724,21 +662,37 @@ export class JobApplicationCustomFieldResponseDto extends OmitType(
   options!: string[];
 }
 
-export class JobApplicationFormResponseDto extends OmitType(
-  JobApplicationFormInputDto,
-  ['salaryMin', 'salaryMax'] as const,
+export class JobApplicationFormFieldResponseDto extends OmitType(
+  JobApplicationFormFieldInputDto,
+  [],
 ) {
+  @ApiProperty()
+  id!: string;
+}
+
+export class JobApplicationFormSectionResponseDto extends OmitType(
+  JobApplicationFormSectionInputDto,
+  [],
+) {
+  @ApiProperty()
+  id!: string;
+}
+
+export class JobApplicationFormResponseDto {
   @ApiProperty()
   id!: string;
 
   @ApiProperty()
   jobId!: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  salaryMin!: string | null;
+  @ApiProperty({ type: [JobApplicationFormFieldResponseDto] })
+  applicantFields!: JobApplicationFormFieldResponseDto[];
 
-  @ApiPropertyOptional({ nullable: true })
-  salaryMax!: string | null;
+  @ApiProperty({ type: [JobApplicationFormSectionResponseDto] })
+  sections!: JobApplicationFormSectionResponseDto[];
+
+  @ApiProperty({ type: [JobApplicationCustomFieldResponseDto] })
+  customFields!: JobApplicationCustomFieldResponseDto[];
 }
 
 export class JobResponseDto {

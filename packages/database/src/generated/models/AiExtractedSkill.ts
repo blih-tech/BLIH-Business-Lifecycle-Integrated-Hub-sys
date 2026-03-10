@@ -36,29 +36,47 @@ export type AiExtractedSkillSumAggregateOutputType = {
 
 export type AiExtractedSkillMinAggregateOutputType = {
   id: string | null
-  candidateId: string | null
+  applicantId: string | null
   skillId: string | null
   extractedName: string | null
   confidence: number | null
+  source: string | null
+  context: string | null
+  verified: boolean | null
+  verifiedBy: string | null
+  verifiedAt: Date | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type AiExtractedSkillMaxAggregateOutputType = {
   id: string | null
-  candidateId: string | null
+  applicantId: string | null
   skillId: string | null
   extractedName: string | null
   confidence: number | null
+  source: string | null
+  context: string | null
+  verified: boolean | null
+  verifiedBy: string | null
+  verifiedAt: Date | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type AiExtractedSkillCountAggregateOutputType = {
   id: number
-  candidateId: number
+  applicantId: number
   skillId: number
   extractedName: number
   confidence: number
+  source: number
+  context: number
+  verified: number
+  verifiedBy: number
+  verifiedAt: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -73,29 +91,47 @@ export type AiExtractedSkillSumAggregateInputType = {
 
 export type AiExtractedSkillMinAggregateInputType = {
   id?: true
-  candidateId?: true
+  applicantId?: true
   skillId?: true
   extractedName?: true
   confidence?: true
+  source?: true
+  context?: true
+  verified?: true
+  verifiedBy?: true
+  verifiedAt?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type AiExtractedSkillMaxAggregateInputType = {
   id?: true
-  candidateId?: true
+  applicantId?: true
   skillId?: true
   extractedName?: true
   confidence?: true
+  source?: true
+  context?: true
+  verified?: true
+  verifiedBy?: true
+  verifiedAt?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type AiExtractedSkillCountAggregateInputType = {
   id?: true
-  candidateId?: true
+  applicantId?: true
   skillId?: true
   extractedName?: true
   confidence?: true
+  source?: true
+  context?: true
+  verified?: true
+  verifiedBy?: true
+  verifiedAt?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -187,11 +223,17 @@ export type AiExtractedSkillGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type AiExtractedSkillGroupByOutputType = {
   id: string
-  candidateId: string
+  applicantId: string
   skillId: string | null
   extractedName: string
   confidence: number
+  source: string | null
+  context: string | null
+  verified: boolean
+  verifiedBy: string | null
+  verifiedAt: Date | null
   createdAt: Date
+  updatedAt: Date
   _count: AiExtractedSkillCountAggregateOutputType | null
   _avg: AiExtractedSkillAvgAggregateOutputType | null
   _sum: AiExtractedSkillSumAggregateOutputType | null
@@ -219,20 +261,32 @@ export type AiExtractedSkillWhereInput = {
   OR?: Prisma.AiExtractedSkillWhereInput[]
   NOT?: Prisma.AiExtractedSkillWhereInput | Prisma.AiExtractedSkillWhereInput[]
   id?: Prisma.UuidFilter<"AiExtractedSkill"> | string
-  candidateId?: Prisma.UuidFilter<"AiExtractedSkill"> | string
+  applicantId?: Prisma.UuidFilter<"AiExtractedSkill"> | string
   skillId?: Prisma.UuidNullableFilter<"AiExtractedSkill"> | string | null
   extractedName?: Prisma.StringFilter<"AiExtractedSkill"> | string
   confidence?: Prisma.FloatFilter<"AiExtractedSkill"> | number
+  source?: Prisma.StringNullableFilter<"AiExtractedSkill"> | string | null
+  context?: Prisma.StringNullableFilter<"AiExtractedSkill"> | string | null
+  verified?: Prisma.BoolFilter<"AiExtractedSkill"> | boolean
+  verifiedBy?: Prisma.UuidNullableFilter<"AiExtractedSkill"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"AiExtractedSkill"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AiExtractedSkill"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AiExtractedSkill"> | Date | string
 }
 
 export type AiExtractedSkillOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   skillId?: Prisma.SortOrderInput | Prisma.SortOrder
   extractedName?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
+  context?: Prisma.SortOrderInput | Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiExtractedSkillWhereUniqueInput = Prisma.AtLeast<{
@@ -240,20 +294,32 @@ export type AiExtractedSkillWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AiExtractedSkillWhereInput | Prisma.AiExtractedSkillWhereInput[]
   OR?: Prisma.AiExtractedSkillWhereInput[]
   NOT?: Prisma.AiExtractedSkillWhereInput | Prisma.AiExtractedSkillWhereInput[]
-  candidateId?: Prisma.UuidFilter<"AiExtractedSkill"> | string
+  applicantId?: Prisma.UuidFilter<"AiExtractedSkill"> | string
   skillId?: Prisma.UuidNullableFilter<"AiExtractedSkill"> | string | null
   extractedName?: Prisma.StringFilter<"AiExtractedSkill"> | string
   confidence?: Prisma.FloatFilter<"AiExtractedSkill"> | number
+  source?: Prisma.StringNullableFilter<"AiExtractedSkill"> | string | null
+  context?: Prisma.StringNullableFilter<"AiExtractedSkill"> | string | null
+  verified?: Prisma.BoolFilter<"AiExtractedSkill"> | boolean
+  verifiedBy?: Prisma.UuidNullableFilter<"AiExtractedSkill"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"AiExtractedSkill"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AiExtractedSkill"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AiExtractedSkill"> | Date | string
 }, "id">
 
 export type AiExtractedSkillOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   skillId?: Prisma.SortOrderInput | Prisma.SortOrder
   extractedName?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
+  context?: Prisma.SortOrderInput | Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.AiExtractedSkillCountOrderByAggregateInput
   _avg?: Prisma.AiExtractedSkillAvgOrderByAggregateInput
   _max?: Prisma.AiExtractedSkillMaxOrderByAggregateInput
@@ -266,83 +332,137 @@ export type AiExtractedSkillScalarWhereWithAggregatesInput = {
   OR?: Prisma.AiExtractedSkillScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AiExtractedSkillScalarWhereWithAggregatesInput | Prisma.AiExtractedSkillScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"AiExtractedSkill"> | string
-  candidateId?: Prisma.UuidWithAggregatesFilter<"AiExtractedSkill"> | string
+  applicantId?: Prisma.UuidWithAggregatesFilter<"AiExtractedSkill"> | string
   skillId?: Prisma.UuidNullableWithAggregatesFilter<"AiExtractedSkill"> | string | null
   extractedName?: Prisma.StringWithAggregatesFilter<"AiExtractedSkill"> | string
   confidence?: Prisma.FloatWithAggregatesFilter<"AiExtractedSkill"> | number
+  source?: Prisma.StringNullableWithAggregatesFilter<"AiExtractedSkill"> | string | null
+  context?: Prisma.StringNullableWithAggregatesFilter<"AiExtractedSkill"> | string | null
+  verified?: Prisma.BoolWithAggregatesFilter<"AiExtractedSkill"> | boolean
+  verifiedBy?: Prisma.UuidNullableWithAggregatesFilter<"AiExtractedSkill"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AiExtractedSkill"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AiExtractedSkill"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AiExtractedSkill"> | Date | string
 }
 
 export type AiExtractedSkillCreateInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   skillId?: string | null
   extractedName: string
   confidence: number
+  source?: string | null
+  context?: string | null
+  verified?: boolean
+  verifiedBy?: string | null
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type AiExtractedSkillUncheckedCreateInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   skillId?: string | null
   extractedName: string
   confidence: number
+  source?: string | null
+  context?: string | null
+  verified?: boolean
+  verifiedBy?: string | null
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type AiExtractedSkillUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   skillId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedName?: Prisma.StringFieldUpdateOperationsInput | string
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  context?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiExtractedSkillUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   skillId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedName?: Prisma.StringFieldUpdateOperationsInput | string
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  context?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiExtractedSkillCreateManyInput = {
   id?: string
-  candidateId: string
+  applicantId: string
   skillId?: string | null
   extractedName: string
   confidence: number
+  source?: string | null
+  context?: string | null
+  verified?: boolean
+  verifiedBy?: string | null
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type AiExtractedSkillUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   skillId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedName?: Prisma.StringFieldUpdateOperationsInput | string
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  context?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiExtractedSkillUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  candidateId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
   skillId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedName?: Prisma.StringFieldUpdateOperationsInput | string
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  context?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AiExtractedSkillCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   skillId?: Prisma.SortOrder
   extractedName?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  context?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiExtractedSkillAvgOrderByAggregateInput = {
@@ -351,20 +471,32 @@ export type AiExtractedSkillAvgOrderByAggregateInput = {
 
 export type AiExtractedSkillMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   skillId?: Prisma.SortOrder
   extractedName?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  context?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiExtractedSkillMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  candidateId?: Prisma.SortOrder
+  applicantId?: Prisma.SortOrder
   skillId?: Prisma.SortOrder
   extractedName?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  context?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type AiExtractedSkillSumOrderByAggregateInput = {
@@ -375,52 +507,82 @@ export type AiExtractedSkillSumOrderByAggregateInput = {
 
 export type AiExtractedSkillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   skillId?: boolean
   extractedName?: boolean
   confidence?: boolean
+  source?: boolean
+  context?: boolean
+  verified?: boolean
+  verifiedBy?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["aiExtractedSkill"]>
 
 export type AiExtractedSkillSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   skillId?: boolean
   extractedName?: boolean
   confidence?: boolean
+  source?: boolean
+  context?: boolean
+  verified?: boolean
+  verifiedBy?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["aiExtractedSkill"]>
 
 export type AiExtractedSkillSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   skillId?: boolean
   extractedName?: boolean
   confidence?: boolean
+  source?: boolean
+  context?: boolean
+  verified?: boolean
+  verifiedBy?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["aiExtractedSkill"]>
 
 export type AiExtractedSkillSelectScalar = {
   id?: boolean
-  candidateId?: boolean
+  applicantId?: boolean
   skillId?: boolean
   extractedName?: boolean
   confidence?: boolean
+  source?: boolean
+  context?: boolean
+  verified?: boolean
+  verifiedBy?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type AiExtractedSkillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "candidateId" | "skillId" | "extractedName" | "confidence" | "createdAt", ExtArgs["result"]["aiExtractedSkill"]>
+export type AiExtractedSkillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicantId" | "skillId" | "extractedName" | "confidence" | "source" | "context" | "verified" | "verifiedBy" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["aiExtractedSkill"]>
 
 export type $AiExtractedSkillPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AiExtractedSkill"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    candidateId: string
+    applicantId: string
     skillId: string | null
     extractedName: string
     confidence: number
+    source: string | null
+    context: string | null
+    verified: boolean
+    verifiedBy: string | null
+    verifiedAt: Date | null
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["aiExtractedSkill"]>
   composites: {}
 }
@@ -845,11 +1007,17 @@ export interface Prisma__AiExtractedSkillClient<T, Null = never, ExtArgs extends
  */
 export interface AiExtractedSkillFieldRefs {
   readonly id: Prisma.FieldRef<"AiExtractedSkill", 'String'>
-  readonly candidateId: Prisma.FieldRef<"AiExtractedSkill", 'String'>
+  readonly applicantId: Prisma.FieldRef<"AiExtractedSkill", 'String'>
   readonly skillId: Prisma.FieldRef<"AiExtractedSkill", 'String'>
   readonly extractedName: Prisma.FieldRef<"AiExtractedSkill", 'String'>
   readonly confidence: Prisma.FieldRef<"AiExtractedSkill", 'Float'>
+  readonly source: Prisma.FieldRef<"AiExtractedSkill", 'String'>
+  readonly context: Prisma.FieldRef<"AiExtractedSkill", 'String'>
+  readonly verified: Prisma.FieldRef<"AiExtractedSkill", 'Boolean'>
+  readonly verifiedBy: Prisma.FieldRef<"AiExtractedSkill", 'String'>
+  readonly verifiedAt: Prisma.FieldRef<"AiExtractedSkill", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AiExtractedSkill", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"AiExtractedSkill", 'DateTime'>
 }
     
 
