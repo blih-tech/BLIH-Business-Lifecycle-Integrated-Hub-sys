@@ -1,5 +1,4 @@
 import type {
-  ApprovalProgressState,
   FullJobRequest,
   JobRequestDepartment,
   JobRequestPriority,
@@ -56,20 +55,6 @@ function formatCreatedDate(value?: string) {
   }).format(parsed);
 }
 
-function progressClasses(status: ApprovalProgressState) {
-  if (status === "approved") return "bg-[rgba(22,163,74,0.08)] text-[rgb(22,101,52)]";
-  if (status === "requested_review") return "bg-[rgba(217,119,6,0.12)] text-[rgb(146,64,14)]";
-  if (status === "rejected") return "bg-[rgba(220,38,38,0.08)] text-[rgb(153,27,27)]";
-  return "bg-muted text-muted-foreground";
-}
-
-function progressLabel(status: ApprovalProgressState) {
-  if (status === "requested_review") return "Review";
-  if (status === "approved") return "Approved";
-  if (status === "rejected") return "Rejected";
-  return "Pending";
-}
-
 export function JobRequestCard({ item, priority, currentUserName, onClick, onJustifyClick }: JobRequestCardProps) {
   const ownRequest = isOwnRequest(item.requestForm.requestedBy, currentUserName);
 
@@ -116,18 +101,6 @@ export function JobRequestCard({ item, priority, currentUserName, onClick, onJus
         <p className="ui-body text-muted-foreground">
           Created: <span className="font-medium text-foreground">{formatCreatedDate(item.requestForm.createdDate)}</span>
         </p>
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        <span className={`rounded-md px-2 py-1 text-[11px] ${progressClasses(item.progress.jm.status)}`}>
-          JM: {progressLabel(item.progress.jm.status)}
-        </span>
-        <span className={`rounded-md px-2 py-1 text-[11px] ${progressClasses(item.progress.hr.status)}`}>
-          HR: {progressLabel(item.progress.hr.status)}
-        </span>
-        <span className={`rounded-md px-2 py-1 text-[11px] ${progressClasses(item.progress.finance.status)}`}>
-          Finance: {progressLabel(item.progress.finance.status)}
-        </span>
       </div>
 
       {ownRequest ? (
