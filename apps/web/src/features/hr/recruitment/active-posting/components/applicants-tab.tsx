@@ -84,6 +84,7 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
   const [selectedApplicantIds, setSelectedApplicantIds] = useState<string[]>([]);
   const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [viewedApplicantIds, setViewedApplicantIds] = useState<Set<string>>(new Set());
 
   const sortedApplicants = useMemo(() => {
     return [...job.applicants].sort((left, right) => {
@@ -237,8 +238,19 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
             {paginatedApplicants.map((applicant) => (
               <TableRow
                 key={applicant.id}
-                className="group border-0 bg-white transition-colors duration-200 hover:cursor-pointer hover:bg-[#f8fbff]"
-                onClick={() => setSelectedApplicantId(applicant.id)}
+                className={`group border-0 transition-colors duration-200 hover:cursor-pointer hover:bg-[#f8fbff] ${
+                  viewedApplicantIds.has(applicant.id)
+                    ? "bg-[#eef2f7] shadow-[inset_3px_0_0_rgba(30,102,247,0.35)]"
+                    : "bg-white"
+                }`}
+                onClick={() => {
+                  setSelectedApplicantId(applicant.id);
+                  setViewedApplicantIds((current) => {
+                    const next = new Set(current);
+                    next.add(applicant.id);
+                    return next;
+                  });
+                }}
               >
                 {!historyMode ? (
                   <TableCell className="w-12 px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
@@ -254,7 +266,17 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
                 ) : null}
                 <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
                   <div className="space-y-0.5">
-                    <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-base font-medium tracking-[-0.3125px] text-black">
+                        {applicant.fullName}
+                      </p>
+                      {viewedApplicantIds.has(applicant.id) ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5b6472]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary/70" />
+                          Viewed
+                        </span>
+                      ) : null}
+                    </div>
                     <p className="text-xs text-[#666]">{applicant.phone}</p>
                   </div>
                 </TableCell>
