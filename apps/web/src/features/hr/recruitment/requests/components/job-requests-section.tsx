@@ -25,12 +25,6 @@ type JobRequestsSectionProps = {
   currentUserName: string;
 };
 
-type OwnershipFilter = "all" | "mine";
-
-function normalizeName(value: string) {
-  return value.trim().toLowerCase();
-}
-
 function departmentLabel(department: JobRequestDepartment) {
   if (department === "technical") return "Technical";
   if (department === "creative") return "Creative";
@@ -41,7 +35,6 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [ownershipFilter, setOwnershipFilter] = useState<OwnershipFilter>("all");
   const [departmentFilter, setDepartmentFilter] = useState<JobRequestDepartment | "all">("all");
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
   const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
@@ -61,15 +54,12 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
   const filteredItems = useMemo(
     () =>
       items.filter((item) => {
-        const matchesOwnership =
-          ownershipFilter === "all" ||
-          normalizeName(item.requestForm.requestedBy) === normalizeName(currentUserName);
         const matchesDepartment =
           departmentFilter === "all" || item.requestForm.department === departmentFilter;
 
-        return matchesOwnership && matchesDepartment;
+        return matchesDepartment;
       }),
-    [currentUserName, departmentFilter, items, ownershipFilter],
+    [departmentFilter, items],
   );
   const filteredRequestEntries = useMemo(
     () =>
@@ -117,29 +107,11 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
           <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground">Filters</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Narrow the request list by ownership or department.
+              Narrow the request list by department.
             </p>
           </div>
 
-          <div className="grid gap-3 md:min-w-[420px] md:grid-cols-2">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                Requests
-              </p>
-              <Select
-                value={ownershipFilter}
-                onValueChange={(value) => setOwnershipFilter(value as OwnershipFilter)}
-              >
-                <SelectTrigger className="w-full bg-background">
-                  <SelectValue placeholder="Filter by owner" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Requests</SelectItem>
-                  <SelectItem value="mine">Requested By Me</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
+          <div className="grid gap-3 md:min-w-[260px] md:grid-cols-1">
             <div className="space-y-1.5">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
                 Department
@@ -183,7 +155,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
           <div className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center">
             <p className="text-sm font-semibold text-foreground">No matching requests</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Try changing the ownership or department filter.
+              Try changing the department filter.
             </p>
           </div>
         )}
