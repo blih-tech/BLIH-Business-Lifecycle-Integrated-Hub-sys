@@ -60,5 +60,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@prisma/client": "^7.4.2",
+    "pdf-parse-debugging-disabled": "^1.1.1"
+  }
 }
