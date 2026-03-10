@@ -214,7 +214,6 @@ export type UpdateJobDto = Partial<CreateJobDto>;
 
 export interface ApproveJobDto {
   decision: 'APPROVED' | 'REJECTED';
-  stage?: JobApprovalStage | null;
   comments?: string | null;
 }
 

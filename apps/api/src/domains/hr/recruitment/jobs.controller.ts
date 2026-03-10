@@ -385,7 +385,7 @@ export class JobsController {
   @ApiOperation({
     summary: 'Submit job for approval workflow',
     description:
-      'Submits a DRAFT or REJECTED job into approval workflow. Finance and GM stages open in parallel, and HR review is unlocked after both approve. Any rejection marks the job REJECTED immediately.',
+      'Submits a DRAFT or REJECTED job into approval workflow. Finance, GM, and HR review stages are parallel by role. Any rejection marks the job REJECTED immediately.',
   })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
@@ -413,21 +413,20 @@ export class JobsController {
     roles: [JobApprovalPermissions.DECIDE],
   })
   @ApiOperation({
-    summary: 'Approve/reject current job approval stage',
+    summary: 'Approve/reject one eligible job approval stage',
     description:
-      'Records approval or rejection for a pending actionable stage. Finance and GM can be approved in parallel. Use optional stage for deterministic targeting when an actor can decide multiple stages.',
+      'Records approval or rejection for one pending actionable stage that matches caller roles. No stage input is required.',
   })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: ApproveJobDto,
     description:
-      'Request body: decision (required) — APPROVED or REJECTED; stage (optional) — FINANCE | GM | HR_REVIEW; comments (optional).',
+      'Request body: decision (required) — APPROVED or REJECTED; comments (optional).',
     examples: {
       approve: {
         summary: 'Approve stage',
         value: {
           decision: 'APPROVED',
-          stage: 'GM',
           comments: 'Approved by stage owner.',
         },
       },
@@ -435,7 +434,6 @@ export class JobsController {
         summary: 'Reject stage',
         value: {
           decision: 'REJECTED',
-          stage: 'FINANCE',
           comments: 'Budget is not approved.',
         },
       },

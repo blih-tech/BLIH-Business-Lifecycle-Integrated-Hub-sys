@@ -447,12 +447,6 @@ export class ApproveJobDto {
   @IsEnum(['APPROVED', 'REJECTED'])
   decision!: 'APPROVED' | 'REJECTED';
 
-  @ApiPropertyOptional({ enum: JOB_APPROVAL_STAGES, nullable: true })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(JOB_APPROVAL_STAGES)
-  stage?: 'FINANCE' | 'GM' | 'HR_REVIEW' | null;
-
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()

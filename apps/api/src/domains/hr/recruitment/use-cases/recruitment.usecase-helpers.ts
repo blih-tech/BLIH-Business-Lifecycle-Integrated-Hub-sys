@@ -145,26 +145,12 @@ export function isApprovalStageActionable(
     return false;
   }
 
-  const finance = approvals.find((approval) => approval.stage === 'FINANCE');
-  const gm = approvals.find((approval) => approval.stage === 'GM');
-  const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
-
-  if (!finance || !gm || !hr) {
+  const current = approvals.find((approval) => approval.stage === stage);
+  if (!current) {
     throw new BadRequestException('Missing approval stage configuration');
   }
 
-  if (stage === 'FINANCE') {
-    return finance.decision === 'PENDING';
-  }
-  if (stage === 'GM') {
-    return gm.decision === 'PENDING';
-  }
-
-  return (
-    finance.decision === 'APPROVED' &&
-    gm.decision === 'APPROVED' &&
-    hr.decision === 'PENDING'
-  );
+  return current.decision === 'PENDING';
 }
 
 export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {

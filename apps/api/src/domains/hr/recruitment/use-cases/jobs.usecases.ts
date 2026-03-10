@@ -815,6 +815,8 @@ export class SubmitJobUseCase {
         applicationDeadline: true,
         requiredSkills: true,
         responsibilities: true,
+        creatorIsHr: true,
+        createdById: true,
         requestForm: {
           select: {
             id: true,
@@ -889,6 +891,37 @@ export class SubmitJobUseCase {
       });
 
       const now = new Date();
+      if (existing.creatorIsHr && existing.createdById) {
+        const hrStep = await tx.jobApprovalStep.findFirst({
+          where: {
+            jobRequestFormId: requestFormId,
+            department: 'HR',
+          },
+          select: { id: true },
+        });
+        if (!hrStep) {
+          throw new BadRequestException('Missing approval stage configuration');
+        }
+
+        await tx.jobApprovalStep.update({
+          where: { id: hrStep.id },
+          data: {
+            approverId: existing.createdById,
+            status: 'APPROVED',
+            currentNote: 'Auto-approved because creator has HR role',
+            decidedAt: now,
+          },
+        });
+        await tx.jobApprovalHistory.create({
+          data: {
+            approvalStepId: hrStep.id,
+            toStatus: 'APPROVED',
+            changedById: existing.createdById,
+            reason: 'CREATOR_HAS_HR_ROLE',
+          },
+        });
+      }
+
       return tx.job.update({
         where: { id },
         data: {
@@ -945,46 +978,32 @@ export class ApproveJobUseCase {
         approval.decision === 'PENDING' &&
         isApprovalStageActionable(approval.stage, approvals),
     );
-
-    let target = pendingActionable[0];
-    if (dto.stage !== undefined) {
-      const stageApproval = approvals.find(
-        (approval) => approval.stage === dto.stage,
-      );
-      if (!stageApproval) {
-        throw new BadRequestException('Invalid approval stage');
+    if (pendingActionable.length === 0) {
+      if (approvals.some((approval) => approval.decision === 'REJECTED')) {
+        throw new ConflictException('Job approval workflow already rejected');
       }
-      if (stageApproval.decision !== 'PENDING') {
-        throw new ConflictException('Approval already decided');
-      }
-      if (!isApprovalStageActionable(dto.stage!, approvals)) {
-        throw new BadRequestException('Approval stage is not actionable');
-      }
-      target = stageApproval;
-    }
-
-    if (!target) {
       throw new BadRequestException('No pending approval stage available');
     }
 
+    const eligibleStages = pendingActionable
+      .map((approval, index) => ({ approval, index }))
+      .filter(({ approval }) =>
+        principal.roles?.includes(requiredRoleForStage(approval.stage)),
+      )
+      .sort(
+        (left, right) =>
+          left.approval.level - right.approval.level ||
+          left.index - right.index,
+      );
+
+    if (eligibleStages.length === 0) {
+      throw new ForbiddenException('Required approval role is missing');
+    }
+
+    const target = eligibleStages[0].approval;
     const requiredRole = requiredRoleForStage(target.stage);
     if (!principal.roles?.includes(requiredRole)) {
       throw new ForbiddenException(`Role ${requiredRole} is required`);
-    }
-
-    if (!dto.stage) {
-      const eligibleStages = pendingActionable.filter((approval) =>
-        principal.roles?.includes(requiredRoleForStage(approval.stage)),
-      );
-      if (eligibleStages.length === 0) {
-        throw new ForbiddenException('Required approval role is missing');
-      }
-      if (eligibleStages.length > 1) {
-        throw new BadRequestException(
-          'Multiple approval stages are available; specify stage',
-        );
-      }
-      target = eligibleStages[0];
     }
 
     const decidedAt = new Date();
@@ -1029,45 +1048,6 @@ export class ApproveJobUseCase {
           ? { ...approval, decision: dto.decision }
           : approval,
       );
-
-      const finance = nextApprovals.find(
-        (approval) => approval.stage === 'FINANCE',
-      );
-      const gm = nextApprovals.find((approval) => approval.stage === 'GM');
-      const hr = nextApprovals.find(
-        (approval) => approval.stage === 'HR_REVIEW',
-      );
-
-      if (!finance || !gm || !hr) {
-        throw new BadRequestException('Missing approval stage configuration');
-      }
-
-      if (
-        existing.creatorIsHr &&
-        existing.createdById &&
-        finance.decision === 'APPROVED' &&
-        gm.decision === 'APPROVED' &&
-        hr.decision === 'PENDING'
-      ) {
-        await tx.jobApprovalStep.update({
-          where: { id: hr.id },
-          data: {
-            approverId: existing.createdById,
-            status: 'APPROVED',
-            currentNote: 'Auto-approved because creator has HR role',
-            decidedAt,
-          },
-        });
-        await tx.jobApprovalHistory.create({
-          data: {
-            approvalStepId: hr.id,
-            toStatus: 'APPROVED',
-            changedById: existing.createdById,
-            reason: 'CREATOR_HAS_HR_ROLE',
-          },
-        });
-        hr.decision = 'APPROVED';
-      }
 
       const nextStatus = computeJobStatusFromApprovals(nextApprovals);
       return tx.job.update({
