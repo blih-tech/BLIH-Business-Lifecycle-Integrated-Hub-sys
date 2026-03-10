@@ -152,13 +152,13 @@ export class RagService {
 
   const prompt = `
 You are a senior HR recruiter specializing in candidate evaluation.
-
 Your task is to compare a candidate CV with a job description and evaluate suitability.
 
 RECOMMENDATION LOGIC:
-- If score > 70: SELECT
-- If score 50-70: PAUSE
-- If score < 50: DECLINE
+- If score >= 85: STRONG_RECOMMEND
+- If score 70-84: RECOMMEND
+- If score 50-69: CONSIDER
+- If score < 50: REJECT
 
 Return ONLY valid JSON in this format:
 
@@ -166,7 +166,7 @@ Return ONLY valid JSON in this format:
  "score": number,
  "strengths": ["..."],
  "weaknesses": ["..."],
- "recommendation": "SELECT | DECLINE | PAUSE",
+ "recommendation": "STRONG_RECOMMEND | RECOMMEND | CONSIDER | REJECT",
  "summary": "short explanation"
 }
 
@@ -180,7 +180,7 @@ ${cvText}
   const response = await this.llm.invoke([
     {
       role: "system",
-      content: "You are a senior HR recruiter specialized in talent evaluation."
+      content: "You are a senior HR recruiter specialized in talent evaluation. You output strictly valid JSON using the provided schema."
     },
     {
       role: "user",
@@ -189,22 +189,20 @@ ${cvText}
   ]);
 
   try {
-  // Use a regex to find the JSON block if the AI adds conversational text
-  const jsonMatch = (response.content as string).match(/\{[\s\S]*\}/);
-  const jsonString = jsonMatch ? jsonMatch[0] : response.content as string;
-  return JSON.parse(jsonString);
-} catch (e) {
-  this.logger.error("AI returned invalid JSON, falling back to raw content");
-  return {
-    score: 0,
-    strengths: [],
-    weaknesses: [],
-    recommendation: "REVIEW",
-    summary: response.content
-  };
+    const jsonMatch = (response.content as string).match(/\{[\s\S]*\}/);
+    const jsonString = jsonMatch ? jsonMatch[0] : response.content as string;
+    return JSON.parse(jsonString);
+  } catch (e) {
+    this.logger.error("AI returned invalid JSON, falling back to raw content");
+    return {
+      score: 0,
+      strengths: [],
+      weaknesses: [],
+      recommendation: "CONSIDER", 
+      summary: response.content
+    };
+  }
 }
-}
-
   status() {
     return {
       status: 'AI Service is online',
