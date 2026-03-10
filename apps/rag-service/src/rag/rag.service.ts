@@ -151,30 +151,42 @@ export class RagService {
   async analyzeCv(cvText: string, jobDescription: string) {
 
   const prompt = `
-You are a senior HR recruiter specializing in candidate evaluation.
-Your task is to compare a candidate CV with a job description and evaluate suitability.
+### ROLE
+You are a Technical Headhunter with a reputation for being extremely strict. 
+You are performing a Binary Skill Gap Audit. Do NOT award points for "transferable skills" if the core technical requirements are missing.
 
-RECOMMENDATION LOGIC:
-- If score >= 85: STRONG_RECOMMEND
-- If score 70-84: RECOMMEND
-- If score 50-69: CONSIDER
-- If score < 50: REJECT
+### SCORING SYSTEM (WEIGHTED)
+- TECHNICAL STACK (60 pts): Does the candidate know the exact languages/frameworks listed? 
+  - Deduct 20 points for every missing CORE requirement (e.g., TypeScript, NestJS).
+- DOMAIN EXPERIENCE (25 pts): Is their past work in the same field (Software Engineering/AI)?
+  - Business Management experience = 0 points in this section for an Engineering role.
+- SOFT SKILLS & LEADERSHIP (15 pts): Professionalism and communication.
 
-Return ONLY valid JSON in this format:
+### AUTO-FAIL RULES
+- If the candidate is from a completely unrelated field (e.g., Manager applying for Engineer), the score MUST be below 25.
+- If the candidate lacks ALL technical requirements, the recommendation MUST be REJECT.
 
-{
- "score": number,
- "strengths": ["..."],
- "weaknesses": ["..."],
- "recommendation": "STRONG_RECOMMEND | RECOMMEND | CONSIDER | REJECT",
- "summary": "short explanation"
-}
+### RECOMMENDATION LOGIC
+- Score >= 85: STRONG_RECOMMEND (Perfect technical and cultural fit)
+- Score 70-84: RECOMMEND (Strong tech skills, minor experience gaps)
+- Score 50-69: CONSIDER (Has some tech skills but needs training)
+- Score < 50: REJECT (Missing core tech stack or unrelated background)
 
+### INPUT DATA
 JOB DESCRIPTION:
-${jobDescription}
+${JSON.stringify(jobDescription)}
 
 CANDIDATE CV:
 ${cvText}
+
+### OUTPUT FORMAT (STRICT JSON ONLY)
+{
+ "score": number,
+ "strengths": ["list only relevant technical strengths"],
+ "weaknesses": ["list missing technical skills and domain gaps"],
+ "recommendation": "STRONG_RECOMMEND" | "RECOMMEND" | "CONSIDER" | "REJECT",
+ "summary": "Be blunt. Explain why the candidate is or is not a fit for this specific technical role."
+}
 `;
 
   const response = await this.llm.invoke([
