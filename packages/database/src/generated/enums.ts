@@ -157,11 +157,21 @@ export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
 
 export const JobStageApprovalStatus = {
   PENDING_FOR_APPROVAL: 'PENDING_FOR_APPROVAL',
+  REQUEST_REVIEW: 'REQUEST_REVIEW',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
 } as const
 
 export type JobStageApprovalStatus = (typeof JobStageApprovalStatus)[keyof typeof JobStageApprovalStatus]
+
+
+export const JobApprovalDepartment = {
+  FINANCE: 'FINANCE',
+  GM: 'GM',
+  HR: 'HR'
+} as const
+
+export type JobApprovalDepartment = (typeof JobApprovalDepartment)[keyof typeof JobApprovalDepartment]
 
 
 export const JobApprovalStage = {
@@ -336,6 +346,90 @@ export const HiringDecisionOutcome = {
 } as const
 
 export type HiringDecisionOutcome = (typeof HiringDecisionOutcome)[keyof typeof HiringDecisionOutcome]
+
+
+export const CvScreeningRecommendation = {
+  STRONG_RECOMMEND: 'STRONG_RECOMMEND',
+  RECOMMEND: 'RECOMMEND',
+  CONSIDER: 'CONSIDER',
+  REJECT: 'REJECT'
+} as const
+
+export type CvScreeningRecommendation = (typeof CvScreeningRecommendation)[keyof typeof CvScreeningRecommendation]
+
+
+export const CvScreeningStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type CvScreeningStatus = (typeof CvScreeningStatus)[keyof typeof CvScreeningStatus]
+
+
+export const CvScreeningCriteriaType = {
+  SKILLS: 'SKILLS',
+  EXPERIENCE: 'EXPERIENCE',
+  EDUCATION: 'EDUCATION',
+  CERTIFICATIONS: 'CERTIFICATIONS',
+  LANGUAGES: 'LANGUAGES',
+  SOFT_SKILLS: 'SOFT_SKILLS',
+  TECHNICAL_SKILLS: 'TECHNICAL_SKILLS',
+  DOMAIN_KNOWLEDGE: 'DOMAIN_KNOWLEDGE',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type CvScreeningCriteriaType = (typeof CvScreeningCriteriaType)[keyof typeof CvScreeningCriteriaType]
+
+
+export const CvScoringMethod = {
+  MANUAL: 'MANUAL',
+  AUTOMATIC: 'AUTOMATIC',
+  HYBRID: 'HYBRID'
+} as const
+
+export type CvScoringMethod = (typeof CvScoringMethod)[keyof typeof CvScoringMethod]
+
+
+export const CvScreeningQuestionType = {
+  TEXT: 'TEXT',
+  TEXTAREA: 'TEXTAREA',
+  NUMBER: 'NUMBER',
+  SELECT: 'SELECT',
+  MULTI_SELECT: 'MULTI_SELECT',
+  CHECKBOX: 'CHECKBOX',
+  RADIO: 'RADIO',
+  RATING: 'RATING',
+  BOOLEAN: 'BOOLEAN',
+  DATE: 'DATE',
+  FILE: 'FILE'
+} as const
+
+export type CvScreeningQuestionType = (typeof CvScreeningQuestionType)[keyof typeof CvScreeningQuestionType]
+
+
+export const CvScreeningStageType = {
+  INITIAL_SCREENING: 'INITIAL_SCREENING',
+  TECHNICAL_REVIEW: 'TECHNICAL_REVIEW',
+  HR_REVIEW: 'HR_REVIEW',
+  MANAGER_REVIEW: 'MANAGER_REVIEW',
+  FINAL_DECISION: 'FINAL_DECISION',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type CvScreeningStageType = (typeof CvScreeningStageType)[keyof typeof CvScreeningStageType]
+
+
+export const CvScreeningDecisionType = {
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  REQUEST_CHANGES: 'REQUEST_CHANGES',
+  ESCALATE: 'ESCALATE',
+  HOLD: 'HOLD'
+} as const
+
+export type CvScreeningDecisionType = (typeof CvScreeningDecisionType)[keyof typeof CvScreeningDecisionType]
 
 
 export const OnboardingStatus = {

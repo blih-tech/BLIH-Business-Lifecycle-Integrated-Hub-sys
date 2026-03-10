@@ -520,6 +520,7 @@ export type ApplicantWhereInput = {
   interviews?: Prisma.InterviewListRelationFilter
   hiringDecisions?: Prisma.HiringDecisionListRelationFilter
   statusHistory?: Prisma.ApplicantStatusHistoryListRelationFilter
+  cvScreenings?: Prisma.CvScreeningListRelationFilter
 }
 
 export type ApplicantOrderByWithRelationInput = {
@@ -573,6 +574,7 @@ export type ApplicantOrderByWithRelationInput = {
   interviews?: Prisma.InterviewOrderByRelationAggregateInput
   hiringDecisions?: Prisma.HiringDecisionOrderByRelationAggregateInput
   statusHistory?: Prisma.ApplicantStatusHistoryOrderByRelationAggregateInput
+  cvScreenings?: Prisma.CvScreeningOrderByRelationAggregateInput
 }
 
 export type ApplicantWhereUniqueInput = Prisma.AtLeast<{
@@ -630,6 +632,7 @@ export type ApplicantWhereUniqueInput = Prisma.AtLeast<{
   interviews?: Prisma.InterviewListRelationFilter
   hiringDecisions?: Prisma.HiringDecisionListRelationFilter
   statusHistory?: Prisma.ApplicantStatusHistoryListRelationFilter
+  cvScreenings?: Prisma.CvScreeningListRelationFilter
 }, "id" | "jobId_emailNormalized">
 
 export type ApplicantOrderByWithAggregationInput = {
@@ -778,6 +781,7 @@ export type ApplicantCreateInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateInput = {
@@ -828,6 +832,7 @@ export type ApplicantUncheckedCreateInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUpdateInput = {
@@ -878,6 +883,7 @@ export type ApplicantUpdateInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateInput = {
@@ -928,6 +934,7 @@ export type ApplicantUncheckedUpdateInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantCreateManyInput = {
@@ -1326,14 +1333,6 @@ export type EnumApplicantStatusFieldUpdateOperationsInput = {
   set?: $Enums.ApplicantStatus
 }
 
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ApplicantCreateNestedOneWithoutStatusHistoryInput = {
   create?: Prisma.XOR<Prisma.ApplicantCreateWithoutStatusHistoryInput, Prisma.ApplicantUncheckedCreateWithoutStatusHistoryInput>
   connectOrCreate?: Prisma.ApplicantCreateOrConnectWithoutStatusHistoryInput
@@ -1402,6 +1401,20 @@ export type ApplicantUpdateOneRequiredWithoutHiringDecisionsNestedInput = {
   upsert?: Prisma.ApplicantUpsertWithoutHiringDecisionsInput
   connect?: Prisma.ApplicantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicantUpdateToOneWithWhereWithoutHiringDecisionsInput, Prisma.ApplicantUpdateWithoutHiringDecisionsInput>, Prisma.ApplicantUncheckedUpdateWithoutHiringDecisionsInput>
+}
+
+export type ApplicantCreateNestedOneWithoutCvScreeningsInput = {
+  create?: Prisma.XOR<Prisma.ApplicantCreateWithoutCvScreeningsInput, Prisma.ApplicantUncheckedCreateWithoutCvScreeningsInput>
+  connectOrCreate?: Prisma.ApplicantCreateOrConnectWithoutCvScreeningsInput
+  connect?: Prisma.ApplicantWhereUniqueInput
+}
+
+export type ApplicantUpdateOneRequiredWithoutCvScreeningsNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicantCreateWithoutCvScreeningsInput, Prisma.ApplicantUncheckedCreateWithoutCvScreeningsInput>
+  connectOrCreate?: Prisma.ApplicantCreateOrConnectWithoutCvScreeningsInput
+  upsert?: Prisma.ApplicantUpsertWithoutCvScreeningsInput
+  connect?: Prisma.ApplicantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicantUpdateToOneWithWhereWithoutCvScreeningsInput, Prisma.ApplicantUpdateWithoutCvScreeningsInput>, Prisma.ApplicantUncheckedUpdateWithoutCvScreeningsInput>
 }
 
 export type ApplicantCreateNestedManyWithoutReferredByInput = {
@@ -1493,6 +1506,7 @@ export type ApplicantCreateWithoutJobInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutJobInput = {
@@ -1542,6 +1556,7 @@ export type ApplicantUncheckedCreateWithoutJobInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutJobInput = {
@@ -1665,6 +1680,7 @@ export type ApplicantCreateWithoutApplicationFormInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutApplicationFormInput = {
@@ -1714,6 +1730,7 @@ export type ApplicantUncheckedCreateWithoutApplicationFormInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutApplicationFormInput = {
@@ -1789,6 +1806,7 @@ export type ApplicantCreateWithoutStatusHistoryInput = {
   experiences?: Prisma.ApplicantExperienceCreateNestedManyWithoutApplicantInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutStatusHistoryInput = {
@@ -1838,6 +1856,7 @@ export type ApplicantUncheckedCreateWithoutStatusHistoryInput = {
   experiences?: Prisma.ApplicantExperienceUncheckedCreateNestedManyWithoutApplicantInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutStatusHistoryInput = {
@@ -1903,6 +1922,7 @@ export type ApplicantUpdateWithoutStatusHistoryInput = {
   experiences?: Prisma.ApplicantExperienceUpdateManyWithoutApplicantNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutStatusHistoryInput = {
@@ -1952,6 +1972,7 @@ export type ApplicantUncheckedUpdateWithoutStatusHistoryInput = {
   experiences?: Prisma.ApplicantExperienceUncheckedUpdateManyWithoutApplicantNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantCreateWithoutEducationsInput = {
@@ -2001,6 +2022,7 @@ export type ApplicantCreateWithoutEducationsInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutEducationsInput = {
@@ -2050,6 +2072,7 @@ export type ApplicantUncheckedCreateWithoutEducationsInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutEducationsInput = {
@@ -2115,6 +2138,7 @@ export type ApplicantUpdateWithoutEducationsInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutEducationsInput = {
@@ -2164,6 +2188,7 @@ export type ApplicantUncheckedUpdateWithoutEducationsInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantCreateWithoutExperiencesInput = {
@@ -2213,6 +2238,7 @@ export type ApplicantCreateWithoutExperiencesInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutExperiencesInput = {
@@ -2262,6 +2288,7 @@ export type ApplicantUncheckedCreateWithoutExperiencesInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutExperiencesInput = {
@@ -2327,6 +2354,7 @@ export type ApplicantUpdateWithoutExperiencesInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutExperiencesInput = {
@@ -2376,6 +2404,7 @@ export type ApplicantUncheckedUpdateWithoutExperiencesInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantCreateWithoutInterviewsInput = {
@@ -2425,6 +2454,7 @@ export type ApplicantCreateWithoutInterviewsInput = {
   experiences?: Prisma.ApplicantExperienceCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutInterviewsInput = {
@@ -2474,6 +2504,7 @@ export type ApplicantUncheckedCreateWithoutInterviewsInput = {
   experiences?: Prisma.ApplicantExperienceUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutInterviewsInput = {
@@ -2539,6 +2570,7 @@ export type ApplicantUpdateWithoutInterviewsInput = {
   experiences?: Prisma.ApplicantExperienceUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutInterviewsInput = {
@@ -2588,6 +2620,7 @@ export type ApplicantUncheckedUpdateWithoutInterviewsInput = {
   experiences?: Prisma.ApplicantExperienceUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantCreateWithoutHiringDecisionsInput = {
@@ -2637,6 +2670,7 @@ export type ApplicantCreateWithoutHiringDecisionsInput = {
   experiences?: Prisma.ApplicantExperienceCreateNestedManyWithoutApplicantInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutHiringDecisionsInput = {
@@ -2686,6 +2720,7 @@ export type ApplicantUncheckedCreateWithoutHiringDecisionsInput = {
   experiences?: Prisma.ApplicantExperienceUncheckedCreateNestedManyWithoutApplicantInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutHiringDecisionsInput = {
@@ -2751,6 +2786,7 @@ export type ApplicantUpdateWithoutHiringDecisionsInput = {
   experiences?: Prisma.ApplicantExperienceUpdateManyWithoutApplicantNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutHiringDecisionsInput = {
@@ -2799,6 +2835,223 @@ export type ApplicantUncheckedUpdateWithoutHiringDecisionsInput = {
   educations?: Prisma.ApplicantEducationUncheckedUpdateManyWithoutApplicantNestedInput
   experiences?: Prisma.ApplicantExperienceUncheckedUpdateManyWithoutApplicantNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
+  statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
+}
+
+export type ApplicantCreateWithoutCvScreeningsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  emailNormalized: string
+  phone?: string | null
+  resumeUrl?: string | null
+  linkedinUrl?: string | null
+  portfolioUrl?: string | null
+  githubUrl?: string | null
+  source?: $Enums.CandidateSource
+  currentCompany?: string | null
+  currentPosition?: string | null
+  yearsExperience?: number | null
+  location?: string | null
+  country?: string | null
+  city?: string | null
+  nationality?: string | null
+  expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLevel?: string | null
+  highestDegree?: string | null
+  skills?: Prisma.ApplicantCreateskillsInput | string[]
+  status?: $Enums.ApplicantStatus
+  coverLetter?: string | null
+  sourceSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customFieldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  appliedAt?: Date | string
+  screeningAt?: Date | string | null
+  shortlistedAt?: Date | string | null
+  interviewAt?: Date | string | null
+  offerAt?: Date | string | null
+  hiredAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  withdrawnAt?: Date | string | null
+  lastActivityAt?: Date | string | null
+  profileScore?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  job: Prisma.JobCreateNestedOneWithoutApplicantsInput
+  applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutApplicantsInput
+  referredBy?: Prisma.UserCreateNestedOneWithoutReferredApplicantsInput
+  educations?: Prisma.ApplicantEducationCreateNestedManyWithoutApplicantInput
+  experiences?: Prisma.ApplicantExperienceCreateNestedManyWithoutApplicantInput
+  interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
+  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
+  statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+}
+
+export type ApplicantUncheckedCreateWithoutCvScreeningsInput = {
+  id?: string
+  jobId: string
+  applicationFormId?: string | null
+  firstName: string
+  lastName: string
+  email: string
+  emailNormalized: string
+  phone?: string | null
+  resumeUrl?: string | null
+  linkedinUrl?: string | null
+  portfolioUrl?: string | null
+  githubUrl?: string | null
+  source?: $Enums.CandidateSource
+  referredById?: string | null
+  currentCompany?: string | null
+  currentPosition?: string | null
+  yearsExperience?: number | null
+  location?: string | null
+  country?: string | null
+  city?: string | null
+  nationality?: string | null
+  expectedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currentSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLevel?: string | null
+  highestDegree?: string | null
+  skills?: Prisma.ApplicantCreateskillsInput | string[]
+  status?: $Enums.ApplicantStatus
+  coverLetter?: string | null
+  sourceSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customFieldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  appliedAt?: Date | string
+  screeningAt?: Date | string | null
+  shortlistedAt?: Date | string | null
+  interviewAt?: Date | string | null
+  offerAt?: Date | string | null
+  hiredAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  withdrawnAt?: Date | string | null
+  lastActivityAt?: Date | string | null
+  profileScore?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  educations?: Prisma.ApplicantEducationUncheckedCreateNestedManyWithoutApplicantInput
+  experiences?: Prisma.ApplicantExperienceUncheckedCreateNestedManyWithoutApplicantInput
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
+  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
+  statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+}
+
+export type ApplicantCreateOrConnectWithoutCvScreeningsInput = {
+  where: Prisma.ApplicantWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApplicantCreateWithoutCvScreeningsInput, Prisma.ApplicantUncheckedCreateWithoutCvScreeningsInput>
+}
+
+export type ApplicantUpsertWithoutCvScreeningsInput = {
+  update: Prisma.XOR<Prisma.ApplicantUpdateWithoutCvScreeningsInput, Prisma.ApplicantUncheckedUpdateWithoutCvScreeningsInput>
+  create: Prisma.XOR<Prisma.ApplicantCreateWithoutCvScreeningsInput, Prisma.ApplicantUncheckedCreateWithoutCvScreeningsInput>
+  where?: Prisma.ApplicantWhereInput
+}
+
+export type ApplicantUpdateToOneWithWhereWithoutCvScreeningsInput = {
+  where?: Prisma.ApplicantWhereInput
+  data: Prisma.XOR<Prisma.ApplicantUpdateWithoutCvScreeningsInput, Prisma.ApplicantUncheckedUpdateWithoutCvScreeningsInput>
+}
+
+export type ApplicantUpdateWithoutCvScreeningsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  githubUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumCandidateSourceFieldUpdateOperationsInput | $Enums.CandidateSource
+  currentCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highestDegree?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.ApplicantUpdateskillsInput | string[]
+  status?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
+  coverLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customFieldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  screeningAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shortlistedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  interviewAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  offerAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  withdrawnAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profileScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  job?: Prisma.JobUpdateOneRequiredWithoutApplicantsNestedInput
+  applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutApplicantsNestedInput
+  referredBy?: Prisma.UserUpdateOneWithoutReferredApplicantsNestedInput
+  educations?: Prisma.ApplicantEducationUpdateManyWithoutApplicantNestedInput
+  experiences?: Prisma.ApplicantExperienceUpdateManyWithoutApplicantNestedInput
+  interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
+  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
+  statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+}
+
+export type ApplicantUncheckedUpdateWithoutCvScreeningsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationFormId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  githubUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumCandidateSourceFieldUpdateOperationsInput | $Enums.CandidateSource
+  referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearsExperience?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currentSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highestDegree?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.ApplicantUpdateskillsInput | string[]
+  status?: Prisma.EnumApplicantStatusFieldUpdateOperationsInput | $Enums.ApplicantStatus
+  coverLetter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customFieldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  screeningAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shortlistedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  interviewAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  offerAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  withdrawnAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profileScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  educations?: Prisma.ApplicantEducationUncheckedUpdateManyWithoutApplicantNestedInput
+  experiences?: Prisma.ApplicantExperienceUncheckedUpdateManyWithoutApplicantNestedInput
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
+  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
@@ -2849,6 +3102,7 @@ export type ApplicantCreateWithoutReferredByInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantUncheckedCreateWithoutReferredByInput = {
@@ -2898,6 +3152,7 @@ export type ApplicantUncheckedCreateWithoutReferredByInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutApplicantInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutApplicantInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutApplicantInput
+  cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutApplicantInput
 }
 
 export type ApplicantCreateOrConnectWithoutReferredByInput = {
@@ -3017,6 +3272,7 @@ export type ApplicantUpdateWithoutJobInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutJobInput = {
@@ -3066,6 +3322,7 @@ export type ApplicantUncheckedUpdateWithoutJobInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateManyWithoutJobInput = {
@@ -3203,6 +3460,7 @@ export type ApplicantUpdateWithoutApplicationFormInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutApplicationFormInput = {
@@ -3252,6 +3510,7 @@ export type ApplicantUncheckedUpdateWithoutApplicationFormInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateManyWithoutApplicationFormInput = {
@@ -3389,6 +3648,7 @@ export type ApplicantUpdateWithoutReferredByInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateWithoutReferredByInput = {
@@ -3438,6 +3698,7 @@ export type ApplicantUncheckedUpdateWithoutReferredByInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutApplicantNestedInput
   hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutApplicantNestedInput
   statusHistory?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutApplicantNestedInput
+  cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutApplicantNestedInput
 }
 
 export type ApplicantUncheckedUpdateManyWithoutReferredByInput = {
@@ -3495,6 +3756,7 @@ export type ApplicantCountOutputType = {
   interviews: number
   hiringDecisions: number
   statusHistory: number
+  cvScreenings: number
 }
 
 export type ApplicantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3503,6 +3765,7 @@ export type ApplicantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   interviews?: boolean | ApplicantCountOutputTypeCountInterviewsArgs
   hiringDecisions?: boolean | ApplicantCountOutputTypeCountHiringDecisionsArgs
   statusHistory?: boolean | ApplicantCountOutputTypeCountStatusHistoryArgs
+  cvScreenings?: boolean | ApplicantCountOutputTypeCountCvScreeningsArgs
 }
 
 /**
@@ -3548,6 +3811,13 @@ export type ApplicantCountOutputTypeCountHiringDecisionsArgs<ExtArgs extends run
  */
 export type ApplicantCountOutputTypeCountStatusHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ApplicantStatusHistoryWhereInput
+}
+
+/**
+ * ApplicantCountOutputType without action
+ */
+export type ApplicantCountOutputTypeCountCvScreeningsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CvScreeningWhereInput
 }
 
 
@@ -3602,6 +3872,7 @@ export type ApplicantSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   interviews?: boolean | Prisma.Applicant$interviewsArgs<ExtArgs>
   hiringDecisions?: boolean | Prisma.Applicant$hiringDecisionsArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Applicant$statusHistoryArgs<ExtArgs>
+  cvScreenings?: boolean | Prisma.Applicant$cvScreeningsArgs<ExtArgs>
   _count?: boolean | Prisma.ApplicantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["applicant"]>
 
@@ -3756,6 +4027,7 @@ export type ApplicantInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   interviews?: boolean | Prisma.Applicant$interviewsArgs<ExtArgs>
   hiringDecisions?: boolean | Prisma.Applicant$hiringDecisionsArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Applicant$statusHistoryArgs<ExtArgs>
+  cvScreenings?: boolean | Prisma.Applicant$cvScreeningsArgs<ExtArgs>
   _count?: boolean | Prisma.ApplicantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ApplicantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3780,6 +4052,7 @@ export type $ApplicantPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     interviews: Prisma.$InterviewPayload<ExtArgs>[]
     hiringDecisions: Prisma.$HiringDecisionPayload<ExtArgs>[]
     statusHistory: Prisma.$ApplicantStatusHistoryPayload<ExtArgs>[]
+    cvScreenings: Prisma.$CvScreeningPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4226,6 +4499,7 @@ export interface Prisma__ApplicantClient<T, Null = never, ExtArgs extends runtim
   interviews<T extends Prisma.Applicant$interviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Applicant$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   hiringDecisions<T extends Prisma.Applicant$hiringDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Applicant$hiringDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HiringDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   statusHistory<T extends Prisma.Applicant$statusHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Applicant$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicantStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cvScreenings<T extends Prisma.Applicant$cvScreeningsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Applicant$cvScreeningsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CvScreeningPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4848,6 +5122,30 @@ export type Applicant$statusHistoryArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ApplicantStatusHistoryScalarFieldEnum | Prisma.ApplicantStatusHistoryScalarFieldEnum[]
+}
+
+/**
+ * Applicant.cvScreenings
+ */
+export type Applicant$cvScreeningsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CvScreening
+   */
+  select?: Prisma.CvScreeningSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CvScreening
+   */
+  omit?: Prisma.CvScreeningOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CvScreeningInclude<ExtArgs> | null
+  where?: Prisma.CvScreeningWhereInput
+  orderBy?: Prisma.CvScreeningOrderByWithRelationInput | Prisma.CvScreeningOrderByWithRelationInput[]
+  cursor?: Prisma.CvScreeningWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CvScreeningScalarFieldEnum | Prisma.CvScreeningScalarFieldEnum[]
 }
 
 /**

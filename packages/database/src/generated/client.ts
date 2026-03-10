@@ -133,6 +133,31 @@ export type AiChatMessage = Prisma.AiChatMessageModel
  */
 export type AiCvAnalysis = Prisma.AiCvAnalysisModel
 /**
+ * Model AiCvScreeningInsight
+ * 
+ */
+export type AiCvScreeningInsight = Prisma.AiCvScreeningInsightModel
+/**
+ * Model AiSkillExtraction
+ * 
+ */
+export type AiSkillExtraction = Prisma.AiSkillExtractionModel
+/**
+ * Model AiExperienceAnalysis
+ * 
+ */
+export type AiExperienceAnalysis = Prisma.AiExperienceAnalysisModel
+/**
+ * Model AiEducationAnalysis
+ * 
+ */
+export type AiEducationAnalysis = Prisma.AiEducationAnalysisModel
+/**
+ * Model AiCvComparison
+ * 
+ */
+export type AiCvComparison = Prisma.AiCvComparisonModel
+/**
  * Model AiExtractedSkill
  * 
  */
@@ -423,10 +448,15 @@ export type JobApplicationCustomField = Prisma.JobApplicationCustomFieldModel
  */
 export type JobApplicationCustomFieldOption = Prisma.JobApplicationCustomFieldOptionModel
 /**
- * Model JobApproval
+ * Model JobApprovalStep
  * 
  */
-export type JobApproval = Prisma.JobApprovalModel
+export type JobApprovalStep = Prisma.JobApprovalStepModel
+/**
+ * Model JobApprovalHistory
+ * 
+ */
+export type JobApprovalHistory = Prisma.JobApprovalHistoryModel
 /**
  * Model Applicant
  * 
@@ -457,6 +487,41 @@ export type Interview = Prisma.InterviewModel
  * 
  */
 export type HiringDecision = Prisma.HiringDecisionModel
+/**
+ * Model CvScreening
+ * 
+ */
+export type CvScreening = Prisma.CvScreeningModel
+/**
+ * Model CvScreeningCriteria
+ * 
+ */
+export type CvScreeningCriteria = Prisma.CvScreeningCriteriaModel
+/**
+ * Model CvScreeningQuestion
+ * 
+ */
+export type CvScreeningQuestion = Prisma.CvScreeningQuestionModel
+/**
+ * Model CvScreeningResponse
+ * 
+ */
+export type CvScreeningResponse = Prisma.CvScreeningResponseModel
+/**
+ * Model CvScreeningWorkflow
+ * 
+ */
+export type CvScreeningWorkflow = Prisma.CvScreeningWorkflowModel
+/**
+ * Model CvScreeningWorkflowStage
+ * 
+ */
+export type CvScreeningWorkflowStage = Prisma.CvScreeningWorkflowStageModel
+/**
+ * Model CvScreeningDecision
+ * 
+ */
+export type CvScreeningDecision = Prisma.CvScreeningDecisionModel
 /**
  * Model AuditLog
  * 

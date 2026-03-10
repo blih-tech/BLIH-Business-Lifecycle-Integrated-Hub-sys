@@ -70,6 +70,11 @@ export const ModelName = {
   AiChatSession: 'AiChatSession',
   AiChatMessage: 'AiChatMessage',
   AiCvAnalysis: 'AiCvAnalysis',
+  AiCvScreeningInsight: 'AiCvScreeningInsight',
+  AiSkillExtraction: 'AiSkillExtraction',
+  AiExperienceAnalysis: 'AiExperienceAnalysis',
+  AiEducationAnalysis: 'AiEducationAnalysis',
+  AiCvComparison: 'AiCvComparison',
   AiExtractedSkill: 'AiExtractedSkill',
   AiPerformanceInsight: 'AiPerformanceInsight',
   AiTrainingRecommendation: 'AiTrainingRecommendation',
@@ -128,13 +133,21 @@ export const ModelName = {
   JobApplicationFormSection: 'JobApplicationFormSection',
   JobApplicationCustomField: 'JobApplicationCustomField',
   JobApplicationCustomFieldOption: 'JobApplicationCustomFieldOption',
-  JobApproval: 'JobApproval',
+  JobApprovalStep: 'JobApprovalStep',
+  JobApprovalHistory: 'JobApprovalHistory',
   Applicant: 'Applicant',
   ApplicantStatusHistory: 'ApplicantStatusHistory',
   ApplicantEducation: 'ApplicantEducation',
   ApplicantExperience: 'ApplicantExperience',
   Interview: 'Interview',
   HiringDecision: 'HiringDecision',
+  CvScreening: 'CvScreening',
+  CvScreeningCriteria: 'CvScreeningCriteria',
+  CvScreeningQuestion: 'CvScreeningQuestion',
+  CvScreeningResponse: 'CvScreeningResponse',
+  CvScreeningWorkflow: 'CvScreeningWorkflow',
+  CvScreeningWorkflowStage: 'CvScreeningWorkflowStage',
+  CvScreeningDecision: 'CvScreeningDecision',
   AuditLog: 'AuditLog',
   AuditExport: 'AuditExport',
   Notification: 'Notification',
@@ -486,26 +499,135 @@ export type AiChatMessageScalarFieldEnum = (typeof AiChatMessageScalarFieldEnum)
 
 export const AiCvAnalysisScalarFieldEnum = {
   id: 'id',
-  candidateId: 'candidateId',
+  applicantId: 'applicantId',
   jobId: 'jobId',
+  screeningId: 'screeningId',
   score: 'score',
   recommendation: 'recommendation',
   strengths: 'strengths',
   weaknesses: 'weaknesses',
   aiSummary: 'aiSummary',
-  createdAt: 'createdAt'
+  detailedAnalysis: 'detailedAnalysis',
+  skillMatches: 'skillMatches',
+  experienceMatches: 'experienceMatches',
+  educationMatches: 'educationMatches',
+  confidence: 'confidence',
+  modelVersion: 'modelVersion',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type AiCvAnalysisScalarFieldEnum = (typeof AiCvAnalysisScalarFieldEnum)[keyof typeof AiCvAnalysisScalarFieldEnum]
 
 
+export const AiCvScreeningInsightScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  jobId: 'jobId',
+  screeningId: 'screeningId',
+  insightType: 'insightType',
+  category: 'category',
+  title: 'title',
+  description: 'description',
+  confidence: 'confidence',
+  priority: 'priority',
+  actionable: 'actionable',
+  suggestedAction: 'suggestedAction',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type AiCvScreeningInsightScalarFieldEnum = (typeof AiCvScreeningInsightScalarFieldEnum)[keyof typeof AiCvScreeningInsightScalarFieldEnum]
+
+
+export const AiSkillExtractionScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  documentType: 'documentType',
+  skillName: 'skillName',
+  skillCategory: 'skillCategory',
+  confidence: 'confidence',
+  context: 'context',
+  source: 'source',
+  verified: 'verified',
+  verifiedBy: 'verifiedBy',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiSkillExtractionScalarFieldEnum = (typeof AiSkillExtractionScalarFieldEnum)[keyof typeof AiSkillExtractionScalarFieldEnum]
+
+
+export const AiExperienceAnalysisScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  company: 'company',
+  position: 'position',
+  duration: 'duration',
+  relevanceScore: 'relevanceScore',
+  skills: 'skills',
+  achievements: 'achievements',
+  responsibilities: 'responsibilities',
+  level: 'level',
+  industry: 'industry',
+  summary: 'summary',
+  confidence: 'confidence',
+  createdAt: 'createdAt'
+} as const
+
+export type AiExperienceAnalysisScalarFieldEnum = (typeof AiExperienceAnalysisScalarFieldEnum)[keyof typeof AiExperienceAnalysisScalarFieldEnum]
+
+
+export const AiEducationAnalysisScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  institution: 'institution',
+  degree: 'degree',
+  field: 'field',
+  level: 'level',
+  relevanceScore: 'relevanceScore',
+  gpa: 'gpa',
+  honors: 'honors',
+  coursework: 'coursework',
+  confidence: 'confidence',
+  createdAt: 'createdAt'
+} as const
+
+export type AiEducationAnalysisScalarFieldEnum = (typeof AiEducationAnalysisScalarFieldEnum)[keyof typeof AiEducationAnalysisScalarFieldEnum]
+
+
+export const AiCvComparisonScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  jobId: 'jobId',
+  comparisonType: 'comparisonType',
+  score: 'score',
+  matchPercentage: 'matchPercentage',
+  gaps: 'gaps',
+  strengths: 'strengths',
+  recommendations: 'recommendations',
+  detailedBreakdown: 'detailedBreakdown',
+  createdAt: 'createdAt'
+} as const
+
+export type AiCvComparisonScalarFieldEnum = (typeof AiCvComparisonScalarFieldEnum)[keyof typeof AiCvComparisonScalarFieldEnum]
+
+
 export const AiExtractedSkillScalarFieldEnum = {
   id: 'id',
-  candidateId: 'candidateId',
+  applicantId: 'applicantId',
   skillId: 'skillId',
   extractedName: 'extractedName',
   confidence: 'confidence',
-  createdAt: 'createdAt'
+  source: 'source',
+  context: 'context',
+  verified: 'verified',
+  verifiedBy: 'verifiedBy',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type AiExtractedSkillScalarFieldEnum = (typeof AiExtractedSkillScalarFieldEnum)[keyof typeof AiExtractedSkillScalarFieldEnum]
@@ -1386,9 +1508,6 @@ export const JobRequestFormScalarFieldEnum = {
   neededByDate: 'neededByDate',
   status: 'status',
   priority: 'priority',
-  financeApprovalStatus: 'financeApprovalStatus',
-  gmApprovalStatus: 'gmApprovalStatus',
-  hrApprovalStatus: 'hrApprovalStatus',
   draftedAt: 'draftedAt',
   pendingApprovalAt: 'pendingApprovalAt',
   readyToPostAt: 'readyToPostAt',
@@ -1511,22 +1630,33 @@ export const JobApplicationCustomFieldOptionScalarFieldEnum = {
 export type JobApplicationCustomFieldOptionScalarFieldEnum = (typeof JobApplicationCustomFieldOptionScalarFieldEnum)[keyof typeof JobApplicationCustomFieldOptionScalarFieldEnum]
 
 
-export const JobApprovalScalarFieldEnum = {
+export const JobApprovalStepScalarFieldEnum = {
   id: 'id',
-  jobId: 'jobId',
-  stage: 'stage',
-  requiredRole: 'requiredRole',
-  approverId: 'approverId',
-  decision: 'decision',
-  autoApproved: 'autoApproved',
-  autoApprovalReason: 'autoApprovalReason',
-  comments: 'comments',
-  decidedAt: 'decidedAt',
+  jobRequestFormId: 'jobRequestFormId',
+  department: 'department',
   level: 'level',
+  status: 'status',
+  approverId: 'approverId',
+  currentNote: 'currentNote',
+  decidedAt: 'decidedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobApprovalStepScalarFieldEnum = (typeof JobApprovalStepScalarFieldEnum)[keyof typeof JobApprovalStepScalarFieldEnum]
+
+
+export const JobApprovalHistoryScalarFieldEnum = {
+  id: 'id',
+  approvalStepId: 'approvalStepId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  changedById: 'changedById',
+  reason: 'reason',
   createdAt: 'createdAt'
 } as const
 
-export type JobApprovalScalarFieldEnum = (typeof JobApprovalScalarFieldEnum)[keyof typeof JobApprovalScalarFieldEnum]
+export type JobApprovalHistoryScalarFieldEnum = (typeof JobApprovalHistoryScalarFieldEnum)[keyof typeof JobApprovalHistoryScalarFieldEnum]
 
 
 export const ApplicantScalarFieldEnum = {
@@ -1660,6 +1790,129 @@ export const HiringDecisionScalarFieldEnum = {
 } as const
 
 export type HiringDecisionScalarFieldEnum = (typeof HiringDecisionScalarFieldEnum)[keyof typeof HiringDecisionScalarFieldEnum]
+
+
+export const CvScreeningScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  jobId: 'jobId',
+  screenedById: 'screenedById',
+  overallScore: 'overallScore',
+  recommendation: 'recommendation',
+  skillsMatch: 'skillsMatch',
+  experienceMatch: 'experienceMatch',
+  educationMatch: 'educationMatch',
+  qualifications: 'qualifications',
+  disqualifications: 'disqualifications',
+  strengths: 'strengths',
+  weaknesses: 'weaknesses',
+  screeningNotes: 'screeningNotes',
+  aiAssisted: 'aiAssisted',
+  aiConfidence: 'aiConfidence',
+  status: 'status',
+  screeningDuration: 'screeningDuration',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CvScreeningScalarFieldEnum = (typeof CvScreeningScalarFieldEnum)[keyof typeof CvScreeningScalarFieldEnum]
+
+
+export const CvScreeningCriteriaScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  category: 'category',
+  name: 'name',
+  description: 'description',
+  weight: 'weight',
+  required: 'required',
+  minValue: 'minValue',
+  maxValue: 'maxValue',
+  acceptableValues: 'acceptableValues',
+  scoringMethod: 'scoringMethod',
+  active: 'active',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CvScreeningCriteriaScalarFieldEnum = (typeof CvScreeningCriteriaScalarFieldEnum)[keyof typeof CvScreeningCriteriaScalarFieldEnum]
+
+
+export const CvScreeningQuestionScalarFieldEnum = {
+  id: 'id',
+  criteriaId: 'criteriaId',
+  question: 'question',
+  questionType: 'questionType',
+  options: 'options',
+  required: 'required',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CvScreeningQuestionScalarFieldEnum = (typeof CvScreeningQuestionScalarFieldEnum)[keyof typeof CvScreeningQuestionScalarFieldEnum]
+
+
+export const CvScreeningResponseScalarFieldEnum = {
+  id: 'id',
+  screeningId: 'screeningId',
+  questionId: 'questionId',
+  response: 'response',
+  score: 'score',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CvScreeningResponseScalarFieldEnum = (typeof CvScreeningResponseScalarFieldEnum)[keyof typeof CvScreeningResponseScalarFieldEnum]
+
+
+export const CvScreeningWorkflowScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  name: 'name',
+  description: 'description',
+  isActive: 'isActive',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CvScreeningWorkflowScalarFieldEnum = (typeof CvScreeningWorkflowScalarFieldEnum)[keyof typeof CvScreeningWorkflowScalarFieldEnum]
+
+
+export const CvScreeningWorkflowStageScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  name: 'name',
+  description: 'description',
+  stageType: 'stageType',
+  requiredRole: 'requiredRole',
+  approverId: 'approverId',
+  order: 'order',
+  autoApprove: 'autoApprove',
+  autoApproveRules: 'autoApproveRules',
+  timeLimitHours: 'timeLimitHours',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CvScreeningWorkflowStageScalarFieldEnum = (typeof CvScreeningWorkflowStageScalarFieldEnum)[keyof typeof CvScreeningWorkflowStageScalarFieldEnum]
+
+
+export const CvScreeningDecisionScalarFieldEnum = {
+  id: 'id',
+  screeningId: 'screeningId',
+  stageId: 'stageId',
+  decision: 'decision',
+  decisionMakerId: 'decisionMakerId',
+  comments: 'comments',
+  decidedAt: 'decidedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CvScreeningDecisionScalarFieldEnum = (typeof CvScreeningDecisionScalarFieldEnum)[keyof typeof CvScreeningDecisionScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

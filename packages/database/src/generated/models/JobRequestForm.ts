@@ -40,9 +40,6 @@ export type JobRequestFormMinAggregateOutputType = {
   neededByDate: Date | null
   status: $Enums.JobWorkflowStatus | null
   priority: $Enums.JobPriority | null
-  financeApprovalStatus: $Enums.JobStageApprovalStatus | null
-  gmApprovalStatus: $Enums.JobStageApprovalStatus | null
-  hrApprovalStatus: $Enums.JobStageApprovalStatus | null
   draftedAt: Date | null
   pendingApprovalAt: Date | null
   readyToPostAt: Date | null
@@ -67,9 +64,6 @@ export type JobRequestFormMaxAggregateOutputType = {
   neededByDate: Date | null
   status: $Enums.JobWorkflowStatus | null
   priority: $Enums.JobPriority | null
-  financeApprovalStatus: $Enums.JobStageApprovalStatus | null
-  gmApprovalStatus: $Enums.JobStageApprovalStatus | null
-  hrApprovalStatus: $Enums.JobStageApprovalStatus | null
   draftedAt: Date | null
   pendingApprovalAt: Date | null
   readyToPostAt: Date | null
@@ -94,9 +88,6 @@ export type JobRequestFormCountAggregateOutputType = {
   neededByDate: number
   status: number
   priority: number
-  financeApprovalStatus: number
-  gmApprovalStatus: number
-  hrApprovalStatus: number
   draftedAt: number
   pendingApprovalAt: number
   readyToPostAt: number
@@ -123,9 +114,6 @@ export type JobRequestFormMinAggregateInputType = {
   neededByDate?: true
   status?: true
   priority?: true
-  financeApprovalStatus?: true
-  gmApprovalStatus?: true
-  hrApprovalStatus?: true
   draftedAt?: true
   pendingApprovalAt?: true
   readyToPostAt?: true
@@ -150,9 +138,6 @@ export type JobRequestFormMaxAggregateInputType = {
   neededByDate?: true
   status?: true
   priority?: true
-  financeApprovalStatus?: true
-  gmApprovalStatus?: true
-  hrApprovalStatus?: true
   draftedAt?: true
   pendingApprovalAt?: true
   readyToPostAt?: true
@@ -177,9 +162,6 @@ export type JobRequestFormCountAggregateInputType = {
   neededByDate?: true
   status?: true
   priority?: true
-  financeApprovalStatus?: true
-  gmApprovalStatus?: true
-  hrApprovalStatus?: true
   draftedAt?: true
   pendingApprovalAt?: true
   readyToPostAt?: true
@@ -277,9 +259,6 @@ export type JobRequestFormGroupByOutputType = {
   neededByDate: Date
   status: $Enums.JobWorkflowStatus
   priority: $Enums.JobPriority
-  financeApprovalStatus: $Enums.JobStageApprovalStatus
-  gmApprovalStatus: $Enums.JobStageApprovalStatus
-  hrApprovalStatus: $Enums.JobStageApprovalStatus
   draftedAt: Date | null
   pendingApprovalAt: Date | null
   readyToPostAt: Date | null
@@ -325,9 +304,6 @@ export type JobRequestFormWhereInput = {
   neededByDate?: Prisma.DateTimeFilter<"JobRequestForm"> | Date | string
   status?: Prisma.EnumJobWorkflowStatusFilter<"JobRequestForm"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"JobRequestForm"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
   pendingApprovalAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
   readyToPostAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
@@ -338,6 +314,7 @@ export type JobRequestFormWhereInput = {
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   position?: Prisma.XOR<Prisma.PositionScalarRelationFilter, Prisma.PositionWhereInput>
   replaceForUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  approvals?: Prisma.JobApprovalStepListRelationFilter
 }
 
 export type JobRequestFormOrderByWithRelationInput = {
@@ -356,9 +333,6 @@ export type JobRequestFormOrderByWithRelationInput = {
   neededByDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   draftedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   pendingApprovalAt?: Prisma.SortOrderInput | Prisma.SortOrder
   readyToPostAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -369,6 +343,7 @@ export type JobRequestFormOrderByWithRelationInput = {
   department?: Prisma.DepartmentOrderByWithRelationInput
   position?: Prisma.PositionOrderByWithRelationInput
   replaceForUser?: Prisma.UserOrderByWithRelationInput
+  approvals?: Prisma.JobApprovalStepOrderByRelationAggregateInput
 }
 
 export type JobRequestFormWhereUniqueInput = Prisma.AtLeast<{
@@ -390,9 +365,6 @@ export type JobRequestFormWhereUniqueInput = Prisma.AtLeast<{
   neededByDate?: Prisma.DateTimeFilter<"JobRequestForm"> | Date | string
   status?: Prisma.EnumJobWorkflowStatusFilter<"JobRequestForm"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"JobRequestForm"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
   pendingApprovalAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
   readyToPostAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
@@ -403,6 +375,7 @@ export type JobRequestFormWhereUniqueInput = Prisma.AtLeast<{
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   position?: Prisma.XOR<Prisma.PositionScalarRelationFilter, Prisma.PositionWhereInput>
   replaceForUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  approvals?: Prisma.JobApprovalStepListRelationFilter
 }, "id" | "jobId">
 
 export type JobRequestFormOrderByWithAggregationInput = {
@@ -421,9 +394,6 @@ export type JobRequestFormOrderByWithAggregationInput = {
   neededByDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   draftedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   pendingApprovalAt?: Prisma.SortOrderInput | Prisma.SortOrder
   readyToPostAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -454,9 +424,6 @@ export type JobRequestFormScalarWhereWithAggregatesInput = {
   neededByDate?: Prisma.DateTimeWithAggregatesFilter<"JobRequestForm"> | Date | string
   status?: Prisma.EnumJobWorkflowStatusWithAggregatesFilter<"JobRequestForm"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityWithAggregatesFilter<"JobRequestForm"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusWithAggregatesFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"JobRequestForm"> | Date | string | null
   pendingApprovalAt?: Prisma.DateTimeNullableWithAggregatesFilter<"JobRequestForm"> | Date | string | null
   readyToPostAt?: Prisma.DateTimeNullableWithAggregatesFilter<"JobRequestForm"> | Date | string | null
@@ -477,9 +444,6 @@ export type JobRequestFormCreateInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -490,6 +454,7 @@ export type JobRequestFormCreateInput = {
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
+  approvals?: Prisma.JobApprovalStepCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateInput = {
@@ -508,15 +473,13 @@ export type JobRequestFormUncheckedCreateInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormUpdateInput = {
@@ -531,9 +494,6 @@ export type JobRequestFormUpdateInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -544,6 +504,7 @@ export type JobRequestFormUpdateInput = {
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
+  approvals?: Prisma.JobApprovalStepUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateInput = {
@@ -562,15 +523,13 @@ export type JobRequestFormUncheckedUpdateInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormCreateManyInput = {
@@ -589,9 +548,6 @@ export type JobRequestFormCreateManyInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -612,9 +568,6 @@ export type JobRequestFormUpdateManyMutationInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -639,9 +592,6 @@ export type JobRequestFormUncheckedUpdateManyInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -676,9 +626,6 @@ export type JobRequestFormCountOrderByAggregateInput = {
   neededByDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   draftedAt?: Prisma.SortOrder
   pendingApprovalAt?: Prisma.SortOrder
   readyToPostAt?: Prisma.SortOrder
@@ -703,9 +650,6 @@ export type JobRequestFormMaxOrderByAggregateInput = {
   neededByDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   draftedAt?: Prisma.SortOrder
   pendingApprovalAt?: Prisma.SortOrder
   readyToPostAt?: Prisma.SortOrder
@@ -730,9 +674,6 @@ export type JobRequestFormMinOrderByAggregateInput = {
   neededByDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
-  financeApprovalStatus?: Prisma.SortOrder
-  gmApprovalStatus?: Prisma.SortOrder
-  hrApprovalStatus?: Prisma.SortOrder
   draftedAt?: Prisma.SortOrder
   pendingApprovalAt?: Prisma.SortOrder
   readyToPostAt?: Prisma.SortOrder
@@ -744,6 +685,11 @@ export type JobRequestFormMinOrderByAggregateInput = {
 export type JobRequestFormNullableScalarRelationFilter = {
   is?: Prisma.JobRequestFormWhereInput | null
   isNot?: Prisma.JobRequestFormWhereInput | null
+}
+
+export type JobRequestFormScalarRelationFilter = {
+  is?: Prisma.JobRequestFormWhereInput
+  isNot?: Prisma.JobRequestFormWhereInput
 }
 
 export type JobRequestFormCreateNestedManyWithoutDepartmentInput = {
@@ -854,10 +800,6 @@ export type EnumJobPriorityFieldUpdateOperationsInput = {
   set?: $Enums.JobPriority
 }
 
-export type EnumJobStageApprovalStatusFieldUpdateOperationsInput = {
-  set?: $Enums.JobStageApprovalStatus
-}
-
 export type JobRequestFormCreateNestedOneWithoutJobInput = {
   create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutJobInput, Prisma.JobRequestFormUncheckedCreateWithoutJobInput>
   connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutJobInput
@@ -888,6 +830,20 @@ export type JobRequestFormUncheckedUpdateOneWithoutJobNestedInput = {
   delete?: Prisma.JobRequestFormWhereInput | boolean
   connect?: Prisma.JobRequestFormWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobRequestFormUpdateToOneWithWhereWithoutJobInput, Prisma.JobRequestFormUpdateWithoutJobInput>, Prisma.JobRequestFormUncheckedUpdateWithoutJobInput>
+}
+
+export type JobRequestFormCreateNestedOneWithoutApprovalsInput = {
+  create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutApprovalsInput, Prisma.JobRequestFormUncheckedCreateWithoutApprovalsInput>
+  connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutApprovalsInput
+  connect?: Prisma.JobRequestFormWhereUniqueInput
+}
+
+export type JobRequestFormUpdateOneRequiredWithoutApprovalsNestedInput = {
+  create?: Prisma.XOR<Prisma.JobRequestFormCreateWithoutApprovalsInput, Prisma.JobRequestFormUncheckedCreateWithoutApprovalsInput>
+  connectOrCreate?: Prisma.JobRequestFormCreateOrConnectWithoutApprovalsInput
+  upsert?: Prisma.JobRequestFormUpsertWithoutApprovalsInput
+  connect?: Prisma.JobRequestFormWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobRequestFormUpdateToOneWithWhereWithoutApprovalsInput, Prisma.JobRequestFormUpdateWithoutApprovalsInput>, Prisma.JobRequestFormUncheckedUpdateWithoutApprovalsInput>
 }
 
 export type JobRequestFormCreateNestedManyWithoutReplaceForUserInput = {
@@ -944,9 +900,6 @@ export type JobRequestFormCreateWithoutDepartmentInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -956,6 +909,7 @@ export type JobRequestFormCreateWithoutDepartmentInput = {
   job: Prisma.JobCreateNestedOneWithoutRequestFormInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
+  approvals?: Prisma.JobApprovalStepCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutDepartmentInput = {
@@ -973,15 +927,13 @@ export type JobRequestFormUncheckedCreateWithoutDepartmentInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutDepartmentInput = {
@@ -1029,9 +981,6 @@ export type JobRequestFormScalarWhereInput = {
   neededByDate?: Prisma.DateTimeFilter<"JobRequestForm"> | Date | string
   status?: Prisma.EnumJobWorkflowStatusFilter<"JobRequestForm"> | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFilter<"JobRequestForm"> | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFilter<"JobRequestForm"> | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
   pendingApprovalAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
   readyToPostAt?: Prisma.DateTimeNullableFilter<"JobRequestForm"> | Date | string | null
@@ -1052,9 +1001,6 @@ export type JobRequestFormCreateWithoutPositionInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -1064,6 +1010,7 @@ export type JobRequestFormCreateWithoutPositionInput = {
   job: Prisma.JobCreateNestedOneWithoutRequestFormInput
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
+  approvals?: Prisma.JobApprovalStepCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutPositionInput = {
@@ -1081,15 +1028,13 @@ export type JobRequestFormUncheckedCreateWithoutPositionInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutPositionInput = {
@@ -1130,9 +1075,6 @@ export type JobRequestFormCreateWithoutJobInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -1142,6 +1084,7 @@ export type JobRequestFormCreateWithoutJobInput = {
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
   replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
+  approvals?: Prisma.JobApprovalStepCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutJobInput = {
@@ -1159,15 +1102,13 @@ export type JobRequestFormUncheckedCreateWithoutJobInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutJobInput = {
@@ -1198,9 +1139,6 @@ export type JobRequestFormUpdateWithoutJobInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1210,6 +1148,7 @@ export type JobRequestFormUpdateWithoutJobInput = {
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
+  approvals?: Prisma.JobApprovalStepUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutJobInput = {
@@ -1227,9 +1166,119 @@ export type JobRequestFormUncheckedUpdateWithoutJobInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
+  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutJobRequestFormNestedInput
+}
+
+export type JobRequestFormCreateWithoutApprovalsInput = {
+  id?: string
+  jobTitle: string
+  requestedBy: string
+  requestType: $Enums.JobRequestType
+  businessJustification: string
+  employmentType: $Enums.EmploymentType
+  workMode: $Enums.WorkLocationType
+  urgency: $Enums.JobUrgency
+  neededByDate: Date | string
+  status?: $Enums.JobWorkflowStatus
+  priority?: $Enums.JobPriority
+  draftedAt?: Date | string | null
+  pendingApprovalAt?: Date | string | null
+  readyToPostAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  job: Prisma.JobCreateNestedOneWithoutRequestFormInput
+  department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
+  position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
+  replaceForUser?: Prisma.UserCreateNestedOneWithoutJobReplacementRequestsInput
+}
+
+export type JobRequestFormUncheckedCreateWithoutApprovalsInput = {
+  id?: string
+  jobId: string
+  jobTitle: string
+  departmentId: string
+  positionId: string
+  requestedBy: string
+  requestType: $Enums.JobRequestType
+  replaceForUserId?: string | null
+  businessJustification: string
+  employmentType: $Enums.EmploymentType
+  workMode: $Enums.WorkLocationType
+  urgency: $Enums.JobUrgency
+  neededByDate: Date | string
+  status?: $Enums.JobWorkflowStatus
+  priority?: $Enums.JobPriority
+  draftedAt?: Date | string | null
+  pendingApprovalAt?: Date | string | null
+  readyToPostAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type JobRequestFormCreateOrConnectWithoutApprovalsInput = {
+  where: Prisma.JobRequestFormWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobRequestFormCreateWithoutApprovalsInput, Prisma.JobRequestFormUncheckedCreateWithoutApprovalsInput>
+}
+
+export type JobRequestFormUpsertWithoutApprovalsInput = {
+  update: Prisma.XOR<Prisma.JobRequestFormUpdateWithoutApprovalsInput, Prisma.JobRequestFormUncheckedUpdateWithoutApprovalsInput>
+  create: Prisma.XOR<Prisma.JobRequestFormCreateWithoutApprovalsInput, Prisma.JobRequestFormUncheckedCreateWithoutApprovalsInput>
+  where?: Prisma.JobRequestFormWhereInput
+}
+
+export type JobRequestFormUpdateToOneWithWhereWithoutApprovalsInput = {
+  where?: Prisma.JobRequestFormWhereInput
+  data: Prisma.XOR<Prisma.JobRequestFormUpdateWithoutApprovalsInput, Prisma.JobRequestFormUncheckedUpdateWithoutApprovalsInput>
+}
+
+export type JobRequestFormUpdateWithoutApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  requestedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  requestType?: Prisma.EnumJobRequestTypeFieldUpdateOperationsInput | $Enums.JobRequestType
+  businessJustification?: Prisma.StringFieldUpdateOperationsInput | string
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  workMode?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
+  urgency?: Prisma.EnumJobUrgencyFieldUpdateOperationsInput | $Enums.JobUrgency
+  neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
+  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+  draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
+  position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
+  replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
+}
+
+export type JobRequestFormUncheckedUpdateWithoutApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.StringFieldUpdateOperationsInput | string
+  requestedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  requestType?: Prisma.EnumJobRequestTypeFieldUpdateOperationsInput | $Enums.JobRequestType
+  replaceForUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessJustification?: Prisma.StringFieldUpdateOperationsInput | string
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  workMode?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
+  urgency?: Prisma.EnumJobUrgencyFieldUpdateOperationsInput | $Enums.JobUrgency
+  neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
+  priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1250,9 +1299,6 @@ export type JobRequestFormCreateWithoutReplaceForUserInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -1262,6 +1308,7 @@ export type JobRequestFormCreateWithoutReplaceForUserInput = {
   job: Prisma.JobCreateNestedOneWithoutRequestFormInput
   department: Prisma.DepartmentCreateNestedOneWithoutJobRequestFormsInput
   position: Prisma.PositionCreateNestedOneWithoutJobRequestFormsInput
+  approvals?: Prisma.JobApprovalStepCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormUncheckedCreateWithoutReplaceForUserInput = {
@@ -1279,15 +1326,13 @@ export type JobRequestFormUncheckedCreateWithoutReplaceForUserInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutJobRequestFormInput
 }
 
 export type JobRequestFormCreateOrConnectWithoutReplaceForUserInput = {
@@ -1331,9 +1376,6 @@ export type JobRequestFormCreateManyDepartmentInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -1354,9 +1396,6 @@ export type JobRequestFormUpdateWithoutDepartmentInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1366,6 +1405,7 @@ export type JobRequestFormUpdateWithoutDepartmentInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
+  approvals?: Prisma.JobApprovalStepUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutDepartmentInput = {
@@ -1383,15 +1423,13 @@ export type JobRequestFormUncheckedUpdateWithoutDepartmentInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateManyWithoutDepartmentInput = {
@@ -1409,9 +1447,6 @@ export type JobRequestFormUncheckedUpdateManyWithoutDepartmentInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1435,9 +1470,6 @@ export type JobRequestFormCreateManyPositionInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -1458,9 +1490,6 @@ export type JobRequestFormUpdateWithoutPositionInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1470,6 +1499,7 @@ export type JobRequestFormUpdateWithoutPositionInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   replaceForUser?: Prisma.UserUpdateOneWithoutJobReplacementRequestsNestedInput
+  approvals?: Prisma.JobApprovalStepUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutPositionInput = {
@@ -1487,15 +1517,13 @@ export type JobRequestFormUncheckedUpdateWithoutPositionInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateManyWithoutPositionInput = {
@@ -1513,9 +1541,6 @@ export type JobRequestFormUncheckedUpdateManyWithoutPositionInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1539,9 +1564,6 @@ export type JobRequestFormCreateManyReplaceForUserInput = {
   neededByDate: Date | string
   status?: $Enums.JobWorkflowStatus
   priority?: $Enums.JobPriority
-  financeApprovalStatus?: $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: $Enums.JobStageApprovalStatus
   draftedAt?: Date | string | null
   pendingApprovalAt?: Date | string | null
   readyToPostAt?: Date | string | null
@@ -1562,9 +1584,6 @@ export type JobRequestFormUpdateWithoutReplaceForUserInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1574,6 +1593,7 @@ export type JobRequestFormUpdateWithoutReplaceForUserInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutRequestFormNestedInput
   department?: Prisma.DepartmentUpdateOneRequiredWithoutJobRequestFormsNestedInput
   position?: Prisma.PositionUpdateOneRequiredWithoutJobRequestFormsNestedInput
+  approvals?: Prisma.JobApprovalStepUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateWithoutReplaceForUserInput = {
@@ -1591,15 +1611,13 @@ export type JobRequestFormUncheckedUpdateWithoutReplaceForUserInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvals?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutJobRequestFormNestedInput
 }
 
 export type JobRequestFormUncheckedUpdateManyWithoutReplaceForUserInput = {
@@ -1617,9 +1635,6 @@ export type JobRequestFormUncheckedUpdateManyWithoutReplaceForUserInput = {
   neededByDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumJobWorkflowStatusFieldUpdateOperationsInput | $Enums.JobWorkflowStatus
   priority?: Prisma.EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
-  financeApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  gmApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
-  hrApprovalStatus?: Prisma.EnumJobStageApprovalStatusFieldUpdateOperationsInput | $Enums.JobStageApprovalStatus
   draftedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pendingApprovalAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readyToPostAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1628,6 +1643,35 @@ export type JobRequestFormUncheckedUpdateManyWithoutReplaceForUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type JobRequestFormCountOutputType
+ */
+
+export type JobRequestFormCountOutputType = {
+  approvals: number
+}
+
+export type JobRequestFormCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  approvals?: boolean | JobRequestFormCountOutputTypeCountApprovalsArgs
+}
+
+/**
+ * JobRequestFormCountOutputType without action
+ */
+export type JobRequestFormCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobRequestFormCountOutputType
+   */
+  select?: Prisma.JobRequestFormCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * JobRequestFormCountOutputType without action
+ */
+export type JobRequestFormCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobApprovalStepWhereInput
+}
 
 
 export type JobRequestFormSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1646,9 +1690,6 @@ export type JobRequestFormSelect<ExtArgs extends runtime.Types.Extensions.Intern
   neededByDate?: boolean
   status?: boolean
   priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   draftedAt?: boolean
   pendingApprovalAt?: boolean
   readyToPostAt?: boolean
@@ -1659,6 +1700,8 @@ export type JobRequestFormSelect<ExtArgs extends runtime.Types.Extensions.Intern
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
   replaceForUser?: boolean | Prisma.JobRequestForm$replaceForUserArgs<ExtArgs>
+  approvals?: boolean | Prisma.JobRequestForm$approvalsArgs<ExtArgs>
+  _count?: boolean | Prisma.JobRequestFormCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobRequestForm"]>
 
 export type JobRequestFormSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1677,9 +1720,6 @@ export type JobRequestFormSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   neededByDate?: boolean
   status?: boolean
   priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   draftedAt?: boolean
   pendingApprovalAt?: boolean
   readyToPostAt?: boolean
@@ -1708,9 +1748,6 @@ export type JobRequestFormSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   neededByDate?: boolean
   status?: boolean
   priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   draftedAt?: boolean
   pendingApprovalAt?: boolean
   readyToPostAt?: boolean
@@ -1739,9 +1776,6 @@ export type JobRequestFormSelectScalar = {
   neededByDate?: boolean
   status?: boolean
   priority?: boolean
-  financeApprovalStatus?: boolean
-  gmApprovalStatus?: boolean
-  hrApprovalStatus?: boolean
   draftedAt?: boolean
   pendingApprovalAt?: boolean
   readyToPostAt?: boolean
@@ -1750,12 +1784,14 @@ export type JobRequestFormSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobRequestFormOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "jobTitle" | "departmentId" | "positionId" | "requestedBy" | "requestType" | "replaceForUserId" | "businessJustification" | "employmentType" | "workMode" | "urgency" | "neededByDate" | "status" | "priority" | "financeApprovalStatus" | "gmApprovalStatus" | "hrApprovalStatus" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "rejectedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobRequestForm"]>
+export type JobRequestFormOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "jobTitle" | "departmentId" | "positionId" | "requestedBy" | "requestType" | "replaceForUserId" | "businessJustification" | "employmentType" | "workMode" | "urgency" | "neededByDate" | "status" | "priority" | "draftedAt" | "pendingApprovalAt" | "readyToPostAt" | "rejectedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobRequestForm"]>
 export type JobRequestFormInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
   replaceForUser?: boolean | Prisma.JobRequestForm$replaceForUserArgs<ExtArgs>
+  approvals?: boolean | Prisma.JobRequestForm$approvalsArgs<ExtArgs>
+  _count?: boolean | Prisma.JobRequestFormCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JobRequestFormIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
@@ -1777,6 +1813,7 @@ export type $JobRequestFormPayload<ExtArgs extends runtime.Types.Extensions.Inte
     department: Prisma.$DepartmentPayload<ExtArgs>
     position: Prisma.$PositionPayload<ExtArgs>
     replaceForUser: Prisma.$UserPayload<ExtArgs> | null
+    approvals: Prisma.$JobApprovalStepPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1794,9 +1831,6 @@ export type $JobRequestFormPayload<ExtArgs extends runtime.Types.Extensions.Inte
     neededByDate: Date
     status: $Enums.JobWorkflowStatus
     priority: $Enums.JobPriority
-    financeApprovalStatus: $Enums.JobStageApprovalStatus
-    gmApprovalStatus: $Enums.JobStageApprovalStatus
-    hrApprovalStatus: $Enums.JobStageApprovalStatus
     draftedAt: Date | null
     pendingApprovalAt: Date | null
     readyToPostAt: Date | null
@@ -2201,6 +2235,7 @@ export interface Prisma__JobRequestFormClient<T, Null = never, ExtArgs extends r
   department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   position<T extends Prisma.PositionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PositionDefaultArgs<ExtArgs>>): Prisma.Prisma__PositionClient<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   replaceForUser<T extends Prisma.JobRequestForm$replaceForUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobRequestForm$replaceForUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  approvals<T extends Prisma.JobRequestForm$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobRequestForm$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2245,9 +2280,6 @@ export interface JobRequestFormFieldRefs {
   readonly neededByDate: Prisma.FieldRef<"JobRequestForm", 'DateTime'>
   readonly status: Prisma.FieldRef<"JobRequestForm", 'JobWorkflowStatus'>
   readonly priority: Prisma.FieldRef<"JobRequestForm", 'JobPriority'>
-  readonly financeApprovalStatus: Prisma.FieldRef<"JobRequestForm", 'JobStageApprovalStatus'>
-  readonly gmApprovalStatus: Prisma.FieldRef<"JobRequestForm", 'JobStageApprovalStatus'>
-  readonly hrApprovalStatus: Prisma.FieldRef<"JobRequestForm", 'JobStageApprovalStatus'>
   readonly draftedAt: Prisma.FieldRef<"JobRequestForm", 'DateTime'>
   readonly pendingApprovalAt: Prisma.FieldRef<"JobRequestForm", 'DateTime'>
   readonly readyToPostAt: Prisma.FieldRef<"JobRequestForm", 'DateTime'>
@@ -2666,6 +2698,30 @@ export type JobRequestForm$replaceForUserArgs<ExtArgs extends runtime.Types.Exte
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * JobRequestForm.approvals
+ */
+export type JobRequestForm$approvalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobApprovalStep
+   */
+  select?: Prisma.JobApprovalStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobApprovalStep
+   */
+  omit?: Prisma.JobApprovalStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobApprovalStepInclude<ExtArgs> | null
+  where?: Prisma.JobApprovalStepWhereInput
+  orderBy?: Prisma.JobApprovalStepOrderByWithRelationInput | Prisma.JobApprovalStepOrderByWithRelationInput[]
+  cursor?: Prisma.JobApprovalStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobApprovalStepScalarFieldEnum | Prisma.JobApprovalStepScalarFieldEnum[]
 }
 
 /**
