@@ -8,7 +8,7 @@ export class OnboardingLifecycleService {
   async activateEmployeeIfEligible(employeeId: string): Promise<boolean> {
     const [latestChecklist, latestAssetProvisioning, latestPolicyAck] =
       await Promise.all([
-        this.prisma.onboardingChecklist.findFirst({
+        this.prisma.onbosardingChecklist.findFirst({
           where: { employeeId },
           orderBy: { createdAt: 'desc' },
           select: {
