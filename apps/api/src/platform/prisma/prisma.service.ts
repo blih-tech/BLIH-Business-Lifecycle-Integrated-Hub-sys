@@ -4,7 +4,6 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import type { Pool } from 'pg';
 import { env } from '../../config/env.config';
 import { createPrismaPgAdapter } from './prisma.adapter';
 import { PrismaClient } from './prisma-client';
@@ -14,7 +13,7 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
-  private readonly pool: Pool;
+  private readonly pool: ReturnType<typeof createPrismaPgAdapter>['pool'];
 
   constructor() {
     const { adapter, pool } = createPrismaPgAdapter();

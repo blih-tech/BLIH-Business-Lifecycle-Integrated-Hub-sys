@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { ReviewStatus } from '../../../../platform/prisma/generated/enums';
+import type { ReviewStatus } from '../../../../platform/prisma/prisma-client';
 import { mapPerformanceReviewResponse } from '../performance.mapper';
 
 export interface ListPerformanceReviewsFilters {

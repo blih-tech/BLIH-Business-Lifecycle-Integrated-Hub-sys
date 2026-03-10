@@ -1,0 +1,82 @@
+// Authentication and Authorization Models
+// This file contains Role, Permission, and RBAC-related models
+
+model Role {
+  id           String           @id @default(uuid()) @db.Uuid
+  name         String
+  displayName  String
+  description  String?
+  parentRoleId String?          @db.Uuid
+  parentRole   Role?            @relation("RoleHierarchy", fields: [parentRoleId], references: [id], onDelete: SetNull)
+  childRoles   Role[]           @relation("RoleHierarchy")
+  isSystem     Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  users        UserRole[]
+  permissions  RolePermission[]
+
+  @@unique([name])
+  @@index([parentRoleId])
+}
+
+model PermissionResource {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  permissions Permission[]
+}
+
+model PermissionAction {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  permissions Permission[]
+}
+
+model Permission {
+  id          String             @id @default(uuid()) @db.Uuid
+  resourceId  String             @db.Uuid
+  actionId    String             @db.Uuid
+  resource    PermissionResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  action      PermissionAction   @relation(fields: [actionId], references: [id], onDelete: Cascade)
+  slug        String             @unique
+  description String?
+  createdAt   DateTime           @default(now())
+  roleLinks   RolePermission[]
+
+  @@unique([resourceId, actionId])
+  @@index([resourceId])
+  @@index([actionId])
+}
+
+model UserRole {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  roleId     String    @db.Uuid
+  assignedBy String?   @db.Uuid
+  assignedAt DateTime  @default(now())
+  expiresAt  DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@index([userId, roleId])
+}
+
+model RolePermission {
+  id           String     @id @default(uuid()) @db.Uuid
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  createdAt    DateTime   @default(now())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}

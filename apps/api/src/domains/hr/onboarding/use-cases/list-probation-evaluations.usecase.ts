@@ -14,8 +14,8 @@ export class ListProbationEvaluationsUseCase {
     const list = await this.prisma.probationEvaluation.findMany({
       where: {
         ...(filters.employeeId ? { employeeId: filters.employeeId } : {}),
-        ...(filters.kpiPlanId ? { kpiPlanId: filters.kpiPlanId } : {}),
-        ...(filters.round ? { evaluationRound: filters.round as never } : {}),
+        ...(filters.kpiPlanId ? { probationPlanId: filters.kpiPlanId } : {}),
+        ...(filters.round ? { round: filters.round as never } : {}),
       },
       orderBy: [{ evaluationDate: 'asc' }, { createdAt: 'asc' }],
     });

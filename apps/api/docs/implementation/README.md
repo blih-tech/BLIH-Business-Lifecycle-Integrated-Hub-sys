@@ -6,17 +6,17 @@ This folder contains **detailed implementation plans** for each of the 8 HR subs
 
 ## Plan Index and Implementation Order
 
-| Order | Subsystem          | Document                                                                                 | Description                                                                                                 |
-| ----- | ------------------ | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 1     | Employee (Records) | [HR_IMPLEMENTATION_01_EMPLOYEE_RECORDS.md](HR_IMPLEMENTATION_01_EMPLOYEE_RECORDS.md)     | Profile, documents, contracts, job descriptions, profile change approval, document expiry                   |
-| 2     | _(Cross-cutting)_  | Approval Workflow + Notifications                                                        | Implement minimal approval engine and HR notification triggers first (see master plan)                      |
-| 3     | Attendance & Leave | [HR_IMPLEMENTATION_04_ATTENDANCE_LEAVE.md](HR_IMPLEMENTATION_04_ATTENDANCE_LEAVE.md)     | Check-in/out, leave balance, leave request, timesheets, overtime, device validation                         |
-| 4     | Onboarding         | [HR_IMPLEMENTATION_03_ONBOARDING.md](HR_IMPLEMENTATION_03_ONBOARDING.md)                 | Checklists, asset provisioning, policy acknowledgement, probation KPI, evaluation, confirm/extend/terminate |
-| 5     | Recruitment        | [HR_IMPLEMENTATION_02_RECRUITMENT.md](HR_IMPLEMENTATION_02_RECRUITMENT.md)               | Request, job posting, application, CV screening, interview feedback, hiring decision & offer                |
-| 6     | Performance & OKR  | [HR_IMPLEMENTATION_05_PERFORMANCE_OKR.md](HR_IMPLEMENTATION_05_PERFORMANCE_OKR.md)       | Review periods, self/manager review, OKRs, key results, rating, raise recommendation                        |
-| 7     | Training           | [HR_IMPLEMENTATION_06_TRAINING.md](HR_IMPLEMENTATION_06_TRAINING.md)                     | Training request, completion & certification, skill gap assessment, budget allocation                       |
-| 8     | Employee Relations | [HR_IMPLEMENTATION_07_EMPLOYEE_RELATIONS.md](HR_IMPLEMENTATION_07_EMPLOYEE_RELATIONS.md) | Incidents, disciplinary, grievances, recognition, surveys, conflict mediation                               |
-| 9     | Offboarding        | [HR_IMPLEMENTATION_08_OFFBOARDING.md](HR_IMPLEMENTATION_08_OFFBOARDING.md)               | Resignation, notice validation, checklist, final settlement, exit interview, compliance                     |
+| Order | Subsystem          | Document                                                                                       | Description                                                                                                 |
+| ----- | ------------------ | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 1     | Employee (Records) | [HR_IMPLEMENTATION_01_EMPLOYEE_RECORDS.md](HR_IMPLEMENTATION_01_EMPLOYEE_RECORDS.md)           | Profile, documents, contracts, job descriptions, profile change approval, document expiry                   |
+| 2     | _(Cross-cutting)_  | Approval Workflow + Notifications                                                              | Implement minimal approval engine and HR notification triggers first (see master plan)                      |
+| 3     | Attendance & Leave | [HR_IMPLEMENTATION_04_ATTENDANCE_LEAVE.md](HR_IMPLEMENTATION_04_ATTENDANCE_LEAVE.md)           | Check-in/out, leave balance, leave request, timesheets, overtime, device validation                         |
+| 4     | Onboarding         | [HR_IMPLEMENTATION_03_ONBOARDING.md](HR_IMPLEMENTATION_03_ONBOARDING.md)                       | Checklists, asset provisioning, policy acknowledgement, probation KPI, evaluation, confirm/extend/terminate |
+| 5     | Recruitment        | [HR_IMPLEMENTATION_02_RECRUITMENT_CANONICAL.md](HR_IMPLEMENTATION_02_RECRUITMENT_CANONICAL.md) | Enterprise job, approval, candidate, application, interview, and hiring handoff workflow                    |
+| 6     | Performance & OKR  | [HR_IMPLEMENTATION_05_PERFORMANCE_OKR.md](HR_IMPLEMENTATION_05_PERFORMANCE_OKR.md)             | Review periods, self/manager review, OKRs, key results, rating, raise recommendation                        |
+| 7     | Training           | [HR_IMPLEMENTATION_06_TRAINING.md](HR_IMPLEMENTATION_06_TRAINING.md)                           | Training request, completion & certification, skill gap assessment, budget allocation                       |
+| 8     | Employee Relations | [HR_IMPLEMENTATION_07_EMPLOYEE_RELATIONS.md](HR_IMPLEMENTATION_07_EMPLOYEE_RELATIONS.md)       | Incidents, disciplinary, grievances, recognition, surveys, conflict mediation                               |
+| 9     | Offboarding        | [HR_IMPLEMENTATION_08_OFFBOARDING.md](HR_IMPLEMENTATION_08_OFFBOARDING.md)                     | Resignation, notice validation, checklist, final settlement, exit interview, compliance                     |
 
 ---
 

@@ -3,10 +3,14 @@ import type { CreateTrainingCompletionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapTrainingCompletionResponse } from '../training.mapper';
 import { resolveEmployeeSubjectOrThrow } from '../../employees/employee-subject.utils';
+import { TrainingProfileSyncService } from '../training-profile-sync.service';
 
 @Injectable()
 export class CreateTrainingCompletionUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly trainingProfileSync: TrainingProfileSyncService,
+  ) {}
 
   async execute(dto: CreateTrainingCompletionDto) {
     const employee = await resolveEmployeeSubjectOrThrow(
@@ -30,6 +34,20 @@ export class CreateTrainingCompletionUseCase {
         attestedAt: dto.attestedAt ? new Date(dto.attestedAt) : new Date(),
       },
     });
-    return mapTrainingCompletionResponse(c);
+    if (c.completionStatus === 'COMPLETED') {
+      const syncedSkills = (
+        Array.isArray(c.skillsAcquired) ? c.skillsAcquired : null
+      ) as CreateTrainingCompletionDto['skillsAcquired'];
+      await this.trainingProfileSync.syncCompletionSkills({
+        completionId: c.id,
+        employeeId: employee.id,
+        skillsAcquired: syncedSkills ?? null,
+        attestedAt: c.attestedAt,
+      });
+    }
+    const refreshed = await this.prisma.trainingCompletion.findUniqueOrThrow({
+      where: { id: c.id },
+    });
+    return mapTrainingCompletionResponse(refreshed);
   }
 }

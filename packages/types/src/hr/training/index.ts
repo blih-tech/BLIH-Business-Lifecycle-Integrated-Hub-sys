@@ -4,3 +4,7 @@ export * from './budget.js';
 export * from './request.js';
 export * from './completion.js';
 export * from './skill-gap.js';
+export * from './feedback.js';
+export * from './certification.js';
+export * from './analytics.js';
+export * from './compliance.js';

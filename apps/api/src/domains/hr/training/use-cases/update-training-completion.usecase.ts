@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { UpdateTrainingCompletionDto } from '@repo/types';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { mapTrainingCompletionResponse } from '../training.mapper';
+import { TrainingProfileSyncService } from '../training-profile-sync.service';
 
 @Injectable()
 export class UpdateTrainingCompletionUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly trainingProfileSync: TrainingProfileSyncService,
+  ) {}
 
   async execute(id: string, dto: UpdateTrainingCompletionDto) {
     const existing = await this.prisma.trainingCompletion.findUnique({
@@ -36,6 +40,20 @@ export class UpdateTrainingCompletionUseCase {
       where: { id },
       data: data as never,
     });
-    return mapTrainingCompletionResponse(updated);
+    if (updated.completionStatus === 'COMPLETED') {
+      const syncedSkills = (
+        Array.isArray(updated.skillsAcquired) ? updated.skillsAcquired : null
+      ) as UpdateTrainingCompletionDto['skillsAcquired'];
+      await this.trainingProfileSync.syncCompletionSkills({
+        completionId: updated.id,
+        employeeId: updated.employeeId,
+        skillsAcquired: syncedSkills ?? null,
+        attestedAt: updated.attestedAt,
+      });
+    }
+    const refreshed = await this.prisma.trainingCompletion.findUniqueOrThrow({
+      where: { id: updated.id },
+    });
+    return mapTrainingCompletionResponse(refreshed);
   }
 }

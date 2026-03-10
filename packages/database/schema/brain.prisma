@@ -1,0 +1,158 @@
+// Brain/AI Schema for BLIH System
+// This file contains all AI-related models and enums
+// Note: Relations to main schema models are handled via foreign keys without explicit relations
+
+// AI-specific enums
+enum ScreeningRecommendation {
+  STRONG_RECOMMEND
+  RECOMMEND
+  CONSIDER
+  REJECT
+}
+
+// AI Document Management Models
+model AiDocument {
+  id            String   @id @default(uuid()) @db.Uuid
+  title         String
+  module        String
+  sourceType    String
+  sourceId      String?
+  fileUrl       String?
+  content       String?
+  uploadedById  String?  @db.Uuid
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  chunks        AiChunk[]
+
+  @@index([module])
+  @@index([uploadedById])
+}
+
+model AiChunk {
+  id           String   @id @default(uuid()) @db.Uuid
+  documentId   String   @db.Uuid
+  document     AiDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  content      String
+  chunkIndex   Int
+  tokenCount   Int?
+
+  qdrantId     String
+  module       String
+  departmentId String? @db.Uuid
+
+  createdAt    DateTime @default(now())
+
+  @@index([documentId])
+  @@index([module])
+  @@index([departmentId])
+}
+
+// AI Chat System Models
+model AiChatSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+
+  title     String?
+  module    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages  AiChatMessage[]
+
+  @@index([userId])
+  @@index([module])
+}
+
+model AiChatMessage {
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @db.Uuid
+  session   AiChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  role      String
+  content   String
+  tokensUsed Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+// AI Analysis Models
+model AiCvAnalysis {
+  id            String   @id @default(uuid()) @db.Uuid
+  candidateId   String   @db.Uuid
+  jobId         String   @db.Uuid
+  score         Float
+  recommendation ScreeningRecommendation
+  strengths     String[]
+  weaknesses    String[]
+  aiSummary     String
+  createdAt     DateTime @default(now())
+
+  @@index([candidateId])
+  @@index([jobId])
+}
+
+model AiExtractedSkill {
+  id          String   @id @default(uuid()) @db.Uuid
+  candidateId String   @db.Uuid
+  skillId     String?  @db.Uuid
+  extractedName String
+  confidence   Float
+  createdAt    DateTime @default(now())
+
+  @@index([candidateId])
+  @@index([skillId])
+}
+
+model AiPerformanceInsight {
+  id            String   @id @default(uuid()) @db.Uuid
+  employeeId    String   @db.Uuid
+  reviewId      String?  @db.Uuid
+  insights      Json
+  recommendations Json
+  createdAt     DateTime @default(now())
+
+  @@index([employeeId])
+  @@index([reviewId])
+}
+
+model AiTrainingRecommendation {
+  id          String   @id @default(uuid()) @db.Uuid
+  employeeId  String   @db.Uuid
+  recommendedSkills Json
+  recommendedCourses Json
+  createdAt DateTime @default(now())
+
+  @@index([employeeId])
+}
+
+// AI Logging Model
+model AiDecisionLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  type        String
+  referenceId String?
+  result      Json
+  createdAt   DateTime @default(now())
+
+  @@index([type])
+  @@index([referenceId])
+  @@index([createdAt])
+}
+
+// Knowledge Management Model
+model BrainKnowledgeSource {
+  id         String   @id @default(uuid()) @db.Uuid
+  module     String
+  sourceType String
+  sourceId   String?
+  lastSynced DateTime?
+  createdAt  DateTime @default(now())
+
+  @@index([module])
+  @@index([sourceType])
+  @@index([lastSynced])
+}

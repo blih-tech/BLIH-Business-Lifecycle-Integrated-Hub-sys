@@ -15,6 +15,7 @@ import {
   createEnvelopeErrorExample,
 } from '../../shared/docs/openapi';
 import { PrismaService } from '../../platform/prisma/prisma.service';
+import { HealthCheckResponseDto } from './dto/health-check-response.dto';
 
 @ApiTags('Health')
 @Controller('health')
@@ -34,17 +35,7 @@ export class HealthController {
   })
   @ApiOkResponse({
     description: 'Health check result.',
-    schema: {
-      example: {
-        status: 'degraded',
-        checks: {
-          database: { status: 'up' },
-          keycloak: { status: 'down', error: 'connect ECONNREFUSED' },
-          smtp: { status: 'up', mode: 'disabled' },
-        },
-        timestamp: '2026-02-15T12:00:00.000Z',
-      },
-    },
+    type: HealthCheckResponseDto,
   })
   @ApiInternalServerErrorResponse({
     description: 'Unexpected health check failure.',

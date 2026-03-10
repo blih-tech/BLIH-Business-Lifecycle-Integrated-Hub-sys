@@ -7,10 +7,13 @@ import ts from 'typescript';
 const projectRoot = process.cwd();
 const srcRoot = path.join(projectRoot, 'src');
 const constantsPath = path.join(
-  srcRoot,
-  'core',
+  projectRoot,
+  '..',
+  '..',
+  'packages',
+  'database',
+  'src',
   'rbac',
-  'constants',
   'permissions.constants.ts',
 );
 

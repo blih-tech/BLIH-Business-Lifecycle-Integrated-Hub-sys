@@ -8,20 +8,20 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
   CreateSuccessionPlanDto,
   UpdateSuccessionPlanDto,
 } from '@repo/types';
 import { SuccessionPlanPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ApiProtected } from '../../../shared/docs/openapi';
+import {
+  ApiDefaultErrors,
+  ApiEnvelopeArrayResponse,
+  ApiEnvelopeOkResponse,
+  ApiProtected,
+  GenericEntityResponseDto,
+} from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { CreateSuccessionPlanUseCase } from './use-cases/create-succession-plan.usecase';
@@ -45,7 +45,12 @@ export class SuccessionPlansController {
     roles: [SuccessionPlanPermissions.VIEW],
   })
   @ApiOperation({ summary: 'List succession plans' })
-  @ApiOkResponse({ description: 'Succession plan list' })
+  @ApiEnvelopeArrayResponse(GenericEntityResponseDto, 'Succession plan list')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/succession-plans',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   list(
     @Query('positionId') positionId?: string,
     @Query('candidateEmployeeId') candidateEmployeeId?: string,
@@ -61,7 +66,13 @@ export class SuccessionPlansController {
   })
   @ApiOperation({ summary: 'Create succession plan entry' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Created succession plan' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Created succession plan')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/succession-plans',
+    badRequest: 'Succession plan payload is invalid',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   create(@Body() body: CreateSuccessionPlanDto) {
     return this.createUseCase.execute(body);
   }
@@ -75,7 +86,14 @@ export class SuccessionPlansController {
   @ApiOperation({ summary: 'Update succession plan entry' })
   @ApiParam({ name: 'id' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiOkResponse({ description: 'Updated succession plan' })
+  @ApiEnvelopeOkResponse(GenericEntityResponseDto, 'Updated succession plan')
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/succession-plans/:id',
+    badRequest: 'Succession plan payload is invalid',
+    notFound: 'Succession plan not found',
+    unauthorized: 'Unauthorized: missing or invalid bearer access token',
+    forbidden: 'Required roles are missing',
+  })
   update(@Param('id') id: string, @Body() body: UpdateSuccessionPlanDto) {
     return this.updateUseCase.execute(id, body);
   }
