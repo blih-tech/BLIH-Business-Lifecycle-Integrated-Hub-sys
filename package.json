@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "node init && turbo run build",
+    "dev": "node init && turbo run dev",
     "dev:api": "turbo run dev --filter=blih-system-backend",
     "start:api": "npm run start --workspace blih-system-backend",
     "lint": "turbo run lint",
@@ -60,5 +60,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@prisma/client": "^7.4.2",
+    "pdf-parse-debugging-disabled": "^1.1.1"
+  }
 }

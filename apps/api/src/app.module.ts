@@ -21,6 +21,7 @@ import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { PreAuditInterceptor } from './shared/interceptors/pre-audit.interceptor';
 import { ResponseEnvelopeInterceptor } from './shared/interceptors/response-envelope.interceptor';
 import { CorrelationIdMiddleware } from './shared/middlewares/correlation-id.middleware';
+import { BrainModule } from './domains/brain/brain.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CorrelationIdMiddleware } from './shared/middlewares/correlation-id.mid
     ScheduleModule.forRoot(),
     PlatformModule,
     CoreModule,
+    BrainModule,
     DomainsModule,
   ],
   providers: [
