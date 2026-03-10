@@ -6,12 +6,16 @@ import { Grip, PanelLeftIcon, Plus, Sparkles } from 'lucide-react';
 type AppHeaderProps = {
   onToggleSubnav?: () => void;
   onCreate?: () => void;
+  createLabel?: string;
+  showCreate?: boolean;
   onAppsClick?: () => void;
 };
 
 export function AppHeader({
   onToggleSubnav,
   onCreate,
+  createLabel = 'Create',
+  showCreate = true,
   onAppsClick,
 }: AppHeaderProps) {
   return (
@@ -33,14 +37,16 @@ export function AppHeader({
           <span>Snap AI</span>
         </div>
 
-        <Button
-          type="button"
-          className="h-7 gap-2 rounded-[6px] bg-primary px-3 text-[12px] font-medium text-primary-foreground hover:bg-primary/90 cursor-pointer"
-          onClick={onCreate}
-        >
-          <Plus className="h-3.5 w-3.5" />
-          Create
-        </Button>
+        {showCreate ? (
+          <Button
+            type="button"
+            className="h-7 gap-2 rounded-[6px] bg-primary px-3 text-[12px] font-medium text-primary-foreground hover:bg-primary/90 cursor-pointer"
+            onClick={onCreate}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {createLabel}
+          </Button>
+        ) : null}
 
         <div aria-hidden className="h-6 w-px bg-[#cfcfd6]" />
 

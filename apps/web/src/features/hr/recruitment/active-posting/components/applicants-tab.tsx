@@ -1,57 +1,332 @@
+"use client";
+
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import { ScheduleInterviewDialog } from "@/features/hr/recruitment/active-posting/components/schedule-interview-dialog";
+import { CandidateDetailDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/candidate-detail-dialog";
 import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
+import { Button } from "@/shared/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
 
 type ApplicantsTabProps = {
   job: ActiveJobItem;
+  historyMode?: boolean;
 };
 
-export function ApplicantsTab({ job }: ApplicantsTabProps) {
+const APPLICANTS_PER_PAGE = 10;
+
+type SortKey = "name" | "appliedAt" | "yearsOfExperience" | "salaryExpectation" | "aiScore";
+type SortDirection = "asc" | "desc";
+
+function parseExperience(value: string) {
+  return Number.parseInt(value, 10) || 0;
+}
+
+function parseSalary(value: string) {
+  return Number.parseFloat(value.replace(/,/g, "")) || 0;
+}
+
+function getComparableValue(applicant: ActiveJobItem["applicants"][number], key: SortKey) {
+  if (key === "name") return applicant.fullName.toLowerCase();
+  if (key === "appliedAt") return new Date(applicant.appliedAt).getTime();
+  if (key === "yearsOfExperience") return parseExperience(applicant.yearsOfExperience);
+  if (key === "salaryExpectation") return parseSalary(applicant.salaryExpectation);
+  return applicant.aiScore;
+}
+
+function SortHeader({
+  label,
+  sortKey,
+  activeSortKey,
+  direction,
+  onSort,
+  align = "left",
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeSortKey: SortKey;
+  direction: SortDirection;
+  onSort: (key: SortKey) => void;
+  align?: "left" | "right";
+}) {
   return (
-    <section className="space-y-2 px-6">
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Name of Applicant</TableHead>
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Applied Date</TableHead>
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Year of Experience</TableHead>
-            <TableHead className="px-4 py-3 text-xs font-semibold uppercase text-primary">Salary Expectation</TableHead>
-            <TableHead className="px-4 py-3 text-right text-xs font-semibold uppercase text-primary">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {job.applicants.map((applicant) => (
-            <TableRow
-              key={applicant.id}
-              className="group border-0 bg-white transition-colors duration-200 hover:bg-[#f8fbff]"
-            >
-              <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
-                <div className="space-y-0.5">
-                  <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
-                  <p className="text-xs text-[#666]">{applicant.phone}</p>
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.appliedAt}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.yearsOfExperience}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.salaryExpectation}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-right transition-colors duration-200 group-hover:bg-transparent">
-                {applicant.status === "new" ? (
-                  <span className="inline-flex h-[22px] items-center rounded-[6px] bg-primary px-[9px] py-[3px] text-xs font-medium text-white">
-                    New
-                  </span>
-                ) : (
-                  <span className="text-xs font-medium text-[rgba(0,0,0,0.7)]">Reviewed</span>
-                )}
-              </TableCell>
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className={`h-auto cursor-pointer gap-1 px-0 py-0 text-xs font-semibold uppercase text-primary hover:bg-transparent hover:text-primary ${
+        align === "right" ? "ml-auto flex" : ""
+      }`}
+      onClick={() => onSort(sortKey)}
+    >
+      {label}
+      <span className="flex flex-col items-center leading-none">
+        <ChevronUp
+          className={`h-3 w-3 ${
+            activeSortKey === sortKey && direction === "asc" ? "text-primary opacity-100" : "opacity-30"
+          }`}
+        />
+        <ChevronDown
+          className={`-mt-1 h-3 w-3 ${
+            activeSortKey === sortKey && direction === "desc" ? "text-primary opacity-100" : "opacity-30"
+          }`}
+        />
+      </span>
+    </Button>
+  );
+}
+
+export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("appliedAt");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [selectedApplicantIds, setSelectedApplicantIds] = useState<string[]>([]);
+  const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+
+  const sortedApplicants = useMemo(() => {
+    return [...job.applicants].sort((left, right) => {
+      const leftValue = getComparableValue(left, sortKey);
+      const rightValue = getComparableValue(right, sortKey);
+
+      if (leftValue < rightValue) return sortDirection === "asc" ? -1 : 1;
+      if (leftValue > rightValue) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [job.applicants, sortDirection, sortKey]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedApplicants.length / APPLICANTS_PER_PAGE));
+  const paginatedApplicants = useMemo(() => {
+    const startIndex = (currentPage - 1) * APPLICANTS_PER_PAGE;
+    return sortedApplicants.slice(startIndex, startIndex + APPLICANTS_PER_PAGE);
+  }, [currentPage, sortedApplicants]);
+  const allVisibleSelected =
+    paginatedApplicants.length > 0 &&
+    paginatedApplicants.every((applicant) => selectedApplicantIds.includes(applicant.id));
+
+  function handleSort(nextSortKey: SortKey) {
+    setCurrentPage(1);
+    if (sortKey === nextSortKey) {
+      setSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortKey(nextSortKey);
+    setSortDirection("asc");
+  }
+
+  function toggleApplicantSelection(applicantId: string, checked: boolean) {
+    setSelectedApplicantIds((current) =>
+      checked ? [...new Set([...current, applicantId])] : current.filter((id) => id !== applicantId),
+    );
+  }
+
+  function toggleSelectAllVisible(checked: boolean) {
+    const visibleIds = paginatedApplicants.map((applicant) => applicant.id);
+    setSelectedApplicantIds((current) =>
+      checked
+        ? [...new Set([...current, ...visibleIds])]
+        : current.filter((id) => !visibleIds.includes(id)),
+    );
+  }
+
+  function handleBulkAction(action: "summon_for_interview" | "shortlist" | "reject") {
+    const selectedApplicants = job.applicants.filter((applicant) => selectedApplicantIds.includes(applicant.id));
+
+    if (action === "summon_for_interview") {
+      setIsScheduleDialogOpen(true);
+      return;
+    }
+
+    console.log("activePostingApplicantAction", {
+      action,
+      applicantIds: selectedApplicantIds,
+      applicants: selectedApplicants,
+    });
+  }
+
+  const selectedApplicants = job.applicants.filter((applicant) => selectedApplicantIds.includes(applicant.id));
+  const selectedApplicant = job.applicants.find((applicant) => applicant.id === selectedApplicantId) ?? null;
+  const selectedCandidate = selectedApplicant
+    ? {
+        id: selectedApplicant.id,
+        fullName: selectedApplicant.fullName,
+        phone: selectedApplicant.phone,
+        listedAt: selectedApplicant.appliedAt,
+        rating: selectedApplicant.aiScore,
+        answers: selectedApplicant.answers,
+        aiAnalysis: selectedApplicant.aiAnalysis,
+      }
+    : null;
+
+  return (
+    <>
+      <section className="space-y-2 px-6">
+        {!historyMode ? (
+          <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-[#666]">
+              {selectedApplicantIds.length} applicant{selectedApplicantIds.length === 1 ? "" : "s"} selected
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 cursor-pointer text-xs"
+                disabled={selectedApplicantIds.length === 0}
+                onClick={() => handleBulkAction("summon_for_interview")}
+              >
+                Summon for Interview
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 cursor-pointer text-xs"
+                disabled={selectedApplicantIds.length === 0}
+                onClick={() => handleBulkAction("shortlist")}
+              >
+                Shortlist
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 cursor-pointer text-xs"
+                disabled={selectedApplicantIds.length === 0}
+                onClick={() => handleBulkAction("reject")}
+              >
+                Reject
+              </Button>
+            </div>
+          </div>
+        ) : null}
+
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              {!historyMode ? (
+                <TableHead className="w-12 px-4 py-3">
+                  <input
+                    type="checkbox"
+                    checked={allVisibleSelected}
+                    onChange={(event) => toggleSelectAllVisible(event.target.checked)}
+                    aria-label="Select all applicants on current page"
+                    className="h-4 w-4 rounded border-border"
+                  />
+                </TableHead>
+              ) : null}
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Name" sortKey="name" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Applied" sortKey="appliedAt" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Experience" sortKey="yearsOfExperience" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                <SortHeader label="Salary" sortKey="salaryExpectation" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
+              </TableHead>
+              <TableHead className="px-4 py-3 text-right">
+                <SortHeader label="AI Score" sortKey="aiScore" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" />
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </section>
+          </TableHeader>
+          <TableBody>
+            {paginatedApplicants.map((applicant) => (
+              <TableRow
+                key={applicant.id}
+                className="group border-0 bg-white transition-colors duration-200 hover:cursor-pointer hover:bg-[#f8fbff]"
+                onClick={() => setSelectedApplicantId(applicant.id)}
+              >
+                {!historyMode ? (
+                  <TableCell className="w-12 px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
+                    <input
+                      type="checkbox"
+                      checked={selectedApplicantIds.includes(applicant.id)}
+                      onClick={(event) => event.stopPropagation()}
+                      onChange={(event) => toggleApplicantSelection(applicant.id, event.target.checked)}
+                      aria-label={`Select ${applicant.fullName}`}
+                      className="h-4 w-4 rounded border-border"
+                    />
+                  </TableCell>
+                ) : null}
+                <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
+                  <div className="space-y-0.5">
+                    <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
+                    <p className="text-xs text-[#666]">{applicant.phone}</p>
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
+                  {applicant.appliedAt}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
+                  {applicant.yearsOfExperience}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-sm tracking-[-0.1504px] text-[#666] transition-colors duration-200 group-hover:bg-transparent">
+                  {applicant.salaryExpectation}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-right transition-colors duration-200 group-hover:bg-transparent">
+                  <span className="inline-flex rounded-[6px] bg-[rgba(30,102,247,0.1)] px-[9px] py-[3px] text-xs font-medium text-primary">
+                    {applicant.aiScore}%
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
+          <p className="text-sm text-[#666]">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            >
+              Previous
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer text-xs"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <CandidateDetailDialog
+        candidate={selectedCandidate}
+        open={selectedCandidate !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedApplicantId(null);
+          }
+        }}
+      />
+      <ScheduleInterviewDialog
+        open={isScheduleDialogOpen}
+        applicants={selectedApplicants}
+        onOpenChange={setIsScheduleDialogOpen}
+        onProceed={(payload) => {
+          console.log("activePostingApplicantAction", {
+            action: "summon_for_interview",
+            ...payload,
+            applicants: selectedApplicants,
+          });
+        }}
+      />
+    </>
   );
 }
