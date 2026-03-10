@@ -37,17 +37,23 @@ function priorityLabel(priority: JobRequestPriority) {
   return "Low";
 }
 
-function employmentTypeLabel(value: FullJobRequest["jobDetailsForm"]["employmentType"]) {
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
-  return "Intern";
+function formatPosition(value: string) {
+  if (!value.trim()) return "Not set";
+  return value
+    .split("_")
+    .map((part) => (part ? part[0]!.toUpperCase() + part.slice(1) : part))
+    .join(" ");
 }
 
-function workModeLabel(value: FullJobRequest["jobDetailsForm"]["workMode"]) {
-  if (value === "on_site") return "On-site";
-  if (value === "hybrid") return "Hybrid";
-  return "Remote";
+function formatCreatedDate(value?: string) {
+  if (!value?.trim()) return "Not set";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  }).format(parsed);
 }
 
 function progressClasses(status: ApprovalProgressState) {
@@ -102,10 +108,13 @@ export function JobRequestCard({ item, priority, currentUserName, onClick, onJus
 
       <div className="mt-3 space-y-1">
         <p className="ui-body text-muted-foreground">
-          Type: <span className="font-medium text-foreground">{employmentTypeLabel(item.jobDetailsForm.employmentType)}</span>
+          Position: <span className="font-medium text-foreground">{formatPosition(item.requestForm.position)}</span>
         </p>
         <p className="ui-body text-muted-foreground">
-          Work Mode: <span className="font-medium text-foreground">{workModeLabel(item.jobDetailsForm.workMode)}</span>
+          Openings: <span className="font-medium text-foreground">{item.requestForm.openings || "Not set"}</span>
+        </p>
+        <p className="ui-body text-muted-foreground">
+          Created: <span className="font-medium text-foreground">{formatCreatedDate(item.requestForm.createdDate)}</span>
         </p>
       </div>
 

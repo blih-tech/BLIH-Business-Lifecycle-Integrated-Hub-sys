@@ -20,6 +20,8 @@ export const jobRequests: FullJobRequest[] = [
       replaceFor: '',
       businessJustification:
         'Expand HR operations capacity to support recruitment workflow rollout and reduce turnaround time across approvals.',
+      openings: '2',
+      createdDate: '2025-02-10',
       employmentType: 'full_time',
       workMode: 'hybrid',
       urgency: 'medium',
@@ -96,6 +98,8 @@ export const jobRequests: FullJobRequest[] = [
       replaceFor: '',
       businessJustification:
         'Scale the backend and platform teams to support Q2 product launches and reduce delivery bottlenecks.',
+      openings: '1',
+      createdDate: '2025-02-18',
       employmentType: 'full_time',
       workMode: 'hybrid',
       urgency: 'high',
@@ -179,6 +183,8 @@ export const jobRequests: FullJobRequest[] = [
       replaceFor: 'emp-mercy-wanjiku',
       businessJustification:
         'Own roadmap execution for HR automation initiatives and align product delivery across cross-functional teams.',
+      openings: '1',
+      createdDate: '2025-02-23',
       employmentType: 'full_time',
       workMode: 'on_site',
       urgency: 'medium',
@@ -263,6 +269,8 @@ export const jobRequests: FullJobRequest[] = [
       replaceFor: '',
       businessJustification:
         'Strengthen campaign reporting and attribution analysis to improve budget allocation and lead quality.',
+      openings: '1',
+      createdDate: '2025-02-27',
       employmentType: 'part_time',
       workMode: 'remote',
       urgency: 'low',
