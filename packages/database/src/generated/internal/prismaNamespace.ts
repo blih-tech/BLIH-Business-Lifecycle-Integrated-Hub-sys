@@ -11006,7 +11006,6 @@ export const JobScalarFieldEnum = {
   contractType: 'contractType',
   employmentType: 'employmentType',
   workLocationType: 'workLocationType',
-  remoteScope: 'remoteScope',
   city: 'city',
   country: 'country',
   openings: 'openings',
@@ -12889,20 +12888,6 @@ export type EnumJobContractTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'JobContractType[]'
  */
 export type ListEnumJobContractTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobContractType[]'>
-    
-
-
-/**
- * Reference to a field of type 'RemoteScope'
- */
-export type EnumRemoteScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RemoteScope'>
-    
-
-
-/**
- * Reference to a field of type 'RemoteScope[]'
- */
-export type ListEnumRemoteScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RemoteScope[]'>
     
 
 

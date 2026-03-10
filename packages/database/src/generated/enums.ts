@@ -185,6 +185,7 @@ export type JobApprovalStage = (typeof JobApprovalStage)[keyof typeof JobApprova
 
 export const JobSalaryMode = {
   NOT_SPECIFIED: 'NOT_SPECIFIED',
+  FIXED: 'FIXED',
   NEGOTIABLE: 'NEGOTIABLE',
   COMPETITIVE: 'COMPETITIVE'
 } as const

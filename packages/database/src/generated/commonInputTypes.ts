@@ -1588,13 +1588,6 @@ export type EnumEmploymentTypeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumEmploymentTypeNullableFilter<$PrismaModel> | $Enums.EmploymentType | null
 }
 
-export type EnumRemoteScopeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.RemoteScope | Prisma.EnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRemoteScopeNullableFilter<$PrismaModel> | $Enums.RemoteScope | null
-}
-
 export type EnumJobSalaryModeFilter<$PrismaModel = never> = {
   equals?: $Enums.JobSalaryMode | Prisma.EnumJobSalaryModeFieldRefInput<$PrismaModel>
   in?: $Enums.JobSalaryMode[] | Prisma.ListEnumJobSalaryModeFieldRefInput<$PrismaModel>
@@ -1630,16 +1623,6 @@ export type EnumEmploymentTypeNullableWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEmploymentTypeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEmploymentTypeNullableFilter<$PrismaModel>
-}
-
-export type EnumRemoteScopeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.RemoteScope | Prisma.EnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRemoteScopeNullableWithAggregatesFilter<$PrismaModel> | $Enums.RemoteScope | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumRemoteScopeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumRemoteScopeNullableFilter<$PrismaModel>
 }
 
 export type EnumJobSalaryModeWithAggregatesFilter<$PrismaModel = never> = {
@@ -3754,13 +3737,6 @@ export type NestedEnumEmploymentTypeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumEmploymentTypeNullableFilter<$PrismaModel> | $Enums.EmploymentType | null
 }
 
-export type NestedEnumRemoteScopeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.RemoteScope | Prisma.EnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRemoteScopeNullableFilter<$PrismaModel> | $Enums.RemoteScope | null
-}
-
 export type NestedEnumJobSalaryModeFilter<$PrismaModel = never> = {
   equals?: $Enums.JobSalaryMode | Prisma.EnumJobSalaryModeFieldRefInput<$PrismaModel>
   in?: $Enums.JobSalaryMode[] | Prisma.ListEnumJobSalaryModeFieldRefInput<$PrismaModel>
@@ -3796,16 +3772,6 @@ export type NestedEnumEmploymentTypeNullableWithAggregatesFilter<$PrismaModel = 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEmploymentTypeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEmploymentTypeNullableFilter<$PrismaModel>
-}
-
-export type NestedEnumRemoteScopeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.RemoteScope | Prisma.EnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RemoteScope[] | Prisma.ListEnumRemoteScopeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRemoteScopeNullableWithAggregatesFilter<$PrismaModel> | $Enums.RemoteScope | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumRemoteScopeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumRemoteScopeNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumJobSalaryModeWithAggregatesFilter<$PrismaModel = never> = {

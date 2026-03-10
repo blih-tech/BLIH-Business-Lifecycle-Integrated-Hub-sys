@@ -474,7 +474,6 @@ export function mapJob(job: any) {
       contractType: job.contractType,
       employmentType: job.employmentType ?? null,
       workLocationType: job.workLocationType,
-      remoteScope: job.remoteScope ?? null,
       city: job.city ?? null,
       country: job.country ?? null,
       openings: job.openings,

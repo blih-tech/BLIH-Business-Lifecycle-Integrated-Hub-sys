@@ -29,7 +29,11 @@ export type JobRequestType = 'NEW' | 'REPLACEMENT';
 
 export type JobUrgency = 'HIGH' | 'MEDIUM' | 'LOW';
 
-export type JobSalaryMode = 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
+export type JobSalaryMode =
+  | 'NOT_SPECIFIED'
+  | 'FIXED'
+  | 'NEGOTIABLE'
+  | 'COMPETITIVE';
 export type JobPriority = 'HIGH' | 'MEDIUM' | 'LOW';
 
 export type JobContractType =
@@ -109,6 +113,7 @@ export const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 export const JOB_URGENCY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
 export const JOB_SALARY_MODES = [
   'NOT_SPECIFIED',
+  'FIXED',
   'NEGOTIABLE',
   'COMPETITIVE',
 ] as const;
@@ -154,7 +159,6 @@ export interface JobInputDto {
   contractType: JobContractType;
   employmentType?: EmploymentType | null;
   workLocationType: WorkLocationType;
-  remoteScope?: RemoteScope | null;
   city?: string | null;
   country?: string | null;
   openings?: number;
@@ -267,7 +271,6 @@ export interface JobResponseDto {
     contractType: JobContractType;
     employmentType: EmploymentType | null;
     workLocationType: WorkLocationType;
-    remoteScope: RemoteScope | null;
     city: string | null;
     country: string | null;
     openings: number;

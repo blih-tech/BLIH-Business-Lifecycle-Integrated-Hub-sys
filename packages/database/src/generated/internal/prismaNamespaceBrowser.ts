@@ -1531,7 +1531,6 @@ export const JobScalarFieldEnum = {
   contractType: 'contractType',
   employmentType: 'employmentType',
   workLocationType: 'workLocationType',
-  remoteScope: 'remoteScope',
   city: 'city',
   country: 'country',
   openings: 'openings',

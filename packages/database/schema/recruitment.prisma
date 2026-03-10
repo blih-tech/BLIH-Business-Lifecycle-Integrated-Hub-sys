@@ -50,7 +50,6 @@ model Job {
   contractType        JobContractType     @map("contract_type")
   employmentType      EmploymentType?     @map("employment_type")
   workLocationType    WorkLocationType    @map("work_location_type")
-  remoteScope         RemoteScope?        @map("remote_scope")
   city                String?             @db.VarChar(128)
   country             String?             @db.VarChar(128)
   openings            Int                 @default(1)

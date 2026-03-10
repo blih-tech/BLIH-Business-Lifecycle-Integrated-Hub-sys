@@ -65,7 +65,6 @@ export const jobExample = {
     contractType: 'PERMANENT',
     employmentType: 'FULL_TIME',
     workLocationType: 'HYBRID',
-    remoteScope: null,
     city: 'Addis Ababa',
     country: 'Ethiopia',
     openings: 2,

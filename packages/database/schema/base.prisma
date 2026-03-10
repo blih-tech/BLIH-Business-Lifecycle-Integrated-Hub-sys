@@ -129,6 +129,7 @@ enum JobApprovalStage {
 
 enum JobSalaryMode {
   NOT_SPECIFIED
+  FIXED
   NEGOTIABLE
   COMPETITIVE
 }

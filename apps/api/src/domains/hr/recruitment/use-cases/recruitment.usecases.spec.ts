@@ -58,7 +58,6 @@ const buildJob = (status: string, overrides: Record<string, unknown> = {}) => ({
   contractType: 'PERMANENT',
   employmentType: 'FULL_TIME',
   workLocationType: 'HYBRID',
-  remoteScope: null,
   city: null,
   country: null,
   openings: 1,

@@ -81,8 +81,12 @@ const JOB_CONTRACT_TYPES = [
   'INTERNSHIP',
   'FREELANCE',
 ] as const;
-const REMOTE_SCOPES = ['CITY', 'COUNTRY', 'REGION', 'GLOBAL'] as const;
-const SALARY_MODES = ['NOT_SPECIFIED', 'NEGOTIABLE', 'COMPETITIVE'] as const;
+const SALARY_MODES = [
+  'NOT_SPECIFIED',
+  'FIXED',
+  'NEGOTIABLE',
+  'COMPETITIVE',
+] as const;
 const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
@@ -233,12 +237,6 @@ export class JobInputDto {
   @IsEnum(WORK_LOCATION_TYPES)
   workLocationType!: 'ON_SITE' | 'HYBRID' | 'REMOTE';
 
-  @ApiPropertyOptional({ enum: REMOTE_SCOPES, nullable: true })
-  @IsOptional()
-  @Transform(normalizeEnumValue)
-  @IsEnum(REMOTE_SCOPES)
-  remoteScope?: 'CITY' | 'COUNTRY' | 'REGION' | 'GLOBAL' | null;
-
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
@@ -275,7 +273,7 @@ export class JobInputDto {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(SALARY_MODES)
-  salaryMode?: 'NOT_SPECIFIED' | 'NEGOTIABLE' | 'COMPETITIVE';
+  salaryMode?: 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
 
   @ApiPropertyOptional({ type: [String], default: [] })
   @IsOptional()

@@ -60,7 +60,6 @@ export type JobMinAggregateOutputType = {
   contractType: $Enums.JobContractType | null
   employmentType: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType | null
-  remoteScope: $Enums.RemoteScope | null
   city: string | null
   country: string | null
   openings: number | null
@@ -95,7 +94,6 @@ export type JobMaxAggregateOutputType = {
   contractType: $Enums.JobContractType | null
   employmentType: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType | null
-  remoteScope: $Enums.RemoteScope | null
   city: string | null
   country: string | null
   openings: number | null
@@ -132,7 +130,6 @@ export type JobCountAggregateOutputType = {
   contractType: number
   employmentType: number
   workLocationType: number
-  remoteScope: number
   city: number
   country: number
   openings: number
@@ -198,7 +195,6 @@ export type JobMinAggregateInputType = {
   contractType?: true
   employmentType?: true
   workLocationType?: true
-  remoteScope?: true
   city?: true
   country?: true
   openings?: true
@@ -233,7 +229,6 @@ export type JobMaxAggregateInputType = {
   contractType?: true
   employmentType?: true
   workLocationType?: true
-  remoteScope?: true
   city?: true
   country?: true
   openings?: true
@@ -270,7 +265,6 @@ export type JobCountAggregateInputType = {
   contractType?: true
   employmentType?: true
   workLocationType?: true
-  remoteScope?: true
   city?: true
   country?: true
   openings?: true
@@ -399,7 +393,6 @@ export type JobGroupByOutputType = {
   contractType: $Enums.JobContractType
   employmentType: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope: $Enums.RemoteScope | null
   city: string | null
   country: string | null
   openings: number
@@ -464,7 +457,6 @@ export type JobWhereInput = {
   contractType?: Prisma.EnumJobContractTypeFilter<"Job"> | $Enums.JobContractType
   employmentType?: Prisma.EnumEmploymentTypeNullableFilter<"Job"> | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFilter<"Job"> | $Enums.WorkLocationType
-  remoteScope?: Prisma.EnumRemoteScopeNullableFilter<"Job"> | $Enums.RemoteScope | null
   city?: Prisma.StringNullableFilter<"Job"> | string | null
   country?: Prisma.StringNullableFilter<"Job"> | string | null
   openings?: Prisma.IntFilter<"Job"> | number
@@ -518,7 +510,6 @@ export type JobOrderByWithRelationInput = {
   contractType?: Prisma.SortOrder
   employmentType?: Prisma.SortOrderInput | Prisma.SortOrder
   workLocationType?: Prisma.SortOrder
-  remoteScope?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.SortOrderInput | Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
   openings?: Prisma.SortOrder
@@ -575,7 +566,6 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   contractType?: Prisma.EnumJobContractTypeFilter<"Job"> | $Enums.JobContractType
   employmentType?: Prisma.EnumEmploymentTypeNullableFilter<"Job"> | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFilter<"Job"> | $Enums.WorkLocationType
-  remoteScope?: Prisma.EnumRemoteScopeNullableFilter<"Job"> | $Enums.RemoteScope | null
   city?: Prisma.StringNullableFilter<"Job"> | string | null
   country?: Prisma.StringNullableFilter<"Job"> | string | null
   openings?: Prisma.IntFilter<"Job"> | number
@@ -629,7 +619,6 @@ export type JobOrderByWithAggregationInput = {
   contractType?: Prisma.SortOrder
   employmentType?: Prisma.SortOrderInput | Prisma.SortOrder
   workLocationType?: Prisma.SortOrder
-  remoteScope?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.SortOrderInput | Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
   openings?: Prisma.SortOrder
@@ -679,7 +668,6 @@ export type JobScalarWhereWithAggregatesInput = {
   contractType?: Prisma.EnumJobContractTypeWithAggregatesFilter<"Job"> | $Enums.JobContractType
   employmentType?: Prisma.EnumEmploymentTypeNullableWithAggregatesFilter<"Job"> | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeWithAggregatesFilter<"Job"> | $Enums.WorkLocationType
-  remoteScope?: Prisma.EnumRemoteScopeNullableWithAggregatesFilter<"Job"> | $Enums.RemoteScope | null
   city?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   country?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   openings?: Prisma.IntWithAggregatesFilter<"Job"> | number
@@ -719,7 +707,6 @@ export type JobCreateInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -771,7 +758,6 @@ export type JobUncheckedCreateInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -819,7 +805,6 @@ export type JobUpdateInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -871,7 +856,6 @@ export type JobUncheckedUpdateInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -921,7 +905,6 @@ export type JobCreateManyInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -961,7 +944,6 @@ export type JobUpdateManyMutationInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1001,7 +983,6 @@ export type JobUncheckedUpdateManyInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1058,7 +1039,6 @@ export type JobCountOrderByAggregateInput = {
   contractType?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   workLocationType?: Prisma.SortOrder
-  remoteScope?: Prisma.SortOrder
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
   openings?: Prisma.SortOrder
@@ -1110,7 +1090,6 @@ export type JobMaxOrderByAggregateInput = {
   contractType?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   workLocationType?: Prisma.SortOrder
-  remoteScope?: Prisma.SortOrder
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
   openings?: Prisma.SortOrder
@@ -1145,7 +1124,6 @@ export type JobMinOrderByAggregateInput = {
   contractType?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   workLocationType?: Prisma.SortOrder
-  remoteScope?: Prisma.SortOrder
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
   openings?: Prisma.SortOrder
@@ -1310,10 +1288,6 @@ export type EnumJobContractTypeFieldUpdateOperationsInput = {
 
 export type NullableEnumEmploymentTypeFieldUpdateOperationsInput = {
   set?: $Enums.EmploymentType | null
-}
-
-export type NullableEnumRemoteScopeFieldUpdateOperationsInput = {
-  set?: $Enums.RemoteScope | null
 }
 
 export type EnumJobSalaryModeFieldUpdateOperationsInput = {
@@ -1537,7 +1511,6 @@ export type JobCreateWithoutDepartmentInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -1587,7 +1560,6 @@ export type JobUncheckedCreateWithoutDepartmentInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -1666,7 +1638,6 @@ export type JobScalarWhereInput = {
   contractType?: Prisma.EnumJobContractTypeFilter<"Job"> | $Enums.JobContractType
   employmentType?: Prisma.EnumEmploymentTypeNullableFilter<"Job"> | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFilter<"Job"> | $Enums.WorkLocationType
-  remoteScope?: Prisma.EnumRemoteScopeNullableFilter<"Job"> | $Enums.RemoteScope | null
   city?: Prisma.StringNullableFilter<"Job"> | string | null
   country?: Prisma.StringNullableFilter<"Job"> | string | null
   openings?: Prisma.IntFilter<"Job"> | number
@@ -1706,7 +1677,6 @@ export type JobCreateWithoutPositionInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -1756,7 +1726,6 @@ export type JobUncheckedCreateWithoutPositionInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -1830,7 +1799,6 @@ export type JobCreateWithoutRequestFormInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -1881,7 +1849,6 @@ export type JobUncheckedCreateWithoutRequestFormInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -1944,7 +1911,6 @@ export type JobUpdateWithoutRequestFormInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1995,7 +1961,6 @@ export type JobUncheckedUpdateWithoutRequestFormInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2042,7 +2007,6 @@ export type JobCreateWithoutApplicationFormInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2093,7 +2057,6 @@ export type JobUncheckedCreateWithoutApplicationFormInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2156,7 +2119,6 @@ export type JobUpdateWithoutApplicationFormInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2207,7 +2169,6 @@ export type JobUncheckedUpdateWithoutApplicationFormInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2254,7 +2215,6 @@ export type JobCreateWithoutApplicantsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2305,7 +2265,6 @@ export type JobUncheckedCreateWithoutApplicantsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2368,7 +2327,6 @@ export type JobUpdateWithoutApplicantsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2419,7 +2377,6 @@ export type JobUncheckedUpdateWithoutApplicantsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2466,7 +2423,6 @@ export type JobCreateWithoutInterviewsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2517,7 +2473,6 @@ export type JobUncheckedCreateWithoutInterviewsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2580,7 +2535,6 @@ export type JobUpdateWithoutInterviewsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2631,7 +2585,6 @@ export type JobUncheckedUpdateWithoutInterviewsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2678,7 +2631,6 @@ export type JobCreateWithoutHiringDecisionsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2729,7 +2681,6 @@ export type JobUncheckedCreateWithoutHiringDecisionsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2792,7 +2743,6 @@ export type JobUpdateWithoutHiringDecisionsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2843,7 +2793,6 @@ export type JobUncheckedUpdateWithoutHiringDecisionsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2890,7 +2839,6 @@ export type JobCreateWithoutCvScreeningsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -2941,7 +2889,6 @@ export type JobUncheckedCreateWithoutCvScreeningsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3004,7 +2951,6 @@ export type JobUpdateWithoutCvScreeningsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3055,7 +3001,6 @@ export type JobUncheckedUpdateWithoutCvScreeningsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3102,7 +3047,6 @@ export type JobCreateWithoutScreeningCriteriaInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3153,7 +3097,6 @@ export type JobUncheckedCreateWithoutScreeningCriteriaInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3216,7 +3159,6 @@ export type JobUpdateWithoutScreeningCriteriaInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3267,7 +3209,6 @@ export type JobUncheckedUpdateWithoutScreeningCriteriaInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3314,7 +3255,6 @@ export type JobCreateWithoutScreeningWorkflowsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3365,7 +3305,6 @@ export type JobUncheckedCreateWithoutScreeningWorkflowsInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3428,7 +3367,6 @@ export type JobUpdateWithoutScreeningWorkflowsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3479,7 +3417,6 @@ export type JobUncheckedUpdateWithoutScreeningWorkflowsInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3526,7 +3463,6 @@ export type JobCreateWithoutCreatedByInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3577,7 +3513,6 @@ export type JobUncheckedCreateWithoutCreatedByInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3634,7 +3569,6 @@ export type JobCreateWithoutHiringManagerInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3685,7 +3619,6 @@ export type JobUncheckedCreateWithoutHiringManagerInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3775,7 +3708,6 @@ export type JobCreateManyDepartmentInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3815,7 +3747,6 @@ export type JobUpdateWithoutDepartmentInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3865,7 +3796,6 @@ export type JobUncheckedUpdateWithoutDepartmentInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3914,7 +3844,6 @@ export type JobUncheckedUpdateManyWithoutDepartmentInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3955,7 +3884,6 @@ export type JobCreateManyPositionInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -3995,7 +3923,6 @@ export type JobUpdateWithoutPositionInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4045,7 +3972,6 @@ export type JobUncheckedUpdateWithoutPositionInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4094,7 +4020,6 @@ export type JobUncheckedUpdateManyWithoutPositionInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4136,7 +4061,6 @@ export type JobCreateManyCreatedByInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -4177,7 +4101,6 @@ export type JobCreateManyHiringManagerInput = {
   contractType: $Enums.JobContractType
   employmentType?: $Enums.EmploymentType | null
   workLocationType: $Enums.WorkLocationType
-  remoteScope?: $Enums.RemoteScope | null
   city?: string | null
   country?: string | null
   openings?: number
@@ -4216,7 +4139,6 @@ export type JobUpdateWithoutCreatedByInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4267,7 +4189,6 @@ export type JobUncheckedUpdateWithoutCreatedByInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4316,7 +4237,6 @@ export type JobUncheckedUpdateManyWithoutCreatedByInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4355,7 +4275,6 @@ export type JobUpdateWithoutHiringManagerInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4406,7 +4325,6 @@ export type JobUncheckedUpdateWithoutHiringManagerInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4455,7 +4373,6 @@ export type JobUncheckedUpdateManyWithoutHiringManagerInput = {
   contractType?: Prisma.EnumJobContractTypeFieldUpdateOperationsInput | $Enums.JobContractType
   employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
   workLocationType?: Prisma.EnumWorkLocationTypeFieldUpdateOperationsInput | $Enums.WorkLocationType
-  remoteScope?: Prisma.NullableEnumRemoteScopeFieldUpdateOperationsInput | $Enums.RemoteScope | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4572,7 +4489,6 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   contractType?: boolean
   employmentType?: boolean
   workLocationType?: boolean
-  remoteScope?: boolean
   city?: boolean
   country?: boolean
   openings?: boolean
@@ -4627,7 +4543,6 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   contractType?: boolean
   employmentType?: boolean
   workLocationType?: boolean
-  remoteScope?: boolean
   city?: boolean
   country?: boolean
   openings?: boolean
@@ -4673,7 +4588,6 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   contractType?: boolean
   employmentType?: boolean
   workLocationType?: boolean
-  remoteScope?: boolean
   city?: boolean
   country?: boolean
   openings?: boolean
@@ -4719,7 +4633,6 @@ export type JobSelectScalar = {
   contractType?: boolean
   employmentType?: boolean
   workLocationType?: boolean
-  remoteScope?: boolean
   city?: boolean
   country?: boolean
   openings?: boolean
@@ -4749,7 +4662,7 @@ export type JobSelectScalar = {
   tools?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "remoteScope" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "requiredSkills" | "preferredSkills" | "responsibilities" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "publishedAt" | "closedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt" | "tools", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "departmentId" | "positionId" | "description" | "summary" | "experienceLevel" | "contractType" | "employmentType" | "workLocationType" | "city" | "country" | "openings" | "salaryMin" | "salaryMax" | "currency" | "salaryMode" | "benefits" | "requiredSkills" | "preferredSkills" | "responsibilities" | "creatorIsHr" | "hiringManagerId" | "applicationDeadline" | "publishedAt" | "closedAt" | "closingReason" | "viewsCount" | "applicationsCount" | "shortlistedCount" | "interviewsCount" | "offersCount" | "hiresCount" | "createdById" | "createdAt" | "updatedAt" | "tools", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
@@ -4806,7 +4719,6 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     contractType: $Enums.JobContractType
     employmentType: $Enums.EmploymentType | null
     workLocationType: $Enums.WorkLocationType
-    remoteScope: $Enums.RemoteScope | null
     city: string | null
     country: string | null
     openings: number
@@ -5280,7 +5192,6 @@ export interface JobFieldRefs {
   readonly contractType: Prisma.FieldRef<"Job", 'JobContractType'>
   readonly employmentType: Prisma.FieldRef<"Job", 'EmploymentType'>
   readonly workLocationType: Prisma.FieldRef<"Job", 'WorkLocationType'>
-  readonly remoteScope: Prisma.FieldRef<"Job", 'RemoteScope'>
   readonly city: Prisma.FieldRef<"Job", 'String'>
   readonly country: Prisma.FieldRef<"Job", 'String'>
   readonly openings: Prisma.FieldRef<"Job", 'Int'>
