@@ -1,10 +1,22 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import type { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 
 export const jobInclude = {
-  approvals: { orderBy: { level: 'asc' as const } },
-  requestForm: true,
+  requestForm: {
+    include: {
+      approvals: {
+        orderBy: { level: 'asc' as const },
+        include: {
+          history: {
+            orderBy: { createdAt: 'desc' as const },
+            take: 1,
+          },
+        },
+      },
+    },
+  },
   applicationForm: {
     include: {
       applicantFields: {
@@ -19,7 +31,7 @@ export const jobInclude = {
       },
     },
   },
-};
+} satisfies Prisma.JobInclude;
 
 export const applicantInclude = {
   educations: { orderBy: { startDate: 'desc' as const } },
@@ -29,6 +41,12 @@ export const applicantInclude = {
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
 type ApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
+type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
+type ApprovalStepStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'REQUEST_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED';
 
 export interface ApprovalState {
   id: string;
@@ -51,6 +69,43 @@ interface SubmitReadinessPayload {
   applicationDeadline: Date | null;
   requiredSkills: unknown[];
   responsibilities: unknown[];
+}
+
+function departmentToStage(department: string): ApprovalStage {
+  if (department === 'FINANCE') return 'FINANCE';
+  if (department === 'GM') return 'GM';
+  return 'HR_REVIEW';
+}
+
+function stepStatusToDecision(status: string): ApprovalDecision {
+  if (status === 'APPROVED') return 'APPROVED';
+  if (status === 'REJECTED') return 'REJECTED';
+  return 'PENDING';
+}
+
+function buildStageStatusSnapshot(approvals: any[]) {
+  const decisions: Record<ApprovalStage, ApprovalDecision> = {
+    FINANCE: 'PENDING',
+    GM: 'PENDING',
+    HR_REVIEW: 'PENDING',
+  };
+
+  for (const approval of approvals ?? []) {
+    const stage = departmentToStage(
+      (approval.department as ApprovalDepartment | undefined) ?? 'HR',
+    );
+    const decision = stepStatusToDecision(
+      (approval.status as ApprovalStepStatus | undefined) ??
+        'PENDING_FOR_APPROVAL',
+    );
+    decisions[stage] = decision;
+  }
+
+  return {
+    financeApprovalStatus: approvalDecisionToStageStatus(decisions.FINANCE),
+    gmApprovalStatus: approvalDecisionToStageStatus(decisions.GM),
+    hrApprovalStatus: approvalDecisionToStageStatus(decisions.HR_REVIEW),
+  };
 }
 
 const APPLICANT_TRANSITIONS: Record<string, string[]> = {
@@ -377,6 +432,8 @@ export function parseInterviewMetadata(value: unknown) {
 
 export function mapJob(job: any) {
   const requestForm = job.requestForm;
+  const requestApprovals = requestForm?.approvals ?? [];
+  const stageStatuses = buildStageStatusSnapshot(requestApprovals);
   const applicationForm = job.applicationForm;
 
   return {
@@ -396,9 +453,9 @@ export function mapJob(job: any) {
           neededByDate: dateToIso(requestForm.neededByDate),
           status: requestForm.status,
           priority: requestForm.priority,
-          financeApprovalStatus: requestForm.financeApprovalStatus,
-          gmApprovalStatus: requestForm.gmApprovalStatus,
-          hrApprovalStatus: requestForm.hrApprovalStatus,
+          financeApprovalStatus: stageStatuses.financeApprovalStatus,
+          gmApprovalStatus: stageStatuses.gmApprovalStatus,
+          hrApprovalStatus: stageStatuses.hrApprovalStatus,
           draftedAt: dateToIso(requestForm.draftedAt),
           pendingApprovalAt: dateToIso(requestForm.pendingApprovalAt),
           readyToPostAt: dateToIso(requestForm.readyToPostAt),
@@ -480,11 +537,29 @@ export function mapJob(job: any) {
           ),
         }
       : null,
-    approvals: (job.approvals ?? []).map((approval: any) => ({
-      ...approval,
-      decidedAt: dateToIso(approval.decidedAt),
-      createdAt: approval.createdAt.toISOString(),
-    })),
+    approvals: requestApprovals.map((approval: any) => {
+      const stage = departmentToStage(approval.department);
+      const decision = stepStatusToDecision(approval.status);
+      const latestHistory = approval.history?.[0];
+      const autoApprovalReason =
+        latestHistory?.reason === 'CREATOR_HAS_HR_ROLE'
+          ? latestHistory.reason
+          : null;
+
+      return {
+        id: approval.id,
+        stage,
+        level: approval.level,
+        requiredRole: requiredRoleForStage(stage),
+        approverId: approval.approverId ?? null,
+        decision,
+        autoApproved: autoApprovalReason !== null,
+        autoApprovalReason,
+        comments: approval.currentNote ?? null,
+        decidedAt: dateToIso(approval.decidedAt),
+        createdAt: approval.createdAt.toISOString(),
+      };
+    }),
   };
 }
 

@@ -23,7 +23,6 @@ import type {
   UpsertJobToolsDto,
 } from '../dto/job.dto';
 import {
-  approvalDecisionToStageStatus,
   assertDepartmentPositionIntegrity,
   assertSalaryRange,
   assertSubmitReadiness,
@@ -38,10 +37,17 @@ import {
 } from './recruitment.usecase-helpers';
 
 type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
+type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
+type ApprovalStepStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'REQUEST_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED';
 type StageStatus = 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
 
 interface ApprovalState {
   id: string;
+  level: number;
   stage: ApprovalStage;
   decision: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
@@ -55,9 +61,6 @@ interface RequestWorkflowState {
     | 'CLOSED'
     | 'REJECTED';
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  financeApprovalStatus: StageStatus;
-  gmApprovalStatus: StageStatus;
-  hrApprovalStatus: StageStatus;
   draftedAt: Date | null;
   pendingApprovalAt: Date | null;
   readyToPostAt: Date | null;
@@ -69,35 +72,55 @@ const toNumberOrNull = (value: unknown): number | null => {
   return Number(value);
 };
 
-const toApprovalState = (approval: {
-  id: string;
-  stage: string;
-  decision: string;
-}): ApprovalState => ({
-  id: approval.id,
-  stage: approval.stage as ApprovalStage,
-  decision: approval.decision as ApprovalState['decision'],
+const departmentToStage = (department: ApprovalDepartment): ApprovalStage => {
+  if (department === 'HR') return 'HR_REVIEW';
+  return department;
+};
+
+const stageToDepartment = (stage: ApprovalStage): ApprovalDepartment => {
+  if (stage === 'HR_REVIEW') return 'HR';
+  return stage;
+};
+
+const stepStatusToDecision = (
+  status: ApprovalStepStatus | string,
+): ApprovalState['decision'] => {
+  if (status === 'APPROVED') return 'APPROVED';
+  if (status === 'REJECTED') return 'REJECTED';
+  return 'PENDING';
+};
+
+const decisionToStepStatus = (
+  decision: Exclude<ApprovalState['decision'], 'PENDING'>,
+): ApprovalStepStatus => (decision === 'APPROVED' ? 'APPROVED' : 'REJECTED');
+
+const stageStatusToStepStatuses = (
+  status: StageStatus,
+): ApprovalStepStatus[] => {
+  if (status === 'APPROVED') return ['APPROVED'];
+  if (status === 'REJECTED') return ['REJECTED'];
+  return ['PENDING_FOR_APPROVAL', 'REQUEST_REVIEW'];
+};
+
+const approvalWhereForStageStatus = (
+  stage: ApprovalStage,
+  status: StageStatus,
+): Prisma.JobApprovalStepWhereInput => ({
+  department: stageToDepartment(stage),
+  status: { in: stageStatusToStepStatuses(status) },
 });
 
-const stageFieldPatch = (stage: ApprovalStage, value: StageStatus) => {
-  if (stage === 'FINANCE') return { financeApprovalStatus: value };
-  if (stage === 'GM') return { gmApprovalStatus: value };
-  return { hrApprovalStatus: value };
-};
-
-const buildStageStatusesFromApprovals = (approvals: ApprovalState[]) => {
-  const finance = approvals.find((approval) => approval.stage === 'FINANCE');
-  const gm = approvals.find((approval) => approval.stage === 'GM');
-  const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
-  if (!finance || !gm || !hr) {
-    throw new BadRequestException('Missing approval stage configuration');
-  }
-  return {
-    financeApprovalStatus: approvalDecisionToStageStatus(finance.decision),
-    gmApprovalStatus: approvalDecisionToStageStatus(gm.decision),
-    hrApprovalStatus: approvalDecisionToStageStatus(hr.decision),
-  };
-};
+const toApprovalState = (approval: {
+  id: string;
+  department: ApprovalDepartment;
+  status: ApprovalStepStatus;
+  level: number;
+}): ApprovalState => ({
+  id: approval.id,
+  level: approval.level,
+  stage: departmentToStage(approval.department),
+  decision: stepStatusToDecision(approval.status),
+});
 
 const validateApplicationCustomFieldOptions = (
   customFields: JobApplicationCustomFieldInputDto[],
@@ -430,9 +453,6 @@ export class CreateJobUseCase {
             neededByDate: new Date(dto.requestForm.neededByDate),
             status: 'DRAFT',
             priority: dto.requestForm.priority ?? 'MEDIUM',
-            financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-            gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-            hrApprovalStatus: 'PENDING_FOR_APPROVAL',
             draftedAt,
           },
         },
@@ -485,24 +505,43 @@ export class ListJobsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: JobListQueryDto) {
-    const requestFormFilters = {
-      ...(query.status ? { status: query.status } : {}),
-      ...(query.financeApprovalStatus
-        ? { financeApprovalStatus: query.financeApprovalStatus }
-        : {}),
-      ...(query.gmApprovalStatus
-        ? { gmApprovalStatus: query.gmApprovalStatus }
-        : {}),
-      ...(query.hrApprovalStatus
-        ? { hrApprovalStatus: query.hrApprovalStatus }
-        : {}),
-    };
+    const requestFormAnd: Prisma.JobRequestFormWhereInput[] = [];
+    if (query.status) {
+      requestFormAnd.push({ status: query.status });
+    }
+    if (query.financeApprovalStatus) {
+      requestFormAnd.push({
+        approvals: {
+          some: approvalWhereForStageStatus(
+            'FINANCE',
+            query.financeApprovalStatus,
+          ),
+        },
+      });
+    }
+    if (query.gmApprovalStatus) {
+      requestFormAnd.push({
+        approvals: {
+          some: approvalWhereForStageStatus('GM', query.gmApprovalStatus),
+        },
+      });
+    }
+    if (query.hrApprovalStatus) {
+      requestFormAnd.push({
+        approvals: {
+          some: approvalWhereForStageStatus(
+            'HR_REVIEW',
+            query.hrApprovalStatus,
+          ),
+        },
+      });
+    }
 
     const jobs = await this.prisma.job.findMany({
       where: {
         ...(query.departmentId ? { departmentId: query.departmentId } : {}),
-        ...(Object.keys(requestFormFilters).length > 0
-          ? { requestForm: { is: requestFormFilters } }
+        ...(requestFormAnd.length > 0
+          ? { requestForm: { is: { AND: requestFormAnd } } }
           : {}),
       },
       include: jobInclude,
@@ -658,9 +697,6 @@ export class UpdateJobUseCase {
           neededByDate: new Date(merged.requestForm.neededByDate),
           status: requestFormState.status,
           priority: merged.requestForm.priority ?? requestFormState.priority,
-          financeApprovalStatus: requestFormState.financeApprovalStatus,
-          gmApprovalStatus: requestFormState.gmApprovalStatus,
-          hrApprovalStatus: requestFormState.hrApprovalStatus,
           draftedAt: requestFormState.draftedAt,
           pendingApprovalAt: requestFormState.pendingApprovalAt,
           readyToPostAt: requestFormState.readyToPostAt,
@@ -784,6 +820,7 @@ export class SubmitJobUseCase {
         responsibilities: true,
         requestForm: {
           select: {
+            id: true,
             status: true,
           },
         },
@@ -826,27 +863,30 @@ export class SubmitJobUseCase {
       responsibilities: existing.responsibilities,
     });
 
+    const requestFormId = existing.requestForm.id;
     const submitted = await this.prisma.$transaction(async (tx) => {
-      await tx.jobApproval.deleteMany({ where: { jobId: id } });
-      await tx.jobApproval.createMany({
+      await tx.jobApprovalStep.deleteMany({
+        where: { jobRequestFormId: requestFormId },
+      });
+      await tx.jobApprovalStep.createMany({
         data: [
           {
-            jobId: id,
-            stage: 'FINANCE',
+            jobRequestFormId: requestFormId,
+            department: 'FINANCE',
             level: 1,
-            requiredRole: SYSTEM_ROLES.FINANCE_MANAGER,
+            status: 'PENDING_FOR_APPROVAL',
           },
           {
-            jobId: id,
-            stage: 'GM',
+            jobRequestFormId: requestFormId,
+            department: 'GM',
             level: 2,
-            requiredRole: SYSTEM_ROLES.SUPERADMIN,
+            status: 'PENDING_FOR_APPROVAL',
           },
           {
-            jobId: id,
-            stage: 'HR_REVIEW',
+            jobRequestFormId: requestFormId,
+            department: 'HR',
             level: 3,
-            requiredRole: SYSTEM_ROLES.HR_MANAGER,
+            status: 'PENDING_FOR_APPROVAL',
           },
         ],
       });
@@ -858,9 +898,6 @@ export class SubmitJobUseCase {
           requestForm: {
             update: {
               status: 'PENDING_FOR_APPROVAL',
-              financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-              gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-              hrApprovalStatus: 'PENDING_FOR_APPROVAL',
               pendingApprovalAt: now,
               readyToPostAt: null,
               rejectedAt: null,
@@ -890,8 +927,18 @@ export class ApproveJobUseCase {
       include: jobInclude,
     });
     if (!existing) throw new NotFoundException('Job not found');
+    if (!existing.requestForm) {
+      throw new BadRequestException('Job request form is missing');
+    }
 
-    const approvals = existing.approvals.map(toApprovalState);
+    const approvals = existing.requestForm.approvals.map((approval) =>
+      toApprovalState({
+        id: approval.id,
+        department: approval.department,
+        status: approval.status,
+        level: approval.level,
+      }),
+    );
     if (approvals.length === 0) {
       throw new BadRequestException('Missing approval stage configuration');
     }
@@ -945,13 +992,22 @@ export class ApproveJobUseCase {
 
     const decidedAt = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
-      await tx.jobApproval.update({
+      const targetStatus = decisionToStepStatus(dto.decision);
+      await tx.jobApprovalStep.update({
         where: { id: target.id },
         data: {
           approverId,
-          decision: dto.decision,
-          comments: dto.comments ?? undefined,
+          status: targetStatus,
+          currentNote: dto.comments ?? undefined,
           decidedAt,
+        },
+      });
+      await tx.jobApprovalHistory.create({
+        data: {
+          approvalStepId: target.id,
+          toStatus: targetStatus,
+          changedById: approverId,
+          reason: dto.comments ?? undefined,
         },
       });
 
@@ -961,9 +1017,9 @@ export class ApproveJobUseCase {
           data: {
             requestForm: {
               update: {
-                ...stageFieldPatch(target.stage, 'REJECTED'),
                 status: 'REJECTED',
                 rejectedAt: decidedAt,
+                readyToPostAt: null,
               },
             },
           },
@@ -973,7 +1029,7 @@ export class ApproveJobUseCase {
 
       const nextApprovals: ApprovalState[] = approvals.map((approval) =>
         approval.id === target.id
-          ? { ...approval, decision: 'APPROVED' }
+          ? { ...approval, decision: dto.decision }
           : approval,
       );
 
@@ -996,32 +1052,36 @@ export class ApproveJobUseCase {
         gm.decision === 'APPROVED' &&
         hr.decision === 'PENDING'
       ) {
-        await tx.jobApproval.update({
+        await tx.jobApprovalStep.update({
           where: { id: hr.id },
           data: {
             approverId: existing.createdById,
-            decision: 'APPROVED',
-            autoApproved: true,
-            autoApprovalReason: 'CREATOR_HAS_HR_ROLE',
-            comments: 'Auto-approved because creator has HR role',
+            status: 'APPROVED',
+            currentNote: 'Auto-approved because creator has HR role',
             decidedAt,
+          },
+        });
+        await tx.jobApprovalHistory.create({
+          data: {
+            approvalStepId: hr.id,
+            toStatus: 'APPROVED',
+            changedById: existing.createdById,
+            reason: 'CREATOR_HAS_HR_ROLE',
           },
         });
         hr.decision = 'APPROVED';
       }
 
       const nextStatus = computeJobStatusFromApprovals(nextApprovals);
-      const stageStatuses = buildStageStatusesFromApprovals(nextApprovals);
       return tx.job.update({
         where: { id },
         data: {
           requestForm: {
             update: {
-              ...stageStatuses,
               status: nextStatus,
               ...(nextStatus === 'READY_TO_POST'
-                ? { readyToPostAt: decidedAt }
-                : {}),
+                ? { readyToPostAt: decidedAt, rejectedAt: null }
+                : { readyToPostAt: null, rejectedAt: null }),
             },
           },
         },
