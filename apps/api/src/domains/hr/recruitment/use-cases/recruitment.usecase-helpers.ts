@@ -71,6 +71,93 @@ interface SubmitReadinessPayload {
   responsibilities: unknown[];
 }
 
+const JOB_APPLICANT_FIELD_METADATA: Record<
+  string,
+  {
+    label: string;
+    type:
+      | 'TEXT'
+      | 'TEXTAREA'
+      | 'NUMBER'
+      | 'SELECT'
+      | 'FILE'
+      | 'DATE'
+      | 'CHECKBOX';
+    helpText: string | null;
+    options: string[];
+  }
+> = {
+  PHONE: {
+    label: 'Phone Number',
+    type: 'TEXT',
+    helpText: 'Primary contact phone number including country code.',
+    options: [],
+  },
+  LINKEDIN_URL: {
+    label: 'LinkedIn URL',
+    type: 'TEXT',
+    helpText: 'Candidate LinkedIn profile URL.',
+    options: [],
+  },
+  PORTFOLIO_URL: {
+    label: 'Portfolio URL',
+    type: 'TEXT',
+    helpText: 'Candidate portfolio or personal website URL.',
+    options: [],
+  },
+  GITHUB_URL: {
+    label: 'GitHub URL',
+    type: 'TEXT',
+    helpText: 'Candidate GitHub profile URL.',
+    options: [],
+  },
+  EXPECTED_SALARY: {
+    label: 'Expected Salary',
+    type: 'NUMBER',
+    helpText: 'Candidate salary expectation for the role.',
+    options: [],
+  },
+  COVER_LETTER: {
+    label: 'Cover Letter',
+    type: 'TEXTAREA',
+    helpText: 'Candidate motivation and fit for the role.',
+    options: [],
+  },
+};
+
+const JOB_APPLICATION_SECTION_METADATA: Record<
+  string,
+  {
+    label: string;
+    type: 'SECTION';
+    helpText: string | null;
+    options: string[];
+  }
+> = {
+  EDUCATION: {
+    label: 'Education',
+    type: 'SECTION',
+    helpText: 'Collect education history entries.',
+    options: [],
+  },
+  EXPERIENCE: {
+    label: 'Experience',
+    type: 'SECTION',
+    helpText: 'Collect professional experience entries.',
+    options: [],
+  },
+};
+
+function humanizeKey(key: string) {
+  return key
+    .toLowerCase()
+    .split('_')
+    .map((segment) =>
+      segment.length > 0 ? segment[0]!.toUpperCase() + segment.slice(1) : '',
+    )
+    .join(' ');
+}
+
 function departmentToStage(department: string): ApprovalStage {
   if (department === 'FINANCE') return 'FINANCE';
   if (department === 'GM') return 'GM';
@@ -474,6 +561,12 @@ export function mapJob(job: any) {
           jobId: applicationForm.jobId,
           applicantFields: (applicationForm.applicantFields ?? []).map(
             (field: any, index: number) => ({
+              ...(JOB_APPLICANT_FIELD_METADATA[field.key] ?? {
+                label: humanizeKey(field.key),
+                type: 'TEXT',
+                helpText: null,
+                options: [],
+              }),
               id: field.id,
               key: field.key,
               enabled: field.enabled,
@@ -483,6 +576,12 @@ export function mapJob(job: any) {
           ),
           sections: (applicationForm.sections ?? []).map(
             (section: any, index: number) => ({
+              ...(JOB_APPLICATION_SECTION_METADATA[section.key] ?? {
+                label: humanizeKey(section.key),
+                type: 'SECTION',
+                helpText: null,
+                options: [],
+              }),
               id: section.id,
               key: section.key,
               enabled: section.enabled,

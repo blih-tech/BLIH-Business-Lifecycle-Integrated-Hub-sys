@@ -59,6 +59,7 @@ const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
   'COVER_LETTER',
 ] as const;
 const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
+const APPLICATION_FORM_SECTION_TYPES = ['SECTION'] as const;
 const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 const JOB_STAGE_STATUSES = [
   'PENDING_FOR_APPROVAL',
@@ -668,6 +669,18 @@ export class JobApplicationFormFieldResponseDto extends OmitType(
 ) {
   @ApiProperty()
   id!: string;
+
+  @ApiProperty({ example: 'Phone Number' })
+  label!: string;
+
+  @ApiProperty({ enum: JOB_APPLICATION_FIELD_TYPES, example: 'TEXT' })
+  type!: (typeof JOB_APPLICATION_FIELD_TYPES)[number];
+
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
+  @ApiProperty({ type: [String], default: [] })
+  options!: string[];
 }
 
 export class JobApplicationFormSectionResponseDto extends OmitType(
@@ -676,6 +689,18 @@ export class JobApplicationFormSectionResponseDto extends OmitType(
 ) {
   @ApiProperty()
   id!: string;
+
+  @ApiProperty({ example: 'Education' })
+  label!: string;
+
+  @ApiProperty({ enum: APPLICATION_FORM_SECTION_TYPES, example: 'SECTION' })
+  type!: (typeof APPLICATION_FORM_SECTION_TYPES)[number];
+
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
+  @ApiProperty({ type: [String], default: [] })
+  options!: string[];
 }
 
 export class JobApplicationFormResponseDto {

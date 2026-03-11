@@ -304,15 +304,23 @@ export interface JobResponseDto {
     applicantFields: Array<{
       id: string;
       key: JobApplicantOptionalFieldKey;
+      label: string;
+      type: JobApplicationFieldType;
       enabled: boolean;
       required: boolean;
+      helpText: string | null;
+      options: string[];
       order: number | null;
     }>;
     sections: Array<{
       id: string;
       key: JobApplicationFormSectionKey;
+      label: string;
+      type: 'SECTION';
       enabled: boolean;
       required: boolean;
+      helpText: string | null;
+      options: string[];
       order: number | null;
     }>;
     customFields: Array<{
