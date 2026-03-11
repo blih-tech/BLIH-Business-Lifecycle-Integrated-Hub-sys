@@ -1,5 +1,6 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { RagService } from './rag.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('rag')
 export class RagController {
@@ -9,6 +10,20 @@ export class RagController {
   async ingestText(@Body() data: { text: string; source: string; metadata?: any }) {
     console.log(`Received document from source: ${data.source}`);
     return await this.ragService.ingest(data.text, data.source, data.metadata);
+  }
+
+  @Post('ai/vision')
+  @UseInterceptors(FileInterceptor('file'))
+  async analyzeImage(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new Error('No image file provided');
+    return await this.ragService.analyzeImage(file.buffer);
+  }
+
+  @Post('ai/transcribe')
+  @UseInterceptors(FileInterceptor('file'))
+  async transcribeAudio(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new Error('No audio file provided');
+    return await this.ragService.transcribeAudio(file.buffer);
   }
 
   @Post('ask')

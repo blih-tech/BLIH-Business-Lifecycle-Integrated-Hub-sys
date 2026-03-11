@@ -44,7 +44,7 @@ export class RagService {
   }
 
   async ingest(text: string, source: string, metadata?: Record<string, any>) {
-    console.log(`Ingesting text from: ${source}`);
+    console.log(`Ingesting text from: ${source} with matadate:`, metadata);
     const doc = new Document({
       pageContent: text,
       metadata: {
@@ -69,7 +69,7 @@ export class RagService {
     return { message: `Successfully ingested ${splitDocs.length} chunks.` };
   }
 
-  async processPDF(fileBuffer: Buffer) {
+  async processPDF(fileBuffer: Buffer, fileName: string, metadata?: Record<string, any>) {
     const blob = new Blob([new Uint8Array(fileBuffer)], {
       type: 'application/pdf',
     });
@@ -82,14 +82,47 @@ export class RagService {
       chunkOverlap: 200,
     });
 
-    const splitDocs = await splitter.splitDocuments(docs);
+    const docsWithMetadata = docs.map(d => ({
+        ...d,
+        metadata: { 
+          ...d.metadata, 
+          ...metadata, 
+          source: fileName }
+    }));
+
+    const splitDocs = await splitter.splitDocuments(docsWithMetadata);
 
     await QdrantVectorStore.fromDocuments(splitDocs, this.embeddings, {
       url: this.qdrantUrl,
       collectionName: this.collectionName,
     });
 
-    return { message: `Successfully processed ${splitDocs.length} chunks.` };
+    return { message: `Successfully processed ${splitDocs.length} chunks or ${fileName}.` };
+  }
+
+  async analyzeImage(fileBuffer: Buffer): Promise<{ description: string }> {
+    const base64Image = fileBuffer.toString('base64');
+    
+    const visionModel = new ChatOllama({
+      baseUrl: process.env.OLLAMA_BASE_URL,
+      model: 'llava', 
+    });
+
+    const response = await visionModel.invoke([
+      {
+        role: 'user',
+        content: [
+          { type: 'text', text: 'Describe this image for a corporate knowledge base. Focus on text, charts, or professional context.' },
+          { type: 'image_url', image_url: `data:image/jpeg;base64,${base64Image}` }
+        ]
+      }
+    ]);
+
+    return { description: response.content as string };
+  }
+  async transcribeAudio(fileBuffer: Buffer): Promise<{ text: string }> {
+    this.logger.warn('Audio transcription called - ensure Whisper service is configured.');
+    return { text: "Audio transcription placeholder: User mentioned a task update." };
   }
 
   async askQuestion(
@@ -129,6 +162,7 @@ export class RagService {
     1. If the answer is not in the context, say: "I'm sorry, I don't have that specific information in my knowledge base."
     2. Do not make up facts.
     3. Be professional and concise.
+    4. If the user refers to something previously mentioned (e.g., 'tell me more about that'), use the CHAT HISTORY to understand what 'that' refers to.
 
     CHAT HISTORY:
     ${chatHistoryString}
