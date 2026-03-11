@@ -6,13 +6,14 @@ import {
   ApiEnvelopeCreatedResponse,
   ApiEnvelopeOkResponse,
   ApiProtected,
+  ActionSuccessResponseDto,
 } from '../../../../shared/docs/openapi';
 import { OnboardingTaskPermissions } from '../../../../core/rbac/constants/permissions.constants';
 import {
   CreateOnboardingTaskDto,
   OnboardingTaskResponseDto,
   UpdateOnboardingTaskDto,
-} from './on-boarding-tasks.dto';
+} from './onboarding-tasks.dto';
 
 // ─── Swagger example data ─────────────────────────────────────────────────────
 
@@ -73,6 +74,9 @@ const taskUpdated = envelope(
   'Onboarding task updated successfully',
   onboardingTaskExample,
 );
+const taskDeleted = envelope('Onboarding task deleted successfully', {
+  success: true,
+});
 const taskList = envelope('Onboarding tasks retrieved successfully', [
   onboardingTaskExample,
 ]);
@@ -225,6 +229,28 @@ export function ApiUpdateOnboardingTask() {
     ApiDefaultErrors({
       path: '/api/v1/hr/onboarding/tasks/:id',
       badRequest: 'Onboarding task payload is invalid',
+      notFound: 'Onboarding task not found',
+      unauthorized: 'Unauthorized: missing or invalid bearer access token',
+      forbidden: 'Required roles are missing',
+    }),
+  );
+}
+
+export function ApiDeleteOnboardingTask() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Delete onboarding task' }),
+    ApiParam({ name: 'id', description: 'Onboarding task UUID' }),
+    ApiProtected({
+      path: '/api/v1/hr/onboarding/tasks/:id',
+      roles: [OnboardingTaskPermissions.DELETE],
+    }),
+    ApiEnvelopeOkResponse(
+      ActionSuccessResponseDto,
+      'Deleted onboarding task',
+      taskDeleted,
+    ),
+    ApiDefaultErrors({
+      path: '/api/v1/hr/onboarding/tasks/:id',
       notFound: 'Onboarding task not found',
       unauthorized: 'Unauthorized: missing or invalid bearer access token',
       forbidden: 'Required roles are missing',

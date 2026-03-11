@@ -6,55 +6,55 @@ import {
   type ResponseEnvelopeSuccessDto,
 } from '../../../../shared/dto/response-envelope.dto';
 import type {
-  PolicyAcknowledgementListQueryDto,
-  PolicyAcknowledgementResponseDto,
-} from './policy-acknowledgement.dto';
-import { mapPolicyAcknowledgement } from './create-policy-acknowledgement.usecase';
+  AssetProvisioningListQueryDto,
+  AssetProvisioningResponseDto,
+} from './asset-provisioning.dto';
+import { mapAssetProvisioning } from './create-asset-provisioning.usecase';
 
 function buildWhere(
-  query: PolicyAcknowledgementListQueryDto,
-): Prisma.PolicyAcknowledgementWhereInput {
-  const where: Prisma.PolicyAcknowledgementWhereInput = {};
+  query: AssetProvisioningListQueryDto,
+): Prisma.AssetProvisioningWhereInput {
+  const where: Prisma.AssetProvisioningWhereInput = {};
 
   if (query.employeeId) {
     where.employeeId = query.employeeId;
   }
 
-  if (query.verifiedById) {
-    where.verifiedById = query.verifiedById;
+  if (query.status) {
+    where.status = query.status;
   }
 
-  if (query.allAcknowledged !== undefined) {
-    where.allAcknowledged = query.allAcknowledged;
+  if (query.financeApprovalRequired !== undefined) {
+    where.financeApprovalRequired = query.financeApprovalRequired;
   }
 
   return where;
 }
 
 @Injectable()
-export class ListAllPolicyAcknowledgementUseCase {
+export class ListAllAssetProvisioningUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
-    query: PolicyAcknowledgementListQueryDto,
-  ): Promise<PolicyAcknowledgementResponseDto[]> {
-    const records = await this.prisma.policyAcknowledgement.findMany({
+    query: AssetProvisioningListQueryDto,
+  ): Promise<AssetProvisioningResponseDto[]> {
+    const records = await this.prisma.assetProvisioning.findMany({
       where: buildWhere(query),
       orderBy: { createdAt: 'desc' },
     });
 
-    return records.map(mapPolicyAcknowledgement);
+    return records.map(mapAssetProvisioning);
   }
 }
 
 @Injectable()
-export class ListPaginatedPolicyAcknowledgementUseCase {
+export class ListPaginatedAssetProvisioningUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
-    query: PolicyAcknowledgementListQueryDto,
+    query: AssetProvisioningListQueryDto,
     requestId: string,
-  ): Promise<ResponseEnvelopeSuccessDto<PolicyAcknowledgementResponseDto[]>> {
+  ): Promise<ResponseEnvelopeSuccessDto<AssetProvisioningResponseDto[]>> {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -62,21 +62,21 @@ export class ListPaginatedPolicyAcknowledgementUseCase {
     const where = buildWhere(query);
 
     const [records, total] = await this.prisma.$transaction([
-      this.prisma.policyAcknowledgement.findMany({
+      this.prisma.assetProvisioning.findMany({
         where,
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
       }),
-      this.prisma.policyAcknowledgement.count({ where }),
+      this.prisma.assetProvisioning.count({ where }),
     ]);
 
     const totalPages = Math.ceil(total / limit);
 
     return buildSuccessEnvelope(
-      records.map(mapPolicyAcknowledgement),
+      records.map(mapAssetProvisioning),
       requestId,
-      'Policy acknowledgement records retrieved successfully',
+      'Asset provisioning records retrieved successfully',
       {
         page,
         limit,
@@ -90,20 +90,20 @@ export class ListPaginatedPolicyAcknowledgementUseCase {
 }
 
 @Injectable()
-export class GetPolicyAcknowledgementByIdUseCase {
+export class GetAssetProvisioningByIdUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string): Promise<PolicyAcknowledgementResponseDto> {
-    const record = await this.prisma.policyAcknowledgement.findUnique({
+  async execute(id: string): Promise<AssetProvisioningResponseDto> {
+    const record = await this.prisma.assetProvisioning.findUnique({
       where: { id },
     });
 
     if (!record) {
       throw new NotFoundException(
-        `Policy acknowledgement with id "${id}" not found`,
+        `Asset provisioning with id "${id}" not found`,
       );
     }
 
-    return mapPolicyAcknowledgement(record);
+    return mapAssetProvisioning(record);
   }
 }

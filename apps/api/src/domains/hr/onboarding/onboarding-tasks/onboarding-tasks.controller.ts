@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -19,9 +20,10 @@ import {
   CreateOnboardingTaskDto,
   OnboardingTaskListQueryDto,
   UpdateOnboardingTaskDto,
-} from './on-boarding-tasks.dto';
+} from './onboarding-tasks.dto';
 import {
   ApiCreateOnboardingTask,
+  ApiDeleteOnboardingTask,
   ApiGetOnboardingTaskById,
   ApiListAllOnboardingTasks,
   ApiListPaginatedOnboardingTasks,
@@ -29,6 +31,7 @@ import {
   ApiUpdateOnboardingTask,
 } from './onboarding-tasks.docs';
 import { CreateOnboardingTaskUseCase } from './create-onboarding-tasks.usecase';
+import { DeleteOnboardingTaskUseCase } from './delete-onboarding-tasks.usecase';
 import {
   GetOnboardingTaskByIdUseCase,
   ListAllOnboardingTasksUseCase,
@@ -46,6 +49,7 @@ export class OnboardingTasksController {
     private readonly listPaginatedTasks: ListPaginatedOnboardingTasksUseCase,
     private readonly getTaskById: GetOnboardingTaskByIdUseCase,
     private readonly updateTask: UpdateOnboardingTaskUseCase,
+    private readonly deleteTask: DeleteOnboardingTaskUseCase,
   ) {}
 
   @Post()
@@ -86,5 +90,12 @@ export class OnboardingTasksController {
   @ApiUpdateOnboardingTask()
   update(@Param('id') id: string, @Body() body: UpdateOnboardingTaskDto) {
     return this.updateTask.execute(id, body);
+  }
+
+  @Delete(':id')
+  @Roles(OnboardingTaskPermissions.DELETE)
+  @ApiDeleteOnboardingTask()
+  delete(@Param('id') id: string) {
+    return this.deleteTask.execute(id);
   }
 }

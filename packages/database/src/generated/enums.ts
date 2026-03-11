@@ -444,7 +444,6 @@ export type OnboardingStatus = (typeof OnboardingStatus)[keyof typeof Onboarding
 
 
 export const OnboardingChecklistStatus = {
-  NOT_STARTED: 'NOT_STARTED',
   IN_PROGRESS: 'IN_PROGRESS',
   COMPLETED: 'COMPLETED',
   OVERDUE: 'OVERDUE'

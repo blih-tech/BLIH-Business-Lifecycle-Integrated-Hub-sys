@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { UpdateOnboardingTaskDto } from './on-boarding-tasks.dto';
+import type { UpdateOnboardingTaskDto } from './onboarding-tasks.dto';
 import {
   mapOnboardingTask,
   onboardingTaskInclude,

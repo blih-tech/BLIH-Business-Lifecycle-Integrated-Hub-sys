@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { buildSuccessEnvelope } from '../../../../shared/dto/response-envelope.dto';
-import type { OnboardingTaskListQueryDto } from './on-boarding-tasks.dto';
+import type { OnboardingTaskListQueryDto } from './onboarding-tasks.dto';
 import {
   mapOnboardingTask,
   onboardingTaskInclude,
