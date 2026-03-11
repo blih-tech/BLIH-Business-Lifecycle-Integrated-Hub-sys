@@ -250,7 +250,7 @@ export type UserWhereInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryListRelationFilter
   createdInterviewSessions?: Prisma.InterviewSessionListRelationFilter
   interviewerAssignments?: Prisma.InterviewerAssignmentListRelationFilter
-  submittedHiringDecisions?: Prisma.HiringDecisionListRelationFilter
+  createdOffers?: Prisma.OfferListRelationFilter
   jobApprovalSteps?: Prisma.JobApprovalStepListRelationFilter
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryListRelationFilter
   checklistsOverseen?: Prisma.OnboardingChecklistListRelationFilter
@@ -327,7 +327,7 @@ export type UserOrderByWithRelationInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryOrderByRelationAggregateInput
   createdInterviewSessions?: Prisma.InterviewSessionOrderByRelationAggregateInput
   interviewerAssignments?: Prisma.InterviewerAssignmentOrderByRelationAggregateInput
-  submittedHiringDecisions?: Prisma.HiringDecisionOrderByRelationAggregateInput
+  createdOffers?: Prisma.OfferOrderByRelationAggregateInput
   jobApprovalSteps?: Prisma.JobApprovalStepOrderByRelationAggregateInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryOrderByRelationAggregateInput
   checklistsOverseen?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
@@ -407,7 +407,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryListRelationFilter
   createdInterviewSessions?: Prisma.InterviewSessionListRelationFilter
   interviewerAssignments?: Prisma.InterviewerAssignmentListRelationFilter
-  submittedHiringDecisions?: Prisma.HiringDecisionListRelationFilter
+  createdOffers?: Prisma.OfferListRelationFilter
   jobApprovalSteps?: Prisma.JobApprovalStepListRelationFilter
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryListRelationFilter
   checklistsOverseen?: Prisma.OnboardingChecklistListRelationFilter
@@ -522,7 +522,7 @@ export type UserCreateInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -599,7 +599,7 @@ export type UserUncheckedCreateInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -676,7 +676,7 @@ export type UserUpdateInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -753,7 +753,7 @@ export type UserUncheckedUpdateInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -1572,18 +1572,18 @@ export type UserUpdateOneRequiredWithoutInterviewerAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInterviewerAssignmentsInput, Prisma.UserUpdateWithoutInterviewerAssignmentsInput>, Prisma.UserUncheckedUpdateWithoutInterviewerAssignmentsInput>
 }
 
-export type UserCreateNestedOneWithoutSubmittedHiringDecisionsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmittedHiringDecisionsInput, Prisma.UserUncheckedCreateWithoutSubmittedHiringDecisionsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmittedHiringDecisionsInput
+export type UserCreateNestedOneWithoutCreatedOffersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedOffersInput, Prisma.UserUncheckedCreateWithoutCreatedOffersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedOffersInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutSubmittedHiringDecisionsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmittedHiringDecisionsInput, Prisma.UserUncheckedCreateWithoutSubmittedHiringDecisionsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmittedHiringDecisionsInput
-  upsert?: Prisma.UserUpsertWithoutSubmittedHiringDecisionsInput
+export type UserUpdateOneRequiredWithoutCreatedOffersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedOffersInput, Prisma.UserUncheckedCreateWithoutCreatedOffersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedOffersInput
+  upsert?: Prisma.UserUpsertWithoutCreatedOffersInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubmittedHiringDecisionsInput, Prisma.UserUpdateWithoutSubmittedHiringDecisionsInput>, Prisma.UserUncheckedUpdateWithoutSubmittedHiringDecisionsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedOffersInput, Prisma.UserUpdateWithoutCreatedOffersInput>, Prisma.UserUncheckedUpdateWithoutCreatedOffersInput>
 }
 
 export type UserCreateNestedOneWithoutCvScreeningsConductedInput = {
@@ -1881,7 +1881,7 @@ export type UserCreateWithoutDelegatedLeaveHandoversInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -1957,7 +1957,7 @@ export type UserUncheckedCreateWithoutDelegatedLeaveHandoversInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -2038,7 +2038,7 @@ export type UserCreateWithoutLeaveRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -2114,7 +2114,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -2206,7 +2206,7 @@ export type UserUpdateWithoutDelegatedLeaveHandoversInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -2282,7 +2282,7 @@ export type UserUncheckedUpdateWithoutDelegatedLeaveHandoversInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -2369,7 +2369,7 @@ export type UserUpdateWithoutLeaveRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -2445,7 +2445,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -2521,7 +2521,7 @@ export type UserCreateWithoutLeaveApprovalsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -2597,7 +2597,7 @@ export type UserUncheckedCreateWithoutLeaveApprovalsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -2689,7 +2689,7 @@ export type UserUpdateWithoutLeaveApprovalsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -2765,7 +2765,7 @@ export type UserUncheckedUpdateWithoutLeaveApprovalsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -2841,7 +2841,7 @@ export type UserCreateWithoutAttendanceCorrectionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -2917,7 +2917,7 @@ export type UserUncheckedCreateWithoutAttendanceCorrectionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -3009,7 +3009,7 @@ export type UserUpdateWithoutAttendanceCorrectionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -3085,7 +3085,7 @@ export type UserUncheckedUpdateWithoutAttendanceCorrectionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -3161,7 +3161,7 @@ export type UserCreateWithoutOvertimeRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -3237,7 +3237,7 @@ export type UserUncheckedCreateWithoutOvertimeRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -3329,7 +3329,7 @@ export type UserUpdateWithoutOvertimeRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -3405,7 +3405,7 @@ export type UserUncheckedUpdateWithoutOvertimeRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -3481,7 +3481,7 @@ export type UserCreateWithoutFlexWorkRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -3557,7 +3557,7 @@ export type UserUncheckedCreateWithoutFlexWorkRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -3649,7 +3649,7 @@ export type UserUpdateWithoutFlexWorkRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -3725,7 +3725,7 @@ export type UserUncheckedUpdateWithoutFlexWorkRequestsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -3801,7 +3801,7 @@ export type UserCreateWithoutApprovedTimesheetsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -3877,7 +3877,7 @@ export type UserUncheckedCreateWithoutApprovedTimesheetsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -3969,7 +3969,7 @@ export type UserUpdateWithoutApprovedTimesheetsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -4045,7 +4045,7 @@ export type UserUncheckedUpdateWithoutApprovedTimesheetsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -4120,7 +4120,7 @@ export type UserCreateWithoutRolesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -4196,7 +4196,7 @@ export type UserUncheckedCreateWithoutRolesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -4288,7 +4288,7 @@ export type UserUpdateWithoutRolesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -4364,7 +4364,7 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -4440,7 +4440,7 @@ export type UserCreateWithoutVerifiedDocumentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -4516,7 +4516,7 @@ export type UserUncheckedCreateWithoutVerifiedDocumentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -4608,7 +4608,7 @@ export type UserUpdateWithoutVerifiedDocumentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -4684,7 +4684,7 @@ export type UserUncheckedUpdateWithoutVerifiedDocumentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -4761,7 +4761,7 @@ export type UserCreateWithoutIncidentInvestigationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -4837,7 +4837,7 @@ export type UserUncheckedCreateWithoutIncidentInvestigationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -4929,7 +4929,7 @@ export type UserUpdateWithoutIncidentInvestigationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -5005,7 +5005,7 @@ export type UserUncheckedUpdateWithoutIncidentInvestigationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -5081,7 +5081,7 @@ export type UserCreateWithoutDisciplinaryActionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -5157,7 +5157,7 @@ export type UserUncheckedCreateWithoutDisciplinaryActionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -5249,7 +5249,7 @@ export type UserUpdateWithoutDisciplinaryActionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -5325,7 +5325,7 @@ export type UserUncheckedUpdateWithoutDisciplinaryActionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -5401,7 +5401,7 @@ export type UserCreateWithoutGrievancesAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -5477,7 +5477,7 @@ export type UserUncheckedCreateWithoutGrievancesAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -5569,7 +5569,7 @@ export type UserUpdateWithoutGrievancesAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -5645,7 +5645,7 @@ export type UserUncheckedUpdateWithoutGrievancesAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -5721,7 +5721,7 @@ export type UserCreateWithoutRecognitionsNominatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -5797,7 +5797,7 @@ export type UserUncheckedCreateWithoutRecognitionsNominatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -5878,7 +5878,7 @@ export type UserCreateWithoutRecognitionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -5954,7 +5954,7 @@ export type UserUncheckedCreateWithoutRecognitionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -6046,7 +6046,7 @@ export type UserUpdateWithoutRecognitionsNominatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -6122,7 +6122,7 @@ export type UserUncheckedUpdateWithoutRecognitionsNominatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -6209,7 +6209,7 @@ export type UserUpdateWithoutRecognitionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -6285,7 +6285,7 @@ export type UserUncheckedUpdateWithoutRecognitionsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -6361,7 +6361,7 @@ export type UserCreateWithoutSurveysCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -6437,7 +6437,7 @@ export type UserUncheckedCreateWithoutSurveysCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -6529,7 +6529,7 @@ export type UserUpdateWithoutSurveysCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -6605,7 +6605,7 @@ export type UserUncheckedUpdateWithoutSurveysCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -6681,7 +6681,7 @@ export type UserCreateWithoutMediationAsMediatorInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -6757,7 +6757,7 @@ export type UserUncheckedCreateWithoutMediationAsMediatorInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -6849,7 +6849,7 @@ export type UserUpdateWithoutMediationAsMediatorInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -6925,7 +6925,7 @@ export type UserUncheckedUpdateWithoutMediationAsMediatorInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -7001,7 +7001,7 @@ export type UserCreateWithoutApprovedTrainingRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -7077,7 +7077,7 @@ export type UserUncheckedCreateWithoutApprovedTrainingRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -7169,7 +7169,7 @@ export type UserUpdateWithoutApprovedTrainingRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -7245,7 +7245,7 @@ export type UserUncheckedUpdateWithoutApprovedTrainingRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -7321,7 +7321,7 @@ export type UserCreateWithoutFeedbackTemplatesCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -7397,7 +7397,7 @@ export type UserUncheckedCreateWithoutFeedbackTemplatesCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -7489,7 +7489,7 @@ export type UserUpdateWithoutFeedbackTemplatesCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -7565,7 +7565,7 @@ export type UserUncheckedUpdateWithoutFeedbackTemplatesCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -7641,7 +7641,7 @@ export type UserCreateWithoutTrainingFeedbackReviewedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -7717,7 +7717,7 @@ export type UserUncheckedCreateWithoutTrainingFeedbackReviewedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -7809,7 +7809,7 @@ export type UserUpdateWithoutTrainingFeedbackReviewedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -7885,7 +7885,7 @@ export type UserUncheckedUpdateWithoutTrainingFeedbackReviewedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -7961,7 +7961,7 @@ export type UserCreateWithoutSkillGapAssessmentsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -8037,7 +8037,7 @@ export type UserUncheckedCreateWithoutSkillGapAssessmentsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -8129,7 +8129,7 @@ export type UserUpdateWithoutSkillGapAssessmentsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -8205,7 +8205,7 @@ export type UserUncheckedUpdateWithoutSkillGapAssessmentsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -8281,7 +8281,7 @@ export type UserCreateWithoutResignationsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -8357,7 +8357,7 @@ export type UserUncheckedCreateWithoutResignationsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -8449,7 +8449,7 @@ export type UserUpdateWithoutResignationsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -8525,7 +8525,7 @@ export type UserUncheckedUpdateWithoutResignationsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -8601,7 +8601,7 @@ export type UserCreateWithoutOffboardingTasksAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -8677,7 +8677,7 @@ export type UserUncheckedCreateWithoutOffboardingTasksAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -8758,7 +8758,7 @@ export type UserCreateWithoutOffboardingTasksCompletedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -8834,7 +8834,7 @@ export type UserUncheckedCreateWithoutOffboardingTasksCompletedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -8926,7 +8926,7 @@ export type UserUpdateWithoutOffboardingTasksAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -9002,7 +9002,7 @@ export type UserUncheckedUpdateWithoutOffboardingTasksAssignedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -9089,7 +9089,7 @@ export type UserUpdateWithoutOffboardingTasksCompletedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -9165,7 +9165,7 @@ export type UserUncheckedUpdateWithoutOffboardingTasksCompletedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -9241,7 +9241,7 @@ export type UserCreateWithoutExitInterviewsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -9317,7 +9317,7 @@ export type UserUncheckedCreateWithoutExitInterviewsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -9409,7 +9409,7 @@ export type UserUpdateWithoutExitInterviewsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -9485,7 +9485,7 @@ export type UserUncheckedUpdateWithoutExitInterviewsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -9561,7 +9561,7 @@ export type UserCreateWithoutFinalSettlementsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -9637,7 +9637,7 @@ export type UserUncheckedCreateWithoutFinalSettlementsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -9729,7 +9729,7 @@ export type UserUpdateWithoutFinalSettlementsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -9805,7 +9805,7 @@ export type UserUncheckedUpdateWithoutFinalSettlementsApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -9881,7 +9881,7 @@ export type UserCreateWithoutComplianceChecklistsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -9957,7 +9957,7 @@ export type UserUncheckedCreateWithoutComplianceChecklistsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -10049,7 +10049,7 @@ export type UserUpdateWithoutComplianceChecklistsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -10125,7 +10125,7 @@ export type UserUncheckedUpdateWithoutComplianceChecklistsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -10201,7 +10201,7 @@ export type UserCreateWithoutChecklistsOverseenInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
@@ -10277,7 +10277,7 @@ export type UserUncheckedCreateWithoutChecklistsOverseenInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
@@ -10369,7 +10369,7 @@ export type UserUpdateWithoutChecklistsOverseenInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
@@ -10445,7 +10445,7 @@ export type UserUncheckedUpdateWithoutChecklistsOverseenInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
@@ -10521,7 +10521,7 @@ export type UserCreateWithoutAssignedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -10597,7 +10597,7 @@ export type UserUncheckedCreateWithoutAssignedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -10678,7 +10678,7 @@ export type UserCreateWithoutCompletedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -10754,7 +10754,7 @@ export type UserUncheckedCreateWithoutCompletedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -10846,7 +10846,7 @@ export type UserUpdateWithoutAssignedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -10922,7 +10922,7 @@ export type UserUncheckedUpdateWithoutAssignedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -11009,7 +11009,7 @@ export type UserUpdateWithoutCompletedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -11085,7 +11085,7 @@ export type UserUncheckedUpdateWithoutCompletedOnboardingTasksInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -11161,7 +11161,7 @@ export type UserCreateWithoutPolicyAcknowledgementsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -11237,7 +11237,7 @@ export type UserUncheckedCreateWithoutPolicyAcknowledgementsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -11329,7 +11329,7 @@ export type UserUpdateWithoutPolicyAcknowledgementsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -11405,7 +11405,7 @@ export type UserUncheckedUpdateWithoutPolicyAcknowledgementsVerifiedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -11481,7 +11481,7 @@ export type UserCreateWithoutPerformanceReviewFeedbackInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -11557,7 +11557,7 @@ export type UserUncheckedCreateWithoutPerformanceReviewFeedbackInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -11649,7 +11649,7 @@ export type UserUpdateWithoutPerformanceReviewFeedbackInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -11725,7 +11725,7 @@ export type UserUncheckedUpdateWithoutPerformanceReviewFeedbackInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -11801,7 +11801,7 @@ export type UserCreateWithoutFinalizedPerformanceCalibrationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -11877,7 +11877,7 @@ export type UserUncheckedCreateWithoutFinalizedPerformanceCalibrationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -11969,7 +11969,7 @@ export type UserUpdateWithoutFinalizedPerformanceCalibrationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -12045,7 +12045,7 @@ export type UserUncheckedUpdateWithoutFinalizedPerformanceCalibrationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -12121,7 +12121,7 @@ export type UserCreateWithoutKeyResultUpdatesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -12197,7 +12197,7 @@ export type UserUncheckedCreateWithoutKeyResultUpdatesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -12289,7 +12289,7 @@ export type UserUpdateWithoutKeyResultUpdatesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -12365,7 +12365,7 @@ export type UserUncheckedUpdateWithoutKeyResultUpdatesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -12441,7 +12441,7 @@ export type UserCreateWithoutOkrManagerReviewsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -12517,7 +12517,7 @@ export type UserUncheckedCreateWithoutOkrManagerReviewsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -12609,7 +12609,7 @@ export type UserUpdateWithoutOkrManagerReviewsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -12685,7 +12685,7 @@ export type UserUncheckedUpdateWithoutOkrManagerReviewsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -12760,7 +12760,7 @@ export type UserCreateWithoutJobReplacementRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -12836,7 +12836,7 @@ export type UserUncheckedCreateWithoutJobReplacementRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -12928,7 +12928,7 @@ export type UserUpdateWithoutJobReplacementRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -13004,7 +13004,7 @@ export type UserUncheckedUpdateWithoutJobReplacementRequestsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -13080,7 +13080,7 @@ export type UserCreateWithoutManagedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -13156,7 +13156,7 @@ export type UserUncheckedCreateWithoutManagedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -13237,7 +13237,7 @@ export type UserCreateWithoutCreatedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -13313,7 +13313,7 @@ export type UserUncheckedCreateWithoutCreatedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -13405,7 +13405,7 @@ export type UserUpdateWithoutManagedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -13481,7 +13481,7 @@ export type UserUncheckedUpdateWithoutManagedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -13568,7 +13568,7 @@ export type UserUpdateWithoutCreatedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -13644,7 +13644,7 @@ export type UserUncheckedUpdateWithoutCreatedJobsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -13721,7 +13721,7 @@ export type UserCreateWithoutJobApprovalStepsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
@@ -13797,7 +13797,7 @@ export type UserUncheckedCreateWithoutJobApprovalStepsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
@@ -13889,7 +13889,7 @@ export type UserUpdateWithoutJobApprovalStepsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
@@ -13965,7 +13965,7 @@ export type UserUncheckedUpdateWithoutJobApprovalStepsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
@@ -14041,7 +14041,7 @@ export type UserCreateWithoutJobApprovalHistoryChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
@@ -14117,7 +14117,7 @@ export type UserUncheckedCreateWithoutJobApprovalHistoryChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
@@ -14209,7 +14209,7 @@ export type UserUpdateWithoutJobApprovalHistoryChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
@@ -14285,7 +14285,7 @@ export type UserUncheckedUpdateWithoutJobApprovalHistoryChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
   assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
@@ -14360,7 +14360,7 @@ export type UserCreateWithoutReferredApplicantsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -14436,7 +14436,7 @@ export type UserUncheckedCreateWithoutReferredApplicantsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -14528,7 +14528,7 @@ export type UserUpdateWithoutReferredApplicantsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -14604,7 +14604,7 @@ export type UserUncheckedUpdateWithoutReferredApplicantsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -14680,7 +14680,7 @@ export type UserCreateWithoutApplicantStatusChangesInput = {
   referredApplicants?: Prisma.ApplicantCreateNestedManyWithoutReferredByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -14756,7 +14756,7 @@ export type UserUncheckedCreateWithoutApplicantStatusChangesInput = {
   referredApplicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutReferredByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -14848,7 +14848,7 @@ export type UserUpdateWithoutApplicantStatusChangesInput = {
   referredApplicants?: Prisma.ApplicantUpdateManyWithoutReferredByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -14924,7 +14924,7 @@ export type UserUncheckedUpdateWithoutApplicantStatusChangesInput = {
   referredApplicants?: Prisma.ApplicantUncheckedUpdateManyWithoutReferredByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -15000,7 +15000,7 @@ export type UserCreateWithoutCreatedInterviewSessionsInput = {
   referredApplicants?: Prisma.ApplicantCreateNestedManyWithoutReferredByInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -15076,7 +15076,7 @@ export type UserUncheckedCreateWithoutCreatedInterviewSessionsInput = {
   referredApplicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutReferredByInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -15168,7 +15168,7 @@ export type UserUpdateWithoutCreatedInterviewSessionsInput = {
   referredApplicants?: Prisma.ApplicantUpdateManyWithoutReferredByNestedInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -15244,7 +15244,7 @@ export type UserUncheckedUpdateWithoutCreatedInterviewSessionsInput = {
   referredApplicants?: Prisma.ApplicantUncheckedUpdateManyWithoutReferredByNestedInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -15320,7 +15320,7 @@ export type UserCreateWithoutInterviewerAssignmentsInput = {
   referredApplicants?: Prisma.ApplicantCreateNestedManyWithoutReferredByInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -15396,7 +15396,7 @@ export type UserUncheckedCreateWithoutInterviewerAssignmentsInput = {
   referredApplicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutReferredByInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -15488,7 +15488,7 @@ export type UserUpdateWithoutInterviewerAssignmentsInput = {
   referredApplicants?: Prisma.ApplicantUpdateManyWithoutReferredByNestedInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -15564,7 +15564,7 @@ export type UserUncheckedUpdateWithoutInterviewerAssignmentsInput = {
   referredApplicants?: Prisma.ApplicantUncheckedUpdateManyWithoutReferredByNestedInput
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -15615,7 +15615,7 @@ export type UserUncheckedUpdateWithoutInterviewerAssignmentsInput = {
   cvScreeningDecisionsMade?: Prisma.CvScreeningDecisionUncheckedUpdateManyWithoutDecisionMakerNestedInput
 }
 
-export type UserCreateWithoutSubmittedHiringDecisionsInput = {
+export type UserCreateWithoutCreatedOffersInput = {
   id?: string
   keycloakId: string
   username: string
@@ -15691,7 +15691,7 @@ export type UserCreateWithoutSubmittedHiringDecisionsInput = {
   cvScreeningDecisionsMade?: Prisma.CvScreeningDecisionCreateNestedManyWithoutDecisionMakerInput
 }
 
-export type UserUncheckedCreateWithoutSubmittedHiringDecisionsInput = {
+export type UserUncheckedCreateWithoutCreatedOffersInput = {
   id?: string
   keycloakId: string
   username: string
@@ -15767,23 +15767,23 @@ export type UserUncheckedCreateWithoutSubmittedHiringDecisionsInput = {
   cvScreeningDecisionsMade?: Prisma.CvScreeningDecisionUncheckedCreateNestedManyWithoutDecisionMakerInput
 }
 
-export type UserCreateOrConnectWithoutSubmittedHiringDecisionsInput = {
+export type UserCreateOrConnectWithoutCreatedOffersInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSubmittedHiringDecisionsInput, Prisma.UserUncheckedCreateWithoutSubmittedHiringDecisionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedOffersInput, Prisma.UserUncheckedCreateWithoutCreatedOffersInput>
 }
 
-export type UserUpsertWithoutSubmittedHiringDecisionsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSubmittedHiringDecisionsInput, Prisma.UserUncheckedUpdateWithoutSubmittedHiringDecisionsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSubmittedHiringDecisionsInput, Prisma.UserUncheckedCreateWithoutSubmittedHiringDecisionsInput>
+export type UserUpsertWithoutCreatedOffersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedOffersInput, Prisma.UserUncheckedUpdateWithoutCreatedOffersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedOffersInput, Prisma.UserUncheckedCreateWithoutCreatedOffersInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutSubmittedHiringDecisionsInput = {
+export type UserUpdateToOneWithWhereWithoutCreatedOffersInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSubmittedHiringDecisionsInput, Prisma.UserUncheckedUpdateWithoutSubmittedHiringDecisionsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedOffersInput, Prisma.UserUncheckedUpdateWithoutCreatedOffersInput>
 }
 
-export type UserUpdateWithoutSubmittedHiringDecisionsInput = {
+export type UserUpdateWithoutCreatedOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
@@ -15859,7 +15859,7 @@ export type UserUpdateWithoutSubmittedHiringDecisionsInput = {
   cvScreeningDecisionsMade?: Prisma.CvScreeningDecisionUpdateManyWithoutDecisionMakerNestedInput
 }
 
-export type UserUncheckedUpdateWithoutSubmittedHiringDecisionsInput = {
+export type UserUncheckedUpdateWithoutCreatedOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
@@ -15961,7 +15961,7 @@ export type UserCreateWithoutCvScreeningsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -16037,7 +16037,7 @@ export type UserUncheckedCreateWithoutCvScreeningsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -16129,7 +16129,7 @@ export type UserUpdateWithoutCvScreeningsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -16205,7 +16205,7 @@ export type UserUncheckedUpdateWithoutCvScreeningsConductedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -16281,7 +16281,7 @@ export type UserCreateWithoutCvScreeningWorkflowsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -16357,7 +16357,7 @@ export type UserUncheckedCreateWithoutCvScreeningWorkflowsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -16449,7 +16449,7 @@ export type UserUpdateWithoutCvScreeningWorkflowsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -16525,7 +16525,7 @@ export type UserUncheckedUpdateWithoutCvScreeningWorkflowsCreatedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -16601,7 +16601,7 @@ export type UserCreateWithoutCvScreeningStagesApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -16677,7 +16677,7 @@ export type UserUncheckedCreateWithoutCvScreeningStagesApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -16769,7 +16769,7 @@ export type UserUpdateWithoutCvScreeningStagesApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -16845,7 +16845,7 @@ export type UserUncheckedUpdateWithoutCvScreeningStagesApprovedInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -16921,7 +16921,7 @@ export type UserCreateWithoutCvScreeningDecisionsMadeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -16997,7 +16997,7 @@ export type UserUncheckedCreateWithoutCvScreeningDecisionsMadeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -17089,7 +17089,7 @@ export type UserUpdateWithoutCvScreeningDecisionsMadeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -17165,7 +17165,7 @@ export type UserUncheckedUpdateWithoutCvScreeningDecisionsMadeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -17241,7 +17241,7 @@ export type UserCreateWithoutProposedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -17317,7 +17317,7 @@ export type UserUncheckedCreateWithoutProposedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -17398,7 +17398,7 @@ export type UserCreateWithoutApprovedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -17474,7 +17474,7 @@ export type UserUncheckedCreateWithoutApprovedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -17566,7 +17566,7 @@ export type UserUpdateWithoutProposedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -17642,7 +17642,7 @@ export type UserUncheckedUpdateWithoutProposedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -17729,7 +17729,7 @@ export type UserUpdateWithoutApprovedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -17805,7 +17805,7 @@ export type UserUncheckedUpdateWithoutApprovedPromotionsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -17881,7 +17881,7 @@ export type UserCreateWithoutCreatedCareerDevelopmentPlansInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -17957,7 +17957,7 @@ export type UserUncheckedCreateWithoutCreatedCareerDevelopmentPlansInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -18049,7 +18049,7 @@ export type UserUpdateWithoutCreatedCareerDevelopmentPlansInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -18125,7 +18125,7 @@ export type UserUncheckedUpdateWithoutCreatedCareerDevelopmentPlansInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -18201,7 +18201,7 @@ export type UserCreateWithoutAssessedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -18277,7 +18277,7 @@ export type UserUncheckedCreateWithoutAssessedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -18358,7 +18358,7 @@ export type UserCreateWithoutReviewedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -18434,7 +18434,7 @@ export type UserUncheckedCreateWithoutReviewedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -18526,7 +18526,7 @@ export type UserUpdateWithoutAssessedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -18602,7 +18602,7 @@ export type UserUncheckedUpdateWithoutAssessedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -18689,7 +18689,7 @@ export type UserUpdateWithoutReviewedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -18765,7 +18765,7 @@ export type UserUncheckedUpdateWithoutReviewedTrainingNeedsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -18841,7 +18841,7 @@ export type UserCreateWithoutRequestedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -18917,7 +18917,7 @@ export type UserUncheckedCreateWithoutRequestedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -18998,7 +18998,7 @@ export type UserCreateWithoutApprovedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -19074,7 +19074,7 @@ export type UserUncheckedCreateWithoutApprovedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -19166,7 +19166,7 @@ export type UserUpdateWithoutRequestedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -19242,7 +19242,7 @@ export type UserUncheckedUpdateWithoutRequestedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -19329,7 +19329,7 @@ export type UserUpdateWithoutApprovedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -19405,7 +19405,7 @@ export type UserUncheckedUpdateWithoutApprovedInternalTransfersInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -19481,7 +19481,7 @@ export type UserCreateWithoutProposedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -19557,7 +19557,7 @@ export type UserUncheckedCreateWithoutProposedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -19638,7 +19638,7 @@ export type UserCreateWithoutApprovedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -19714,7 +19714,7 @@ export type UserUncheckedCreateWithoutApprovedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -19806,7 +19806,7 @@ export type UserUpdateWithoutProposedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -19882,7 +19882,7 @@ export type UserUncheckedUpdateWithoutProposedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -19969,7 +19969,7 @@ export type UserUpdateWithoutApprovedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -20045,7 +20045,7 @@ export type UserUncheckedUpdateWithoutApprovedSalaryAdjustmentsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -20120,7 +20120,7 @@ export type UserCreateWithoutEmployeeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -20196,7 +20196,7 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -20288,7 +20288,7 @@ export type UserUpdateWithoutEmployeeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -20364,7 +20364,7 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -20440,7 +20440,7 @@ export type UserCreateWithoutEmploymentChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -20516,7 +20516,7 @@ export type UserUncheckedCreateWithoutEmploymentChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -20608,7 +20608,7 @@ export type UserUpdateWithoutEmploymentChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -20684,7 +20684,7 @@ export type UserUncheckedUpdateWithoutEmploymentChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -20760,7 +20760,7 @@ export type UserCreateWithoutCompensationChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -20836,7 +20836,7 @@ export type UserUncheckedCreateWithoutCompensationChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -20928,7 +20928,7 @@ export type UserUpdateWithoutCompensationChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -21004,7 +21004,7 @@ export type UserUncheckedUpdateWithoutCompensationChangesInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -21081,7 +21081,7 @@ export type UserCreateWithoutUserLifecycleVerificationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
@@ -21157,7 +21157,7 @@ export type UserUncheckedCreateWithoutUserLifecycleVerificationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutCreatedByInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutInterviewerInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutSubmittedByInput
+  createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
@@ -21249,7 +21249,7 @@ export type UserUpdateWithoutUserLifecycleVerificationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
@@ -21325,7 +21325,7 @@ export type UserUncheckedUpdateWithoutUserLifecycleVerificationsInput = {
   applicantStatusChanges?: Prisma.ApplicantStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   createdInterviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutCreatedByNestedInput
   interviewerAssignments?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutInterviewerNestedInput
-  submittedHiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutSubmittedByNestedInput
+  createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
@@ -21392,7 +21392,7 @@ export type UserCountOutputType = {
   applicantStatusChanges: number
   createdInterviewSessions: number
   interviewerAssignments: number
-  submittedHiringDecisions: number
+  createdOffers: number
   jobApprovalSteps: number
   jobApprovalHistoryChanges: number
   checklistsOverseen: number
@@ -21455,7 +21455,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   applicantStatusChanges?: boolean | UserCountOutputTypeCountApplicantStatusChangesArgs
   createdInterviewSessions?: boolean | UserCountOutputTypeCountCreatedInterviewSessionsArgs
   interviewerAssignments?: boolean | UserCountOutputTypeCountInterviewerAssignmentsArgs
-  submittedHiringDecisions?: boolean | UserCountOutputTypeCountSubmittedHiringDecisionsArgs
+  createdOffers?: boolean | UserCountOutputTypeCountCreatedOffersArgs
   jobApprovalSteps?: boolean | UserCountOutputTypeCountJobApprovalStepsArgs
   jobApprovalHistoryChanges?: boolean | UserCountOutputTypeCountJobApprovalHistoryChangesArgs
   checklistsOverseen?: boolean | UserCountOutputTypeCountChecklistsOverseenArgs
@@ -21596,8 +21596,8 @@ export type UserCountOutputTypeCountInterviewerAssignmentsArgs<ExtArgs extends r
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountSubmittedHiringDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HiringDecisionWhereInput
+export type UserCountOutputTypeCountCreatedOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OfferWhereInput
 }
 
 /**
@@ -21963,7 +21963,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   applicantStatusChanges?: boolean | Prisma.User$applicantStatusChangesArgs<ExtArgs>
   createdInterviewSessions?: boolean | Prisma.User$createdInterviewSessionsArgs<ExtArgs>
   interviewerAssignments?: boolean | Prisma.User$interviewerAssignmentsArgs<ExtArgs>
-  submittedHiringDecisions?: boolean | Prisma.User$submittedHiringDecisionsArgs<ExtArgs>
+  createdOffers?: boolean | Prisma.User$createdOffersArgs<ExtArgs>
   jobApprovalSteps?: boolean | Prisma.User$jobApprovalStepsArgs<ExtArgs>
   jobApprovalHistoryChanges?: boolean | Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs>
   checklistsOverseen?: boolean | Prisma.User$checklistsOverseenArgs<ExtArgs>
@@ -22077,7 +22077,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   applicantStatusChanges?: boolean | Prisma.User$applicantStatusChangesArgs<ExtArgs>
   createdInterviewSessions?: boolean | Prisma.User$createdInterviewSessionsArgs<ExtArgs>
   interviewerAssignments?: boolean | Prisma.User$interviewerAssignmentsArgs<ExtArgs>
-  submittedHiringDecisions?: boolean | Prisma.User$submittedHiringDecisionsArgs<ExtArgs>
+  createdOffers?: boolean | Prisma.User$createdOffersArgs<ExtArgs>
   jobApprovalSteps?: boolean | Prisma.User$jobApprovalStepsArgs<ExtArgs>
   jobApprovalHistoryChanges?: boolean | Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs>
   checklistsOverseen?: boolean | Prisma.User$checklistsOverseenArgs<ExtArgs>
@@ -22146,7 +22146,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     applicantStatusChanges: Prisma.$ApplicantStatusHistoryPayload<ExtArgs>[]
     createdInterviewSessions: Prisma.$InterviewSessionPayload<ExtArgs>[]
     interviewerAssignments: Prisma.$InterviewerAssignmentPayload<ExtArgs>[]
-    submittedHiringDecisions: Prisma.$HiringDecisionPayload<ExtArgs>[]
+    createdOffers: Prisma.$OfferPayload<ExtArgs>[]
     jobApprovalSteps: Prisma.$JobApprovalStepPayload<ExtArgs>[]
     jobApprovalHistoryChanges: Prisma.$JobApprovalHistoryPayload<ExtArgs>[]
     checklistsOverseen: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
@@ -22616,7 +22616,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   applicantStatusChanges<T extends Prisma.User$applicantStatusChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$applicantStatusChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicantStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdInterviewSessions<T extends Prisma.User$createdInterviewSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdInterviewSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   interviewerAssignments<T extends Prisma.User$interviewerAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$interviewerAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewerAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  submittedHiringDecisions<T extends Prisma.User$submittedHiringDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submittedHiringDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HiringDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdOffers<T extends Prisma.User$createdOffersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdOffersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobApprovalSteps<T extends Prisma.User$jobApprovalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobApprovalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobApprovalHistoryChanges<T extends Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApprovalHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checklistsOverseen<T extends Prisma.User$checklistsOverseenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checklistsOverseenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -23378,27 +23378,27 @@ export type User$interviewerAssignmentsArgs<ExtArgs extends runtime.Types.Extens
 }
 
 /**
- * User.submittedHiringDecisions
+ * User.createdOffers
  */
-export type User$submittedHiringDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$createdOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the HiringDecision
+   * Select specific fields to fetch from the Offer
    */
-  select?: Prisma.HiringDecisionSelect<ExtArgs> | null
+  select?: Prisma.OfferSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the HiringDecision
+   * Omit specific fields from the Offer
    */
-  omit?: Prisma.HiringDecisionOmit<ExtArgs> | null
+  omit?: Prisma.OfferOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.HiringDecisionInclude<ExtArgs> | null
-  where?: Prisma.HiringDecisionWhereInput
-  orderBy?: Prisma.HiringDecisionOrderByWithRelationInput | Prisma.HiringDecisionOrderByWithRelationInput[]
-  cursor?: Prisma.HiringDecisionWhereUniqueInput
+  include?: Prisma.OfferInclude<ExtArgs> | null
+  where?: Prisma.OfferWhereInput
+  orderBy?: Prisma.OfferOrderByWithRelationInput | Prisma.OfferOrderByWithRelationInput[]
+  cursor?: Prisma.OfferWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.HiringDecisionScalarFieldEnum | Prisma.HiringDecisionScalarFieldEnum[]
+  distinct?: Prisma.OfferScalarFieldEnum | Prisma.OfferScalarFieldEnum[]
 }
 
 /**

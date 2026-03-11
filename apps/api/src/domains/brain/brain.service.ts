@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { PrismaService } from 'src/platform/prisma/prisma.service';
+import { PrismaService } from '../../platform/prisma/prisma.service';
 import { parseCv } from './utils/cv-parser';
-import { ScreeningRecommendation } from '@repo/database';
+import { ScreeningRecommendation } from '../../platform/prisma/prisma-client';
 
 const recommendationMap = {
   SHORTLIST: ScreeningRecommendation.STRONG_RECOMMEND,

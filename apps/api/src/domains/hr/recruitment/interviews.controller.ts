@@ -71,7 +71,29 @@ export class InterviewsController {
     roles: [InterviewPermissions.CREATE],
   })
   @ApiOperation({ summary: 'Create interview session' })
-  @ApiBody({ type: CreateInterviewDto })
+  @ApiBody({
+    type: CreateInterviewDto,
+    examples: {
+      technicalRound: {
+        summary: 'Schedule technical interview',
+        value: {
+          jobId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
+          type: 'TECHNICAL',
+          round: 1,
+          scheduledAt: '2026-03-25T09:00:00.000Z',
+          durationMinutes: 60,
+          location: 'Meeting Room A',
+          applicantIds: ['8dea40a6-4ee2-4cca-9ff3-ac9e95e50384'],
+          interviewers: [
+            {
+              interviewerId: 'e3f7b8a5-1b7f-447e-bf62-16e9a9b8d8e2',
+              role: 'Panelist',
+            },
+          ],
+        },
+      },
+    },
+  })
   @ApiEnvelopeOkResponse(
     InterviewResponseDto,
     'Created interview session',
@@ -149,7 +171,19 @@ export class InterviewsController {
   })
   @ApiOperation({ summary: 'Update interview session' })
   @ApiParam({ name: 'id', description: 'Interview session id' })
-  @ApiBody({ type: UpdateInterviewDto })
+  @ApiBody({
+    type: UpdateInterviewDto,
+    examples: {
+      reschedule: {
+        summary: 'Reschedule interview session',
+        value: {
+          scheduledAt: '2026-03-26T10:30:00.000Z',
+          durationMinutes: 75,
+          location: 'Meeting Room B',
+        },
+      },
+    },
+  })
   @ApiEnvelopeOkResponse(
     InterviewResponseDto,
     'Updated interview session',
@@ -176,7 +210,17 @@ export class InterviewsController {
   @ApiOperation({ summary: 'Update interview participant attendance' })
   @ApiParam({ name: 'id', description: 'Interview session id' })
   @ApiParam({ name: 'participantId', description: 'Interview participant id' })
-  @ApiBody({ type: UpdateInterviewParticipantAttendanceDto })
+  @ApiBody({
+    type: UpdateInterviewParticipantAttendanceDto,
+    examples: {
+      attended: {
+        summary: 'Mark participant as attended',
+        value: {
+          attendanceStatus: 'COMPLETED',
+        },
+      },
+    },
+  })
   @ApiEnvelopeOkResponse(
     InterviewResponseDto,
     'Updated interview participant attendance',
@@ -207,7 +251,22 @@ export class InterviewsController {
   @ApiOperation({ summary: 'Submit or update interview feedback' })
   @ApiParam({ name: 'id', description: 'Interview session id' })
   @ApiParam({ name: 'participantId', description: 'Interview participant id' })
-  @ApiBody({ type: UpsertInterviewFeedbackDto })
+  @ApiBody({
+    type: UpsertInterviewFeedbackDto,
+    examples: {
+      submitFeedback: {
+        summary: 'Submit interviewer feedback',
+        value: {
+          score: 84,
+          endorsement: 'YES',
+          strengths: ['Strong problem-solving', 'Clear communication'],
+          weaknesses: ['Needs deeper system design experience'],
+          notes: 'Good candidate for next round.',
+          isDraft: false,
+        },
+      },
+    },
+  })
   @ApiEnvelopeOkResponse(
     InterviewFeedbackResponseDto,
     'Upserted interview feedback',

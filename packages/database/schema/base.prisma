@@ -211,9 +211,19 @@ enum ApplicantStatus {
   SCREENING
   SHORTLISTED
   INTERVIEW
+  WAITLIST
   OFFER
   HIRED
   REJECTED
+  WITHDRAWN
+}
+
+enum OfferStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  DECLINED
+  EXPIRED
   WITHDRAWN
 }
 
@@ -245,12 +255,6 @@ enum EndorsementLevel {
   YES
   UNCERTAIN
   NO
-}
-
-enum HiringDecisionOutcome {
-  OFFER_APPROVED
-  OFFER_DECLINED
-  SUSPENDED
 }
 
 // CV Screening Enums

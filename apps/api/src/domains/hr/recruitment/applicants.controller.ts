@@ -159,6 +159,18 @@ export class ApplicantsController {
     type: UpdateApplicantDto,
     description:
       'Request body: partial applicant fields (all optional). Same structure as create.',
+    examples: {
+      updateApplicant: {
+        summary: 'Update applicant profile fields',
+        value: {
+          phone: '+251911111111',
+          currentCompany: 'NextWave Labs',
+          currentPosition: 'Lead Engineer',
+          yearsExperience: 7,
+          skills: ['Node.js', 'TypeScript', 'PostgreSQL'],
+        },
+      },
+    },
   })
   @ApiEnvelopeOkResponse(
     ApplicantResponseDto,
@@ -187,6 +199,15 @@ export class ApplicantsController {
     type: UpdateApplicantStatusDto,
     description:
       'Status flow: APPLIED -> SCREENING -> SHORTLISTED -> INTERVIEW -> OFFER -> HIRED, with REJECTED/WITHDRAWN allowed from active states.',
+    examples: {
+      moveToInterview: {
+        summary: 'Move applicant to interview stage',
+        value: {
+          status: 'INTERVIEW',
+          note: 'Passed screening and shortlisted by hiring manager.',
+        },
+      },
+    },
   })
   @ApiEnvelopeOkResponse(
     ApplicantResponseDto,

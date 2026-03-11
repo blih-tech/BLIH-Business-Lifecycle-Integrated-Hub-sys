@@ -3,6 +3,7 @@ export type ApplicantStatus =
   | 'SCREENING'
   | 'SHORTLISTED'
   | 'INTERVIEW'
+  | 'WAITLIST'
   | 'OFFER'
   | 'HIRED'
   | 'REJECTED'
@@ -102,6 +103,7 @@ export interface ApplicantResponseDto {
   screeningAt: string | null;
   shortlistedAt: string | null;
   interviewAt: string | null;
+  waitlistAt: string | null;
   offerAt: string | null;
   hiredAt: string | null;
   rejectedAt: string | null;

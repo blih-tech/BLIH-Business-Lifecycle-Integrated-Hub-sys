@@ -1856,21 +1856,38 @@ export type EnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel = neve
   _max?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
 }
 
-export type EnumHiringDecisionOutcomeFilter<$PrismaModel = never> = {
-  equals?: $Enums.HiringDecisionOutcome | Prisma.EnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  in?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHiringDecisionOutcomeFilter<$PrismaModel> | $Enums.HiringDecisionOutcome
+export type EnumOfferStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OfferStatus | Prisma.EnumOfferStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOfferStatusFilter<$PrismaModel> | $Enums.OfferStatus
 }
 
-export type EnumHiringDecisionOutcomeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.HiringDecisionOutcome | Prisma.EnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  in?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHiringDecisionOutcomeWithAggregatesFilter<$PrismaModel> | $Enums.HiringDecisionOutcome
+export type EnumPayFrequencyNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPayFrequencyNullableFilter<$PrismaModel> | $Enums.PayFrequency | null
+}
+
+export type EnumOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OfferStatus | Prisma.EnumOfferStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOfferStatusWithAggregatesFilter<$PrismaModel> | $Enums.OfferStatus
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumHiringDecisionOutcomeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumHiringDecisionOutcomeFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOfferStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOfferStatusFilter<$PrismaModel>
+}
+
+export type EnumPayFrequencyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPayFrequencyNullableWithAggregatesFilter<$PrismaModel> | $Enums.PayFrequency | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayFrequencyNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayFrequencyNullableFilter<$PrismaModel>
 }
 
 export type EnumCvScreeningRecommendationFilter<$PrismaModel = never> = {
@@ -4039,21 +4056,38 @@ export type NestedEnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel 
   _max?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
 }
 
-export type NestedEnumHiringDecisionOutcomeFilter<$PrismaModel = never> = {
-  equals?: $Enums.HiringDecisionOutcome | Prisma.EnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  in?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHiringDecisionOutcomeFilter<$PrismaModel> | $Enums.HiringDecisionOutcome
+export type NestedEnumOfferStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OfferStatus | Prisma.EnumOfferStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOfferStatusFilter<$PrismaModel> | $Enums.OfferStatus
 }
 
-export type NestedEnumHiringDecisionOutcomeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.HiringDecisionOutcome | Prisma.EnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  in?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHiringDecisionOutcomeWithAggregatesFilter<$PrismaModel> | $Enums.HiringDecisionOutcome
+export type NestedEnumPayFrequencyNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPayFrequencyNullableFilter<$PrismaModel> | $Enums.PayFrequency | null
+}
+
+export type NestedEnumOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OfferStatus | Prisma.EnumOfferStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOfferStatusWithAggregatesFilter<$PrismaModel> | $Enums.OfferStatus
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumHiringDecisionOutcomeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumHiringDecisionOutcomeFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOfferStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOfferStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPayFrequencyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPayFrequencyNullableWithAggregatesFilter<$PrismaModel> | $Enums.PayFrequency | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayFrequencyNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayFrequencyNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumCvScreeningRecommendationFilter<$PrismaModel = never> = {

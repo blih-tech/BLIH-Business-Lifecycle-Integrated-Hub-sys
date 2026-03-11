@@ -22,6 +22,7 @@ const APPLICANT_STATUSES = [
   'SCREENING',
   'SHORTLISTED',
   'INTERVIEW',
+  'WAITLIST',
   'OFFER',
   'HIRED',
   'REJECTED',
@@ -378,6 +379,9 @@ export class ApplicantResponseDto {
 
   @ApiPropertyOptional({ nullable: true })
   interviewAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  waitlistAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   offerAt!: string | null;

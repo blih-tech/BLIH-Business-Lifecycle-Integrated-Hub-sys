@@ -478,10 +478,10 @@ export type InterviewerAssignment = Prisma.InterviewerAssignmentModel
  */
 export type InterviewFeedback = Prisma.InterviewFeedbackModel
 /**
- * Model HiringDecision
+ * Model Offer
  * 
  */
-export type HiringDecision = Prisma.HiringDecisionModel
+export type Offer = Prisma.OfferModel
 /**
  * Model CvScreening
  * 
