@@ -109,7 +109,8 @@
       "ts"
     ],
     "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
+      "^(\\.{1,2}/.*)\\.js$": "$1",
+      "^@repo/(.*)$": "<rootDir>/../../packages/$1/src/index.ts"
     },
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
@@ -117,10 +118,7 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(.*\\.mjs$|@repo/database))"
-    ],
-    "extensionsToTreatAsEsm": [
-      ".js"
+      "node_modules/(?!(.*\\.mjs$|@prisma/adapter-pg|@prisma/client))"
     ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
