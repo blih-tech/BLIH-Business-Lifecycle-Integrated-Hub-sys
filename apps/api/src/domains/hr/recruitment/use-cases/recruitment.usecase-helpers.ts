@@ -125,6 +125,23 @@ const JOB_APPLICANT_FIELD_METADATA: Record<
   },
 };
 
+interface JobApplicationSectionFieldMetadata {
+  key: string;
+  label: string;
+  type:
+    | 'TEXT'
+    | 'TEXTAREA'
+    | 'NUMBER'
+    | 'SELECT'
+    | 'FILE'
+    | 'DATE'
+    | 'CHECKBOX';
+  required: boolean;
+  helpText: string | null;
+  options: string[];
+  order: number;
+}
+
 const JOB_APPLICATION_SECTION_METADATA: Record<
   string,
   {
@@ -132,6 +149,7 @@ const JOB_APPLICATION_SECTION_METADATA: Record<
     type: 'SECTION';
     helpText: string | null;
     options: string[];
+    fields: JobApplicationSectionFieldMetadata[];
   }
 > = {
   EDUCATION: {
@@ -139,12 +157,106 @@ const JOB_APPLICATION_SECTION_METADATA: Record<
     type: 'SECTION',
     helpText: 'Collect education history entries.',
     options: [],
+    fields: [
+      {
+        key: 'INSTITUTION',
+        label: 'Institution',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Name of school, college, or university.',
+        options: [],
+        order: 1,
+      },
+      {
+        key: 'DEGREE',
+        label: 'Degree',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Degree or qualification obtained.',
+        options: [],
+        order: 2,
+      },
+      {
+        key: 'FIELD',
+        label: 'Field of Study',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Major or specialization.',
+        options: [],
+        order: 3,
+      },
+      {
+        key: 'START_DATE',
+        label: 'Start Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Education start date.',
+        options: [],
+        order: 4,
+      },
+      {
+        key: 'END_DATE',
+        label: 'End Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Education completion date.',
+        options: [],
+        order: 5,
+      },
+    ],
   },
   EXPERIENCE: {
     label: 'Experience',
     type: 'SECTION',
     helpText: 'Collect professional experience entries.',
     options: [],
+    fields: [
+      {
+        key: 'COMPANY',
+        label: 'Company',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Employer or organization name.',
+        options: [],
+        order: 1,
+      },
+      {
+        key: 'TITLE',
+        label: 'Job Title',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Role title held by the applicant.',
+        options: [],
+        order: 2,
+      },
+      {
+        key: 'START_DATE',
+        label: 'Start Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Employment start date.',
+        options: [],
+        order: 3,
+      },
+      {
+        key: 'END_DATE',
+        label: 'End Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Employment end date.',
+        options: [],
+        order: 4,
+      },
+      {
+        key: 'DESCRIPTION',
+        label: 'Description',
+        type: 'TEXTAREA',
+        required: false,
+        helpText: 'Key responsibilities and impact.',
+        options: [],
+        order: 5,
+      },
+    ],
   },
 };
 
@@ -575,19 +687,38 @@ export function mapJob(job: any) {
             }),
           ),
           sections: (applicationForm.sections ?? []).map(
-            (section: any, index: number) => ({
-              ...(JOB_APPLICATION_SECTION_METADATA[section.key] ?? {
+            (section: any, index: number) => {
+              const sectionMetadata = JOB_APPLICATION_SECTION_METADATA[
+                section.key
+              ] ?? {
                 label: humanizeKey(section.key),
-                type: 'SECTION',
+                type: 'SECTION' as const,
                 helpText: null,
                 options: [],
-              }),
-              id: section.id,
-              key: section.key,
-              enabled: section.enabled,
-              required: section.required,
-              order: section.order ?? index + 1,
-            }),
+                fields: [],
+              };
+
+              return {
+                id: section.id,
+                key: section.key,
+                label: sectionMetadata.label,
+                type: sectionMetadata.type,
+                enabled: section.enabled,
+                required: section.required,
+                helpText: sectionMetadata.helpText,
+                options: [...sectionMetadata.options],
+                fields: sectionMetadata.fields.map((field) => ({
+                  key: field.key,
+                  label: field.label,
+                  type: field.type,
+                  required: field.required,
+                  helpText: field.helpText,
+                  options: [...field.options],
+                  order: field.order,
+                })),
+                order: section.order ?? index + 1,
+              };
+            },
           ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({

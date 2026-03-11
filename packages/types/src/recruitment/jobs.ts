@@ -321,6 +321,15 @@ export interface JobResponseDto {
       required: boolean;
       helpText: string | null;
       options: string[];
+      fields: Array<{
+        key: string;
+        label: string;
+        type: JobApplicationFieldType;
+        required: boolean;
+        helpText: string | null;
+        options: string[];
+        order: number;
+      }>;
       order: number | null;
     }>;
     customFields: Array<{

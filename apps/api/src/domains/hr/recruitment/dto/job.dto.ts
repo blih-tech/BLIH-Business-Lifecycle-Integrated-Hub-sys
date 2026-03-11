@@ -683,6 +683,29 @@ export class JobApplicationFormFieldResponseDto extends OmitType(
   options!: string[];
 }
 
+export class JobApplicationFormSectionFieldResponseDto {
+  @ApiProperty({ example: 'INSTITUTION' })
+  key!: string;
+
+  @ApiProperty({ example: 'Institution' })
+  label!: string;
+
+  @ApiProperty({ enum: JOB_APPLICATION_FIELD_TYPES, example: 'TEXT' })
+  type!: (typeof JOB_APPLICATION_FIELD_TYPES)[number];
+
+  @ApiProperty({ example: true })
+  required!: boolean;
+
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
+  @ApiProperty({ type: [String], default: [] })
+  options!: string[];
+
+  @ApiProperty({ example: 1 })
+  order!: number;
+}
+
 export class JobApplicationFormSectionResponseDto extends OmitType(
   JobApplicationFormSectionInputDto,
   [],
@@ -701,6 +724,12 @@ export class JobApplicationFormSectionResponseDto extends OmitType(
 
   @ApiProperty({ type: [String], default: [] })
   options!: string[];
+
+  @ApiProperty({
+    type: [JobApplicationFormSectionFieldResponseDto],
+    default: [],
+  })
+  fields!: JobApplicationFormSectionFieldResponseDto[];
 }
 
 export class JobApplicationFormResponseDto {
