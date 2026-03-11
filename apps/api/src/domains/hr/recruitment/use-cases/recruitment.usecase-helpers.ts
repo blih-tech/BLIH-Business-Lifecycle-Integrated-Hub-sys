@@ -663,11 +663,77 @@ function mapInterviewerAssignment(assignment: any) {
   };
 }
 
+function normalizeInterviewResponseAnswer(
+  answer: unknown,
+): string | boolean | number | string[] | null {
+  if (answer == null) return null;
+  if (typeof answer === 'string') return answer;
+  if (typeof answer === 'boolean') return answer;
+  if (typeof answer === 'number' && Number.isFinite(answer)) return answer;
+  if (Array.isArray(answer) && answer.every((item) => typeof item === 'string'))
+    return answer;
+  return null;
+}
+
+function mapInterviewQuestionResponseItem(item: unknown) {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) {
+    return null;
+  }
+
+  const row = item as Record<string, unknown>;
+  const score =
+    typeof row.score === 'number' && Number.isFinite(row.score)
+      ? row.score
+      : null;
+  const maxScore =
+    typeof row.maxScore === 'number' && Number.isFinite(row.maxScore)
+      ? row.maxScore
+      : null;
+  const weight =
+    typeof row.weight === 'number' && Number.isFinite(row.weight)
+      ? row.weight
+      : null;
+
+  return {
+    questionId: typeof row.questionId === 'string' ? row.questionId : null,
+    question: typeof row.question === 'string' ? row.question : '',
+    category: typeof row.category === 'string' ? row.category : null,
+    type: typeof row.type === 'string' ? row.type : 'TEXT',
+    answer: normalizeInterviewResponseAnswer(row.answer),
+    score,
+    maxScore,
+    weight,
+    notes: typeof row.notes === 'string' ? row.notes : null,
+  };
+}
+
+export function mapInterviewQuestion(row: any) {
+  return {
+    id: row.id,
+    question: row.question,
+    description: row.description ?? null,
+    category: row.category ?? null,
+    type: row.type,
+    options: row.options ?? [],
+    difficulty: typeof row.difficulty === 'number' ? row.difficulty : null,
+    tags: row.tags ?? [],
+    createdById: row.createdById,
+    isActive: Boolean(row.isActive),
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
 export function mapInterviewFeedback(feedback: any) {
   const score =
     typeof feedback.score === 'number' && Number.isFinite(feedback.score)
       ? feedback.score
       : null;
+  const questionResponses = Array.isArray(feedback.questionResponses)
+    ? feedback.questionResponses
+        .map((item: unknown) => mapInterviewQuestionResponseItem(item))
+        .filter(Boolean)
+    : null;
 
   return {
     id: feedback.id,
@@ -678,6 +744,7 @@ export function mapInterviewFeedback(feedback: any) {
     endorsement: feedback.endorsement ?? null,
     strengths: feedback.strengths ?? [],
     weaknesses: feedback.weaknesses ?? [],
+    questionResponses,
     notes: feedback.notes ?? null,
     isDraft: Boolean(feedback.isDraft),
     submittedAt: dateToIso(feedback.submittedAt),

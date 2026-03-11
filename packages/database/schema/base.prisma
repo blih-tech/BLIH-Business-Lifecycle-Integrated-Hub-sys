@@ -257,6 +257,27 @@ enum EndorsementLevel {
   NO
 }
 
+enum InterviewQuestionCategory {
+  TECHNICAL
+  BEHAVIORAL
+  SITUATIONAL
+  PROBLEM_SOLVING
+  LEADERSHIP
+  COMMUNICATION
+  DOMAIN_KNOWLEDGE
+  CULTURAL_FIT
+  GENERAL
+}
+
+enum InterviewQuestionType {
+  TEXT
+  TEXTAREA
+  BOOLEAN
+  RATING
+  SINGLE_SELECT
+  MULTI_SELECT
+}
+
 // CV Screening Enums
 enum CvScreeningRecommendation {
   STRONG_RECOMMEND

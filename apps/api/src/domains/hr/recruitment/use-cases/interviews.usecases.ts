@@ -9,6 +9,7 @@ import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   CreateInterviewDto,
+  InterviewQuestionResponseInputDto,
   InterviewListQueryDto,
   UpdateInterviewDto,
   UpdateInterviewParticipantAttendanceDto,
@@ -66,6 +67,138 @@ const sessionInclude = {
 
 function uniqueIds(ids: string[]) {
   return [...new Set(ids)];
+}
+
+const QUESTION_RESPONSE_TYPES = new Set([
+  'TEXT',
+  'TEXTAREA',
+  'BOOLEAN',
+  'RATING',
+  'SINGLE_SELECT',
+  'MULTI_SELECT',
+]);
+
+type QuestionResponseType = NonNullable<
+  InterviewQuestionResponseInputDto['type']
+>;
+type QuestionResponseAnswer = string | boolean | number | string[] | null;
+
+interface NormalizedQuestionResponseItem {
+  questionId: string | null;
+  question: string;
+  category: string | null;
+  type: QuestionResponseType;
+  answer: QuestionResponseAnswer;
+  score: number | null;
+  maxScore: number | null;
+  weight: number | null;
+  notes: string | null;
+}
+
+function normalizeQuestionText(value: string) {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new BadRequestException(
+      'Each custom question response must include a question',
+    );
+  }
+  return normalized;
+}
+
+function normalizeNullableText(value: string | null | undefined) {
+  if (value == null) return null;
+  const normalized = value.trim();
+  return normalized || null;
+}
+
+function toNullableFiniteNumber(value: unknown, field: string) {
+  if (value == null) return null;
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new BadRequestException(
+      `Question response ${field} must be a valid number`,
+    );
+  }
+  return value;
+}
+
+function normalizeQuestionResponseAnswer(
+  type: QuestionResponseType,
+  answer: unknown,
+): QuestionResponseAnswer {
+  if (answer == null) return null;
+
+  if (type === 'TEXT' || type === 'TEXTAREA') {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException(
+        `Question response answer must be string for ${type}`,
+      );
+    }
+    return answer.trim();
+  }
+
+  if (type === 'BOOLEAN') {
+    if (typeof answer !== 'boolean') {
+      throw new BadRequestException(
+        'Question response answer must be boolean for BOOLEAN type',
+      );
+    }
+    return answer;
+  }
+
+  if (type === 'RATING') {
+    if (typeof answer !== 'number' || !Number.isFinite(answer)) {
+      throw new BadRequestException(
+        'Question response answer must be number for RATING type',
+      );
+    }
+    return answer;
+  }
+
+  if (type === 'SINGLE_SELECT') {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException(
+        'Question response answer must be string for SINGLE_SELECT type',
+      );
+    }
+    return answer.trim();
+  }
+
+  if (type === 'MULTI_SELECT') {
+    if (
+      !Array.isArray(answer) ||
+      answer.some((item) => typeof item !== 'string')
+    ) {
+      throw new BadRequestException(
+        'Question response answer must be string[] for MULTI_SELECT type',
+      );
+    }
+    return answer.map((item) => item.trim());
+  }
+
+  throw new BadRequestException('Unsupported question response type');
+}
+
+function computeScoreFromQuestionResponses(
+  items: NormalizedQuestionResponseItem[],
+) {
+  const scored = items.filter(
+    (item) => item.score != null && item.maxScore != null && item.maxScore > 0,
+  );
+  if (scored.length === 0) return null;
+
+  let weightedScore = 0;
+  let totalWeight = 0;
+  for (const item of scored) {
+    const weight = item.weight ?? 1;
+    weightedScore +=
+      ((item.score as number) / (item.maxScore as number)) * weight;
+    totalWeight += weight;
+  }
+
+  if (totalWeight <= 0) return null;
+
+  const score = (weightedScore / totalWeight) * 100;
+  return Math.round(score * 100) / 100;
 }
 
 function normalizeInterviewerPayload(
@@ -552,6 +685,104 @@ export class UpdateInterviewParticipantAttendanceUseCase {
 export class UpsertInterviewFeedbackUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
+  private async normalizeQuestionResponses(
+    payload: InterviewQuestionResponseInputDto[],
+  ) {
+    if (payload.length === 0) return [];
+
+    const questionIds = payload
+      .map((item) => item.questionId)
+      .filter((id): id is string => Boolean(id));
+
+    const bankQuestions =
+      questionIds.length === 0
+        ? []
+        : await this.prisma.interviewQuestion.findMany({
+            where: {
+              id: { in: questionIds },
+            },
+            select: {
+              id: true,
+              question: true,
+              category: true,
+              type: true,
+            },
+          });
+
+    const questionById = new Map(
+      bankQuestions.map((question) => [question.id, question] as const),
+    );
+
+    if (questionById.size !== new Set(questionIds).size) {
+      throw new BadRequestException(
+        'One or more questionIds do not exist in the interview question bank',
+      );
+    }
+
+    const normalized: NormalizedQuestionResponseItem[] = [];
+    for (const item of payload) {
+      const questionId = item.questionId ?? null;
+      const bankQuestion = questionId ? questionById.get(questionId) : null;
+
+      const type: QuestionResponseType = bankQuestion
+        ? (bankQuestion.type as QuestionResponseType)
+        : item.type;
+
+      if (!QUESTION_RESPONSE_TYPES.has(type)) {
+        throw new BadRequestException('Question response type is invalid');
+      }
+
+      const question = bankQuestion
+        ? bankQuestion.question
+        : normalizeQuestionText(item.question);
+
+      const score = toNullableFiniteNumber(item.score, 'score');
+      const maxScore = toNullableFiniteNumber(item.maxScore, 'maxScore');
+      const requestedWeight = toNullableFiniteNumber(item.weight, 'weight');
+      const weight = requestedWeight ?? 1;
+
+      if (score != null && score < 0) {
+        throw new BadRequestException('Question response score must be >= 0');
+      }
+
+      if (maxScore != null && maxScore <= 0) {
+        throw new BadRequestException('Question response maxScore must be > 0');
+      }
+
+      if (weight <= 0) {
+        throw new BadRequestException('Question response weight must be > 0');
+      }
+
+      if (score != null && maxScore == null) {
+        throw new BadRequestException(
+          'Question response maxScore is required when score is provided',
+        );
+      }
+
+      if (score != null && maxScore != null && score > maxScore) {
+        throw new BadRequestException(
+          'Question response score cannot exceed maxScore',
+        );
+      }
+
+      normalized.push({
+        questionId,
+        question,
+        category: bankQuestion
+          ? (bankQuestion.category ?? null)
+          : (item.category ?? null),
+        type,
+        answer: normalizeQuestionResponseAnswer(type, item.answer),
+        score,
+        maxScore,
+        weight,
+        notes: normalizeNullableText(item.notes),
+      });
+    }
+
+    return normalized;
+  }
+
   async execute(
     sessionId: string,
     participantId: string,
@@ -591,6 +822,18 @@ export class UpsertInterviewFeedbackUseCase {
       );
     }
 
+    const normalizedQuestionResponses =
+      dto.questionResponses !== undefined
+        ? await this.normalizeQuestionResponses(dto.questionResponses)
+        : undefined;
+
+    const computedScore =
+      dto.score !== undefined
+        ? dto.score
+        : normalizedQuestionResponses !== undefined
+          ? computeScoreFromQuestionResponses(normalizedQuestionResponses)
+          : undefined;
+
     const isDraft = dto.isDraft === true;
     const now = new Date();
     const feedback = await this.prisma.$transaction(async (tx) => {
@@ -604,22 +847,31 @@ export class UpsertInterviewFeedbackUseCase {
         create: {
           participantId,
           assignmentId: assignment.id,
-          score: dto.score ?? undefined,
+          score: computedScore,
           endorsement: dto.endorsement ?? undefined,
           strengths: dto.strengths ?? [],
           weaknesses: dto.weaknesses ?? [],
+          questionResponses: normalizedQuestionResponses as unknown as
+            | Prisma.InputJsonValue
+            | undefined,
           notes: dto.notes ?? undefined,
           isDraft,
           submittedAt: isDraft ? null : now,
         },
         update: {
-          ...(dto.score !== undefined ? { score: dto.score } : {}),
+          ...(computedScore !== undefined ? { score: computedScore } : {}),
           ...(dto.endorsement !== undefined
             ? { endorsement: dto.endorsement }
             : {}),
           ...(dto.strengths !== undefined ? { strengths: dto.strengths } : {}),
           ...(dto.weaknesses !== undefined
             ? { weaknesses: dto.weaknesses }
+            : {}),
+          ...(normalizedQuestionResponses !== undefined
+            ? {
+                questionResponses:
+                  normalizedQuestionResponses as unknown as Prisma.InputJsonValue,
+              }
             : {}),
           ...(dto.notes !== undefined ? { notes: dto.notes } : {}),
           isDraft,

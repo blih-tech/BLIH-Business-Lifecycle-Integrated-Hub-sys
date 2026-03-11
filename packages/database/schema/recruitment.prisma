@@ -3,32 +3,32 @@
 
 // Job workflow: DRAFT -> PENDING_FOR_APPROVAL -> READY_TO_POST -> PUBLISHED -> CLOSED (or REJECTED on rejection
 model JobRequestForm {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  jobId                 String                 @unique @map("job_id") @db.Uuid
-  job                   Job                    @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobTitle              String                 @map("job_title")
-  departmentId          String                 @map("department_id") @db.Uuid
-  department            Department             @relation("JobRequestDepartment", fields: [departmentId], references: [id], onDelete: Restrict)
-  positionId            String                 @map("position_id") @db.Uuid
-  position              Position               @relation("JobRequestPosition", fields: [positionId], references: [id], onDelete: Restrict)
-  requestedBy           String                 @map("requested_by") @db.VarChar(255) 
-  requestType           JobRequestType         @map("request_type")
-  replaceForUserId      String?                @map("replace_for_user_id") @db.Uuid
-  replaceForUser        User?                  @relation("JobRequestReplacementUser", fields: [replaceForUserId], references: [id], onDelete: SetNull)
-  businessJustification String                 @map("business_justification") @db.Text
-  employmentType        EmploymentType         @map("employment_type")
-  workMode              WorkLocationType       @map("work_mode")
+  id                    String            @id @default(uuid()) @db.Uuid
+  jobId                 String            @unique @map("job_id") @db.Uuid
+  job                   Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobTitle              String            @map("job_title")
+  departmentId          String            @map("department_id") @db.Uuid
+  department            Department        @relation("JobRequestDepartment", fields: [departmentId], references: [id], onDelete: Restrict)
+  positionId            String            @map("position_id") @db.Uuid
+  position              Position          @relation("JobRequestPosition", fields: [positionId], references: [id], onDelete: Restrict)
+  requestedBy           String            @map("requested_by") @db.VarChar(255)
+  requestType           JobRequestType    @map("request_type")
+  replaceForUserId      String?           @map("replace_for_user_id") @db.Uuid
+  replaceForUser        User?             @relation("JobRequestReplacementUser", fields: [replaceForUserId], references: [id], onDelete: SetNull)
+  businessJustification String            @map("business_justification") @db.Text
+  employmentType        EmploymentType    @map("employment_type")
+  workMode              WorkLocationType  @map("work_mode")
   urgency               JobUrgency
-  neededByDate          DateTime               @map("needed_by_date") @db.Date
-  status                JobWorkflowStatus      @default(DRAFT)
-  priority              JobPriority            @default(MEDIUM)
+  neededByDate          DateTime          @map("needed_by_date") @db.Date
+  status                JobWorkflowStatus @default(DRAFT)
+  priority              JobPriority       @default(MEDIUM)
   approvals             JobApprovalStep[]
-  draftedAt             DateTime?              @map("drafted_at")
-  pendingApprovalAt     DateTime?              @map("pending_approval_at")
-  readyToPostAt         DateTime?              @map("ready_to_post_at")
-  rejectedAt            DateTime?              @map("rejected_at")
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
+  draftedAt             DateTime?         @map("drafted_at")
+  pendingApprovalAt     DateTime?         @map("pending_approval_at")
+  readyToPostAt         DateTime?         @map("ready_to_post_at")
+  rejectedAt            DateTime?         @map("rejected_at")
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
 
   @@index([departmentId])
   @@index([positionId])
@@ -37,56 +37,56 @@ model JobRequestForm {
 }
 
 model Job {
-  id                  String              @id @default(uuid()) @db.Uuid
+  id                  String                @id @default(uuid()) @db.Uuid
   title               String
-  slug                String              @unique
-  departmentId        String              @map("department_id") @db.Uuid
-  department          Department          @relation(fields: [departmentId], references: [id])
-  positionId          String              @map("position_id") @db.Uuid
-  position            Position            @relation(fields: [positionId], references: [id])
-  description         Json                @db.JsonB
-  summary             Json?               @db.JsonB
-  experienceLevel     ExperienceLevel?    @map("experience_level")
-  contractType        JobContractType     @map("contract_type")
-  employmentType      EmploymentType?     @map("employment_type")
-  workLocationType    WorkLocationType    @map("work_location_type")
-  city                String?             @db.VarChar(128)
-  country             String?             @db.VarChar(128)
-  openings            Int                 @default(1)
-  salaryMin           Decimal?            @map("salary_min") @db.Decimal(12, 2)
-  salaryMax           Decimal?            @map("salary_max") @db.Decimal(12, 2)
-  currency            String?             @db.VarChar(8)
-  salaryMode          JobSalaryMode       @default(NOT_SPECIFIED) @map("salary_mode")
-  benefits            String[]            @default([])
-  requiredSkills      String[]            @default([]) @map("required_skills")
-  preferredSkills     String[]            @default([]) @map("preferred_skills")
-  responsibilities    String[]            @default([])
-  creatorIsHr         Boolean             @default(false) @map("creator_is_hr")
-  hiringManagerId     String?             @map("hiring_manager_id") @db.Uuid
-  hiringManager       User?               @relation("JobHiringManager", fields: [hiringManagerId], references: [id], onDelete: SetNull)
-  applicationDeadline DateTime?           @map("application_deadline")
-  publishedAt         DateTime?           @map("published_at")
-  closedAt            DateTime?           @map("closed_at")
-  closingReason       String?             @map("closing_reason") @db.Text
-  viewsCount          Int                 @default(0) @map("views_count")
-  applicationsCount   Int                 @default(0) @map("applications_count")
-  shortlistedCount    Int                 @default(0) @map("shortlisted_count")
-  interviewsCount     Int                 @default(0) @map("interviews_count")
-  offersCount         Int                 @default(0) @map("offers_count")
-  hiresCount          Int                 @default(0) @map("hires_count")
-  createdById         String?             @map("created_by_id") @db.Uuid
-  createdBy           User?               @relation("JobCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
-  tools               String[]            @default([])
+  slug                String                @unique
+  departmentId        String                @map("department_id") @db.Uuid
+  department          Department            @relation(fields: [departmentId], references: [id])
+  positionId          String                @map("position_id") @db.Uuid
+  position            Position              @relation(fields: [positionId], references: [id])
+  description         Json                  @db.JsonB
+  summary             Json?                 @db.JsonB
+  experienceLevel     ExperienceLevel?      @map("experience_level")
+  contractType        JobContractType       @map("contract_type")
+  employmentType      EmploymentType?       @map("employment_type")
+  workLocationType    WorkLocationType      @map("work_location_type")
+  city                String?               @db.VarChar(128)
+  country             String?               @db.VarChar(128)
+  openings            Int                   @default(1)
+  salaryMin           Decimal?              @map("salary_min") @db.Decimal(12, 2)
+  salaryMax           Decimal?              @map("salary_max") @db.Decimal(12, 2)
+  currency            String?               @db.VarChar(8)
+  salaryMode          JobSalaryMode         @default(NOT_SPECIFIED) @map("salary_mode")
+  benefits            String[]              @default([])
+  requiredSkills      String[]              @default([]) @map("required_skills")
+  preferredSkills     String[]              @default([]) @map("preferred_skills")
+  responsibilities    String[]              @default([])
+  creatorIsHr         Boolean               @default(false) @map("creator_is_hr")
+  hiringManagerId     String?               @map("hiring_manager_id") @db.Uuid
+  hiringManager       User?                 @relation("JobHiringManager", fields: [hiringManagerId], references: [id], onDelete: SetNull)
+  applicationDeadline DateTime?             @map("application_deadline")
+  publishedAt         DateTime?             @map("published_at")
+  closedAt            DateTime?             @map("closed_at")
+  closingReason       String?               @map("closing_reason") @db.Text
+  viewsCount          Int                   @default(0) @map("views_count")
+  applicationsCount   Int                   @default(0) @map("applications_count")
+  shortlistedCount    Int                   @default(0) @map("shortlisted_count")
+  interviewsCount     Int                   @default(0) @map("interviews_count")
+  offersCount         Int                   @default(0) @map("offers_count")
+  hiresCount          Int                   @default(0) @map("hires_count")
+  createdById         String?               @map("created_by_id") @db.Uuid
+  createdBy           User?                 @relation("JobCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  tools               String[]              @default([])
   applicants          Applicant[]
   interviewSessions   InterviewSession[]
   offers              Offer[]
   requestForm         JobRequestForm?
   applicationForm     JobApplicationForm?
-  cvScreenings        CvScreening[]            @relation("JobScreening")
-  screeningCriteria   CvScreeningCriteria[]    @relation("JobScreeningCriteria")
-  screeningWorkflows  CvScreeningWorkflow[]    @relation("JobScreeningWorkflow")
+  cvScreenings        CvScreening[]         @relation("JobScreening")
+  screeningCriteria   CvScreeningCriteria[] @relation("JobScreeningCriteria")
+  screeningWorkflows  CvScreeningWorkflow[] @relation("JobScreeningWorkflow")
 
   @@index([departmentId])
   @@index([positionId])
@@ -191,71 +191,71 @@ model JobApprovalStep {
 }
 
 model JobApprovalHistory {
-  id             String                 @id @default(uuid()) @db.Uuid
-  approvalStepId String                 @map("approval_step_id") @db.Uuid
-  approvalStep   JobApprovalStep        @relation(fields: [approvalStepId], references: [id], onDelete: Cascade)
+  id             String                  @id @default(uuid()) @db.Uuid
+  approvalStepId String                  @map("approval_step_id") @db.Uuid
+  approvalStep   JobApprovalStep         @relation(fields: [approvalStepId], references: [id], onDelete: Cascade)
   fromStatus     JobStageApprovalStatus?
   toStatus       JobStageApprovalStatus
-  changedById    String?                @map("changed_by_id") @db.Uuid
-  changedBy      User?                  @relation("JobApprovalHistoryUser", fields: [changedById], references: [id])
-  reason         String?                @db.Text
-  createdAt      DateTime               @default(now())
+  changedById    String?                 @map("changed_by_id") @db.Uuid
+  changedBy      User?                   @relation("JobApprovalHistoryUser", fields: [changedById], references: [id])
+  reason         String?                 @db.Text
+  createdAt      DateTime                @default(now())
 
   @@index([approvalStepId])
   @@index([changedById])
 }
 
 model Applicant {
-  id                String                   @id @default(uuid()) @db.Uuid
-  jobId             String                   @map("job_id") @db.Uuid
-  job               Job                      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicationFormId String?                  @map("application_form_id") @db.Uuid
-  applicationForm   JobApplicationForm?      @relation("ApplicantForm", fields: [applicationFormId], references: [id], onDelete: SetNull)
-  firstName         String                   @map("first_name")
-  lastName          String                   @map("last_name")
-  email             String
-  emailNormalized   String                   @map("email_normalized")
-  phone             String?
-  resumeUrl         String?                  @map("resume_url")
-  linkedinUrl       String?                  @map("linkedin_url")
-  portfolioUrl      String?                  @map("portfolio_url")
-  githubUrl         String?                  @map("github_url")
-  source            CandidateSource          @default(COMPANY_SITE)
-  referredById      String?                  @map("referred_by_id") @db.Uuid
-  referredBy        User?                    @relation("ApplicantReferral", fields: [referredById], references: [id], onDelete: SetNull)
-  currentCompany    String?                  @map("current_company")
-  currentPosition   String?                  @map("current_position")
-  yearsExperience   Int?                     @map("years_experience")
-  location          String?
-  nationality       String?
-  expectedSalary    Decimal?                 @map("expected_salary") @db.Decimal(12, 2)
-  currentSalary     Decimal?                 @map("current_salary") @db.Decimal(12, 2)
-  educationLevel    String?                  @map("education_level")
-  highestDegree     String?                  @map("highest_degree")
-  skills            String[]                 @default([])
-  status            ApplicantStatus          @default(APPLIED)
-  coverLetter       String?                  @map("cover_letter") @db.Text
-  sourceSnapshot    Json?                    @map("source_snapshot") @db.JsonB
-  customFieldValues Json?                    @map("custom_field_values") @db.JsonB
-  appliedAt         DateTime                 @default(now()) @map("applied_at")
-  screeningAt       DateTime?                @map("screening_at")
-  shortlistedAt     DateTime?                @map("shortlisted_at")
-  interviewAt       DateTime?                @map("interview_at")
-  waitlistAt        DateTime?                @map("waitlist_at")
-  offerAt           DateTime?                @map("offer_at")
-  hiredAt           DateTime?                @map("hired_at")
-  rejectedAt        DateTime?                @map("rejected_at")
-  withdrawnAt       DateTime?                @map("withdrawn_at")
-  lastActivityAt    DateTime?                @map("last_activity_at")
-  profileScore      Float?                   @map("profile_score")
-  createdAt         DateTime                 @default(now())
-  updatedAt         DateTime                 @updatedAt
-  educations        ApplicantEducation[]
-  experiences       ApplicantExperience[]
+  id                    String                   @id @default(uuid()) @db.Uuid
+  jobId                 String                   @map("job_id") @db.Uuid
+  job                   Job                      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicationFormId     String?                  @map("application_form_id") @db.Uuid
+  applicationForm       JobApplicationForm?      @relation("ApplicantForm", fields: [applicationFormId], references: [id], onDelete: SetNull)
+  firstName             String                   @map("first_name")
+  lastName              String                   @map("last_name")
+  email                 String
+  emailNormalized       String                   @map("email_normalized")
+  phone                 String?
+  resumeUrl             String?                  @map("resume_url")
+  linkedinUrl           String?                  @map("linkedin_url")
+  portfolioUrl          String?                  @map("portfolio_url")
+  githubUrl             String?                  @map("github_url")
+  source                CandidateSource          @default(COMPANY_SITE)
+  referredById          String?                  @map("referred_by_id") @db.Uuid
+  referredBy            User?                    @relation("ApplicantReferral", fields: [referredById], references: [id], onDelete: SetNull)
+  currentCompany        String?                  @map("current_company")
+  currentPosition       String?                  @map("current_position")
+  yearsExperience       Int?                     @map("years_experience")
+  location              String?
+  nationality           String?
+  expectedSalary        Decimal?                 @map("expected_salary") @db.Decimal(12, 2)
+  currentSalary         Decimal?                 @map("current_salary") @db.Decimal(12, 2)
+  educationLevel        String?                  @map("education_level")
+  highestDegree         String?                  @map("highest_degree")
+  skills                String[]                 @default([])
+  status                ApplicantStatus          @default(APPLIED)
+  coverLetter           String?                  @map("cover_letter") @db.Text
+  sourceSnapshot        Json?                    @map("source_snapshot") @db.JsonB
+  customFieldValues     Json?                    @map("custom_field_values") @db.JsonB
+  appliedAt             DateTime                 @default(now()) @map("applied_at")
+  screeningAt           DateTime?                @map("screening_at")
+  shortlistedAt         DateTime?                @map("shortlisted_at")
+  interviewAt           DateTime?                @map("interview_at")
+  waitlistAt            DateTime?                @map("waitlist_at")
+  offerAt               DateTime?                @map("offer_at")
+  hiredAt               DateTime?                @map("hired_at")
+  rejectedAt            DateTime?                @map("rejected_at")
+  withdrawnAt           DateTime?                @map("withdrawn_at")
+  lastActivityAt        DateTime?                @map("last_activity_at")
+  profileScore          Float?                   @map("profile_score")
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  educations            ApplicantEducation[]
+  experiences           ApplicantExperience[]
   interviewParticipants InterviewParticipant[]
-  offers            Offer[]
-  statusHistory     ApplicantStatusHistory[]
-  cvScreenings      CvScreening[]            @relation("ApplicantScreening")
+  offers                Offer[]
+  statusHistory         ApplicantStatusHistory[]
+  cvScreenings          CvScreening[]            @relation("ApplicantScreening")
 
   @@unique([jobId, emailNormalized])
   @@index([jobId])
@@ -312,20 +312,20 @@ model ApplicantExperience {
 }
 
 model InterviewSession {
-  id              String                @id @default(uuid()) @db.Uuid
-  jobId           String                @map("job_id") @db.Uuid
-  job             Job                   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id              String                  @id @default(uuid()) @db.Uuid
+  jobId           String                  @map("job_id") @db.Uuid
+  job             Job                     @relation(fields: [jobId], references: [id], onDelete: Cascade)
   type            InterviewType
-  round           Int                   @default(1)
-  status          InterviewStatus       @default(SCHEDULED)
-  scheduledAt     DateTime              @map("scheduled_at")
-  durationMinutes Int?                  @map("duration_minutes")
-  location        String?               @db.VarChar(255)
-  meetingUrl      String?               @map("meeting_url")
-  createdById     String                @map("created_by_id") @db.Uuid
-  createdBy       User                  @relation("InterviewSessionCreator", fields: [createdById], references: [id], onDelete: Restrict)
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
+  round           Int                     @default(1)
+  status          InterviewStatus         @default(SCHEDULED)
+  scheduledAt     DateTime                @map("scheduled_at")
+  durationMinutes Int?                    @map("duration_minutes")
+  location        String?                 @db.VarChar(255)
+  meetingUrl      String?                 @map("meeting_url")
+  createdById     String                  @map("created_by_id") @db.Uuid
+  createdBy       User                    @relation("InterviewSessionCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
   participants    InterviewParticipant[]
   interviewers    InterviewerAssignment[]
 
@@ -337,14 +337,14 @@ model InterviewSession {
 }
 
 model InterviewParticipant {
-  id               String                   @id @default(uuid()) @db.Uuid
-  sessionId        String                   @map("session_id") @db.Uuid
-  session          InterviewSession         @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  applicantId      String                   @map("applicant_id") @db.Uuid
-  applicant        Applicant                @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  id               String                    @id @default(uuid()) @db.Uuid
+  sessionId        String                    @map("session_id") @db.Uuid
+  session          InterviewSession          @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  applicantId      String                    @map("applicant_id") @db.Uuid
+  applicant        Applicant                 @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   attendanceStatus InterviewAttendanceStatus @default(SCHEDULED) @map("attendance_status")
-  createdAt        DateTime                 @default(now())
-  feedbacks        InterviewFeedback[]      @relation("InterviewFeedbackParticipant")
+  createdAt        DateTime                  @default(now())
+  feedbacks        InterviewFeedback[]       @relation("InterviewFeedbackParticipant")
 
   @@unique([sessionId, applicantId])
   @@unique([id, sessionId])
@@ -369,20 +369,21 @@ model InterviewerAssignment {
 }
 
 model InterviewFeedback {
-  id            String                @id @default(uuid()) @db.Uuid
-  participantId String                @map("participant_id") @db.Uuid
-  participant   InterviewParticipant  @relation("InterviewFeedbackParticipant", fields: [participantId], references: [id], onDelete: Cascade)
-  assignmentId  String                @map("assignment_id") @db.Uuid
-  assignment    InterviewerAssignment @relation("InterviewFeedbackAssignment", fields: [assignmentId], references: [id], onDelete: Cascade)
-  score         Float?
-  endorsement   EndorsementLevel?
-  strengths     String[]              @default([])
-  weaknesses    String[]              @default([])
-  notes         String?               @db.Text
-  isDraft       Boolean               @default(true) @map("is_draft")
-  submittedAt   DateTime?             @map("submitted_at")
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
+  id                String                @id @default(uuid()) @db.Uuid
+  participantId     String                @map("participant_id") @db.Uuid
+  participant       InterviewParticipant  @relation("InterviewFeedbackParticipant", fields: [participantId], references: [id], onDelete: Cascade)
+  assignmentId      String                @map("assignment_id") @db.Uuid
+  assignment        InterviewerAssignment @relation("InterviewFeedbackAssignment", fields: [assignmentId], references: [id], onDelete: Cascade)
+  score             Float?
+  endorsement       EndorsementLevel?
+  strengths         String[]              @default([])
+  weaknesses        String[]              @default([])
+  questionResponses Json?                 @map("question_responses") @db.JsonB
+  notes             String?               @db.Text
+  isDraft           Boolean               @default(true) @map("is_draft")
+  submittedAt       DateTime?             @map("submitted_at")
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
 
   @@unique([participantId, assignmentId])
   @@index([participantId])
@@ -390,31 +391,52 @@ model InterviewFeedback {
   @@index([participantId, assignmentId])
 }
 
+model InterviewQuestion {
+  id          String                     @id @default(uuid()) @db.Uuid
+  question    String
+  description String?                    @db.Text
+  category    InterviewQuestionCategory?
+  type        InterviewQuestionType
+  options     String[]                   @default([])
+  difficulty  Int?                       @map("difficulty")
+  tags        String[]                   @default([])
+  createdById String                     @map("created_by_id") @db.Uuid
+  createdBy   User                       @relation("InterviewQuestionCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  isActive    Boolean                    @default(true) @map("is_active")
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+
+  @@index([createdById])
+  @@index([category])
+  @@index([type])
+  @@index([isActive])
+}
+
 model Offer {
-  id             String      @id @default(uuid()) @db.Uuid
-  jobId          String      @map("job_id") @db.Uuid
-  job            Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicantId    String      @map("applicant_id") @db.Uuid
-  applicant      Applicant   @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  onboardingId   String?     @unique @map("onboarding_id") @db.Uuid
-  onboarding     Onboarding? @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
-  createdById    String      @map("created_by_id") @db.Uuid
-  createdBy      User        @relation("OfferCreator", fields: [createdById], references: [id], onDelete: Restrict)
-  status         OfferStatus @default(DRAFT)
-  salary         Decimal?    @db.Decimal(12, 2)
-  currency       String?     @db.VarChar(8)
-  startDate      DateTime?   @map("start_date") @db.Date
-  payFrequency   PayFrequency?
-  employmentType EmploymentType?
-  bonus          Decimal?    @db.Decimal(12, 2)
-  equity         Decimal?    @db.Decimal(12, 2)
-  offerLetterUrl String?     @map("offer_letter_url")
-  notes          String?     @db.Text
-  sentAt         DateTime?   @map("sent_at")
-  respondedAt    DateTime?   @map("responded_at")
-  expiresAt      DateTime?   @map("expires_at")
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                   String                @id @default(uuid()) @db.Uuid
+  jobId                String                @map("job_id") @db.Uuid
+  job                  Job                   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicantId          String                @map("applicant_id") @db.Uuid
+  applicant            Applicant             @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  onboardingId         String?               @unique @map("onboarding_id") @db.Uuid
+  onboarding           Onboarding?           @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
+  createdById          String                @map("created_by_id") @db.Uuid
+  createdBy            User                  @relation("OfferCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  status               OfferStatus           @default(DRAFT)
+  salary               Decimal?              @db.Decimal(12, 2)
+  currency             String?               @db.VarChar(8)
+  startDate            DateTime?             @map("start_date") @db.Date
+  payFrequency         PayFrequency?
+  employmentType       EmploymentType?
+  bonus                Decimal?              @db.Decimal(12, 2)
+  equity               Decimal?              @db.Decimal(12, 2)
+  offerLetterUrl       String?               @map("offer_letter_url")
+  notes                String?               @db.Text
+  sentAt               DateTime?             @map("sent_at")
+  respondedAt          DateTime?             @map("responded_at")
+  expiresAt            DateTime?             @map("expires_at")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
   onboardingChecklists OnboardingChecklist[]
 
   @@unique([jobId, applicantId])
@@ -426,31 +448,31 @@ model Offer {
 
 // CV Screening Models
 model CvScreening {
-  id                String            @id @default(uuid()) @db.Uuid
-  applicantId       String            @map("applicant_id") @db.Uuid
-  applicant         Applicant         @relation("ApplicantScreening", fields: [applicantId], references: [id], onDelete: Cascade)
-  jobId             String            @map("job_id") @db.Uuid
-  job               Job               @relation("JobScreening", fields: [jobId], references: [id], onDelete: Cascade)
-  screenedById      String            @map("screened_by_id") @db.Uuid
-  screenedBy        User              @relation("CvScreeningReviewer", fields: [screenedById], references: [id], onDelete: Restrict)
-  overallScore      Float             @map("overall_score")
+  id                String                    @id @default(uuid()) @db.Uuid
+  applicantId       String                    @map("applicant_id") @db.Uuid
+  applicant         Applicant                 @relation("ApplicantScreening", fields: [applicantId], references: [id], onDelete: Cascade)
+  jobId             String                    @map("job_id") @db.Uuid
+  job               Job                       @relation("JobScreening", fields: [jobId], references: [id], onDelete: Cascade)
+  screenedById      String                    @map("screened_by_id") @db.Uuid
+  screenedBy        User                      @relation("CvScreeningReviewer", fields: [screenedById], references: [id], onDelete: Restrict)
+  overallScore      Float                     @map("overall_score")
   recommendation    CvScreeningRecommendation
-  skillsMatch       Float?            @map("skills_match")
-  experienceMatch   Float?            @map("experience_match")
-  educationMatch    Float?            @map("education_match")
-  qualifications    String[]          @default([])
-  disqualifications  String[]          @default([])
-  strengths         String[]          @default([])
-  weaknesses        String[]          @default([])
-  screeningNotes    String?           @map("screening_notes") @db.Text
-  aiAssisted        Boolean           @default(false) @map("ai_assisted")
-  aiConfidence      Float?            @map("ai_confidence")
-  status            CvScreeningStatus @default(PENDING)
-  screeningDuration Int?              @map("screening_duration") // in minutes
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  responses         CvScreeningResponse[]       @relation("ScreeningResponses")
-  decisions         CvScreeningDecision[]       @relation("ScreeningDecisions")
+  skillsMatch       Float?                    @map("skills_match")
+  experienceMatch   Float?                    @map("experience_match")
+  educationMatch    Float?                    @map("education_match")
+  qualifications    String[]                  @default([])
+  disqualifications String[]                  @default([])
+  strengths         String[]                  @default([])
+  weaknesses        String[]                  @default([])
+  screeningNotes    String?                   @map("screening_notes") @db.Text
+  aiAssisted        Boolean                   @default(false) @map("ai_assisted")
+  aiConfidence      Float?                    @map("ai_confidence")
+  status            CvScreeningStatus         @default(PENDING)
+  screeningDuration Int?                      @map("screening_duration") // in minutes
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  responses         CvScreeningResponse[]     @relation("ScreeningResponses")
+  decisions         CvScreeningDecision[]     @relation("ScreeningDecisions")
 
   @@unique([applicantId, jobId])
   @@index([applicantId])
@@ -461,13 +483,13 @@ model CvScreening {
 }
 
 model CvScreeningCriteria {
-  id                String                  @id @default(uuid()) @db.Uuid
-  jobId             String                  @map("job_id") @db.Uuid
-  job               Job                     @relation("JobScreeningCriteria", fields: [jobId], references: [id], onDelete: Cascade)
-  category          CvScreeningCriteriaType
-  name              String
-  description       String?                 @db.Text
-  weight            Float                   @default(1.0)
+  id               String                  @id @default(uuid()) @db.Uuid
+  jobId            String                  @map("job_id") @db.Uuid
+  job              Job                     @relation("JobScreeningCriteria", fields: [jobId], references: [id], onDelete: Cascade)
+  category         CvScreeningCriteriaType
+  name             String
+  description      String?                 @db.Text
+  weight           Float                   @default(1.0)
   required         Boolean                 @default(false)
   minValue         Int?                    @map("min_value")
   maxValue         Int?                    @map("max_value")
@@ -477,7 +499,7 @@ model CvScreeningCriteria {
   order            Int?
   createdAt        DateTime                @default(now())
   updatedAt        DateTime                @updatedAt
-  questions         CvScreeningQuestion[]
+  questions        CvScreeningQuestion[]
 
   @@index([jobId])
   @@index([category])
@@ -486,33 +508,33 @@ model CvScreeningCriteria {
 }
 
 model CvScreeningQuestion {
-  id                String                    @id @default(uuid()) @db.Uuid
-  criteriaId        String                    @map("criteria_id") @db.Uuid
-  criteria          CvScreeningCriteria       @relation(fields: [criteriaId], references: [id], onDelete: Cascade)
-  question          String
-  questionType      CvScreeningQuestionType
-  options           String[]                  @default([])
-  required          Boolean                   @default(false)
-  order             Int?
-  createdAt         DateTime                  @default(now())
-  updatedAt         DateTime                  @updatedAt
-  responses         CvScreeningResponse[]
+  id           String                  @id @default(uuid()) @db.Uuid
+  criteriaId   String                  @map("criteria_id") @db.Uuid
+  criteria     CvScreeningCriteria     @relation(fields: [criteriaId], references: [id], onDelete: Cascade)
+  question     String
+  questionType CvScreeningQuestionType
+  options      String[]                @default([])
+  required     Boolean                 @default(false)
+  order        Int?
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  responses    CvScreeningResponse[]
 
   @@index([criteriaId])
   @@index([criteriaId, order])
 }
 
 model CvScreeningResponse {
-  id                String            @id @default(uuid()) @db.Uuid
-  screeningId       String            @map("screening_id") @db.Uuid
-  screening         CvScreening       @relation("ScreeningResponses", fields: [screeningId], references: [id], onDelete: Cascade)
-  questionId        String            @map("question_id") @db.Uuid
-  question          CvScreeningQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  response          String
-  score             Float?
-  notes             String?           @db.Text
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  id          String              @id @default(uuid()) @db.Uuid
+  screeningId String              @map("screening_id") @db.Uuid
+  screening   CvScreening         @relation("ScreeningResponses", fields: [screeningId], references: [id], onDelete: Cascade)
+  questionId  String              @map("question_id") @db.Uuid
+  question    CvScreeningQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  response    String
+  score       Float?
+  notes       String?             @db.Text
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 
   @@unique([screeningId, questionId])
   @@index([screeningId])
@@ -520,17 +542,17 @@ model CvScreeningResponse {
 }
 
 model CvScreeningWorkflow {
-  id                String                    @id @default(uuid()) @db.Uuid
-  jobId             String                    @map("job_id") @db.Uuid
-  job               Job                       @relation("JobScreeningWorkflow", fields: [jobId], references: [id], onDelete: Cascade)
-  name              String
-  description       String?                   @db.Text
-  stages            CvScreeningWorkflowStage[]
-  isActive          Boolean                   @default(true) @map("is_active")
-  createdBy         String                    @map("created_by_id") @db.Uuid
-  creator           User                      @relation("CvScreeningWorkflowCreator", fields: [createdBy], references: [id], onDelete: Restrict)
-  createdAt         DateTime                  @default(now())
-  updatedAt         DateTime                  @updatedAt
+  id          String                     @id @default(uuid()) @db.Uuid
+  jobId       String                     @map("job_id") @db.Uuid
+  job         Job                        @relation("JobScreeningWorkflow", fields: [jobId], references: [id], onDelete: Cascade)
+  name        String
+  description String?                    @db.Text
+  stages      CvScreeningWorkflowStage[]
+  isActive    Boolean                    @default(true) @map("is_active")
+  createdBy   String                     @map("created_by_id") @db.Uuid
+  creator     User                       @relation("CvScreeningWorkflowCreator", fields: [createdBy], references: [id], onDelete: Restrict)
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
 
   @@index([jobId])
   @@index([createdBy])
@@ -538,22 +560,22 @@ model CvScreeningWorkflow {
 }
 
 model CvScreeningWorkflowStage {
-  id                String                  @id @default(uuid()) @db.Uuid
-  workflowId        String                  @map("workflow_id") @db.Uuid
-  workflow          CvScreeningWorkflow    @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  name              String
-  description       String?                 @db.Text
-  stageType         CvScreeningStageType
-  requiredRole      String                  @map("required_role") @db.VarChar(64)
-  approverId        String?                 @map("approver_id") @db.Uuid
-  approver          User?                   @relation("CvScreeningStageApprover", fields: [approverId], references: [id], onDelete: SetNull)
-  order             Int
-  autoApprove       Boolean                 @default(false) @map("auto_approve")
-  autoApproveRules  Json?                   @map("auto_approve_rules") @db.JsonB
-  timeLimitHours    Int?                    @map("time_limit_hours")
-  createdAt         DateTime                @default(now())
-  updatedAt         DateTime                @updatedAt
-  decisions         CvScreeningDecision[]
+  id               String                @id @default(uuid()) @db.Uuid
+  workflowId       String                @map("workflow_id") @db.Uuid
+  workflow         CvScreeningWorkflow   @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  name             String
+  description      String?               @db.Text
+  stageType        CvScreeningStageType
+  requiredRole     String                @map("required_role") @db.VarChar(64)
+  approverId       String?               @map("approver_id") @db.Uuid
+  approver         User?                 @relation("CvScreeningStageApprover", fields: [approverId], references: [id], onDelete: SetNull)
+  order            Int
+  autoApprove      Boolean               @default(false) @map("auto_approve")
+  autoApproveRules Json?                 @map("auto_approve_rules") @db.JsonB
+  timeLimitHours   Int?                  @map("time_limit_hours")
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  decisions        CvScreeningDecision[]
 
   @@index([workflowId])
   @@index([approverId])
@@ -561,17 +583,17 @@ model CvScreeningWorkflowStage {
 }
 
 model CvScreeningDecision {
-  id                String                    @id @default(uuid()) @db.Uuid
-  screeningId       String                    @map("screening_id") @db.Uuid
-  screening         CvScreening               @relation("ScreeningDecisions", fields: [screeningId], references: [id], onDelete: Cascade)
-  stageId           String                    @map("stage_id") @db.Uuid
-  stage             CvScreeningWorkflowStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
-  decision          CvScreeningDecisionType
-  decisionMakerId   String                    @map("decision_maker_id") @db.Uuid
-  decisionMaker     User                      @relation("CvScreeningDecisionMaker", fields: [decisionMakerId], references: [id], onDelete: Restrict)
-  comments          String?                   @db.Text
-  decidedAt         DateTime                  @default(now()) @map("decided_at")
-  createdAt         DateTime                  @default(now())
+  id              String                   @id @default(uuid()) @db.Uuid
+  screeningId     String                   @map("screening_id") @db.Uuid
+  screening       CvScreening              @relation("ScreeningDecisions", fields: [screeningId], references: [id], onDelete: Cascade)
+  stageId         String                   @map("stage_id") @db.Uuid
+  stage           CvScreeningWorkflowStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  decision        CvScreeningDecisionType
+  decisionMakerId String                   @map("decision_maker_id") @db.Uuid
+  decisionMaker   User                     @relation("CvScreeningDecisionMaker", fields: [decisionMakerId], references: [id], onDelete: Restrict)
+  comments        String?                  @db.Text
+  decidedAt       DateTime                 @default(now()) @map("decided_at")
+  createdAt       DateTime                 @default(now())
 
   @@unique([screeningId, stageId])
   @@index([screeningId])

@@ -13,6 +13,25 @@ export type InterviewAttendanceStatus =
   | 'COMPLETED'
   | 'CANCELLED';
 
+export type InterviewQuestionCategory =
+  | 'TECHNICAL'
+  | 'BEHAVIORAL'
+  | 'SITUATIONAL'
+  | 'PROBLEM_SOLVING'
+  | 'LEADERSHIP'
+  | 'COMMUNICATION'
+  | 'DOMAIN_KNOWLEDGE'
+  | 'CULTURAL_FIT'
+  | 'GENERAL';
+
+export type InterviewQuestionType =
+  | 'TEXT'
+  | 'TEXTAREA'
+  | 'BOOLEAN'
+  | 'RATING'
+  | 'SINGLE_SELECT'
+  | 'MULTI_SELECT';
+
 export const INTERVIEW_TYPES = [
   'HR_SCREENING',
   'TECHNICAL',
@@ -36,12 +55,99 @@ export const INTERVIEW_ATTENDANCE_STATUSES = [
   'CANCELLED',
 ] as const;
 
+export const INTERVIEW_QUESTION_CATEGORIES = [
+  'TECHNICAL',
+  'BEHAVIORAL',
+  'SITUATIONAL',
+  'PROBLEM_SOLVING',
+  'LEADERSHIP',
+  'COMMUNICATION',
+  'DOMAIN_KNOWLEDGE',
+  'CULTURAL_FIT',
+  'GENERAL',
+] as const;
+
+export const INTERVIEW_QUESTION_TYPES = [
+  'TEXT',
+  'TEXTAREA',
+  'BOOLEAN',
+  'RATING',
+  'SINGLE_SELECT',
+  'MULTI_SELECT',
+] as const;
+
 export const ENDORSEMENT_LEVELS = [
   'STRONG_YES',
   'YES',
   'UNCERTAIN',
   'NO',
 ] as const;
+
+export type InterviewQuestionResponseAnswer =
+  | string
+  | boolean
+  | number
+  | string[]
+  | null;
+
+export interface InterviewQuestionResponseInputItemDto {
+  questionId?: string | null;
+  question: string;
+  category?: InterviewQuestionCategory | null;
+  type: InterviewQuestionType;
+  answer: InterviewQuestionResponseAnswer;
+  score?: number | null;
+  maxScore?: number | null;
+  weight?: number | null;
+  notes?: string | null;
+}
+
+export interface InterviewQuestionResponseItemDto {
+  questionId: string | null;
+  question: string;
+  category: InterviewQuestionCategory | null;
+  type: InterviewQuestionType;
+  answer: InterviewQuestionResponseAnswer;
+  score: number | null;
+  maxScore: number | null;
+  weight: number | null;
+  notes: string | null;
+}
+
+export interface CreateInterviewQuestionDto {
+  question: string;
+  description?: string | null;
+  category?: InterviewQuestionCategory | null;
+  type: InterviewQuestionType;
+  options?: string[];
+  difficulty?: number | null;
+  tags?: string[];
+  isActive?: boolean;
+}
+
+export type UpdateInterviewQuestionDto = Partial<CreateInterviewQuestionDto>;
+
+export interface InterviewQuestionListQueryDto {
+  category?: InterviewQuestionCategory;
+  tags?: string[];
+  difficulty?: number;
+  isActive?: boolean;
+}
+
+export interface InterviewQuestionDto {
+  id: string;
+  question: string;
+  description: string | null;
+  category: InterviewQuestionCategory | null;
+  type: InterviewQuestionType;
+  options: string[];
+  difficulty: number | null;
+  tags: string[];
+  createdById: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface InterviewerAssignmentInputDto {
   interviewerId: string;
@@ -72,6 +178,7 @@ export interface UpsertInterviewFeedbackDto {
   endorsement?: EndorsementLevel | null;
   strengths?: string[];
   weaknesses?: string[];
+  questionResponses?: InterviewQuestionResponseInputItemDto[];
   notes?: string | null;
   isDraft?: boolean;
 }
@@ -119,6 +226,7 @@ export interface InterviewFeedbackResponseDto {
   endorsement: EndorsementLevel | null;
   strengths: string[];
   weaknesses: string[];
+  questionResponses: InterviewQuestionResponseItemDto[] | null;
   notes: string | null;
   isDraft: boolean;
   submittedAt: string | null;

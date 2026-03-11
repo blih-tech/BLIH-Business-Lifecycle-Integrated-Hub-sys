@@ -287,11 +287,53 @@ export const interviewFeedbackExample = {
   endorsement: 'YES',
   strengths: ['Strong system design', 'Clear communication'],
   weaknesses: ['Needs deeper PostgreSQL tuning experience'],
+  questionResponses: [
+    {
+      questionId: 'dfef45a5-6bf0-4b6a-a30f-7885fbe7c89d',
+      question: 'Explain REST API principles',
+      category: 'TECHNICAL',
+      type: 'TEXT',
+      answer:
+        'Candidate explained constraints, statelessness, resource naming, and status code semantics.',
+      score: 4,
+      maxScore: 5,
+      weight: 1,
+      notes: 'Strong understanding',
+    },
+    {
+      questionId: null,
+      question: 'Describe a conflict you resolved in a project team',
+      category: 'BEHAVIORAL',
+      type: 'TEXTAREA',
+      answer:
+        'Candidate described a production incident conflict and a clear resolution process.',
+      score: 3,
+      maxScore: 5,
+      weight: 1,
+      notes: 'Good communication and ownership',
+    },
+  ],
   notes: 'Recommended to proceed to final round.',
   isDraft: false,
   submittedAt: '2026-03-10T12:05:00.000Z',
   createdAt: '2026-03-10T12:05:00.000Z',
   updatedAt: '2026-03-10T12:05:00.000Z',
+};
+
+export const interviewQuestionExample = {
+  id: 'dfef45a5-6bf0-4b6a-a30f-7885fbe7c89d',
+  question: 'Explain REST API principles',
+  description:
+    'Assess understanding of REST constraints and practical API design.',
+  category: 'TECHNICAL',
+  type: 'TEXT',
+  options: [],
+  difficulty: 3,
+  tags: ['rest', 'api', 'backend'],
+  createdById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
+  isActive: true,
+  createdAt: '2026-03-05T09:20:00.000Z',
+  updatedAt: '2026-03-05T09:20:00.000Z',
 };
 
 export const jobResponseEnvelope = envelope('Created job', jobExample);
@@ -336,4 +378,12 @@ export const interviewFeedbackResponseEnvelope = envelope(
 export const interviewFeedbackListResponseEnvelope = envelope(
   'List interview participant feedback',
   [interviewFeedbackExample],
+);
+export const interviewQuestionResponseEnvelope = envelope(
+  'Created interview question',
+  interviewQuestionExample,
+);
+export const interviewQuestionListResponseEnvelope = envelope(
+  'List of interview questions',
+  [interviewQuestionExample],
 );

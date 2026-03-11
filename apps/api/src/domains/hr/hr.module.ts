@@ -21,6 +21,7 @@ import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.jo
 import { JobsController } from './recruitment/jobs.controller';
 import { ApplicantsController } from './recruitment/applicants.controller';
 import { InterviewsController } from './recruitment/interviews.controller';
+import { InterviewQuestionsController } from './recruitment/interview-questions.controller';
 import { OffersController } from './recruitment/offers.controller';
 import { RecruitmentNotificationService } from './recruitment/recruitment-notification.service';
 import {
@@ -29,7 +30,9 @@ import {
   CreateApplicantUseCase,
   CreateOfferUseCase,
   CreateInterviewUseCase,
+  CreateInterviewQuestionUseCase,
   CreateJobUseCase,
+  DeactivateInterviewQuestionUseCase,
   GetApplicantUseCase,
   GetOfferUseCase,
   GetInterviewUseCase,
@@ -38,12 +41,14 @@ import {
   ListOffersUseCase,
   ListInterviewsUseCase,
   ListInterviewParticipantFeedbackUseCase,
+  ListInterviewQuestionsUseCase,
   ListJobsUseCase,
   PublishJobUseCase,
   RespondOfferUseCase,
   SendOfferUseCase,
   SubmitJobUseCase,
   UpdateInterviewParticipantAttendanceUseCase,
+  UpdateInterviewQuestionUseCase,
   UpdateApplicantStatusUseCase,
   UpdateApplicantUseCase,
   UpdateInterviewUseCase,
@@ -262,6 +267,7 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     JobsController,
     ApplicantsController,
     InterviewsController,
+    InterviewQuestionsController,
     OffersController,
     OnboardingController,
     AssetProvisioningController,
@@ -341,6 +347,10 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
     UpdateInterviewParticipantAttendanceUseCase,
     UpsertInterviewFeedbackUseCase,
     ListInterviewParticipantFeedbackUseCase,
+    CreateInterviewQuestionUseCase,
+    UpdateInterviewQuestionUseCase,
+    DeactivateInterviewQuestionUseCase,
+    ListInterviewQuestionsUseCase,
     CreateOfferUseCase,
     ListOffersUseCase,
     GetOfferUseCase,
