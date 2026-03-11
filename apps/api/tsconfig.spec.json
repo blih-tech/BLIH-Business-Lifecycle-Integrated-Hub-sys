@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "../../packages/database/src/**/*.ts",
+    "../../packages/database/seed/**/*.ts",
+    "../../packages/types/src/**/*.ts"
+  ]
+}
