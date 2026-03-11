@@ -299,6 +299,13 @@ export const InterviewPermissions = {
   ALL: 'interview:*',
 } as const;
 
+export const OnboardingTaskPermissions = {
+  VIEW: 'onboarding_task:view',
+  CREATE: 'onboarding_task:create',
+  UPDATE: 'onboarding_task:update',
+  ALL: 'onboarding_task:*',
+} as const;
+
 export const OnboardingChecklistPermissions = {
   VIEW: 'onboarding_checklist:view',
   CREATE: 'onboarding_checklist:create',
@@ -501,6 +508,7 @@ export const PermissionGroups = {
   job_approval: JobApprovalPermissions,
   applicant: ApplicantPermissions,
   interview: InterviewPermissions,
+  onboarding_task: OnboardingTaskPermissions,
   onboarding_checklist: OnboardingChecklistPermissions,
   asset_provisioning: AssetProvisioningPermissions,
   policy_acknowledgement: PolicyAcknowledgementPermissions,

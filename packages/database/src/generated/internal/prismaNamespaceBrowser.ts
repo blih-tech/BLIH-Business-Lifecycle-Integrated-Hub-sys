@@ -1152,6 +1152,7 @@ export const OnboardingScalarFieldEnum = {
   employeeId: 'employeeId',
   status: 'status',
   startedAt: 'startedAt',
+  joinDate: 'joinDate',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1162,13 +1163,9 @@ export type OnboardingScalarFieldEnum = (typeof OnboardingScalarFieldEnum)[keyof
 
 export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
+  onboardingTaskId: 'onboardingTaskId',
   onboardingId: 'onboardingId',
-  hiringDecisionId: 'hiringDecisionId',
-  joinDate: 'joinDate',
   overseerId: 'overseerId',
-  totalItems: 'totalItems',
-  completedItems: 'completedItems',
   status: 'status',
   teamLeadVerifiedAt: 'teamLeadVerifiedAt',
   ceoSignOffRequired: 'ceoSignOffRequired',
@@ -1182,14 +1179,9 @@ export type OnboardingChecklistScalarFieldEnum = (typeof OnboardingChecklistScal
 
 export const OnboardingTaskScalarFieldEnum = {
   id: 'id',
-  checklistId: 'checklistId',
   department: 'department',
   title: 'title',
   description: 'description',
-  dueDate: 'dueDate',
-  assignedToId: 'assignedToId',
-  status: 'status',
-  completedAt: 'completedAt',
   completedById: 'completedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -1183,13 +1183,6 @@ export type EnumOnboardingTaskDepartmentFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel> | $Enums.OnboardingTaskDepartment
 }
 
-export type EnumOnboardingTaskStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.OnboardingTaskStatus | Prisma.EnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOnboardingTaskStatusFilter<$PrismaModel> | $Enums.OnboardingTaskStatus
-}
-
 export type EnumOnboardingTaskDepartmentWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.OnboardingTaskDepartment | Prisma.EnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel>
   in?: $Enums.OnboardingTaskDepartment[] | Prisma.ListEnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel>
@@ -1198,16 +1191,6 @@ export type EnumOnboardingTaskDepartmentWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel>
-}
-
-export type EnumOnboardingTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OnboardingTaskStatus | Prisma.EnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOnboardingTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnboardingTaskStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOnboardingTaskStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOnboardingTaskStatusFilter<$PrismaModel>
 }
 
 export type EnumAssetProvisioningStatusFilter<$PrismaModel = never> = {
@@ -3332,13 +3315,6 @@ export type NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel> | $Enums.OnboardingTaskDepartment
 }
 
-export type NestedEnumOnboardingTaskStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.OnboardingTaskStatus | Prisma.EnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOnboardingTaskStatusFilter<$PrismaModel> | $Enums.OnboardingTaskStatus
-}
-
 export type NestedEnumOnboardingTaskDepartmentWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.OnboardingTaskDepartment | Prisma.EnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel>
   in?: $Enums.OnboardingTaskDepartment[] | Prisma.ListEnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel>
@@ -3347,16 +3323,6 @@ export type NestedEnumOnboardingTaskDepartmentWithAggregatesFilter<$PrismaModel 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOnboardingTaskDepartmentFilter<$PrismaModel>
-}
-
-export type NestedEnumOnboardingTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OnboardingTaskStatus | Prisma.EnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OnboardingTaskStatus[] | Prisma.ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOnboardingTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnboardingTaskStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOnboardingTaskStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOnboardingTaskStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumAssetProvisioningStatusFilter<$PrismaModel = never> = {

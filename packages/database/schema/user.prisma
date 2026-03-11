@@ -30,7 +30,6 @@ model User {
   jobApprovalSteps                 JobApprovalStep[]             @relation("JobApprovalStepApprover")
   jobApprovalHistoryChanges        JobApprovalHistory[]          @relation("JobApprovalHistoryUser")
   checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")
-  assignedOnboardingTasks          OnboardingTask[]              @relation("OnboardingTaskAssignee")
   completedOnboardingTasks         OnboardingTask[]              @relation("OnboardingTaskCompletedBy")
   policyAcknowledgementsVerified   PolicyAcknowledgement[]       @relation("PolicyAcknowledgementVerifiedBy")
   delegatedLeaveHandovers          LeaveRequest[]                @relation("LeaveRequestHandoverDelegate")
@@ -92,7 +91,6 @@ model Employee {
   employeeDocuments           EmployeeDocument[]
   contracts                   Contract[]
   onboardings                 Onboarding[]
-  onboardingChecklists        OnboardingChecklist[]
   assetProvisionings          AssetProvisioning[]
   policyAcknowledgements      PolicyAcknowledgement[]
   probationKpiPlans           ProbationKpiPlan[]
