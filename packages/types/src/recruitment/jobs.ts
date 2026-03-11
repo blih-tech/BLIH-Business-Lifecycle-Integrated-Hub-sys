@@ -248,11 +248,15 @@ export interface JobResponseDto {
     workMode: WorkLocationType;
     urgency: JobUrgency;
     neededByDate: string | null;
-    status: JobWorkflowStatus;
+    status: {
+      workflow: JobWorkflowStatus;
+      approvals: {
+        finance: JobStageApprovalStatus;
+        gm: JobStageApprovalStatus;
+        hr: JobStageApprovalStatus;
+      };
+    };
     priority: JobPriority;
-    financeApprovalStatus: JobStageApprovalStatus;
-    gmApprovalStatus: JobStageApprovalStatus;
-    hrApprovalStatus: JobStageApprovalStatus;
     draftedAt: string | null;
     pendingApprovalAt: string | null;
     readyToPostAt: string | null;

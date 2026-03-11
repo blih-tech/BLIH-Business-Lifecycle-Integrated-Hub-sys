@@ -25,10 +25,14 @@ export const jobExample = {
     workMode: 'HYBRID',
     urgency: 'HIGH',
     neededByDate: '2026-03-30T00:00:00.000Z',
-    status: 'PENDING_FOR_APPROVAL',
-    financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-    gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-    hrApprovalStatus: 'PENDING_FOR_APPROVAL',
+    status: {
+      workflow: 'PENDING_FOR_APPROVAL',
+      approvals: {
+        finance: 'PENDING_FOR_APPROVAL',
+        gm: 'PENDING_FOR_APPROVAL',
+        hr: 'PENDING_FOR_APPROVAL',
+      },
+    },
     priority: 'MEDIUM',
     draftedAt: '2026-03-05T09:00:00.000Z',
     pendingApprovalAt: '2026-03-05T09:10:00.000Z',

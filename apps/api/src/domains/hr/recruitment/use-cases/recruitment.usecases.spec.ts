@@ -181,7 +181,7 @@ describe('Recruitment UseCases', () => {
     const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
-    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
     expect(tx.jobApprovalStep.createMany).toHaveBeenCalledWith({
       data: [
         expect.objectContaining({ department: 'FINANCE', level: 1 }),
@@ -263,8 +263,8 @@ describe('Recruitment UseCases', () => {
         reason: 'CREATOR_HAS_HR_ROLE',
       },
     });
-    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
-    expect(result.requestForm?.hrApprovalStatus).toBe('APPROVED');
+    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status.approvals.hr).toBe('APPROVED');
   });
 
   it('allows HR approval while finance and gm are still pending', async () => {
@@ -311,8 +311,8 @@ describe('Recruitment UseCases', () => {
     expect(tx.jobApprovalStep.update).toHaveBeenCalledWith(
       expect.objectContaining({ where: { id: 'approval-hr' } }),
     );
-    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
-    expect(result.requestForm?.hrApprovalStatus).toBe('APPROVED');
+    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status.approvals.hr).toBe('APPROVED');
   });
 
   it('for multi-role approver decides only one stage per call (lowest level first)', async () => {
@@ -407,7 +407,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(rejected.requestForm?.status).toBe('REJECTED');
+    expect(rejected.requestForm?.status.workflow).toBe('REJECTED');
 
     const prismaFrozen = {
       job: {

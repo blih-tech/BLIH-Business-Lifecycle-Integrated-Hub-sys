@@ -545,6 +545,31 @@ export class JobResponsibilityValueResponseDto {
   value!: string;
 }
 
+export class JobRequestFormApprovalStatusResponseDto {
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  finance!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  gm!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  hr!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+}
+
+export class JobRequestFormStatusResponseDto {
+  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
+  workflow!:
+    | 'DRAFT'
+    | 'PENDING_FOR_APPROVAL'
+    | 'READY_TO_POST'
+    | 'PUBLISHED'
+    | 'CLOSED'
+    | 'REJECTED';
+
+  @ApiProperty({ type: () => JobRequestFormApprovalStatusResponseDto })
+  approvals!: JobRequestFormApprovalStatusResponseDto;
+}
+
 export class JobRequestFormResponseDto extends OmitType(
   JobRequestFormInputDto,
   [],
@@ -558,26 +583,11 @@ export class JobRequestFormResponseDto extends OmitType(
   @ApiProperty()
   position!: string;
 
-  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
-  status!:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
+  @ApiProperty({ type: () => JobRequestFormStatusResponseDto })
+  status!: JobRequestFormStatusResponseDto;
 
   @ApiProperty({ enum: JOB_PRIORITY_LEVELS })
   priority!: (typeof JOB_PRIORITY_LEVELS)[number];
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  financeApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  gmApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  hrApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
 
   @ApiPropertyOptional({ nullable: true })
   draftedAt!: string | null;
