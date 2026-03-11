@@ -157,11 +157,21 @@ export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
 
 export const JobStageApprovalStatus = {
   PENDING_FOR_APPROVAL: 'PENDING_FOR_APPROVAL',
+  REQUEST_REVIEW: 'REQUEST_REVIEW',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
 } as const
 
 export type JobStageApprovalStatus = (typeof JobStageApprovalStatus)[keyof typeof JobStageApprovalStatus]
+
+
+export const JobApprovalDepartment = {
+  FINANCE: 'FINANCE',
+  GM: 'GM',
+  HR: 'HR'
+} as const
+
+export type JobApprovalDepartment = (typeof JobApprovalDepartment)[keyof typeof JobApprovalDepartment]
 
 
 export const JobApprovalStage = {
@@ -175,6 +185,7 @@ export type JobApprovalStage = (typeof JobApprovalStage)[keyof typeof JobApprova
 
 export const JobSalaryMode = {
   NOT_SPECIFIED: 'NOT_SPECIFIED',
+  FIXED: 'FIXED',
   NEGOTIABLE: 'NEGOTIABLE',
   COMPETITIVE: 'COMPETITIVE'
 } as const
@@ -210,6 +221,26 @@ export const JobApplicationFieldType = {
 } as const
 
 export type JobApplicationFieldType = (typeof JobApplicationFieldType)[keyof typeof JobApplicationFieldType]
+
+
+export const JobApplicantOptionalFieldKey = {
+  PHONE: 'PHONE',
+  LINKEDIN_URL: 'LINKEDIN_URL',
+  PORTFOLIO_URL: 'PORTFOLIO_URL',
+  GITHUB_URL: 'GITHUB_URL',
+  EXPECTED_SALARY: 'EXPECTED_SALARY',
+  COVER_LETTER: 'COVER_LETTER'
+} as const
+
+export type JobApplicantOptionalFieldKey = (typeof JobApplicantOptionalFieldKey)[keyof typeof JobApplicantOptionalFieldKey]
+
+
+export const JobApplicationFormSectionKey = {
+  EDUCATION: 'EDUCATION',
+  EXPERIENCE: 'EXPERIENCE'
+} as const
+
+export type JobApplicationFormSectionKey = (typeof JobApplicationFormSectionKey)[keyof typeof JobApplicationFormSectionKey]
 
 
 export const JobContractType = {
@@ -264,30 +295,31 @@ export const CandidateSource = {
 export type CandidateSource = (typeof CandidateSource)[keyof typeof CandidateSource]
 
 
-export const JobApplicationStatus = {
-  NEW: 'NEW',
+export const ApplicantStatus = {
+  APPLIED: 'APPLIED',
   SCREENING: 'SCREENING',
   SHORTLISTED: 'SHORTLISTED',
-  INTERVIEW_STAGE: 'INTERVIEW_STAGE',
-  OFFER_PENDING: 'OFFER_PENDING',
+  INTERVIEW: 'INTERVIEW',
+  WAITLIST: 'WAITLIST',
+  OFFER: 'OFFER',
   HIRED: 'HIRED',
   REJECTED: 'REJECTED',
   WITHDRAWN: 'WITHDRAWN'
 } as const
 
-export type JobApplicationStatus = (typeof JobApplicationStatus)[keyof typeof JobApplicationStatus]
+export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
 
 
-export const ApplicantStatus = {
-  APPLIED: 'APPLIED',
-  SHORTLISTED: 'SHORTLISTED',
-  INTERVIEW: 'INTERVIEW',
-  OFFER: 'OFFER',
-  HIRED: 'HIRED',
-  REJECTED: 'REJECTED'
+export const OfferStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED',
+  WITHDRAWN: 'WITHDRAWN'
 } as const
 
-export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
+export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus]
 
 
 export const InterviewType = {
@@ -311,6 +343,17 @@ export const InterviewStatus = {
 export type InterviewStatus = (typeof InterviewStatus)[keyof typeof InterviewStatus]
 
 
+export const InterviewAttendanceStatus = {
+  SCHEDULED: 'SCHEDULED',
+  ATTENDING: 'ATTENDING',
+  NO_SHOW: 'NO_SHOW',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type InterviewAttendanceStatus = (typeof InterviewAttendanceStatus)[keyof typeof InterviewAttendanceStatus]
+
+
 export const EndorsementLevel = {
   STRONG_YES: 'STRONG_YES',
   YES: 'YES',
@@ -321,13 +364,88 @@ export const EndorsementLevel = {
 export type EndorsementLevel = (typeof EndorsementLevel)[keyof typeof EndorsementLevel]
 
 
-export const HiringDecisionOutcome = {
-  OFFER_APPROVED: 'OFFER_APPROVED',
-  OFFER_DECLINED: 'OFFER_DECLINED',
-  SUSPENDED: 'SUSPENDED'
+export const CvScreeningRecommendation = {
+  STRONG_RECOMMEND: 'STRONG_RECOMMEND',
+  RECOMMEND: 'RECOMMEND',
+  CONSIDER: 'CONSIDER',
+  REJECT: 'REJECT'
 } as const
 
-export type HiringDecisionOutcome = (typeof HiringDecisionOutcome)[keyof typeof HiringDecisionOutcome]
+export type CvScreeningRecommendation = (typeof CvScreeningRecommendation)[keyof typeof CvScreeningRecommendation]
+
+
+export const CvScreeningStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type CvScreeningStatus = (typeof CvScreeningStatus)[keyof typeof CvScreeningStatus]
+
+
+export const CvScreeningCriteriaType = {
+  SKILLS: 'SKILLS',
+  EXPERIENCE: 'EXPERIENCE',
+  EDUCATION: 'EDUCATION',
+  CERTIFICATIONS: 'CERTIFICATIONS',
+  LANGUAGES: 'LANGUAGES',
+  SOFT_SKILLS: 'SOFT_SKILLS',
+  TECHNICAL_SKILLS: 'TECHNICAL_SKILLS',
+  DOMAIN_KNOWLEDGE: 'DOMAIN_KNOWLEDGE',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type CvScreeningCriteriaType = (typeof CvScreeningCriteriaType)[keyof typeof CvScreeningCriteriaType]
+
+
+export const CvScoringMethod = {
+  MANUAL: 'MANUAL',
+  AUTOMATIC: 'AUTOMATIC',
+  HYBRID: 'HYBRID'
+} as const
+
+export type CvScoringMethod = (typeof CvScoringMethod)[keyof typeof CvScoringMethod]
+
+
+export const CvScreeningQuestionType = {
+  TEXT: 'TEXT',
+  TEXTAREA: 'TEXTAREA',
+  NUMBER: 'NUMBER',
+  SELECT: 'SELECT',
+  MULTI_SELECT: 'MULTI_SELECT',
+  CHECKBOX: 'CHECKBOX',
+  RADIO: 'RADIO',
+  RATING: 'RATING',
+  BOOLEAN: 'BOOLEAN',
+  DATE: 'DATE',
+  FILE: 'FILE'
+} as const
+
+export type CvScreeningQuestionType = (typeof CvScreeningQuestionType)[keyof typeof CvScreeningQuestionType]
+
+
+export const CvScreeningStageType = {
+  INITIAL_SCREENING: 'INITIAL_SCREENING',
+  TECHNICAL_REVIEW: 'TECHNICAL_REVIEW',
+  HR_REVIEW: 'HR_REVIEW',
+  MANAGER_REVIEW: 'MANAGER_REVIEW',
+  FINAL_DECISION: 'FINAL_DECISION',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type CvScreeningStageType = (typeof CvScreeningStageType)[keyof typeof CvScreeningStageType]
+
+
+export const CvScreeningDecisionType = {
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  REQUEST_CHANGES: 'REQUEST_CHANGES',
+  ESCALATE: 'ESCALATE',
+  HOLD: 'HOLD'
+} as const
+
+export type CvScreeningDecisionType = (typeof CvScreeningDecisionType)[keyof typeof CvScreeningDecisionType]
 
 
 export const OnboardingStatus = {

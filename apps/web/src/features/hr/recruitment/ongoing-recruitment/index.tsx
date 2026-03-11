@@ -4,7 +4,11 @@ import { ongoingRecruitmentJobs } from "@/features/hr/recruitment/ongoing-recrui
 export * from "@/features/hr/recruitment/ongoing-recruitment/components";
 export * from "@/features/hr/recruitment/ongoing-recruitment/types";
 
-export function OngoingRecruitmentContent() {
+type OngoingRecruitmentContentProps = {
+  currentUserName: string;
+};
+
+export function OngoingRecruitmentContent({ currentUserName }: OngoingRecruitmentContentProps) {
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-4 px-4 py-5 md:px-5 md:py-6">
       <section className="space-y-1">
@@ -14,7 +18,7 @@ export function OngoingRecruitmentContent() {
 
       <section className="space-y-4">
         {ongoingRecruitmentJobs.map((job, index) => (
-          <RecruitmentCard key={job.id} job={job} defaultExpanded={index === 0} />
+          <RecruitmentCard key={job.id} job={job} currentUserName={currentUserName} defaultExpanded={index === 0} />
         ))}
       </section>
     </main>

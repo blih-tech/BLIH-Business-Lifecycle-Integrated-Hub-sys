@@ -17,7 +17,7 @@ type OnboardingChecklistRow = {
   id: string;
   employeeId: string;
   onboardingId: string | null;
-  hiringDecisionId: string | null;
+  offerId: string | null;
   joinDate: Date;
   overseerId: string | null;
   totalItems: number;
@@ -55,7 +55,7 @@ export function mapOnboardingChecklistResponse(
     id: checklist.id,
     employeeId: checklist.employeeId,
     onboardingId: checklist.onboardingId,
-    hiringDecisionId: checklist.hiringDecisionId,
+    offerId: checklist.offerId,
     joinDate: checklist.joinDate.toISOString().slice(0, 10),
     overseerId: checklist.overseerId,
     totalItems: checklist.totalItems,

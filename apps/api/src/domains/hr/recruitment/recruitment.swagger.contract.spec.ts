@@ -14,16 +14,19 @@ import {
   CreateJobUseCase,
   GetApplicantUseCase,
   GetInterviewUseCase,
+  ListInterviewParticipantFeedbackUseCase,
   GetJobUseCase,
   ListApplicantsUseCase,
   ListInterviewsUseCase,
   ListJobsUseCase,
   PublishJobUseCase,
   SubmitJobUseCase,
+  UpdateInterviewParticipantAttendanceUseCase,
   UpdateApplicantStatusUseCase,
   UpdateApplicantUseCase,
   UpdateInterviewUseCase,
   UpdateJobUseCase,
+  UpsertInterviewFeedbackUseCase,
   UpsertJobResponsibilitiesUseCase,
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
@@ -50,6 +53,9 @@ const useCaseTokens = [
   ListInterviewsUseCase,
   GetInterviewUseCase,
   UpdateInterviewUseCase,
+  UpdateInterviewParticipantAttendanceUseCase,
+  UpsertInterviewFeedbackUseCase,
+  ListInterviewParticipantFeedbackUseCase,
 ] as const;
 
 type HttpMethod = 'get' | 'post' | 'patch';
@@ -127,6 +133,21 @@ const expectedOperations: Array<{
     method: 'patch',
     expectsBody: true,
   },
+  {
+    path: '/hr/recruitment/interviews/{id}/participants/{participantId}/attendance',
+    method: 'patch',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interviews/{id}/participants/{participantId}/feedback',
+    method: 'post',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interviews/{id}/participants/{participantId}/feedback',
+    method: 'get',
+    expectsBody: false,
+  },
 ];
 
 describe('Recruitment Swagger Contract', () => {
@@ -172,11 +193,24 @@ describe('Recruitment Swagger Contract', () => {
 
       if (operationDef.expectsBody) {
         const requestBody = operation?.requestBody as
-          | { content?: Record<string, { examples?: unknown }> }
+          | {
+              content?: Record<
+                string,
+                { examples?: unknown; example?: unknown; schema?: unknown }
+              >;
+            }
           | undefined;
         const media = requestBody?.content?.['application/json'];
         expect(media).toBeDefined();
-        expect(media?.examples).toBeDefined();
+        const requestExample =
+          media?.examples ??
+          media?.example ??
+          (media?.schema as { example?: unknown } | undefined)?.example;
+        if (requestExample === undefined) {
+          throw new Error(
+            `Missing request body example for ${operationDef.method.toUpperCase()} ${operationDef.path}`,
+          );
+        }
       }
 
       const successResponse = (operation?.responses?.['200'] ??

@@ -13,7 +13,20 @@ export type JobApplicant = {
   appliedAt: string;
   yearsOfExperience: string;
   salaryExpectation: string;
-  status: "new" | "reviewed";
+  aiScore: number;
+  answers: Array<{
+    id: string;
+    label: string;
+    value: string;
+    type: "text" | "textarea" | "link" | "file" | "number" | "date";
+  }>;
+  aiAnalysis: {
+    score: number;
+    summary: string;
+    strengths: string[];
+    concerns: string[];
+    recommendation: string;
+  };
 };
 
 export type JobAnalyticsPoint = {
@@ -44,6 +57,7 @@ export type ActiveJobItem = {
   statusLabel: string;
   department: string;
   employmentType: string;
+  workMode: string;
   openings: number;
   applicantsCount: number;
   viewsCount: number;

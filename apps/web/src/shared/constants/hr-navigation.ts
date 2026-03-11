@@ -26,9 +26,8 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
       { id: 'requests', label: 'Requests', href: '/dashboard/hr/recruitment/requests', badge: '4' },
       { id: 'ready-to-post', label: 'Ready to Post', href: '/dashboard/hr/recruitment/ready-to-post', badge: '3' },
       { id: 'active-posting', label: 'Active Posting', href: '/dashboard/hr/recruitment/active-posting' },
-      { id: 'ongoing-recruitment', label: 'Ongoing Recruitment', href: '/dashboard/hr/recruitment/ongoing-recruitment' },
-      { id: 'closed-posts', label: 'Closed Posts', href: '/dashboard/hr/recruitment/closed-posts' },
-      { id: 'applicant-forms', label: 'Applicant Forms', href: '/dashboard/hr/recruitment/applicant-forms' },
+      { id: 'ongoing-recruitment', label: 'Interview and Shortlist', href: '/dashboard/hr/recruitment/ongoing-recruitment' },
+      { id: 'closed-posts', label: 'History', href: '/dashboard/hr/recruitment/closed-posts' },
     ],
   },
   {

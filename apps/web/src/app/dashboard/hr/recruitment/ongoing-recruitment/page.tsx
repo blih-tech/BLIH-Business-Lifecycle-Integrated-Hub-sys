@@ -13,6 +13,6 @@ export default async function OngoingRecruitmentPage() {
     redirect("/dashboard");
   }
 
-  return <OngoingRecruitmentContent />;
+  return <OngoingRecruitmentContent currentUserName={session.username ?? "User"} />;
 }
 

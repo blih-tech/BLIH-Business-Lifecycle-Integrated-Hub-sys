@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { AppHeader } from '@/shared/components/AppHeader';
 import { SidebarProvider, useSidebar } from '@/shared/components/ui/sidebar';
@@ -18,9 +18,22 @@ type HrDashboardFrameProps = {
 
 function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const isHrRoot = pathname === '/dashboard/hr';
   const { toggleSidebar } = useSidebar();
   const [subnavOpen, setSubnavOpen] = React.useState(!isHrRoot);
+
+  const createActionByPath = React.useMemo(
+    () => ({
+      '/dashboard/hr/recruitment/requests': {
+        label: 'Create New Request',
+        onClick: () => router.push('/dashboard/hr/recruitment/requests?create=new-request'),
+      },
+    }),
+    [router],
+  );
+
+  const createAction = createActionByPath[pathname as keyof typeof createActionByPath];
 
   React.useEffect(() => {
     setSubnavOpen(!isHrRoot);
@@ -42,7 +55,12 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
         onRequestOpenSubnav={() => setSubnavOpen(true)}
       />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <AppHeader onToggleSubnav={handleHeaderToggle} />
+        <AppHeader
+          onToggleSubnav={handleHeaderToggle}
+          showCreate={Boolean(createAction)}
+          createLabel={createAction?.label}
+          onCreate={createAction?.onClick}
+        />
         <main className="min-h-0 flex-1 overflow-auto">{children}</main>
       </div>
     </div>

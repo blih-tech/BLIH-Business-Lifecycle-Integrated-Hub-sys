@@ -1,5 +1,14 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsInt,
@@ -7,7 +16,9 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
 
 const ENDORSEMENT_LEVELS = ['STRONG_YES', 'YES', 'UNCERTAIN', 'NO'] as const;
@@ -24,11 +35,29 @@ const INTERVIEW_TYPES = [
   'PANEL',
   'FINAL',
 ] as const;
+const INTERVIEW_ATTENDANCE_STATUSES = [
+  'SCHEDULED',
+  'ATTENDING',
+  'NO_SHOW',
+  'COMPLETED',
+  'CANCELLED',
+] as const;
+
+export class InterviewerAssignmentInputDto {
+  @ApiProperty({ example: 'f8ef7938-8b1e-4a6e-bd25-c61432540273' })
+  @IsUUID()
+  interviewerId!: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  role?: string | null;
+}
 
 export class CreateInterviewDto {
   @ApiProperty({ example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374' })
   @IsUUID()
-  applicantId!: string;
+  jobId!: string;
 
   @ApiProperty({ enum: INTERVIEW_TYPES })
   @IsEnum(INTERVIEW_TYPES)
@@ -45,30 +74,15 @@ export class CreateInterviewDto {
   @IsEnum(INTERVIEW_STATUSES)
   status?: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
+  @ApiProperty({ example: '2026-03-10T10:00:00.000Z' })
   @IsDateString()
-  scheduledAt?: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsDateString()
-  startedAt?: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsDateString()
-  completedAt?: string | null;
+  scheduledAt!: string;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsInt()
   @Min(0)
   durationMinutes?: number | null;
-
-  @ApiProperty()
-  @IsUUID()
-  interviewerId!: string;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -80,44 +94,207 @@ export class CreateInterviewDto {
   @IsString()
   meetingUrl?: string | null;
 
-  @ApiPropertyOptional({ nullable: true, type: () => [Object] })
-  @IsOptional()
-  interviewers?: unknown[] | null;
+  @ApiProperty({ type: () => [String] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  applicantIds!: string[];
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiProperty({ type: () => [InterviewerAssignmentInputDto] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => InterviewerAssignmentInputDto)
+  interviewers!: InterviewerAssignmentInputDto[];
+}
+
+export class UpdateInterviewDto extends PartialType(
+  OmitType(CreateInterviewDto, ['jobId'] as const),
+) {}
+
+export class UpdateInterviewParticipantAttendanceDto {
+  @ApiProperty({ enum: INTERVIEW_ATTENDANCE_STATUSES })
+  @IsEnum(INTERVIEW_ATTENDANCE_STATUSES)
+  attendanceStatus!:
+    | 'SCHEDULED'
+    | 'ATTENDING'
+    | 'NO_SHOW'
+    | 'COMPLETED'
+    | 'CANCELLED';
+}
+
+export class UpsertInterviewFeedbackDto {
+  @ApiPropertyOptional({ nullable: true, example: 82.5 })
   @IsOptional()
-  @IsString()
-  feedback?: string | null;
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @Max(100)
+  score?: number | null;
 
   @ApiPropertyOptional({ enum: ENDORSEMENT_LEVELS, nullable: true })
   @IsOptional()
   @IsEnum(ENDORSEMENT_LEVELS)
   endorsement?: 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO' | null;
 
-  @ApiPropertyOptional({ nullable: true, example: 4.5 })
+  @ApiPropertyOptional({ type: () => [String] })
   @IsOptional()
-  @IsNumber({ maxDecimalPlaces: 2 })
-  score?: number | null;
+  @IsArray()
+  @IsString({ each: true })
+  strengths?: string[];
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ type: () => [String] })
   @IsOptional()
-  @IsString()
-  nextAction?: string | null;
+  @IsArray()
+  @IsString({ each: true })
+  weaknesses?: string[];
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
   notes?: string | null;
+
+  @ApiPropertyOptional({
+    default: false,
+    description:
+      'When true, saves feedback as draft without a submission timestamp.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isDraft?: boolean;
 }
 
-export class UpdateInterviewDto extends PartialType(CreateInterviewDto) {}
+export class InterviewResponseParticipantApplicantDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  firstName!: string;
+
+  @ApiProperty()
+  lastName!: string;
+
+  @ApiProperty()
+  email!: string;
+
+  @ApiProperty()
+  status!: string;
+}
+
+export class InterviewResponseParticipantDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  sessionId!: string;
+
+  @ApiProperty()
+  applicantId!: string;
+
+  @ApiProperty({ enum: INTERVIEW_ATTENDANCE_STATUSES })
+  attendanceStatus!:
+    | 'SCHEDULED'
+    | 'ATTENDING'
+    | 'NO_SHOW'
+    | 'COMPLETED'
+    | 'CANCELLED';
+
+  @ApiPropertyOptional({
+    type: () => InterviewResponseParticipantApplicantDto,
+    nullable: true,
+  })
+  applicant!: InterviewResponseParticipantApplicantDto | null;
+
+  @ApiProperty()
+  createdAt!: string;
+}
+
+export class InterviewResponseInterviewerDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  firstName!: string;
+
+  @ApiProperty()
+  lastName!: string;
+
+  @ApiProperty()
+  email!: string;
+
+  @ApiProperty()
+  status!: string;
+}
+
+export class InterviewResponseAssignmentDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  sessionId!: string;
+
+  @ApiProperty()
+  interviewerId!: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  role!: string | null;
+
+  @ApiPropertyOptional({
+    type: () => InterviewResponseInterviewerDto,
+    nullable: true,
+  })
+  interviewer!: InterviewResponseInterviewerDto | null;
+
+  @ApiProperty()
+  createdAt!: string;
+}
+
+export class InterviewFeedbackResponseDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  participantId!: string;
+
+  @ApiProperty()
+  assignmentId!: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  interviewerId!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  score!: number | null;
+
+  @ApiPropertyOptional({ nullable: true, enum: ENDORSEMENT_LEVELS })
+  endorsement!: 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO' | null;
+
+  @ApiProperty({ type: () => [String] })
+  strengths!: string[];
+
+  @ApiProperty({ type: () => [String] })
+  weaknesses!: string[];
+
+  @ApiPropertyOptional({ nullable: true })
+  notes!: string | null;
+
+  @ApiProperty()
+  isDraft!: boolean;
+
+  @ApiPropertyOptional({ nullable: true })
+  submittedAt!: string | null;
+
+  @ApiProperty()
+  createdAt!: string;
+
+  @ApiProperty()
+  updatedAt!: string;
+}
 
 export class InterviewResponseDto {
   @ApiProperty()
   id!: string;
 
   @ApiProperty()
-  applicantId!: string;
+  jobId!: string;
 
   @ApiProperty({ enum: INTERVIEW_TYPES })
   type!: 'HR_SCREENING' | 'TECHNICAL' | 'BEHAVIORAL' | 'PANEL' | 'FINAL';
@@ -128,20 +305,11 @@ export class InterviewResponseDto {
   @ApiProperty({ enum: INTERVIEW_STATUSES })
   status!: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 
-  @ApiPropertyOptional({ nullable: true })
-  scheduledAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  startedAt!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  completedAt!: string | null;
+  @ApiProperty()
+  scheduledAt!: string;
 
   @ApiPropertyOptional({ nullable: true })
   durationMinutes!: number | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  interviewerId!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   location!: string | null;
@@ -149,23 +317,17 @@ export class InterviewResponseDto {
   @ApiPropertyOptional({ nullable: true })
   meetingUrl!: string | null;
 
-  @ApiPropertyOptional({ nullable: true, type: () => Object })
-  interviewers!: unknown;
+  @ApiProperty()
+  createdById!: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  feedback!: string | null;
+  @ApiProperty({ type: () => [InterviewResponseParticipantDto] })
+  participants!: InterviewResponseParticipantDto[];
 
-  @ApiPropertyOptional({ nullable: true, enum: ENDORSEMENT_LEVELS })
-  endorsement!: 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO' | null;
+  @ApiProperty({ type: () => [InterviewResponseAssignmentDto] })
+  interviewers!: InterviewResponseAssignmentDto[];
 
-  @ApiPropertyOptional({ nullable: true })
-  score!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  nextAction!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  notes!: string | null;
+  @ApiProperty({ type: () => [InterviewFeedbackResponseDto] })
+  feedbacks!: InterviewFeedbackResponseDto[];
 
   @ApiProperty()
   createdAt!: string;
@@ -175,6 +337,16 @@ export class InterviewResponseDto {
 }
 
 export class InterviewListQueryDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  jobId?: string;
+
+  @ApiPropertyOptional({ enum: INTERVIEW_TYPES })
+  @IsOptional()
+  @IsEnum(INTERVIEW_TYPES)
+  type?: 'HR_SCREENING' | 'TECHNICAL' | 'BEHAVIORAL' | 'PANEL' | 'FINAL';
+
   @ApiPropertyOptional({ enum: INTERVIEW_STATUSES })
   @IsOptional()
   @IsEnum(INTERVIEW_STATUSES)
@@ -182,6 +354,17 @@ export class InterviewListQueryDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsInt()
+  @Min(1)
+  round?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsUUID()
   applicantId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  interviewerId?: string;
 }

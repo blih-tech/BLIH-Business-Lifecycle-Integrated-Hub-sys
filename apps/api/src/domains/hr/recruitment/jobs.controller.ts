@@ -109,6 +109,7 @@ export class JobsController {
             workMode: 'hybrid',
             urgency: 'high',
             neededByDate: '2026-03-30',
+            priority: 'medium',
           },
           job: {
             title: 'Senior Frontend Engineer',
@@ -153,49 +154,44 @@ export class JobsController {
               'Collaborate with product and design',
             ],
             tools: ['Docker', 'GitHub Actions'],
-            priority: 'medium',
             hiringManagerId: '6e40348d-4fda-47a7-b267-13ed7b6fca68',
             applicationDeadline: '2026-04-30T23:59:59.000Z',
           },
           applicationForm: {
-            jobTitle: 'Senior Frontend Engineer',
-            location: 'Addis Ababa, Ethiopia',
-            workMode: 'hybrid',
-            employmentType: 'full_time',
-            jobSummary: {
-              type: 'doc',
-              version: 1,
-              content: [
-                {
-                  type: 'paragraph',
-                  text: 'Lead frontend delivery for customer-facing products.',
-                },
-              ],
-            },
-            whyJoinUs: {
-              type: 'doc',
-              version: 1,
-              content: [
-                {
-                  type: 'paragraph',
-                  text: 'Join a fast-moving product team with strong ownership.',
-                },
-              ],
-            },
-            requiredSkills: ['React', 'TypeScript'],
-            preferredSkills: ['Next.js'],
-            responsibilities: [
-              'Lead frontend delivery',
-              'Collaborate with product and design',
+            applicantFields: [
+              {
+                key: 'PHONE',
+                enabled: true,
+                required: false,
+                order: 1,
+              },
+              {
+                key: 'LINKEDIN_URL',
+                enabled: true,
+                required: false,
+                order: 2,
+              },
+              {
+                key: 'EXPECTED_SALARY',
+                enabled: true,
+                required: false,
+                order: 3,
+              },
             ],
-            experienceLevel: 'senior',
-            salaryMin: 2000,
-            salaryMax: 3000,
-            salaryCurrency: 'USD',
-            salaryMode: 'competitive',
-            benefits: ['Health insurance', 'Learning budget'],
-            openings: 2,
-            applicationDeadline: '2026-04-30T23:59:59.000Z',
+            sections: [
+              {
+                key: 'EDUCATION',
+                enabled: true,
+                required: false,
+                order: 1,
+              },
+              {
+                key: 'EXPERIENCE',
+                enabled: true,
+                required: false,
+                order: 2,
+              },
+            ],
             customFields: [
               {
                 id: 'custom-123',
@@ -304,6 +300,7 @@ export class JobsController {
             workMode: 'hybrid',
             urgency: 'medium',
             neededByDate: '2026-04-15',
+            priority: 'high',
           },
           job: {
             title: 'Lead Frontend Engineer',
@@ -321,28 +318,45 @@ export class JobsController {
             responsibilities: ['Lead team', 'Ship product'],
             tools: ['Docker', 'GitHub Actions'],
             experienceLevel: 'lead',
-            priority: 'high',
             salaryMode: 'negotiable',
             openings: 1,
             applicationDeadline: '2026-05-15T23:59:59.000Z',
           },
           applicationForm: {
-            jobTitle: 'Lead Frontend Engineer',
-            location: 'Addis Ababa, Ethiopia',
-            workMode: 'hybrid',
-            employmentType: 'full_time',
-            jobSummary: {
-              type: 'doc',
-              version: 1,
-              content: [{ type: 'paragraph', text: 'Updated summary' }],
-            },
-            requiredSkills: ['React'],
-            preferredSkills: ['TypeScript'],
-            responsibilities: ['Lead team', 'Ship product'],
-            experienceLevel: 'lead',
-            salaryMode: 'negotiable',
-            openings: 1,
-            applicationDeadline: '2026-05-15T23:59:59.000Z',
+            applicantFields: [
+              {
+                key: 'PHONE',
+                enabled: true,
+                required: false,
+                order: 1,
+              },
+              {
+                key: 'GITHUB_URL',
+                enabled: true,
+                required: false,
+                order: 2,
+              },
+              {
+                key: 'COVER_LETTER',
+                enabled: true,
+                required: true,
+                order: 3,
+              },
+            ],
+            sections: [
+              {
+                key: 'EDUCATION',
+                enabled: true,
+                required: true,
+                order: 1,
+              },
+              {
+                key: 'EXPERIENCE',
+                enabled: true,
+                required: false,
+                order: 2,
+              },
+            ],
             customFields: [],
           },
         },
@@ -371,7 +385,7 @@ export class JobsController {
   @ApiOperation({
     summary: 'Submit job for approval workflow',
     description:
-      'Submits a DRAFT or REJECTED job into approval workflow. Finance and GM stages open in parallel, and HR review is unlocked after both approve. Any rejection marks the job REJECTED immediately.',
+      'Submits a DRAFT or REJECTED job into approval workflow. Finance, GM, and HR review stages are parallel by role. Any rejection marks the job REJECTED immediately.',
   })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
@@ -399,21 +413,20 @@ export class JobsController {
     roles: [JobApprovalPermissions.DECIDE],
   })
   @ApiOperation({
-    summary: 'Approve/reject current job approval stage',
+    summary: 'Approve/reject one eligible job approval stage',
     description:
-      'Records approval or rejection for a pending actionable stage. Finance and GM can be approved in parallel. Use optional stage for deterministic targeting when an actor can decide multiple stages.',
+      'Records approval or rejection for one pending actionable stage that matches caller roles. No stage input is required.',
   })
   @ApiParam({ name: 'id', description: 'Job id' })
   @ApiBody({
     type: ApproveJobDto,
     description:
-      'Request body: decision (required) — APPROVED or REJECTED; stage (optional) — FINANCE | GM | HR_REVIEW; comments (optional).',
+      'Request body: decision (required) — APPROVED or REJECTED; comments (optional).',
     examples: {
       approve: {
         summary: 'Approve stage',
         value: {
           decision: 'APPROVED',
-          stage: 'GM',
           comments: 'Approved by stage owner.',
         },
       },
@@ -421,7 +434,6 @@ export class JobsController {
         summary: 'Reject stage',
         value: {
           decision: 'REJECTED',
-          stage: 'FINANCE',
           comments: 'Budget is not approved.',
         },
       },

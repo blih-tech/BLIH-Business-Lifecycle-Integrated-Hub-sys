@@ -28,14 +28,10 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
           </ul>
         </section>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2">
           <div className="rounded-[8px] bg-[#f3f3f3] p-3">
             <p className="text-xs font-normal leading-4 text-[#666]">Posted</p>
             <p className="mt-1 text-sm font-medium leading-5 tracking-[-0.1504px] text-black">{job.postedAt}</p>
-          </div>
-          <div className="rounded-[8px] bg-[#f3f3f3] p-3">
-            <p className="text-xs font-normal leading-4 text-[#666]">Closed</p>
-            <p className="mt-1 text-sm font-medium leading-5 tracking-[-0.1504px] text-black">{job.closesAt}</p>
           </div>
         </div>
       </div>

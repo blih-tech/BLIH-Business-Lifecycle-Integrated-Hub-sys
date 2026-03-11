@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { PrismaService } from 'src/platform/prisma/prisma.service';
+import { PrismaService } from '../../platform/prisma/prisma.service';
 import { parseCv } from './utils/cv-parser';
-import { ScreeningRecommendation } from '@repo/database';
+import { ScreeningRecommendation } from '../../platform/prisma/prisma-client';
 
 const recommendationMap = {
   SHORTLIST: ScreeningRecommendation.STRONG_RECOMMEND,
@@ -332,13 +332,15 @@ export class BrainService {
 
     await this.prisma.aiCvAnalysis.create({
       data: {
-        candidateId: applicant.id,
+        applicantId: applicant.id,
         jobId: jobId,
         score: result.score || 0,
         recommendation: finalRecommendation,
         strengths: result.strengths || [],
         weaknesses: result.weaknesses || [],
         aiSummary: result.summary || '',
+        confidence: result.confidence || 0,
+        modelVersion: result.modelVersion || '',
       },
     });
 
@@ -377,13 +379,15 @@ export class BrainService {
 
         await this.prisma.aiCvAnalysis.create({
           data: {
-            candidateId: applicant.id,
+            applicantId: applicant.id,
             jobId: jobId,
             score: result.score || 0,
             recommendation: finalRecommendation,
             strengths: result.strengths || [],
             weaknesses: result.weaknesses || [],
             aiSummary: result.summary || '',
+            confidence: result.confidence || 0,
+            modelVersion: result.modelVersion || '',
           },
         });
 

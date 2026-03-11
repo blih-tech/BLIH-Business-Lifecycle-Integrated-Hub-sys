@@ -13,5 +13,5 @@ export default async function RecruitmentRequestsPage() {
     redirect("/dashboard");
   }
 
-  return <RecruitmentRequestsContent />;
+  return <RecruitmentRequestsContent currentUserName={session.username ?? "User"} />;
 }

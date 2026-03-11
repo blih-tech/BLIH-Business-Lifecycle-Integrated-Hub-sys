@@ -110,8 +110,15 @@ enum JobPriority {
 
 enum JobStageApprovalStatus {
   PENDING_FOR_APPROVAL
+  REQUEST_REVIEW
   APPROVED
   REJECTED
+}
+
+enum JobApprovalDepartment {
+  FINANCE
+  GM
+  HR
 }
 
 enum JobApprovalStage {
@@ -122,6 +129,7 @@ enum JobApprovalStage {
 
 enum JobSalaryMode {
   NOT_SPECIFIED
+  FIXED
   NEGOTIABLE
   COMPETITIVE
 }
@@ -145,6 +153,20 @@ enum JobApplicationFieldType {
   FILE
   DATE
   CHECKBOX
+}
+
+enum JobApplicantOptionalFieldKey {
+  PHONE
+  LINKEDIN_URL
+  PORTFOLIO_URL
+  GITHUB_URL
+  EXPECTED_SALARY
+  COVER_LETTER
+}
+
+enum JobApplicationFormSectionKey {
+  EDUCATION
+  EXPERIENCE
 }
 
 enum JobContractType {
@@ -184,24 +206,25 @@ enum CandidateSource {
   AGENCY
 }
 
-enum JobApplicationStatus {
-  NEW
+enum ApplicantStatus {
+  APPLIED
   SCREENING
   SHORTLISTED
-  INTERVIEW_STAGE
-  OFFER_PENDING
+  INTERVIEW
+  WAITLIST
+  OFFER
   HIRED
   REJECTED
   WITHDRAWN
 }
 
-enum ApplicantStatus {
-  APPLIED
-  SHORTLISTED
-  INTERVIEW
-  OFFER
-  HIRED
-  REJECTED
+enum OfferStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  WITHDRAWN
 }
 
 enum InterviewType {
@@ -219,6 +242,14 @@ enum InterviewStatus {
   NO_SHOW
 }
 
+enum InterviewAttendanceStatus {
+  SCHEDULED
+  ATTENDING
+  NO_SHOW
+  COMPLETED
+  CANCELLED
+}
+
 enum EndorsementLevel {
   STRONG_YES
   YES
@@ -226,10 +257,68 @@ enum EndorsementLevel {
   NO
 }
 
-enum HiringDecisionOutcome {
-  OFFER_APPROVED
-  OFFER_DECLINED
-  SUSPENDED
+// CV Screening Enums
+enum CvScreeningRecommendation {
+  STRONG_RECOMMEND
+  RECOMMEND
+  CONSIDER
+  REJECT
+}
+
+enum CvScreeningStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum CvScreeningCriteriaType {
+  SKILLS
+  EXPERIENCE
+  EDUCATION
+  CERTIFICATIONS
+  LANGUAGES
+  SOFT_SKILLS
+  TECHNICAL_SKILLS
+  DOMAIN_KNOWLEDGE
+  CUSTOM
+}
+
+enum CvScoringMethod {
+  MANUAL
+  AUTOMATIC
+  HYBRID
+}
+
+enum CvScreeningQuestionType {
+  TEXT
+  TEXTAREA
+  NUMBER
+  SELECT
+  MULTI_SELECT
+  CHECKBOX
+  RADIO
+  RATING
+  BOOLEAN
+  DATE
+  FILE
+}
+
+enum CvScreeningStageType {
+  INITIAL_SCREENING
+  TECHNICAL_REVIEW
+  HR_REVIEW
+  MANAGER_REVIEW
+  FINAL_DECISION
+  CUSTOM
+}
+
+enum CvScreeningDecisionType {
+  APPROVE
+  REJECT
+  REQUEST_CHANGES
+  ESCALATE
+  HOLD
 }
 
 // Onboarding Enums

@@ -1,3 +1,7 @@
+import type { ApplicationFormValues } from "@/features/hr/recruitment/requests/application-form-schema";
+import type { CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
+import type { JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
+
 export type JobRequestPriority = "high" | "medium" | "low";
 
 export type JobRequestDepartment = "technical" | "creative" | "digital_marketing";
@@ -12,6 +16,12 @@ export type JobRequestItem = {
   positions: number;
   employmentType: JobRequestType;
   requestedAt: string;
+  expectedStartDate: string;
+  requestedBy: string;
+  hiringManager: string;
+  experienceLevel: string;
+  justification: string;
+  keySkills: string[];
   primaryActionLabel: string;
   secondaryActionLabel: string;
 };
@@ -23,4 +33,36 @@ export type RequestsStatItem = {
   label: string;
   value: string;
   icon: RequestsStatIcon;
+};
+
+export type SubmittedJobDetails = Omit<
+  JobDetailsFormValues,
+  "keyResponsibilities" | "requirements" | "preferredSkills" | "benefits"
+> & {
+  keyResponsibilities: string[];
+  requirements: string[];
+  preferredSkills: string[];
+  benefits: string[];
+};
+
+export type SubmittedJobRequest = {
+  requestForm: CreateRequestFormValues;
+  jobDetailsForm: SubmittedJobDetails;
+  applicationForm: ApplicationFormValues;
+};
+
+export type ApprovalProgressState = "pending" | "approved" | "requested_review" | "rejected";
+
+export type ApprovalStep = {
+  status: ApprovalProgressState;
+  justification?: string;
+};
+
+export type FullJobRequest = SubmittedJobRequest & {
+  status: "pending" | "posted";
+  progress: {
+    jm: ApprovalStep;
+    hr: ApprovalStep;
+    finance: ApprovalStep;
+  };
 };

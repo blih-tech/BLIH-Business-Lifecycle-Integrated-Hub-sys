@@ -72,7 +72,8 @@ export class ApplicantsController {
         summary: 'Create applicant payload',
         value: {
           jobId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
-          fullName: 'Abel Tesfaye',
+          firstName: 'Abel',
+          lastName: 'Tesfaye',
           email: 'abel.tesfaye@example.com',
           phone: '+251912345678',
           resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
@@ -158,6 +159,18 @@ export class ApplicantsController {
     type: UpdateApplicantDto,
     description:
       'Request body: partial applicant fields (all optional). Same structure as create.',
+    examples: {
+      updateApplicant: {
+        summary: 'Update applicant profile fields',
+        value: {
+          phone: '+251911111111',
+          currentCompany: 'NextWave Labs',
+          currentPosition: 'Lead Engineer',
+          yearsExperience: 7,
+          skills: ['Node.js', 'TypeScript', 'PostgreSQL'],
+        },
+      },
+    },
   })
   @ApiEnvelopeOkResponse(
     ApplicantResponseDto,
@@ -185,7 +198,16 @@ export class ApplicantsController {
   @ApiBody({
     type: UpdateApplicantStatusDto,
     description:
-      'Status flow: APPLIED -> SHORTLISTED -> INTERVIEW -> OFFER -> HIRED, with REJECTED allowed from active states.',
+      'Status flow: APPLIED -> SCREENING -> SHORTLISTED -> INTERVIEW -> OFFER -> HIRED, with REJECTED/WITHDRAWN allowed from active states.',
+    examples: {
+      moveToInterview: {
+        summary: 'Move applicant to interview stage',
+        value: {
+          status: 'INTERVIEW',
+          note: 'Passed screening and shortlisted by hiring manager.',
+        },
+      },
+    },
   })
   @ApiEnvelopeOkResponse(
     ApplicantResponseDto,
