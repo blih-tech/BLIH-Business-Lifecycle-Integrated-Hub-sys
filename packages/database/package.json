@@ -27,6 +27,11 @@
       "import": "./dist/src/prisma-adapter.js",
       "default": "./dist/src/prisma-adapter.js"
     },
+    "./generated/enums": {
+      "types": "./dist/src/generated/enums.d.ts",
+      "import": "./dist/src/generated/enums.js",
+      "default": "./dist/src/generated/enums.js"
+    },
     "./rbac/permissions.constants": {
       "types": "./dist/src/rbac/permissions.constants.d.ts",
       "import": "./dist/src/rbac/permissions.constants.js",

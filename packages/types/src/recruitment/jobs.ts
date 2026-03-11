@@ -248,11 +248,15 @@ export interface JobResponseDto {
     workMode: WorkLocationType;
     urgency: JobUrgency;
     neededByDate: string | null;
-    status: JobWorkflowStatus;
+    status: {
+      workflow: JobWorkflowStatus;
+      approvals: {
+        finance: JobStageApprovalStatus;
+        gm: JobStageApprovalStatus;
+        hr: JobStageApprovalStatus;
+      };
+    };
     priority: JobPriority;
-    financeApprovalStatus: JobStageApprovalStatus;
-    gmApprovalStatus: JobStageApprovalStatus;
-    hrApprovalStatus: JobStageApprovalStatus;
     draftedAt: string | null;
     pendingApprovalAt: string | null;
     readyToPostAt: string | null;
@@ -304,15 +308,32 @@ export interface JobResponseDto {
     applicantFields: Array<{
       id: string;
       key: JobApplicantOptionalFieldKey;
+      label: string;
+      type: JobApplicationFieldType;
       enabled: boolean;
       required: boolean;
+      helpText: string | null;
+      options: string[];
       order: number | null;
     }>;
     sections: Array<{
       id: string;
       key: JobApplicationFormSectionKey;
+      label: string;
+      type: 'SECTION';
       enabled: boolean;
       required: boolean;
+      helpText: string | null;
+      options: string[];
+      fields: Array<{
+        key: string;
+        label: string;
+        type: JobApplicationFieldType;
+        required: boolean;
+        helpText: string | null;
+        options: string[];
+        order: number;
+      }>;
       order: number | null;
     }>;
     customFields: Array<{

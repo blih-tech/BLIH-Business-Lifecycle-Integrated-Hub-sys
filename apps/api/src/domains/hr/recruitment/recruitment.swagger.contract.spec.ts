@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { ApplicantsController } from './applicants.controller';
+import { InterviewQuestionsController } from './interview-questions.controller';
 import { InterviewsController } from './interviews.controller';
 import { JobsController } from './jobs.controller';
 import {
@@ -11,10 +12,13 @@ import {
   CloseJobUseCase,
   CreateApplicantUseCase,
   CreateInterviewUseCase,
+  CreateInterviewQuestionUseCase,
   CreateJobUseCase,
+  DeactivateInterviewQuestionUseCase,
   GetApplicantUseCase,
   GetInterviewUseCase,
   ListInterviewParticipantFeedbackUseCase,
+  ListInterviewQuestionsUseCase,
   GetJobUseCase,
   ListApplicantsUseCase,
   ListInterviewsUseCase,
@@ -22,6 +26,7 @@ import {
   PublishJobUseCase,
   SubmitJobUseCase,
   UpdateInterviewParticipantAttendanceUseCase,
+  UpdateInterviewQuestionUseCase,
   UpdateApplicantStatusUseCase,
   UpdateApplicantUseCase,
   UpdateInterviewUseCase,
@@ -56,6 +61,10 @@ const useCaseTokens = [
   UpdateInterviewParticipantAttendanceUseCase,
   UpsertInterviewFeedbackUseCase,
   ListInterviewParticipantFeedbackUseCase,
+  CreateInterviewQuestionUseCase,
+  UpdateInterviewQuestionUseCase,
+  DeactivateInterviewQuestionUseCase,
+  ListInterviewQuestionsUseCase,
 ] as const;
 
 type HttpMethod = 'get' | 'post' | 'patch';
@@ -148,6 +157,26 @@ const expectedOperations: Array<{
     method: 'get',
     expectsBody: false,
   },
+  {
+    path: '/hr/recruitment/interview-questions',
+    method: 'post',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interview-questions',
+    method: 'get',
+    expectsBody: false,
+  },
+  {
+    path: '/hr/recruitment/interview-questions/{id}',
+    method: 'patch',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interview-questions/{id}/deactivate',
+    method: 'patch',
+    expectsBody: false,
+  },
 ];
 
 describe('Recruitment Swagger Contract', () => {
@@ -160,7 +189,12 @@ describe('Recruitment Swagger Contract', () => {
     }));
 
     const moduleRef: TestingModule = await Test.createTestingModule({
-      controllers: [JobsController, ApplicantsController, InterviewsController],
+      controllers: [
+        JobsController,
+        ApplicantsController,
+        InterviewsController,
+        InterviewQuestionsController,
+      ],
       providers,
     })
       .overrideGuard(KeycloakAuthGuard)

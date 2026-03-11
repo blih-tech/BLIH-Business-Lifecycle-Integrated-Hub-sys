@@ -2,7 +2,8 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "moduleNameMapper": {
     "^(\\.{1,2}/.*)\\.js$": "$1",
-    "^@repo/database/prisma-client$": "<rootDir>/../src/platform/prisma/prisma-client.jest.ts"
+    "^@repo/database/prisma-client$": "<rootDir>/../src/platform/prisma/prisma-client.jest.ts",
+    "^@repo/database/generated/enums$": "<rootDir>/../../../packages/database/src/generated/enums.ts"
   },
   "rootDir": ".",
   "testEnvironment": "node",

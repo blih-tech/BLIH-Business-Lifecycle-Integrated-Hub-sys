@@ -59,6 +59,7 @@ const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
   'COVER_LETTER',
 ] as const;
 const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
+const APPLICATION_FORM_SECTION_TYPES = ['SECTION'] as const;
 const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 const JOB_STAGE_STATUSES = [
   'PENDING_FOR_APPROVAL',
@@ -544,6 +545,31 @@ export class JobResponsibilityValueResponseDto {
   value!: string;
 }
 
+export class JobRequestFormApprovalStatusResponseDto {
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  finance!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  gm!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+
+  @ApiProperty({ enum: JOB_STAGE_STATUSES })
+  hr!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+}
+
+export class JobRequestFormStatusResponseDto {
+  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
+  workflow!:
+    | 'DRAFT'
+    | 'PENDING_FOR_APPROVAL'
+    | 'READY_TO_POST'
+    | 'PUBLISHED'
+    | 'CLOSED'
+    | 'REJECTED';
+
+  @ApiProperty({ type: () => JobRequestFormApprovalStatusResponseDto })
+  approvals!: JobRequestFormApprovalStatusResponseDto;
+}
+
 export class JobRequestFormResponseDto extends OmitType(
   JobRequestFormInputDto,
   [],
@@ -557,26 +583,11 @@ export class JobRequestFormResponseDto extends OmitType(
   @ApiProperty()
   position!: string;
 
-  @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
-  status!:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
+  @ApiProperty({ type: () => JobRequestFormStatusResponseDto })
+  status!: JobRequestFormStatusResponseDto;
 
   @ApiProperty({ enum: JOB_PRIORITY_LEVELS })
   priority!: (typeof JOB_PRIORITY_LEVELS)[number];
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  financeApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  gmApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
-
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  hrApprovalStatus!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
 
   @ApiPropertyOptional({ nullable: true })
   draftedAt!: string | null;
@@ -668,6 +679,41 @@ export class JobApplicationFormFieldResponseDto extends OmitType(
 ) {
   @ApiProperty()
   id!: string;
+
+  @ApiProperty({ example: 'Phone Number' })
+  label!: string;
+
+  @ApiProperty({ enum: JOB_APPLICATION_FIELD_TYPES, example: 'TEXT' })
+  type!: (typeof JOB_APPLICATION_FIELD_TYPES)[number];
+
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
+  @ApiProperty({ type: [String], default: [] })
+  options!: string[];
+}
+
+export class JobApplicationFormSectionFieldResponseDto {
+  @ApiProperty({ example: 'INSTITUTION' })
+  key!: string;
+
+  @ApiProperty({ example: 'Institution' })
+  label!: string;
+
+  @ApiProperty({ enum: JOB_APPLICATION_FIELD_TYPES, example: 'TEXT' })
+  type!: (typeof JOB_APPLICATION_FIELD_TYPES)[number];
+
+  @ApiProperty({ example: true })
+  required!: boolean;
+
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
+  @ApiProperty({ type: [String], default: [] })
+  options!: string[];
+
+  @ApiProperty({ example: 1 })
+  order!: number;
 }
 
 export class JobApplicationFormSectionResponseDto extends OmitType(
@@ -676,6 +722,24 @@ export class JobApplicationFormSectionResponseDto extends OmitType(
 ) {
   @ApiProperty()
   id!: string;
+
+  @ApiProperty({ example: 'Education' })
+  label!: string;
+
+  @ApiProperty({ enum: APPLICATION_FORM_SECTION_TYPES, example: 'SECTION' })
+  type!: (typeof APPLICATION_FORM_SECTION_TYPES)[number];
+
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
+  @ApiProperty({ type: [String], default: [] })
+  options!: string[];
+
+  @ApiProperty({
+    type: [JobApplicationFormSectionFieldResponseDto],
+    default: [],
+  })
+  fields!: JobApplicationFormSectionFieldResponseDto[];
 }
 
 export class JobApplicationFormResponseDto {

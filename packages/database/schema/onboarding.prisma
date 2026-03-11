@@ -2,16 +2,16 @@
 // This file contains Onboarding, OnboardingChecklist, OnboardingTask, AssetProvisioning, PolicyAcknowledgement, ProbationKpiPlan, ProbationEvaluation, and ProbationConfirmation models
 
 model Onboarding {
-  id             String                @id @default(uuid()) @db.Uuid
-  employeeId     String                @map("employee_id") @db.Uuid
-  employee       Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  status         OnboardingStatus      @default(PENDING)
-  startedAt      DateTime?             @map("started_at")
-  completedAt    DateTime?             @map("completed_at")
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  offer          Offer?
-  checklists     OnboardingChecklist[]
+  id          String                @id @default(uuid()) @db.Uuid
+  employeeId  String                @map("employee_id") @db.Uuid
+  employee    Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  status      OnboardingStatus      @default(PENDING)
+  startedAt   DateTime?             @map("started_at")
+  completedAt DateTime?             @map("completed_at")
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  offer       Offer?
+  checklists  OnboardingChecklist[]
 
   @@index([employeeId])
   @@index([status])
@@ -88,11 +88,11 @@ model PolicyAcknowledgement {
   employee              Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   policies              Json?     @db.JsonB
   allAcknowledged       Boolean   @default(false) @map("all_acknowledged")
-  confirmedAt           DateTime?  @map("confirmed_at")
-  systemAccessGrantedAt DateTime?  @map("system_access_granted_at")
+  confirmedAt           DateTime? @map("confirmed_at")
+  systemAccessGrantedAt DateTime? @map("system_access_granted_at")
   verifiedById          String?   @map("verified_by_id") @db.Uuid
   verifiedBy            User?     @relation("PolicyAcknowledgementVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
-  verifiedAt            DateTime?  @map("verified_at")
+  verifiedAt            DateTime? @map("verified_at")
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -109,7 +109,7 @@ model ProbationKpiPlan {
   probationEnd         DateTime              @map("probation_end") @db.Date
   goals                Json?                 @db.JsonB
   development          Json?                 @db.JsonB
-  employeeEndorsedAt  DateTime?             @map("employee_endorsed_at")
+  employeeEndorsedAt   DateTime?             @map("employee_endorsed_at")
   supervisorEndorsedAt DateTime?             @map("supervisor_endorsed_at")
   hrEndorsedAt         DateTime?             @map("hr_endorsed_at")
   status               ProbationPlanStatus   @default(DRAFT)
@@ -122,25 +122,25 @@ model ProbationKpiPlan {
 }
 
 model ProbationEvaluation {
-  id                 String              @id @default(uuid()) @db.Uuid
-  employeeId         String              @map("employee_id") @db.Uuid
-  employee           Employee            @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  probationPlanId   String              @map("probation_plan_id") @db.Uuid
-  probationPlan     ProbationKpiPlan    @relation(fields: [probationPlanId], references: [id], onDelete: Cascade)
-  round              ProbationEvaluationRound
-  evaluationDate     DateTime            @map("evaluation_date") @db.Date
-  performanceScore   Int?                @map("performance_score")
-  attitudeScore      Int?                @map("attitude_score")
-  potentialScore     Int?                @map("potential_score")
-  overallScore       Decimal?            @map("overall_score") @db.Decimal(5, 2)
-  strengths         Json?               @db.JsonB
-  improvements      Json?               @db.JsonB
-  recommendation     ProbationRecommendation @default(CONFIRM)
-  evaluatorComments  String?             @map("evaluator_comments") @db.Text
-  employeeComments  String?             @map("employee_comments") @db.Text
+  id                String                    @id @default(uuid()) @db.Uuid
+  employeeId        String                    @map("employee_id") @db.Uuid
+  employee          Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  probationPlanId   String                    @map("probation_plan_id") @db.Uuid
+  probationPlan     ProbationKpiPlan          @relation(fields: [probationPlanId], references: [id], onDelete: Cascade)
+  round             ProbationEvaluationRound
+  evaluationDate    DateTime                  @map("evaluation_date") @db.Date
+  performanceScore  Int?                      @map("performance_score")
+  attitudeScore     Int?                      @map("attitude_score")
+  potentialScore    Int?                      @map("potential_score")
+  overallScore      Decimal?                  @map("overall_score") @db.Decimal(5, 2)
+  strengths         Json?                     @db.JsonB
+  improvements      Json?                     @db.JsonB
+  recommendation    ProbationRecommendation   @default(CONFIRM)
+  evaluatorComments String?                   @map("evaluator_comments") @db.Text
+  employeeComments  String?                   @map("employee_comments") @db.Text
   status            ProbationEvaluationStatus @default(DRAFT)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
 
   @@index([employeeId])
   @@index([probationPlanId])

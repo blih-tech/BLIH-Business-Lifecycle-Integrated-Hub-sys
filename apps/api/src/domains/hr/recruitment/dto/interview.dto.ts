@@ -10,6 +10,7 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsDefined,
   IsEnum,
   IsInt,
   IsNumber,
@@ -42,6 +43,115 @@ const INTERVIEW_ATTENDANCE_STATUSES = [
   'COMPLETED',
   'CANCELLED',
 ] as const;
+const INTERVIEW_QUESTION_CATEGORIES = [
+  'TECHNICAL',
+  'BEHAVIORAL',
+  'SITUATIONAL',
+  'PROBLEM_SOLVING',
+  'LEADERSHIP',
+  'COMMUNICATION',
+  'DOMAIN_KNOWLEDGE',
+  'CULTURAL_FIT',
+  'GENERAL',
+] as const;
+const INTERVIEW_QUESTION_TYPES = [
+  'TEXT',
+  'TEXTAREA',
+  'BOOLEAN',
+  'RATING',
+  'SINGLE_SELECT',
+  'MULTI_SELECT',
+] as const;
+
+export class InterviewQuestionResponseInputDto {
+  @ApiPropertyOptional({
+    nullable: true,
+    description:
+      'Question bank id when response is based on a reusable question. Null for custom questions.',
+  })
+  @IsOptional()
+  @IsUUID()
+  questionId?: string | null;
+
+  @ApiProperty({ example: 'Explain REST API principles' })
+  @IsString()
+  question!: string;
+
+  @ApiPropertyOptional({
+    enum: INTERVIEW_QUESTION_CATEGORIES,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsEnum(INTERVIEW_QUESTION_CATEGORIES)
+  category?: (typeof INTERVIEW_QUESTION_CATEGORIES)[number] | null;
+
+  @ApiProperty({ enum: INTERVIEW_QUESTION_TYPES })
+  @IsEnum(INTERVIEW_QUESTION_TYPES)
+  type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
+
+  @ApiProperty({
+    description:
+      'Answer value based on question type (string, boolean, number, string[] or null).',
+    nullable: true,
+  })
+  @IsDefined()
+  answer!: unknown;
+
+  @ApiPropertyOptional({ nullable: true, minimum: 0 })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  score?: number | null;
+
+  @ApiPropertyOptional({ nullable: true, minimum: 0.01 })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0.01)
+  maxScore?: number | null;
+
+  @ApiPropertyOptional({ nullable: true, minimum: 0.01, default: 1 })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 4 })
+  @Min(0.01)
+  weight?: number | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  notes?: string | null;
+}
+
+export class InterviewQuestionResponseItemDto {
+  @ApiPropertyOptional({ nullable: true })
+  questionId!: string | null;
+
+  @ApiProperty()
+  question!: string;
+
+  @ApiPropertyOptional({
+    enum: INTERVIEW_QUESTION_CATEGORIES,
+    nullable: true,
+  })
+  category!: (typeof INTERVIEW_QUESTION_CATEGORIES)[number] | null;
+
+  @ApiProperty({ enum: INTERVIEW_QUESTION_TYPES })
+  type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
+
+  @ApiProperty({ nullable: true })
+  answer!: unknown;
+
+  @ApiPropertyOptional({ nullable: true })
+  score!: number | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  maxScore!: number | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  weight!: number | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  notes!: string | null;
+}
 
 export class InterviewerAssignmentInputDto {
   @ApiProperty({ example: 'f8ef7938-8b1e-4a6e-bd25-c61432540273' })
@@ -147,6 +257,17 @@ export class UpsertInterviewFeedbackDto {
   @IsArray()
   @IsString({ each: true })
   weaknesses?: string[];
+
+  @ApiPropertyOptional({
+    type: () => [InterviewQuestionResponseInputDto],
+    description:
+      'Full replacement payload for per-question responses. Supports bank and custom questions.',
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => InterviewQuestionResponseInputDto)
+  questionResponses?: InterviewQuestionResponseInputDto[];
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -272,6 +393,12 @@ export class InterviewFeedbackResponseDto {
 
   @ApiProperty({ type: () => [String] })
   weaknesses!: string[];
+
+  @ApiPropertyOptional({
+    type: () => [InterviewQuestionResponseItemDto],
+    nullable: true,
+  })
+  questionResponses!: InterviewQuestionResponseItemDto[] | null;
 
   @ApiPropertyOptional({ nullable: true })
   notes!: string | null;

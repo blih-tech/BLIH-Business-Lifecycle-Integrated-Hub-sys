@@ -364,6 +364,33 @@ export const EndorsementLevel = {
 export type EndorsementLevel = (typeof EndorsementLevel)[keyof typeof EndorsementLevel]
 
 
+export const InterviewQuestionCategory = {
+  TECHNICAL: 'TECHNICAL',
+  BEHAVIORAL: 'BEHAVIORAL',
+  SITUATIONAL: 'SITUATIONAL',
+  PROBLEM_SOLVING: 'PROBLEM_SOLVING',
+  LEADERSHIP: 'LEADERSHIP',
+  COMMUNICATION: 'COMMUNICATION',
+  DOMAIN_KNOWLEDGE: 'DOMAIN_KNOWLEDGE',
+  CULTURAL_FIT: 'CULTURAL_FIT',
+  GENERAL: 'GENERAL'
+} as const
+
+export type InterviewQuestionCategory = (typeof InterviewQuestionCategory)[keyof typeof InterviewQuestionCategory]
+
+
+export const InterviewQuestionType = {
+  TEXT: 'TEXT',
+  TEXTAREA: 'TEXTAREA',
+  BOOLEAN: 'BOOLEAN',
+  RATING: 'RATING',
+  SINGLE_SELECT: 'SINGLE_SELECT',
+  MULTI_SELECT: 'MULTI_SELECT'
+} as const
+
+export type InterviewQuestionType = (typeof InterviewQuestionType)[keyof typeof InterviewQuestionType]
+
+
 export const CvScreeningRecommendation = {
   STRONG_RECOMMEND: 'STRONG_RECOMMEND',
   RECOMMEND: 'RECOMMEND',

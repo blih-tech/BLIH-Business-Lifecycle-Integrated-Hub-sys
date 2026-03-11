@@ -71,6 +71,205 @@ interface SubmitReadinessPayload {
   responsibilities: unknown[];
 }
 
+const JOB_APPLICANT_FIELD_METADATA: Record<
+  string,
+  {
+    label: string;
+    type:
+      | 'TEXT'
+      | 'TEXTAREA'
+      | 'NUMBER'
+      | 'SELECT'
+      | 'FILE'
+      | 'DATE'
+      | 'CHECKBOX';
+    helpText: string | null;
+    options: string[];
+  }
+> = {
+  PHONE: {
+    label: 'Phone Number',
+    type: 'TEXT',
+    helpText: 'Primary contact phone number including country code.',
+    options: [],
+  },
+  LINKEDIN_URL: {
+    label: 'LinkedIn URL',
+    type: 'TEXT',
+    helpText: 'Candidate LinkedIn profile URL.',
+    options: [],
+  },
+  PORTFOLIO_URL: {
+    label: 'Portfolio URL',
+    type: 'TEXT',
+    helpText: 'Candidate portfolio or personal website URL.',
+    options: [],
+  },
+  GITHUB_URL: {
+    label: 'GitHub URL',
+    type: 'TEXT',
+    helpText: 'Candidate GitHub profile URL.',
+    options: [],
+  },
+  EXPECTED_SALARY: {
+    label: 'Expected Salary',
+    type: 'NUMBER',
+    helpText: 'Candidate salary expectation for the role.',
+    options: [],
+  },
+  COVER_LETTER: {
+    label: 'Cover Letter',
+    type: 'TEXTAREA',
+    helpText: 'Candidate motivation and fit for the role.',
+    options: [],
+  },
+};
+
+interface JobApplicationSectionFieldMetadata {
+  key: string;
+  label: string;
+  type:
+    | 'TEXT'
+    | 'TEXTAREA'
+    | 'NUMBER'
+    | 'SELECT'
+    | 'FILE'
+    | 'DATE'
+    | 'CHECKBOX';
+  required: boolean;
+  helpText: string | null;
+  options: string[];
+  order: number;
+}
+
+const JOB_APPLICATION_SECTION_METADATA: Record<
+  string,
+  {
+    label: string;
+    type: 'SECTION';
+    helpText: string | null;
+    options: string[];
+    fields: JobApplicationSectionFieldMetadata[];
+  }
+> = {
+  EDUCATION: {
+    label: 'Education',
+    type: 'SECTION',
+    helpText: 'Collect education history entries.',
+    options: [],
+    fields: [
+      {
+        key: 'INSTITUTION',
+        label: 'Institution',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Name of school, college, or university.',
+        options: [],
+        order: 1,
+      },
+      {
+        key: 'DEGREE',
+        label: 'Degree',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Degree or qualification obtained.',
+        options: [],
+        order: 2,
+      },
+      {
+        key: 'FIELD',
+        label: 'Field of Study',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Major or specialization.',
+        options: [],
+        order: 3,
+      },
+      {
+        key: 'START_DATE',
+        label: 'Start Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Education start date.',
+        options: [],
+        order: 4,
+      },
+      {
+        key: 'END_DATE',
+        label: 'End Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Education completion date.',
+        options: [],
+        order: 5,
+      },
+    ],
+  },
+  EXPERIENCE: {
+    label: 'Experience',
+    type: 'SECTION',
+    helpText: 'Collect professional experience entries.',
+    options: [],
+    fields: [
+      {
+        key: 'COMPANY',
+        label: 'Company',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Employer or organization name.',
+        options: [],
+        order: 1,
+      },
+      {
+        key: 'TITLE',
+        label: 'Job Title',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Role title held by the applicant.',
+        options: [],
+        order: 2,
+      },
+      {
+        key: 'START_DATE',
+        label: 'Start Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Employment start date.',
+        options: [],
+        order: 3,
+      },
+      {
+        key: 'END_DATE',
+        label: 'End Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Employment end date.',
+        options: [],
+        order: 4,
+      },
+      {
+        key: 'DESCRIPTION',
+        label: 'Description',
+        type: 'TEXTAREA',
+        required: false,
+        helpText: 'Key responsibilities and impact.',
+        options: [],
+        order: 5,
+      },
+    ],
+  },
+};
+
+function humanizeKey(key: string) {
+  return key
+    .toLowerCase()
+    .split('_')
+    .map((segment) =>
+      segment.length > 0 ? segment[0]!.toUpperCase() + segment.slice(1) : '',
+    )
+    .join(' ');
+}
+
 function departmentToStage(department: string): ApprovalStage {
   if (department === 'FINANCE') return 'FINANCE';
   if (department === 'GM') return 'GM';
@@ -417,11 +616,15 @@ export function mapJob(job: any) {
           workMode: requestForm.workMode,
           urgency: requestForm.urgency,
           neededByDate: dateToIso(requestForm.neededByDate),
-          status: requestForm.status,
+          status: {
+            workflow: requestForm.status,
+            approvals: {
+              finance: stageStatuses.financeApprovalStatus,
+              gm: stageStatuses.gmApprovalStatus,
+              hr: stageStatuses.hrApprovalStatus,
+            },
+          },
           priority: requestForm.priority,
-          financeApprovalStatus: stageStatuses.financeApprovalStatus,
-          gmApprovalStatus: stageStatuses.gmApprovalStatus,
-          hrApprovalStatus: stageStatuses.hrApprovalStatus,
           draftedAt: dateToIso(requestForm.draftedAt),
           pendingApprovalAt: dateToIso(requestForm.pendingApprovalAt),
           readyToPostAt: dateToIso(requestForm.readyToPostAt),
@@ -474,6 +677,12 @@ export function mapJob(job: any) {
           jobId: applicationForm.jobId,
           applicantFields: (applicationForm.applicantFields ?? []).map(
             (field: any, index: number) => ({
+              ...(JOB_APPLICANT_FIELD_METADATA[field.key] ?? {
+                label: humanizeKey(field.key),
+                type: 'TEXT',
+                helpText: null,
+                options: [],
+              }),
               id: field.id,
               key: field.key,
               enabled: field.enabled,
@@ -482,13 +691,38 @@ export function mapJob(job: any) {
             }),
           ),
           sections: (applicationForm.sections ?? []).map(
-            (section: any, index: number) => ({
-              id: section.id,
-              key: section.key,
-              enabled: section.enabled,
-              required: section.required,
-              order: section.order ?? index + 1,
-            }),
+            (section: any, index: number) => {
+              const sectionMetadata = JOB_APPLICATION_SECTION_METADATA[
+                section.key
+              ] ?? {
+                label: humanizeKey(section.key),
+                type: 'SECTION' as const,
+                helpText: null,
+                options: [],
+                fields: [],
+              };
+
+              return {
+                id: section.id,
+                key: section.key,
+                label: sectionMetadata.label,
+                type: sectionMetadata.type,
+                enabled: section.enabled,
+                required: section.required,
+                helpText: sectionMetadata.helpText,
+                options: [...sectionMetadata.options],
+                fields: sectionMetadata.fields.map((field) => ({
+                  key: field.key,
+                  label: field.label,
+                  type: field.type,
+                  required: field.required,
+                  helpText: field.helpText,
+                  options: [...field.options],
+                  order: field.order,
+                })),
+                order: section.order ?? index + 1,
+              };
+            },
           ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
@@ -663,11 +897,77 @@ function mapInterviewerAssignment(assignment: any) {
   };
 }
 
+function normalizeInterviewResponseAnswer(
+  answer: unknown,
+): string | boolean | number | string[] | null {
+  if (answer == null) return null;
+  if (typeof answer === 'string') return answer;
+  if (typeof answer === 'boolean') return answer;
+  if (typeof answer === 'number' && Number.isFinite(answer)) return answer;
+  if (Array.isArray(answer) && answer.every((item) => typeof item === 'string'))
+    return answer;
+  return null;
+}
+
+function mapInterviewQuestionResponseItem(item: unknown) {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) {
+    return null;
+  }
+
+  const row = item as Record<string, unknown>;
+  const score =
+    typeof row.score === 'number' && Number.isFinite(row.score)
+      ? row.score
+      : null;
+  const maxScore =
+    typeof row.maxScore === 'number' && Number.isFinite(row.maxScore)
+      ? row.maxScore
+      : null;
+  const weight =
+    typeof row.weight === 'number' && Number.isFinite(row.weight)
+      ? row.weight
+      : null;
+
+  return {
+    questionId: typeof row.questionId === 'string' ? row.questionId : null,
+    question: typeof row.question === 'string' ? row.question : '',
+    category: typeof row.category === 'string' ? row.category : null,
+    type: typeof row.type === 'string' ? row.type : 'TEXT',
+    answer: normalizeInterviewResponseAnswer(row.answer),
+    score,
+    maxScore,
+    weight,
+    notes: typeof row.notes === 'string' ? row.notes : null,
+  };
+}
+
+export function mapInterviewQuestion(row: any) {
+  return {
+    id: row.id,
+    question: row.question,
+    description: row.description ?? null,
+    category: row.category ?? null,
+    type: row.type,
+    options: row.options ?? [],
+    difficulty: typeof row.difficulty === 'number' ? row.difficulty : null,
+    tags: row.tags ?? [],
+    createdById: row.createdById,
+    isActive: Boolean(row.isActive),
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
 export function mapInterviewFeedback(feedback: any) {
   const score =
     typeof feedback.score === 'number' && Number.isFinite(feedback.score)
       ? feedback.score
       : null;
+  const questionResponses = Array.isArray(feedback.questionResponses)
+    ? feedback.questionResponses
+        .map((item: unknown) => mapInterviewQuestionResponseItem(item))
+        .filter(Boolean)
+    : null;
 
   return {
     id: feedback.id,
@@ -678,6 +978,7 @@ export function mapInterviewFeedback(feedback: any) {
     endorsement: feedback.endorsement ?? null,
     strengths: feedback.strengths ?? [],
     weaknesses: feedback.weaknesses ?? [],
+    questionResponses,
     notes: feedback.notes ?? null,
     isDraft: Boolean(feedback.isDraft),
     submittedAt: dateToIso(feedback.submittedAt),

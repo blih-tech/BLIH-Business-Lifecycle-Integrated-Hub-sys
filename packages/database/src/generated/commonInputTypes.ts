@@ -1856,6 +1856,40 @@ export type EnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel = neve
   _max?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
 }
 
+export type EnumInterviewQuestionCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionCategory | Prisma.EnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel> | $Enums.InterviewQuestionCategory | null
+}
+
+export type EnumInterviewQuestionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionType | Prisma.EnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewQuestionTypeFilter<$PrismaModel> | $Enums.InterviewQuestionType
+}
+
+export type EnumInterviewQuestionCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionCategory | Prisma.EnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumInterviewQuestionCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.InterviewQuestionCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel>
+}
+
+export type EnumInterviewQuestionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionType | Prisma.EnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewQuestionTypeWithAggregatesFilter<$PrismaModel> | $Enums.InterviewQuestionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewQuestionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewQuestionTypeFilter<$PrismaModel>
+}
+
 export type EnumOfferStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.OfferStatus | Prisma.EnumOfferStatusFieldRefInput<$PrismaModel>
   in?: $Enums.OfferStatus[] | Prisma.ListEnumOfferStatusFieldRefInput<$PrismaModel>
@@ -4054,6 +4088,40 @@ export type NestedEnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionCategory | Prisma.EnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel> | $Enums.InterviewQuestionCategory | null
+}
+
+export type NestedEnumInterviewQuestionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionType | Prisma.EnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewQuestionTypeFilter<$PrismaModel> | $Enums.InterviewQuestionType
+}
+
+export type NestedEnumInterviewQuestionCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionCategory | Prisma.EnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.InterviewQuestionCategory[] | Prisma.ListEnumInterviewQuestionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumInterviewQuestionCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.InterviewQuestionCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewQuestionCategoryNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumInterviewQuestionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewQuestionType | Prisma.EnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewQuestionType[] | Prisma.ListEnumInterviewQuestionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewQuestionTypeWithAggregatesFilter<$PrismaModel> | $Enums.InterviewQuestionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewQuestionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewQuestionTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumOfferStatusFilter<$PrismaModel = never> = {
