@@ -405,7 +405,7 @@ export class BrainService {
     );
     results.sort((a, b) => b.score - a.score);
 
-    return { totalCandidates: results.length, rankedCandidates: results };
+    return { totalApplicants: results.length, rankedApplicants: results };
   }
 
   async getEmployeeInsights(employeeId: string) {
