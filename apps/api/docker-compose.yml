@@ -64,9 +64,7 @@ services:
       - '8025:8025'
 
   api:
-    build:
-      context: ../..
-      dockerfile: apps/api/Dockerfile
+    image: ${API_IMAGE}
     container_name: blih-api
     env_file:
       - .env
