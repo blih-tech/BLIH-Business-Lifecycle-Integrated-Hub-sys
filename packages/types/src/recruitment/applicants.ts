@@ -50,8 +50,6 @@ export interface CreateApplicantDto {
   currentPosition?: string | null;
   yearsExperience?: number | null;
   location?: string | null;
-  country?: string | null;
-  city?: string | null;
   nationality?: string | null;
   expectedSalary?: number | null;
   currentSalary?: number | null;
@@ -90,8 +88,6 @@ export interface ApplicantResponseDto {
   currentPosition: string | null;
   yearsExperience: number | null;
   location: string | null;
-  country: string | null;
-  city: string | null;
   nationality: string | null;
   expectedSalary: string | null;
   currentSalary: string | null;

@@ -80,7 +80,7 @@ model Job {
   updatedAt           DateTime            @updatedAt
   tools               String[]            @default([])
   applicants          Applicant[]
-  interviews          Interview[]
+  interviewSessions   InterviewSession[]
   hiringDecisions     HiringDecision[]
   requestForm         JobRequestForm?
   applicationForm     JobApplicationForm?
@@ -227,8 +227,6 @@ model Applicant {
   currentPosition   String?                  @map("current_position")
   yearsExperience   Int?                     @map("years_experience")
   location          String?
-  country           String?
-  city              String?
   nationality       String?
   expectedSalary    Decimal?                 @map("expected_salary") @db.Decimal(12, 2)
   currentSalary     Decimal?                 @map("current_salary") @db.Decimal(12, 2)
@@ -253,7 +251,7 @@ model Applicant {
   updatedAt         DateTime                 @updatedAt
   educations        ApplicantEducation[]
   experiences       ApplicantExperience[]
-  interviews        Interview[]
+  interviewParticipants InterviewParticipant[]
   hiringDecisions   HiringDecision[]         @relation("HiringDecisionApplicant")
   statusHistory     ApplicantStatusHistory[]
   cvScreenings      CvScreening[]            @relation("ApplicantScreening")
@@ -276,7 +274,6 @@ model ApplicantStatusHistory {
   toStatus    ApplicantStatus  @map("to_status")
   notes       String?          @db.Text
   changedAt   DateTime         @default(now()) @map("changed_at")
-  createdAt   DateTime         @default(now())
 
   @@index([applicantId])
   @@index([applicantId, changedAt])
@@ -313,32 +310,83 @@ model ApplicantExperience {
   @@index([applicantId])
 }
 
-model Interview {
-  id              String          @id @default(uuid()) @db.Uuid
-  jobId           String          @map("job_id") @db.Uuid
-  job             Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicantId     String          @map("applicant_id") @db.Uuid
-  applicant       Applicant       @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+model InterviewSession {
+  id              String                @id @default(uuid()) @db.Uuid
+  jobId           String                @map("job_id") @db.Uuid
+  job             Job                   @relation(fields: [jobId], references: [id], onDelete: Cascade)
   type            InterviewType
-  status          InterviewStatus @default(SCHEDULED)
-  scheduledAt     DateTime?       @map("scheduled_at")
-  startedAt       DateTime?       @map("started_at")
-  completedAt     DateTime?       @map("completed_at")
-  durationMinutes Int?            @map("duration_minutes")
-  interviewerId   String          @map("interviewer_id") @db.Uuid
-  interviewer     User            @relation("InterviewInterviewer", fields: [interviewerId], references: [id], onDelete: Restrict)
-  location        String?         @db.VarChar(255)
-  meetingUrl      String?         @map("meeting_url")
-  notes           String?         @db.Text
-  feedback        Json?           @db.JsonB
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  round           Int                   @default(1)
+  status          InterviewStatus       @default(SCHEDULED)
+  scheduledAt     DateTime              @map("scheduled_at")
+  durationMinutes Int?                  @map("duration_minutes")
+  location        String?               @db.VarChar(255)
+  meetingUrl      String?               @map("meeting_url")
+  createdById     String                @map("created_by_id") @db.Uuid
+  createdBy       User                  @relation("InterviewSessionCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  participants    InterviewParticipant[]
+  interviewers    InterviewerAssignment[]
 
   @@index([jobId])
-  @@index([applicantId])
-  @@index([applicantId, jobId])
-  @@index([interviewerId])
   @@index([status])
+  @@index([scheduledAt])
+  @@index([jobId, round])
+  @@index([createdById])
+}
+
+model InterviewParticipant {
+  id               String                   @id @default(uuid()) @db.Uuid
+  sessionId        String                   @map("session_id") @db.Uuid
+  session          InterviewSession         @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  applicantId      String                   @map("applicant_id") @db.Uuid
+  applicant        Applicant                @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  attendanceStatus InterviewAttendanceStatus @default(SCHEDULED) @map("attendance_status")
+  createdAt        DateTime                 @default(now())
+  feedbacks        InterviewFeedback[]      @relation("InterviewFeedbackParticipant")
+
+  @@unique([sessionId, applicantId])
+  @@unique([id, sessionId])
+  @@index([sessionId])
+  @@index([applicantId])
+}
+
+model InterviewerAssignment {
+  id            String              @id @default(uuid()) @db.Uuid
+  sessionId     String              @map("session_id") @db.Uuid
+  session       InterviewSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  interviewerId String              @map("interviewer_id") @db.Uuid
+  interviewer   User                @relation("InterviewSessionInterviewer", fields: [interviewerId], references: [id], onDelete: Restrict)
+  role          String?             @db.VarChar(100)
+  createdAt     DateTime            @default(now())
+  feedbacks     InterviewFeedback[] @relation("InterviewFeedbackAssignment")
+
+  @@unique([sessionId, interviewerId])
+  @@unique([id, sessionId])
+  @@index([sessionId])
+  @@index([interviewerId])
+}
+
+model InterviewFeedback {
+  id            String                @id @default(uuid()) @db.Uuid
+  participantId String                @map("participant_id") @db.Uuid
+  participant   InterviewParticipant  @relation("InterviewFeedbackParticipant", fields: [participantId], references: [id], onDelete: Cascade)
+  assignmentId  String                @map("assignment_id") @db.Uuid
+  assignment    InterviewerAssignment @relation("InterviewFeedbackAssignment", fields: [assignmentId], references: [id], onDelete: Cascade)
+  score         Float?
+  endorsement   EndorsementLevel?
+  strengths     String[]              @default([])
+  weaknesses    String[]              @default([])
+  notes         String?               @db.Text
+  isDraft       Boolean               @default(true) @map("is_draft")
+  submittedAt   DateTime?             @map("submitted_at")
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@unique([participantId, assignmentId])
+  @@index([participantId])
+  @@index([assignmentId])
+  @@index([participantId, assignmentId])
 }
 
 model HiringDecision {

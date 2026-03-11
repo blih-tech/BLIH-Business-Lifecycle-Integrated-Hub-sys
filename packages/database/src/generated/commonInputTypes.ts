@@ -1822,6 +1822,40 @@ export type EnumInterviewStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
 }
 
+export type EnumInterviewAttendanceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewAttendanceStatus | Prisma.EnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewAttendanceStatusFilter<$PrismaModel> | $Enums.InterviewAttendanceStatus
+}
+
+export type EnumInterviewAttendanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewAttendanceStatus | Prisma.EnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewAttendanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.InterviewAttendanceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewAttendanceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewAttendanceStatusFilter<$PrismaModel>
+}
+
+export type EnumEndorsementLevelNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.EndorsementLevel | Prisma.EnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel> | $Enums.EndorsementLevel | null
+}
+
+export type EnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EndorsementLevel | Prisma.EnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.EndorsementLevel | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
+}
+
 export type EnumHiringDecisionOutcomeFilter<$PrismaModel = never> = {
   equals?: $Enums.HiringDecisionOutcome | Prisma.EnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
   in?: $Enums.HiringDecisionOutcome[] | Prisma.ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel>
@@ -3969,6 +4003,40 @@ export type NestedEnumInterviewStatusWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumInterviewAttendanceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewAttendanceStatus | Prisma.EnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewAttendanceStatusFilter<$PrismaModel> | $Enums.InterviewAttendanceStatus
+}
+
+export type NestedEnumInterviewAttendanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewAttendanceStatus | Prisma.EnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewAttendanceStatus[] | Prisma.ListEnumInterviewAttendanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewAttendanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.InterviewAttendanceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewAttendanceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewAttendanceStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumEndorsementLevelNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.EndorsementLevel | Prisma.EnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel> | $Enums.EndorsementLevel | null
+}
+
+export type NestedEnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EndorsementLevel | Prisma.EnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EndorsementLevel[] | Prisma.ListEnumEndorsementLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEndorsementLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.EndorsementLevel | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEndorsementLevelNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumHiringDecisionOutcomeFilter<$PrismaModel = never> = {

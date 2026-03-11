@@ -14,16 +14,19 @@ import {
   CreateJobUseCase,
   GetApplicantUseCase,
   GetInterviewUseCase,
+  ListInterviewParticipantFeedbackUseCase,
   GetJobUseCase,
   ListApplicantsUseCase,
   ListInterviewsUseCase,
   ListJobsUseCase,
   PublishJobUseCase,
   SubmitJobUseCase,
+  UpdateInterviewParticipantAttendanceUseCase,
   UpdateApplicantStatusUseCase,
   UpdateApplicantUseCase,
   UpdateInterviewUseCase,
   UpdateJobUseCase,
+  UpsertInterviewFeedbackUseCase,
   UpsertJobResponsibilitiesUseCase,
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
@@ -50,6 +53,9 @@ const useCaseTokens = [
   ListInterviewsUseCase,
   GetInterviewUseCase,
   UpdateInterviewUseCase,
+  UpdateInterviewParticipantAttendanceUseCase,
+  UpsertInterviewFeedbackUseCase,
+  ListInterviewParticipantFeedbackUseCase,
 ] as const;
 
 type HttpMethod = 'get' | 'post' | 'patch';
@@ -126,6 +132,21 @@ const expectedOperations: Array<{
     path: '/hr/recruitment/interviews/{id}',
     method: 'patch',
     expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interviews/{id}/participants/{participantId}/attendance',
+    method: 'patch',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interviews/{id}/participants/{participantId}/feedback',
+    method: 'post',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/interviews/{id}/participants/{participantId}/feedback',
+    method: 'get',
+    expectsBody: false,
   },
 ];
 

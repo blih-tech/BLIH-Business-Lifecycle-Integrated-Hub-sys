@@ -170,8 +170,6 @@ export const applicantExample = {
   currentPosition: 'Senior Engineer',
   yearsExperience: 6,
   location: 'Addis Ababa, Ethiopia',
-  country: 'Ethiopia',
-  city: 'Addis Ababa',
   nationality: 'Ethiopian',
   expectedSalary: '145000.00',
   currentSalary: '125000.00',
@@ -209,26 +207,67 @@ export const applicantExample = {
 };
 
 export const interviewExample = {
-  id: 'd85dc0db-d6dc-49b8-b91f-b6dd0ffea88a',
-  applicantId: applicantExample.id,
+  id: 'af0f3efe-e71b-4b73-a9ef-2b6f8dcba123',
+  jobId: jobExample.job.id,
   type: 'TECHNICAL',
   round: 1,
   status: 'SCHEDULED',
   scheduledAt: '2026-03-10T10:00:00.000Z',
-  startedAt: null,
-  completedAt: null,
-  durationMinutes: null,
-  interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+  durationMinutes: 90,
   location: null,
   meetingUrl: null,
-  interviewers: [{ name: 'Tech Lead', role: 'Panelist' }],
-  feedback: null,
-  endorsement: null,
-  score: null,
-  nextAction: 'Submit feedback',
-  notes: null,
+  createdById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
+  participants: [
+    {
+      id: '6bd5ff77-f43d-4385-ad6b-87945c131ec3',
+      sessionId: 'af0f3efe-e71b-4b73-a9ef-2b6f8dcba123',
+      applicantId: applicantExample.id,
+      attendanceStatus: 'SCHEDULED',
+      applicant: {
+        id: applicantExample.id,
+        firstName: applicantExample.firstName,
+        lastName: applicantExample.lastName,
+        email: applicantExample.email,
+        status: applicantExample.status,
+      },
+      createdAt: '2026-03-05T09:15:00.000Z',
+    },
+  ],
+  interviewers: [
+    {
+      id: '833be5c5-f4f8-4686-830a-a4e61f3af4d5',
+      sessionId: 'af0f3efe-e71b-4b73-a9ef-2b6f8dcba123',
+      interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+      role: 'Panelist',
+      interviewer: {
+        id: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+        firstName: 'Liya',
+        lastName: 'Tekle',
+        email: 'liya.tekle@example.com',
+        status: 'ACTIVE',
+      },
+      createdAt: '2026-03-05T09:15:00.000Z',
+    },
+  ],
+  feedbacks: [],
   createdAt: '2026-03-05T09:15:00.000Z',
   updatedAt: '2026-03-05T09:15:00.000Z',
+};
+
+export const interviewFeedbackExample = {
+  id: 'de55a2d6-7df0-4324-8151-c478226cde2a',
+  participantId: interviewExample.participants[0].id,
+  assignmentId: interviewExample.interviewers[0].id,
+  interviewerId: interviewExample.interviewers[0].interviewerId,
+  score: 84.5,
+  endorsement: 'YES',
+  strengths: ['Strong system design', 'Clear communication'],
+  weaknesses: ['Needs deeper PostgreSQL tuning experience'],
+  notes: 'Recommended to proceed to final round.',
+  isDraft: false,
+  submittedAt: '2026-03-10T12:05:00.000Z',
+  createdAt: '2026-03-10T12:05:00.000Z',
+  updatedAt: '2026-03-10T12:05:00.000Z',
 };
 
 export const jobResponseEnvelope = envelope('Created job', jobExample);
@@ -254,9 +293,18 @@ export const applicantListResponseEnvelope = envelope('List of applicants', [
 ]);
 
 export const interviewResponseEnvelope = envelope(
-  'Created interview',
+  'Created interview session',
   interviewExample,
 );
-export const interviewListResponseEnvelope = envelope('List of interviews', [
-  interviewExample,
-]);
+export const interviewListResponseEnvelope = envelope(
+  'List of interview sessions',
+  [interviewExample],
+);
+export const interviewFeedbackResponseEnvelope = envelope(
+  'Upserted interview feedback',
+  interviewFeedbackExample,
+);
+export const interviewFeedbackListResponseEnvelope = envelope(
+  'List interview participant feedback',
+  [interviewFeedbackExample],
+);

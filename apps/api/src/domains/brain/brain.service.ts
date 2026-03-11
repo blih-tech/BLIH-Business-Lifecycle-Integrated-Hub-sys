@@ -332,13 +332,15 @@ export class BrainService {
 
     await this.prisma.aiCvAnalysis.create({
       data: {
-        candidateId: applicant.id,
+        applicantId: applicant.id,
         jobId: jobId,
         score: result.score || 0,
         recommendation: finalRecommendation,
         strengths: result.strengths || [],
         weaknesses: result.weaknesses || [],
         aiSummary: result.summary || '',
+        confidence: result.confidence || 0,
+        modelVersion: result.modelVersion || '',
       },
     });
 
@@ -377,13 +379,15 @@ export class BrainService {
 
         await this.prisma.aiCvAnalysis.create({
           data: {
-            candidateId: applicant.id,
+            applicantId: applicant.id,
             jobId: jobId,
             score: result.score || 0,
             recommendation: finalRecommendation,
             strengths: result.strengths || [],
             weaknesses: result.weaknesses || [],
             aiSummary: result.summary || '',
+            confidence: result.confidence || 0,
+            modelVersion: result.modelVersion || '',
           },
         });
 

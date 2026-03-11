@@ -330,6 +330,17 @@ export const InterviewStatus = {
 export type InterviewStatus = (typeof InterviewStatus)[keyof typeof InterviewStatus]
 
 
+export const InterviewAttendanceStatus = {
+  SCHEDULED: 'SCHEDULED',
+  ATTENDING: 'ATTENDING',
+  NO_SHOW: 'NO_SHOW',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type InterviewAttendanceStatus = (typeof InterviewAttendanceStatus)[keyof typeof InterviewAttendanceStatus]
+
+
 export const EndorsementLevel = {
   STRONG_YES: 'STRONG_YES',
   YES: 'YES',

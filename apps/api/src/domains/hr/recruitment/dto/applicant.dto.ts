@@ -183,16 +183,6 @@ export class CreateApplicantDto {
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
-  country?: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsString()
-  city?: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsString()
   nationality?: string | null;
 
   @ApiPropertyOptional({ nullable: true, example: 145000 })
@@ -346,12 +336,6 @@ export class ApplicantResponseDto {
 
   @ApiPropertyOptional({ nullable: true })
   location!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  country!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  city!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   nationality!: string | null;
