@@ -300,6 +300,7 @@ export const ApplicantStatus = {
   SCREENING: 'SCREENING',
   SHORTLISTED: 'SHORTLISTED',
   INTERVIEW: 'INTERVIEW',
+  WAITLIST: 'WAITLIST',
   OFFER: 'OFFER',
   HIRED: 'HIRED',
   REJECTED: 'REJECTED',
@@ -307,6 +308,18 @@ export const ApplicantStatus = {
 } as const
 
 export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
+
+
+export const OfferStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus]
 
 
 export const InterviewType = {
@@ -349,15 +362,6 @@ export const EndorsementLevel = {
 } as const
 
 export type EndorsementLevel = (typeof EndorsementLevel)[keyof typeof EndorsementLevel]
-
-
-export const HiringDecisionOutcome = {
-  OFFER_APPROVED: 'OFFER_APPROVED',
-  OFFER_DECLINED: 'OFFER_DECLINED',
-  SUSPENDED: 'SUSPENDED'
-} as const
-
-export type HiringDecisionOutcome = (typeof HiringDecisionOutcome)[keyof typeof HiringDecisionOutcome]
 
 
 export const CvScreeningRecommendation = {

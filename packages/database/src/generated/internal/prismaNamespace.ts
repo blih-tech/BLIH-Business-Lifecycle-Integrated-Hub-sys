@@ -476,7 +476,7 @@ export const ModelName = {
   InterviewParticipant: 'InterviewParticipant',
   InterviewerAssignment: 'InterviewerAssignment',
   InterviewFeedback: 'InterviewFeedback',
-  HiringDecision: 'HiringDecision',
+  Offer: 'Offer',
   CvScreening: 'CvScreening',
   CvScreeningCriteria: 'CvScreeningCriteria',
   CvScreeningQuestion: 'CvScreeningQuestion',
@@ -525,7 +525,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiCvScreeningInsight" | "aiSkillExtraction" | "aiExperienceAnalysis" | "aiEducationAnalysis" | "aiCvComparison" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "jobRequestForm" | "job" | "jobApplicationForm" | "jobApplicationFormField" | "jobApplicationFormSection" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApprovalStep" | "jobApprovalHistory" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interviewSession" | "interviewParticipant" | "interviewerAssignment" | "interviewFeedback" | "hiringDecision" | "cvScreening" | "cvScreeningCriteria" | "cvScreeningQuestion" | "cvScreeningResponse" | "cvScreeningWorkflow" | "cvScreeningWorkflowStage" | "cvScreeningDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
+    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiCvScreeningInsight" | "aiSkillExtraction" | "aiExperienceAnalysis" | "aiEducationAnalysis" | "aiCvComparison" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "jobRequestForm" | "job" | "jobApplicationForm" | "jobApplicationFormField" | "jobApplicationFormSection" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApprovalStep" | "jobApprovalHistory" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interviewSession" | "interviewParticipant" | "interviewerAssignment" | "interviewFeedback" | "offer" | "cvScreening" | "cvScreeningCriteria" | "cvScreeningQuestion" | "cvScreeningResponse" | "cvScreeningWorkflow" | "cvScreeningWorkflowStage" | "cvScreeningDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -7337,77 +7337,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    HiringDecision: {
-      payload: Prisma.$HiringDecisionPayload<ExtArgs>
-      fields: Prisma.HiringDecisionFieldRefs
+    Offer: {
+      payload: Prisma.$OfferPayload<ExtArgs>
+      fields: Prisma.OfferFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.HiringDecisionFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload> | null
+          args: Prisma.OfferFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.HiringDecisionFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>
+          args: Prisma.OfferFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>
         }
         findFirst: {
-          args: Prisma.HiringDecisionFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload> | null
+          args: Prisma.OfferFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.HiringDecisionFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>
+          args: Prisma.OfferFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>
         }
         findMany: {
-          args: Prisma.HiringDecisionFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>[]
+          args: Prisma.OfferFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>[]
         }
         create: {
-          args: Prisma.HiringDecisionCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>
+          args: Prisma.OfferCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>
         }
         createMany: {
-          args: Prisma.HiringDecisionCreateManyArgs<ExtArgs>
+          args: Prisma.OfferCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.HiringDecisionCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>[]
+          args: Prisma.OfferCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>[]
         }
         delete: {
-          args: Prisma.HiringDecisionDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>
+          args: Prisma.OfferDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>
         }
         update: {
-          args: Prisma.HiringDecisionUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>
+          args: Prisma.OfferUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>
         }
         deleteMany: {
-          args: Prisma.HiringDecisionDeleteManyArgs<ExtArgs>
+          args: Prisma.OfferDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.HiringDecisionUpdateManyArgs<ExtArgs>
+          args: Prisma.OfferUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.HiringDecisionUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>[]
+          args: Prisma.OfferUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>[]
         }
         upsert: {
-          args: Prisma.HiringDecisionUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringDecisionPayload>
+          args: Prisma.OfferUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OfferPayload>
         }
         aggregate: {
-          args: Prisma.HiringDecisionAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateHiringDecision>
+          args: Prisma.OfferAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOffer>
         }
         groupBy: {
-          args: Prisma.HiringDecisionGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.HiringDecisionGroupByOutputType>[]
+          args: Prisma.OfferGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OfferGroupByOutputType>[]
         }
         count: {
-          args: Prisma.HiringDecisionCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.HiringDecisionCountAggregateOutputType> | number
+          args: Prisma.OfferCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OfferCountAggregateOutputType> | number
         }
       }
     }
@@ -10864,7 +10864,7 @@ export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
   onboardingId: 'onboardingId',
-  hiringDecisionId: 'hiringDecisionId',
+  offerId: 'offerId',
   joinDate: 'joinDate',
   overseerId: 'overseerId',
   totalItems: 'totalItems',
@@ -11391,6 +11391,7 @@ export const ApplicantScalarFieldEnum = {
   screeningAt: 'screeningAt',
   shortlistedAt: 'shortlistedAt',
   interviewAt: 'interviewAt',
+  waitlistAt: 'waitlistAt',
   offerAt: 'offerAt',
   hiredAt: 'hiredAt',
   rejectedAt: 'rejectedAt',
@@ -11505,23 +11506,30 @@ export const InterviewFeedbackScalarFieldEnum = {
 export type InterviewFeedbackScalarFieldEnum = (typeof InterviewFeedbackScalarFieldEnum)[keyof typeof InterviewFeedbackScalarFieldEnum]
 
 
-export const HiringDecisionScalarFieldEnum = {
+export const OfferScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
   applicantId: 'applicantId',
   onboardingId: 'onboardingId',
-  submittedById: 'submittedById',
-  outcome: 'outcome',
-  salaryOffered: 'salaryOffered',
+  createdById: 'createdById',
+  status: 'status',
+  salary: 'salary',
   currency: 'currency',
   startDate: 'startDate',
-  decisionNotes: 'decisionNotes',
-  decidedAt: 'decidedAt',
+  payFrequency: 'payFrequency',
+  employmentType: 'employmentType',
+  bonus: 'bonus',
+  equity: 'equity',
+  offerLetterUrl: 'offerLetterUrl',
+  notes: 'notes',
+  sentAt: 'sentAt',
+  respondedAt: 'respondedAt',
+  expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type HiringDecisionScalarFieldEnum = (typeof HiringDecisionScalarFieldEnum)[keyof typeof HiringDecisionScalarFieldEnum]
+export type OfferScalarFieldEnum = (typeof OfferScalarFieldEnum)[keyof typeof OfferScalarFieldEnum]
 
 
 export const CvScreeningScalarFieldEnum = {
@@ -13318,16 +13326,30 @@ export type ListEnumEndorsementLevelFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'HiringDecisionOutcome'
+ * Reference to a field of type 'OfferStatus'
  */
-export type EnumHiringDecisionOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HiringDecisionOutcome'>
+export type EnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OfferStatus'>
     
 
 
 /**
- * Reference to a field of type 'HiringDecisionOutcome[]'
+ * Reference to a field of type 'OfferStatus[]'
  */
-export type ListEnumHiringDecisionOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HiringDecisionOutcome[]'>
+export type ListEnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OfferStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PayFrequency'
+ */
+export type EnumPayFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayFrequency'>
+    
+
+
+/**
+ * Reference to a field of type 'PayFrequency[]'
+ */
+export type ListEnumPayFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayFrequency[]'>
     
 
 
@@ -13612,20 +13634,6 @@ export type ListEnumMaritalStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'PayFrequency'
- */
-export type EnumPayFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayFrequency'>
-    
-
-
-/**
- * Reference to a field of type 'PayFrequency[]'
- */
-export type ListEnumPayFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayFrequency[]'>
-    
-
-
-/**
  * Reference to a field of type 'CompensationComponentType'
  */
 export type EnumCompensationComponentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompensationComponentType'>
@@ -13839,7 +13847,7 @@ export type GlobalOmitConfig = {
   interviewParticipant?: Prisma.InterviewParticipantOmit
   interviewerAssignment?: Prisma.InterviewerAssignmentOmit
   interviewFeedback?: Prisma.InterviewFeedbackOmit
-  hiringDecision?: Prisma.HiringDecisionOmit
+  offer?: Prisma.OfferOmit
   cvScreening?: Prisma.CvScreeningOmit
   cvScreeningCriteria?: Prisma.CvScreeningCriteriaOmit
   cvScreeningQuestion?: Prisma.CvScreeningQuestionOmit

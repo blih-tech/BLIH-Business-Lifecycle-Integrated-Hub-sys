@@ -571,6 +571,9 @@ describe('Recruitment UseCases', () => {
       job: {
         update: jest.fn().mockResolvedValue(undefined),
       },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
+      },
     };
     const prisma = {
       job: {
@@ -697,6 +700,9 @@ describe('Recruitment UseCases', () => {
       },
       job: {
         update: jest.fn().mockResolvedValue(undefined),
+      },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
       },
       interviewSession: {
         findUniqueOrThrow: jest.fn().mockResolvedValue({

@@ -10,7 +10,7 @@ model Onboarding {
   completedAt    DateTime?             @map("completed_at")
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
-  hiringDecision HiringDecision?
+  offer          Offer?
   checklists     OnboardingChecklist[]
 
   @@index([employeeId])
@@ -23,8 +23,8 @@ model OnboardingChecklist {
   employee           Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   onboardingId       String?                   @map("onboarding_id") @db.Uuid
   onboarding         Onboarding?               @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
-  hiringDecisionId   String?                   @map("hiring_decision_id") @db.Uuid
-  hiringDecision     HiringDecision?           @relation(fields: [hiringDecisionId], references: [id], onDelete: SetNull)
+  offerId            String?                   @map("offer_id") @db.Uuid
+  offer              Offer?                    @relation(fields: [offerId], references: [id], onDelete: SetNull)
   joinDate           DateTime                  @map("join_date") @db.Date
   overseerId         String?                   @map("overseer_id") @db.Uuid
   overseer           User?                     @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
@@ -40,7 +40,7 @@ model OnboardingChecklist {
 
   @@index([employeeId])
   @@index([onboardingId])
-  @@index([hiringDecisionId])
+  @@index([offerId])
   @@index([status])
 }
 

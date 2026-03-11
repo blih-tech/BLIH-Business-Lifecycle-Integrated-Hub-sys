@@ -184,6 +184,7 @@ export const applicantExample = {
   screeningAt: '2026-03-05T15:00:00.000Z',
   shortlistedAt: null,
   interviewAt: null,
+  waitlistAt: null,
   offerAt: null,
   hiredAt: null,
   rejectedAt: null,
@@ -204,6 +205,29 @@ export const applicantExample = {
   ],
   createdAt: '2026-03-05T09:00:00.000Z',
   updatedAt: '2026-03-05T09:00:00.000Z',
+};
+
+export const offerExample = {
+  id: 'c2a7d7e8-6a7f-4b58-9b92-0c2b6c4f77c1',
+  jobId: jobExample.job.id,
+  applicantId: applicantExample.id,
+  createdById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
+  status: 'SENT',
+  salary: '145000.00',
+  currency: 'USD',
+  startDate: '2026-04-01T00:00:00.000Z',
+  payFrequency: 'MONTHLY',
+  employmentType: 'FULL_TIME',
+  bonus: '5000.00',
+  equity: null,
+  offerLetterUrl: 'https://cdn.example.com/offers/offer-letter.pdf',
+  notes: 'Offer sent after final interview.',
+  sentAt: '2026-03-20T10:00:00.000Z',
+  respondedAt: null,
+  expiresAt: '2026-03-31T23:59:59.000Z',
+  onboardingId: null,
+  createdAt: '2026-03-20T09:55:00.000Z',
+  updatedAt: '2026-03-20T10:00:00.000Z',
 };
 
 export const interviewExample = {
@@ -290,6 +314,11 @@ export const applicantResponseEnvelope = envelope(
 );
 export const applicantListResponseEnvelope = envelope('List of applicants', [
   applicantExample,
+]);
+
+export const offerResponseEnvelope = envelope('Created offer', offerExample);
+export const offerListResponseEnvelope = envelope('List of offers', [
+  offerExample,
 ]);
 
 export const interviewResponseEnvelope = envelope(

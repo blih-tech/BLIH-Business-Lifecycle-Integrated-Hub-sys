@@ -112,7 +112,8 @@ const APPLICANT_TRANSITIONS: Record<string, string[]> = {
   APPLIED: ['SCREENING'],
   SCREENING: ['SHORTLISTED', 'REJECTED', 'WITHDRAWN'],
   SHORTLISTED: ['INTERVIEW', 'REJECTED', 'WITHDRAWN'],
-  INTERVIEW: ['OFFER', 'REJECTED', 'WITHDRAWN'],
+  INTERVIEW: ['WAITLIST', 'OFFER', 'REJECTED', 'WITHDRAWN'],
+  WAITLIST: ['OFFER', 'REJECTED', 'WITHDRAWN'],
   OFFER: ['HIRED', 'REJECTED', 'WITHDRAWN'],
   HIRED: [],
   REJECTED: [],
@@ -560,6 +561,7 @@ export function mapApplicant(applicant: any) {
     screeningAt: dateToIso(applicant.screeningAt),
     shortlistedAt: dateToIso(applicant.shortlistedAt),
     interviewAt: dateToIso(applicant.interviewAt),
+    waitlistAt: dateToIso(applicant.waitlistAt),
     offerAt: dateToIso(applicant.offerAt),
     hiredAt: dateToIso(applicant.hiredAt),
     rejectedAt: dateToIso(applicant.rejectedAt),
@@ -595,6 +597,31 @@ export function mapApplicant(applicant: any) {
     })),
     createdAt: applicant.createdAt.toISOString(),
     updatedAt: applicant.updatedAt.toISOString(),
+  };
+}
+
+export function mapOffer(offer: any) {
+  return {
+    id: offer.id,
+    jobId: offer.jobId,
+    applicantId: offer.applicantId,
+    createdById: offer.createdById,
+    status: offer.status,
+    salary: decimalToString(offer.salary),
+    currency: offer.currency ?? null,
+    startDate: dateToIso(offer.startDate),
+    payFrequency: offer.payFrequency ?? null,
+    employmentType: offer.employmentType ?? null,
+    bonus: decimalToString(offer.bonus),
+    equity: decimalToString(offer.equity),
+    offerLetterUrl: offer.offerLetterUrl ?? null,
+    notes: offer.notes ?? null,
+    sentAt: dateToIso(offer.sentAt),
+    respondedAt: dateToIso(offer.respondedAt),
+    expiresAt: dateToIso(offer.expiresAt),
+    onboardingId: offer.onboardingId ?? null,
+    createdAt: offer.createdAt.toISOString(),
+    updatedAt: offer.updatedAt.toISOString(),
   };
 }
 
@@ -750,6 +777,7 @@ export async function recalculateJobMetrics(
     job: PrismaService['job'];
     applicant: PrismaService['applicant'];
     interviewParticipant: PrismaService['interviewParticipant'];
+    offer: PrismaService['offer'];
   },
   jobId: string,
 ) {
@@ -769,10 +797,12 @@ export async function recalculateJobMetrics(
         status: 'SHORTLISTED',
       },
     }),
-    prisma.applicant.count({
+    prisma.offer.count({
       where: {
         jobId,
-        status: 'OFFER',
+        status: {
+          in: ['SENT', 'ACCEPTED', 'DECLINED', 'EXPIRED', 'WITHDRAWN'],
+        },
       },
     }),
     prisma.applicant.count({

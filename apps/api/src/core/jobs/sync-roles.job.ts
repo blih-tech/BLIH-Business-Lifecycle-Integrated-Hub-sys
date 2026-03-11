@@ -5,7 +5,7 @@ import { PrismaService } from '../../platform/prisma/prisma.service';
 import {
   RBAC_ROLE_BY_NAME,
   RBAC_ROLE_NAMES,
-} from '@repo/database/seed/rbac.manifest';
+} from '../rbac/constants/rbac.manifest';
 import { env } from '../../config/env.config';
 import { UserPermissionSnapshotService } from '../rbac/user-permission-snapshot.service';
 

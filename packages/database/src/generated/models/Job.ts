@@ -490,7 +490,7 @@ export type JobWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   applicants?: Prisma.ApplicantListRelationFilter
   interviewSessions?: Prisma.InterviewSessionListRelationFilter
-  hiringDecisions?: Prisma.HiringDecisionListRelationFilter
+  offers?: Prisma.OfferListRelationFilter
   requestForm?: Prisma.XOR<Prisma.JobRequestFormNullableScalarRelationFilter, Prisma.JobRequestFormWhereInput> | null
   applicationForm?: Prisma.XOR<Prisma.JobApplicationFormNullableScalarRelationFilter, Prisma.JobApplicationFormWhereInput> | null
   cvScreenings?: Prisma.CvScreeningListRelationFilter
@@ -543,7 +543,7 @@ export type JobOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   applicants?: Prisma.ApplicantOrderByRelationAggregateInput
   interviewSessions?: Prisma.InterviewSessionOrderByRelationAggregateInput
-  hiringDecisions?: Prisma.HiringDecisionOrderByRelationAggregateInput
+  offers?: Prisma.OfferOrderByRelationAggregateInput
   requestForm?: Prisma.JobRequestFormOrderByWithRelationInput
   applicationForm?: Prisma.JobApplicationFormOrderByWithRelationInput
   cvScreenings?: Prisma.CvScreeningOrderByRelationAggregateInput
@@ -599,7 +599,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   applicants?: Prisma.ApplicantListRelationFilter
   interviewSessions?: Prisma.InterviewSessionListRelationFilter
-  hiringDecisions?: Prisma.HiringDecisionListRelationFilter
+  offers?: Prisma.OfferListRelationFilter
   requestForm?: Prisma.XOR<Prisma.JobRequestFormNullableScalarRelationFilter, Prisma.JobRequestFormWhereInput> | null
   applicationForm?: Prisma.XOR<Prisma.JobApplicationFormNullableScalarRelationFilter, Prisma.JobApplicationFormWhereInput> | null
   cvScreenings?: Prisma.CvScreeningListRelationFilter
@@ -738,7 +738,7 @@ export type JobCreateInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -787,7 +787,7 @@ export type JobUncheckedCreateInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -836,7 +836,7 @@ export type JobUpdateInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -885,7 +885,7 @@ export type JobUncheckedUpdateInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -1361,18 +1361,18 @@ export type JobUpdateOneRequiredWithoutInterviewSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutInterviewSessionsInput, Prisma.JobUpdateWithoutInterviewSessionsInput>, Prisma.JobUncheckedUpdateWithoutInterviewSessionsInput>
 }
 
-export type JobCreateNestedOneWithoutHiringDecisionsInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutHiringDecisionsInput, Prisma.JobUncheckedCreateWithoutHiringDecisionsInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutHiringDecisionsInput
+export type JobCreateNestedOneWithoutOffersInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutOffersInput, Prisma.JobUncheckedCreateWithoutOffersInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutOffersInput
   connect?: Prisma.JobWhereUniqueInput
 }
 
-export type JobUpdateOneRequiredWithoutHiringDecisionsNestedInput = {
-  create?: Prisma.XOR<Prisma.JobCreateWithoutHiringDecisionsInput, Prisma.JobUncheckedCreateWithoutHiringDecisionsInput>
-  connectOrCreate?: Prisma.JobCreateOrConnectWithoutHiringDecisionsInput
-  upsert?: Prisma.JobUpsertWithoutHiringDecisionsInput
+export type JobUpdateOneRequiredWithoutOffersNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutOffersInput, Prisma.JobUncheckedCreateWithoutOffersInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutOffersInput
+  upsert?: Prisma.JobUpsertWithoutOffersInput
   connect?: Prisma.JobWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutHiringDecisionsInput, Prisma.JobUpdateWithoutHiringDecisionsInput>, Prisma.JobUncheckedUpdateWithoutHiringDecisionsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutOffersInput, Prisma.JobUpdateWithoutOffersInput>, Prisma.JobUncheckedUpdateWithoutOffersInput>
 }
 
 export type JobCreateNestedOneWithoutCvScreeningsInput = {
@@ -1541,7 +1541,7 @@ export type JobCreateWithoutDepartmentInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -1589,7 +1589,7 @@ export type JobUncheckedCreateWithoutDepartmentInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -1707,7 +1707,7 @@ export type JobCreateWithoutPositionInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -1755,7 +1755,7 @@ export type JobUncheckedCreateWithoutPositionInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -1830,7 +1830,7 @@ export type JobCreateWithoutRequestFormInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
   screeningCriteria?: Prisma.CvScreeningCriteriaCreateNestedManyWithoutJobInput
@@ -1878,7 +1878,7 @@ export type JobUncheckedCreateWithoutRequestFormInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUncheckedCreateNestedManyWithoutJobInput
@@ -1942,7 +1942,7 @@ export type JobUpdateWithoutRequestFormInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUpdateManyWithoutJobNestedInput
@@ -1990,7 +1990,7 @@ export type JobUncheckedUpdateWithoutRequestFormInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUncheckedUpdateManyWithoutJobNestedInput
@@ -2038,7 +2038,7 @@ export type JobCreateWithoutApplicationFormInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
   screeningCriteria?: Prisma.CvScreeningCriteriaCreateNestedManyWithoutJobInput
@@ -2086,7 +2086,7 @@ export type JobUncheckedCreateWithoutApplicationFormInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUncheckedCreateNestedManyWithoutJobInput
@@ -2150,7 +2150,7 @@ export type JobUpdateWithoutApplicationFormInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUpdateManyWithoutJobNestedInput
@@ -2198,7 +2198,7 @@ export type JobUncheckedUpdateWithoutApplicationFormInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUncheckedUpdateManyWithoutJobNestedInput
@@ -2245,7 +2245,7 @@ export type JobCreateWithoutApplicantsInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -2293,7 +2293,7 @@ export type JobUncheckedCreateWithoutApplicantsInput = {
   updatedAt?: Date | string
   tools?: Prisma.JobCreatetoolsInput | string[]
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -2357,7 +2357,7 @@ export type JobUpdateWithoutApplicantsInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -2405,7 +2405,7 @@ export type JobUncheckedUpdateWithoutApplicantsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tools?: Prisma.JobUpdatetoolsInput | string[]
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -2453,7 +2453,7 @@ export type JobCreateWithoutInterviewSessionsInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -2501,7 +2501,7 @@ export type JobUncheckedCreateWithoutInterviewSessionsInput = {
   updatedAt?: Date | string
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -2565,7 +2565,7 @@ export type JobUpdateWithoutInterviewSessionsInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -2613,7 +2613,7 @@ export type JobUncheckedUpdateWithoutInterviewSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -2621,7 +2621,7 @@ export type JobUncheckedUpdateWithoutInterviewSessionsInput = {
   screeningWorkflows?: Prisma.CvScreeningWorkflowUncheckedUpdateManyWithoutJobNestedInput
 }
 
-export type JobCreateWithoutHiringDecisionsInput = {
+export type JobCreateWithoutOffersInput = {
   id?: string
   title: string
   slug: string
@@ -2669,7 +2669,7 @@ export type JobCreateWithoutHiringDecisionsInput = {
   screeningWorkflows?: Prisma.CvScreeningWorkflowCreateNestedManyWithoutJobInput
 }
 
-export type JobUncheckedCreateWithoutHiringDecisionsInput = {
+export type JobUncheckedCreateWithoutOffersInput = {
   id?: string
   title: string
   slug: string
@@ -2717,23 +2717,23 @@ export type JobUncheckedCreateWithoutHiringDecisionsInput = {
   screeningWorkflows?: Prisma.CvScreeningWorkflowUncheckedCreateNestedManyWithoutJobInput
 }
 
-export type JobCreateOrConnectWithoutHiringDecisionsInput = {
+export type JobCreateOrConnectWithoutOffersInput = {
   where: Prisma.JobWhereUniqueInput
-  create: Prisma.XOR<Prisma.JobCreateWithoutHiringDecisionsInput, Prisma.JobUncheckedCreateWithoutHiringDecisionsInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutOffersInput, Prisma.JobUncheckedCreateWithoutOffersInput>
 }
 
-export type JobUpsertWithoutHiringDecisionsInput = {
-  update: Prisma.XOR<Prisma.JobUpdateWithoutHiringDecisionsInput, Prisma.JobUncheckedUpdateWithoutHiringDecisionsInput>
-  create: Prisma.XOR<Prisma.JobCreateWithoutHiringDecisionsInput, Prisma.JobUncheckedCreateWithoutHiringDecisionsInput>
+export type JobUpsertWithoutOffersInput = {
+  update: Prisma.XOR<Prisma.JobUpdateWithoutOffersInput, Prisma.JobUncheckedUpdateWithoutOffersInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutOffersInput, Prisma.JobUncheckedCreateWithoutOffersInput>
   where?: Prisma.JobWhereInput
 }
 
-export type JobUpdateToOneWithWhereWithoutHiringDecisionsInput = {
+export type JobUpdateToOneWithWhereWithoutOffersInput = {
   where?: Prisma.JobWhereInput
-  data: Prisma.XOR<Prisma.JobUpdateWithoutHiringDecisionsInput, Prisma.JobUncheckedUpdateWithoutHiringDecisionsInput>
+  data: Prisma.XOR<Prisma.JobUpdateWithoutOffersInput, Prisma.JobUncheckedUpdateWithoutOffersInput>
 }
 
-export type JobUpdateWithoutHiringDecisionsInput = {
+export type JobUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2781,7 +2781,7 @@ export type JobUpdateWithoutHiringDecisionsInput = {
   screeningWorkflows?: Prisma.CvScreeningWorkflowUpdateManyWithoutJobNestedInput
 }
 
-export type JobUncheckedUpdateWithoutHiringDecisionsInput = {
+export type JobUncheckedUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2870,7 +2870,7 @@ export type JobCreateWithoutCvScreeningsInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   screeningCriteria?: Prisma.CvScreeningCriteriaCreateNestedManyWithoutJobInput
@@ -2918,7 +2918,7 @@ export type JobUncheckedCreateWithoutCvScreeningsInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUncheckedCreateNestedManyWithoutJobInput
@@ -2982,7 +2982,7 @@ export type JobUpdateWithoutCvScreeningsInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUpdateManyWithoutJobNestedInput
@@ -3030,7 +3030,7 @@ export type JobUncheckedUpdateWithoutCvScreeningsInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   screeningCriteria?: Prisma.CvScreeningCriteriaUncheckedUpdateManyWithoutJobNestedInput
@@ -3078,7 +3078,7 @@ export type JobCreateWithoutScreeningCriteriaInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -3126,7 +3126,7 @@ export type JobUncheckedCreateWithoutScreeningCriteriaInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -3190,7 +3190,7 @@ export type JobUpdateWithoutScreeningCriteriaInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -3238,7 +3238,7 @@ export type JobUncheckedUpdateWithoutScreeningCriteriaInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -3286,7 +3286,7 @@ export type JobCreateWithoutScreeningWorkflowsInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -3334,7 +3334,7 @@ export type JobUncheckedCreateWithoutScreeningWorkflowsInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -3398,7 +3398,7 @@ export type JobUpdateWithoutScreeningWorkflowsInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -3446,7 +3446,7 @@ export type JobUncheckedUpdateWithoutScreeningWorkflowsInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -3493,7 +3493,7 @@ export type JobCreateWithoutCreatedByInput = {
   hiringManager?: Prisma.UserCreateNestedOneWithoutManagedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -3541,7 +3541,7 @@ export type JobUncheckedCreateWithoutCreatedByInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -3599,7 +3599,7 @@ export type JobCreateWithoutHiringManagerInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedJobsInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningCreateNestedManyWithoutJobInput
@@ -3647,7 +3647,7 @@ export type JobUncheckedCreateWithoutHiringManagerInput = {
   tools?: Prisma.JobCreatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutJobInput
   interviewSessions?: Prisma.InterviewSessionUncheckedCreateNestedManyWithoutJobInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedCreateNestedManyWithoutJobInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutJobInput
   requestForm?: Prisma.JobRequestFormUncheckedCreateNestedOneWithoutJobInput
   applicationForm?: Prisma.JobApplicationFormUncheckedCreateNestedOneWithoutJobInput
   cvScreenings?: Prisma.CvScreeningUncheckedCreateNestedManyWithoutJobInput
@@ -3777,7 +3777,7 @@ export type JobUpdateWithoutDepartmentInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -3825,7 +3825,7 @@ export type JobUncheckedUpdateWithoutDepartmentInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -3953,7 +3953,7 @@ export type JobUpdateWithoutPositionInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -4001,7 +4001,7 @@ export type JobUncheckedUpdateWithoutPositionInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -4169,7 +4169,7 @@ export type JobUpdateWithoutCreatedByInput = {
   hiringManager?: Prisma.UserUpdateOneWithoutManagedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -4217,7 +4217,7 @@ export type JobUncheckedUpdateWithoutCreatedByInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -4305,7 +4305,7 @@ export type JobUpdateWithoutHiringManagerInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedJobsNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUpdateManyWithoutJobNestedInput
@@ -4353,7 +4353,7 @@ export type JobUncheckedUpdateWithoutHiringManagerInput = {
   tools?: Prisma.JobUpdatetoolsInput | string[]
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutJobNestedInput
   interviewSessions?: Prisma.InterviewSessionUncheckedUpdateManyWithoutJobNestedInput
-  hiringDecisions?: Prisma.HiringDecisionUncheckedUpdateManyWithoutJobNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutJobNestedInput
   requestForm?: Prisma.JobRequestFormUncheckedUpdateOneWithoutJobNestedInput
   applicationForm?: Prisma.JobApplicationFormUncheckedUpdateOneWithoutJobNestedInput
   cvScreenings?: Prisma.CvScreeningUncheckedUpdateManyWithoutJobNestedInput
@@ -4409,7 +4409,7 @@ export type JobUncheckedUpdateManyWithoutHiringManagerInput = {
 export type JobCountOutputType = {
   applicants: number
   interviewSessions: number
-  hiringDecisions: number
+  offers: number
   cvScreenings: number
   screeningCriteria: number
   screeningWorkflows: number
@@ -4418,7 +4418,7 @@ export type JobCountOutputType = {
 export type JobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applicants?: boolean | JobCountOutputTypeCountApplicantsArgs
   interviewSessions?: boolean | JobCountOutputTypeCountInterviewSessionsArgs
-  hiringDecisions?: boolean | JobCountOutputTypeCountHiringDecisionsArgs
+  offers?: boolean | JobCountOutputTypeCountOffersArgs
   cvScreenings?: boolean | JobCountOutputTypeCountCvScreeningsArgs
   screeningCriteria?: boolean | JobCountOutputTypeCountScreeningCriteriaArgs
   screeningWorkflows?: boolean | JobCountOutputTypeCountScreeningWorkflowsArgs
@@ -4451,8 +4451,8 @@ export type JobCountOutputTypeCountInterviewSessionsArgs<ExtArgs extends runtime
 /**
  * JobCountOutputType without action
  */
-export type JobCountOutputTypeCountHiringDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HiringDecisionWhereInput
+export type JobCountOutputTypeCountOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OfferWhereInput
 }
 
 /**
@@ -4522,7 +4522,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   createdBy?: boolean | Prisma.Job$createdByArgs<ExtArgs>
   applicants?: boolean | Prisma.Job$applicantsArgs<ExtArgs>
   interviewSessions?: boolean | Prisma.Job$interviewSessionsArgs<ExtArgs>
-  hiringDecisions?: boolean | Prisma.Job$hiringDecisionsArgs<ExtArgs>
+  offers?: boolean | Prisma.Job$offersArgs<ExtArgs>
   requestForm?: boolean | Prisma.Job$requestFormArgs<ExtArgs>
   applicationForm?: boolean | Prisma.Job$applicationFormArgs<ExtArgs>
   cvScreenings?: boolean | Prisma.Job$cvScreeningsArgs<ExtArgs>
@@ -4670,7 +4670,7 @@ export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdBy?: boolean | Prisma.Job$createdByArgs<ExtArgs>
   applicants?: boolean | Prisma.Job$applicantsArgs<ExtArgs>
   interviewSessions?: boolean | Prisma.Job$interviewSessionsArgs<ExtArgs>
-  hiringDecisions?: boolean | Prisma.Job$hiringDecisionsArgs<ExtArgs>
+  offers?: boolean | Prisma.Job$offersArgs<ExtArgs>
   requestForm?: boolean | Prisma.Job$requestFormArgs<ExtArgs>
   applicationForm?: boolean | Prisma.Job$applicationFormArgs<ExtArgs>
   cvScreenings?: boolean | Prisma.Job$cvScreeningsArgs<ExtArgs>
@@ -4700,7 +4700,7 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     createdBy: Prisma.$UserPayload<ExtArgs> | null
     applicants: Prisma.$ApplicantPayload<ExtArgs>[]
     interviewSessions: Prisma.$InterviewSessionPayload<ExtArgs>[]
-    hiringDecisions: Prisma.$HiringDecisionPayload<ExtArgs>[]
+    offers: Prisma.$OfferPayload<ExtArgs>[]
     requestForm: Prisma.$JobRequestFormPayload<ExtArgs> | null
     applicationForm: Prisma.$JobApplicationFormPayload<ExtArgs> | null
     cvScreenings: Prisma.$CvScreeningPayload<ExtArgs>[]
@@ -5146,7 +5146,7 @@ export interface Prisma__JobClient<T, Null = never, ExtArgs extends runtime.Type
   createdBy<T extends Prisma.Job$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   applicants<T extends Prisma.Job$applicantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   interviewSessions<T extends Prisma.Job$interviewSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$interviewSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  hiringDecisions<T extends Prisma.Job$hiringDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$hiringDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HiringDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  offers<T extends Prisma.Job$offersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$offersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requestForm<T extends Prisma.Job$requestFormArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$requestFormArgs<ExtArgs>>): Prisma.Prisma__JobRequestFormClient<runtime.Types.Result.GetResult<Prisma.$JobRequestFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   applicationForm<T extends Prisma.Job$applicationFormArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$applicationFormArgs<ExtArgs>>): Prisma.Prisma__JobApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$JobApplicationFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   cvScreenings<T extends Prisma.Job$cvScreeningsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$cvScreeningsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CvScreeningPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5701,27 +5701,27 @@ export type Job$interviewSessionsArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * Job.hiringDecisions
+ * Job.offers
  */
-export type Job$hiringDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Job$offersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the HiringDecision
+   * Select specific fields to fetch from the Offer
    */
-  select?: Prisma.HiringDecisionSelect<ExtArgs> | null
+  select?: Prisma.OfferSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the HiringDecision
+   * Omit specific fields from the Offer
    */
-  omit?: Prisma.HiringDecisionOmit<ExtArgs> | null
+  omit?: Prisma.OfferOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.HiringDecisionInclude<ExtArgs> | null
-  where?: Prisma.HiringDecisionWhereInput
-  orderBy?: Prisma.HiringDecisionOrderByWithRelationInput | Prisma.HiringDecisionOrderByWithRelationInput[]
-  cursor?: Prisma.HiringDecisionWhereUniqueInput
+  include?: Prisma.OfferInclude<ExtArgs> | null
+  where?: Prisma.OfferWhereInput
+  orderBy?: Prisma.OfferOrderByWithRelationInput | Prisma.OfferOrderByWithRelationInput[]
+  cursor?: Prisma.OfferWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.HiringDecisionScalarFieldEnum | Prisma.HiringDecisionScalarFieldEnum[]
+  distinct?: Prisma.OfferScalarFieldEnum | Prisma.OfferScalarFieldEnum[]
 }
 
 /**

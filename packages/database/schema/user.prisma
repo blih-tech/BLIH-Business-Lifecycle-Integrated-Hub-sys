@@ -27,7 +27,7 @@ model User {
   applicantStatusChanges           ApplicantStatusHistory[]      @relation("ApplicantStatusChangedBy")
   createdInterviewSessions         InterviewSession[]            @relation("InterviewSessionCreator")
   interviewerAssignments           InterviewerAssignment[]       @relation("InterviewSessionInterviewer")
-  submittedHiringDecisions         HiringDecision[]              @relation("HiringDecisionSubmittedBy")
+  createdOffers                    Offer[]                       @relation("OfferCreator")
   jobApprovalSteps                 JobApprovalStep[]             @relation("JobApprovalStepApprover")
   jobApprovalHistoryChanges        JobApprovalHistory[]          @relation("JobApprovalHistoryUser")
   checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")

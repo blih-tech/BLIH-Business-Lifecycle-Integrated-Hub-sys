@@ -768,6 +768,7 @@ export class UpdateApplicantStatusUseCase {
       if (dto.status === 'SCREENING') data.screeningAt = now;
       if (dto.status === 'SHORTLISTED') data.shortlistedAt = now;
       if (dto.status === 'INTERVIEW') data.interviewAt = now;
+      if (dto.status === 'WAITLIST') data.waitlistAt = now;
       if (dto.status === 'OFFER') data.offerAt = now;
       if (dto.status === 'HIRED') data.hiredAt = now;
       if (dto.status === 'REJECTED') data.rejectedAt = now;

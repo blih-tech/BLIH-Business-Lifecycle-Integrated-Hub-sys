@@ -81,7 +81,7 @@ model Job {
   tools               String[]            @default([])
   applicants          Applicant[]
   interviewSessions   InterviewSession[]
-  hiringDecisions     HiringDecision[]
+  offers              Offer[]
   requestForm         JobRequestForm?
   applicationForm     JobApplicationForm?
   cvScreenings        CvScreening[]            @relation("JobScreening")
@@ -241,6 +241,7 @@ model Applicant {
   screeningAt       DateTime?                @map("screening_at")
   shortlistedAt     DateTime?                @map("shortlisted_at")
   interviewAt       DateTime?                @map("interview_at")
+  waitlistAt        DateTime?                @map("waitlist_at")
   offerAt           DateTime?                @map("offer_at")
   hiredAt           DateTime?                @map("hired_at")
   rejectedAt        DateTime?                @map("rejected_at")
@@ -252,7 +253,7 @@ model Applicant {
   educations        ApplicantEducation[]
   experiences       ApplicantExperience[]
   interviewParticipants InterviewParticipant[]
-  hiringDecisions   HiringDecision[]         @relation("HiringDecisionApplicant")
+  offers            Offer[]
   statusHistory     ApplicantStatusHistory[]
   cvScreenings      CvScreening[]            @relation("ApplicantScreening")
 
@@ -389,30 +390,38 @@ model InterviewFeedback {
   @@index([participantId, assignmentId])
 }
 
-model HiringDecision {
-  id                   String                @id @default(uuid()) @db.Uuid
-  jobId                String                @map("job_id") @db.Uuid
-  job                  Job                   @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicantId          String                @map("applicant_id") @db.Uuid
-  applicant            Applicant             @relation("HiringDecisionApplicant", fields: [applicantId], references: [id], onDelete: Cascade)
-  onboardingId         String?               @unique @map("onboarding_id") @db.Uuid
-  onboarding           Onboarding?           @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
-  submittedById        String                @map("submitted_by_id") @db.Uuid
-  submittedBy          User                  @relation("HiringDecisionSubmittedBy", fields: [submittedById], references: [id], onDelete: Restrict)
-  outcome              HiringDecisionOutcome @default(OFFER_APPROVED)
-  salaryOffered        Decimal?              @map("salary_offered") @db.Decimal(15, 2)
-  currency             String?               @db.VarChar(8)
-  startDate            DateTime?             @map("start_date") @db.Date
-  decisionNotes        String?               @map("decision_notes") @db.Text
-  decidedAt            DateTime?             @map("decided_at")
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
+model Offer {
+  id             String      @id @default(uuid()) @db.Uuid
+  jobId          String      @map("job_id") @db.Uuid
+  job            Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicantId    String      @map("applicant_id") @db.Uuid
+  applicant      Applicant   @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  onboardingId   String?     @unique @map("onboarding_id") @db.Uuid
+  onboarding     Onboarding? @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
+  createdById    String      @map("created_by_id") @db.Uuid
+  createdBy      User        @relation("OfferCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  status         OfferStatus @default(DRAFT)
+  salary         Decimal?    @db.Decimal(12, 2)
+  currency       String?     @db.VarChar(8)
+  startDate      DateTime?   @map("start_date") @db.Date
+  payFrequency   PayFrequency?
+  employmentType EmploymentType?
+  bonus          Decimal?    @db.Decimal(12, 2)
+  equity         Decimal?    @db.Decimal(12, 2)
+  offerLetterUrl String?     @map("offer_letter_url")
+  notes          String?     @db.Text
+  sentAt         DateTime?   @map("sent_at")
+  respondedAt    DateTime?   @map("responded_at")
+  expiresAt      DateTime?   @map("expires_at")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   onboardingChecklists OnboardingChecklist[]
 
+  @@unique([jobId, applicantId])
   @@index([jobId])
   @@index([applicantId])
-  @@index([onboardingId])
-  @@index([submittedById])
+  @@index([status])
+  @@index([createdById])
 }
 
 // CV Screening Models

@@ -39,7 +39,7 @@ export class CreateOnboardingChecklistUseCase {
       data: {
         employeeId: employee.id,
         onboardingId: dto.onboardingId ?? undefined,
-        hiringDecisionId: dto.hiringDecisionId ?? undefined,
+        offerId: dto.offerId ?? undefined,
         joinDate,
         overseerId: dto.overseerId ?? undefined,
         ceoSignOffRequired: dto.ceoSignOffRequired ?? false,

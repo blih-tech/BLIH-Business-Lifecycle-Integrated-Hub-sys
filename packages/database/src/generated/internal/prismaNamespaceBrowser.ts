@@ -143,7 +143,7 @@ export const ModelName = {
   InterviewParticipant: 'InterviewParticipant',
   InterviewerAssignment: 'InterviewerAssignment',
   InterviewFeedback: 'InterviewFeedback',
-  HiringDecision: 'HiringDecision',
+  Offer: 'Offer',
   CvScreening: 'CvScreening',
   CvScreeningCriteria: 'CvScreeningCriteria',
   CvScreeningQuestion: 'CvScreeningQuestion',
@@ -1167,7 +1167,7 @@ export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
   onboardingId: 'onboardingId',
-  hiringDecisionId: 'hiringDecisionId',
+  offerId: 'offerId',
   joinDate: 'joinDate',
   overseerId: 'overseerId',
   totalItems: 'totalItems',
@@ -1694,6 +1694,7 @@ export const ApplicantScalarFieldEnum = {
   screeningAt: 'screeningAt',
   shortlistedAt: 'shortlistedAt',
   interviewAt: 'interviewAt',
+  waitlistAt: 'waitlistAt',
   offerAt: 'offerAt',
   hiredAt: 'hiredAt',
   rejectedAt: 'rejectedAt',
@@ -1808,23 +1809,30 @@ export const InterviewFeedbackScalarFieldEnum = {
 export type InterviewFeedbackScalarFieldEnum = (typeof InterviewFeedbackScalarFieldEnum)[keyof typeof InterviewFeedbackScalarFieldEnum]
 
 
-export const HiringDecisionScalarFieldEnum = {
+export const OfferScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
   applicantId: 'applicantId',
   onboardingId: 'onboardingId',
-  submittedById: 'submittedById',
-  outcome: 'outcome',
-  salaryOffered: 'salaryOffered',
+  createdById: 'createdById',
+  status: 'status',
+  salary: 'salary',
   currency: 'currency',
   startDate: 'startDate',
-  decisionNotes: 'decisionNotes',
-  decidedAt: 'decidedAt',
+  payFrequency: 'payFrequency',
+  employmentType: 'employmentType',
+  bonus: 'bonus',
+  equity: 'equity',
+  offerLetterUrl: 'offerLetterUrl',
+  notes: 'notes',
+  sentAt: 'sentAt',
+  respondedAt: 'respondedAt',
+  expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type HiringDecisionScalarFieldEnum = (typeof HiringDecisionScalarFieldEnum)[keyof typeof HiringDecisionScalarFieldEnum]
+export type OfferScalarFieldEnum = (typeof OfferScalarFieldEnum)[keyof typeof OfferScalarFieldEnum]
 
 
 export const CvScreeningScalarFieldEnum = {
