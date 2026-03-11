@@ -116,6 +116,12 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(.*\\.mjs$|@repo/database))"
+    ],
+    "extensionsToTreatAsEsm": [
+      ".js"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
