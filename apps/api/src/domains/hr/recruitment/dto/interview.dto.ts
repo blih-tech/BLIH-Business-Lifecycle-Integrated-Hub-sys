@@ -8,6 +8,7 @@ import {
 import {
   ArrayNotEmpty,
   IsArray,
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsInt,
@@ -151,6 +152,15 @@ export class UpsertInterviewFeedbackDto {
   @IsOptional()
   @IsString()
   notes?: string | null;
+
+  @ApiPropertyOptional({
+    default: false,
+    description:
+      'When true, saves feedback as draft without a submission timestamp.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isDraft?: boolean;
 }
 
 export class InterviewResponseParticipantApplicantDto {
@@ -243,9 +253,6 @@ export class InterviewFeedbackResponseDto {
   id!: string;
 
   @ApiProperty()
-  sessionId!: string;
-
-  @ApiProperty()
   participantId!: string;
 
   @ApiProperty()
@@ -268,6 +275,9 @@ export class InterviewFeedbackResponseDto {
 
   @ApiPropertyOptional({ nullable: true })
   notes!: string | null;
+
+  @ApiProperty()
+  isDraft!: boolean;
 
   @ApiPropertyOptional({ nullable: true })
   submittedAt!: string | null;

@@ -274,7 +274,6 @@ model ApplicantStatusHistory {
   toStatus    ApplicantStatus  @map("to_status")
   notes       String?          @db.Text
   changedAt   DateTime         @default(now()) @map("changed_at")
-  createdAt   DateTime         @default(now())
 
   @@index([applicantId])
   @@index([applicantId, changedAt])
@@ -328,7 +327,6 @@ model InterviewSession {
   updatedAt       DateTime              @updatedAt
   participants    InterviewParticipant[]
   interviewers    InterviewerAssignment[]
-  feedbacks       InterviewFeedback[]
 
   @@index([jobId])
   @@index([status])
@@ -370,24 +368,22 @@ model InterviewerAssignment {
 }
 
 model InterviewFeedback {
-  id          String               @id @default(uuid()) @db.Uuid
-  sessionId   String               @map("session_id") @db.Uuid
-  session     InterviewSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  participantId String             @map("participant_id") @db.Uuid
-  participant InterviewParticipant @relation("InterviewFeedbackParticipant", fields: [participantId, sessionId], references: [id, sessionId], onDelete: Cascade)
-  assignmentId String              @map("assignment_id") @db.Uuid
-  assignment  InterviewerAssignment @relation("InterviewFeedbackAssignment", fields: [assignmentId, sessionId], references: [id, sessionId], onDelete: Cascade)
-  score       Float?
-  endorsement EndorsementLevel?
-  strengths   String[]             @default([])
-  weaknesses  String[]             @default([])
-  notes       String?              @db.Text
-  submittedAt DateTime?            @map("submitted_at")
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  id            String                @id @default(uuid()) @db.Uuid
+  participantId String                @map("participant_id") @db.Uuid
+  participant   InterviewParticipant  @relation("InterviewFeedbackParticipant", fields: [participantId], references: [id], onDelete: Cascade)
+  assignmentId  String                @map("assignment_id") @db.Uuid
+  assignment    InterviewerAssignment @relation("InterviewFeedbackAssignment", fields: [assignmentId], references: [id], onDelete: Cascade)
+  score         Float?
+  endorsement   EndorsementLevel?
+  strengths     String[]              @default([])
+  weaknesses    String[]              @default([])
+  notes         String?               @db.Text
+  isDraft       Boolean               @default(true) @map("is_draft")
+  submittedAt   DateTime?             @map("submitted_at")
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
 
   @@unique([participantId, assignmentId])
-  @@index([sessionId])
   @@index([participantId])
   @@index([assignmentId])
   @@index([participantId, assignmentId])

@@ -644,7 +644,6 @@ export function mapInterviewFeedback(feedback: any) {
 
   return {
     id: feedback.id,
-    sessionId: feedback.sessionId,
     participantId: feedback.participantId,
     assignmentId: feedback.assignmentId,
     interviewerId: feedback.assignment?.interviewerId ?? null,
@@ -653,6 +652,7 @@ export function mapInterviewFeedback(feedback: any) {
     strengths: feedback.strengths ?? [],
     weaknesses: feedback.weaknesses ?? [],
     notes: feedback.notes ?? null,
+    isDraft: Boolean(feedback.isDraft),
     submittedAt: dateToIso(feedback.submittedAt),
     createdAt: feedback.createdAt.toISOString(),
     updatedAt: feedback.updatedAt.toISOString(),
@@ -660,6 +660,16 @@ export function mapInterviewFeedback(feedback: any) {
 }
 
 export function mapInterview(session: any) {
+  const sessionFeedbacks = Array.isArray(session.feedbacks)
+    ? session.feedbacks
+    : (session.participants ?? []).flatMap(
+        (participant: any) => participant.feedbacks ?? [],
+      );
+
+  const sortedFeedbacks = [...sessionFeedbacks].sort(
+    (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+  );
+
   return {
     id: session.id,
     jobId: session.jobId,
@@ -682,7 +692,7 @@ export function mapInterview(session: any) {
     interviewers: (session.interviewers ?? []).map((assignment: any) =>
       mapInterviewerAssignment(assignment),
     ),
-    feedbacks: (session.feedbacks ?? []).map((feedback: any) =>
+    feedbacks: sortedFeedbacks.map((feedback: any) =>
       mapInterviewFeedback(feedback),
     ),
   };

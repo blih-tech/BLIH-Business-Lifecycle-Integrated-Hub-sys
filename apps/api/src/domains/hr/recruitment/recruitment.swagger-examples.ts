@@ -256,7 +256,6 @@ export const interviewExample = {
 
 export const interviewFeedbackExample = {
   id: 'de55a2d6-7df0-4324-8151-c478226cde2a',
-  sessionId: interviewExample.id,
   participantId: interviewExample.participants[0].id,
   assignmentId: interviewExample.interviewers[0].id,
   interviewerId: interviewExample.interviewers[0].interviewerId,
@@ -265,6 +264,7 @@ export const interviewFeedbackExample = {
   strengths: ['Strong system design', 'Clear communication'],
   weaknesses: ['Needs deeper PostgreSQL tuning experience'],
   notes: 'Recommended to proceed to final round.',
+  isDraft: false,
   submittedAt: '2026-03-10T12:05:00.000Z',
   createdAt: '2026-03-10T12:05:00.000Z',
   updatedAt: '2026-03-10T12:05:00.000Z',

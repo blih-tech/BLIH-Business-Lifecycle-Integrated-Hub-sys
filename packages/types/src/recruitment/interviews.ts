@@ -73,6 +73,7 @@ export interface UpsertInterviewFeedbackDto {
   strengths?: string[];
   weaknesses?: string[];
   notes?: string | null;
+  isDraft?: boolean;
 }
 
 export interface InterviewResponseParticipantApplicantDto {
@@ -111,7 +112,6 @@ export interface InterviewResponseAssignmentDto {
 
 export interface InterviewFeedbackResponseDto {
   id: string;
-  sessionId: string;
   participantId: string;
   assignmentId: string;
   interviewerId: string | null;
@@ -120,6 +120,7 @@ export interface InterviewFeedbackResponseDto {
   strengths: string[];
   weaknesses: string[];
   notes: string | null;
+  isDraft: boolean;
   submittedAt: string | null;
   createdAt: string;
   updatedAt: string;

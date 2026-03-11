@@ -36,12 +36,12 @@ export type InterviewFeedbackSumAggregateOutputType = {
 
 export type InterviewFeedbackMinAggregateOutputType = {
   id: string | null
-  sessionId: string | null
   participantId: string | null
   assignmentId: string | null
   score: number | null
   endorsement: $Enums.EndorsementLevel | null
   notes: string | null
+  isDraft: boolean | null
   submittedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,12 +49,12 @@ export type InterviewFeedbackMinAggregateOutputType = {
 
 export type InterviewFeedbackMaxAggregateOutputType = {
   id: string | null
-  sessionId: string | null
   participantId: string | null
   assignmentId: string | null
   score: number | null
   endorsement: $Enums.EndorsementLevel | null
   notes: string | null
+  isDraft: boolean | null
   submittedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -62,7 +62,6 @@ export type InterviewFeedbackMaxAggregateOutputType = {
 
 export type InterviewFeedbackCountAggregateOutputType = {
   id: number
-  sessionId: number
   participantId: number
   assignmentId: number
   score: number
@@ -70,6 +69,7 @@ export type InterviewFeedbackCountAggregateOutputType = {
   strengths: number
   weaknesses: number
   notes: number
+  isDraft: number
   submittedAt: number
   createdAt: number
   updatedAt: number
@@ -87,12 +87,12 @@ export type InterviewFeedbackSumAggregateInputType = {
 
 export type InterviewFeedbackMinAggregateInputType = {
   id?: true
-  sessionId?: true
   participantId?: true
   assignmentId?: true
   score?: true
   endorsement?: true
   notes?: true
+  isDraft?: true
   submittedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -100,12 +100,12 @@ export type InterviewFeedbackMinAggregateInputType = {
 
 export type InterviewFeedbackMaxAggregateInputType = {
   id?: true
-  sessionId?: true
   participantId?: true
   assignmentId?: true
   score?: true
   endorsement?: true
   notes?: true
+  isDraft?: true
   submittedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -113,7 +113,6 @@ export type InterviewFeedbackMaxAggregateInputType = {
 
 export type InterviewFeedbackCountAggregateInputType = {
   id?: true
-  sessionId?: true
   participantId?: true
   assignmentId?: true
   score?: true
@@ -121,6 +120,7 @@ export type InterviewFeedbackCountAggregateInputType = {
   strengths?: true
   weaknesses?: true
   notes?: true
+  isDraft?: true
   submittedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -215,7 +215,6 @@ export type InterviewFeedbackGroupByArgs<ExtArgs extends runtime.Types.Extension
 
 export type InterviewFeedbackGroupByOutputType = {
   id: string
-  sessionId: string
   participantId: string
   assignmentId: string
   score: number | null
@@ -223,6 +222,7 @@ export type InterviewFeedbackGroupByOutputType = {
   strengths: string[]
   weaknesses: string[]
   notes: string | null
+  isDraft: boolean
   submittedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -253,7 +253,6 @@ export type InterviewFeedbackWhereInput = {
   OR?: Prisma.InterviewFeedbackWhereInput[]
   NOT?: Prisma.InterviewFeedbackWhereInput | Prisma.InterviewFeedbackWhereInput[]
   id?: Prisma.UuidFilter<"InterviewFeedback"> | string
-  sessionId?: Prisma.UuidFilter<"InterviewFeedback"> | string
   participantId?: Prisma.UuidFilter<"InterviewFeedback"> | string
   assignmentId?: Prisma.UuidFilter<"InterviewFeedback"> | string
   score?: Prisma.FloatNullableFilter<"InterviewFeedback"> | number | null
@@ -261,17 +260,16 @@ export type InterviewFeedbackWhereInput = {
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
+  isDraft?: Prisma.BoolFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
-  session?: Prisma.XOR<Prisma.InterviewSessionScalarRelationFilter, Prisma.InterviewSessionWhereInput>
   participant?: Prisma.XOR<Prisma.InterviewParticipantScalarRelationFilter, Prisma.InterviewParticipantWhereInput>
   assignment?: Prisma.XOR<Prisma.InterviewerAssignmentScalarRelationFilter, Prisma.InterviewerAssignmentWhereInput>
 }
 
 export type InterviewFeedbackOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   assignmentId?: Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -279,10 +277,10 @@ export type InterviewFeedbackOrderByWithRelationInput = {
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  session?: Prisma.InterviewSessionOrderByWithRelationInput
   participant?: Prisma.InterviewParticipantOrderByWithRelationInput
   assignment?: Prisma.InterviewerAssignmentOrderByWithRelationInput
 }
@@ -293,7 +291,6 @@ export type InterviewFeedbackWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.InterviewFeedbackWhereInput | Prisma.InterviewFeedbackWhereInput[]
   OR?: Prisma.InterviewFeedbackWhereInput[]
   NOT?: Prisma.InterviewFeedbackWhereInput | Prisma.InterviewFeedbackWhereInput[]
-  sessionId?: Prisma.UuidFilter<"InterviewFeedback"> | string
   participantId?: Prisma.UuidFilter<"InterviewFeedback"> | string
   assignmentId?: Prisma.UuidFilter<"InterviewFeedback"> | string
   score?: Prisma.FloatNullableFilter<"InterviewFeedback"> | number | null
@@ -301,17 +298,16 @@ export type InterviewFeedbackWhereUniqueInput = Prisma.AtLeast<{
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
+  isDraft?: Prisma.BoolFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
-  session?: Prisma.XOR<Prisma.InterviewSessionScalarRelationFilter, Prisma.InterviewSessionWhereInput>
   participant?: Prisma.XOR<Prisma.InterviewParticipantScalarRelationFilter, Prisma.InterviewParticipantWhereInput>
   assignment?: Prisma.XOR<Prisma.InterviewerAssignmentScalarRelationFilter, Prisma.InterviewerAssignmentWhereInput>
 }, "id" | "participantId_assignmentId">
 
 export type InterviewFeedbackOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   assignmentId?: Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -319,6 +315,7 @@ export type InterviewFeedbackOrderByWithAggregationInput = {
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -334,7 +331,6 @@ export type InterviewFeedbackScalarWhereWithAggregatesInput = {
   OR?: Prisma.InterviewFeedbackScalarWhereWithAggregatesInput[]
   NOT?: Prisma.InterviewFeedbackScalarWhereWithAggregatesInput | Prisma.InterviewFeedbackScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"InterviewFeedback"> | string
-  sessionId?: Prisma.UuidWithAggregatesFilter<"InterviewFeedback"> | string
   participantId?: Prisma.UuidWithAggregatesFilter<"InterviewFeedback"> | string
   assignmentId?: Prisma.UuidWithAggregatesFilter<"InterviewFeedback"> | string
   score?: Prisma.FloatNullableWithAggregatesFilter<"InterviewFeedback"> | number | null
@@ -342,6 +338,7 @@ export type InterviewFeedbackScalarWhereWithAggregatesInput = {
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableWithAggregatesFilter<"InterviewFeedback"> | string | null
+  isDraft?: Prisma.BoolWithAggregatesFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InterviewFeedback"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"InterviewFeedback"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"InterviewFeedback"> | Date | string
@@ -354,17 +351,16 @@ export type InterviewFeedbackCreateInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  session: Prisma.InterviewSessionCreateNestedOneWithoutFeedbacksInput
   participant: Prisma.InterviewParticipantCreateNestedOneWithoutFeedbacksInput
   assignment: Prisma.InterviewerAssignmentCreateNestedOneWithoutFeedbacksInput
 }
 
 export type InterviewFeedbackUncheckedCreateInput = {
   id?: string
-  sessionId: string
   participantId: string
   assignmentId: string
   score?: number | null
@@ -372,6 +368,7 @@ export type InterviewFeedbackUncheckedCreateInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -384,17 +381,16 @@ export type InterviewFeedbackUpdateInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  session?: Prisma.InterviewSessionUpdateOneRequiredWithoutFeedbacksNestedInput
   participant?: Prisma.InterviewParticipantUpdateOneRequiredWithoutFeedbacksNestedInput
   assignment?: Prisma.InterviewerAssignmentUpdateOneRequiredWithoutFeedbacksNestedInput
 }
 
 export type InterviewFeedbackUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sessionId?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
   assignmentId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -402,6 +398,7 @@ export type InterviewFeedbackUncheckedUpdateInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -409,7 +406,6 @@ export type InterviewFeedbackUncheckedUpdateInput = {
 
 export type InterviewFeedbackCreateManyInput = {
   id?: string
-  sessionId: string
   participantId: string
   assignmentId: string
   score?: number | null
@@ -417,6 +413,7 @@ export type InterviewFeedbackCreateManyInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -429,6 +426,7 @@ export type InterviewFeedbackUpdateManyMutationInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,7 +434,6 @@ export type InterviewFeedbackUpdateManyMutationInput = {
 
 export type InterviewFeedbackUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sessionId?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
   assignmentId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -444,6 +441,7 @@ export type InterviewFeedbackUncheckedUpdateManyInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -466,7 +464,6 @@ export type InterviewFeedbackParticipantIdAssignmentIdCompoundUniqueInput = {
 
 export type InterviewFeedbackCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   assignmentId?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -474,6 +471,7 @@ export type InterviewFeedbackCountOrderByAggregateInput = {
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -485,12 +483,12 @@ export type InterviewFeedbackAvgOrderByAggregateInput = {
 
 export type InterviewFeedbackMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   assignmentId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   endorsement?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -498,12 +496,12 @@ export type InterviewFeedbackMaxOrderByAggregateInput = {
 
 export type InterviewFeedbackMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   assignmentId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   endorsement?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -511,48 +509,6 @@ export type InterviewFeedbackMinOrderByAggregateInput = {
 
 export type InterviewFeedbackSumOrderByAggregateInput = {
   score?: Prisma.SortOrder
-}
-
-export type InterviewFeedbackCreateNestedManyWithoutSessionInput = {
-  create?: Prisma.XOR<Prisma.InterviewFeedbackCreateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput> | Prisma.InterviewFeedbackCreateWithoutSessionInput[] | Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput[]
-  connectOrCreate?: Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput | Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput[]
-  createMany?: Prisma.InterviewFeedbackCreateManySessionInputEnvelope
-  connect?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-}
-
-export type InterviewFeedbackUncheckedCreateNestedManyWithoutSessionInput = {
-  create?: Prisma.XOR<Prisma.InterviewFeedbackCreateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput> | Prisma.InterviewFeedbackCreateWithoutSessionInput[] | Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput[]
-  connectOrCreate?: Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput | Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput[]
-  createMany?: Prisma.InterviewFeedbackCreateManySessionInputEnvelope
-  connect?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-}
-
-export type InterviewFeedbackUpdateManyWithoutSessionNestedInput = {
-  create?: Prisma.XOR<Prisma.InterviewFeedbackCreateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput> | Prisma.InterviewFeedbackCreateWithoutSessionInput[] | Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput[]
-  connectOrCreate?: Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput | Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput[]
-  upsert?: Prisma.InterviewFeedbackUpsertWithWhereUniqueWithoutSessionInput | Prisma.InterviewFeedbackUpsertWithWhereUniqueWithoutSessionInput[]
-  createMany?: Prisma.InterviewFeedbackCreateManySessionInputEnvelope
-  set?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  disconnect?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  delete?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  connect?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  update?: Prisma.InterviewFeedbackUpdateWithWhereUniqueWithoutSessionInput | Prisma.InterviewFeedbackUpdateWithWhereUniqueWithoutSessionInput[]
-  updateMany?: Prisma.InterviewFeedbackUpdateManyWithWhereWithoutSessionInput | Prisma.InterviewFeedbackUpdateManyWithWhereWithoutSessionInput[]
-  deleteMany?: Prisma.InterviewFeedbackScalarWhereInput | Prisma.InterviewFeedbackScalarWhereInput[]
-}
-
-export type InterviewFeedbackUncheckedUpdateManyWithoutSessionNestedInput = {
-  create?: Prisma.XOR<Prisma.InterviewFeedbackCreateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput> | Prisma.InterviewFeedbackCreateWithoutSessionInput[] | Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput[]
-  connectOrCreate?: Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput | Prisma.InterviewFeedbackCreateOrConnectWithoutSessionInput[]
-  upsert?: Prisma.InterviewFeedbackUpsertWithWhereUniqueWithoutSessionInput | Prisma.InterviewFeedbackUpsertWithWhereUniqueWithoutSessionInput[]
-  createMany?: Prisma.InterviewFeedbackCreateManySessionInputEnvelope
-  set?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  disconnect?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  delete?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  connect?: Prisma.InterviewFeedbackWhereUniqueInput | Prisma.InterviewFeedbackWhereUniqueInput[]
-  update?: Prisma.InterviewFeedbackUpdateWithWhereUniqueWithoutSessionInput | Prisma.InterviewFeedbackUpdateWithWhereUniqueWithoutSessionInput[]
-  updateMany?: Prisma.InterviewFeedbackUpdateManyWithWhereWithoutSessionInput | Prisma.InterviewFeedbackUpdateManyWithWhereWithoutSessionInput[]
-  deleteMany?: Prisma.InterviewFeedbackScalarWhereInput | Prisma.InterviewFeedbackScalarWhereInput[]
 }
 
 export type InterviewFeedbackCreateNestedManyWithoutParticipantInput = {
@@ -661,78 +617,6 @@ export type InterviewFeedbackUpdateweaknessesInput = {
   push?: string | string[]
 }
 
-export type InterviewFeedbackCreateWithoutSessionInput = {
-  id?: string
-  score?: number | null
-  endorsement?: $Enums.EndorsementLevel | null
-  strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
-  weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
-  notes?: string | null
-  submittedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  participant: Prisma.InterviewParticipantCreateNestedOneWithoutFeedbacksInput
-  assignment: Prisma.InterviewerAssignmentCreateNestedOneWithoutFeedbacksInput
-}
-
-export type InterviewFeedbackUncheckedCreateWithoutSessionInput = {
-  id?: string
-  participantId: string
-  assignmentId: string
-  score?: number | null
-  endorsement?: $Enums.EndorsementLevel | null
-  strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
-  weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
-  notes?: string | null
-  submittedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type InterviewFeedbackCreateOrConnectWithoutSessionInput = {
-  where: Prisma.InterviewFeedbackWhereUniqueInput
-  create: Prisma.XOR<Prisma.InterviewFeedbackCreateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput>
-}
-
-export type InterviewFeedbackCreateManySessionInputEnvelope = {
-  data: Prisma.InterviewFeedbackCreateManySessionInput | Prisma.InterviewFeedbackCreateManySessionInput[]
-  skipDuplicates?: boolean
-}
-
-export type InterviewFeedbackUpsertWithWhereUniqueWithoutSessionInput = {
-  where: Prisma.InterviewFeedbackWhereUniqueInput
-  update: Prisma.XOR<Prisma.InterviewFeedbackUpdateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedUpdateWithoutSessionInput>
-  create: Prisma.XOR<Prisma.InterviewFeedbackCreateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedCreateWithoutSessionInput>
-}
-
-export type InterviewFeedbackUpdateWithWhereUniqueWithoutSessionInput = {
-  where: Prisma.InterviewFeedbackWhereUniqueInput
-  data: Prisma.XOR<Prisma.InterviewFeedbackUpdateWithoutSessionInput, Prisma.InterviewFeedbackUncheckedUpdateWithoutSessionInput>
-}
-
-export type InterviewFeedbackUpdateManyWithWhereWithoutSessionInput = {
-  where: Prisma.InterviewFeedbackScalarWhereInput
-  data: Prisma.XOR<Prisma.InterviewFeedbackUpdateManyMutationInput, Prisma.InterviewFeedbackUncheckedUpdateManyWithoutSessionInput>
-}
-
-export type InterviewFeedbackScalarWhereInput = {
-  AND?: Prisma.InterviewFeedbackScalarWhereInput | Prisma.InterviewFeedbackScalarWhereInput[]
-  OR?: Prisma.InterviewFeedbackScalarWhereInput[]
-  NOT?: Prisma.InterviewFeedbackScalarWhereInput | Prisma.InterviewFeedbackScalarWhereInput[]
-  id?: Prisma.UuidFilter<"InterviewFeedback"> | string
-  sessionId?: Prisma.UuidFilter<"InterviewFeedback"> | string
-  participantId?: Prisma.UuidFilter<"InterviewFeedback"> | string
-  assignmentId?: Prisma.UuidFilter<"InterviewFeedback"> | string
-  score?: Prisma.FloatNullableFilter<"InterviewFeedback"> | number | null
-  endorsement?: Prisma.EnumEndorsementLevelNullableFilter<"InterviewFeedback"> | $Enums.EndorsementLevel | null
-  strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
-  weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
-  notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
-  submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
-  createdAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
-}
-
 export type InterviewFeedbackCreateWithoutParticipantInput = {
   id?: string
   score?: number | null
@@ -740,10 +624,10 @@ export type InterviewFeedbackCreateWithoutParticipantInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  session: Prisma.InterviewSessionCreateNestedOneWithoutFeedbacksInput
   assignment: Prisma.InterviewerAssignmentCreateNestedOneWithoutFeedbacksInput
 }
 
@@ -755,6 +639,7 @@ export type InterviewFeedbackUncheckedCreateWithoutParticipantInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -786,6 +671,24 @@ export type InterviewFeedbackUpdateManyWithWhereWithoutParticipantInput = {
   data: Prisma.XOR<Prisma.InterviewFeedbackUpdateManyMutationInput, Prisma.InterviewFeedbackUncheckedUpdateManyWithoutParticipantInput>
 }
 
+export type InterviewFeedbackScalarWhereInput = {
+  AND?: Prisma.InterviewFeedbackScalarWhereInput | Prisma.InterviewFeedbackScalarWhereInput[]
+  OR?: Prisma.InterviewFeedbackScalarWhereInput[]
+  NOT?: Prisma.InterviewFeedbackScalarWhereInput | Prisma.InterviewFeedbackScalarWhereInput[]
+  id?: Prisma.UuidFilter<"InterviewFeedback"> | string
+  participantId?: Prisma.UuidFilter<"InterviewFeedback"> | string
+  assignmentId?: Prisma.UuidFilter<"InterviewFeedback"> | string
+  score?: Prisma.FloatNullableFilter<"InterviewFeedback"> | number | null
+  endorsement?: Prisma.EnumEndorsementLevelNullableFilter<"InterviewFeedback"> | $Enums.EndorsementLevel | null
+  strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
+  weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
+  notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
+  isDraft?: Prisma.BoolFilter<"InterviewFeedback"> | boolean
+  submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"InterviewFeedback"> | Date | string
+}
+
 export type InterviewFeedbackCreateWithoutAssignmentInput = {
   id?: string
   score?: number | null
@@ -793,10 +696,10 @@ export type InterviewFeedbackCreateWithoutAssignmentInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  session: Prisma.InterviewSessionCreateNestedOneWithoutFeedbacksInput
   participant: Prisma.InterviewParticipantCreateNestedOneWithoutFeedbacksInput
 }
 
@@ -808,6 +711,7 @@ export type InterviewFeedbackUncheckedCreateWithoutAssignmentInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -839,62 +743,6 @@ export type InterviewFeedbackUpdateManyWithWhereWithoutAssignmentInput = {
   data: Prisma.XOR<Prisma.InterviewFeedbackUpdateManyMutationInput, Prisma.InterviewFeedbackUncheckedUpdateManyWithoutAssignmentInput>
 }
 
-export type InterviewFeedbackCreateManySessionInput = {
-  id?: string
-  participantId: string
-  assignmentId: string
-  score?: number | null
-  endorsement?: $Enums.EndorsementLevel | null
-  strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
-  weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
-  notes?: string | null
-  submittedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type InterviewFeedbackUpdateWithoutSessionInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
-  strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
-  weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  participant?: Prisma.InterviewParticipantUpdateOneRequiredWithoutFeedbacksNestedInput
-  assignment?: Prisma.InterviewerAssignmentUpdateOneRequiredWithoutFeedbacksNestedInput
-}
-
-export type InterviewFeedbackUncheckedUpdateWithoutSessionInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
-  assignmentId?: Prisma.StringFieldUpdateOperationsInput | string
-  score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
-  strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
-  weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type InterviewFeedbackUncheckedUpdateManyWithoutSessionInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  participantId?: Prisma.StringFieldUpdateOperationsInput | string
-  assignmentId?: Prisma.StringFieldUpdateOperationsInput | string
-  score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
-  strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
-  weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
 export type InterviewFeedbackCreateManyParticipantInput = {
   id?: string
   assignmentId: string
@@ -903,6 +751,7 @@ export type InterviewFeedbackCreateManyParticipantInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -915,10 +764,10 @@ export type InterviewFeedbackUpdateWithoutParticipantInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  session?: Prisma.InterviewSessionUpdateOneRequiredWithoutFeedbacksNestedInput
   assignment?: Prisma.InterviewerAssignmentUpdateOneRequiredWithoutFeedbacksNestedInput
 }
 
@@ -930,6 +779,7 @@ export type InterviewFeedbackUncheckedUpdateWithoutParticipantInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -943,6 +793,7 @@ export type InterviewFeedbackUncheckedUpdateManyWithoutParticipantInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -956,6 +807,7 @@ export type InterviewFeedbackCreateManyAssignmentInput = {
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
   notes?: string | null
+  isDraft?: boolean
   submittedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -968,10 +820,10 @@ export type InterviewFeedbackUpdateWithoutAssignmentInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  session?: Prisma.InterviewSessionUpdateOneRequiredWithoutFeedbacksNestedInput
   participant?: Prisma.InterviewParticipantUpdateOneRequiredWithoutFeedbacksNestedInput
 }
 
@@ -983,6 +835,7 @@ export type InterviewFeedbackUncheckedUpdateWithoutAssignmentInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -996,6 +849,7 @@ export type InterviewFeedbackUncheckedUpdateManyWithoutAssignmentInput = {
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1005,7 +859,6 @@ export type InterviewFeedbackUncheckedUpdateManyWithoutAssignmentInput = {
 
 export type InterviewFeedbackSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  sessionId?: boolean
   participantId?: boolean
   assignmentId?: boolean
   score?: boolean
@@ -1013,17 +866,16 @@ export type InterviewFeedbackSelect<ExtArgs extends runtime.Types.Extensions.Int
   strengths?: boolean
   weaknesses?: boolean
   notes?: boolean
+  isDraft?: boolean
   submittedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  session?: boolean | Prisma.InterviewSessionDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["interviewFeedback"]>
 
 export type InterviewFeedbackSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  sessionId?: boolean
   participantId?: boolean
   assignmentId?: boolean
   score?: boolean
@@ -1031,17 +883,16 @@ export type InterviewFeedbackSelectCreateManyAndReturn<ExtArgs extends runtime.T
   strengths?: boolean
   weaknesses?: boolean
   notes?: boolean
+  isDraft?: boolean
   submittedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  session?: boolean | Prisma.InterviewSessionDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["interviewFeedback"]>
 
 export type InterviewFeedbackSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  sessionId?: boolean
   participantId?: boolean
   assignmentId?: boolean
   score?: boolean
@@ -1049,17 +900,16 @@ export type InterviewFeedbackSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   strengths?: boolean
   weaknesses?: boolean
   notes?: boolean
+  isDraft?: boolean
   submittedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  session?: boolean | Prisma.InterviewSessionDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["interviewFeedback"]>
 
 export type InterviewFeedbackSelectScalar = {
   id?: boolean
-  sessionId?: boolean
   participantId?: boolean
   assignmentId?: boolean
   score?: boolean
@@ -1067,24 +917,22 @@ export type InterviewFeedbackSelectScalar = {
   strengths?: boolean
   weaknesses?: boolean
   notes?: boolean
+  isDraft?: boolean
   submittedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type InterviewFeedbackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "participantId" | "assignmentId" | "score" | "endorsement" | "strengths" | "weaknesses" | "notes" | "submittedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["interviewFeedback"]>
+export type InterviewFeedbackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "assignmentId" | "score" | "endorsement" | "strengths" | "weaknesses" | "notes" | "isDraft" | "submittedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["interviewFeedback"]>
 export type InterviewFeedbackInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  session?: boolean | Prisma.InterviewSessionDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
 }
 export type InterviewFeedbackIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  session?: boolean | Prisma.InterviewSessionDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
 }
 export type InterviewFeedbackIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  session?: boolean | Prisma.InterviewSessionDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
 }
@@ -1092,13 +940,11 @@ export type InterviewFeedbackIncludeUpdateManyAndReturn<ExtArgs extends runtime.
 export type $InterviewFeedbackPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "InterviewFeedback"
   objects: {
-    session: Prisma.$InterviewSessionPayload<ExtArgs>
     participant: Prisma.$InterviewParticipantPayload<ExtArgs>
     assignment: Prisma.$InterviewerAssignmentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    sessionId: string
     participantId: string
     assignmentId: string
     score: number | null
@@ -1106,6 +952,7 @@ export type $InterviewFeedbackPayload<ExtArgs extends runtime.Types.Extensions.I
     strengths: string[]
     weaknesses: string[]
     notes: string | null
+    isDraft: boolean
     submittedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1503,7 +1350,6 @@ readonly fields: InterviewFeedbackFieldRefs;
  */
 export interface Prisma__InterviewFeedbackClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  session<T extends Prisma.InterviewSessionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.InterviewSessionDefaultArgs<ExtArgs>>): Prisma.Prisma__InterviewSessionClient<runtime.Types.Result.GetResult<Prisma.$InterviewSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   participant<T extends Prisma.InterviewParticipantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.InterviewParticipantDefaultArgs<ExtArgs>>): Prisma.Prisma__InterviewParticipantClient<runtime.Types.Result.GetResult<Prisma.$InterviewParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   assignment<T extends Prisma.InterviewerAssignmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>>): Prisma.Prisma__InterviewerAssignmentClient<runtime.Types.Result.GetResult<Prisma.$InterviewerAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1536,7 +1382,6 @@ export interface Prisma__InterviewFeedbackClient<T, Null = never, ExtArgs extend
  */
 export interface InterviewFeedbackFieldRefs {
   readonly id: Prisma.FieldRef<"InterviewFeedback", 'String'>
-  readonly sessionId: Prisma.FieldRef<"InterviewFeedback", 'String'>
   readonly participantId: Prisma.FieldRef<"InterviewFeedback", 'String'>
   readonly assignmentId: Prisma.FieldRef<"InterviewFeedback", 'String'>
   readonly score: Prisma.FieldRef<"InterviewFeedback", 'Float'>
@@ -1544,6 +1389,7 @@ export interface InterviewFeedbackFieldRefs {
   readonly strengths: Prisma.FieldRef<"InterviewFeedback", 'String[]'>
   readonly weaknesses: Prisma.FieldRef<"InterviewFeedback", 'String[]'>
   readonly notes: Prisma.FieldRef<"InterviewFeedback", 'String'>
+  readonly isDraft: Prisma.FieldRef<"InterviewFeedback", 'Boolean'>
   readonly submittedAt: Prisma.FieldRef<"InterviewFeedback", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"InterviewFeedback", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"InterviewFeedback", 'DateTime'>

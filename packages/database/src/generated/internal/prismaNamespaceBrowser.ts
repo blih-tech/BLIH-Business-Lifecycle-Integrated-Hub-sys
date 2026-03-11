@@ -1714,8 +1714,7 @@ export const ApplicantStatusHistoryScalarFieldEnum = {
   fromStatus: 'fromStatus',
   toStatus: 'toStatus',
   notes: 'notes',
-  changedAt: 'changedAt',
-  createdAt: 'createdAt'
+  changedAt: 'changedAt'
 } as const
 
 export type ApplicantStatusHistoryScalarFieldEnum = (typeof ApplicantStatusHistoryScalarFieldEnum)[keyof typeof ApplicantStatusHistoryScalarFieldEnum]
@@ -1793,7 +1792,6 @@ export type InterviewerAssignmentScalarFieldEnum = (typeof InterviewerAssignment
 
 export const InterviewFeedbackScalarFieldEnum = {
   id: 'id',
-  sessionId: 'sessionId',
   participantId: 'participantId',
   assignmentId: 'assignmentId',
   score: 'score',
@@ -1801,6 +1799,7 @@ export const InterviewFeedbackScalarFieldEnum = {
   strengths: 'strengths',
   weaknesses: 'weaknesses',
   notes: 'notes',
+  isDraft: 'isDraft',
   submittedAt: 'submittedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

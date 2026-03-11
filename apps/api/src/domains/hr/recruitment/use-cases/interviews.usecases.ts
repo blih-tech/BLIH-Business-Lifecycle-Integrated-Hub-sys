@@ -36,6 +36,16 @@ const sessionInclude = {
           status: true,
         },
       },
+      feedbacks: {
+        orderBy: { updatedAt: 'desc' as const },
+        include: {
+          assignment: {
+            select: {
+              interviewerId: true,
+            },
+          },
+        },
+      },
     },
   },
   interviewers: {
@@ -48,16 +58,6 @@ const sessionInclude = {
           lastName: true,
           email: true,
           status: true,
-        },
-      },
-    },
-  },
-  feedbacks: {
-    orderBy: { updatedAt: 'desc' as const },
-    include: {
-      assignment: {
-        select: {
-          interviewerId: true,
         },
       },
     },
@@ -591,6 +591,7 @@ export class UpsertInterviewFeedbackUseCase {
       );
     }
 
+    const isDraft = dto.isDraft === true;
     const now = new Date();
     const feedback = await this.prisma.$transaction(async (tx) => {
       const row = await tx.interviewFeedback.upsert({
@@ -601,7 +602,6 @@ export class UpsertInterviewFeedbackUseCase {
           },
         },
         create: {
-          sessionId,
           participantId,
           assignmentId: assignment.id,
           score: dto.score ?? undefined,
@@ -609,7 +609,8 @@ export class UpsertInterviewFeedbackUseCase {
           strengths: dto.strengths ?? [],
           weaknesses: dto.weaknesses ?? [],
           notes: dto.notes ?? undefined,
-          submittedAt: now,
+          isDraft,
+          submittedAt: isDraft ? null : now,
         },
         update: {
           ...(dto.score !== undefined ? { score: dto.score } : {}),
@@ -621,7 +622,8 @@ export class UpsertInterviewFeedbackUseCase {
             ? { weaknesses: dto.weaknesses }
             : {}),
           ...(dto.notes !== undefined ? { notes: dto.notes } : {}),
-          submittedAt: now,
+          isDraft,
+          submittedAt: isDraft ? null : now,
         },
         include: {
           assignment: {
@@ -659,7 +661,6 @@ export class ListInterviewParticipantFeedbackUseCase {
 
     const feedback = await this.prisma.interviewFeedback.findMany({
       where: {
-        sessionId,
         participantId,
       },
       orderBy: { updatedAt: 'desc' },

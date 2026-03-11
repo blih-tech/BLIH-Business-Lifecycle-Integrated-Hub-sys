@@ -280,7 +280,6 @@ export type InterviewSessionWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   participants?: Prisma.InterviewParticipantListRelationFilter
   interviewers?: Prisma.InterviewerAssignmentListRelationFilter
-  feedbacks?: Prisma.InterviewFeedbackListRelationFilter
 }
 
 export type InterviewSessionOrderByWithRelationInput = {
@@ -300,7 +299,6 @@ export type InterviewSessionOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   participants?: Prisma.InterviewParticipantOrderByRelationAggregateInput
   interviewers?: Prisma.InterviewerAssignmentOrderByRelationAggregateInput
-  feedbacks?: Prisma.InterviewFeedbackOrderByRelationAggregateInput
 }
 
 export type InterviewSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -323,7 +321,6 @@ export type InterviewSessionWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   participants?: Prisma.InterviewParticipantListRelationFilter
   interviewers?: Prisma.InterviewerAssignmentListRelationFilter
-  feedbacks?: Prisma.InterviewFeedbackListRelationFilter
 }, "id">
 
 export type InterviewSessionOrderByWithAggregationInput = {
@@ -379,7 +376,6 @@ export type InterviewSessionCreateInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInterviewSessionsInput
   participants?: Prisma.InterviewParticipantCreateNestedManyWithoutSessionInput
   interviewers?: Prisma.InterviewerAssignmentCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionUncheckedCreateInput = {
@@ -397,7 +393,6 @@ export type InterviewSessionUncheckedCreateInput = {
   updatedAt?: Date | string
   participants?: Prisma.InterviewParticipantUncheckedCreateNestedManyWithoutSessionInput
   interviewers?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionUpdateInput = {
@@ -415,7 +410,6 @@ export type InterviewSessionUpdateInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInterviewSessionsNestedInput
   participants?: Prisma.InterviewParticipantUpdateManyWithoutSessionNestedInput
   interviewers?: Prisma.InterviewerAssignmentUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateInput = {
@@ -433,7 +427,6 @@ export type InterviewSessionUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.InterviewParticipantUncheckedUpdateManyWithoutSessionNestedInput
   interviewers?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionCreateManyInput = {
@@ -627,20 +620,6 @@ export type InterviewSessionUpdateOneRequiredWithoutInterviewersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.InterviewSessionUpdateToOneWithWhereWithoutInterviewersInput, Prisma.InterviewSessionUpdateWithoutInterviewersInput>, Prisma.InterviewSessionUncheckedUpdateWithoutInterviewersInput>
 }
 
-export type InterviewSessionCreateNestedOneWithoutFeedbacksInput = {
-  create?: Prisma.XOR<Prisma.InterviewSessionCreateWithoutFeedbacksInput, Prisma.InterviewSessionUncheckedCreateWithoutFeedbacksInput>
-  connectOrCreate?: Prisma.InterviewSessionCreateOrConnectWithoutFeedbacksInput
-  connect?: Prisma.InterviewSessionWhereUniqueInput
-}
-
-export type InterviewSessionUpdateOneRequiredWithoutFeedbacksNestedInput = {
-  create?: Prisma.XOR<Prisma.InterviewSessionCreateWithoutFeedbacksInput, Prisma.InterviewSessionUncheckedCreateWithoutFeedbacksInput>
-  connectOrCreate?: Prisma.InterviewSessionCreateOrConnectWithoutFeedbacksInput
-  upsert?: Prisma.InterviewSessionUpsertWithoutFeedbacksInput
-  connect?: Prisma.InterviewSessionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.InterviewSessionUpdateToOneWithWhereWithoutFeedbacksInput, Prisma.InterviewSessionUpdateWithoutFeedbacksInput>, Prisma.InterviewSessionUncheckedUpdateWithoutFeedbacksInput>
-}
-
 export type InterviewSessionCreateNestedManyWithoutCreatedByInput = {
   create?: Prisma.XOR<Prisma.InterviewSessionCreateWithoutCreatedByInput, Prisma.InterviewSessionUncheckedCreateWithoutCreatedByInput> | Prisma.InterviewSessionCreateWithoutCreatedByInput[] | Prisma.InterviewSessionUncheckedCreateWithoutCreatedByInput[]
   connectOrCreate?: Prisma.InterviewSessionCreateOrConnectWithoutCreatedByInput | Prisma.InterviewSessionCreateOrConnectWithoutCreatedByInput[]
@@ -697,7 +676,6 @@ export type InterviewSessionCreateWithoutJobInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInterviewSessionsInput
   participants?: Prisma.InterviewParticipantCreateNestedManyWithoutSessionInput
   interviewers?: Prisma.InterviewerAssignmentCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionUncheckedCreateWithoutJobInput = {
@@ -714,7 +692,6 @@ export type InterviewSessionUncheckedCreateWithoutJobInput = {
   updatedAt?: Date | string
   participants?: Prisma.InterviewParticipantUncheckedCreateNestedManyWithoutSessionInput
   interviewers?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionCreateOrConnectWithoutJobInput = {
@@ -775,7 +752,6 @@ export type InterviewSessionCreateWithoutParticipantsInput = {
   job: Prisma.JobCreateNestedOneWithoutInterviewSessionsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInterviewSessionsInput
   interviewers?: Prisma.InterviewerAssignmentCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionUncheckedCreateWithoutParticipantsInput = {
@@ -792,7 +768,6 @@ export type InterviewSessionUncheckedCreateWithoutParticipantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   interviewers?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionCreateOrConnectWithoutParticipantsInput = {
@@ -825,7 +800,6 @@ export type InterviewSessionUpdateWithoutParticipantsInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutInterviewSessionsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInterviewSessionsNestedInput
   interviewers?: Prisma.InterviewerAssignmentUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateWithoutParticipantsInput = {
@@ -842,7 +816,6 @@ export type InterviewSessionUncheckedUpdateWithoutParticipantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviewers?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionCreateWithoutInterviewersInput = {
@@ -859,7 +832,6 @@ export type InterviewSessionCreateWithoutInterviewersInput = {
   job: Prisma.JobCreateNestedOneWithoutInterviewSessionsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInterviewSessionsInput
   participants?: Prisma.InterviewParticipantCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionUncheckedCreateWithoutInterviewersInput = {
@@ -876,7 +848,6 @@ export type InterviewSessionUncheckedCreateWithoutInterviewersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   participants?: Prisma.InterviewParticipantUncheckedCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionCreateOrConnectWithoutInterviewersInput = {
@@ -909,7 +880,6 @@ export type InterviewSessionUpdateWithoutInterviewersInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutInterviewSessionsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInterviewSessionsNestedInput
   participants?: Prisma.InterviewParticipantUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateWithoutInterviewersInput = {
@@ -926,91 +896,6 @@ export type InterviewSessionUncheckedUpdateWithoutInterviewersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.InterviewParticipantUncheckedUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedUpdateManyWithoutSessionNestedInput
-}
-
-export type InterviewSessionCreateWithoutFeedbacksInput = {
-  id?: string
-  type: $Enums.InterviewType
-  round?: number
-  status?: $Enums.InterviewStatus
-  scheduledAt: Date | string
-  durationMinutes?: number | null
-  location?: string | null
-  meetingUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  job: Prisma.JobCreateNestedOneWithoutInterviewSessionsInput
-  createdBy: Prisma.UserCreateNestedOneWithoutCreatedInterviewSessionsInput
-  participants?: Prisma.InterviewParticipantCreateNestedManyWithoutSessionInput
-  interviewers?: Prisma.InterviewerAssignmentCreateNestedManyWithoutSessionInput
-}
-
-export type InterviewSessionUncheckedCreateWithoutFeedbacksInput = {
-  id?: string
-  jobId: string
-  type: $Enums.InterviewType
-  round?: number
-  status?: $Enums.InterviewStatus
-  scheduledAt: Date | string
-  durationMinutes?: number | null
-  location?: string | null
-  meetingUrl?: string | null
-  createdById: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  participants?: Prisma.InterviewParticipantUncheckedCreateNestedManyWithoutSessionInput
-  interviewers?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutSessionInput
-}
-
-export type InterviewSessionCreateOrConnectWithoutFeedbacksInput = {
-  where: Prisma.InterviewSessionWhereUniqueInput
-  create: Prisma.XOR<Prisma.InterviewSessionCreateWithoutFeedbacksInput, Prisma.InterviewSessionUncheckedCreateWithoutFeedbacksInput>
-}
-
-export type InterviewSessionUpsertWithoutFeedbacksInput = {
-  update: Prisma.XOR<Prisma.InterviewSessionUpdateWithoutFeedbacksInput, Prisma.InterviewSessionUncheckedUpdateWithoutFeedbacksInput>
-  create: Prisma.XOR<Prisma.InterviewSessionCreateWithoutFeedbacksInput, Prisma.InterviewSessionUncheckedCreateWithoutFeedbacksInput>
-  where?: Prisma.InterviewSessionWhereInput
-}
-
-export type InterviewSessionUpdateToOneWithWhereWithoutFeedbacksInput = {
-  where?: Prisma.InterviewSessionWhereInput
-  data: Prisma.XOR<Prisma.InterviewSessionUpdateWithoutFeedbacksInput, Prisma.InterviewSessionUncheckedUpdateWithoutFeedbacksInput>
-}
-
-export type InterviewSessionUpdateWithoutFeedbacksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
-  round?: Prisma.IntFieldUpdateOperationsInput | number
-  status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
-  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  durationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  job?: Prisma.JobUpdateOneRequiredWithoutInterviewSessionsNestedInput
-  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInterviewSessionsNestedInput
-  participants?: Prisma.InterviewParticipantUpdateManyWithoutSessionNestedInput
-  interviewers?: Prisma.InterviewerAssignmentUpdateManyWithoutSessionNestedInput
-}
-
-export type InterviewSessionUncheckedUpdateWithoutFeedbacksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
-  round?: Prisma.IntFieldUpdateOperationsInput | number
-  status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
-  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  durationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  participants?: Prisma.InterviewParticipantUncheckedUpdateManyWithoutSessionNestedInput
-  interviewers?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionCreateWithoutCreatedByInput = {
@@ -1027,7 +912,6 @@ export type InterviewSessionCreateWithoutCreatedByInput = {
   job: Prisma.JobCreateNestedOneWithoutInterviewSessionsInput
   participants?: Prisma.InterviewParticipantCreateNestedManyWithoutSessionInput
   interviewers?: Prisma.InterviewerAssignmentCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionUncheckedCreateWithoutCreatedByInput = {
@@ -1044,7 +928,6 @@ export type InterviewSessionUncheckedCreateWithoutCreatedByInput = {
   updatedAt?: Date | string
   participants?: Prisma.InterviewParticipantUncheckedCreateNestedManyWithoutSessionInput
   interviewers?: Prisma.InterviewerAssignmentUncheckedCreateNestedManyWithoutSessionInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type InterviewSessionCreateOrConnectWithoutCreatedByInput = {
@@ -1101,7 +984,6 @@ export type InterviewSessionUpdateWithoutJobInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInterviewSessionsNestedInput
   participants?: Prisma.InterviewParticipantUpdateManyWithoutSessionNestedInput
   interviewers?: Prisma.InterviewerAssignmentUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateWithoutJobInput = {
@@ -1118,7 +1000,6 @@ export type InterviewSessionUncheckedUpdateWithoutJobInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.InterviewParticipantUncheckedUpdateManyWithoutSessionNestedInput
   interviewers?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateManyWithoutJobInput = {
@@ -1163,7 +1044,6 @@ export type InterviewSessionUpdateWithoutCreatedByInput = {
   job?: Prisma.JobUpdateOneRequiredWithoutInterviewSessionsNestedInput
   participants?: Prisma.InterviewParticipantUpdateManyWithoutSessionNestedInput
   interviewers?: Prisma.InterviewerAssignmentUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateWithoutCreatedByInput = {
@@ -1180,7 +1060,6 @@ export type InterviewSessionUncheckedUpdateWithoutCreatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.InterviewParticipantUncheckedUpdateManyWithoutSessionNestedInput
   interviewers?: Prisma.InterviewerAssignmentUncheckedUpdateManyWithoutSessionNestedInput
-  feedbacks?: Prisma.InterviewFeedbackUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type InterviewSessionUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1205,13 +1084,11 @@ export type InterviewSessionUncheckedUpdateManyWithoutCreatedByInput = {
 export type InterviewSessionCountOutputType = {
   participants: number
   interviewers: number
-  feedbacks: number
 }
 
 export type InterviewSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   participants?: boolean | InterviewSessionCountOutputTypeCountParticipantsArgs
   interviewers?: boolean | InterviewSessionCountOutputTypeCountInterviewersArgs
-  feedbacks?: boolean | InterviewSessionCountOutputTypeCountFeedbacksArgs
 }
 
 /**
@@ -1238,13 +1115,6 @@ export type InterviewSessionCountOutputTypeCountInterviewersArgs<ExtArgs extends
   where?: Prisma.InterviewerAssignmentWhereInput
 }
 
-/**
- * InterviewSessionCountOutputType without action
- */
-export type InterviewSessionCountOutputTypeCountFeedbacksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.InterviewFeedbackWhereInput
-}
-
 
 export type InterviewSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1263,7 +1133,6 @@ export type InterviewSessionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   participants?: boolean | Prisma.InterviewSession$participantsArgs<ExtArgs>
   interviewers?: boolean | Prisma.InterviewSession$interviewersArgs<ExtArgs>
-  feedbacks?: boolean | Prisma.InterviewSession$feedbacksArgs<ExtArgs>
   _count?: boolean | Prisma.InterviewSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["interviewSession"]>
 
@@ -1322,7 +1191,6 @@ export type InterviewSessionInclude<ExtArgs extends runtime.Types.Extensions.Int
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   participants?: boolean | Prisma.InterviewSession$participantsArgs<ExtArgs>
   interviewers?: boolean | Prisma.InterviewSession$interviewersArgs<ExtArgs>
-  feedbacks?: boolean | Prisma.InterviewSession$feedbacksArgs<ExtArgs>
   _count?: boolean | Prisma.InterviewSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type InterviewSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1341,7 +1209,6 @@ export type $InterviewSessionPayload<ExtArgs extends runtime.Types.Extensions.In
     createdBy: Prisma.$UserPayload<ExtArgs>
     participants: Prisma.$InterviewParticipantPayload<ExtArgs>[]
     interviewers: Prisma.$InterviewerAssignmentPayload<ExtArgs>[]
-    feedbacks: Prisma.$InterviewFeedbackPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1754,7 +1621,6 @@ export interface Prisma__InterviewSessionClient<T, Null = never, ExtArgs extends
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   participants<T extends Prisma.InterviewSession$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.InterviewSession$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   interviewers<T extends Prisma.InterviewSession$interviewersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.InterviewSession$interviewersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewerAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  feedbacks<T extends Prisma.InterviewSession$feedbacksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.InterviewSession$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2237,30 +2103,6 @@ export type InterviewSession$interviewersArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.InterviewerAssignmentScalarFieldEnum | Prisma.InterviewerAssignmentScalarFieldEnum[]
-}
-
-/**
- * InterviewSession.feedbacks
- */
-export type InterviewSession$feedbacksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the InterviewFeedback
-   */
-  select?: Prisma.InterviewFeedbackSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the InterviewFeedback
-   */
-  omit?: Prisma.InterviewFeedbackOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.InterviewFeedbackInclude<ExtArgs> | null
-  where?: Prisma.InterviewFeedbackWhereInput
-  orderBy?: Prisma.InterviewFeedbackOrderByWithRelationInput | Prisma.InterviewFeedbackOrderByWithRelationInput[]
-  cursor?: Prisma.InterviewFeedbackWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.InterviewFeedbackScalarFieldEnum | Prisma.InterviewFeedbackScalarFieldEnum[]
 }
 
 /**
