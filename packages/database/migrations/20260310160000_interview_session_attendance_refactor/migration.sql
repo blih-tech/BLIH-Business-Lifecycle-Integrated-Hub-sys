@@ -27,9 +27,9 @@ END $$;
 CREATE TABLE "InterviewSession" (
   "id" UUID NOT NULL,
   "job_id" UUID NOT NULL,
-  "type" "InterviewType" NOT NULL,
+  "type" VARCHAR(100) NOT NULL DEFAULT 'TECHNICAL',
   "round" INTEGER NOT NULL DEFAULT 1,
-  "status" "InterviewStatus" NOT NULL DEFAULT 'SCHEDULED',
+  "status" VARCHAR(100) NOT NULL DEFAULT 'SCHEDULED',
   "scheduled_at" TIMESTAMP(3) NOT NULL,
   "duration_minutes" INTEGER,
   "location" VARCHAR(255),
@@ -64,7 +64,7 @@ CREATE TABLE "InterviewFeedback" (
   "participant_id" UUID NOT NULL,
   "assignment_id" UUID NOT NULL,
   "score" DOUBLE PRECISION,
-  "endorsement" "EndorsementLevel",
+  "endorsement" VARCHAR(100),
   "strengths" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
   "weaknesses" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
   "notes" TEXT,
@@ -110,29 +110,21 @@ CREATE INDEX "InterviewFeedback_participant_id_assignment_id_idx"
   ON "InterviewFeedback"("participant_id", "assignment_id");
 
 -- Foreign keys
-ALTER TABLE "InterviewSession"
-  ADD CONSTRAINT "InterviewSession_job_id_fkey"
-  FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- NOTE: "Job" table is introduced in a later migration. The FK is added
+-- in a follow-up migration to keep fresh resets ordered and consistent.
 
-ALTER TABLE "InterviewSession"
-  ADD CONSTRAINT "InterviewSession_created_by_id_fkey"
-  FOREIGN KEY ("created_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "InterviewParticipant"
   ADD CONSTRAINT "InterviewParticipant_session_id_fkey"
   FOREIGN KEY ("session_id") REFERENCES "InterviewSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "InterviewParticipant"
-  ADD CONSTRAINT "InterviewParticipant_applicant_id_fkey"
-  FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "InterviewerAssignment"
   ADD CONSTRAINT "InterviewerAssignment_session_id_fkey"
   FOREIGN KEY ("session_id") REFERENCES "InterviewSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "InterviewerAssignment"
-  ADD CONSTRAINT "InterviewerAssignment_interviewer_id_fkey"
-  FOREIGN KEY ("interviewer_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-- NOTE: "User" and "Applicant" tables are introduced in a later migration.
+-- The corresponding FKs are added in a follow-up migration to keep fresh resets ordered.
 
 ALTER TABLE "InterviewFeedback"
   ADD CONSTRAINT "InterviewFeedback_session_id_fkey"

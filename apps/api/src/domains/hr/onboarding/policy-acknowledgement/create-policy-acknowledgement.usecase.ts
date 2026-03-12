@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   CreatePolicyAcknowledgementDto,
@@ -61,7 +62,9 @@ export class CreatePolicyAcknowledgementUseCase {
     const record = await this.prisma.policyAcknowledgement.create({
       data: {
         employeeId: dto.employeeId,
-        policies: dto.policies ?? undefined,
+        policies:
+          (dto.policies as unknown as Prisma.InputJsonValue | undefined) ??
+          undefined,
         allAcknowledged: dto.allAcknowledged ?? false,
         confirmedAt: dto.confirmedAt ? new Date(dto.confirmedAt) : undefined,
       },

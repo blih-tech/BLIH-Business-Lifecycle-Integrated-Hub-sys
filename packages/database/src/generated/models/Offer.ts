@@ -346,9 +346,7 @@ export type OfferWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Offer"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
   applicant?: Prisma.XOR<Prisma.ApplicantScalarRelationFilter, Prisma.ApplicantWhereInput>
-  onboarding?: Prisma.XOR<Prisma.OnboardingNullableScalarRelationFilter, Prisma.OnboardingWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  onboardingChecklists?: Prisma.OnboardingChecklistListRelationFilter
 }
 
 export type OfferOrderByWithRelationInput = {
@@ -374,9 +372,7 @@ export type OfferOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   job?: Prisma.JobOrderByWithRelationInput
   applicant?: Prisma.ApplicantOrderByWithRelationInput
-  onboarding?: Prisma.OnboardingOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
-  onboardingChecklists?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
 }
 
 export type OfferWhereUniqueInput = Prisma.AtLeast<{
@@ -406,9 +402,7 @@ export type OfferWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Offer"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
   applicant?: Prisma.XOR<Prisma.ApplicantScalarRelationFilter, Prisma.ApplicantWhereInput>
-  onboarding?: Prisma.XOR<Prisma.OnboardingNullableScalarRelationFilter, Prisma.OnboardingWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  onboardingChecklists?: Prisma.OnboardingChecklistListRelationFilter
 }, "id" | "onboardingId" | "jobId_applicantId">
 
 export type OfferOrderByWithAggregationInput = {
@@ -467,6 +461,7 @@ export type OfferScalarWhereWithAggregatesInput = {
 
 export type OfferCreateInput = {
   id?: string
+  onboardingId?: string | null
   status?: $Enums.OfferStatus
   salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string | null
@@ -484,9 +479,7 @@ export type OfferCreateInput = {
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutOffersInput
   applicant: Prisma.ApplicantCreateNestedOneWithoutOffersInput
-  onboarding?: Prisma.OnboardingCreateNestedOneWithoutOfferInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOffersInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutOfferInput
 }
 
 export type OfferUncheckedCreateInput = {
@@ -510,11 +503,11 @@ export type OfferUncheckedCreateInput = {
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOfferInput
 }
 
 export type OfferUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
   salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -532,9 +525,7 @@ export type OfferUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutOffersNestedInput
   applicant?: Prisma.ApplicantUpdateOneRequiredWithoutOffersNestedInput
-  onboarding?: Prisma.OnboardingUpdateOneWithoutOfferNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOffersNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateInput = {
@@ -558,7 +549,6 @@ export type OfferUncheckedUpdateInput = {
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferCreateManyInput = {
@@ -586,6 +576,7 @@ export type OfferCreateManyInput = {
 
 export type OfferUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
   salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -624,11 +615,6 @@ export type OfferUncheckedUpdateManyInput = {
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type OfferNullableScalarRelationFilter = {
-  is?: Prisma.OfferWhereInput | null
-  isNot?: Prisma.OfferWhereInput | null
 }
 
 export type OfferListRelationFilter = {
@@ -725,54 +711,6 @@ export type OfferSumOrderByAggregateInput = {
   salary?: Prisma.SortOrder
   bonus?: Prisma.SortOrder
   equity?: Prisma.SortOrder
-}
-
-export type OfferCreateNestedOneWithoutOnboardingInput = {
-  create?: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingInput, Prisma.OfferUncheckedCreateWithoutOnboardingInput>
-  connectOrCreate?: Prisma.OfferCreateOrConnectWithoutOnboardingInput
-  connect?: Prisma.OfferWhereUniqueInput
-}
-
-export type OfferUncheckedCreateNestedOneWithoutOnboardingInput = {
-  create?: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingInput, Prisma.OfferUncheckedCreateWithoutOnboardingInput>
-  connectOrCreate?: Prisma.OfferCreateOrConnectWithoutOnboardingInput
-  connect?: Prisma.OfferWhereUniqueInput
-}
-
-export type OfferUpdateOneWithoutOnboardingNestedInput = {
-  create?: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingInput, Prisma.OfferUncheckedCreateWithoutOnboardingInput>
-  connectOrCreate?: Prisma.OfferCreateOrConnectWithoutOnboardingInput
-  upsert?: Prisma.OfferUpsertWithoutOnboardingInput
-  disconnect?: Prisma.OfferWhereInput | boolean
-  delete?: Prisma.OfferWhereInput | boolean
-  connect?: Prisma.OfferWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OfferUpdateToOneWithWhereWithoutOnboardingInput, Prisma.OfferUpdateWithoutOnboardingInput>, Prisma.OfferUncheckedUpdateWithoutOnboardingInput>
-}
-
-export type OfferUncheckedUpdateOneWithoutOnboardingNestedInput = {
-  create?: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingInput, Prisma.OfferUncheckedCreateWithoutOnboardingInput>
-  connectOrCreate?: Prisma.OfferCreateOrConnectWithoutOnboardingInput
-  upsert?: Prisma.OfferUpsertWithoutOnboardingInput
-  disconnect?: Prisma.OfferWhereInput | boolean
-  delete?: Prisma.OfferWhereInput | boolean
-  connect?: Prisma.OfferWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OfferUpdateToOneWithWhereWithoutOnboardingInput, Prisma.OfferUpdateWithoutOnboardingInput>, Prisma.OfferUncheckedUpdateWithoutOnboardingInput>
-}
-
-export type OfferCreateNestedOneWithoutOnboardingChecklistsInput = {
-  create?: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingChecklistsInput, Prisma.OfferUncheckedCreateWithoutOnboardingChecklistsInput>
-  connectOrCreate?: Prisma.OfferCreateOrConnectWithoutOnboardingChecklistsInput
-  connect?: Prisma.OfferWhereUniqueInput
-}
-
-export type OfferUpdateOneWithoutOnboardingChecklistsNestedInput = {
-  create?: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingChecklistsInput, Prisma.OfferUncheckedCreateWithoutOnboardingChecklistsInput>
-  connectOrCreate?: Prisma.OfferCreateOrConnectWithoutOnboardingChecklistsInput
-  upsert?: Prisma.OfferUpsertWithoutOnboardingChecklistsInput
-  disconnect?: Prisma.OfferWhereInput | boolean
-  delete?: Prisma.OfferWhereInput | boolean
-  connect?: Prisma.OfferWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OfferUpdateToOneWithWhereWithoutOnboardingChecklistsInput, Prisma.OfferUpdateWithoutOnboardingChecklistsInput>, Prisma.OfferUncheckedUpdateWithoutOnboardingChecklistsInput>
 }
 
 export type OfferCreateNestedManyWithoutJobInput = {
@@ -909,224 +847,9 @@ export type OfferUncheckedUpdateManyWithoutCreatedByNestedInput = {
   deleteMany?: Prisma.OfferScalarWhereInput | Prisma.OfferScalarWhereInput[]
 }
 
-export type OfferCreateWithoutOnboardingInput = {
-  id?: string
-  status?: $Enums.OfferStatus
-  salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  startDate?: Date | string | null
-  payFrequency?: $Enums.PayFrequency | null
-  employmentType?: $Enums.EmploymentType | null
-  bonus?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: string | null
-  notes?: string | null
-  sentAt?: Date | string | null
-  respondedAt?: Date | string | null
-  expiresAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  job: Prisma.JobCreateNestedOneWithoutOffersInput
-  applicant: Prisma.ApplicantCreateNestedOneWithoutOffersInput
-  createdBy: Prisma.UserCreateNestedOneWithoutCreatedOffersInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutOfferInput
-}
-
-export type OfferUncheckedCreateWithoutOnboardingInput = {
-  id?: string
-  jobId: string
-  applicantId: string
-  createdById: string
-  status?: $Enums.OfferStatus
-  salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  startDate?: Date | string | null
-  payFrequency?: $Enums.PayFrequency | null
-  employmentType?: $Enums.EmploymentType | null
-  bonus?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: string | null
-  notes?: string | null
-  sentAt?: Date | string | null
-  respondedAt?: Date | string | null
-  expiresAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOfferInput
-}
-
-export type OfferCreateOrConnectWithoutOnboardingInput = {
-  where: Prisma.OfferWhereUniqueInput
-  create: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingInput, Prisma.OfferUncheckedCreateWithoutOnboardingInput>
-}
-
-export type OfferUpsertWithoutOnboardingInput = {
-  update: Prisma.XOR<Prisma.OfferUpdateWithoutOnboardingInput, Prisma.OfferUncheckedUpdateWithoutOnboardingInput>
-  create: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingInput, Prisma.OfferUncheckedCreateWithoutOnboardingInput>
-  where?: Prisma.OfferWhereInput
-}
-
-export type OfferUpdateToOneWithWhereWithoutOnboardingInput = {
-  where?: Prisma.OfferWhereInput
-  data: Prisma.XOR<Prisma.OfferUpdateWithoutOnboardingInput, Prisma.OfferUncheckedUpdateWithoutOnboardingInput>
-}
-
-export type OfferUpdateWithoutOnboardingInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
-  salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  payFrequency?: Prisma.NullableEnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency | null
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  bonus?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  respondedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  job?: Prisma.JobUpdateOneRequiredWithoutOffersNestedInput
-  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutOffersNestedInput
-  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOffersNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutOfferNestedInput
-}
-
-export type OfferUncheckedUpdateWithoutOnboardingInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
-  salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  payFrequency?: Prisma.NullableEnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency | null
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  bonus?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  respondedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOfferNestedInput
-}
-
-export type OfferCreateWithoutOnboardingChecklistsInput = {
-  id?: string
-  status?: $Enums.OfferStatus
-  salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  startDate?: Date | string | null
-  payFrequency?: $Enums.PayFrequency | null
-  employmentType?: $Enums.EmploymentType | null
-  bonus?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: string | null
-  notes?: string | null
-  sentAt?: Date | string | null
-  respondedAt?: Date | string | null
-  expiresAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  job: Prisma.JobCreateNestedOneWithoutOffersInput
-  applicant: Prisma.ApplicantCreateNestedOneWithoutOffersInput
-  onboarding?: Prisma.OnboardingCreateNestedOneWithoutOfferInput
-  createdBy: Prisma.UserCreateNestedOneWithoutCreatedOffersInput
-}
-
-export type OfferUncheckedCreateWithoutOnboardingChecklistsInput = {
-  id?: string
-  jobId: string
-  applicantId: string
-  onboardingId?: string | null
-  createdById: string
-  status?: $Enums.OfferStatus
-  salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: string | null
-  startDate?: Date | string | null
-  payFrequency?: $Enums.PayFrequency | null
-  employmentType?: $Enums.EmploymentType | null
-  bonus?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: string | null
-  notes?: string | null
-  sentAt?: Date | string | null
-  respondedAt?: Date | string | null
-  expiresAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type OfferCreateOrConnectWithoutOnboardingChecklistsInput = {
-  where: Prisma.OfferWhereUniqueInput
-  create: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingChecklistsInput, Prisma.OfferUncheckedCreateWithoutOnboardingChecklistsInput>
-}
-
-export type OfferUpsertWithoutOnboardingChecklistsInput = {
-  update: Prisma.XOR<Prisma.OfferUpdateWithoutOnboardingChecklistsInput, Prisma.OfferUncheckedUpdateWithoutOnboardingChecklistsInput>
-  create: Prisma.XOR<Prisma.OfferCreateWithoutOnboardingChecklistsInput, Prisma.OfferUncheckedCreateWithoutOnboardingChecklistsInput>
-  where?: Prisma.OfferWhereInput
-}
-
-export type OfferUpdateToOneWithWhereWithoutOnboardingChecklistsInput = {
-  where?: Prisma.OfferWhereInput
-  data: Prisma.XOR<Prisma.OfferUpdateWithoutOnboardingChecklistsInput, Prisma.OfferUncheckedUpdateWithoutOnboardingChecklistsInput>
-}
-
-export type OfferUpdateWithoutOnboardingChecklistsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
-  salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  payFrequency?: Prisma.NullableEnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency | null
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  bonus?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  respondedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  job?: Prisma.JobUpdateOneRequiredWithoutOffersNestedInput
-  applicant?: Prisma.ApplicantUpdateOneRequiredWithoutOffersNestedInput
-  onboarding?: Prisma.OnboardingUpdateOneWithoutOfferNestedInput
-  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOffersNestedInput
-}
-
-export type OfferUncheckedUpdateWithoutOnboardingChecklistsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  applicantId?: Prisma.StringFieldUpdateOperationsInput | string
-  onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
-  salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  payFrequency?: Prisma.NullableEnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency | null
-  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
-  bonus?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  equity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  offerLetterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  respondedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
 export type OfferCreateWithoutJobInput = {
   id?: string
+  onboardingId?: string | null
   status?: $Enums.OfferStatus
   salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string | null
@@ -1143,9 +866,7 @@ export type OfferCreateWithoutJobInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   applicant: Prisma.ApplicantCreateNestedOneWithoutOffersInput
-  onboarding?: Prisma.OnboardingCreateNestedOneWithoutOfferInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOffersInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutOfferInput
 }
 
 export type OfferUncheckedCreateWithoutJobInput = {
@@ -1168,7 +889,6 @@ export type OfferUncheckedCreateWithoutJobInput = {
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOfferInput
 }
 
 export type OfferCreateOrConnectWithoutJobInput = {
@@ -1225,6 +945,7 @@ export type OfferScalarWhereInput = {
 
 export type OfferCreateWithoutApplicantInput = {
   id?: string
+  onboardingId?: string | null
   status?: $Enums.OfferStatus
   salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string | null
@@ -1241,9 +962,7 @@ export type OfferCreateWithoutApplicantInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutOffersInput
-  onboarding?: Prisma.OnboardingCreateNestedOneWithoutOfferInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOffersInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutOfferInput
 }
 
 export type OfferUncheckedCreateWithoutApplicantInput = {
@@ -1266,7 +985,6 @@ export type OfferUncheckedCreateWithoutApplicantInput = {
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOfferInput
 }
 
 export type OfferCreateOrConnectWithoutApplicantInput = {
@@ -1297,6 +1015,7 @@ export type OfferUpdateManyWithWhereWithoutApplicantInput = {
 
 export type OfferCreateWithoutCreatedByInput = {
   id?: string
+  onboardingId?: string | null
   status?: $Enums.OfferStatus
   salary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string | null
@@ -1314,8 +1033,6 @@ export type OfferCreateWithoutCreatedByInput = {
   updatedAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutOffersInput
   applicant: Prisma.ApplicantCreateNestedOneWithoutOffersInput
-  onboarding?: Prisma.OnboardingCreateNestedOneWithoutOfferInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutOfferInput
 }
 
 export type OfferUncheckedCreateWithoutCreatedByInput = {
@@ -1338,7 +1055,6 @@ export type OfferUncheckedCreateWithoutCreatedByInput = {
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOfferInput
 }
 
 export type OfferCreateOrConnectWithoutCreatedByInput = {
@@ -1391,6 +1107,7 @@ export type OfferCreateManyJobInput = {
 
 export type OfferUpdateWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
   salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1407,9 +1124,7 @@ export type OfferUpdateWithoutJobInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applicant?: Prisma.ApplicantUpdateOneRequiredWithoutOffersNestedInput
-  onboarding?: Prisma.OnboardingUpdateOneWithoutOfferNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOffersNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateWithoutJobInput = {
@@ -1432,7 +1147,6 @@ export type OfferUncheckedUpdateWithoutJobInput = {
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateManyWithoutJobInput = {
@@ -1481,6 +1195,7 @@ export type OfferCreateManyApplicantInput = {
 
 export type OfferUpdateWithoutApplicantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
   salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1497,9 +1212,7 @@ export type OfferUpdateWithoutApplicantInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutOffersNestedInput
-  onboarding?: Prisma.OnboardingUpdateOneWithoutOfferNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOffersNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateWithoutApplicantInput = {
@@ -1522,7 +1235,6 @@ export type OfferUncheckedUpdateWithoutApplicantInput = {
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateManyWithoutApplicantInput = {
@@ -1571,6 +1283,7 @@ export type OfferCreateManyCreatedByInput = {
 
 export type OfferUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
   salary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1588,8 +1301,6 @@ export type OfferUpdateWithoutCreatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutOffersNestedInput
   applicant?: Prisma.ApplicantUpdateOneRequiredWithoutOffersNestedInput
-  onboarding?: Prisma.OnboardingUpdateOneWithoutOfferNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateWithoutCreatedByInput = {
@@ -1612,7 +1323,6 @@ export type OfferUncheckedUpdateWithoutCreatedByInput = {
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOfferNestedInput
 }
 
 export type OfferUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1638,35 +1348,6 @@ export type OfferUncheckedUpdateManyWithoutCreatedByInput = {
 }
 
 
-/**
- * Count Type OfferCountOutputType
- */
-
-export type OfferCountOutputType = {
-  onboardingChecklists: number
-}
-
-export type OfferCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  onboardingChecklists?: boolean | OfferCountOutputTypeCountOnboardingChecklistsArgs
-}
-
-/**
- * OfferCountOutputType without action
- */
-export type OfferCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OfferCountOutputType
-   */
-  select?: Prisma.OfferCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * OfferCountOutputType without action
- */
-export type OfferCountOutputTypeCountOnboardingChecklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OnboardingChecklistWhereInput
-}
-
 
 export type OfferSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1691,10 +1372,7 @@ export type OfferSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updatedAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
-  onboarding?: boolean | Prisma.Offer$onboardingArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  onboardingChecklists?: boolean | Prisma.Offer$onboardingChecklistsArgs<ExtArgs>
-  _count?: boolean | Prisma.OfferCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["offer"]>
 
 export type OfferSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1720,7 +1398,6 @@ export type OfferSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   updatedAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
-  onboarding?: boolean | Prisma.Offer$onboardingArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["offer"]>
 
@@ -1747,7 +1424,6 @@ export type OfferSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   updatedAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
-  onboarding?: boolean | Prisma.Offer$onboardingArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["offer"]>
 
@@ -1778,21 +1454,16 @@ export type OfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type OfferInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
-  onboarding?: boolean | Prisma.Offer$onboardingArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  onboardingChecklists?: boolean | Prisma.Offer$onboardingChecklistsArgs<ExtArgs>
-  _count?: boolean | Prisma.OfferCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OfferIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
-  onboarding?: boolean | Prisma.Offer$onboardingArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type OfferIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   applicant?: boolean | Prisma.ApplicantDefaultArgs<ExtArgs>
-  onboarding?: boolean | Prisma.Offer$onboardingArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -1801,9 +1472,7 @@ export type $OfferPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     job: Prisma.$JobPayload<ExtArgs>
     applicant: Prisma.$ApplicantPayload<ExtArgs>
-    onboarding: Prisma.$OnboardingPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
-    onboardingChecklists: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2222,9 +1891,7 @@ export interface Prisma__OfferClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   job<T extends Prisma.JobDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobDefaultArgs<ExtArgs>>): Prisma.Prisma__JobClient<runtime.Types.Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   applicant<T extends Prisma.ApplicantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicantDefaultArgs<ExtArgs>>): Prisma.Prisma__ApplicantClient<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  onboarding<T extends Prisma.Offer$onboardingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Offer$onboardingArgs<ExtArgs>>): Prisma.Prisma__OnboardingClient<runtime.Types.Result.GetResult<Prisma.$OnboardingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  onboardingChecklists<T extends Prisma.Offer$onboardingChecklistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Offer$onboardingChecklistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2667,49 +2334,6 @@ export type OfferDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Offers to delete.
    */
   limit?: number
-}
-
-/**
- * Offer.onboarding
- */
-export type Offer$onboardingArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Onboarding
-   */
-  select?: Prisma.OnboardingSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Onboarding
-   */
-  omit?: Prisma.OnboardingOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingInclude<ExtArgs> | null
-  where?: Prisma.OnboardingWhereInput
-}
-
-/**
- * Offer.onboardingChecklists
- */
-export type Offer$onboardingChecklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OnboardingChecklist
-   */
-  select?: Prisma.OnboardingChecklistSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the OnboardingChecklist
-   */
-  omit?: Prisma.OnboardingChecklistOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingChecklistInclude<ExtArgs> | null
-  where?: Prisma.OnboardingChecklistWhereInput
-  orderBy?: Prisma.OnboardingChecklistOrderByWithRelationInput | Prisma.OnboardingChecklistOrderByWithRelationInput[]
-  cursor?: Prisma.OnboardingChecklistWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OnboardingChecklistScalarFieldEnum | Prisma.OnboardingChecklistScalarFieldEnum[]
 }
 
 /**

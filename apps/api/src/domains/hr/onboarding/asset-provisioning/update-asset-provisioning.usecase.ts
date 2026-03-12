@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   AssetProvisioningResponseDto,
@@ -28,9 +29,12 @@ export class UpdateAssetProvisioningUseCase {
     const record = await this.prisma.assetProvisioning.update({
       where: { id },
       data: {
-        ...(dto.equipment !== undefined && { equipment: dto.equipment }),
+        ...(dto.equipment !== undefined && {
+          equipment: dto.equipment as unknown as Prisma.InputJsonValue,
+        }),
         ...(dto.platformPermissions !== undefined && {
-          platformPermissions: dto.platformPermissions,
+          platformPermissions:
+            dto.platformPermissions as unknown as Prisma.InputJsonValue,
         }),
         ...(dto.financeApprovalRequired !== undefined && {
           financeApprovalRequired: dto.financeApprovalRequired,
