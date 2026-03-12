@@ -20,31 +20,20 @@ export type OnboardingChecklistModel = runtime.Types.Result.DefaultSelection<Pri
 
 export type AggregateOnboardingChecklist = {
   _count: OnboardingChecklistCountAggregateOutputType | null
-  _avg: OnboardingChecklistAvgAggregateOutputType | null
-  _sum: OnboardingChecklistSumAggregateOutputType | null
   _min: OnboardingChecklistMinAggregateOutputType | null
   _max: OnboardingChecklistMaxAggregateOutputType | null
 }
 
-export type OnboardingChecklistAvgAggregateOutputType = {
-  totalItems: number | null
-  completedItems: number | null
-}
-
-export type OnboardingChecklistSumAggregateOutputType = {
-  totalItems: number | null
-  completedItems: number | null
-}
-
 export type OnboardingChecklistMinAggregateOutputType = {
   id: string | null
-  employeeId: string | null
+  onboardingTaskId: string | null
   onboardingId: string | null
+<<<<<<< HEAD
   offerId: string | null
   joinDate: Date | null
+=======
+>>>>>>> origin/feat/onboarding
   overseerId: string | null
-  totalItems: number | null
-  completedItems: number | null
   status: $Enums.OnboardingChecklistStatus | null
   teamLeadVerifiedAt: Date | null
   ceoSignOffRequired: boolean | null
@@ -55,13 +44,14 @@ export type OnboardingChecklistMinAggregateOutputType = {
 
 export type OnboardingChecklistMaxAggregateOutputType = {
   id: string | null
-  employeeId: string | null
+  onboardingTaskId: string | null
   onboardingId: string | null
+<<<<<<< HEAD
   offerId: string | null
   joinDate: Date | null
+=======
+>>>>>>> origin/feat/onboarding
   overseerId: string | null
-  totalItems: number | null
-  completedItems: number | null
   status: $Enums.OnboardingChecklistStatus | null
   teamLeadVerifiedAt: Date | null
   ceoSignOffRequired: boolean | null
@@ -72,13 +62,14 @@ export type OnboardingChecklistMaxAggregateOutputType = {
 
 export type OnboardingChecklistCountAggregateOutputType = {
   id: number
-  employeeId: number
+  onboardingTaskId: number
   onboardingId: number
+<<<<<<< HEAD
   offerId: number
   joinDate: number
+=======
+>>>>>>> origin/feat/onboarding
   overseerId: number
-  totalItems: number
-  completedItems: number
   status: number
   teamLeadVerifiedAt: number
   ceoSignOffRequired: number
@@ -89,25 +80,16 @@ export type OnboardingChecklistCountAggregateOutputType = {
 }
 
 
-export type OnboardingChecklistAvgAggregateInputType = {
-  totalItems?: true
-  completedItems?: true
-}
-
-export type OnboardingChecklistSumAggregateInputType = {
-  totalItems?: true
-  completedItems?: true
-}
-
 export type OnboardingChecklistMinAggregateInputType = {
   id?: true
-  employeeId?: true
+  onboardingTaskId?: true
   onboardingId?: true
+<<<<<<< HEAD
   offerId?: true
   joinDate?: true
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: true
-  totalItems?: true
-  completedItems?: true
   status?: true
   teamLeadVerifiedAt?: true
   ceoSignOffRequired?: true
@@ -118,13 +100,14 @@ export type OnboardingChecklistMinAggregateInputType = {
 
 export type OnboardingChecklistMaxAggregateInputType = {
   id?: true
-  employeeId?: true
+  onboardingTaskId?: true
   onboardingId?: true
+<<<<<<< HEAD
   offerId?: true
   joinDate?: true
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: true
-  totalItems?: true
-  completedItems?: true
   status?: true
   teamLeadVerifiedAt?: true
   ceoSignOffRequired?: true
@@ -135,13 +118,14 @@ export type OnboardingChecklistMaxAggregateInputType = {
 
 export type OnboardingChecklistCountAggregateInputType = {
   id?: true
-  employeeId?: true
+  onboardingTaskId?: true
   onboardingId?: true
+<<<<<<< HEAD
   offerId?: true
   joinDate?: true
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: true
-  totalItems?: true
-  completedItems?: true
   status?: true
   teamLeadVerifiedAt?: true
   ceoSignOffRequired?: true
@@ -189,18 +173,6 @@ export type OnboardingChecklistAggregateArgs<ExtArgs extends runtime.Types.Exten
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: OnboardingChecklistAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: OnboardingChecklistSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: OnboardingChecklistMinAggregateInputType
@@ -231,21 +203,20 @@ export type OnboardingChecklistGroupByArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   _count?: OnboardingChecklistCountAggregateInputType | true
-  _avg?: OnboardingChecklistAvgAggregateInputType
-  _sum?: OnboardingChecklistSumAggregateInputType
   _min?: OnboardingChecklistMinAggregateInputType
   _max?: OnboardingChecklistMaxAggregateInputType
 }
 
 export type OnboardingChecklistGroupByOutputType = {
   id: string
-  employeeId: string
+  onboardingTaskId: string | null
   onboardingId: string | null
+<<<<<<< HEAD
   offerId: string | null
   joinDate: Date
+=======
+>>>>>>> origin/feat/onboarding
   overseerId: string | null
-  totalItems: number
-  completedItems: number
   status: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt: Date | null
   ceoSignOffRequired: boolean
@@ -253,8 +224,6 @@ export type OnboardingChecklistGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: OnboardingChecklistCountAggregateOutputType | null
-  _avg: OnboardingChecklistAvgAggregateOutputType | null
-  _sum: OnboardingChecklistSumAggregateOutputType | null
   _min: OnboardingChecklistMinAggregateOutputType | null
   _max: OnboardingChecklistMaxAggregateOutputType | null
 }
@@ -279,82 +248,93 @@ export type OnboardingChecklistWhereInput = {
   OR?: Prisma.OnboardingChecklistWhereInput[]
   NOT?: Prisma.OnboardingChecklistWhereInput | Prisma.OnboardingChecklistWhereInput[]
   id?: Prisma.UuidFilter<"OnboardingChecklist"> | string
-  employeeId?: Prisma.UuidFilter<"OnboardingChecklist"> | string
+  onboardingTaskId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
   onboardingId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
+<<<<<<< HEAD
   offerId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
   joinDate?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
-  totalItems?: Prisma.IntFilter<"OnboardingChecklist"> | number
-  completedItems?: Prisma.IntFilter<"OnboardingChecklist"> | number
   status?: Prisma.EnumOnboardingChecklistStatusFilter<"OnboardingChecklist"> | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.DateTimeNullableFilter<"OnboardingChecklist"> | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFilter<"OnboardingChecklist"> | boolean
   ceoSignOffAt?: Prisma.DateTimeNullableFilter<"OnboardingChecklist"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   onboarding?: Prisma.XOR<Prisma.OnboardingNullableScalarRelationFilter, Prisma.OnboardingWhereInput> | null
+<<<<<<< HEAD
   offer?: Prisma.XOR<Prisma.OfferNullableScalarRelationFilter, Prisma.OfferWhereInput> | null
+=======
+  onboardingTask?: Prisma.XOR<Prisma.OnboardingTaskNullableScalarRelationFilter, Prisma.OnboardingTaskWhereInput> | null
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  tasks?: Prisma.OnboardingTaskListRelationFilter
 }
 
 export type OnboardingChecklistOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
+  onboardingTaskId?: Prisma.SortOrderInput | Prisma.SortOrder
   onboardingId?: Prisma.SortOrderInput | Prisma.SortOrder
+<<<<<<< HEAD
   offerId?: Prisma.SortOrderInput | Prisma.SortOrder
   joinDate?: Prisma.SortOrder
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.SortOrderInput | Prisma.SortOrder
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
   status?: Prisma.SortOrder
   teamLeadVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ceoSignOffRequired?: Prisma.SortOrder
   ceoSignOffAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  employee?: Prisma.EmployeeOrderByWithRelationInput
   onboarding?: Prisma.OnboardingOrderByWithRelationInput
+<<<<<<< HEAD
   offer?: Prisma.OfferOrderByWithRelationInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskOrderByWithRelationInput
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.UserOrderByWithRelationInput
-  tasks?: Prisma.OnboardingTaskOrderByRelationAggregateInput
 }
 
 export type OnboardingChecklistWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  onboardingId_onboardingTaskId?: Prisma.OnboardingChecklistOnboardingIdOnboardingTaskIdCompoundUniqueInput
   AND?: Prisma.OnboardingChecklistWhereInput | Prisma.OnboardingChecklistWhereInput[]
   OR?: Prisma.OnboardingChecklistWhereInput[]
   NOT?: Prisma.OnboardingChecklistWhereInput | Prisma.OnboardingChecklistWhereInput[]
-  employeeId?: Prisma.UuidFilter<"OnboardingChecklist"> | string
+  onboardingTaskId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
   onboardingId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
+<<<<<<< HEAD
   offerId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
   joinDate?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
-  totalItems?: Prisma.IntFilter<"OnboardingChecklist"> | number
-  completedItems?: Prisma.IntFilter<"OnboardingChecklist"> | number
   status?: Prisma.EnumOnboardingChecklistStatusFilter<"OnboardingChecklist"> | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.DateTimeNullableFilter<"OnboardingChecklist"> | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFilter<"OnboardingChecklist"> | boolean
   ceoSignOffAt?: Prisma.DateTimeNullableFilter<"OnboardingChecklist"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   onboarding?: Prisma.XOR<Prisma.OnboardingNullableScalarRelationFilter, Prisma.OnboardingWhereInput> | null
+<<<<<<< HEAD
   offer?: Prisma.XOR<Prisma.OfferNullableScalarRelationFilter, Prisma.OfferWhereInput> | null
+=======
+  onboardingTask?: Prisma.XOR<Prisma.OnboardingTaskNullableScalarRelationFilter, Prisma.OnboardingTaskWhereInput> | null
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  tasks?: Prisma.OnboardingTaskListRelationFilter
-}, "id">
+}, "id" | "onboardingId_onboardingTaskId">
 
 export type OnboardingChecklistOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
+  onboardingTaskId?: Prisma.SortOrderInput | Prisma.SortOrder
   onboardingId?: Prisma.SortOrderInput | Prisma.SortOrder
+<<<<<<< HEAD
   offerId?: Prisma.SortOrderInput | Prisma.SortOrder
   joinDate?: Prisma.SortOrder
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.SortOrderInput | Prisma.SortOrder
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
   status?: Prisma.SortOrder
   teamLeadVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ceoSignOffRequired?: Prisma.SortOrder
@@ -362,10 +342,8 @@ export type OnboardingChecklistOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OnboardingChecklistCountOrderByAggregateInput
-  _avg?: Prisma.OnboardingChecklistAvgOrderByAggregateInput
   _max?: Prisma.OnboardingChecklistMaxOrderByAggregateInput
   _min?: Prisma.OnboardingChecklistMinOrderByAggregateInput
-  _sum?: Prisma.OnboardingChecklistSumOrderByAggregateInput
 }
 
 export type OnboardingChecklistScalarWhereWithAggregatesInput = {
@@ -373,13 +351,14 @@ export type OnboardingChecklistScalarWhereWithAggregatesInput = {
   OR?: Prisma.OnboardingChecklistScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OnboardingChecklistScalarWhereWithAggregatesInput | Prisma.OnboardingChecklistScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"OnboardingChecklist"> | string
-  employeeId?: Prisma.UuidWithAggregatesFilter<"OnboardingChecklist"> | string
+  onboardingTaskId?: Prisma.UuidNullableWithAggregatesFilter<"OnboardingChecklist"> | string | null
   onboardingId?: Prisma.UuidNullableWithAggregatesFilter<"OnboardingChecklist"> | string | null
+<<<<<<< HEAD
   offerId?: Prisma.UuidNullableWithAggregatesFilter<"OnboardingChecklist"> | string | null
   joinDate?: Prisma.DateTimeWithAggregatesFilter<"OnboardingChecklist"> | Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.UuidNullableWithAggregatesFilter<"OnboardingChecklist"> | string | null
-  totalItems?: Prisma.IntWithAggregatesFilter<"OnboardingChecklist"> | number
-  completedItems?: Prisma.IntWithAggregatesFilter<"OnboardingChecklist"> | number
   status?: Prisma.EnumOnboardingChecklistStatusWithAggregatesFilter<"OnboardingChecklist"> | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OnboardingChecklist"> | Date | string | null
   ceoSignOffRequired?: Prisma.BoolWithAggregatesFilter<"OnboardingChecklist"> | boolean
@@ -390,85 +369,84 @@ export type OnboardingChecklistScalarWhereWithAggregatesInput = {
 
 export type OnboardingChecklistCreateInput = {
   id?: string
-  joinDate: Date | string
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingChecklistsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutChecklistsInput
+<<<<<<< HEAD
   offer?: Prisma.OfferCreateNestedOneWithoutOnboardingChecklistsInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskCreateNestedOneWithoutChecklistInput
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.UserCreateNestedOneWithoutChecklistsOverseenInput
-  tasks?: Prisma.OnboardingTaskCreateNestedManyWithoutChecklistInput
 }
 
 export type OnboardingChecklistUncheckedCreateInput = {
   id?: string
-  employeeId: string
+  onboardingTaskId?: string | null
   onboardingId?: string | null
+<<<<<<< HEAD
   offerId?: string | null
   joinDate: Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: string | null
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutChecklistInput
 }
 
 export type OnboardingChecklistUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingChecklistsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutChecklistsNestedInput
+<<<<<<< HEAD
   offer?: Prisma.OfferUpdateOneWithoutOnboardingChecklistsNestedInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskUpdateOneWithoutChecklistNestedInput
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.UserUpdateOneWithoutChecklistsOverseenNestedInput
-  tasks?: Prisma.OnboardingTaskUpdateManyWithoutChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
   offerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutChecklistNestedInput
 }
 
 export type OnboardingChecklistCreateManyInput = {
   id?: string
-  employeeId: string
+  onboardingTaskId?: string | null
   onboardingId?: string | null
+<<<<<<< HEAD
   offerId?: string | null
   joinDate: Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: string | null
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
@@ -479,9 +457,6 @@ export type OnboardingChecklistCreateManyInput = {
 
 export type OnboardingChecklistUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -492,13 +467,14 @@ export type OnboardingChecklistUpdateManyMutationInput = {
 
 export type OnboardingChecklistUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
   offerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -517,15 +493,21 @@ export type OnboardingChecklistOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type OnboardingChecklistOnboardingIdOnboardingTaskIdCompoundUniqueInput = {
+  onboardingId: string
+  onboardingTaskId: string
+}
+
 export type OnboardingChecklistCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
+  onboardingTaskId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrder
+<<<<<<< HEAD
   offerId?: Prisma.SortOrder
   joinDate?: Prisma.SortOrder
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.SortOrder
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
   status?: Prisma.SortOrder
   teamLeadVerifiedAt?: Prisma.SortOrder
   ceoSignOffRequired?: Prisma.SortOrder
@@ -534,20 +516,16 @@ export type OnboardingChecklistCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type OnboardingChecklistAvgOrderByAggregateInput = {
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
-}
-
 export type OnboardingChecklistMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
+  onboardingTaskId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrder
+<<<<<<< HEAD
   offerId?: Prisma.SortOrder
   joinDate?: Prisma.SortOrder
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.SortOrder
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
   status?: Prisma.SortOrder
   teamLeadVerifiedAt?: Prisma.SortOrder
   ceoSignOffRequired?: Prisma.SortOrder
@@ -558,29 +536,20 @@ export type OnboardingChecklistMaxOrderByAggregateInput = {
 
 export type OnboardingChecklistMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
+  onboardingTaskId?: Prisma.SortOrder
   onboardingId?: Prisma.SortOrder
+<<<<<<< HEAD
   offerId?: Prisma.SortOrder
   joinDate?: Prisma.SortOrder
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.SortOrder
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
   status?: Prisma.SortOrder
   teamLeadVerifiedAt?: Prisma.SortOrder
   ceoSignOffRequired?: Prisma.SortOrder
   ceoSignOffAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type OnboardingChecklistSumOrderByAggregateInput = {
-  totalItems?: Prisma.SortOrder
-  completedItems?: Prisma.SortOrder
-}
-
-export type OnboardingChecklistScalarRelationFilter = {
-  is?: Prisma.OnboardingChecklistWhereInput
-  isNot?: Prisma.OnboardingChecklistWhereInput
 }
 
 export type OnboardingChecklistCreateNestedManyWithoutOnboardingInput = {
@@ -629,6 +598,7 @@ export type EnumOnboardingChecklistStatusFieldUpdateOperationsInput = {
   set?: $Enums.OnboardingChecklistStatus
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistCreateNestedOneWithoutTasksInput = {
   create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutTasksInput, Prisma.OnboardingChecklistUncheckedCreateWithoutTasksInput>
   connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutTasksInput
@@ -662,10 +632,32 @@ export type OnboardingChecklistUpdateManyWithoutOfferNestedInput = {
   connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutOfferInput | Prisma.OnboardingChecklistCreateOrConnectWithoutOfferInput[]
   upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOfferInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOfferInput[]
   createMany?: Prisma.OnboardingChecklistCreateManyOfferInputEnvelope
+=======
+export type OnboardingChecklistCreateNestedManyWithoutOnboardingTaskInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput> | Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput | Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyOnboardingTaskInputEnvelope
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+}
+
+export type OnboardingChecklistUncheckedCreateNestedManyWithoutOnboardingTaskInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput> | Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput | Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyOnboardingTaskInputEnvelope
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+}
+
+export type OnboardingChecklistUpdateManyWithoutOnboardingTaskNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput> | Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput | Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput[]
+  upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOnboardingTaskInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOnboardingTaskInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyOnboardingTaskInputEnvelope
+>>>>>>> origin/feat/onboarding
   set?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
   disconnect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
   delete?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
   connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+<<<<<<< HEAD
   update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOfferInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOfferInput[]
   updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOfferInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOfferInput[]
   deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
@@ -676,12 +668,29 @@ export type OnboardingChecklistUncheckedUpdateManyWithoutOfferNestedInput = {
   connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutOfferInput | Prisma.OnboardingChecklistCreateOrConnectWithoutOfferInput[]
   upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOfferInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOfferInput[]
   createMany?: Prisma.OnboardingChecklistCreateManyOfferInputEnvelope
+=======
+  update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOnboardingTaskInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOnboardingTaskInput[]
+  updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOnboardingTaskInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOnboardingTaskInput[]
+  deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
+}
+
+export type OnboardingChecklistUncheckedUpdateManyWithoutOnboardingTaskNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput> | Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput | Prisma.OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput[]
+  upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOnboardingTaskInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutOnboardingTaskInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyOnboardingTaskInputEnvelope
+>>>>>>> origin/feat/onboarding
   set?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
   disconnect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
   delete?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
   connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+<<<<<<< HEAD
   update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOfferInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOfferInput[]
   updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOfferInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOfferInput[]
+=======
+  update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOnboardingTaskInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutOnboardingTaskInput[]
+  updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOnboardingTaskInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutOnboardingTaskInput[]
+>>>>>>> origin/feat/onboarding
   deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
 }
 
@@ -727,80 +736,39 @@ export type OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput = {
   deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
 }
 
-export type OnboardingChecklistCreateNestedManyWithoutEmployeeInput = {
-  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutEmployeeInput, Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput> | Prisma.OnboardingChecklistCreateWithoutEmployeeInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput | Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput[]
-  createMany?: Prisma.OnboardingChecklistCreateManyEmployeeInputEnvelope
-  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-}
-
-export type OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput = {
-  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutEmployeeInput, Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput> | Prisma.OnboardingChecklistCreateWithoutEmployeeInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput | Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput[]
-  createMany?: Prisma.OnboardingChecklistCreateManyEmployeeInputEnvelope
-  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-}
-
-export type OnboardingChecklistUpdateManyWithoutEmployeeNestedInput = {
-  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutEmployeeInput, Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput> | Prisma.OnboardingChecklistCreateWithoutEmployeeInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput | Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput[]
-  upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutEmployeeInput[]
-  createMany?: Prisma.OnboardingChecklistCreateManyEmployeeInputEnvelope
-  set?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  disconnect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  delete?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutEmployeeInput[]
-  updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutEmployeeInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutEmployeeInput[]
-  deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
-}
-
-export type OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput = {
-  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutEmployeeInput, Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput> | Prisma.OnboardingChecklistCreateWithoutEmployeeInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput | Prisma.OnboardingChecklistCreateOrConnectWithoutEmployeeInput[]
-  upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutEmployeeInput[]
-  createMany?: Prisma.OnboardingChecklistCreateManyEmployeeInputEnvelope
-  set?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  disconnect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  delete?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
-  update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutEmployeeInput[]
-  updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutEmployeeInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutEmployeeInput[]
-  deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
-}
-
 export type OnboardingChecklistCreateWithoutOnboardingInput = {
   id?: string
-  joinDate: Date | string
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+<<<<<<< HEAD
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingChecklistsInput
   offer?: Prisma.OfferCreateNestedOneWithoutOnboardingChecklistsInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskCreateNestedOneWithoutChecklistInput
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.UserCreateNestedOneWithoutChecklistsOverseenInput
-  tasks?: Prisma.OnboardingTaskCreateNestedManyWithoutChecklistInput
 }
 
 export type OnboardingChecklistUncheckedCreateWithoutOnboardingInput = {
   id?: string
+<<<<<<< HEAD
   employeeId: string
   offerId?: string | null
   joinDate: Date | string
+=======
+  onboardingTaskId?: string | null
+>>>>>>> origin/feat/onboarding
   overseerId?: string | null
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutChecklistInput
 }
 
 export type OnboardingChecklistCreateOrConnectWithoutOnboardingInput = {
@@ -834,13 +802,14 @@ export type OnboardingChecklistScalarWhereInput = {
   OR?: Prisma.OnboardingChecklistScalarWhereInput[]
   NOT?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
   id?: Prisma.UuidFilter<"OnboardingChecklist"> | string
-  employeeId?: Prisma.UuidFilter<"OnboardingChecklist"> | string
+  onboardingTaskId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
   onboardingId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
+<<<<<<< HEAD
   offerId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
   joinDate?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.UuidNullableFilter<"OnboardingChecklist"> | string | null
-  totalItems?: Prisma.IntFilter<"OnboardingChecklist"> | number
-  completedItems?: Prisma.IntFilter<"OnboardingChecklist"> | number
   status?: Prisma.EnumOnboardingChecklistStatusFilter<"OnboardingChecklist"> | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.DateTimeNullableFilter<"OnboardingChecklist"> | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFilter<"OnboardingChecklist"> | boolean
@@ -849,17 +818,15 @@ export type OnboardingChecklistScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
 }
 
-export type OnboardingChecklistCreateWithoutTasksInput = {
+export type OnboardingChecklistCreateWithoutOnboardingTaskInput = {
   id?: string
-  joinDate: Date | string
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+<<<<<<< HEAD
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingChecklistsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutChecklistsInput
   offer?: Prisma.OfferCreateNestedOneWithoutOnboardingChecklistsInput
@@ -945,28 +912,29 @@ export type OnboardingChecklistCreateWithoutOfferInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingChecklistsInput
+=======
+>>>>>>> origin/feat/onboarding
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutChecklistsInput
   overseer?: Prisma.UserCreateNestedOneWithoutChecklistsOverseenInput
-  tasks?: Prisma.OnboardingTaskCreateNestedManyWithoutChecklistInput
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistUncheckedCreateWithoutOfferInput = {
+=======
+export type OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput = {
+>>>>>>> origin/feat/onboarding
   id?: string
-  employeeId: string
   onboardingId?: string | null
-  joinDate: Date | string
   overseerId?: string | null
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutChecklistInput
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistCreateOrConnectWithoutOfferInput = {
   where: Prisma.OnboardingChecklistWhereUniqueInput
   create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOfferInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOfferInput>
@@ -991,40 +959,68 @@ export type OnboardingChecklistUpdateWithWhereUniqueWithoutOfferInput = {
 export type OnboardingChecklistUpdateManyWithWhereWithoutOfferInput = {
   where: Prisma.OnboardingChecklistScalarWhereInput
   data: Prisma.XOR<Prisma.OnboardingChecklistUpdateManyMutationInput, Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOfferInput>
+=======
+export type OnboardingChecklistCreateOrConnectWithoutOnboardingTaskInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput>
+}
+
+export type OnboardingChecklistCreateManyOnboardingTaskInputEnvelope = {
+  data: Prisma.OnboardingChecklistCreateManyOnboardingTaskInput | Prisma.OnboardingChecklistCreateManyOnboardingTaskInput[]
+  skipDuplicates?: boolean
+}
+
+export type OnboardingChecklistUpsertWithWhereUniqueWithoutOnboardingTaskInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  update: Prisma.XOR<Prisma.OnboardingChecklistUpdateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedUpdateWithoutOnboardingTaskInput>
+  create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedCreateWithoutOnboardingTaskInput>
+}
+
+export type OnboardingChecklistUpdateWithWhereUniqueWithoutOnboardingTaskInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  data: Prisma.XOR<Prisma.OnboardingChecklistUpdateWithoutOnboardingTaskInput, Prisma.OnboardingChecklistUncheckedUpdateWithoutOnboardingTaskInput>
+}
+
+export type OnboardingChecklistUpdateManyWithWhereWithoutOnboardingTaskInput = {
+  where: Prisma.OnboardingChecklistScalarWhereInput
+  data: Prisma.XOR<Prisma.OnboardingChecklistUpdateManyMutationInput, Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOnboardingTaskInput>
+>>>>>>> origin/feat/onboarding
 }
 
 export type OnboardingChecklistCreateWithoutOverseerInput = {
   id?: string
-  joinDate: Date | string
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingChecklistsInput
   onboarding?: Prisma.OnboardingCreateNestedOneWithoutChecklistsInput
+<<<<<<< HEAD
   offer?: Prisma.OfferCreateNestedOneWithoutOnboardingChecklistsInput
   tasks?: Prisma.OnboardingTaskCreateNestedManyWithoutChecklistInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskCreateNestedOneWithoutChecklistInput
+>>>>>>> origin/feat/onboarding
 }
 
 export type OnboardingChecklistUncheckedCreateWithoutOverseerInput = {
   id?: string
-  employeeId: string
+  onboardingTaskId?: string | null
   onboardingId?: string | null
+<<<<<<< HEAD
   offerId?: string | null
   joinDate: Date | string
   totalItems?: number
   completedItems?: number
+=======
+>>>>>>> origin/feat/onboarding
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutChecklistInput
 }
 
 export type OnboardingChecklistCreateOrConnectWithoutOverseerInput = {
@@ -1053,6 +1049,7 @@ export type OnboardingChecklistUpdateManyWithWhereWithoutOverseerInput = {
   data: Prisma.XOR<Prisma.OnboardingChecklistUpdateManyMutationInput, Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerInput>
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistCreateWithoutEmployeeInput = {
   id?: string
   joinDate: Date | string
@@ -1118,9 +1115,12 @@ export type OnboardingChecklistCreateManyOnboardingInput = {
   employeeId: string
   offerId?: string | null
   joinDate: Date | string
+=======
+export type OnboardingChecklistCreateManyOnboardingInput = {
+  id?: string
+  onboardingTaskId?: string | null
+>>>>>>> origin/feat/onboarding
   overseerId?: string | null
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
@@ -1131,46 +1131,49 @@ export type OnboardingChecklistCreateManyOnboardingInput = {
 
 export type OnboardingChecklistUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+<<<<<<< HEAD
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingChecklistsNestedInput
   offer?: Prisma.OfferUpdateOneWithoutOnboardingChecklistsNestedInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskUpdateOneWithoutChecklistNestedInput
+>>>>>>> origin/feat/onboarding
   overseer?: Prisma.UserUpdateOneWithoutChecklistsOverseenNestedInput
-  tasks?: Prisma.OnboardingTaskUpdateManyWithoutChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   offerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+  onboardingTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateManyWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   offerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+  onboardingTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+>>>>>>> origin/feat/onboarding
   overseerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1179,14 +1182,14 @@ export type OnboardingChecklistUncheckedUpdateManyWithoutOnboardingInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistCreateManyOfferInput = {
+=======
+export type OnboardingChecklistCreateManyOnboardingTaskInput = {
+>>>>>>> origin/feat/onboarding
   id?: string
-  employeeId: string
   onboardingId?: string | null
-  joinDate: Date | string
   overseerId?: string | null
-  totalItems?: number
-  completedItems?: number
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
@@ -1195,48 +1198,46 @@ export type OnboardingChecklistCreateManyOfferInput = {
   updatedAt?: Date | string
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistUpdateWithoutOfferInput = {
+=======
+export type OnboardingChecklistUpdateWithoutOnboardingTaskInput = {
+>>>>>>> origin/feat/onboarding
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingChecklistsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutChecklistsNestedInput
   overseer?: Prisma.UserUpdateOneWithoutChecklistsOverseenNestedInput
-  tasks?: Prisma.OnboardingTaskUpdateManyWithoutChecklistNestedInput
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistUncheckedUpdateWithoutOfferInput = {
+=======
+export type OnboardingChecklistUncheckedUpdateWithoutOnboardingTaskInput = {
+>>>>>>> origin/feat/onboarding
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   overseerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutChecklistNestedInput
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistUncheckedUpdateManyWithoutOfferInput = {
+=======
+export type OnboardingChecklistUncheckedUpdateManyWithoutOnboardingTaskInput = {
+>>>>>>> origin/feat/onboarding
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   overseerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1247,12 +1248,15 @@ export type OnboardingChecklistUncheckedUpdateManyWithoutOfferInput = {
 
 export type OnboardingChecklistCreateManyOverseerInput = {
   id?: string
-  employeeId: string
+  onboardingTaskId?: string | null
   onboardingId?: string | null
+<<<<<<< HEAD
   offerId?: string | null
   joinDate: Date | string
   totalItems?: number
   completedItems?: number
+=======
+>>>>>>> origin/feat/onboarding
   status?: $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Date | string | null
   ceoSignOffRequired?: boolean
@@ -1263,46 +1267,51 @@ export type OnboardingChecklistCreateManyOverseerInput = {
 
 export type OnboardingChecklistUpdateWithoutOverseerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalItems?: Prisma.IntFieldUpdateOperationsInput | number
-  completedItems?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingChecklistsNestedInput
   onboarding?: Prisma.OnboardingUpdateOneWithoutChecklistsNestedInput
+<<<<<<< HEAD
   offer?: Prisma.OfferUpdateOneWithoutOnboardingChecklistsNestedInput
   tasks?: Prisma.OnboardingTaskUpdateManyWithoutChecklistNestedInput
+=======
+  onboardingTask?: Prisma.OnboardingTaskUpdateOneWithoutChecklistNestedInput
+>>>>>>> origin/feat/onboarding
 }
 
 export type OnboardingChecklistUncheckedUpdateWithoutOverseerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
   offerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalItems?: Prisma.IntFieldUpdateOperationsInput | number
   completedItems?: Prisma.IntFieldUpdateOperationsInput | number
+=======
+>>>>>>> origin/feat/onboarding
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ceoSignOffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateManyWithoutOverseerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  onboardingTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
   offerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalItems?: Prisma.IntFieldUpdateOperationsInput | number
   completedItems?: Prisma.IntFieldUpdateOperationsInput | number
+=======
+>>>>>>> origin/feat/onboarding
   status?: Prisma.EnumOnboardingChecklistStatusFieldUpdateOperationsInput | $Enums.OnboardingChecklistStatus
   teamLeadVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ceoSignOffRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1311,6 +1320,7 @@ export type OnboardingChecklistUncheckedUpdateManyWithoutOverseerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistCreateManyEmployeeInput = {
   id?: string
   onboardingId?: string | null
@@ -1406,82 +1416,95 @@ export type OnboardingChecklistCountOutputTypeDefaultArgs<ExtArgs extends runtim
 export type OnboardingChecklistCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OnboardingTaskWhereInput
 }
+=======
+>>>>>>> origin/feat/onboarding
 
 
 export type OnboardingChecklistSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
+  onboardingTaskId?: boolean
   onboardingId?: boolean
+<<<<<<< HEAD
   offerId?: boolean
   joinDate?: boolean
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: boolean
-  totalItems?: boolean
-  completedItems?: boolean
   status?: boolean
   teamLeadVerifiedAt?: boolean
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>
+<<<<<<< HEAD
   offer?: boolean | Prisma.OnboardingChecklist$offerArgs<ExtArgs>
+=======
+  onboardingTask?: boolean | Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>
+>>>>>>> origin/feat/onboarding
   overseer?: boolean | Prisma.OnboardingChecklist$overseerArgs<ExtArgs>
-  tasks?: boolean | Prisma.OnboardingChecklist$tasksArgs<ExtArgs>
-  _count?: boolean | Prisma.OnboardingChecklistCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingChecklist"]>
 
 export type OnboardingChecklistSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
+  onboardingTaskId?: boolean
   onboardingId?: boolean
+<<<<<<< HEAD
   offerId?: boolean
   joinDate?: boolean
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: boolean
-  totalItems?: boolean
-  completedItems?: boolean
   status?: boolean
   teamLeadVerifiedAt?: boolean
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>
+<<<<<<< HEAD
   offer?: boolean | Prisma.OnboardingChecklist$offerArgs<ExtArgs>
+=======
+  onboardingTask?: boolean | Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>
+>>>>>>> origin/feat/onboarding
   overseer?: boolean | Prisma.OnboardingChecklist$overseerArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingChecklist"]>
 
 export type OnboardingChecklistSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
+  onboardingTaskId?: boolean
   onboardingId?: boolean
+<<<<<<< HEAD
   offerId?: boolean
   joinDate?: boolean
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: boolean
-  totalItems?: boolean
-  completedItems?: boolean
   status?: boolean
   teamLeadVerifiedAt?: boolean
   ceoSignOffRequired?: boolean
   ceoSignOffAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>
+<<<<<<< HEAD
   offer?: boolean | Prisma.OnboardingChecklist$offerArgs<ExtArgs>
+=======
+  onboardingTask?: boolean | Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>
+>>>>>>> origin/feat/onboarding
   overseer?: boolean | Prisma.OnboardingChecklist$overseerArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingChecklist"]>
 
 export type OnboardingChecklistSelectScalar = {
   id?: boolean
-  employeeId?: boolean
+  onboardingTaskId?: boolean
   onboardingId?: boolean
+<<<<<<< HEAD
   offerId?: boolean
   joinDate?: boolean
+=======
+>>>>>>> origin/feat/onboarding
   overseerId?: boolean
-  totalItems?: boolean
-  completedItems?: boolean
   status?: boolean
   teamLeadVerifiedAt?: boolean
   ceoSignOffRequired?: boolean
@@ -1490,46 +1513,60 @@ export type OnboardingChecklistSelectScalar = {
   updatedAt?: boolean
 }
 
+<<<<<<< HEAD
 export type OnboardingChecklistOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "onboardingId" | "offerId" | "joinDate" | "overseerId" | "totalItems" | "completedItems" | "status" | "teamLeadVerifiedAt" | "ceoSignOffRequired" | "ceoSignOffAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingChecklist"]>
+=======
+export type OnboardingChecklistOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "onboardingTaskId" | "onboardingId" | "overseerId" | "status" | "teamLeadVerifiedAt" | "ceoSignOffRequired" | "ceoSignOffAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingChecklist"]>
+>>>>>>> origin/feat/onboarding
 export type OnboardingChecklistInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>
+<<<<<<< HEAD
   offer?: boolean | Prisma.OnboardingChecklist$offerArgs<ExtArgs>
+=======
+  onboardingTask?: boolean | Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>
+>>>>>>> origin/feat/onboarding
   overseer?: boolean | Prisma.OnboardingChecklist$overseerArgs<ExtArgs>
-  tasks?: boolean | Prisma.OnboardingChecklist$tasksArgs<ExtArgs>
-  _count?: boolean | Prisma.OnboardingChecklistCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OnboardingChecklistIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>
+<<<<<<< HEAD
   offer?: boolean | Prisma.OnboardingChecklist$offerArgs<ExtArgs>
+=======
+  onboardingTask?: boolean | Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>
+>>>>>>> origin/feat/onboarding
   overseer?: boolean | Prisma.OnboardingChecklist$overseerArgs<ExtArgs>
 }
 export type OnboardingChecklistIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   onboarding?: boolean | Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>
+<<<<<<< HEAD
   offer?: boolean | Prisma.OnboardingChecklist$offerArgs<ExtArgs>
+=======
+  onboardingTask?: boolean | Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>
+>>>>>>> origin/feat/onboarding
   overseer?: boolean | Prisma.OnboardingChecklist$overseerArgs<ExtArgs>
 }
 
 export type $OnboardingChecklistPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OnboardingChecklist"
   objects: {
-    employee: Prisma.$EmployeePayload<ExtArgs>
     onboarding: Prisma.$OnboardingPayload<ExtArgs> | null
+<<<<<<< HEAD
     offer: Prisma.$OfferPayload<ExtArgs> | null
+=======
+    onboardingTask: Prisma.$OnboardingTaskPayload<ExtArgs> | null
+>>>>>>> origin/feat/onboarding
     overseer: Prisma.$UserPayload<ExtArgs> | null
-    tasks: Prisma.$OnboardingTaskPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    employeeId: string
+    onboardingTaskId: string | null
     onboardingId: string | null
+<<<<<<< HEAD
     offerId: string | null
     joinDate: Date
+=======
+>>>>>>> origin/feat/onboarding
     overseerId: string | null
-    totalItems: number
-    completedItems: number
     status: $Enums.OnboardingChecklistStatus
     teamLeadVerifiedAt: Date | null
     ceoSignOffRequired: boolean
@@ -1930,11 +1967,13 @@ readonly fields: OnboardingChecklistFieldRefs;
  */
 export interface Prisma__OnboardingChecklistClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   onboarding<T extends Prisma.OnboardingChecklist$onboardingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$onboardingArgs<ExtArgs>>): Prisma.Prisma__OnboardingClient<runtime.Types.Result.GetResult<Prisma.$OnboardingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+<<<<<<< HEAD
   offer<T extends Prisma.OnboardingChecklist$offerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$offerArgs<ExtArgs>>): Prisma.Prisma__OfferClient<runtime.Types.Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+=======
+  onboardingTask<T extends Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$onboardingTaskArgs<ExtArgs>>): Prisma.Prisma__OnboardingTaskClient<runtime.Types.Result.GetResult<Prisma.$OnboardingTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+>>>>>>> origin/feat/onboarding
   overseer<T extends Prisma.OnboardingChecklist$overseerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$overseerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  tasks<T extends Prisma.OnboardingChecklist$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1965,13 +2004,14 @@ export interface Prisma__OnboardingChecklistClient<T, Null = never, ExtArgs exte
  */
 export interface OnboardingChecklistFieldRefs {
   readonly id: Prisma.FieldRef<"OnboardingChecklist", 'String'>
-  readonly employeeId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
+  readonly onboardingTaskId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
   readonly onboardingId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
+<<<<<<< HEAD
   readonly offerId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
   readonly joinDate: Prisma.FieldRef<"OnboardingChecklist", 'DateTime'>
+=======
+>>>>>>> origin/feat/onboarding
   readonly overseerId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
-  readonly totalItems: Prisma.FieldRef<"OnboardingChecklist", 'Int'>
-  readonly completedItems: Prisma.FieldRef<"OnboardingChecklist", 'Int'>
   readonly status: Prisma.FieldRef<"OnboardingChecklist", 'OnboardingChecklistStatus'>
   readonly teamLeadVerifiedAt: Prisma.FieldRef<"OnboardingChecklist", 'DateTime'>
   readonly ceoSignOffRequired: Prisma.FieldRef<"OnboardingChecklist", 'Boolean'>
@@ -2393,6 +2433,7 @@ export type OnboardingChecklist$onboardingArgs<ExtArgs extends runtime.Types.Ext
 }
 
 /**
+<<<<<<< HEAD
  * OnboardingChecklist.offer
  */
 export type OnboardingChecklist$offerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2409,6 +2450,24 @@ export type OnboardingChecklist$offerArgs<ExtArgs extends runtime.Types.Extensio
    */
   include?: Prisma.OfferInclude<ExtArgs> | null
   where?: Prisma.OfferWhereInput
+=======
+ * OnboardingChecklist.onboardingTask
+ */
+export type OnboardingChecklist$onboardingTaskArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OnboardingTask
+   */
+  select?: Prisma.OnboardingTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OnboardingTask
+   */
+  omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
+  where?: Prisma.OnboardingTaskWhereInput
+>>>>>>> origin/feat/onboarding
 }
 
 /**
@@ -2428,30 +2487,6 @@ export type OnboardingChecklist$overseerArgs<ExtArgs extends runtime.Types.Exten
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
-}
-
-/**
- * OnboardingChecklist.tasks
- */
-export type OnboardingChecklist$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OnboardingTask
-   */
-  select?: Prisma.OnboardingTaskSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the OnboardingTask
-   */
-  omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  where?: Prisma.OnboardingTaskWhereInput
-  orderBy?: Prisma.OnboardingTaskOrderByWithRelationInput | Prisma.OnboardingTaskOrderByWithRelationInput[]
-  cursor?: Prisma.OnboardingTaskWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OnboardingTaskScalarFieldEnum | Prisma.OnboardingTaskScalarFieldEnum[]
 }
 
 /**

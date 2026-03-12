@@ -10927,6 +10927,7 @@ export const OnboardingScalarFieldEnum = {
   employeeId: 'employeeId',
   status: 'status',
   startedAt: 'startedAt',
+  joinDate: 'joinDate',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -10937,13 +10938,14 @@ export type OnboardingScalarFieldEnum = (typeof OnboardingScalarFieldEnum)[keyof
 
 export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
+  onboardingTaskId: 'onboardingTaskId',
   onboardingId: 'onboardingId',
+<<<<<<< HEAD
   offerId: 'offerId',
   joinDate: 'joinDate',
+=======
+>>>>>>> origin/feat/onboarding
   overseerId: 'overseerId',
-  totalItems: 'totalItems',
-  completedItems: 'completedItems',
   status: 'status',
   teamLeadVerifiedAt: 'teamLeadVerifiedAt',
   ceoSignOffRequired: 'ceoSignOffRequired',
@@ -10957,14 +10959,9 @@ export type OnboardingChecklistScalarFieldEnum = (typeof OnboardingChecklistScal
 
 export const OnboardingTaskScalarFieldEnum = {
   id: 'id',
-  checklistId: 'checklistId',
   department: 'department',
   title: 'title',
   description: 'description',
-  dueDate: 'dueDate',
-  assignedToId: 'assignedToId',
-  status: 'status',
-  completedAt: 'completedAt',
   completedById: 'completedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -12912,20 +12909,6 @@ export type EnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel> = FieldRefIn
  * Reference to a field of type 'OnboardingTaskDepartment[]'
  */
 export type ListEnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingTaskDepartment[]'>
-    
-
-
-/**
- * Reference to a field of type 'OnboardingTaskStatus'
- */
-export type EnumOnboardingTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingTaskStatus'>
-    
-
-
-/**
- * Reference to a field of type 'OnboardingTaskStatus[]'
- */
-export type ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingTaskStatus[]'>
     
 
 

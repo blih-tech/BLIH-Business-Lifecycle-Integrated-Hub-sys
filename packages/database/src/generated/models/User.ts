@@ -255,7 +255,6 @@ export type UserWhereInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepListRelationFilter
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryListRelationFilter
   checklistsOverseen?: Prisma.OnboardingChecklistListRelationFilter
-  assignedOnboardingTasks?: Prisma.OnboardingTaskListRelationFilter
   completedOnboardingTasks?: Prisma.OnboardingTaskListRelationFilter
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementListRelationFilter
   delegatedLeaveHandovers?: Prisma.LeaveRequestListRelationFilter
@@ -333,7 +332,6 @@ export type UserOrderByWithRelationInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepOrderByRelationAggregateInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryOrderByRelationAggregateInput
   checklistsOverseen?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskOrderByRelationAggregateInput
   completedOnboardingTasks?: Prisma.OnboardingTaskOrderByRelationAggregateInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementOrderByRelationAggregateInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestOrderByRelationAggregateInput
@@ -414,7 +412,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   jobApprovalSteps?: Prisma.JobApprovalStepListRelationFilter
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryListRelationFilter
   checklistsOverseen?: Prisma.OnboardingChecklistListRelationFilter
-  assignedOnboardingTasks?: Prisma.OnboardingTaskListRelationFilter
   completedOnboardingTasks?: Prisma.OnboardingTaskListRelationFilter
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementListRelationFilter
   delegatedLeaveHandovers?: Prisma.LeaveRequestListRelationFilter
@@ -530,7 +527,6 @@ export type UserCreateInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -608,7 +604,6 @@ export type UserUncheckedCreateInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -686,7 +681,6 @@ export type UserUpdateInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -764,7 +758,6 @@ export type UserUncheckedUpdateInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -1333,26 +1326,10 @@ export type UserUpdateOneWithoutChecklistsOverseenNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChecklistsOverseenInput, Prisma.UserUpdateWithoutChecklistsOverseenInput>, Prisma.UserUncheckedUpdateWithoutChecklistsOverseenInput>
 }
 
-export type UserCreateNestedOneWithoutAssignedOnboardingTasksInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedOnboardingTasksInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
 export type UserCreateNestedOneWithoutCompletedOnboardingTasksInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOnboardingTasksInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedOnboardingTasksInput
   connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneWithoutAssignedOnboardingTasksNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedOnboardingTasksInput
-  upsert?: Prisma.UserUpsertWithoutAssignedOnboardingTasksInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedOnboardingTasksInput, Prisma.UserUpdateWithoutAssignedOnboardingTasksInput>, Prisma.UserUncheckedUpdateWithoutAssignedOnboardingTasksInput>
 }
 
 export type UserUpdateOneWithoutCompletedOnboardingTasksNestedInput = {
@@ -1907,7 +1884,6 @@ export type UserCreateWithoutDelegatedLeaveHandoversInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   leaveRequestsApproved?: Prisma.LeaveRequestCreateNestedManyWithoutApprovedByInput
@@ -1984,7 +1960,6 @@ export type UserUncheckedCreateWithoutDelegatedLeaveHandoversInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   leaveRequestsApproved?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -2066,7 +2041,6 @@ export type UserCreateWithoutLeaveRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -2143,7 +2117,6 @@ export type UserUncheckedCreateWithoutLeaveRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -2236,7 +2209,6 @@ export type UserUpdateWithoutDelegatedLeaveHandoversInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   leaveRequestsApproved?: Prisma.LeaveRequestUpdateManyWithoutApprovedByNestedInput
@@ -2313,7 +2285,6 @@ export type UserUncheckedUpdateWithoutDelegatedLeaveHandoversInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   leaveRequestsApproved?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -2401,7 +2372,6 @@ export type UserUpdateWithoutLeaveRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -2478,7 +2448,6 @@ export type UserUncheckedUpdateWithoutLeaveRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -2555,7 +2524,6 @@ export type UserCreateWithoutLeaveApprovalsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -2632,7 +2600,6 @@ export type UserUncheckedCreateWithoutLeaveApprovalsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -2725,7 +2692,6 @@ export type UserUpdateWithoutLeaveApprovalsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -2802,7 +2768,6 @@ export type UserUncheckedUpdateWithoutLeaveApprovalsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -2879,7 +2844,6 @@ export type UserCreateWithoutAttendanceCorrectionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -2956,7 +2920,6 @@ export type UserUncheckedCreateWithoutAttendanceCorrectionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -3049,7 +3012,6 @@ export type UserUpdateWithoutAttendanceCorrectionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -3126,7 +3088,6 @@ export type UserUncheckedUpdateWithoutAttendanceCorrectionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -3203,7 +3164,6 @@ export type UserCreateWithoutOvertimeRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -3280,7 +3240,6 @@ export type UserUncheckedCreateWithoutOvertimeRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -3373,7 +3332,6 @@ export type UserUpdateWithoutOvertimeRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -3450,7 +3408,6 @@ export type UserUncheckedUpdateWithoutOvertimeRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -3527,7 +3484,6 @@ export type UserCreateWithoutFlexWorkRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -3604,7 +3560,6 @@ export type UserUncheckedCreateWithoutFlexWorkRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -3697,7 +3652,6 @@ export type UserUpdateWithoutFlexWorkRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -3774,7 +3728,6 @@ export type UserUncheckedUpdateWithoutFlexWorkRequestsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -3851,7 +3804,6 @@ export type UserCreateWithoutApprovedTimesheetsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -3928,7 +3880,6 @@ export type UserUncheckedCreateWithoutApprovedTimesheetsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -4021,7 +3972,6 @@ export type UserUpdateWithoutApprovedTimesheetsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -4098,7 +4048,6 @@ export type UserUncheckedUpdateWithoutApprovedTimesheetsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -4174,7 +4123,6 @@ export type UserCreateWithoutRolesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -4251,7 +4199,6 @@ export type UserUncheckedCreateWithoutRolesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -4344,7 +4291,6 @@ export type UserUpdateWithoutRolesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -4421,7 +4367,6 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -4498,7 +4443,6 @@ export type UserCreateWithoutVerifiedDocumentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -4575,7 +4519,6 @@ export type UserUncheckedCreateWithoutVerifiedDocumentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -4668,7 +4611,6 @@ export type UserUpdateWithoutVerifiedDocumentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -4745,7 +4687,6 @@ export type UserUncheckedUpdateWithoutVerifiedDocumentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -4823,7 +4764,6 @@ export type UserCreateWithoutIncidentInvestigationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -4900,7 +4840,6 @@ export type UserUncheckedCreateWithoutIncidentInvestigationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -4993,7 +4932,6 @@ export type UserUpdateWithoutIncidentInvestigationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -5070,7 +5008,6 @@ export type UserUncheckedUpdateWithoutIncidentInvestigationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -5147,7 +5084,6 @@ export type UserCreateWithoutDisciplinaryActionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -5224,7 +5160,6 @@ export type UserUncheckedCreateWithoutDisciplinaryActionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -5317,7 +5252,6 @@ export type UserUpdateWithoutDisciplinaryActionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -5394,7 +5328,6 @@ export type UserUncheckedUpdateWithoutDisciplinaryActionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -5471,7 +5404,6 @@ export type UserCreateWithoutGrievancesAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -5548,7 +5480,6 @@ export type UserUncheckedCreateWithoutGrievancesAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -5641,7 +5572,6 @@ export type UserUpdateWithoutGrievancesAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -5718,7 +5648,6 @@ export type UserUncheckedUpdateWithoutGrievancesAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -5795,7 +5724,6 @@ export type UserCreateWithoutRecognitionsNominatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -5872,7 +5800,6 @@ export type UserUncheckedCreateWithoutRecognitionsNominatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -5954,7 +5881,6 @@ export type UserCreateWithoutRecognitionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -6031,7 +5957,6 @@ export type UserUncheckedCreateWithoutRecognitionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -6124,7 +6049,6 @@ export type UserUpdateWithoutRecognitionsNominatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -6201,7 +6125,6 @@ export type UserUncheckedUpdateWithoutRecognitionsNominatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -6289,7 +6212,6 @@ export type UserUpdateWithoutRecognitionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -6366,7 +6288,6 @@ export type UserUncheckedUpdateWithoutRecognitionsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -6443,7 +6364,6 @@ export type UserCreateWithoutSurveysCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -6520,7 +6440,6 @@ export type UserUncheckedCreateWithoutSurveysCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -6613,7 +6532,6 @@ export type UserUpdateWithoutSurveysCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -6690,7 +6608,6 @@ export type UserUncheckedUpdateWithoutSurveysCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -6767,7 +6684,6 @@ export type UserCreateWithoutMediationAsMediatorInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -6844,7 +6760,6 @@ export type UserUncheckedCreateWithoutMediationAsMediatorInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -6937,7 +6852,6 @@ export type UserUpdateWithoutMediationAsMediatorInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -7014,7 +6928,6 @@ export type UserUncheckedUpdateWithoutMediationAsMediatorInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -7091,7 +7004,6 @@ export type UserCreateWithoutApprovedTrainingRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -7168,7 +7080,6 @@ export type UserUncheckedCreateWithoutApprovedTrainingRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -7261,7 +7172,6 @@ export type UserUpdateWithoutApprovedTrainingRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -7338,7 +7248,6 @@ export type UserUncheckedUpdateWithoutApprovedTrainingRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -7415,7 +7324,6 @@ export type UserCreateWithoutFeedbackTemplatesCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -7492,7 +7400,6 @@ export type UserUncheckedCreateWithoutFeedbackTemplatesCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -7585,7 +7492,6 @@ export type UserUpdateWithoutFeedbackTemplatesCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -7662,7 +7568,6 @@ export type UserUncheckedUpdateWithoutFeedbackTemplatesCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -7739,7 +7644,6 @@ export type UserCreateWithoutTrainingFeedbackReviewedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -7816,7 +7720,6 @@ export type UserUncheckedCreateWithoutTrainingFeedbackReviewedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -7909,7 +7812,6 @@ export type UserUpdateWithoutTrainingFeedbackReviewedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -7986,7 +7888,6 @@ export type UserUncheckedUpdateWithoutTrainingFeedbackReviewedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -8063,7 +7964,6 @@ export type UserCreateWithoutSkillGapAssessmentsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -8140,7 +8040,6 @@ export type UserUncheckedCreateWithoutSkillGapAssessmentsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -8233,7 +8132,6 @@ export type UserUpdateWithoutSkillGapAssessmentsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -8310,7 +8208,6 @@ export type UserUncheckedUpdateWithoutSkillGapAssessmentsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -8387,7 +8284,6 @@ export type UserCreateWithoutResignationsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -8464,7 +8360,6 @@ export type UserUncheckedCreateWithoutResignationsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -8557,7 +8452,6 @@ export type UserUpdateWithoutResignationsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -8634,7 +8528,6 @@ export type UserUncheckedUpdateWithoutResignationsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -8711,7 +8604,6 @@ export type UserCreateWithoutOffboardingTasksAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -8788,7 +8680,6 @@ export type UserUncheckedCreateWithoutOffboardingTasksAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -8870,7 +8761,6 @@ export type UserCreateWithoutOffboardingTasksCompletedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -8947,7 +8837,6 @@ export type UserUncheckedCreateWithoutOffboardingTasksCompletedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -9040,7 +8929,6 @@ export type UserUpdateWithoutOffboardingTasksAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -9117,7 +9005,6 @@ export type UserUncheckedUpdateWithoutOffboardingTasksAssignedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -9205,7 +9092,6 @@ export type UserUpdateWithoutOffboardingTasksCompletedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -9282,7 +9168,6 @@ export type UserUncheckedUpdateWithoutOffboardingTasksCompletedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -9359,7 +9244,6 @@ export type UserCreateWithoutExitInterviewsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -9436,7 +9320,6 @@ export type UserUncheckedCreateWithoutExitInterviewsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -9529,7 +9412,6 @@ export type UserUpdateWithoutExitInterviewsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -9606,7 +9488,6 @@ export type UserUncheckedUpdateWithoutExitInterviewsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -9683,7 +9564,6 @@ export type UserCreateWithoutFinalSettlementsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -9760,7 +9640,6 @@ export type UserUncheckedCreateWithoutFinalSettlementsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -9853,7 +9732,6 @@ export type UserUpdateWithoutFinalSettlementsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -9930,7 +9808,6 @@ export type UserUncheckedUpdateWithoutFinalSettlementsApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -10007,7 +9884,6 @@ export type UserCreateWithoutComplianceChecklistsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -10084,7 +9960,6 @@ export type UserUncheckedCreateWithoutComplianceChecklistsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -10177,7 +10052,6 @@ export type UserUpdateWithoutComplianceChecklistsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -10254,7 +10128,6 @@ export type UserUncheckedUpdateWithoutComplianceChecklistsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -10330,7 +10203,6 @@ export type UserCreateWithoutChecklistsOverseenInput = {
   createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -10407,7 +10279,6 @@ export type UserUncheckedCreateWithoutChecklistsOverseenInput = {
   createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -10500,7 +10371,6 @@ export type UserUpdateWithoutChecklistsOverseenInput = {
   createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -10577,7 +10447,6 @@ export type UserUncheckedUpdateWithoutChecklistsOverseenInput = {
   createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -10624,6 +10493,7 @@ export type UserUncheckedUpdateWithoutChecklistsOverseenInput = {
   cvScreeningDecisionsMade?: Prisma.CvScreeningDecisionUncheckedUpdateManyWithoutDecisionMakerNestedInput
 }
 
+<<<<<<< HEAD
 export type UserCreateWithoutAssignedOnboardingTasksInput = {
   id?: string
   keycloakId: string
@@ -10783,6 +10653,8 @@ export type UserCreateOrConnectWithoutAssignedOnboardingTasksInput = {
   create: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
 }
 
+=======
+>>>>>>> origin/feat/onboarding
 export type UserCreateWithoutCompletedOnboardingTasksInput = {
   id?: string
   keycloakId: string
@@ -10814,7 +10686,6 @@ export type UserCreateWithoutCompletedOnboardingTasksInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
   leaveRequestsApproved?: Prisma.LeaveRequestCreateNestedManyWithoutApprovedByInput
@@ -10891,7 +10762,6 @@ export type UserUncheckedCreateWithoutCompletedOnboardingTasksInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
   leaveRequestsApproved?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -10942,6 +10812,7 @@ export type UserCreateOrConnectWithoutCompletedOnboardingTasksInput = {
   create: Prisma.XOR<Prisma.UserCreateWithoutCompletedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOnboardingTasksInput>
 }
 
+<<<<<<< HEAD
 export type UserUpsertWithoutAssignedOnboardingTasksInput = {
   update: Prisma.XOR<Prisma.UserUpdateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedOnboardingTasksInput>
   create: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
@@ -11107,6 +10978,8 @@ export type UserUncheckedUpdateWithoutAssignedOnboardingTasksInput = {
   cvScreeningDecisionsMade?: Prisma.CvScreeningDecisionUncheckedUpdateManyWithoutDecisionMakerNestedInput
 }
 
+=======
+>>>>>>> origin/feat/onboarding
 export type UserUpsertWithoutCompletedOnboardingTasksInput = {
   update: Prisma.XOR<Prisma.UserUpdateWithoutCompletedOnboardingTasksInput, Prisma.UserUncheckedUpdateWithoutCompletedOnboardingTasksInput>
   create: Prisma.XOR<Prisma.UserCreateWithoutCompletedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOnboardingTasksInput>
@@ -11149,7 +11022,6 @@ export type UserUpdateWithoutCompletedOnboardingTasksInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
   leaveRequestsApproved?: Prisma.LeaveRequestUpdateManyWithoutApprovedByNestedInput
@@ -11226,7 +11098,6 @@ export type UserUncheckedUpdateWithoutCompletedOnboardingTasksInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
   leaveRequestsApproved?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -11303,7 +11174,6 @@ export type UserCreateWithoutPolicyAcknowledgementsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
   leaveRequestsApproved?: Prisma.LeaveRequestCreateNestedManyWithoutApprovedByInput
@@ -11380,7 +11250,6 @@ export type UserUncheckedCreateWithoutPolicyAcknowledgementsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
   leaveRequestsApproved?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -11473,7 +11342,6 @@ export type UserUpdateWithoutPolicyAcknowledgementsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
   leaveRequestsApproved?: Prisma.LeaveRequestUpdateManyWithoutApprovedByNestedInput
@@ -11550,7 +11418,6 @@ export type UserUncheckedUpdateWithoutPolicyAcknowledgementsVerifiedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
   leaveRequestsApproved?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -11627,7 +11494,6 @@ export type UserCreateWithoutPerformanceReviewFeedbackInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -11704,7 +11570,6 @@ export type UserUncheckedCreateWithoutPerformanceReviewFeedbackInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -11797,7 +11662,6 @@ export type UserUpdateWithoutPerformanceReviewFeedbackInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -11874,7 +11738,6 @@ export type UserUncheckedUpdateWithoutPerformanceReviewFeedbackInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -11951,7 +11814,6 @@ export type UserCreateWithoutFinalizedPerformanceCalibrationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -12028,7 +11890,6 @@ export type UserUncheckedCreateWithoutFinalizedPerformanceCalibrationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -12121,7 +11982,6 @@ export type UserUpdateWithoutFinalizedPerformanceCalibrationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -12198,7 +12058,6 @@ export type UserUncheckedUpdateWithoutFinalizedPerformanceCalibrationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -12275,7 +12134,6 @@ export type UserCreateWithoutKeyResultUpdatesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -12352,7 +12210,6 @@ export type UserUncheckedCreateWithoutKeyResultUpdatesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -12445,7 +12302,6 @@ export type UserUpdateWithoutKeyResultUpdatesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -12522,7 +12378,6 @@ export type UserUncheckedUpdateWithoutKeyResultUpdatesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -12599,7 +12454,6 @@ export type UserCreateWithoutOkrManagerReviewsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -12676,7 +12530,6 @@ export type UserUncheckedCreateWithoutOkrManagerReviewsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -12769,7 +12622,6 @@ export type UserUpdateWithoutOkrManagerReviewsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -12846,7 +12698,6 @@ export type UserUncheckedUpdateWithoutOkrManagerReviewsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -12922,7 +12773,6 @@ export type UserCreateWithoutJobReplacementRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -12999,7 +12849,6 @@ export type UserUncheckedCreateWithoutJobReplacementRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -13092,7 +12941,6 @@ export type UserUpdateWithoutJobReplacementRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -13169,7 +13017,6 @@ export type UserUncheckedUpdateWithoutJobReplacementRequestsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -13246,7 +13093,6 @@ export type UserCreateWithoutManagedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -13323,7 +13169,6 @@ export type UserUncheckedCreateWithoutManagedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -13405,7 +13250,6 @@ export type UserCreateWithoutCreatedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -13482,7 +13326,6 @@ export type UserUncheckedCreateWithoutCreatedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -13575,7 +13418,6 @@ export type UserUpdateWithoutManagedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -13652,7 +13494,6 @@ export type UserUncheckedUpdateWithoutManagedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -13740,7 +13581,6 @@ export type UserUpdateWithoutCreatedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -13817,7 +13657,6 @@ export type UserUncheckedUpdateWithoutCreatedJobsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -13894,7 +13733,6 @@ export type UserCreateWithoutJobApprovalStepsInput = {
   createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -13971,7 +13809,6 @@ export type UserUncheckedCreateWithoutJobApprovalStepsInput = {
   createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -14064,7 +13901,6 @@ export type UserUpdateWithoutJobApprovalStepsInput = {
   createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -14141,7 +13977,6 @@ export type UserUncheckedUpdateWithoutJobApprovalStepsInput = {
   createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -14218,7 +14053,6 @@ export type UserCreateWithoutJobApprovalHistoryChangesInput = {
   createdOffers?: Prisma.OfferCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -14295,7 +14129,6 @@ export type UserUncheckedCreateWithoutJobApprovalHistoryChangesInput = {
   createdOffers?: Prisma.OfferUncheckedCreateNestedManyWithoutCreatedByInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -14388,7 +14221,6 @@ export type UserUpdateWithoutJobApprovalHistoryChangesInput = {
   createdOffers?: Prisma.OfferUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -14465,7 +14297,6 @@ export type UserUncheckedUpdateWithoutJobApprovalHistoryChangesInput = {
   createdOffers?: Prisma.OfferUncheckedUpdateManyWithoutCreatedByNestedInput
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -14542,7 +14373,6 @@ export type UserCreateWithoutReferredApplicantsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -14619,7 +14449,6 @@ export type UserUncheckedCreateWithoutReferredApplicantsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -14712,7 +14541,6 @@ export type UserUpdateWithoutReferredApplicantsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -14789,7 +14617,6 @@ export type UserUncheckedUpdateWithoutReferredApplicantsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -14866,7 +14693,6 @@ export type UserCreateWithoutApplicantStatusChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -14943,7 +14769,6 @@ export type UserUncheckedCreateWithoutApplicantStatusChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -15036,7 +14861,6 @@ export type UserUpdateWithoutApplicantStatusChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -15113,7 +14937,6 @@ export type UserUncheckedUpdateWithoutApplicantStatusChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -15190,7 +15013,6 @@ export type UserCreateWithoutCreatedInterviewSessionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -15267,7 +15089,6 @@ export type UserUncheckedCreateWithoutCreatedInterviewSessionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -15360,7 +15181,6 @@ export type UserUpdateWithoutCreatedInterviewSessionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -15437,7 +15257,6 @@ export type UserUncheckedUpdateWithoutCreatedInterviewSessionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -15514,7 +15333,6 @@ export type UserCreateWithoutInterviewerAssignmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -15591,7 +15409,6 @@ export type UserUncheckedCreateWithoutInterviewerAssignmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -15684,7 +15501,6 @@ export type UserUpdateWithoutInterviewerAssignmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -16409,7 +16225,6 @@ export type UserUncheckedUpdateWithoutCreatedOffersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -16487,7 +16302,6 @@ export type UserCreateWithoutCvScreeningsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -16564,7 +16378,6 @@ export type UserUncheckedCreateWithoutCvScreeningsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -16657,7 +16470,6 @@ export type UserUpdateWithoutCvScreeningsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -16734,7 +16546,6 @@ export type UserUncheckedUpdateWithoutCvScreeningsConductedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -16811,7 +16622,6 @@ export type UserCreateWithoutCvScreeningWorkflowsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -16888,7 +16698,6 @@ export type UserUncheckedCreateWithoutCvScreeningWorkflowsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -16981,7 +16790,6 @@ export type UserUpdateWithoutCvScreeningWorkflowsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -17058,7 +16866,6 @@ export type UserUncheckedUpdateWithoutCvScreeningWorkflowsCreatedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -17135,7 +16942,6 @@ export type UserCreateWithoutCvScreeningStagesApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -17212,7 +17018,6 @@ export type UserUncheckedCreateWithoutCvScreeningStagesApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -17305,7 +17110,6 @@ export type UserUpdateWithoutCvScreeningStagesApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -17382,7 +17186,6 @@ export type UserUncheckedUpdateWithoutCvScreeningStagesApprovedInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -17459,7 +17262,6 @@ export type UserCreateWithoutCvScreeningDecisionsMadeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -17536,7 +17338,6 @@ export type UserUncheckedCreateWithoutCvScreeningDecisionsMadeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -17629,7 +17430,6 @@ export type UserUpdateWithoutCvScreeningDecisionsMadeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -17706,7 +17506,6 @@ export type UserUncheckedUpdateWithoutCvScreeningDecisionsMadeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -17783,7 +17582,6 @@ export type UserCreateWithoutProposedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -17860,7 +17658,6 @@ export type UserUncheckedCreateWithoutProposedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -17942,7 +17739,6 @@ export type UserCreateWithoutApprovedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -18019,7 +17815,6 @@ export type UserUncheckedCreateWithoutApprovedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -18112,7 +17907,6 @@ export type UserUpdateWithoutProposedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -18189,7 +17983,6 @@ export type UserUncheckedUpdateWithoutProposedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -18277,7 +18070,6 @@ export type UserUpdateWithoutApprovedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -18354,7 +18146,6 @@ export type UserUncheckedUpdateWithoutApprovedPromotionsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -18431,7 +18222,6 @@ export type UserCreateWithoutCreatedCareerDevelopmentPlansInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -18508,7 +18298,6 @@ export type UserUncheckedCreateWithoutCreatedCareerDevelopmentPlansInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -18601,7 +18390,6 @@ export type UserUpdateWithoutCreatedCareerDevelopmentPlansInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -18678,7 +18466,6 @@ export type UserUncheckedUpdateWithoutCreatedCareerDevelopmentPlansInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -18755,7 +18542,6 @@ export type UserCreateWithoutAssessedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -18832,7 +18618,6 @@ export type UserUncheckedCreateWithoutAssessedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -18914,7 +18699,6 @@ export type UserCreateWithoutReviewedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -18991,7 +18775,6 @@ export type UserUncheckedCreateWithoutReviewedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -19084,7 +18867,6 @@ export type UserUpdateWithoutAssessedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -19161,7 +18943,6 @@ export type UserUncheckedUpdateWithoutAssessedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -19249,7 +19030,6 @@ export type UserUpdateWithoutReviewedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -19326,7 +19106,6 @@ export type UserUncheckedUpdateWithoutReviewedTrainingNeedsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -19403,7 +19182,6 @@ export type UserCreateWithoutRequestedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -19480,7 +19258,6 @@ export type UserUncheckedCreateWithoutRequestedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -19562,7 +19339,6 @@ export type UserCreateWithoutApprovedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -19639,7 +19415,6 @@ export type UserUncheckedCreateWithoutApprovedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -19732,7 +19507,6 @@ export type UserUpdateWithoutRequestedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -19809,7 +19583,6 @@ export type UserUncheckedUpdateWithoutRequestedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -19897,7 +19670,6 @@ export type UserUpdateWithoutApprovedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -19974,7 +19746,6 @@ export type UserUncheckedUpdateWithoutApprovedInternalTransfersInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -20051,7 +19822,6 @@ export type UserCreateWithoutProposedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -20128,7 +19898,6 @@ export type UserUncheckedCreateWithoutProposedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -20210,7 +19979,6 @@ export type UserCreateWithoutApprovedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -20287,7 +20055,6 @@ export type UserUncheckedCreateWithoutApprovedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -20380,7 +20147,6 @@ export type UserUpdateWithoutProposedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -20457,7 +20223,6 @@ export type UserUncheckedUpdateWithoutProposedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -20545,7 +20310,6 @@ export type UserUpdateWithoutApprovedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -20622,7 +20386,6 @@ export type UserUncheckedUpdateWithoutApprovedSalaryAdjustmentsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -20698,7 +20461,6 @@ export type UserCreateWithoutEmployeeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -20775,7 +20537,6 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -20868,7 +20629,6 @@ export type UserUpdateWithoutEmployeeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -20945,7 +20705,6 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -21022,7 +20781,6 @@ export type UserCreateWithoutEmploymentChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -21099,7 +20857,6 @@ export type UserUncheckedCreateWithoutEmploymentChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -21192,7 +20949,6 @@ export type UserUpdateWithoutEmploymentChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -21269,7 +21025,6 @@ export type UserUncheckedUpdateWithoutEmploymentChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -21346,7 +21101,6 @@ export type UserCreateWithoutCompensationChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -21423,7 +21177,6 @@ export type UserUncheckedCreateWithoutCompensationChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -21516,7 +21269,6 @@ export type UserUpdateWithoutCompensationChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -21593,7 +21345,6 @@ export type UserUncheckedUpdateWithoutCompensationChangesInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -21671,7 +21422,6 @@ export type UserCreateWithoutUserLifecycleVerificationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestCreateNestedManyWithoutHandoverDelegateInput
@@ -21748,7 +21498,6 @@ export type UserUncheckedCreateWithoutUserLifecycleVerificationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedCreateNestedManyWithoutApproverInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedCreateNestedManyWithoutChangedByInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOverseerInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutAssignedToInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutHandoverDelegateInput
@@ -21841,7 +21590,6 @@ export type UserUpdateWithoutUserLifecycleVerificationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUpdateManyWithoutHandoverDelegateNestedInput
@@ -21918,7 +21666,6 @@ export type UserUncheckedUpdateWithoutUserLifecycleVerificationsInput = {
   jobApprovalSteps?: Prisma.JobApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
   jobApprovalHistoryChanges?: Prisma.JobApprovalHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   checklistsOverseen?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOverseerNestedInput
-  assignedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutAssignedToNestedInput
   completedOnboardingTasks?: Prisma.OnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   policyAcknowledgementsVerified?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput
   delegatedLeaveHandovers?: Prisma.LeaveRequestUncheckedUpdateManyWithoutHandoverDelegateNestedInput
@@ -21986,7 +21733,6 @@ export type UserCountOutputType = {
   jobApprovalSteps: number
   jobApprovalHistoryChanges: number
   checklistsOverseen: number
-  assignedOnboardingTasks: number
   completedOnboardingTasks: number
   policyAcknowledgementsVerified: number
   delegatedLeaveHandovers: number
@@ -22050,7 +21796,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   jobApprovalSteps?: boolean | UserCountOutputTypeCountJobApprovalStepsArgs
   jobApprovalHistoryChanges?: boolean | UserCountOutputTypeCountJobApprovalHistoryChangesArgs
   checklistsOverseen?: boolean | UserCountOutputTypeCountChecklistsOverseenArgs
-  assignedOnboardingTasks?: boolean | UserCountOutputTypeCountAssignedOnboardingTasksArgs
   completedOnboardingTasks?: boolean | UserCountOutputTypeCountCompletedOnboardingTasksArgs
   policyAcknowledgementsVerified?: boolean | UserCountOutputTypeCountPolicyAcknowledgementsVerifiedArgs
   delegatedLeaveHandovers?: boolean | UserCountOutputTypeCountDelegatedLeaveHandoversArgs
@@ -22217,13 +21962,6 @@ export type UserCountOutputTypeCountJobApprovalHistoryChangesArgs<ExtArgs extend
  */
 export type UserCountOutputTypeCountChecklistsOverseenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OnboardingChecklistWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountAssignedOnboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OnboardingTaskWhereInput
 }
 
 /**
@@ -22566,7 +22304,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   jobApprovalSteps?: boolean | Prisma.User$jobApprovalStepsArgs<ExtArgs>
   jobApprovalHistoryChanges?: boolean | Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs>
   checklistsOverseen?: boolean | Prisma.User$checklistsOverseenArgs<ExtArgs>
-  assignedOnboardingTasks?: boolean | Prisma.User$assignedOnboardingTasksArgs<ExtArgs>
   completedOnboardingTasks?: boolean | Prisma.User$completedOnboardingTasksArgs<ExtArgs>
   policyAcknowledgementsVerified?: boolean | Prisma.User$policyAcknowledgementsVerifiedArgs<ExtArgs>
   delegatedLeaveHandovers?: boolean | Prisma.User$delegatedLeaveHandoversArgs<ExtArgs>
@@ -22681,7 +22418,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   jobApprovalSteps?: boolean | Prisma.User$jobApprovalStepsArgs<ExtArgs>
   jobApprovalHistoryChanges?: boolean | Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs>
   checklistsOverseen?: boolean | Prisma.User$checklistsOverseenArgs<ExtArgs>
-  assignedOnboardingTasks?: boolean | Prisma.User$assignedOnboardingTasksArgs<ExtArgs>
   completedOnboardingTasks?: boolean | Prisma.User$completedOnboardingTasksArgs<ExtArgs>
   policyAcknowledgementsVerified?: boolean | Prisma.User$policyAcknowledgementsVerifiedArgs<ExtArgs>
   delegatedLeaveHandovers?: boolean | Prisma.User$delegatedLeaveHandoversArgs<ExtArgs>
@@ -22751,7 +22487,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     jobApprovalSteps: Prisma.$JobApprovalStepPayload<ExtArgs>[]
     jobApprovalHistoryChanges: Prisma.$JobApprovalHistoryPayload<ExtArgs>[]
     checklistsOverseen: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
-    assignedOnboardingTasks: Prisma.$OnboardingTaskPayload<ExtArgs>[]
     completedOnboardingTasks: Prisma.$OnboardingTaskPayload<ExtArgs>[]
     policyAcknowledgementsVerified: Prisma.$PolicyAcknowledgementPayload<ExtArgs>[]
     delegatedLeaveHandovers: Prisma.$LeaveRequestPayload<ExtArgs>[]
@@ -23222,7 +22957,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   jobApprovalSteps<T extends Prisma.User$jobApprovalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobApprovalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobApprovalHistoryChanges<T extends Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobApprovalHistoryChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApprovalHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checklistsOverseen<T extends Prisma.User$checklistsOverseenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checklistsOverseenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  assignedOnboardingTasks<T extends Prisma.User$assignedOnboardingTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedOnboardingTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   completedOnboardingTasks<T extends Prisma.User$completedOnboardingTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$completedOnboardingTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   policyAcknowledgementsVerified<T extends Prisma.User$policyAcknowledgementsVerifiedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$policyAcknowledgementsVerifiedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PolicyAcknowledgementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   delegatedLeaveHandovers<T extends Prisma.User$delegatedLeaveHandoversArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$delegatedLeaveHandoversArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -24097,30 +23831,6 @@ export type User$checklistsOverseenArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.OnboardingChecklistScalarFieldEnum | Prisma.OnboardingChecklistScalarFieldEnum[]
-}
-
-/**
- * User.assignedOnboardingTasks
- */
-export type User$assignedOnboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OnboardingTask
-   */
-  select?: Prisma.OnboardingTaskSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the OnboardingTask
-   */
-  omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  where?: Prisma.OnboardingTaskWhereInput
-  orderBy?: Prisma.OnboardingTaskOrderByWithRelationInput | Prisma.OnboardingTaskOrderByWithRelationInput[]
-  cursor?: Prisma.OnboardingTaskWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OnboardingTaskScalarFieldEnum | Prisma.OnboardingTaskScalarFieldEnum[]
 }
 
 /**
