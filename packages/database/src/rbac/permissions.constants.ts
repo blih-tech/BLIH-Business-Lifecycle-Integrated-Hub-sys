@@ -311,6 +311,22 @@ export const OfferPermissions = {
   ALL: 'offer:*',
 } as const;
 
+export const OnboardingPermissions = {
+  VIEW: 'onboarding:view',
+  CREATE: 'onboarding:create',
+  UPDATE: 'onboarding:update',
+  DELETE: 'onboarding:delete',
+  ALL: 'onboarding:*',
+} as const;
+
+export const OnboardingTaskPermissions = {
+  VIEW: 'onboarding_task:view',
+  CREATE: 'onboarding_task:create',
+  UPDATE: 'onboarding_task:update',
+  DELETE: 'onboarding_task:delete',
+  ALL: 'onboarding_task:*',
+} as const;
+
 export const OnboardingChecklistPermissions = {
   VIEW: 'onboarding_checklist:view',
   CREATE: 'onboarding_checklist:create',
@@ -514,6 +530,8 @@ export const PermissionGroups = {
   applicant: ApplicantPermissions,
   interview: InterviewPermissions,
   offer: OfferPermissions,
+  onboarding: OnboardingPermissions,
+  onboarding_task: OnboardingTaskPermissions,
   onboarding_checklist: OnboardingChecklistPermissions,
   asset_provisioning: AssetProvisioningPermissions,
   policy_acknowledgement: PolicyAcknowledgementPermissions,
