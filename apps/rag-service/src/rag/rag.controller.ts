@@ -7,7 +7,7 @@ export class RagController {
   constructor(private readonly ragService: RagService) {}
 
   @Post('ingest-text')
-  async ingestText(@Body() data: { text: string; source: string; metadata?: any }) {
+  async ingestText(@Body() data: { text: string; source: string; metadata?: Record<string, any> }) {
     console.log(`Received document from source: ${data.source}`);
     return await this.ragService.ingest(data.text, data.source, data.metadata);
   }

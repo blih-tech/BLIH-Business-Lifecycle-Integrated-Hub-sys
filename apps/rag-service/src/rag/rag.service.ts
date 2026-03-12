@@ -4,6 +4,7 @@ import { QdrantVectorStore } from '@langchain/qdrant';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
+import { number } from 'zod/v4';
 
 @Injectable()
 export class RagService {
@@ -19,7 +20,6 @@ export class RagService {
       model: 'llama3.2',
       numPredict: 1024,
       temperature: 0.1,
-      format: 'json',
     });
 
     this.embeddings = new OllamaEmbeddings({
@@ -44,7 +44,12 @@ export class RagService {
   }
 
   async ingest(text: string, source: string, metadata?: Record<string, any>) {
-    console.log(`Ingesting text from: ${source} with matadate:`, metadata);
+
+    const cleanMetadata = metadata ? Object.fromEntries(
+    Object.entries(metadata).map(([k, v]) => [k, typeof v === 'string' ? v.replace(/"/g, '') : v])
+  ) : {};
+
+    console.log(`Ingesting text from: ${source} with matadate:`, cleanMetadata);
     const doc = new Document({
       pageContent: text,
       metadata: {
@@ -128,7 +133,7 @@ export class RagService {
   async askQuestion(
     question: string,
     history: { role: string; content: string }[] = [],
-    filter: any = {}
+    filter: Record<string, unknown> = {}
   ) {
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
       this.embeddings,
@@ -138,7 +143,9 @@ export class RagService {
       },
     );
 
-    const relevantDocs = await vectorStore.similaritySearch(question, 3, filter);
+    console.log('Final Search Filter:', filter); 
+
+    const relevantDocs = await vectorStore.similaritySearch(question, 3);
 
     const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
 
@@ -155,29 +162,30 @@ export class RagService {
     );
 
     const prompt = `
-    You are BLIH Brain, an expert corporate assistant.
-    Use the following context and chat history to answer the user's question accurately.
+    ### ROLE
+You are BLIH Brain, a highly intelligent corporate AI. Your goal is to provide accurate answers based on the provided Knowledge Base and Chat History.
 
-    RULES:
-    1. If the answer is not in the context, say: "I'm sorry, I don't have that specific information in my knowledge base."
-    2. Do not make up facts.
-    3. Be professional and concise.
-    4. If the user refers to something previously mentioned (e.g., 'tell me more about that'), use the CHAT HISTORY to understand what 'that' refers to.
+### GUIDELINES
+1. **Prioritize Context**: Use the "CONTEXT FROM KNOWLEDGE BASE" section below to answer. 
+2. **Handle Ambiguity**: If the user uses pronouns (he, she, it, that), resolve them using the "CHAT HISTORY".
+3. **Strict Fact-Checking**: If the information is truly missing from the context, only then use your fallback: "I'm sorry, I don't have that specific information in my knowledge base."
+4. **Formatting**: Use clean, professional language.
 
-    CHAT HISTORY:
-    ${chatHistoryString}
+### CHAT HISTORY
+${chatHistoryString || 'No previous conversation.'}
 
-    CONTEXT FROM KNOWLEDGE BASE:
-    ${context}
+### CONTEXT FROM KNOWLEDGE BASE
+${context}
 
-    USER QUESTION: ${question}
-    
-    ANSWER:
+### USER QUESTION
+${question}
+
+### ANSWER (Concise and Accurate):
     `;
 
     const response = await this.llm.invoke(prompt);
     return { 
-      answer: response.content,
+      answer: response.content as string,
       sources: relevantDocs.map(d =>d.metadata.source) 
     };
   }
@@ -237,15 +245,21 @@ ${cvText}
   try {
     const jsonMatch = (response.content as string).match(/\{[\s\S]*\}/);
     const jsonString = jsonMatch ? jsonMatch[0] : response.content as string;
-    return JSON.parse(jsonString);
-  } catch (e) {
+    return JSON.parse(jsonString) as {
+      score: number;
+      strengths: string[];
+      weakness: string[];
+      rcommendation: string;
+      summary: string;
+    }
+  } catch (_) {
     this.logger.error("AI returned invalid JSON, falling back to raw content");
     return {
       score: 0,
       strengths: [],
       weaknesses: [],
       recommendation: "CONSIDER", 
-      summary: response.content
+      summary: response.content as string,
     };
   }
 }
