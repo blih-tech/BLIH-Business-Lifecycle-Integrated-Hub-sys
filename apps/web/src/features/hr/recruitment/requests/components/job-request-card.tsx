@@ -9,25 +9,15 @@ import { Button } from "@/shared/components/ui/button";
 type JobRequestCardProps = {
   item: FullJobRequest;
   priority: JobRequestPriority;
-  currentUserName: string;
   onClick?: () => void;
   onJustifyClick?: () => void;
 };
 
-function isOwnRequest(requestedBy: string, currentUserName: string) {
-  return requestedBy.trim().toLowerCase() === currentUserName.trim().toLowerCase();
-}
 
 function departmentLabel(department: JobRequestDepartment) {
   if (department === "technical") return "TECHNICAL DEPT.";
   if (department === "creative") return "CREATIVE DEPT.";
   return "DIGITAL MARKETING DEPT.";
-}
-
-function priorityClasses(priority: JobRequestPriority) {
-  if (priority === "high") return "bg-[rgba(30,102,247,0.1)] text-primary border border-transparent";
-  if (priority === "medium") return "bg-[#f5f5f5] text-black border border-border";
-  return "bg-[#f5f5f5] text-[#666] border border-transparent";
 }
 
 function priorityLabel(priority: JobRequestPriority) {
@@ -36,12 +26,28 @@ function priorityLabel(priority: JobRequestPriority) {
   return "Low";
 }
 
-function formatPosition(value: string) {
-  if (!value.trim()) return "Not set";
-  return value
-    .split("_")
-    .map((part) => (part ? part[0]!.toUpperCase() + part.slice(1) : part))
-    .join(" ");
+function priorityBadgeClasses(priority: JobRequestPriority) {
+  if (priority === "high") {
+    return "h-[22px] rounded-[6px] border border-[#1e66f7] px-[9px] py-[3px] text-[#1e66f7]";
+  }
+  if (priority === "medium") {
+    return "h-[22px] rounded-[6px] border border-black px-[9px] py-[3px] text-black";
+  }
+  return "h-[22px] rounded-[6px] bg-[#f3f3f3] px-[8px] py-[2px] text-[#666]";
+}
+
+function formatOpenings(value?: string) {
+  if (!value?.trim()) return "Not set";
+  return value;
+}
+
+function formatEmploymentType(value?: string) {
+  if (!value?.trim()) return "Not set";
+  if (value === "full_time") return "Full-time";
+  if (value === "part_time") return "Part-time";
+  if (value === "contract") return "Contract";
+  if (value === "intern") return "Intern";
+  return value.replace(/_/g, " ");
 }
 
 function formatCreatedDate(value?: string) {
@@ -55,16 +61,14 @@ function formatCreatedDate(value?: string) {
   }).format(parsed);
 }
 
-export function JobRequestCard({ item, priority, currentUserName, onClick, onJustifyClick }: JobRequestCardProps) {
-  const ownRequest = isOwnRequest(item.requestForm.requestedBy, currentUserName);
-
+export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobRequestCardProps) {
   function handleActionClick(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
   }
 
   return (
     <article
-      className="ui-surface cursor-pointer p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+      className="cursor-pointer rounded-[12px] border border-[#e5e5e5] bg-white p-[25px]"
       role="button"
       tabIndex={0}
       onClick={onClick}
@@ -75,44 +79,48 @@ export function JobRequestCard({ item, priority, currentUserName, onClick, onJus
         }
       }}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between">
         <div className="min-w-0">
-          <p className="ui-section-title truncate text-foreground">{item.jobDetailsForm.jobTitle}</p>
-          <span className="mt-1 inline-flex rounded-[4px] bg-[rgba(30,102,247,0.1)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-primary">
+          <p className="truncate text-[16px] font-semibold leading-[24px] tracking-[-0.4px] text-black">
+            {item.jobDetailsForm.jobTitle}
+          </p>
+          <span className="mt-1 inline-flex rounded-[4px] bg-[#e9f0fe] px-[4px] py-[2px] text-[12px] font-semibold uppercase leading-[16px] text-[#1e66f7]">
             {departmentLabel(item.requestForm.department as JobRequestDepartment)}
           </span>
         </div>
-        <div className="flex flex-col items-end gap-1.5">
-          <span
-            className={`inline-flex rounded-md px-2 py-0.5 text-xs leading-4 ${priorityClasses(priority)}`}
-          >
-            {priorityLabel(priority)}
-          </span>
-        </div>
+        <span
+          className={`inline-flex items-center justify-center text-[12px] font-medium leading-[16px] ${priorityBadgeClasses(
+            priority,
+          )}`}
+        >
+          {priorityLabel(priority)}
+        </span>
       </div>
 
-      <div className="mt-3 space-y-1">
-        <p className="ui-body text-muted-foreground">
-          Position: <span className="font-medium text-foreground">{formatPosition(item.requestForm.position)}</span>
-        </p>
-        <p className="ui-body text-muted-foreground">
-          Openings: <span className="font-medium text-foreground">{item.requestForm.openings || "Not set"}</span>
-        </p>
-        <p className="ui-body text-muted-foreground">
-          Created: <span className="font-medium text-foreground">{formatCreatedDate(item.requestForm.createdDate)}</span>
-        </p>
-      </div>
-
-      {ownRequest ? (
-        <div className="mt-3 rounded-lg border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-          Waiting for other reviewers to make a decision.
+      <div className="mt-[24px] flex items-end justify-between">
+        <div className="flex flex-1 flex-col gap-[4px]">
+          <div className="flex items-center gap-[4px] text-[14px] leading-[20px] tracking-[-0.2px]">
+            <span className="text-[#666]">Positions:</span>
+            <span className="font-medium text-black">{formatOpenings(item.requestForm.openings)}</span>
+          </div>
+          <div className="flex items-center gap-[4px] text-[14px] leading-[20px] tracking-[-0.2px]">
+            <span className="text-[#666]">Type:</span>
+            <span className="font-medium text-black">
+              {formatEmploymentType(item.requestForm.employmentType)}
+            </span>
+          </div>
+          <div className="flex items-center gap-[4px] text-[14px] leading-[20px] tracking-[-0.2px]">
+            <span className="text-[#666]">Requested:</span>
+            <span className="font-medium text-black">
+              {formatCreatedDate(item.requestForm.createdDate)}
+            </span>
+          </div>
         </div>
-      ) : (
-        <div className="mt-3 flex items-center justify-end gap-2">
+        <div className="flex items-start gap-[8px]">
           <Button
             type="button"
             size="sm"
-            className="h-7 cursor-pointer text-xs"
+            className="h-[32px] w-[88px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
             onClick={handleActionClick}
           >
             Approve
@@ -121,7 +129,7 @@ export function JobRequestCard({ item, priority, currentUserName, onClick, onJus
             type="button"
             variant="outline"
             size="sm"
-            className="h-7 cursor-pointer text-xs"
+            className="h-[32px] w-[77px] rounded-[6px] border border-[#e5e5e5] bg-white px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-black shadow-none hover:bg-white hover:text-black"
             onClick={(event) => {
               handleActionClick(event);
               onJustifyClick?.();
@@ -130,7 +138,8 @@ export function JobRequestCard({ item, priority, currentUserName, onClick, onJus
             Justify
           </Button>
         </div>
-      )}
+      </div>
+
     </article>
   );
 }

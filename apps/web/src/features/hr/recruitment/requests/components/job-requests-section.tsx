@@ -144,7 +144,6 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
               <JobRequestCard
                 key={`${request.requestForm.jobTitle}-${index}`}
                 item={request}
-                currentUserName={currentUserName}
                 priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
                 onClick={() => setSelectedRequestIndex(index)}
                 onJustifyClick={() => setJustifyRequestIndex(index)}
