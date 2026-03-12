@@ -4,7 +4,7 @@ import { QdrantVectorStore } from '@langchain/qdrant';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
-import { number } from 'zod/v4';
+
 
 @Injectable()
 export class RagService {
@@ -125,9 +125,9 @@ export class RagService {
 
     return { description: response.content as string };
   }
-  async transcribeAudio(fileBuffer: Buffer): Promise<{ text: string }> {
+    transcribeAudio(_fileBuffer: Buffer): Promise<{ text: string }> {
     this.logger.warn('Audio transcription called - ensure Whisper service is configured.');
-    return { text: "Audio transcription placeholder: User mentioned a task update." };
+    return Promise.resolve ({ text: "Audio transcription placeholder: User mentioned a task update." });
   }
 
   async askQuestion(
@@ -145,7 +145,7 @@ export class RagService {
 
     console.log('Final Search Filter:', filter); 
 
-    const relevantDocs = await vectorStore.similaritySearch(question, 3);
+    const relevantDocs = await vectorStore.similaritySearch(question, 3, filter);
 
     const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
 
@@ -245,14 +245,17 @@ ${cvText}
   try {
     const jsonMatch = (response.content as string).match(/\{[\s\S]*\}/);
     const jsonString = jsonMatch ? jsonMatch[0] : response.content as string;
-    return JSON.parse(jsonString) as {
-      score: number;
-      strengths: string[];
-      weakness: string[];
-      rcommendation: string;
-      summary: string;
-    }
-  } catch (_) {
+    const result = JSON.parse(jsonString);
+      
+      return {
+        score: Number(result.score) || 0,
+        strengths: Array.isArray(result.strengths) ? result.strengths : [],
+        weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : [],
+        recommendation: String(result.recommendation || "CONSIDER"),
+        summary: String(result.summary || response.content),
+      };
+      
+  } catch {
     this.logger.error("AI returned invalid JSON, falling back to raw content");
     return {
       score: 0,
