@@ -163,6 +163,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
       <JobRequestDetailsDialog
         request={selectedRequest}
         currentUserName={currentUserName}
+        variant={selectedRequest?.status ?? "active"}
         onOpenChange={(isOpen) => {
           if (!isOpen) setSelectedRequestIndex(null);
         }}
@@ -171,6 +172,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
           setSelectedRequestIndex(null);
           setJustifyRequestIndex(selectedRequestIndex);
         }}
+        onEdit={() => setSelectedRequestIndex(null)}
       />
 
       <JobRequestJustifyDialog

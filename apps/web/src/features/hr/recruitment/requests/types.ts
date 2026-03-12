@@ -59,7 +59,7 @@ export type ApprovalStep = {
 };
 
 export type FullJobRequest = SubmittedJobRequest & {
-  status: "pending" | "posted";
+  status: "active" | "by_me" | "closed";
   progress: {
     jm: ApprovalStep;
     hr: ApprovalStep;

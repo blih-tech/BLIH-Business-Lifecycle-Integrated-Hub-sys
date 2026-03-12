@@ -5,55 +5,56 @@ import type {
 
 export const jobRequests: FullJobRequest[] = [
   {
-    status: 'posted',
+    status: 'active',
     progress: {
       jm: { status: 'pending' },
       hr: { status: 'approved' },
       finance: { status: 'approved' },
     },
     requestForm: {
-      jobTitle: 'HR Operations Specialist',
-      department: 'technical',
-      requestedBy: 'user1',
-      position: 'hr_operations_specialist',
+      jobTitle: 'Marketing Manager',
+      department: 'digital_marketing',
+      requestedBy: 'Jessica Parker',
+      position: 'full_stack_developer',
       requestType: 'new',
       replaceFor: '',
       businessJustification:
-        'Expand HR operations capacity to support recruitment workflow rollout and reduce turnaround time across approvals.',
-      openings: '2',
-      createdDate: '2025-02-10',
+        'We need a senior marketing leader to align brand, performance, and lifecycle programs across regions. This role will drive campaign strategy and ensure our go-to-market plans translate into measurable pipeline growth.',
+      openings: '1',
+      createdDate: 'Dec 15, 2024',
       employmentType: 'full_time',
-      workMode: 'hybrid',
-      urgency: 'medium',
-      neededByDate: '2025-04-18',
+      workMode: 'on_site',
+      urgency: 'high',
+      neededByDate: 'Dec 15, 2024',
     },
     jobDetailsForm: {
-      jobTitle: 'HR Operations Specialist',
+      jobTitle: 'Marketing Manager',
       location: 'Nairobi, Kenya',
-      workMode: 'hybrid',
+      workMode: 'on_site',
       employmentType: 'full_time',
       jobSummary:
-        'Support recruitment operations, coordination, and reporting across the HR team.',
+        "We're looking for an experienced Frontend Developer to join our team and help build the next generation of our product platform.",
       whyJoinUs:
-        'Help shape internal hiring operations in a fast-moving team with visible organizational impact.',
+        'Join a collaborative team that ships fast and values strong cross-functional partnerships.',
       keyResponsibilities: [
-        'Coordinate recruitment workflows',
-        'Maintain hiring records and reporting',
-        'Support internal process improvements',
+        '7+ years in marketing',
+        'Experience with digital marketing',
+        'Strong analytical skills',
+        'Team leadership experience',
       ],
       requirements: [
-        'HR operations',
-        'Process coordination',
-        'Reporting',
-        'Stakeholder communication',
+        '7+ years in marketing',
+        'Experience with digital marketing',
+        'Strong analytical skills',
+        'Team leadership experience',
       ],
-      preferredSkills: ['HRIS experience', 'Recruitment analytics'],
-      experienceLevel: 'mid',
-      salaryMode: 'competitive',
-      salaryRangeMin: '',
-      salaryRangeMax: '',
-      salaryCurrency: '',
-      benefits: ['Medical cover', 'Hybrid work support'],
+      preferredSkills: ['Performance marketing', 'Lifecycle automation'],
+      experienceLevel: 'senior',
+      salaryMode: 'range',
+      salaryRangeMin: '3000',
+      salaryRangeMax: '4200',
+      salaryCurrency: 'USD',
+      benefits: ['Health insurance', 'Learning budget'],
     },
     applicationForm: {
       predefinedFields: [
@@ -83,7 +84,7 @@ export const jobRequests: FullJobRequest[] = [
     },
   },
   {
-    status: 'posted',
+    status: 'by_me',
     progress: {
       jm: { status: 'approved' },
       hr: { status: 'pending' },
@@ -165,7 +166,7 @@ export const jobRequests: FullJobRequest[] = [
     },
   },
   {
-    status: 'pending',
+    status: 'closed',
     progress: {
       jm: {
         status: 'requested_review',
@@ -254,7 +255,7 @@ export const jobRequests: FullJobRequest[] = [
   },
 
   {
-    status: 'pending',
+    status: 'active',
     progress: {
       jm: { status: 'approved' },
       hr: { status: 'approved' },
