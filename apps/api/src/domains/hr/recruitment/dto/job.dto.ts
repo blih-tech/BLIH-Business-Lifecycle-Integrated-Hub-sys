@@ -32,35 +32,49 @@ import {
   JOB_APPLICANT_OPTIONAL_FIELD_KEYS,
   JOB_APPLICATION_FIELD_TYPES,
   JOB_APPLICATION_FORM_SECTIONS,
-  JOB_APPROVAL_STAGES,
+  JOB_APPROVAL_DEPARTMENTS,
+  JOB_APPROVAL_STATUSES,
   JOB_CONTRACT_TYPES,
   JOB_PRIORITY_LEVELS,
   JOB_REQUEST_TYPES,
   JOB_SALARY_MODES,
-  JOB_STAGE_STATUSES,
   JOB_URGENCY_LEVELS,
   JOB_WORKFLOW_STATUSES,
   WORK_LOCATION_TYPES,
 } from '@repo/types';
 import type {
+  ApprovalDecision,
+  ApproveJobDecision,
   ApproveJobDto as ApproveJobDtoType,
   CloseJobDto as CloseJobDtoType,
   CreateJobDto as CreateJobDtoType,
+  EmploymentType,
+  ExperienceLevel,
+  JobApprovalDepartment,
+  JobApprovalStatus,
   JobApplicationCustomFieldDto as JobApplicationCustomFieldDtoType,
+  JobApplicationFieldType,
   JobApplicationFormDto as JobApplicationFormDtoType,
   JobApplicationFormFieldDto as JobApplicationFormFieldDtoType,
   JobApplicationFormSectionDto as JobApplicationFormSectionDtoType,
   JobApprovalDto as JobApprovalDtoType,
+  JobContractType,
   JobInputDto as JobInputDtoType,
   JobListQueryDto as JobListQueryDtoType,
+  JobPriority,
   JobRequestFormDto as JobRequestFormDtoType,
   JobResponseDto as JobResponseDtoType,
+  JobRequestType,
+  JobUrgency,
+  JobSalaryMode,
   JobSkillsResponseDto as JobSkillsResponseDtoType,
   JobToolsResponseDto as JobToolsResponseDtoType,
+  JobWorkflowStatus,
   UpdateJobDto as UpdateJobDtoType,
   UpsertJobResponsibilitiesDto as UpsertJobResponsibilitiesDtoType,
   UpsertJobSkillsDto as UpsertJobSkillsDtoType,
   UpsertJobToolsDto as UpsertJobToolsDtoType,
+  WorkLocationType,
 } from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
@@ -93,7 +107,7 @@ export class JobRequestFormInputDto implements JobRequestFormDtoType {
   @ApiProperty({ enum: JOB_REQUEST_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_REQUEST_TYPES)
-  requestType!: 'NEW' | 'REPLACEMENT';
+  requestType!: JobRequestType;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -108,22 +122,17 @@ export class JobRequestFormInputDto implements JobRequestFormDtoType {
   @ApiProperty({ enum: EMPLOYMENT_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(EMPLOYMENT_TYPES)
-  employmentType!:
-    | 'FULL_TIME'
-    | 'PART_TIME'
-    | 'CONTRACT'
-    | 'INTERN'
-    | 'TEMPORARY';
+  employmentType!: EmploymentType;
 
   @ApiProperty({ enum: WORK_LOCATION_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(WORK_LOCATION_TYPES)
-  workMode!: 'ON_SITE' | 'HYBRID' | 'REMOTE';
+  workMode!: WorkLocationType;
 
   @ApiProperty({ enum: JOB_URGENCY_LEVELS })
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_URGENCY_LEVELS)
-  urgency!: 'HIGH' | 'MEDIUM' | 'LOW';
+  urgency!: JobUrgency;
 
   @ApiProperty()
   @IsDateString()
@@ -133,7 +142,7 @@ export class JobRequestFormInputDto implements JobRequestFormDtoType {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_PRIORITY_LEVELS)
-  priority?: (typeof JOB_PRIORITY_LEVELS)[number];
+  priority?: JobPriority;
 }
 
 export class JobInputDto implements JobInputDtoType {
@@ -180,36 +189,23 @@ export class JobInputDto implements JobInputDtoType {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(EXPERIENCE_LEVELS)
-  experienceLevel?:
-    | 'ENTRY'
-    | 'JUNIOR'
-    | 'MID'
-    | 'SENIOR'
-    | 'LEAD'
-    | 'PRINCIPAL'
-    | null;
+  experienceLevel?: ExperienceLevel | null;
 
   @ApiProperty({ enum: JOB_CONTRACT_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_CONTRACT_TYPES)
-  contractType!: 'PERMANENT' | 'CONTRACT' | 'INTERNSHIP' | 'FREELANCE';
+  contractType!: JobContractType;
 
   @ApiPropertyOptional({ enum: EMPLOYMENT_TYPES, nullable: true })
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(EMPLOYMENT_TYPES)
-  employmentType?:
-    | 'FULL_TIME'
-    | 'PART_TIME'
-    | 'CONTRACT'
-    | 'INTERN'
-    | 'TEMPORARY'
-    | null;
+  employmentType?: EmploymentType | null;
 
   @ApiProperty({ enum: WORK_LOCATION_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(WORK_LOCATION_TYPES)
-  workLocationType!: 'ON_SITE' | 'HYBRID' | 'REMOTE';
+  workLocationType!: WorkLocationType;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -247,7 +243,7 @@ export class JobInputDto implements JobInputDtoType {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_SALARY_MODES)
-  salaryMode?: 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
+  salaryMode?: JobSalaryMode;
 
   @ApiPropertyOptional({ type: [String], default: [] })
   @IsOptional()
@@ -309,14 +305,7 @@ export class JobApplicationCustomFieldInputDto implements JobApplicationCustomFi
   @ApiProperty({ enum: JOB_APPLICATION_FIELD_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_APPLICATION_FIELD_TYPES)
-  type!:
-    | 'TEXT'
-    | 'TEXTAREA'
-    | 'NUMBER'
-    | 'SELECT'
-    | 'FILE'
-    | 'DATE'
-    | 'CHECKBOX';
+  type!: JobApplicationFieldType;
 
   @ApiProperty()
   @IsBoolean()
@@ -421,7 +410,7 @@ export class ApproveJobDto implements ApproveJobDtoType {
   @ApiProperty({ enum: APPROVE_JOB_DECISIONS })
   @Transform(normalizeEnumValue)
   @IsEnum(APPROVE_JOB_DECISIONS)
-  decision!: 'APPROVED' | 'REJECTED';
+  decision!: ApproveJobDecision;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -471,8 +460,8 @@ export class JobApprovalResponseDto implements JobApprovalDtoType {
   @ApiProperty()
   id!: string;
 
-  @ApiProperty({ enum: JOB_APPROVAL_STAGES })
-  stage!: 'FINANCE' | 'GM' | 'HR_REVIEW';
+  @ApiProperty({ enum: JOB_APPROVAL_DEPARTMENTS })
+  department!: JobApprovalDepartment;
 
   @ApiProperty()
   level!: number;
@@ -484,7 +473,7 @@ export class JobApprovalResponseDto implements JobApprovalDtoType {
   approverId!: string | null;
 
   @ApiProperty({ enum: APPROVAL_DECISIONS })
-  decision!: 'PENDING' | 'APPROVED' | 'REJECTED';
+  decision!: ApprovalDecision;
 
   @ApiProperty()
   autoApproved!: boolean;
@@ -521,25 +510,19 @@ export class JobResponsibilityValueResponseDto {
 }
 
 export class JobRequestFormApprovalStatusResponseDto {
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  finance!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+  @ApiProperty({ enum: JOB_APPROVAL_STATUSES })
+  finance!: JobApprovalStatus;
 
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  gm!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+  @ApiProperty({ enum: JOB_APPROVAL_STATUSES })
+  gm!: JobApprovalStatus;
 
-  @ApiProperty({ enum: JOB_STAGE_STATUSES })
-  hr!: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+  @ApiProperty({ enum: JOB_APPROVAL_STATUSES })
+  hr!: JobApprovalStatus;
 }
 
 export class JobRequestFormStatusResponseDto {
   @ApiProperty({ enum: JOB_WORKFLOW_STATUSES })
-  workflow!:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
+  workflow!: JobWorkflowStatus;
 
   @ApiProperty({ type: () => JobRequestFormApprovalStatusResponseDto })
   approvals!: JobRequestFormApprovalStatusResponseDto;
@@ -565,7 +548,7 @@ export class JobRequestFormResponseDto extends OmitType(
   status!: JobRequestFormStatusResponseDto;
 
   @ApiProperty({ enum: JOB_PRIORITY_LEVELS })
-  priority!: (typeof JOB_PRIORITY_LEVELS)[number];
+  priority!: JobPriority;
 
   @ApiPropertyOptional({ nullable: true })
   draftedAt!: string | null;
@@ -599,23 +582,10 @@ export class JobDataResponseDto extends OmitType(JobInputDto, [
   summary!: Record<string, unknown> | null;
 
   @ApiPropertyOptional({ enum: EXPERIENCE_LEVELS, nullable: true })
-  experienceLevel!:
-    | 'ENTRY'
-    | 'JUNIOR'
-    | 'MID'
-    | 'SENIOR'
-    | 'LEAD'
-    | 'PRINCIPAL'
-    | null;
+  experienceLevel!: ExperienceLevel | null;
 
   @ApiPropertyOptional({ enum: EMPLOYMENT_TYPES, nullable: true })
-  employmentType!:
-    | 'FULL_TIME'
-    | 'PART_TIME'
-    | 'CONTRACT'
-    | 'INTERN'
-    | 'TEMPORARY'
-    | null;
+  employmentType!: EmploymentType | null;
 
   @ApiPropertyOptional({ nullable: true })
   city!: string | null;
@@ -630,7 +600,7 @@ export class JobDataResponseDto extends OmitType(JobInputDto, [
   currency!: string | null;
 
   @ApiProperty({ enum: JOB_SALARY_MODES })
-  salaryMode!: 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
+  salaryMode!: JobSalaryMode;
 
   @ApiProperty({ type: [String], default: [] })
   benefits!: string[];
@@ -824,31 +794,25 @@ export class JobListQueryDto implements JobListQueryDtoType {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_WORKFLOW_STATUSES)
-  status?:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
+  status?: JobWorkflowStatus;
 
-  @ApiPropertyOptional({ enum: JOB_STAGE_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES })
   @IsOptional()
   @Transform(normalizeEnumValue)
-  @IsEnum(JOB_STAGE_STATUSES)
-  financeApprovalStatus?: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+  @IsEnum(JOB_APPROVAL_STATUSES)
+  financeApprovalStatus?: JobApprovalStatus;
 
-  @ApiPropertyOptional({ enum: JOB_STAGE_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES })
   @IsOptional()
   @Transform(normalizeEnumValue)
-  @IsEnum(JOB_STAGE_STATUSES)
-  gmApprovalStatus?: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+  @IsEnum(JOB_APPROVAL_STATUSES)
+  gmApprovalStatus?: JobApprovalStatus;
 
-  @ApiPropertyOptional({ enum: JOB_STAGE_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES })
   @IsOptional()
   @Transform(normalizeEnumValue)
-  @IsEnum(JOB_STAGE_STATUSES)
-  hrApprovalStatus?: 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+  @IsEnum(JOB_APPROVAL_STATUSES)
+  hrApprovalStatus?: JobApprovalStatus;
 
   @ApiPropertyOptional()
   @IsOptional()

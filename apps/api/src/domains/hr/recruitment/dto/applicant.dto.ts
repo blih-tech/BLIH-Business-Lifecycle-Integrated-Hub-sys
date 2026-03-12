@@ -22,7 +22,9 @@ import type {
   ApplicantExperienceDto as ApplicantExperienceDtoType,
   ApplicantListQueryDto as ApplicantListQueryDtoType,
   ApplicantResponseDto as ApplicantResponseDtoType,
+  ApplicantStatus,
   ApplicantStatusHistoryDto as ApplicantStatusHistoryDtoType,
+  CandidateSource,
   CreateApplicantDto as CreateApplicantDtoType,
   UpdateApplicantDto as UpdateApplicantDtoType,
   UpdateApplicantStatusDto as UpdateApplicantStatusDtoType,
@@ -143,7 +145,7 @@ export class CreateApplicantDto implements CreateApplicantDtoType {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(CANDIDATE_SOURCES)
-  source?: (typeof CANDIDATE_SOURCES)[number];
+  source?: CandidateSource;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -241,7 +243,7 @@ export class UpdateApplicantStatusDto implements UpdateApplicantStatusDtoType {
   @ApiProperty({ enum: APPLICANT_STATUSES })
   @Transform(normalizeEnumValue)
   @IsEnum(APPLICANT_STATUSES)
-  status!: (typeof APPLICANT_STATUSES)[number];
+  status!: ApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -267,10 +269,10 @@ export class ApplicantStatusHistoryResponseDto implements ApplicantStatusHistory
   changedById!: string | null;
 
   @ApiPropertyOptional({ nullable: true, enum: APPLICANT_STATUSES })
-  fromStatus!: (typeof APPLICANT_STATUSES)[number] | null;
+  fromStatus!: ApplicantStatus | null;
 
   @ApiProperty({ enum: APPLICANT_STATUSES })
-  toStatus!: (typeof APPLICANT_STATUSES)[number];
+  toStatus!: ApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   notes!: string | null;
@@ -314,7 +316,7 @@ export class ApplicantResponseDto implements ApplicantResponseDtoType {
   githubUrl!: string | null;
 
   @ApiProperty({ enum: CANDIDATE_SOURCES })
-  source!: (typeof CANDIDATE_SOURCES)[number];
+  source!: CandidateSource;
 
   @ApiPropertyOptional({ nullable: true })
   referredById!: string | null;
@@ -350,7 +352,7 @@ export class ApplicantResponseDto implements ApplicantResponseDtoType {
   skills!: string[];
 
   @ApiProperty({ enum: APPLICANT_STATUSES })
-  status!: (typeof APPLICANT_STATUSES)[number];
+  status!: ApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   coverLetter!: string | null;
@@ -415,7 +417,7 @@ export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(APPLICANT_STATUSES)
-  status?: (typeof APPLICANT_STATUSES)[number];
+  status?: ApplicantStatus;
 
   @ApiPropertyOptional()
   @IsOptional()

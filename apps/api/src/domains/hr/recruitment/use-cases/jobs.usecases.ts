@@ -17,13 +17,14 @@ import type {
   JobApplicationCustomFieldDto,
   JobApplicationFormFieldDto,
   JobApplicationFormSectionDto,
-  JobApprovalStage,
+  JobApprovalDepartment,
+  JobApprovalStatus,
+  JobApprovalStepStatus,
   JobListQueryDto,
   JobPriority,
   JobResponseDto,
   JobResponsibilitiesResponseDto,
   JobSkillsResponseDto,
-  JobStageApprovalStatus,
   JobToolsResponseDto,
   JobWorkflowStatus,
   UpdateJobDto,
@@ -45,19 +46,13 @@ import {
   requiredRoleForStage,
 } from './recruitment.usecase-helpers';
 
-type ApprovalStage = JobApprovalStage;
-type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
-type ApprovalStepStatus =
-  | 'PENDING_FOR_APPROVAL'
-  | 'REQUEST_REVIEW'
-  | 'APPROVED'
-  | 'REJECTED';
-type StageStatus = JobStageApprovalStatus;
+type ApprovalDepartment = JobApprovalDepartment;
+type StageStatus = JobApprovalStatus;
 
 interface ApprovalState {
   id: string;
   level: number;
-  stage: ApprovalStage;
+  department: ApprovalDepartment;
   decision: ApprovalDecision;
 }
 
@@ -75,18 +70,8 @@ const toNumberOrNull = (value: unknown): number | null => {
   return Number(value);
 };
 
-const departmentToStage = (department: ApprovalDepartment): ApprovalStage => {
-  if (department === 'HR') return 'HR_REVIEW';
-  return department;
-};
-
-const stageToDepartment = (stage: ApprovalStage): ApprovalDepartment => {
-  if (stage === 'HR_REVIEW') return 'HR';
-  return stage;
-};
-
 const stepStatusToDecision = (
-  status: ApprovalStepStatus | string,
+  status: JobApprovalStepStatus | string,
 ): ApprovalState['decision'] => {
   if (status === 'APPROVED') return 'APPROVED';
   if (status === 'REJECTED') return 'REJECTED';
@@ -95,33 +80,33 @@ const stepStatusToDecision = (
 
 const decisionToStepStatus = (
   decision: Exclude<ApprovalState['decision'], 'PENDING'>,
-): ApprovalStepStatus => (decision === 'APPROVED' ? 'APPROVED' : 'REJECTED');
+): JobApprovalStepStatus => (decision === 'APPROVED' ? 'APPROVED' : 'REJECTED');
 
 const stageStatusToStepStatuses = (
   status: StageStatus,
-): ApprovalStepStatus[] => {
+): JobApprovalStepStatus[] => {
   if (status === 'APPROVED') return ['APPROVED'];
   if (status === 'REJECTED') return ['REJECTED'];
   return ['PENDING_FOR_APPROVAL', 'REQUEST_REVIEW'];
 };
 
 const approvalWhereForStageStatus = (
-  stage: ApprovalStage,
+  department: ApprovalDepartment,
   status: StageStatus,
 ): Prisma.JobApprovalStepWhereInput => ({
-  department: stageToDepartment(stage),
+  department,
   status: { in: stageStatusToStepStatuses(status) },
 });
 
 const toApprovalState = (approval: {
   id: string;
   department: ApprovalDepartment;
-  status: ApprovalStepStatus;
+  status: JobApprovalStepStatus;
   level: number;
 }): ApprovalState => ({
   id: approval.id,
   level: approval.level,
-  stage: departmentToStage(approval.department),
+  department: approval.department,
   decision: stepStatusToDecision(approval.status),
 });
 
@@ -533,10 +518,7 @@ export class ListJobsUseCase {
     if (query.hrApprovalStatus) {
       requestFormAnd.push({
         approvals: {
-          some: approvalWhereForStageStatus(
-            'HR_REVIEW',
-            query.hrApprovalStatus,
-          ),
+          some: approvalWhereForStageStatus('HR', query.hrApprovalStatus),
         },
       });
     }
@@ -986,7 +968,7 @@ export class ApproveJobUseCase {
     const pendingActionable = approvals.filter(
       (approval) =>
         approval.decision === 'PENDING' &&
-        isApprovalStageActionable(approval.stage, approvals),
+        isApprovalStageActionable(approval.department, approvals),
     );
     if (pendingActionable.length === 0) {
       if (approvals.some((approval) => approval.decision === 'REJECTED')) {
@@ -998,7 +980,7 @@ export class ApproveJobUseCase {
     const eligibleStages = pendingActionable
       .map((approval, index) => ({ approval, index }))
       .filter(({ approval }) =>
-        principal.roles?.includes(requiredRoleForStage(approval.stage)),
+        principal.roles?.includes(requiredRoleForStage(approval.department)),
       )
       .sort(
         (left, right) =>
@@ -1011,7 +993,7 @@ export class ApproveJobUseCase {
     }
 
     const target = eligibleStages[0].approval;
-    const requiredRole = requiredRoleForStage(target.stage);
+    const requiredRole = requiredRoleForStage(target.department);
     if (!principal.roles?.includes(requiredRole)) {
       throw new ForbiddenException(`Role ${requiredRole} is required`);
     }

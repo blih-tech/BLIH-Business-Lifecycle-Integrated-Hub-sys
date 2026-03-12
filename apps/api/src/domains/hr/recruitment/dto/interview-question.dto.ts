@@ -17,8 +17,10 @@ import {
 } from '@repo/types';
 import type {
   CreateInterviewQuestionDto as CreateInterviewQuestionDtoType,
+  InterviewQuestionCategory,
   InterviewQuestionDto as InterviewQuestionResponseDtoType,
   InterviewQuestionListQueryDto as InterviewQuestionListQueryDtoType,
+  InterviewQuestionType,
   UpdateInterviewQuestionDto as UpdateInterviewQuestionDtoType,
 } from '@repo/types';
 
@@ -58,12 +60,12 @@ export class CreateInterviewQuestionDto implements CreateInterviewQuestionDtoTyp
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(INTERVIEW_QUESTION_CATEGORIES)
-  category?: (typeof INTERVIEW_QUESTION_CATEGORIES)[number] | null;
+  category?: InterviewQuestionCategory | null;
 
   @ApiProperty({ enum: INTERVIEW_QUESTION_TYPES })
   @Transform(normalizeEnumValue)
   @IsEnum(INTERVIEW_QUESTION_TYPES)
-  type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
+  type!: InterviewQuestionType;
 
   @ApiPropertyOptional({ type: () => [String], default: [] })
   @IsOptional()
@@ -99,7 +101,7 @@ export class InterviewQuestionListQueryDto implements InterviewQuestionListQuery
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(INTERVIEW_QUESTION_CATEGORIES)
-  category?: (typeof INTERVIEW_QUESTION_CATEGORIES)[number];
+  category?: InterviewQuestionCategory;
 
   @ApiPropertyOptional({
     description: 'Comma-separated tags. Returns questions matching any tag.',
@@ -140,10 +142,10 @@ export class InterviewQuestionResponseDto implements InterviewQuestionResponseDt
     enum: INTERVIEW_QUESTION_CATEGORIES,
     nullable: true,
   })
-  category!: (typeof INTERVIEW_QUESTION_CATEGORIES)[number] | null;
+  category!: InterviewQuestionCategory | null;
 
   @ApiProperty({ enum: INTERVIEW_QUESTION_TYPES })
-  type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
+  type!: InterviewQuestionType;
 
   @ApiProperty({ type: () => [String] })
   options!: string[];

@@ -8,12 +8,18 @@ export type JobWorkflowStatus =
   | 'CLOSED'
   | 'REJECTED';
 
-export type JobStageApprovalStatus =
+export type JobApprovalStatus =
   | 'PENDING_FOR_APPROVAL'
   | 'APPROVED'
   | 'REJECTED';
 
-export type JobApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
+export type JobApprovalStepStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'REQUEST_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED';
+
+export type JobApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
 
 export type WorkLocationType = 'ON_SITE' | 'HYBRID' | 'REMOTE';
 
@@ -41,8 +47,6 @@ export type JobContractType =
   | 'CONTRACT'
   | 'INTERNSHIP'
   | 'FREELANCE';
-
-export type RemoteScope = 'CITY' | 'COUNTRY' | 'REGION' | 'GLOBAL';
 
 export type JobApplicationFieldType =
   | 'TEXT'
@@ -90,13 +94,20 @@ export const JOB_WORKFLOW_STATUSES = [
   'REJECTED',
 ] as const;
 
-export const JOB_STAGE_STATUSES = [
+export const JOB_APPROVAL_STATUSES = [
   'PENDING_FOR_APPROVAL',
   'APPROVED',
   'REJECTED',
 ] as const;
 
-export const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
+export const JOB_APPROVAL_STEP_STATUSES = [
+  'PENDING_FOR_APPROVAL',
+  'REQUEST_REVIEW',
+  'APPROVED',
+  'REJECTED',
+] as const;
+
+export const JOB_APPROVAL_DEPARTMENTS = ['FINANCE', 'GM', 'HR'] as const;
 
 export const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
 export const APPROVE_JOB_DECISIONS = ['APPROVED', 'REJECTED'] as const;
@@ -144,7 +155,10 @@ export const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
   'EXPECTED_SALARY',
   'COVER_LETTER',
 ] as const;
-export const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
+export const JOB_APPLICATION_FORM_SECTIONS = [
+  'EDUCATION',
+  'EXPERIENCE',
+] as const;
 export const APPLICATION_FORM_SECTION_TYPES = ['SECTION'] as const;
 export const CANDIDATE_SOURCES = [
   'COMPANY_SITE',
@@ -156,7 +170,7 @@ export const CANDIDATE_SOURCES = [
 
 export interface JobApprovalDto {
   id: string;
-  stage: JobApprovalStage;
+  department: JobApprovalDepartment;
   level: number;
   requiredRole: string;
   approverId?: string | null;
@@ -283,9 +297,9 @@ export type JobResponsibilitiesResponseDto = string[];
 
 export interface JobListQueryDto {
   status?: JobWorkflowStatus;
-  financeApprovalStatus?: JobStageApprovalStatus;
-  gmApprovalStatus?: JobStageApprovalStatus;
-  hrApprovalStatus?: JobStageApprovalStatus;
+  financeApprovalStatus?: JobApprovalStatus;
+  gmApprovalStatus?: JobApprovalStatus;
+  hrApprovalStatus?: JobApprovalStatus;
   departmentId?: string;
 }
 
@@ -306,9 +320,9 @@ export interface JobResponseDto {
     status: {
       workflow: JobWorkflowStatus;
       approvals: {
-        finance: JobStageApprovalStatus;
-        gm: JobStageApprovalStatus;
-        hr: JobStageApprovalStatus;
+        finance: JobApprovalStatus;
+        gm: JobApprovalStatus;
+        hr: JobApprovalStatus;
       };
     };
     priority: JobPriority;

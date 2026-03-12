@@ -31,8 +31,12 @@ import {
 } from '@repo/types';
 import type {
   CreateInterviewDto as CreateInterviewDtoType,
+  EndorsementLevel,
   InterviewFeedbackResponseDto as InterviewFeedbackResponseDtoType,
+  InterviewAttendanceStatus,
   InterviewListQueryDto as InterviewListQueryDtoType,
+  InterviewQuestionCategory,
+  InterviewQuestionType,
   InterviewQuestionResponseAnswer,
   InterviewQuestionResponseInputItemDto as InterviewQuestionResponseInputDtoType,
   InterviewQuestionResponseItemDto as InterviewQuestionResponseItemDtoType,
@@ -41,6 +45,8 @@ import type {
   InterviewResponseInterviewerDto as InterviewResponseInterviewerDtoType,
   InterviewResponseParticipantApplicantDto as InterviewResponseParticipantApplicantDtoType,
   InterviewResponseParticipantDto as InterviewResponseParticipantDtoType,
+  InterviewStatus,
+  InterviewType,
   InterviewerAssignmentInputDto as InterviewerAssignmentInputDtoType,
   UpdateInterviewDto as UpdateInterviewDtoType,
   UpdateInterviewParticipantAttendanceDto as UpdateInterviewParticipantAttendanceDtoType,
@@ -67,11 +73,11 @@ export class InterviewQuestionResponseInputDto implements InterviewQuestionRespo
   })
   @IsOptional()
   @IsEnum(INTERVIEW_QUESTION_CATEGORIES)
-  category?: (typeof INTERVIEW_QUESTION_CATEGORIES)[number] | null;
+  category?: InterviewQuestionCategory | null;
 
   @ApiProperty({ enum: INTERVIEW_QUESTION_TYPES })
   @IsEnum(INTERVIEW_QUESTION_TYPES)
-  type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
+  type!: InterviewQuestionType;
 
   @ApiProperty({
     description:
@@ -116,10 +122,10 @@ export class InterviewQuestionResponseItemDto implements InterviewQuestionRespon
     enum: INTERVIEW_QUESTION_CATEGORIES,
     nullable: true,
   })
-  category!: (typeof INTERVIEW_QUESTION_CATEGORIES)[number] | null;
+  category!: InterviewQuestionCategory | null;
 
   @ApiProperty({ enum: INTERVIEW_QUESTION_TYPES })
-  type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
+  type!: InterviewQuestionType;
 
   @ApiProperty({ nullable: true })
   answer!: InterviewQuestionResponseAnswer;
@@ -155,7 +161,7 @@ export class CreateInterviewDto implements CreateInterviewDtoType {
 
   @ApiProperty({ enum: INTERVIEW_TYPES })
   @IsEnum(INTERVIEW_TYPES)
-  type!: 'HR_SCREENING' | 'TECHNICAL' | 'BEHAVIORAL' | 'PANEL' | 'FINAL';
+  type!: InterviewType;
 
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()
@@ -166,7 +172,7 @@ export class CreateInterviewDto implements CreateInterviewDtoType {
   @ApiPropertyOptional({ enum: INTERVIEW_STATUSES })
   @IsOptional()
   @IsEnum(INTERVIEW_STATUSES)
-  status?: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
+  status?: InterviewStatus;
 
   @ApiProperty({ example: '2026-03-10T10:00:00.000Z' })
   @IsDateString()
@@ -209,12 +215,7 @@ export class UpdateInterviewDto
 export class UpdateInterviewParticipantAttendanceDto implements UpdateInterviewParticipantAttendanceDtoType {
   @ApiProperty({ enum: INTERVIEW_ATTENDANCE_STATUSES })
   @IsEnum(INTERVIEW_ATTENDANCE_STATUSES)
-  attendanceStatus!:
-    | 'SCHEDULED'
-    | 'ATTENDING'
-    | 'NO_SHOW'
-    | 'COMPLETED'
-    | 'CANCELLED';
+  attendanceStatus!: InterviewAttendanceStatus;
 }
 
 export class UpsertInterviewFeedbackDto implements UpsertInterviewFeedbackDtoType {
@@ -228,7 +229,7 @@ export class UpsertInterviewFeedbackDto implements UpsertInterviewFeedbackDtoTyp
   @ApiPropertyOptional({ enum: ENDORSEMENT_LEVELS, nullable: true })
   @IsOptional()
   @IsEnum(ENDORSEMENT_LEVELS)
-  endorsement?: 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO' | null;
+  endorsement?: EndorsementLevel | null;
 
   @ApiPropertyOptional({ type: () => [String] })
   @IsOptional()
@@ -296,12 +297,7 @@ export class InterviewResponseParticipantDto implements InterviewResponsePartici
   applicantId!: string;
 
   @ApiProperty({ enum: INTERVIEW_ATTENDANCE_STATUSES })
-  attendanceStatus!:
-    | 'SCHEDULED'
-    | 'ATTENDING'
-    | 'NO_SHOW'
-    | 'COMPLETED'
-    | 'CANCELLED';
+  attendanceStatus!: InterviewAttendanceStatus;
 
   @ApiPropertyOptional({
     type: () => InterviewResponseParticipantApplicantDto,
@@ -370,7 +366,7 @@ export class InterviewFeedbackResponseDto implements InterviewFeedbackResponseDt
   score!: number | null;
 
   @ApiPropertyOptional({ nullable: true, enum: ENDORSEMENT_LEVELS })
-  endorsement!: 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO' | null;
+  endorsement!: EndorsementLevel | null;
 
   @ApiProperty({ type: () => [String] })
   strengths!: string[];
@@ -408,13 +404,13 @@ export class InterviewResponseDto implements InterviewResponseDtoType {
   jobId!: string;
 
   @ApiProperty({ enum: INTERVIEW_TYPES })
-  type!: 'HR_SCREENING' | 'TECHNICAL' | 'BEHAVIORAL' | 'PANEL' | 'FINAL';
+  type!: InterviewType;
 
   @ApiProperty()
   round!: number;
 
   @ApiProperty({ enum: INTERVIEW_STATUSES })
-  status!: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
+  status!: InterviewStatus;
 
   @ApiProperty()
   scheduledAt!: string;
@@ -456,12 +452,12 @@ export class InterviewListQueryDto implements InterviewListQueryDtoType {
   @ApiPropertyOptional({ enum: INTERVIEW_TYPES })
   @IsOptional()
   @IsEnum(INTERVIEW_TYPES)
-  type?: 'HR_SCREENING' | 'TECHNICAL' | 'BEHAVIORAL' | 'PANEL' | 'FINAL';
+  type?: InterviewType;
 
   @ApiPropertyOptional({ enum: INTERVIEW_STATUSES })
   @IsOptional()
   @IsEnum(INTERVIEW_STATUSES)
-  status?: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
+  status?: InterviewStatus;
 
   @ApiPropertyOptional()
   @IsOptional()

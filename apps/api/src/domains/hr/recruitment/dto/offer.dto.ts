@@ -16,8 +16,12 @@ import {
 } from '@repo/types';
 import type {
   CreateOfferDto as CreateOfferDtoType,
+  EmploymentType,
   OfferListQueryDto as OfferListQueryDtoType,
   OfferResponseDto as OfferResponseDtoType,
+  OfferDecision,
+  OfferStatus,
+  PayFrequency,
   RespondOfferDto as RespondOfferDtoType,
   SendOfferDto as SendOfferDtoType,
   UpdateOfferDto as UpdateOfferDtoType,
@@ -102,7 +106,7 @@ export class SendOfferDto implements SendOfferDtoType {
 export class RespondOfferDto implements RespondOfferDtoType {
   @ApiProperty({ enum: RESPOND_OFFER_DECISIONS })
   @IsEnum(RESPOND_OFFER_DECISIONS)
-  decision!: 'ACCEPTED' | 'DECLINED';
+  decision!: OfferDecision;
 }
 
 export class WithdrawOfferDto implements WithdrawOfferDtoType {
@@ -126,7 +130,7 @@ export class OfferResponseDto implements OfferResponseDtoType {
   createdById!: string;
 
   @ApiProperty({ enum: OFFER_STATUSES })
-  status!: (typeof OFFER_STATUSES)[number];
+  status!: OfferStatus;
 
   @ApiPropertyOptional({ nullable: true })
   salary!: string | null;
@@ -138,10 +142,10 @@ export class OfferResponseDto implements OfferResponseDtoType {
   startDate!: string | null;
 
   @ApiPropertyOptional({ enum: PAY_FREQUENCIES, nullable: true })
-  payFrequency!: (typeof PAY_FREQUENCIES)[number] | null;
+  payFrequency!: PayFrequency | null;
 
   @ApiPropertyOptional({ enum: EMPLOYMENT_TYPES, nullable: true })
-  employmentType!: (typeof EMPLOYMENT_TYPES)[number] | null;
+  employmentType!: EmploymentType | null;
 
   @ApiPropertyOptional({ nullable: true })
   bonus!: string | null;
@@ -178,7 +182,7 @@ export class OfferListQueryDto implements OfferListQueryDtoType {
   @ApiPropertyOptional({ enum: OFFER_STATUSES })
   @IsOptional()
   @IsEnum(OFFER_STATUSES)
-  status?: (typeof OFFER_STATUSES)[number];
+  status?: OfferStatus;
 
   @ApiPropertyOptional()
   @IsOptional()

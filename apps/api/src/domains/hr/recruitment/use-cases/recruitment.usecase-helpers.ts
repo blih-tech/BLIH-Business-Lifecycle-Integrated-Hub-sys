@@ -17,10 +17,10 @@ import type {
   InterviewResponseParticipantApplicantDto,
   InterviewResponseParticipantDto,
   InterviewStatus,
-  JobApprovalStage,
+  JobApprovalDepartment,
+  JobApprovalStatus,
   JobApplicationFieldType,
   JobResponseDto,
-  JobStageApprovalStatus,
   JobWorkflowStatus,
   OfferResponseDto,
 } from '@repo/types';
@@ -61,8 +61,7 @@ export const applicantInclude = {
   statusHistory: { orderBy: { changedAt: 'desc' as const } },
 };
 
-type ApprovalStage = JobApprovalStage;
-type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
+type ApprovalDepartment = JobApprovalDepartment;
 type ApprovalStepStatus =
   | 'PENDING_FOR_APPROVAL'
   | 'REQUEST_REVIEW'
@@ -71,7 +70,7 @@ type ApprovalStepStatus =
 
 export interface ApprovalState {
   id: string;
-  stage: ApprovalStage;
+  department: ApprovalDepartment;
   decision: ApprovalDecision;
 }
 
@@ -277,12 +276,6 @@ function humanizeKey(key: string) {
     .join(' ');
 }
 
-function departmentToStage(department: string): ApprovalStage {
-  if (department === 'FINANCE') return 'FINANCE';
-  if (department === 'GM') return 'GM';
-  return 'HR_REVIEW';
-}
-
 function stepStatusToDecision(status: string): ApprovalDecision {
   if (status === 'APPROVED') return 'APPROVED';
   if (status === 'REJECTED') return 'REJECTED';
@@ -290,27 +283,26 @@ function stepStatusToDecision(status: string): ApprovalDecision {
 }
 
 function buildStageStatusSnapshot(approvals: any[]) {
-  const decisions: Record<ApprovalStage, ApprovalDecision> = {
+  const decisions: Record<ApprovalDepartment, ApprovalDecision> = {
     FINANCE: 'PENDING',
     GM: 'PENDING',
-    HR_REVIEW: 'PENDING',
+    HR: 'PENDING',
   };
 
   for (const approval of approvals ?? []) {
-    const stage = departmentToStage(
-      (approval.department as ApprovalDepartment | undefined) ?? 'HR',
-    );
+    const department =
+      (approval.department as ApprovalDepartment | undefined) ?? 'HR';
     const decision = stepStatusToDecision(
       (approval.status as ApprovalStepStatus | undefined) ??
         'PENDING_FOR_APPROVAL',
     );
-    decisions[stage] = decision;
+    decisions[department] = decision;
   }
 
   return {
     financeApprovalStatus: approvalDecisionToStageStatus(decisions.FINANCE),
     gmApprovalStatus: approvalDecisionToStageStatus(decisions.GM),
-    hrApprovalStatus: approvalDecisionToStageStatus(decisions.HR_REVIEW),
+    hrApprovalStatus: approvalDecisionToStageStatus(decisions.HR),
   };
 }
 
@@ -346,26 +338,28 @@ const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<
 
 export function currentApprovalStage(
   status: JobWorkflowStatus,
-): JobApprovalStage | null {
+): JobApprovalDepartment | null {
   if (status !== 'PENDING_FOR_APPROVAL') return null;
   return 'FINANCE';
 }
 
-export function requiredRoleForStage(stage: JobApprovalStage) {
-  if (stage === 'FINANCE') return SYSTEM_ROLES.FINANCE_MANAGER;
-  if (stage === 'GM') return SYSTEM_ROLES.SUPERADMIN;
+export function requiredRoleForStage(department: JobApprovalDepartment) {
+  if (department === 'FINANCE') return SYSTEM_ROLES.FINANCE_MANAGER;
+  if (department === 'GM') return SYSTEM_ROLES.SUPERADMIN;
   return SYSTEM_ROLES.HR_MANAGER;
 }
 
 export function isApprovalStageActionable(
-  stage: ApprovalStage,
+  department: ApprovalDepartment,
   approvals: ApprovalState[],
 ) {
   if (approvals.some((approval) => approval.decision === 'REJECTED')) {
     return false;
   }
 
-  const current = approvals.find((approval) => approval.stage === stage);
+  const current = approvals.find(
+    (approval) => approval.department === department,
+  );
   if (!current) {
     throw new BadRequestException('Missing approval stage configuration');
   }
@@ -376,9 +370,11 @@ export function isApprovalStageActionable(
 export function computeJobStatusFromApprovals(
   approvals: ApprovalState[],
 ): JobWorkflowStatus {
-  const finance = approvals.find((approval) => approval.stage === 'FINANCE');
-  const gm = approvals.find((approval) => approval.stage === 'GM');
-  const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
+  const finance = approvals.find(
+    (approval) => approval.department === 'FINANCE',
+  );
+  const gm = approvals.find((approval) => approval.department === 'GM');
+  const hr = approvals.find((approval) => approval.department === 'HR');
 
   if (!finance || !gm || !hr) {
     throw new BadRequestException('Missing approval stage configuration');
@@ -402,7 +398,7 @@ export function computeJobStatusFromApprovals(
 export function approvalDecisionToStageStatus(decision: ApprovalDecision) {
   if (decision === 'APPROVED') return 'APPROVED' as const;
   if (decision === 'REJECTED') return 'REJECTED' as const;
-  return 'PENDING_FOR_APPROVAL' as JobStageApprovalStatus;
+  return 'PENDING_FOR_APPROVAL' as JobApprovalStatus;
 }
 
 export function assertApplicantTransition(
@@ -755,7 +751,7 @@ export function mapJob(job: any): JobResponseDto {
         }
       : null,
     approvals: requestApprovals.map((approval: any) => {
-      const stage = departmentToStage(approval.department);
+      const department = (approval.department ?? 'HR') as ApprovalDepartment;
       const decision = stepStatusToDecision(approval.status);
       const latestHistory = approval.history?.[0];
       const autoApprovalReason =
@@ -765,9 +761,9 @@ export function mapJob(job: any): JobResponseDto {
 
       return {
         id: approval.id,
-        stage,
+        department,
         level: approval.level,
-        requiredRole: requiredRoleForStage(stage),
+        requiredRole: requiredRoleForStage(department),
         approverId: approval.approverId ?? null,
         decision,
         autoApproved: autoApprovalReason !== null,
