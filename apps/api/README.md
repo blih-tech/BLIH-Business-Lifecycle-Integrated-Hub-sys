@@ -170,7 +170,7 @@ Once running, verify these endpoints:
 
 ### Environment Variables
 
-The application uses a comprehensive environment configuration system with Joi validation. All 58 variables are defined in `src/config/env.config.ts`:
+The application uses a comprehensive environment configuration system with Joi validation. All runtime variables are defined in `src/config/env.config.ts`:
 
 ```typescript
 // Core Application (4 variables)
@@ -182,21 +182,31 @@ SKIP_DATABASE_CONNECT=false
 // Database (1 variable)
 DATABASE_URL=postgresql://blih_dev_user:blih_dev_pass_2024@postgres:5432/blih-system-dev
 
-// Keycloak Authentication (9 variables)
+// Keycloak Authentication
 KEYCLOAK_ENABLED=true
 KEYCLOAK_URL=http://keycloak:8080
 KEYCLOAK_REALM=blih
 KEYCLOAK_CLIENT_ID=blih-system-api
 KEYCLOAK_CLIENT_SECRET=
+KEYCLOAK_AUTH_CLIENT_ID=blih-system-auth
+KEYCLOAK_AUTH_CLIENT_SECRET=
+KEYCLOAK_AUTH_REDIRECT_URI=http://localhost:5000/api/v1/auth/callback
+KEYCLOAK_AUTH_SCOPES=openid profile email
 KEYCLOAK_ADMIN_CLIENT_ID=admin-cli
 KEYCLOAK_ADMIN_USERNAME=
 KEYCLOAK_ADMIN_PASSWORD=
 TRUST_PROXY_PRINCIPAL_HEADERS=false
 
-// Security & Authorization (4 variables)
+// Security & Authorization
 INTERNAL_AUTH_SHARED_SECRET=
 ENFORCE_MFA_FOR_PRIVILEGED=false
 AUTH_POLICY_VERSION=1.0
+AUTH_LOGIN_ERROR_REDIRECT_URI=/login
+AUTH_POST_LOGIN_REDIRECT_URI=/
+AUTH_POST_LOGOUT_REDIRECT_URI=/login
+AUTH_STATE_TTL_SECONDS=600
+AUTH_COOKIE_SECURE=false
+AUTH_COOKIE_SAME_SITE=lax
 JWT_EXPECTED_AUDIENCE=blih-system-api
 JWT_EXPECTED_ISSUER=
 
@@ -270,19 +280,53 @@ All controllers are versioned under `/api/v1/`:
 
 ### Authentication Flow
 
-1. **Token Exchange**: POST `/api/v1/auth/exchange` - Exchange Keycloak tokens for JWT
-2. **Token Validation**: GET `/api/v1/auth/validate` - Validate JWT tokens
-3. **Token Introspection**: POST `/api/v1/auth/introspect` - Introspect token details
-4. **User Profile**: GET `/api/v1/auth/me` - Get current user profile
-5. **Session Revocation**: POST `/api/v1/auth/revoke` - Revoke user session
-6. **Authorization**: RBAC engine evaluates permissions based on roles
-7. **Audit**: All actions logged with correlation IDs
+Browser OIDC login/logout endpoints (backend-owned):
+
+1. **Login Initiation**: GET `/api/v1/auth/login` - Generate PKCE/state and redirect to Keycloak `/authorize`
+2. **Callback Handling**: GET `/api/v1/auth/callback` - Validate state, exchange authorization code, set auth cookies
+3. **Logout**: GET `/api/v1/auth/logout` - Clear cookies, revoke refresh token (best effort), redirect to Keycloak end-session
+
+Token utility and profile endpoints:
+
+1. **Token Validation**: POST `/api/v1/auth/validate`
+2. **Token Introspection**: POST `/api/v1/auth/introspect`
+3. **Token Exchange**: POST `/api/v1/auth/exchange`
+4. **Token Refresh**: POST `/api/v1/auth/refresh`
+5. **Session Revocation**: POST `/api/v1/auth/revoke-session`
+6. **User Profile**: GET `/api/v1/auth/me`
+
+### OIDC Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant API as Backend API
+    participant KC as Keycloak
+
+    FE->>API: GET /api/v1/auth/login?redirect=/dashboard
+    API->>API: Generate state + PKCE verifier/challenge
+    API-->>FE: 302 to KC /authorize + set kc_state/kc_verifier/kc_redirect cookies
+
+    FE->>KC: GET /realms/{realm}/protocol/openid-connect/auth
+    KC-->>FE: Login UI
+    FE->>KC: Credentials + consent
+    KC-->>API: GET /api/v1/auth/callback?code=...&state=...
+
+    API->>API: Validate state + verifier cookies
+    API->>KC: POST /protocol/openid-connect/token (authorization_code)
+    KC-->>API: access_token + refresh_token + id_token
+    API-->>FE: 302 to app + set kc_access/kc_refresh/kc_id cookies
+
+    FE->>API: API requests with bearer/cookie-based session context
+
+    FE->>API: GET /api/v1/auth/logout
+    API->>KC: POST /protocol/openid-connect/revoke (best effort)
+    API-->>FE: 302 to KC end-session (or local logout redirect)
+```
 
 ```bash
-# Example token exchange
-curl -X POST http://localhost:5000/api/v1/auth/exchange \
-  -H "Content-Type: application/json" \
-  -d '{"token": "keycloak-token", "realm": "blih"}'
+# Example browser login initiation
+curl -i "http://localhost:5000/api/v1/auth/login?redirect=/dashboard"
 ```
 
 ## 🗄️ Database Architecture

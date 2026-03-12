@@ -225,6 +225,57 @@ export class KeycloakTokenService {
     }
   }
 
+  async exchangeAuthorizationCode(
+    code: string,
+    codeVerifier: string,
+    realm = this.keycloak.realm,
+    clientId = this.keycloak.authClientId,
+    clientSecret = this.keycloak.authClientSecret,
+    redirectUri = this.keycloak.authRedirectUri,
+  ): Promise<KeycloakTokenResponse> {
+    const url = `${this.realmBaseUrl(realm)}${KEYCLOAK_TOKEN_PATH}`;
+    const body = new URLSearchParams({
+      grant_type: 'authorization_code',
+      code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      code_verifier: codeVerifier,
+    });
+    const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    this.logger.debug(`exchangeAuthorizationCode POST ${url}`);
+
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post<KeycloakTokenResponse>(url, body.toString(), {
+          headers,
+        }),
+      );
+      this.logger.debug(`exchangeAuthorizationCode ${response.status} ${url}`);
+      return response.data;
+    } catch (err: unknown) {
+      const ax =
+        err && typeof err === 'object' && 'response' in err
+          ? (
+              err as {
+                response?: {
+                  status?: number;
+                  data?: unknown;
+                };
+              }
+            ).response
+          : undefined;
+      const status = ax?.status;
+      const data = ax?.data as
+        | { error?: string; error_description?: string }
+        | undefined;
+      this.logger.warn(
+        `exchangeAuthorizationCode failed: ${status ?? 'n/a'} ${url} - ${data?.error ?? data?.error_description ?? (err instanceof Error ? err.message : String(err))}`,
+      );
+      throw err;
+    }
+  }
+
   async revokeToken(
     token: string,
     realm = this.keycloak.realm,

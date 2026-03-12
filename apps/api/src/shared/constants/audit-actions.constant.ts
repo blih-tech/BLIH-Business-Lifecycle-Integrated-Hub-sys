@@ -1,6 +1,11 @@
 export const AUDIT_ACTIONS = {
+  AUTH_LOGIN_INITIATED: 'auth.login.initiated',
   AUTH_LOGIN_SUCCESS: 'auth.login.success',
   AUTH_LOGIN_FAILURE: 'auth.login.failure',
+  AUTH_CALLBACK_SUCCESS: 'auth.callback.success',
+  AUTH_CALLBACK_FAILURE: 'auth.callback.failure',
+  AUTH_TOKEN_EXCHANGE_SUCCESS: 'auth.token-exchange.success',
+  AUTH_TOKEN_EXCHANGE_FAILURE: 'auth.token-exchange.failure',
   AUTH_LOGOUT: 'auth.logout',
   USER_CREATED: 'user.created',
   USER_UPDATED: 'user.updated',

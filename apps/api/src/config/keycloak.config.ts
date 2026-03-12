@@ -7,6 +7,10 @@ export interface KeycloakConfig {
   realm: string;
   clientId: string;
   clientSecret: string;
+  authClientId: string;
+  authClientSecret: string;
+  authRedirectUri: string;
+  authScopes: string;
   adminClientId: string;
   adminUsername: string;
   adminPassword: string;
@@ -26,6 +30,10 @@ export default registerAs(
     realm: env.KEYCLOAK_REALM,
     clientId: env.KEYCLOAK_CLIENT_ID,
     clientSecret: env.KEYCLOAK_CLIENT_SECRET,
+    authClientId: env.KEYCLOAK_AUTH_CLIENT_ID,
+    authClientSecret: env.KEYCLOAK_AUTH_CLIENT_SECRET,
+    authRedirectUri: env.KEYCLOAK_AUTH_REDIRECT_URI,
+    authScopes: env.KEYCLOAK_AUTH_SCOPES,
     adminClientId: env.KEYCLOAK_ADMIN_CLIENT_ID,
     adminUsername: env.KEYCLOAK_ADMIN_USERNAME,
     adminPassword: env.KEYCLOAK_ADMIN_PASSWORD,

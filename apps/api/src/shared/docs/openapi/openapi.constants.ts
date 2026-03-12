@@ -14,7 +14,8 @@ export const SWAGGER_TAGS: ReadonlyArray<{
 }> = [
   {
     name: 'Auth',
-    description: 'Token validation, introspection, refresh, and session APIs.',
+    description:
+      'OIDC browser login/callback/logout plus token validation, introspection, refresh, and session APIs.',
   },
   {
     name: 'Users',

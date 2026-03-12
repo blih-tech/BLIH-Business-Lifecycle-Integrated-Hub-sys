@@ -548,6 +548,40 @@ describe('enforceUnifiedSchemas', () => {
     ).toBe('NOT_FOUND');
   });
 
+  it('preserves redirect-only operations without injecting synthetic 200 JSON responses', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/auth/login': {
+          get: {
+            responses: {
+              '302': {
+                description: 'Redirect to Keycloak authorize endpoint',
+                headers: {
+                  Location: {
+                    schema: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    enforceUnifiedSchemas(doc);
+
+    const operation = doc.paths['/api/v1/auth/login'].get as {
+      responses?: Record<string, unknown>;
+    };
+
+    expect(operation.responses?.['302']).toBeDefined();
+    expect(operation.responses?.['200']).toBeUndefined();
+  });
+
   it('adds a manual keycloak login operation without requiring a controller route', () => {
     const doc: OpenAPIObject = {
       openapi: '3.0.0',

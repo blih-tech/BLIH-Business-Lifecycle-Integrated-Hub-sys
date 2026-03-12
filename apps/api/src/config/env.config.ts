@@ -21,6 +21,12 @@ export const envValidationSchema = Joi.object({
   KEYCLOAK_REALM: Joi.string().default('blih'),
   KEYCLOAK_CLIENT_ID: Joi.string().default('blih-system-api'),
   KEYCLOAK_CLIENT_SECRET: Joi.string().allow('').default(''),
+  KEYCLOAK_AUTH_CLIENT_ID: Joi.string().default('blih-system-auth'),
+  KEYCLOAK_AUTH_CLIENT_SECRET: Joi.string().allow('').default(''),
+  KEYCLOAK_AUTH_REDIRECT_URI: Joi.string()
+    .uri()
+    .default('http://localhost:5000/api/v1/auth/callback'),
+  KEYCLOAK_AUTH_SCOPES: Joi.string().default('openid profile email'),
   KEYCLOAK_ADMIN_CLIENT_ID: Joi.string().default('admin-cli'),
   KEYCLOAK_ADMIN_USERNAME: Joi.string().allow('').default(''),
   KEYCLOAK_ADMIN_PASSWORD: Joi.string().allow('').default(''),
@@ -28,6 +34,18 @@ export const envValidationSchema = Joi.object({
   INTERNAL_AUTH_SHARED_SECRET: Joi.string().allow('').default(''),
   ENFORCE_MFA_FOR_PRIVILEGED: Joi.boolean().default(false),
   AUTH_POLICY_VERSION: Joi.string().default('1.0'),
+  AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/login'),
+  AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/'),
+  AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/login'),
+  AUTH_STATE_TTL_SECONDS: Joi.number().integer().min(60).default(600),
+  AUTH_COOKIE_SECURE: Joi.boolean().when('NODE_ENV', {
+    is: 'production',
+    then: Joi.boolean().default(true),
+    otherwise: Joi.boolean().default(false),
+  }),
+  AUTH_COOKIE_SAME_SITE: Joi.string()
+    .valid('lax', 'strict', 'none')
+    .default('lax'),
 
   SMTP_ENABLED: Joi.boolean().default(false),
   SMTP_HOST: Joi.string().default('localhost'),
@@ -66,6 +84,10 @@ export type EnvValues = {
   KEYCLOAK_REALM: string;
   KEYCLOAK_CLIENT_ID: string;
   KEYCLOAK_CLIENT_SECRET: string;
+  KEYCLOAK_AUTH_CLIENT_ID: string;
+  KEYCLOAK_AUTH_CLIENT_SECRET: string;
+  KEYCLOAK_AUTH_REDIRECT_URI: string;
+  KEYCLOAK_AUTH_SCOPES: string;
   KEYCLOAK_ADMIN_CLIENT_ID: string;
   KEYCLOAK_ADMIN_USERNAME: string;
   KEYCLOAK_ADMIN_PASSWORD: string;
@@ -73,6 +95,12 @@ export type EnvValues = {
   INTERNAL_AUTH_SHARED_SECRET: string;
   ENFORCE_MFA_FOR_PRIVILEGED: boolean;
   AUTH_POLICY_VERSION: string;
+  AUTH_LOGIN_ERROR_REDIRECT_URI: string;
+  AUTH_POST_LOGIN_REDIRECT_URI: string;
+  AUTH_POST_LOGOUT_REDIRECT_URI: string;
+  AUTH_STATE_TTL_SECONDS: number;
+  AUTH_COOKIE_SECURE: boolean;
+  AUTH_COOKIE_SAME_SITE: 'lax' | 'strict' | 'none';
   SMTP_ENABLED: boolean;
   SMTP_HOST: string;
   SMTP_PORT: number;
@@ -107,6 +135,10 @@ const readRawEnv = () => ({
   KEYCLOAK_REALM: process.env.KEYCLOAK_REALM,
   KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID,
   KEYCLOAK_CLIENT_SECRET: process.env.KEYCLOAK_CLIENT_SECRET,
+  KEYCLOAK_AUTH_CLIENT_ID: process.env.KEYCLOAK_AUTH_CLIENT_ID,
+  KEYCLOAK_AUTH_CLIENT_SECRET: process.env.KEYCLOAK_AUTH_CLIENT_SECRET,
+  KEYCLOAK_AUTH_REDIRECT_URI: process.env.KEYCLOAK_AUTH_REDIRECT_URI,
+  KEYCLOAK_AUTH_SCOPES: process.env.KEYCLOAK_AUTH_SCOPES,
   KEYCLOAK_ADMIN_CLIENT_ID: process.env.KEYCLOAK_ADMIN_CLIENT_ID,
   KEYCLOAK_ADMIN_USERNAME: process.env.KEYCLOAK_ADMIN_USERNAME,
   KEYCLOAK_ADMIN_PASSWORD: process.env.KEYCLOAK_ADMIN_PASSWORD,
@@ -114,6 +146,12 @@ const readRawEnv = () => ({
   INTERNAL_AUTH_SHARED_SECRET: process.env.INTERNAL_AUTH_SHARED_SECRET,
   ENFORCE_MFA_FOR_PRIVILEGED: process.env.ENFORCE_MFA_FOR_PRIVILEGED,
   AUTH_POLICY_VERSION: process.env.AUTH_POLICY_VERSION,
+  AUTH_LOGIN_ERROR_REDIRECT_URI: process.env.AUTH_LOGIN_ERROR_REDIRECT_URI,
+  AUTH_POST_LOGIN_REDIRECT_URI: process.env.AUTH_POST_LOGIN_REDIRECT_URI,
+  AUTH_POST_LOGOUT_REDIRECT_URI: process.env.AUTH_POST_LOGOUT_REDIRECT_URI,
+  AUTH_STATE_TTL_SECONDS: process.env.AUTH_STATE_TTL_SECONDS,
+  AUTH_COOKIE_SECURE: process.env.AUTH_COOKIE_SECURE,
+  AUTH_COOKIE_SAME_SITE: process.env.AUTH_COOKIE_SAME_SITE,
   SMTP_ENABLED: process.env.SMTP_ENABLED,
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_PORT: process.env.SMTP_PORT,

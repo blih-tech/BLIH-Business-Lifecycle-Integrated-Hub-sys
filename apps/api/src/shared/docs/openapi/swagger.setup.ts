@@ -28,7 +28,7 @@ const DOC_SUCCESS_MESSAGE = 'Request processed successfully';
 const KEYCLOAK_LOGIN_PATH = '/realms/{realm}/protocol/openid-connect/token';
 const DEFAULT_KEYCLOAK_BASE_URL = 'http://localhost:8080';
 const DEFAULT_KEYCLOAK_REALM = 'blih';
-const DEFAULT_KEYCLOAK_CLIENT_ID = 'blih-system-frontend';
+const DEFAULT_KEYCLOAK_CLIENT_ID = 'blih-system-auth';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
@@ -36,6 +36,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isSuccessStatusCode(statusCode: string): boolean {
   return /^2\d{2}$/.test(statusCode);
+}
+
+function isRedirectStatusCode(statusCode: string): boolean {
+  return /^3\d{2}$/.test(statusCode);
 }
 
 function methodNeedsSuccessResponse(method: string): boolean {
@@ -228,11 +232,16 @@ function ensureSuccessResponse(
 
   const responses = operation.responses as Record<string, unknown>;
   const existingSuccess = Object.keys(responses).find(isSuccessStatusCode);
+  const existingRedirect = Object.keys(responses).find(isRedirectStatusCode);
   if (existingSuccess) {
     const response = responses[existingSuccess];
     if (isRecord(response)) {
       ensureJsonMedia(response);
     }
+    return;
+  }
+
+  if (existingRedirect) {
     return;
   }
 
@@ -676,6 +685,10 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
       for (const [statusCode, response] of Object.entries(
         operation.responses,
       )) {
+        if (isRedirectStatusCode(statusCode)) {
+          continue;
+        }
+
         if (!isRecord(response)) {
           continue;
         }
@@ -795,8 +808,13 @@ export function addKeycloakLoginOperation(
             properties: {
               grant_type: {
                 type: 'string',
-                enum: ['password', 'client_credentials', 'refresh_token'],
-                default: 'password',
+                enum: [
+                  'authorization_code',
+                  'password',
+                  'client_credentials',
+                  'refresh_token',
+                ],
+                default: 'authorization_code',
               },
               client_id: {
                 type: 'string',
@@ -822,9 +840,34 @@ export function addKeycloakLoginOperation(
                 type: 'string',
                 description: 'Required when grant_type=refresh_token.',
               },
+              code: {
+                type: 'string',
+                description: 'Required when grant_type=authorization_code.',
+              },
+              redirect_uri: {
+                type: 'string',
+                format: 'uri',
+                description:
+                  'Required when grant_type=authorization_code. Must match client redirect URI.',
+              },
+              code_verifier: {
+                type: 'string',
+                description:
+                  'PKCE code verifier required when grant_type=authorization_code.',
+              },
             },
           },
           examples: {
+            authorizationCodeGrant: {
+              summary: 'Authorization code flow with PKCE',
+              value: {
+                grant_type: 'authorization_code',
+                client_id: defaultClientId,
+                code: '3f95f8f9-1f31-40c1-9ed7-8eb7f0f3866f',
+                redirect_uri: 'http://localhost:5000/api/v1/auth/callback',
+                code_verifier: 'mX1j2N9Q8kP0pV2Yb9JQjTg7oQWJ5u0rZkQ1m3s9v7A',
+              },
+            },
             passwordGrant: {
               summary: 'User login with username/password',
               value: {
@@ -868,6 +911,7 @@ export function addKeycloakLoginOperation(
                 refresh_expires_in: { type: 'number' },
                 refresh_token: { type: 'string' },
                 token_type: { type: 'string', example: 'Bearer' },
+                id_token: { type: 'string' },
                 'not-before-policy': { type: 'number' },
                 session_state: { type: 'string' },
                 scope: { type: 'string' },
@@ -879,6 +923,7 @@ export function addKeycloakLoginOperation(
               refresh_expires_in: 1800,
               refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
               token_type: 'Bearer',
+              id_token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjQxNmQifQ...',
               'not-before-policy': 0,
               session_state: 'f0f4e9a0-2e06-4f66-94af-0d2d68ab4ac4',
               scope: 'openid profile email',
@@ -977,7 +1022,10 @@ export function setupSwagger(app: INestApplication): void {
     document,
     configService.get<string>('KEYCLOAK_URL', DEFAULT_KEYCLOAK_BASE_URL),
     configService.get<string>('KEYCLOAK_REALM', DEFAULT_KEYCLOAK_REALM),
-    configService.get<string>('KEYCLOAK_CLIENT_ID', DEFAULT_KEYCLOAK_CLIENT_ID),
+    configService.get<string>(
+      'KEYCLOAK_AUTH_CLIENT_ID',
+      DEFAULT_KEYCLOAK_CLIENT_ID,
+    ),
   );
 
   SwaggerModule.setup(docsPath, app, document, {
