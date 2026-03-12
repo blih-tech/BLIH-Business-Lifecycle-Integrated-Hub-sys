@@ -23,72 +23,45 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-
-const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
-const EMPLOYMENT_TYPES = [
-  'FULL_TIME',
-  'PART_TIME',
-  'CONTRACT',
-  'INTERN',
-  'TEMPORARY',
-] as const;
-const EXPERIENCE_LEVELS = [
-  'ENTRY',
-  'JUNIOR',
-  'MID',
-  'SENIOR',
-  'LEAD',
-  'PRINCIPAL',
-] as const;
-const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
-const JOB_APPLICATION_FIELD_TYPES = [
-  'TEXT',
-  'TEXTAREA',
-  'NUMBER',
-  'SELECT',
-  'FILE',
-  'DATE',
-  'CHECKBOX',
-] as const;
-const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
-  'PHONE',
-  'LINKEDIN_URL',
-  'PORTFOLIO_URL',
-  'GITHUB_URL',
-  'EXPECTED_SALARY',
-  'COVER_LETTER',
-] as const;
-const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
-const APPLICATION_FORM_SECTION_TYPES = ['SECTION'] as const;
-const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
-const JOB_STAGE_STATUSES = [
-  'PENDING_FOR_APPROVAL',
-  'APPROVED',
-  'REJECTED',
-] as const;
-const JOB_WORKFLOW_STATUSES = [
-  'DRAFT',
-  'PENDING_FOR_APPROVAL',
-  'READY_TO_POST',
-  'PUBLISHED',
-  'CLOSED',
-  'REJECTED',
-] as const;
-const JOB_PRIORITY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
-const JOB_URGENCY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
-const JOB_CONTRACT_TYPES = [
-  'PERMANENT',
-  'CONTRACT',
-  'INTERNSHIP',
-  'FREELANCE',
-] as const;
-const SALARY_MODES = [
-  'NOT_SPECIFIED',
-  'FIXED',
-  'NEGOTIABLE',
-  'COMPETITIVE',
-] as const;
-const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
+import {
+  APPROVAL_DECISIONS,
+  APPLICATION_FORM_SECTION_TYPES,
+  APPROVE_JOB_DECISIONS,
+  EMPLOYMENT_TYPES,
+  EXPERIENCE_LEVELS,
+  JOB_APPLICANT_OPTIONAL_FIELD_KEYS,
+  JOB_APPLICATION_FIELD_TYPES,
+  JOB_APPLICATION_FORM_SECTIONS,
+  JOB_APPROVAL_STAGES,
+  JOB_CONTRACT_TYPES,
+  JOB_PRIORITY_LEVELS,
+  JOB_REQUEST_TYPES,
+  JOB_SALARY_MODES,
+  JOB_STAGE_STATUSES,
+  JOB_URGENCY_LEVELS,
+  JOB_WORKFLOW_STATUSES,
+  WORK_LOCATION_TYPES,
+} from '@repo/types';
+import type {
+  ApproveJobDto as ApproveJobDtoType,
+  CloseJobDto as CloseJobDtoType,
+  CreateJobDto as CreateJobDtoType,
+  JobApplicationCustomFieldDto as JobApplicationCustomFieldDtoType,
+  JobApplicationFormDto as JobApplicationFormDtoType,
+  JobApplicationFormFieldDto as JobApplicationFormFieldDtoType,
+  JobApplicationFormSectionDto as JobApplicationFormSectionDtoType,
+  JobApprovalDto as JobApprovalDtoType,
+  JobInputDto as JobInputDtoType,
+  JobListQueryDto as JobListQueryDtoType,
+  JobRequestFormDto as JobRequestFormDtoType,
+  JobResponseDto as JobResponseDtoType,
+  JobSkillsResponseDto as JobSkillsResponseDtoType,
+  JobToolsResponseDto as JobToolsResponseDtoType,
+  UpdateJobDto as UpdateJobDtoType,
+  UpsertJobResponsibilitiesDto as UpsertJobResponsibilitiesDtoType,
+  UpsertJobSkillsDto as UpsertJobSkillsDtoType,
+  UpsertJobToolsDto as UpsertJobToolsDtoType,
+} from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
@@ -98,7 +71,7 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
     .toUpperCase();
 };
 
-export class JobRequestFormInputDto {
+export class JobRequestFormInputDto implements JobRequestFormDtoType {
   @ApiProperty({ example: 'Senior Frontend Engineer' })
   @IsString()
   @IsNotEmpty()
@@ -163,7 +136,7 @@ export class JobRequestFormInputDto {
   priority?: (typeof JOB_PRIORITY_LEVELS)[number];
 }
 
-export class JobInputDto {
+export class JobInputDto implements JobInputDtoType {
   @ApiProperty({ example: 'Senior Frontend Engineer' })
   @IsString()
   @IsNotEmpty()
@@ -270,10 +243,10 @@ export class JobInputDto {
   @Matches(/^[A-Za-z]{3}$/)
   currency?: string | null;
 
-  @ApiPropertyOptional({ enum: SALARY_MODES })
+  @ApiPropertyOptional({ enum: JOB_SALARY_MODES })
   @IsOptional()
   @Transform(normalizeEnumValue)
-  @IsEnum(SALARY_MODES)
+  @IsEnum(JOB_SALARY_MODES)
   salaryMode?: 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
 
   @ApiPropertyOptional({ type: [String], default: [] })
@@ -322,7 +295,7 @@ export class JobInputDto {
   applicationDeadline?: string | null;
 }
 
-export class JobApplicationCustomFieldInputDto {
+export class JobApplicationCustomFieldInputDto implements JobApplicationCustomFieldDtoType {
   @ApiProperty({ example: 'custom-123' })
   @IsString()
   @IsNotEmpty()
@@ -361,7 +334,7 @@ export class JobApplicationCustomFieldInputDto {
   options?: string[];
 }
 
-export class JobApplicationFormFieldInputDto {
+export class JobApplicationFormFieldInputDto implements JobApplicationFormFieldDtoType {
   @ApiProperty({ enum: JOB_APPLICANT_OPTIONAL_FIELD_KEYS })
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_APPLICANT_OPTIONAL_FIELD_KEYS)
@@ -382,7 +355,7 @@ export class JobApplicationFormFieldInputDto {
   order?: number | null;
 }
 
-export class JobApplicationFormSectionInputDto {
+export class JobApplicationFormSectionInputDto implements JobApplicationFormSectionDtoType {
   @ApiProperty({ enum: JOB_APPLICATION_FORM_SECTIONS })
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_APPLICATION_FORM_SECTIONS)
@@ -403,7 +376,7 @@ export class JobApplicationFormSectionInputDto {
   order?: number | null;
 }
 
-export class JobApplicationFormInputDto {
+export class JobApplicationFormInputDto implements JobApplicationFormDtoType {
   @ApiProperty({ type: [JobApplicationFormFieldInputDto] })
   @IsArray()
   @ValidateNested({ each: true })
@@ -423,7 +396,7 @@ export class JobApplicationFormInputDto {
   customFields!: JobApplicationCustomFieldInputDto[];
 }
 
-export class CreateJobDto {
+export class CreateJobDto implements CreateJobDtoType {
   @ApiProperty({ type: JobRequestFormInputDto })
   @ValidateNested()
   @Type(() => JobRequestFormInputDto)
@@ -440,12 +413,14 @@ export class CreateJobDto {
   applicationForm!: JobApplicationFormInputDto;
 }
 
-export class UpdateJobDto extends PartialType(CreateJobDto) {}
+export class UpdateJobDto
+  extends PartialType(CreateJobDto)
+  implements UpdateJobDtoType {}
 
-export class ApproveJobDto {
-  @ApiProperty({ enum: ['APPROVED', 'REJECTED'] })
+export class ApproveJobDto implements ApproveJobDtoType {
+  @ApiProperty({ enum: APPROVE_JOB_DECISIONS })
   @Transform(normalizeEnumValue)
-  @IsEnum(['APPROVED', 'REJECTED'])
+  @IsEnum(APPROVE_JOB_DECISIONS)
   decision!: 'APPROVED' | 'REJECTED';
 
   @ApiPropertyOptional({ nullable: true })
@@ -454,14 +429,14 @@ export class ApproveJobDto {
   comments?: string | null;
 }
 
-export class CloseJobDto {
+export class CloseJobDto implements CloseJobDtoType {
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
   reason?: string | null;
 }
 
-export class UpsertJobSkillsDto {
+export class UpsertJobSkillsDto implements UpsertJobSkillsDtoType {
   @ApiProperty({ type: [String] })
   @IsArray()
   @ArrayMaxSize(200)
@@ -476,7 +451,7 @@ export class UpsertJobSkillsDto {
   preferredSkills?: string[];
 }
 
-export class UpsertJobToolsDto {
+export class UpsertJobToolsDto implements UpsertJobToolsDtoType {
   @ApiProperty({ type: [String] })
   @IsArray()
   @ArrayMaxSize(200)
@@ -484,7 +459,7 @@ export class UpsertJobToolsDto {
   tools!: string[];
 }
 
-export class UpsertJobResponsibilitiesDto {
+export class UpsertJobResponsibilitiesDto implements UpsertJobResponsibilitiesDtoType {
   @ApiProperty({ type: [String] })
   @IsArray()
   @ArrayMaxSize(200)
@@ -492,7 +467,7 @@ export class UpsertJobResponsibilitiesDto {
   responsibilities!: string[];
 }
 
-export class JobApprovalResponseDto {
+export class JobApprovalResponseDto implements JobApprovalDtoType {
   @ApiProperty()
   id!: string;
 
@@ -527,12 +502,12 @@ export class JobApprovalResponseDto {
   createdAt!: string;
 }
 
-export class JobToolsResponseDto {
+export class JobToolsResponseDto implements JobToolsResponseDtoType {
   @ApiProperty({ type: [String] })
   tools!: string[];
 }
 
-export class JobSkillsResponseDto {
+export class JobSkillsResponseDto implements JobSkillsResponseDtoType {
   @ApiProperty({ type: [String] })
   requiredSkills!: string[];
 
@@ -583,6 +558,9 @@ export class JobRequestFormResponseDto extends OmitType(
   @ApiProperty()
   position!: string;
 
+  @ApiPropertyOptional({ nullable: true })
+  replaceForUserId!: string | null;
+
   @ApiProperty({ type: () => JobRequestFormStatusResponseDto })
   status!: JobRequestFormStatusResponseDto;
 
@@ -612,6 +590,65 @@ export class JobDataResponseDto extends OmitType(JobInputDto, [
 
   @ApiProperty()
   slug!: string;
+
+  @ApiPropertyOptional({
+    nullable: true,
+    type: 'object',
+    additionalProperties: true,
+  })
+  summary!: Record<string, unknown> | null;
+
+  @ApiPropertyOptional({ enum: EXPERIENCE_LEVELS, nullable: true })
+  experienceLevel!:
+    | 'ENTRY'
+    | 'JUNIOR'
+    | 'MID'
+    | 'SENIOR'
+    | 'LEAD'
+    | 'PRINCIPAL'
+    | null;
+
+  @ApiPropertyOptional({ enum: EMPLOYMENT_TYPES, nullable: true })
+  employmentType!:
+    | 'FULL_TIME'
+    | 'PART_TIME'
+    | 'CONTRACT'
+    | 'INTERN'
+    | 'TEMPORARY'
+    | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  city!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  country!: string | null;
+
+  @ApiProperty()
+  openings!: number;
+
+  @ApiPropertyOptional({ nullable: true })
+  currency!: string | null;
+
+  @ApiProperty({ enum: JOB_SALARY_MODES })
+  salaryMode!: 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
+
+  @ApiProperty({ type: [String], default: [] })
+  benefits!: string[];
+
+  @ApiProperty({ type: [String], default: [] })
+  requiredSkills!: string[];
+
+  @ApiProperty({ type: [String], default: [] })
+  preferredSkills!: string[];
+
+  @ApiProperty({ type: [String], default: [] })
+  responsibilities!: string[];
+
+  @ApiProperty({ type: [String], default: [] })
+  tools!: string[];
+
+  @ApiPropertyOptional({ nullable: true })
+  hiringManagerId!: string | null;
 
   @ApiProperty()
   creatorIsHr!: boolean;
@@ -669,6 +706,9 @@ export class JobApplicationCustomFieldResponseDto extends OmitType(
   @ApiProperty()
   id!: string;
 
+  @ApiPropertyOptional({ nullable: true })
+  helpText!: string | null;
+
   @ApiProperty({ type: [String] })
   options!: string[];
 }
@@ -691,6 +731,9 @@ export class JobApplicationFormFieldResponseDto extends OmitType(
 
   @ApiProperty({ type: [String], default: [] })
   options!: string[];
+
+  @ApiPropertyOptional({ nullable: true })
+  order!: number | null;
 }
 
 export class JobApplicationFormSectionFieldResponseDto {
@@ -740,6 +783,9 @@ export class JobApplicationFormSectionResponseDto extends OmitType(
     default: [],
   })
   fields!: JobApplicationFormSectionFieldResponseDto[];
+
+  @ApiPropertyOptional({ nullable: true })
+  order!: number | null;
 }
 
 export class JobApplicationFormResponseDto {
@@ -759,7 +805,7 @@ export class JobApplicationFormResponseDto {
   customFields!: JobApplicationCustomFieldResponseDto[];
 }
 
-export class JobResponseDto {
+export class JobResponseDto implements JobResponseDtoType {
   @ApiProperty({ type: JobRequestFormResponseDto, nullable: true })
   requestForm!: JobRequestFormResponseDto | null;
 
@@ -773,7 +819,7 @@ export class JobResponseDto {
   approvals!: JobApprovalResponseDto[];
 }
 
-export class JobListQueryDto {
+export class JobListQueryDto implements JobListQueryDtoType {
   @ApiPropertyOptional({ enum: JOB_WORKFLOW_STATUSES })
   @IsOptional()
   @Transform(normalizeEnumValue)

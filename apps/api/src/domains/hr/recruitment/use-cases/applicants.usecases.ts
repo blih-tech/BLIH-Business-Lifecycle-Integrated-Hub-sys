@@ -8,10 +8,11 @@ import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   ApplicantListQueryDto,
+  ApplicantResponseDto,
   CreateApplicantDto,
   UpdateApplicantDto,
   UpdateApplicantStatusDto,
-} from '../dto/applicant.dto';
+} from '@repo/types';
 import { RecruitmentNotificationService } from '../recruitment-notification.service';
 import {
   applicantInclude,
@@ -177,7 +178,10 @@ export class CreateApplicantUseCase {
     private readonly notifications: RecruitmentNotificationService,
   ) {}
 
-  async execute(dto: CreateApplicantDto, changedById?: string) {
+  async execute(
+    dto: CreateApplicantDto,
+    changedById?: string,
+  ): Promise<ApplicantResponseDto> {
     const submittedEmail = dto.email.trim();
     const normalizedEmail = normalizeEmail(submittedEmail);
     const [job, referredBy] = await Promise.all([
@@ -381,7 +385,7 @@ export class CreateApplicantUseCase {
 export class ListApplicantsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: ApplicantListQueryDto) {
+  async execute(query: ApplicantListQueryDto): Promise<ApplicantResponseDto[]> {
     const list = await this.prisma.applicant.findMany({
       where: {
         ...(query.status ? { status: query.status } : {}),
@@ -402,7 +406,7 @@ export class ListApplicantsUseCase {
 export class GetApplicantUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<ApplicantResponseDto> {
     const applicant = await this.prisma.applicant.findUnique({
       where: { id },
       include: applicantInclude,
@@ -416,7 +420,10 @@ export class GetApplicantUseCase {
 export class UpdateApplicantUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateApplicantDto) {
+  async execute(
+    id: string,
+    dto: UpdateApplicantDto,
+  ): Promise<ApplicantResponseDto> {
     const existing = await this.prisma.applicant.findUnique({
       where: { id },
       select: {
@@ -749,7 +756,7 @@ export class UpdateApplicantStatusUseCase {
     id: string,
     dto: UpdateApplicantStatusDto,
     changedById?: string,
-  ) {
+  ): Promise<ApplicantResponseDto> {
     const existing = await this.prisma.applicant.findUnique({
       where: { id },
       select: { id: true, status: true, jobId: true },

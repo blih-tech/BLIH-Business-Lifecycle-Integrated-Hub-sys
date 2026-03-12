@@ -21,49 +21,33 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import {
+  ENDORSEMENT_LEVELS,
+  INTERVIEW_ATTENDANCE_STATUSES,
+  INTERVIEW_QUESTION_CATEGORIES,
+  INTERVIEW_QUESTION_TYPES,
+  INTERVIEW_STATUSES,
+  INTERVIEW_TYPES,
+} from '@repo/types';
+import type {
+  CreateInterviewDto as CreateInterviewDtoType,
+  InterviewFeedbackResponseDto as InterviewFeedbackResponseDtoType,
+  InterviewListQueryDto as InterviewListQueryDtoType,
+  InterviewQuestionResponseAnswer,
+  InterviewQuestionResponseInputItemDto as InterviewQuestionResponseInputDtoType,
+  InterviewQuestionResponseItemDto as InterviewQuestionResponseItemDtoType,
+  InterviewResponseAssignmentDto as InterviewResponseAssignmentDtoType,
+  InterviewResponseDto as InterviewResponseDtoType,
+  InterviewResponseInterviewerDto as InterviewResponseInterviewerDtoType,
+  InterviewResponseParticipantApplicantDto as InterviewResponseParticipantApplicantDtoType,
+  InterviewResponseParticipantDto as InterviewResponseParticipantDtoType,
+  InterviewerAssignmentInputDto as InterviewerAssignmentInputDtoType,
+  UpdateInterviewDto as UpdateInterviewDtoType,
+  UpdateInterviewParticipantAttendanceDto as UpdateInterviewParticipantAttendanceDtoType,
+  UpsertInterviewFeedbackDto as UpsertInterviewFeedbackDtoType,
+} from '@repo/types';
 
-const ENDORSEMENT_LEVELS = ['STRONG_YES', 'YES', 'UNCERTAIN', 'NO'] as const;
-const INTERVIEW_STATUSES = [
-  'SCHEDULED',
-  'COMPLETED',
-  'CANCELLED',
-  'NO_SHOW',
-] as const;
-const INTERVIEW_TYPES = [
-  'HR_SCREENING',
-  'TECHNICAL',
-  'BEHAVIORAL',
-  'PANEL',
-  'FINAL',
-] as const;
-const INTERVIEW_ATTENDANCE_STATUSES = [
-  'SCHEDULED',
-  'ATTENDING',
-  'NO_SHOW',
-  'COMPLETED',
-  'CANCELLED',
-] as const;
-const INTERVIEW_QUESTION_CATEGORIES = [
-  'TECHNICAL',
-  'BEHAVIORAL',
-  'SITUATIONAL',
-  'PROBLEM_SOLVING',
-  'LEADERSHIP',
-  'COMMUNICATION',
-  'DOMAIN_KNOWLEDGE',
-  'CULTURAL_FIT',
-  'GENERAL',
-] as const;
-const INTERVIEW_QUESTION_TYPES = [
-  'TEXT',
-  'TEXTAREA',
-  'BOOLEAN',
-  'RATING',
-  'SINGLE_SELECT',
-  'MULTI_SELECT',
-] as const;
-
-export class InterviewQuestionResponseInputDto {
+export class InterviewQuestionResponseInputDto implements InterviewQuestionResponseInputDtoType {
   @ApiPropertyOptional({
     nullable: true,
     description:
@@ -95,7 +79,7 @@ export class InterviewQuestionResponseInputDto {
     nullable: true,
   })
   @IsDefined()
-  answer!: unknown;
+  answer!: InterviewQuestionResponseAnswer;
 
   @ApiPropertyOptional({ nullable: true, minimum: 0 })
   @IsOptional()
@@ -121,7 +105,7 @@ export class InterviewQuestionResponseInputDto {
   notes?: string | null;
 }
 
-export class InterviewQuestionResponseItemDto {
+export class InterviewQuestionResponseItemDto implements InterviewQuestionResponseItemDtoType {
   @ApiPropertyOptional({ nullable: true })
   questionId!: string | null;
 
@@ -138,7 +122,7 @@ export class InterviewQuestionResponseItemDto {
   type!: (typeof INTERVIEW_QUESTION_TYPES)[number];
 
   @ApiProperty({ nullable: true })
-  answer!: unknown;
+  answer!: InterviewQuestionResponseAnswer;
 
   @ApiPropertyOptional({ nullable: true })
   score!: number | null;
@@ -153,7 +137,7 @@ export class InterviewQuestionResponseItemDto {
   notes!: string | null;
 }
 
-export class InterviewerAssignmentInputDto {
+export class InterviewerAssignmentInputDto implements InterviewerAssignmentInputDtoType {
   @ApiProperty({ example: 'f8ef7938-8b1e-4a6e-bd25-c61432540273' })
   @IsUUID()
   interviewerId!: string;
@@ -164,7 +148,7 @@ export class InterviewerAssignmentInputDto {
   role?: string | null;
 }
 
-export class CreateInterviewDto {
+export class CreateInterviewDto implements CreateInterviewDtoType {
   @ApiProperty({ example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374' })
   @IsUUID()
   jobId!: string;
@@ -218,11 +202,11 @@ export class CreateInterviewDto {
   interviewers!: InterviewerAssignmentInputDto[];
 }
 
-export class UpdateInterviewDto extends PartialType(
-  OmitType(CreateInterviewDto, ['jobId'] as const),
-) {}
+export class UpdateInterviewDto
+  extends PartialType(OmitType(CreateInterviewDto, ['jobId'] as const))
+  implements UpdateInterviewDtoType {}
 
-export class UpdateInterviewParticipantAttendanceDto {
+export class UpdateInterviewParticipantAttendanceDto implements UpdateInterviewParticipantAttendanceDtoType {
   @ApiProperty({ enum: INTERVIEW_ATTENDANCE_STATUSES })
   @IsEnum(INTERVIEW_ATTENDANCE_STATUSES)
   attendanceStatus!:
@@ -233,7 +217,7 @@ export class UpdateInterviewParticipantAttendanceDto {
     | 'CANCELLED';
 }
 
-export class UpsertInterviewFeedbackDto {
+export class UpsertInterviewFeedbackDto implements UpsertInterviewFeedbackDtoType {
   @ApiPropertyOptional({ nullable: true, example: 82.5 })
   @IsOptional()
   @IsNumber({ maxDecimalPlaces: 2 })
@@ -284,7 +268,7 @@ export class UpsertInterviewFeedbackDto {
   isDraft?: boolean;
 }
 
-export class InterviewResponseParticipantApplicantDto {
+export class InterviewResponseParticipantApplicantDto implements InterviewResponseParticipantApplicantDtoType {
   @ApiProperty()
   id!: string;
 
@@ -301,7 +285,7 @@ export class InterviewResponseParticipantApplicantDto {
   status!: string;
 }
 
-export class InterviewResponseParticipantDto {
+export class InterviewResponseParticipantDto implements InterviewResponseParticipantDtoType {
   @ApiProperty()
   id!: string;
 
@@ -329,7 +313,7 @@ export class InterviewResponseParticipantDto {
   createdAt!: string;
 }
 
-export class InterviewResponseInterviewerDto {
+export class InterviewResponseInterviewerDto implements InterviewResponseInterviewerDtoType {
   @ApiProperty()
   id!: string;
 
@@ -346,7 +330,7 @@ export class InterviewResponseInterviewerDto {
   status!: string;
 }
 
-export class InterviewResponseAssignmentDto {
+export class InterviewResponseAssignmentDto implements InterviewResponseAssignmentDtoType {
   @ApiProperty()
   id!: string;
 
@@ -369,7 +353,7 @@ export class InterviewResponseAssignmentDto {
   createdAt!: string;
 }
 
-export class InterviewFeedbackResponseDto {
+export class InterviewFeedbackResponseDto implements InterviewFeedbackResponseDtoType {
   @ApiProperty()
   id!: string;
 
@@ -416,7 +400,7 @@ export class InterviewFeedbackResponseDto {
   updatedAt!: string;
 }
 
-export class InterviewResponseDto {
+export class InterviewResponseDto implements InterviewResponseDtoType {
   @ApiProperty()
   id!: string;
 
@@ -463,7 +447,7 @@ export class InterviewResponseDto {
   updatedAt!: string;
 }
 
-export class InterviewListQueryDto {
+export class InterviewListQueryDto implements InterviewListQueryDtoType {
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()

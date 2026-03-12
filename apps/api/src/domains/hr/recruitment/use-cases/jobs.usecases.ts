@@ -10,18 +10,27 @@ import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant
 import type { AuthPrincipal } from '../../../../shared/interfaces/auth-principal.interface';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
+  ApprovalDecision,
   ApproveJobDto,
   CloseJobDto,
   CreateJobDto,
-  JobApplicationCustomFieldInputDto,
-  JobApplicationFormFieldInputDto,
-  JobApplicationFormSectionInputDto,
+  JobApplicationCustomFieldDto,
+  JobApplicationFormFieldDto,
+  JobApplicationFormSectionDto,
+  JobApprovalStage,
   JobListQueryDto,
+  JobPriority,
+  JobResponseDto,
+  JobResponsibilitiesResponseDto,
+  JobSkillsResponseDto,
+  JobStageApprovalStatus,
+  JobToolsResponseDto,
+  JobWorkflowStatus,
   UpdateJobDto,
   UpsertJobResponsibilitiesDto,
   UpsertJobSkillsDto,
   UpsertJobToolsDto,
-} from '../dto/job.dto';
+} from '@repo/types';
 import {
   assertDepartmentPositionIntegrity,
   assertSalaryRange,
@@ -36,31 +45,25 @@ import {
   requiredRoleForStage,
 } from './recruitment.usecase-helpers';
 
-type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
+type ApprovalStage = JobApprovalStage;
 type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
 type ApprovalStepStatus =
   | 'PENDING_FOR_APPROVAL'
   | 'REQUEST_REVIEW'
   | 'APPROVED'
   | 'REJECTED';
-type StageStatus = 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+type StageStatus = JobStageApprovalStatus;
 
 interface ApprovalState {
   id: string;
   level: number;
   stage: ApprovalStage;
-  decision: 'PENDING' | 'APPROVED' | 'REJECTED';
+  decision: ApprovalDecision;
 }
 
 interface RequestWorkflowState {
-  status:
-    | 'DRAFT'
-    | 'PENDING_FOR_APPROVAL'
-    | 'READY_TO_POST'
-    | 'PUBLISHED'
-    | 'CLOSED'
-    | 'REJECTED';
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  status: JobWorkflowStatus;
+  priority: JobPriority;
   draftedAt: Date | null;
   pendingApprovalAt: Date | null;
   readyToPostAt: Date | null;
@@ -123,7 +126,7 @@ const toApprovalState = (approval: {
 });
 
 const validateApplicationCustomFieldOptions = (
-  customFields: JobApplicationCustomFieldInputDto[],
+  customFields: JobApplicationCustomFieldDto[],
 ) => {
   const seenIds = new Set<string>();
   for (const field of customFields) {
@@ -149,7 +152,7 @@ const validateApplicationCustomFieldOptions = (
 };
 
 const validateApplicantFieldConfig = (
-  applicantFields: JobApplicationFormFieldInputDto[],
+  applicantFields: JobApplicationFormFieldDto[],
 ) => {
   const seenKeys = new Set<string>();
   for (const field of applicantFields) {
@@ -169,7 +172,7 @@ const validateApplicantFieldConfig = (
 };
 
 const validateFormSectionConfig = (
-  sections: JobApplicationFormSectionInputDto[],
+  sections: JobApplicationFormSectionDto[],
 ) => {
   const seenKeys = new Set<string>();
   for (const section of sections) {
@@ -191,7 +194,7 @@ const validateFormSectionConfig = (
 const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
 
-const defaultApplicantFields = (): JobApplicationFormFieldInputDto[] => [
+const defaultApplicantFields = (): JobApplicationFormFieldDto[] => [
   { key: 'PHONE', enabled: true, required: false, order: 1 },
   { key: 'LINKEDIN_URL', enabled: false, required: false, order: 2 },
   { key: 'PORTFOLIO_URL', enabled: false, required: false, order: 3 },
@@ -200,7 +203,7 @@ const defaultApplicantFields = (): JobApplicationFormFieldInputDto[] => [
   { key: 'COVER_LETTER', enabled: false, required: false, order: 6 },
 ];
 
-const defaultFormSections = (): JobApplicationFormSectionInputDto[] => [
+const defaultFormSections = (): JobApplicationFormSectionDto[] => [
   { key: 'EDUCATION', enabled: false, required: false, order: 1 },
   { key: 'EXPERIENCE', enabled: false, required: false, order: 2 },
 ];
@@ -349,7 +352,10 @@ const mergeNestedPayload = (
 export class CreateJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(dto: CreateJobDto, principal: AuthPrincipal) {
+  async execute(
+    dto: CreateJobDto,
+    principal: AuthPrincipal,
+  ): Promise<JobResponseDto> {
     validateApplicationCustomFieldOptions(dto.applicationForm.customFields);
     validateApplicantFieldConfig(dto.applicationForm.applicantFields);
     validateFormSectionConfig(dto.applicationForm.sections);
@@ -502,7 +508,7 @@ export class CreateJobUseCase {
 export class ListJobsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: JobListQueryDto) {
+  async execute(query: JobListQueryDto): Promise<JobResponseDto[]> {
     const requestFormAnd: Prisma.JobRequestFormWhereInput[] = [];
     if (query.status) {
       requestFormAnd.push({ status: query.status });
@@ -553,7 +559,7 @@ export class ListJobsUseCase {
 export class GetJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<JobResponseDto> {
     const job = await this.prisma.job
       .update({
         where: { id },
@@ -579,7 +585,7 @@ export class GetJobUseCase {
 export class UpdateJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateJobDto) {
+  async execute(id: string, dto: UpdateJobDto): Promise<JobResponseDto> {
     const existing = await this.prisma.job.findUnique({
       where: { id },
       include: jobInclude,
@@ -796,7 +802,7 @@ export class UpdateJobUseCase {
 export class SubmitJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<JobResponseDto> {
     const existing = await this.prisma.job.findUnique({
       where: { id },
       select: {
@@ -946,7 +952,11 @@ export class SubmitJobUseCase {
 export class ApproveJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: ApproveJobDto, principal: AuthPrincipal) {
+  async execute(
+    id: string,
+    dto: ApproveJobDto,
+    principal: AuthPrincipal,
+  ): Promise<JobResponseDto> {
     const approverId = principal.userId ?? principal.sub;
     if (!approverId) {
       throw new ForbiddenException('Authenticated user id required');
@@ -1074,7 +1084,7 @@ export class ApproveJobUseCase {
 export class PublishJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<JobResponseDto> {
     const existing = await this.prisma.job.findUnique({
       where: { id },
       include: jobInclude,
@@ -1102,7 +1112,7 @@ export class PublishJobUseCase {
 export class CloseJobUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto?: CloseJobDto) {
+  async execute(id: string, dto?: CloseJobDto): Promise<JobResponseDto> {
     const existing = await this.prisma.job.findUnique({
       where: { id },
       include: jobInclude,
@@ -1136,7 +1146,10 @@ export class CloseJobUseCase {
 export class UpsertJobSkillsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpsertJobSkillsDto) {
+  async execute(
+    id: string,
+    dto: UpsertJobSkillsDto,
+  ): Promise<JobSkillsResponseDto> {
     const job = await this.prisma.job.findUnique({
       where: { id },
       select: { preferredSkills: true },
@@ -1164,7 +1177,10 @@ export class UpsertJobSkillsUseCase {
 export class UpsertJobToolsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpsertJobToolsDto) {
+  async execute(
+    id: string,
+    dto: UpsertJobToolsDto,
+  ): Promise<JobToolsResponseDto> {
     await this.prisma.job.findUniqueOrThrow({
       where: { id },
       select: { id: true },
@@ -1184,7 +1200,10 @@ export class UpsertJobToolsUseCase {
 export class UpsertJobResponsibilitiesUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpsertJobResponsibilitiesDto) {
+  async execute(
+    id: string,
+    dto: UpsertJobResponsibilitiesDto,
+  ): Promise<JobResponsibilitiesResponseDto> {
     const job = await this.prisma.job.findUnique({
       where: { id },
       select: { id: true },

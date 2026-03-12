@@ -16,26 +16,17 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-
-const APPLICANT_STATUSES = [
-  'APPLIED',
-  'SCREENING',
-  'SHORTLISTED',
-  'INTERVIEW',
-  'WAITLIST',
-  'OFFER',
-  'HIRED',
-  'REJECTED',
-  'WITHDRAWN',
-] as const;
-
-const CANDIDATE_SOURCES = [
-  'COMPANY_SITE',
-  'LINKEDIN',
-  'TELEGRAM',
-  'REFERRAL',
-  'AGENCY',
-] as const;
+import { APPLICANT_STATUSES, CANDIDATE_SOURCES } from '@repo/types';
+import type {
+  ApplicantEducationDto as ApplicantEducationDtoType,
+  ApplicantExperienceDto as ApplicantExperienceDtoType,
+  ApplicantListQueryDto as ApplicantListQueryDtoType,
+  ApplicantResponseDto as ApplicantResponseDtoType,
+  ApplicantStatusHistoryDto as ApplicantStatusHistoryDtoType,
+  CreateApplicantDto as CreateApplicantDtoType,
+  UpdateApplicantDto as UpdateApplicantDtoType,
+  UpdateApplicantStatusDto as UpdateApplicantStatusDtoType,
+} from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
@@ -45,7 +36,7 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
     .toUpperCase();
 };
 
-export class ApplicantEducationInputDto {
+export class ApplicantEducationInputDto implements ApplicantEducationDtoType {
   @ApiProperty({ example: 'Addis Ababa University' })
   @IsString()
   @IsNotEmpty()
@@ -72,7 +63,7 @@ export class ApplicantEducationInputDto {
   endDate?: string | null;
 }
 
-export class ApplicantExperienceInputDto {
+export class ApplicantExperienceInputDto implements ApplicantExperienceDtoType {
   @ApiProperty({ example: 'TechCorp' })
   @IsString()
   @IsNotEmpty()
@@ -99,7 +90,7 @@ export class ApplicantExperienceInputDto {
   description?: string | null;
 }
 
-export class CreateApplicantDto {
+export class CreateApplicantDto implements CreateApplicantDtoType {
   @ApiProperty({ example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374' })
   @IsUUID()
   jobId!: string;
@@ -242,9 +233,11 @@ export class CreateApplicantDto {
   experiences?: ApplicantExperienceInputDto[];
 }
 
-export class UpdateApplicantDto extends PartialType(CreateApplicantDto) {}
+export class UpdateApplicantDto
+  extends PartialType(CreateApplicantDto)
+  implements UpdateApplicantDtoType {}
 
-export class UpdateApplicantStatusDto {
+export class UpdateApplicantStatusDto implements UpdateApplicantStatusDtoType {
   @ApiProperty({ enum: APPLICANT_STATUSES })
   @Transform(normalizeEnumValue)
   @IsEnum(APPLICANT_STATUSES)
@@ -266,7 +259,7 @@ export class ApplicantExperienceResponseDto extends ApplicantExperienceInputDto 
   id!: string;
 }
 
-export class ApplicantStatusHistoryResponseDto {
+export class ApplicantStatusHistoryResponseDto implements ApplicantStatusHistoryDtoType {
   @ApiProperty()
   id!: string;
 
@@ -286,7 +279,7 @@ export class ApplicantStatusHistoryResponseDto {
   changedAt!: string;
 }
 
-export class ApplicantResponseDto {
+export class ApplicantResponseDto implements ApplicantResponseDtoType {
   @ApiProperty()
   id!: string;
 
@@ -417,7 +410,7 @@ export class ApplicantResponseDto {
   updatedAt!: string;
 }
 
-export class ApplicantListQueryDto {
+export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @ApiPropertyOptional({ enum: APPLICANT_STATUSES })
   @IsOptional()
   @Transform(normalizeEnumValue)

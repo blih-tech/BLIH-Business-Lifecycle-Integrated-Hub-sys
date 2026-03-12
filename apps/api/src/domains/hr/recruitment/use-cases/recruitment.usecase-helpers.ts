@@ -2,6 +2,28 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import type { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
+import type {
+  ApplicantResponseDto,
+  ApplicantStatus,
+  ApprovalDecision,
+  InterviewAttendanceStatus,
+  InterviewFeedbackResponseDto,
+  InterviewQuestionDto,
+  InterviewQuestionResponseAnswer,
+  InterviewQuestionResponseItemDto,
+  InterviewResponseAssignmentDto,
+  InterviewResponseDto,
+  InterviewResponseInterviewerDto,
+  InterviewResponseParticipantApplicantDto,
+  InterviewResponseParticipantDto,
+  InterviewStatus,
+  JobApprovalStage,
+  JobApplicationFieldType,
+  JobResponseDto,
+  JobStageApprovalStatus,
+  JobWorkflowStatus,
+  OfferResponseDto,
+} from '@repo/types';
 
 export const jobInclude = {
   requestForm: {
@@ -39,8 +61,7 @@ export const applicantInclude = {
   statusHistory: { orderBy: { changedAt: 'desc' as const } },
 };
 
-type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
-type ApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
+type ApprovalStage = JobApprovalStage;
 type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
 type ApprovalStepStatus =
   | 'PENDING_FOR_APPROVAL'
@@ -75,14 +96,7 @@ const JOB_APPLICANT_FIELD_METADATA: Record<
   string,
   {
     label: string;
-    type:
-      | 'TEXT'
-      | 'TEXTAREA'
-      | 'NUMBER'
-      | 'SELECT'
-      | 'FILE'
-      | 'DATE'
-      | 'CHECKBOX';
+    type: JobApplicationFieldType;
     helpText: string | null;
     options: string[];
   }
@@ -128,14 +142,7 @@ const JOB_APPLICANT_FIELD_METADATA: Record<
 interface JobApplicationSectionFieldMetadata {
   key: string;
   label: string;
-  type:
-    | 'TEXT'
-    | 'TEXTAREA'
-    | 'NUMBER'
-    | 'SELECT'
-    | 'FILE'
-    | 'DATE'
-    | 'CHECKBOX';
+  type: JobApplicationFieldType;
   required: boolean;
   helpText: string | null;
   options: string[];
@@ -307,7 +314,7 @@ function buildStageStatusSnapshot(approvals: any[]) {
   };
 }
 
-const APPLICANT_TRANSITIONS: Record<string, string[]> = {
+const APPLICANT_TRANSITIONS: Record<ApplicantStatus, ApplicantStatus[]> = {
   APPLIED: ['SCREENING'],
   SCREENING: ['SHORTLISTED', 'REJECTED', 'WITHDRAWN'],
   SHORTLISTED: ['INTERVIEW', 'REJECTED', 'WITHDRAWN'],
@@ -319,14 +326,17 @@ const APPLICANT_TRANSITIONS: Record<string, string[]> = {
   WITHDRAWN: [],
 };
 
-const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
+const INTERVIEW_TRANSITIONS: Record<InterviewStatus, InterviewStatus[]> = {
   SCHEDULED: ['COMPLETED', 'CANCELLED', 'NO_SHOW'],
   COMPLETED: [],
   CANCELLED: [],
   NO_SHOW: [],
 };
 
-const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<string, string[]> = {
+const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<
+  InterviewAttendanceStatus,
+  InterviewAttendanceStatus[]
+> = {
   SCHEDULED: ['ATTENDING', 'NO_SHOW', 'CANCELLED'],
   ATTENDING: ['COMPLETED', 'CANCELLED'],
   NO_SHOW: [],
@@ -334,12 +344,14 @@ const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<string, string[]> = {
   CANCELLED: [],
 };
 
-export function currentApprovalStage(status: string) {
+export function currentApprovalStage(
+  status: JobWorkflowStatus,
+): JobApprovalStage | null {
   if (status !== 'PENDING_FOR_APPROVAL') return null;
   return 'FINANCE';
 }
 
-export function requiredRoleForStage(stage: 'FINANCE' | 'GM' | 'HR_REVIEW') {
+export function requiredRoleForStage(stage: JobApprovalStage) {
   if (stage === 'FINANCE') return SYSTEM_ROLES.FINANCE_MANAGER;
   if (stage === 'GM') return SYSTEM_ROLES.SUPERADMIN;
   return SYSTEM_ROLES.HR_MANAGER;
@@ -361,7 +373,9 @@ export function isApprovalStageActionable(
   return current.decision === 'PENDING';
 }
 
-export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {
+export function computeJobStatusFromApprovals(
+  approvals: ApprovalState[],
+): JobWorkflowStatus {
   const finance = approvals.find((approval) => approval.stage === 'FINANCE');
   const gm = approvals.find((approval) => approval.stage === 'GM');
   const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
@@ -388,12 +402,12 @@ export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {
 export function approvalDecisionToStageStatus(decision: ApprovalDecision) {
   if (decision === 'APPROVED') return 'APPROVED' as const;
   if (decision === 'REJECTED') return 'REJECTED' as const;
-  return 'PENDING_FOR_APPROVAL' as const;
+  return 'PENDING_FOR_APPROVAL' as JobStageApprovalStatus;
 }
 
 export function assertApplicantTransition(
-  currentStatus: string,
-  nextStatus: string,
+  currentStatus: ApplicantStatus,
+  nextStatus: ApplicantStatus,
 ) {
   if (currentStatus === nextStatus) return;
   const allowed = APPLICANT_TRANSITIONS[currentStatus] ?? [];
@@ -405,8 +419,8 @@ export function assertApplicantTransition(
 }
 
 export function assertInterviewTransition(
-  currentStatus: string,
-  nextStatus: string,
+  currentStatus: InterviewStatus,
+  nextStatus: InterviewStatus,
 ) {
   if (currentStatus === nextStatus) return;
   const allowed = INTERVIEW_TRANSITIONS[currentStatus] ?? [];
@@ -418,8 +432,8 @@ export function assertInterviewTransition(
 }
 
 export function assertInterviewAttendanceTransition(
-  currentStatus: string,
-  nextStatus: string,
+  currentStatus: InterviewAttendanceStatus,
+  nextStatus: InterviewAttendanceStatus,
 ) {
   if (currentStatus === nextStatus) return;
   const allowed = INTERVIEW_ATTENDANCE_TRANSITIONS[currentStatus] ?? [];
@@ -595,7 +609,11 @@ export function normalizeSkillArray(values: string[] | null | undefined) {
   return normalized;
 }
 
-export function mapJob(job: any) {
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
+export function mapJob(job: any): JobResponseDto {
   const requestForm = job.requestForm;
   const requestApprovals = requestForm?.approvals ?? [];
   const stageStatuses = buildStageStatusSnapshot(requestApprovals);
@@ -762,7 +780,7 @@ export function mapJob(job: any) {
   };
 }
 
-export function mapApplicant(applicant: any) {
+export function mapApplicant(applicant: any): ApplicantResponseDto {
   return {
     id: applicant.id,
     jobId: applicant.jobId,
@@ -791,7 +809,7 @@ export function mapApplicant(applicant: any) {
     coverLetter: applicant.coverLetter ?? null,
     sourceSnapshot: toObjectRecord(applicant.sourceSnapshot),
     customFieldValues: toObjectRecord(applicant.customFieldValues),
-    appliedAt: dateToIso(applicant.appliedAt),
+    appliedAt: applicant.appliedAt.toISOString(),
     screeningAt: dateToIso(applicant.screeningAt),
     shortlistedAt: dateToIso(applicant.shortlistedAt),
     interviewAt: dateToIso(applicant.interviewAt),
@@ -834,7 +852,7 @@ export function mapApplicant(applicant: any) {
   };
 }
 
-export function mapOffer(offer: any) {
+export function mapOffer(offer: any): OfferResponseDto {
   return {
     id: offer.id,
     jobId: offer.jobId,
@@ -859,7 +877,9 @@ export function mapOffer(offer: any) {
   };
 }
 
-function mapInterviewParticipant(participant: any) {
+function mapInterviewParticipant(
+  participant: any,
+): InterviewResponseParticipantDto {
   return {
     id: participant.id,
     sessionId: participant.sessionId,
@@ -867,18 +887,20 @@ function mapInterviewParticipant(participant: any) {
     attendanceStatus: participant.attendanceStatus,
     createdAt: participant.createdAt.toISOString(),
     applicant: participant.applicant
-      ? {
+      ? ({
           id: participant.applicant.id,
           firstName: participant.applicant.firstName,
           lastName: participant.applicant.lastName,
           email: participant.applicant.email,
           status: participant.applicant.status,
-        }
+        } satisfies InterviewResponseParticipantApplicantDto)
       : null,
   };
 }
 
-function mapInterviewerAssignment(assignment: any) {
+function mapInterviewerAssignment(
+  assignment: any,
+): InterviewResponseAssignmentDto {
   return {
     id: assignment.id,
     sessionId: assignment.sessionId,
@@ -886,20 +908,20 @@ function mapInterviewerAssignment(assignment: any) {
     role: assignment.role ?? null,
     createdAt: assignment.createdAt.toISOString(),
     interviewer: assignment.interviewer
-      ? {
+      ? ({
           id: assignment.interviewer.id,
           firstName: assignment.interviewer.firstName,
           lastName: assignment.interviewer.lastName,
           email: assignment.interviewer.email,
           status: assignment.interviewer.status,
-        }
+        } satisfies InterviewResponseInterviewerDto)
       : null,
   };
 }
 
 function normalizeInterviewResponseAnswer(
   answer: unknown,
-): string | boolean | number | string[] | null {
+): InterviewQuestionResponseAnswer {
   if (answer == null) return null;
   if (typeof answer === 'string') return answer;
   if (typeof answer === 'boolean') return answer;
@@ -909,7 +931,9 @@ function normalizeInterviewResponseAnswer(
   return null;
 }
 
-function mapInterviewQuestionResponseItem(item: unknown) {
+function mapInterviewQuestionResponseItem(
+  item: unknown,
+): InterviewQuestionResponseItemDto | null {
   if (!item || typeof item !== 'object' || Array.isArray(item)) {
     return null;
   }
@@ -931,8 +955,14 @@ function mapInterviewQuestionResponseItem(item: unknown) {
   return {
     questionId: typeof row.questionId === 'string' ? row.questionId : null,
     question: typeof row.question === 'string' ? row.question : '',
-    category: typeof row.category === 'string' ? row.category : null,
-    type: typeof row.type === 'string' ? row.type : 'TEXT',
+    category:
+      typeof row.category === 'string'
+        ? (row.category as InterviewQuestionResponseItemDto['category'])
+        : null,
+    type:
+      typeof row.type === 'string'
+        ? (row.type as InterviewQuestionResponseItemDto['type'])
+        : 'TEXT',
     answer: normalizeInterviewResponseAnswer(row.answer),
     score,
     maxScore,
@@ -941,7 +971,7 @@ function mapInterviewQuestionResponseItem(item: unknown) {
   };
 }
 
-export function mapInterviewQuestion(row: any) {
+export function mapInterviewQuestion(row: any): InterviewQuestionDto {
   return {
     id: row.id,
     question: row.question,
@@ -958,7 +988,9 @@ export function mapInterviewQuestion(row: any) {
   };
 }
 
-export function mapInterviewFeedback(feedback: any) {
+export function mapInterviewFeedback(
+  feedback: any,
+): InterviewFeedbackResponseDto {
   const score =
     typeof feedback.score === 'number' && Number.isFinite(feedback.score)
       ? feedback.score
@@ -966,7 +998,7 @@ export function mapInterviewFeedback(feedback: any) {
   const questionResponses = Array.isArray(feedback.questionResponses)
     ? feedback.questionResponses
         .map((item: unknown) => mapInterviewQuestionResponseItem(item))
-        .filter(Boolean)
+        .filter(isDefined)
     : null;
 
   return {
@@ -987,7 +1019,7 @@ export function mapInterviewFeedback(feedback: any) {
   };
 }
 
-export function mapInterview(session: any) {
+export function mapInterview(session: any): InterviewResponseDto {
   const sessionFeedbacks = Array.isArray(session.feedbacks)
     ? session.feedbacks
     : (session.participants ?? []).flatMap(

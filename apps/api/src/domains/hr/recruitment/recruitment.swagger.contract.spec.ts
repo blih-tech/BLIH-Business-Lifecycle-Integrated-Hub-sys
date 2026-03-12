@@ -7,6 +7,7 @@ import { ApplicantsController } from './applicants.controller';
 import { InterviewQuestionsController } from './interview-questions.controller';
 import { InterviewsController } from './interviews.controller';
 import { JobsController } from './jobs.controller';
+import { OffersController } from './offers.controller';
 import {
   ApproveJobUseCase,
   CloseJobUseCase,
@@ -14,16 +15,21 @@ import {
   CreateInterviewUseCase,
   CreateInterviewQuestionUseCase,
   CreateJobUseCase,
+  CreateOfferUseCase,
   DeactivateInterviewQuestionUseCase,
   GetApplicantUseCase,
   GetInterviewUseCase,
+  GetOfferUseCase,
   ListInterviewParticipantFeedbackUseCase,
   ListInterviewQuestionsUseCase,
   GetJobUseCase,
   ListApplicantsUseCase,
   ListInterviewsUseCase,
   ListJobsUseCase,
+  ListOffersUseCase,
   PublishJobUseCase,
+  RespondOfferUseCase,
+  SendOfferUseCase,
   SubmitJobUseCase,
   UpdateInterviewParticipantAttendanceUseCase,
   UpdateInterviewQuestionUseCase,
@@ -31,10 +37,12 @@ import {
   UpdateApplicantUseCase,
   UpdateInterviewUseCase,
   UpdateJobUseCase,
+  UpdateOfferUseCase,
   UpsertInterviewFeedbackUseCase,
   UpsertJobResponsibilitiesUseCase,
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
+  WithdrawOfferUseCase,
 } from './use-cases';
 
 const useCaseTokens = [
@@ -65,6 +73,13 @@ const useCaseTokens = [
   UpdateInterviewQuestionUseCase,
   DeactivateInterviewQuestionUseCase,
   ListInterviewQuestionsUseCase,
+  CreateOfferUseCase,
+  ListOffersUseCase,
+  GetOfferUseCase,
+  UpdateOfferUseCase,
+  SendOfferUseCase,
+  RespondOfferUseCase,
+  WithdrawOfferUseCase,
 ] as const;
 
 type HttpMethod = 'get' | 'post' | 'patch';
@@ -177,6 +192,25 @@ const expectedOperations: Array<{
     method: 'patch',
     expectsBody: false,
   },
+  { path: '/hr/recruitment/offers', method: 'post', expectsBody: true },
+  { path: '/hr/recruitment/offers', method: 'get', expectsBody: false },
+  { path: '/hr/recruitment/offers/{id}', method: 'get', expectsBody: false },
+  { path: '/hr/recruitment/offers/{id}', method: 'patch', expectsBody: true },
+  {
+    path: '/hr/recruitment/offers/{id}/send',
+    method: 'post',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/offers/{id}/respond',
+    method: 'post',
+    expectsBody: true,
+  },
+  {
+    path: '/hr/recruitment/offers/{id}/withdraw',
+    method: 'post',
+    expectsBody: true,
+  },
 ];
 
 describe('Recruitment Swagger Contract', () => {
@@ -194,6 +228,7 @@ describe('Recruitment Swagger Contract', () => {
         ApplicantsController,
         InterviewsController,
         InterviewQuestionsController,
+        OffersController,
       ],
       providers,
     })

@@ -12,6 +12,12 @@
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import type {
+  JobResponseDto as JobResponseContract,
+  JobResponsibilitiesResponseDto as JobResponsibilitiesResponseContract,
+  JobSkillsResponseDto as JobSkillsResponseContract,
+  JobToolsResponseDto as JobToolsResponseContract,
+} from '@repo/types';
 import {
   JobApprovalPermissions,
   JobPermissions,
@@ -223,7 +229,7 @@ export class JobsController {
   create(
     @Body() body: CreateJobDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<JobResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -248,7 +254,7 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  list(@Query() query: JobListQueryDto) {
+  list(@Query() query: JobListQueryDto): Promise<JobResponseContract[]> {
     return this.listJobs.execute(query);
   }
 
@@ -268,7 +274,7 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  get(@Param('id') id: string) {
+  get(@Param('id') id: string): Promise<JobResponseContract> {
     return this.getJobById.execute(id);
   }
 
@@ -371,7 +377,10 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  update(@Param('id') id: string, @Body() body: UpdateJobDto) {
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateJobDto,
+  ): Promise<JobResponseContract> {
     return this.updateJobById.execute(id, body);
   }
 
@@ -401,7 +410,7 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  submit(@Param('id') id: string) {
+  submit(@Param('id') id: string): Promise<JobResponseContract> {
     return this.submitJobById.execute(id);
   }
 
@@ -456,7 +465,7 @@ export class JobsController {
     @Param('id') id: string,
     @Body() body: ApproveJobDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<JobResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -489,7 +498,7 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  publish(@Param('id') id: string) {
+  publish(@Param('id') id: string): Promise<JobResponseContract> {
     return this.publishJobById.execute(id);
   }
 
@@ -525,7 +534,10 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  close(@Param('id') id: string, @Body() body?: CloseJobDto) {
+  close(
+    @Param('id') id: string,
+    @Body() body?: CloseJobDto,
+  ): Promise<JobResponseContract> {
     return this.closeJobById.execute(id, body);
   }
 
@@ -564,7 +576,10 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  upsertSkills(@Param('id') id: string, @Body() body: UpsertJobSkillsDto) {
+  upsertSkills(
+    @Param('id') id: string,
+    @Body() body: UpsertJobSkillsDto,
+  ): Promise<JobSkillsResponseContract> {
     return this.upsertJobSkills.execute(id, body);
   }
 
@@ -602,7 +617,10 @@ export class JobsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  upsertTools(@Param('id') id: string, @Body() body: UpsertJobToolsDto) {
+  upsertTools(
+    @Param('id') id: string,
+    @Body() body: UpsertJobToolsDto,
+  ): Promise<JobToolsResponseContract> {
     return this.upsertJobTools.execute(id, body);
   }
 
@@ -646,7 +664,7 @@ export class JobsController {
   upsertResponsibilities(
     @Param('id') id: string,
     @Body() body: UpsertJobResponsibilitiesDto,
-  ) {
+  ): Promise<JobResponsibilitiesResponseContract> {
     return this.upsertJobResponsibilities.execute(id, body);
   }
 }

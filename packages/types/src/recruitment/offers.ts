@@ -8,6 +8,8 @@ export type OfferStatus =
   | 'EXPIRED'
   | 'WITHDRAWN';
 
+export type OfferDecision = 'ACCEPTED' | 'DECLINED';
+
 export const OFFER_STATUSES = [
   'DRAFT',
   'SENT',
@@ -16,6 +18,8 @@ export const OFFER_STATUSES = [
   'EXPIRED',
   'WITHDRAWN',
 ] as const;
+
+export const RESPOND_OFFER_DECISIONS = ['ACCEPTED', 'DECLINED'] as const;
 
 export interface CreateOfferDto {
   jobId: string;
@@ -39,7 +43,7 @@ export interface SendOfferDto {
 }
 
 export interface RespondOfferDto {
-  decision: 'ACCEPTED' | 'DECLINED';
+  decision: OfferDecision;
 }
 
 export interface WithdrawOfferDto {
@@ -69,3 +73,8 @@ export interface OfferResponseDto {
   updatedAt: string;
 }
 
+export interface OfferListQueryDto {
+  status?: OfferStatus;
+  jobId?: string;
+  applicantId?: string;
+}

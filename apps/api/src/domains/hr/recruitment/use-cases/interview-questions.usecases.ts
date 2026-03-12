@@ -6,9 +6,10 @@ import {
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   CreateInterviewQuestionDto,
+  InterviewQuestionDto,
   InterviewQuestionListQueryDto,
   UpdateInterviewQuestionDto,
-} from '../dto/interview-question.dto';
+} from '@repo/types';
 import {
   mapInterviewQuestion,
   normalizeStringArray,
@@ -65,7 +66,10 @@ function normalizeTagsFilter(tags: string | undefined) {
 export class CreateInterviewQuestionUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(dto: CreateInterviewQuestionDto, createdById: string) {
+  async execute(
+    dto: CreateInterviewQuestionDto,
+    createdById: string,
+  ): Promise<InterviewQuestionDto> {
     const options = normalizeTypeOptions(
       dto.type,
       normalizeStringArray(dto.options ?? []),
@@ -93,7 +97,10 @@ export class CreateInterviewQuestionUseCase {
 export class UpdateInterviewQuestionUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateInterviewQuestionDto) {
+  async execute(
+    id: string,
+    dto: UpdateInterviewQuestionDto,
+  ): Promise<InterviewQuestionDto> {
     const existing = await this.prisma.interviewQuestion.findUnique({
       where: { id },
     });
@@ -136,7 +143,7 @@ export class UpdateInterviewQuestionUseCase {
 export class DeactivateInterviewQuestionUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<InterviewQuestionDto> {
     const existing = await this.prisma.interviewQuestion.findUnique({
       where: { id },
       select: { id: true },
@@ -157,7 +164,9 @@ export class DeactivateInterviewQuestionUseCase {
 export class ListInterviewQuestionsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: InterviewQuestionListQueryDto) {
+  async execute(
+    query: InterviewQuestionListQueryDto,
+  ): Promise<InterviewQuestionDto[]> {
     const tags = normalizeTagsFilter(query.tags);
 
     const rows = await this.prisma.interviewQuestion.findMany({

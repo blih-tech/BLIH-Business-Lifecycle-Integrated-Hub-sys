@@ -11,27 +11,16 @@ import {
   Max,
   Min,
 } from 'class-validator';
-
-const INTERVIEW_QUESTION_CATEGORIES = [
-  'TECHNICAL',
-  'BEHAVIORAL',
-  'SITUATIONAL',
-  'PROBLEM_SOLVING',
-  'LEADERSHIP',
-  'COMMUNICATION',
-  'DOMAIN_KNOWLEDGE',
-  'CULTURAL_FIT',
-  'GENERAL',
-] as const;
-
-const INTERVIEW_QUESTION_TYPES = [
-  'TEXT',
-  'TEXTAREA',
-  'BOOLEAN',
-  'RATING',
-  'SINGLE_SELECT',
-  'MULTI_SELECT',
-] as const;
+import {
+  INTERVIEW_QUESTION_CATEGORIES,
+  INTERVIEW_QUESTION_TYPES,
+} from '@repo/types';
+import type {
+  CreateInterviewQuestionDto as CreateInterviewQuestionDtoType,
+  InterviewQuestionDto as InterviewQuestionResponseDtoType,
+  InterviewQuestionListQueryDto as InterviewQuestionListQueryDtoType,
+  UpdateInterviewQuestionDto as UpdateInterviewQuestionDtoType,
+} from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
@@ -51,7 +40,7 @@ const toBoolean = ({ value }: { value: unknown }) => {
   return value;
 };
 
-export class CreateInterviewQuestionDto {
+export class CreateInterviewQuestionDto implements CreateInterviewQuestionDtoType {
   @ApiProperty({ example: 'Explain REST API principles' })
   @IsString()
   @IsNotEmpty()
@@ -101,11 +90,11 @@ export class CreateInterviewQuestionDto {
   isActive?: boolean;
 }
 
-export class UpdateInterviewQuestionDto extends PartialType(
-  CreateInterviewQuestionDto,
-) {}
+export class UpdateInterviewQuestionDto
+  extends PartialType(CreateInterviewQuestionDto)
+  implements UpdateInterviewQuestionDtoType {}
 
-export class InterviewQuestionListQueryDto {
+export class InterviewQuestionListQueryDto implements InterviewQuestionListQueryDtoType {
   @ApiPropertyOptional({ enum: INTERVIEW_QUESTION_CATEGORIES })
   @IsOptional()
   @Transform(normalizeEnumValue)
@@ -137,7 +126,7 @@ export class InterviewQuestionListQueryDto {
   isActive?: boolean;
 }
 
-export class InterviewQuestionResponseDto {
+export class InterviewQuestionResponseDto implements InterviewQuestionResponseDtoType {
   @ApiProperty()
   id!: string;
 

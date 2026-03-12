@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import type { InterviewQuestionDto as InterviewQuestionContract } from '@repo/types';
 import { InterviewPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
@@ -89,7 +90,7 @@ export class InterviewQuestionsController {
   create(
     @Body() body: CreateInterviewQuestionDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<InterviewQuestionContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -127,7 +128,10 @@ export class InterviewQuestionsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  update(@Param('id') id: string, @Body() body: UpdateInterviewQuestionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateInterviewQuestionDto,
+  ): Promise<InterviewQuestionContract> {
     return this.updateQuestion.execute(id, body);
   }
 
@@ -151,7 +155,7 @@ export class InterviewQuestionsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  deactivate(@Param('id') id: string) {
+  deactivate(@Param('id') id: string): Promise<InterviewQuestionContract> {
     return this.deactivateQuestion.execute(id);
   }
 
@@ -173,7 +177,9 @@ export class InterviewQuestionsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  list(@Query() query: InterviewQuestionListQueryDto) {
+  list(
+    @Query() query: InterviewQuestionListQueryDto,
+  ): Promise<InterviewQuestionContract[]> {
     return this.listQuestions.execute(query);
   }
 }

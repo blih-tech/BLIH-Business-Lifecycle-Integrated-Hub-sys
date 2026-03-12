@@ -1,3 +1,5 @@
+import type { CandidateSource } from './jobs.js';
+
 export type ApplicantStatus =
   | 'APPLIED'
   | 'SCREENING'
@@ -8,6 +10,18 @@ export type ApplicantStatus =
   | 'HIRED'
   | 'REJECTED'
   | 'WITHDRAWN';
+
+export const APPLICANT_STATUSES = [
+  'APPLIED',
+  'SCREENING',
+  'SHORTLISTED',
+  'INTERVIEW',
+  'WAITLIST',
+  'OFFER',
+  'HIRED',
+  'REJECTED',
+  'WITHDRAWN',
+] as const;
 
 export interface ApplicantStatusHistoryDto {
   id: string;
@@ -45,7 +59,7 @@ export interface CreateApplicantDto {
   linkedinUrl?: string | null;
   portfolioUrl?: string | null;
   githubUrl?: string | null;
-  source?: 'COMPANY_SITE' | 'LINKEDIN' | 'TELEGRAM' | 'REFERRAL' | 'AGENCY';
+  source?: CandidateSource;
   referredById?: string | null;
   currentCompany?: string | null;
   currentPosition?: string | null;
@@ -83,7 +97,7 @@ export interface ApplicantResponseDto {
   linkedinUrl: string | null;
   portfolioUrl: string | null;
   githubUrl: string | null;
-  source: 'COMPANY_SITE' | 'LINKEDIN' | 'TELEGRAM' | 'REFERRAL' | 'AGENCY';
+  source: CandidateSource;
   referredById: string | null;
   currentCompany: string | null;
   currentPosition: string | null;
@@ -115,4 +129,10 @@ export interface ApplicantResponseDto {
   statusHistory: ApplicantStatusHistoryDto[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ApplicantListQueryDto {
+  status?: ApplicantStatus;
+  jobId?: string;
+  email?: string;
 }

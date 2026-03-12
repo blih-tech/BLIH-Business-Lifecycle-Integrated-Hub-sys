@@ -78,6 +78,8 @@ export type InterviewType =
   | 'FINAL';
 
 export type EndorsementLevel = 'STRONG_YES' | 'YES' | 'UNCERTAIN' | 'NO';
+export type ApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
+export type ApproveJobDecision = 'APPROVED' | 'REJECTED';
 
 export const JOB_WORKFLOW_STATUSES = [
   'DRAFT',
@@ -97,8 +99,15 @@ export const JOB_STAGE_STATUSES = [
 export const JOB_APPROVAL_STAGES = ['FINANCE', 'GM', 'HR_REVIEW'] as const;
 
 export const APPROVAL_DECISIONS = ['PENDING', 'APPROVED', 'REJECTED'] as const;
+export const APPROVE_JOB_DECISIONS = ['APPROVED', 'REJECTED'] as const;
 
 export const WORK_LOCATION_TYPES = ['ON_SITE', 'HYBRID', 'REMOTE'] as const;
+export const JOB_CONTRACT_TYPES = [
+  'PERMANENT',
+  'CONTRACT',
+  'INTERNSHIP',
+  'FREELANCE',
+] as const;
 
 export const EXPERIENCE_LEVELS = [
   'ENTRY',
@@ -111,11 +120,38 @@ export const EXPERIENCE_LEVELS = [
 
 export const JOB_REQUEST_TYPES = ['NEW', 'REPLACEMENT'] as const;
 export const JOB_URGENCY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
+export const JOB_PRIORITY_LEVELS = ['HIGH', 'MEDIUM', 'LOW'] as const;
 export const JOB_SALARY_MODES = [
   'NOT_SPECIFIED',
   'FIXED',
   'NEGOTIABLE',
   'COMPETITIVE',
+] as const;
+export const JOB_APPLICATION_FIELD_TYPES = [
+  'TEXT',
+  'TEXTAREA',
+  'NUMBER',
+  'SELECT',
+  'FILE',
+  'DATE',
+  'CHECKBOX',
+] as const;
+export const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
+  'PHONE',
+  'LINKEDIN_URL',
+  'PORTFOLIO_URL',
+  'GITHUB_URL',
+  'EXPECTED_SALARY',
+  'COVER_LETTER',
+] as const;
+export const JOB_APPLICATION_FORM_SECTIONS = ['EDUCATION', 'EXPERIENCE'] as const;
+export const APPLICATION_FORM_SECTION_TYPES = ['SECTION'] as const;
+export const CANDIDATE_SOURCES = [
+  'COMPANY_SITE',
+  'LINKEDIN',
+  'TELEGRAM',
+  'REFERRAL',
+  'AGENCY',
 ] as const;
 
 export interface JobApprovalDto {
@@ -124,7 +160,7 @@ export interface JobApprovalDto {
   level: number;
   requiredRole: string;
   approverId?: string | null;
-  decision: 'PENDING' | 'APPROVED' | 'REJECTED';
+  decision: ApprovalDecision;
   autoApproved: boolean;
   autoApprovalReason?: string | null;
   comments?: string | null;
@@ -213,7 +249,7 @@ export interface CreateJobDto {
 export type UpdateJobDto = Partial<CreateJobDto>;
 
 export interface ApproveJobDto {
-  decision: 'APPROVED' | 'REJECTED';
+  decision: ApproveJobDecision;
   comments?: string | null;
 }
 
@@ -232,6 +268,25 @@ export interface UpsertJobToolsDto {
 
 export interface UpsertJobResponsibilitiesDto {
   responsibilities: string[];
+}
+
+export interface JobSkillsResponseDto {
+  requiredSkills: string[];
+  preferredSkills: string[];
+}
+
+export interface JobToolsResponseDto {
+  tools: string[];
+}
+
+export type JobResponsibilitiesResponseDto = string[];
+
+export interface JobListQueryDto {
+  status?: JobWorkflowStatus;
+  financeApprovalStatus?: JobStageApprovalStatus;
+  gmApprovalStatus?: JobStageApprovalStatus;
+  hrApprovalStatus?: JobStageApprovalStatus;
+  departmentId?: string;
 }
 
 export interface JobResponseDto {

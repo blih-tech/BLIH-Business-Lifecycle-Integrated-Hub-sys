@@ -9,11 +9,12 @@ import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   CreateOfferDto,
   OfferListQueryDto,
+  OfferResponseDto,
   RespondOfferDto,
   SendOfferDto,
   UpdateOfferDto,
   WithdrawOfferDto,
-} from '../dto/offer.dto';
+} from '@repo/types';
 import {
   mapOffer,
   recalculateJobMetrics,
@@ -24,7 +25,10 @@ import {
 export class CreateOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(dto: CreateOfferDto, createdById?: string) {
+  async execute(
+    dto: CreateOfferDto,
+    createdById?: string,
+  ): Promise<OfferResponseDto> {
     if (!createdById)
       throw new ForbiddenException('Authenticated user id required');
 
@@ -84,7 +88,7 @@ export class CreateOfferUseCase {
 export class ListOffersUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: OfferListQueryDto) {
+  async execute(query: OfferListQueryDto): Promise<OfferResponseDto[]> {
     const rows = await this.prisma.offer.findMany({
       where: {
         ...(query.status ? { status: query.status } : {}),
@@ -101,7 +105,7 @@ export class ListOffersUseCase {
 export class GetOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<OfferResponseDto> {
     const row = await this.prisma.offer.findUnique({ where: { id } });
     if (!row) throw new NotFoundException('Offer not found');
     return mapOffer(row);
@@ -112,7 +116,7 @@ export class GetOfferUseCase {
 export class UpdateOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateOfferDto) {
+  async execute(id: string, dto: UpdateOfferDto): Promise<OfferResponseDto> {
     const existing = await this.prisma.offer.findUnique({
       where: { id },
       select: { id: true, status: true, jobId: true, applicantId: true },
@@ -156,7 +160,7 @@ export class UpdateOfferUseCase {
 export class SendOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: SendOfferDto) {
+  async execute(id: string, dto: SendOfferDto): Promise<OfferResponseDto> {
     const existing = await this.prisma.offer.findUnique({
       where: { id },
       select: { id: true, status: true, jobId: true, applicantId: true },
@@ -195,7 +199,7 @@ export class SendOfferUseCase {
 export class RespondOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: RespondOfferDto) {
+  async execute(id: string, dto: RespondOfferDto): Promise<OfferResponseDto> {
     const existing = await this.prisma.offer.findUnique({
       where: { id },
       select: {
@@ -260,7 +264,7 @@ export class RespondOfferUseCase {
 export class WithdrawOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: WithdrawOfferDto) {
+  async execute(id: string, dto: WithdrawOfferDto): Promise<OfferResponseDto> {
     const existing = await this.prisma.offer.findUnique({
       where: { id },
       select: { id: true, status: true, jobId: true, applicantId: true },
