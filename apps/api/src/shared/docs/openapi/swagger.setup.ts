@@ -16,10 +16,19 @@ function normalizePath(path: string): string {
   return path.replace(/^\/+/, '').replace(/\/+$/, '');
 }
 
+function normalizeBaseUrl(url: string): string {
+  const normalized = url.trim().replace(/\/+$/, '');
+  return normalized || DEFAULT_KEYCLOAK_BASE_URL;
+}
+
 const DOC_TIMESTAMP = '2026-02-20T12:00:00.000Z';
 const DOC_REQUEST_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 const DOC_VERSION = 'v1';
 const DOC_SUCCESS_MESSAGE = 'Request processed successfully';
+const KEYCLOAK_LOGIN_PATH = '/realms/{realm}/protocol/openid-connect/token';
+const DEFAULT_KEYCLOAK_BASE_URL = 'http://localhost:8080';
+const DEFAULT_KEYCLOAK_REALM = 'blih';
+const DEFAULT_KEYCLOAK_CLIENT_ID = 'blih-system-frontend';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
@@ -737,6 +746,189 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
   }
 }
 
+export function addKeycloakLoginOperation(
+  document: OpenAPIObject,
+  keycloakBaseUrl: string,
+  defaultRealm: string,
+  defaultClientId: string,
+): void {
+  if (!isRecord(document.paths)) {
+    document.paths = {};
+  }
+
+  const paths = document.paths as Record<string, unknown>;
+  const existingPath = paths[KEYCLOAK_LOGIN_PATH];
+  const pathItem = isRecord(existingPath) ? existingPath : {};
+  const normalizedKeycloakBaseUrl = normalizeBaseUrl(keycloakBaseUrl);
+
+  pathItem.post = {
+    tags: ['Auth'],
+    summary: 'Keycloak login (token endpoint)',
+    description:
+      'Direct token issuance by Keycloak for password, client credentials, and refresh grants. This operation is external to the BLIH API service.',
+    operationId: 'keycloak_login',
+    servers: [
+      {
+        url: normalizedKeycloakBaseUrl,
+        description: 'Keycloak base URL',
+      },
+    ],
+    parameters: [
+      {
+        name: 'realm',
+        in: 'path',
+        required: true,
+        description: 'Target Keycloak realm.',
+        schema: {
+          type: 'string',
+          default: defaultRealm,
+        },
+      },
+    ],
+    requestBody: {
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {
+          schema: {
+            type: 'object',
+            required: ['grant_type', 'client_id'],
+            properties: {
+              grant_type: {
+                type: 'string',
+                enum: ['password', 'client_credentials', 'refresh_token'],
+                default: 'password',
+              },
+              client_id: {
+                type: 'string',
+                default: defaultClientId,
+              },
+              client_secret: {
+                type: 'string',
+              },
+              username: {
+                type: 'string',
+                description: 'Required when grant_type=password.',
+              },
+              password: {
+                type: 'string',
+                format: 'password',
+                description: 'Required when grant_type=password.',
+              },
+              scope: {
+                type: 'string',
+                example: 'openid profile email',
+              },
+              refresh_token: {
+                type: 'string',
+                description: 'Required when grant_type=refresh_token.',
+              },
+            },
+          },
+          examples: {
+            passwordGrant: {
+              summary: 'User login with username/password',
+              value: {
+                grant_type: 'password',
+                client_id: defaultClientId,
+                username: 'admin',
+                password: 'admin',
+              },
+            },
+            clientCredentialsGrant: {
+              summary: 'Service account login',
+              value: {
+                grant_type: 'client_credentials',
+                client_id: defaultClientId,
+                client_secret: 'your-client-secret',
+              },
+            },
+            refreshTokenGrant: {
+              summary: 'Refresh access token',
+              value: {
+                grant_type: 'refresh_token',
+                client_id: defaultClientId,
+                refresh_token: 'your-refresh-token',
+              },
+            },
+          },
+        },
+      },
+    },
+    responses: {
+      '200': {
+        description: 'Token issued by Keycloak.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              required: ['access_token', 'token_type', 'expires_in'],
+              properties: {
+                access_token: { type: 'string' },
+                expires_in: { type: 'number' },
+                refresh_expires_in: { type: 'number' },
+                refresh_token: { type: 'string' },
+                token_type: { type: 'string', example: 'Bearer' },
+                'not-before-policy': { type: 'number' },
+                session_state: { type: 'string' },
+                scope: { type: 'string' },
+              },
+            },
+            example: {
+              access_token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
+              expires_in: 300,
+              refresh_expires_in: 1800,
+              refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+              token_type: 'Bearer',
+              'not-before-policy': 0,
+              session_state: 'f0f4e9a0-2e06-4f66-94af-0d2d68ab4ac4',
+              scope: 'openid profile email',
+            },
+          },
+        },
+      },
+      '400': {
+        description: 'Invalid grant or malformed request body.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string' },
+                error_description: { type: 'string' },
+              },
+            },
+            example: {
+              error: 'invalid_grant',
+              error_description: 'Invalid user credentials',
+            },
+          },
+        },
+      },
+      '401': {
+        description: 'Client authentication failed.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string' },
+                error_description: { type: 'string' },
+              },
+            },
+            example: {
+              error: 'unauthorized_client',
+              error_description:
+                'Invalid client credentials or client is not allowed',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  paths[KEYCLOAK_LOGIN_PATH] = pathItem;
+}
+
 export function setupSwagger(app: INestApplication): void {
   const configService = app.get(ConfigService);
   const apiPrefix = normalizePath(
@@ -781,6 +973,12 @@ export function setupSwagger(app: INestApplication): void {
   });
 
   enforceUnifiedSchemas(document);
+  addKeycloakLoginOperation(
+    document,
+    configService.get<string>('KEYCLOAK_URL', DEFAULT_KEYCLOAK_BASE_URL),
+    configService.get<string>('KEYCLOAK_REALM', DEFAULT_KEYCLOAK_REALM),
+    configService.get<string>('KEYCLOAK_CLIENT_ID', DEFAULT_KEYCLOAK_CLIENT_ID),
+  );
 
   SwaggerModule.setup(docsPath, app, document, {
     useGlobalPrefix: true,

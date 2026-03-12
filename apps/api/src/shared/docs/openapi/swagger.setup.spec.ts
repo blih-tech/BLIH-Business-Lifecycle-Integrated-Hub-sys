@@ -1,5 +1,8 @@
 import type { OpenAPIObject } from '@nestjs/swagger';
-import { enforceUnifiedSchemas } from './swagger.setup';
+import {
+  addKeycloakLoginOperation,
+  enforceUnifiedSchemas,
+} from './swagger.setup';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
@@ -543,5 +546,65 @@ describe('enforceUnifiedSchemas', () => {
     expect(
       (notFound?.example as { error?: { code?: string } })?.error?.code,
     ).toBe('NOT_FOUND');
+  });
+
+  it('adds a manual keycloak login operation without requiring a controller route', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {},
+      components: {},
+      tags: [],
+    };
+
+    addKeycloakLoginOperation(
+      doc,
+      'http://localhost:8080/',
+      'blih',
+      'blih-system-api',
+    );
+
+    const pathItem = doc.paths['/realms/{realm}/protocol/openid-connect/token'];
+    expect(pathItem).toBeDefined();
+    expect(pathItem.post).toBeDefined();
+
+    const operation = pathItem.post as {
+      servers?: Array<{ url?: string }>;
+      parameters?: Array<{ name?: string; schema?: { default?: string } }>;
+      requestBody?: {
+        content?: {
+          'application/x-www-form-urlencoded'?: {
+            examples?: {
+              passwordGrant?: { value?: { client_id?: string } };
+            };
+          };
+        };
+      };
+      responses?: {
+        '200'?: {
+          content?: {
+            'application/json'?: {
+              schema?: {
+                properties?: {
+                  access_token?: { type?: string };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+
+    expect(operation.servers?.[0]?.url).toBe('http://localhost:8080');
+    expect(operation.parameters?.[0]?.name).toBe('realm');
+    expect(operation.parameters?.[0]?.schema?.default).toBe('blih');
+    expect(
+      operation.requestBody?.content?.['application/x-www-form-urlencoded']
+        ?.examples?.passwordGrant?.value?.client_id,
+    ).toBe('blih-system-api');
+    expect(
+      operation.responses?.['200']?.content?.['application/json']?.schema
+        ?.properties?.access_token?.type,
+    ).toBe('string');
   });
 });
