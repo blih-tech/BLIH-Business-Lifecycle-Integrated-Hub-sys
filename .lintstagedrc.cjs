@@ -1,4 +1,5 @@
 module.exports = {
+  '.husky/*': ['prettier --write --ignore-unknown'],
   'apps/api/**/*.{ts,tsx,js,jsx,mjs,cjs}': [
     'eslint --config apps/api/eslint.config.mjs --ignore-pattern apps/api/eslint.config.mjs --ignore-pattern apps/api/validate-permission-constants.mjs --max-warnings=0 --fix --no-warn-ignored',
     'prettier --write',

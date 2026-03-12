@@ -3,6 +3,6 @@ set -e
 
 echo "Running lint-staged checks..."
 
-npx lint-staged
+npx lint-staged --verbose --concurrent 1 --max-arg-length 3000
 
 echo "Pre-commit checks passed"
