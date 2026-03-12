@@ -12,6 +12,10 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import type {
+  InterviewFeedbackResponseDto as InterviewFeedbackResponseContract,
+  InterviewResponseDto as InterviewResponseContract,
+} from '@repo/types';
 import { InterviewPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
@@ -109,7 +113,7 @@ export class InterviewsController {
   create(
     @Body() body: CreateInterviewDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<InterviewResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -134,7 +138,9 @@ export class InterviewsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  list(@Query() query: InterviewListQueryDto) {
+  list(
+    @Query() query: InterviewListQueryDto,
+  ): Promise<InterviewResponseContract[]> {
     return this.listInterviews.execute(query);
   }
 
@@ -158,7 +164,7 @@ export class InterviewsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  get(@Param('id') id: string) {
+  get(@Param('id') id: string): Promise<InterviewResponseContract> {
     return this.getInterviewById.execute(id);
   }
 
@@ -196,7 +202,10 @@ export class InterviewsController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
-  update(@Param('id') id: string, @Body() body: UpdateInterviewDto) {
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateInterviewDto,
+  ): Promise<InterviewResponseContract> {
     return this.updateInterviewById.execute(id, body);
   }
 
@@ -237,7 +246,7 @@ export class InterviewsController {
     @Param('id') id: string,
     @Param('participantId') participantId: string,
     @Body() body: UpdateInterviewParticipantAttendanceDto,
-  ) {
+  ): Promise<InterviewResponseContract> {
     return this.updateParticipantAttendance.execute(id, participantId, body);
   }
 
@@ -284,7 +293,7 @@ export class InterviewsController {
     @Param('participantId') participantId: string,
     @Body() body: UpsertInterviewFeedbackDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<InterviewFeedbackResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -320,7 +329,7 @@ export class InterviewsController {
   listParticipantFeedback(
     @Param('id') id: string,
     @Param('participantId') participantId: string,
-  ) {
+  ): Promise<InterviewFeedbackResponseContract[]> {
     return this.listFeedback.execute(id, participantId);
   }
 }

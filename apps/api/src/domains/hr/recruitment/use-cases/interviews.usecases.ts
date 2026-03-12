@@ -9,12 +9,14 @@ import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   CreateInterviewDto,
-  InterviewQuestionResponseInputDto,
+  InterviewFeedbackResponseDto,
   InterviewListQueryDto,
+  InterviewQuestionResponseInputItemDto,
+  InterviewResponseDto,
   UpdateInterviewDto,
   UpdateInterviewParticipantAttendanceDto,
   UpsertInterviewFeedbackDto,
-} from '../dto/interview.dto';
+} from '@repo/types';
 import {
   assertInterviewAttendanceTransition,
   assertInterviewTransition,
@@ -79,7 +81,7 @@ const QUESTION_RESPONSE_TYPES = new Set([
 ]);
 
 type QuestionResponseType = NonNullable<
-  InterviewQuestionResponseInputDto['type']
+  InterviewQuestionResponseInputItemDto['type']
 >;
 type QuestionResponseAnswer = string | boolean | number | string[] | null;
 
@@ -294,7 +296,10 @@ async function assertNoActiveDuplicateRound(
 export class CreateInterviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(dto: CreateInterviewDto, createdById: string) {
+  async execute(
+    dto: CreateInterviewDto,
+    createdById: string,
+  ): Promise<InterviewResponseDto> {
     const applicantIds = uniqueIds(dto.applicantIds);
     if (applicantIds.length === 0) {
       throw new BadRequestException('At least one applicant is required');
@@ -366,7 +371,7 @@ export class CreateInterviewUseCase {
 export class ListInterviewsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: InterviewListQueryDto) {
+  async execute(query: InterviewListQueryDto): Promise<InterviewResponseDto[]> {
     const list = await this.prisma.interviewSession.findMany({
       where: {
         ...(query.jobId ? { jobId: query.jobId } : {}),
@@ -400,7 +405,7 @@ export class ListInterviewsUseCase {
 export class GetInterviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<InterviewResponseDto> {
     const session = await this.prisma.interviewSession.findUnique({
       where: { id },
       include: sessionInclude,
@@ -414,7 +419,10 @@ export class GetInterviewUseCase {
 export class UpdateInterviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateInterviewDto) {
+  async execute(
+    id: string,
+    dto: UpdateInterviewDto,
+  ): Promise<InterviewResponseDto> {
     const existing = await this.prisma.interviewSession.findUnique({
       where: { id },
       include: {
@@ -636,7 +644,7 @@ export class UpdateInterviewParticipantAttendanceUseCase {
     sessionId: string,
     participantId: string,
     dto: UpdateInterviewParticipantAttendanceDto,
-  ) {
+  ): Promise<InterviewResponseDto> {
     const participant = await this.prisma.interviewParticipant.findFirst({
       where: {
         id: participantId,
@@ -686,7 +694,7 @@ export class UpsertInterviewFeedbackUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   private async normalizeQuestionResponses(
-    payload: InterviewQuestionResponseInputDto[],
+    payload: InterviewQuestionResponseInputItemDto[],
   ) {
     if (payload.length === 0) return [];
 
@@ -788,7 +796,7 @@ export class UpsertInterviewFeedbackUseCase {
     participantId: string,
     interviewerUserId: string,
     dto: UpsertInterviewFeedbackDto,
-  ) {
+  ): Promise<InterviewFeedbackResponseDto> {
     const participant = await this.prisma.interviewParticipant.findFirst({
       where: {
         id: participantId,
@@ -898,7 +906,10 @@ export class UpsertInterviewFeedbackUseCase {
 export class ListInterviewParticipantFeedbackUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(sessionId: string, participantId: string) {
+  async execute(
+    sessionId: string,
+    participantId: string,
+  ): Promise<InterviewFeedbackResponseDto[]> {
     const participant = await this.prisma.interviewParticipant.findFirst({
       where: {
         id: participantId,

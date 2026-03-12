@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import type { ApplicantResponseDto as ApplicantResponseContract } from '@repo/types';
 import { ApplicantPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
@@ -100,7 +101,7 @@ export class ApplicantsController {
   create(
     @Body() body: CreateApplicantDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<ApplicantResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -120,7 +121,9 @@ export class ApplicantsController {
     'List of applicants',
     applicantListResponseEnvelope,
   )
-  list(@Query() query: ApplicantListQueryDto) {
+  list(
+    @Query() query: ApplicantListQueryDto,
+  ): Promise<ApplicantResponseContract[]> {
     return this.listApplicants.execute(query);
   }
 
@@ -142,7 +145,7 @@ export class ApplicantsController {
     path: '/api/v1/hr/recruitment/applicants/:id',
     notFound: 'Applicant not found',
   })
-  get(@Param('id') id: string) {
+  get(@Param('id') id: string): Promise<ApplicantResponseContract> {
     return this.getApplicantById.execute(id);
   }
 
@@ -182,7 +185,10 @@ export class ApplicantsController {
     badRequest: 'Applicant payload is invalid',
     notFound: 'Applicant not found',
   })
-  update(@Param('id') id: string, @Body() body: UpdateApplicantDto) {
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateApplicantDto,
+  ): Promise<ApplicantResponseContract> {
     return this.updateApplicantById.execute(id, body);
   }
 
@@ -223,7 +229,7 @@ export class ApplicantsController {
     @Param('id') id: string,
     @Body() body: UpdateApplicantStatusDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<ApplicantResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');

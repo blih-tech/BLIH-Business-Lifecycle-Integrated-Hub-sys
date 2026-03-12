@@ -129,7 +129,7 @@ export type UpdateInterviewQuestionDto = Partial<CreateInterviewQuestionDto>;
 
 export interface InterviewQuestionListQueryDto {
   category?: InterviewQuestionCategory;
-  tags?: string[];
+  tags?: string;
   difficulty?: number;
   isActive?: boolean;
 }

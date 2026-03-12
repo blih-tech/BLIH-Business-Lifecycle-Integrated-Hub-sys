@@ -34,7 +34,7 @@
     "@repo/typescript-config": "file:../../packages/typescript-config",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^22.15.3",
-    "@types/react": "19.2.2",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "19.2.2",
     "eslint": "^9.39.1",
     "postcss": "^8.5.6",
