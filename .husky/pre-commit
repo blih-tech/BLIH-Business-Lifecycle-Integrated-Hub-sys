@@ -3,8 +3,6 @@ set -e
 
 echo "Running lint-staged checks..."
 
-# Git for Windows can emit CRLF warnings during `git stash create`, which
-# corrupts the hash lint-staged expects and breaks the backup step.
-npx lint-staged --no-stash --concurrent 1 --max-arg-length 3000
+npx lint-staged
 
 echo "Pre-commit checks passed"
