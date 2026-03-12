@@ -104,6 +104,10 @@ fi
 
 if [[ "$deploy_ok" == true ]]; then
   write_release_file
+
+  echo "Cleaning up unused Docker resources..."
+  docker system prune -af || true
+
   docker logout ghcr.io >/dev/null 2>&1 || true
   echo "Deployment completed successfully."
   exit 0
@@ -111,5 +115,9 @@ fi
 
 echo "Deployment failed, attempting automatic rollback."
 rollback || true
+
+echo "Cleaning up unused Docker resources..."
+docker system prune -af || true
+
 docker logout ghcr.io >/dev/null 2>&1 || true
 exit 1

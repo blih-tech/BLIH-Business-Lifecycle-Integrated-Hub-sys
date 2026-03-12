@@ -478,6 +478,11 @@ export type InterviewerAssignment = Prisma.InterviewerAssignmentModel
  */
 export type InterviewFeedback = Prisma.InterviewFeedbackModel
 /**
+ * Model InterviewQuestion
+ * 
+ */
+export type InterviewQuestion = Prisma.InterviewQuestionModel
+/**
  * Model Offer
  * 
  */

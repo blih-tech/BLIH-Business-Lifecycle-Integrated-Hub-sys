@@ -110,12 +110,22 @@
     ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1",
-      "^@repo/database/prisma-client$": "<rootDir>/platform/prisma/prisma-client.jest.ts"
+      "^@repo/types$": "<rootDir>/../../../packages/types/src/index.ts",
+      "^@repo/database/prisma-client$": "<rootDir>/platform/prisma/prisma-client.jest.ts",
+      "^@repo/database/generated/enums$": "<rootDir>/../../../packages/database/src/generated/enums.ts"
     },
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "module": "commonjs",
+            "resolvePackageJsonExports": false
+          }
+        }
+      ]
     },
     "transformIgnorePatterns": [
       "node_modules/(?!(.*\\.mjs$|@prisma/adapter-pg|@prisma/client))"

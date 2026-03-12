@@ -143,6 +143,7 @@ export const ModelName = {
   InterviewParticipant: 'InterviewParticipant',
   InterviewerAssignment: 'InterviewerAssignment',
   InterviewFeedback: 'InterviewFeedback',
+  InterviewQuestion: 'InterviewQuestion',
   Offer: 'Offer',
   CvScreening: 'CvScreening',
   CvScreeningCriteria: 'CvScreeningCriteria',
@@ -1799,6 +1800,7 @@ export const InterviewFeedbackScalarFieldEnum = {
   endorsement: 'endorsement',
   strengths: 'strengths',
   weaknesses: 'weaknesses',
+  questionResponses: 'questionResponses',
   notes: 'notes',
   isDraft: 'isDraft',
   submittedAt: 'submittedAt',
@@ -1807,6 +1809,24 @@ export const InterviewFeedbackScalarFieldEnum = {
 } as const
 
 export type InterviewFeedbackScalarFieldEnum = (typeof InterviewFeedbackScalarFieldEnum)[keyof typeof InterviewFeedbackScalarFieldEnum]
+
+
+export const InterviewQuestionScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  description: 'description',
+  category: 'category',
+  type: 'type',
+  options: 'options',
+  difficulty: 'difficulty',
+  tags: 'tags',
+  createdById: 'createdById',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InterviewQuestionScalarFieldEnum = (typeof InterviewQuestionScalarFieldEnum)[keyof typeof InterviewQuestionScalarFieldEnum]
 
 
 export const OfferScalarFieldEnum = {

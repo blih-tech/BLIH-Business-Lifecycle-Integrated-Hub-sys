@@ -68,6 +68,7 @@ export type InterviewFeedbackCountAggregateOutputType = {
   endorsement: number
   strengths: number
   weaknesses: number
+  questionResponses: number
   notes: number
   isDraft: number
   submittedAt: number
@@ -119,6 +120,7 @@ export type InterviewFeedbackCountAggregateInputType = {
   endorsement?: true
   strengths?: true
   weaknesses?: true
+  questionResponses?: true
   notes?: true
   isDraft?: true
   submittedAt?: true
@@ -221,6 +223,7 @@ export type InterviewFeedbackGroupByOutputType = {
   endorsement: $Enums.EndorsementLevel | null
   strengths: string[]
   weaknesses: string[]
+  questionResponses: runtime.JsonValue | null
   notes: string | null
   isDraft: boolean
   submittedAt: Date | null
@@ -259,6 +262,7 @@ export type InterviewFeedbackWhereInput = {
   endorsement?: Prisma.EnumEndorsementLevelNullableFilter<"InterviewFeedback"> | $Enums.EndorsementLevel | null
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
+  questionResponses?: Prisma.JsonNullableFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
   isDraft?: Prisma.BoolFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
@@ -276,6 +280,7 @@ export type InterviewFeedbackOrderByWithRelationInput = {
   endorsement?: Prisma.SortOrderInput | Prisma.SortOrder
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
+  questionResponses?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -297,6 +302,7 @@ export type InterviewFeedbackWhereUniqueInput = Prisma.AtLeast<{
   endorsement?: Prisma.EnumEndorsementLevelNullableFilter<"InterviewFeedback"> | $Enums.EndorsementLevel | null
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
+  questionResponses?: Prisma.JsonNullableFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
   isDraft?: Prisma.BoolFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
@@ -314,6 +320,7 @@ export type InterviewFeedbackOrderByWithAggregationInput = {
   endorsement?: Prisma.SortOrderInput | Prisma.SortOrder
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
+  questionResponses?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -337,6 +344,7 @@ export type InterviewFeedbackScalarWhereWithAggregatesInput = {
   endorsement?: Prisma.EnumEndorsementLevelNullableWithAggregatesFilter<"InterviewFeedback"> | $Enums.EndorsementLevel | null
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
+  questionResponses?: Prisma.JsonNullableWithAggregatesFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableWithAggregatesFilter<"InterviewFeedback"> | string | null
   isDraft?: Prisma.BoolWithAggregatesFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InterviewFeedback"> | Date | string | null
@@ -350,6 +358,7 @@ export type InterviewFeedbackCreateInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -367,6 +376,7 @@ export type InterviewFeedbackUncheckedCreateInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -380,6 +390,7 @@ export type InterviewFeedbackUpdateInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -397,6 +408,7 @@ export type InterviewFeedbackUncheckedUpdateInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -412,6 +424,7 @@ export type InterviewFeedbackCreateManyInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -425,6 +438,7 @@ export type InterviewFeedbackUpdateManyMutationInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -440,6 +454,7 @@ export type InterviewFeedbackUncheckedUpdateManyInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -470,6 +485,7 @@ export type InterviewFeedbackCountOrderByAggregateInput = {
   endorsement?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   weaknesses?: Prisma.SortOrder
+  questionResponses?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isDraft?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -623,6 +639,7 @@ export type InterviewFeedbackCreateWithoutParticipantInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -638,6 +655,7 @@ export type InterviewFeedbackUncheckedCreateWithoutParticipantInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -682,6 +700,7 @@ export type InterviewFeedbackScalarWhereInput = {
   endorsement?: Prisma.EnumEndorsementLevelNullableFilter<"InterviewFeedback"> | $Enums.EndorsementLevel | null
   strengths?: Prisma.StringNullableListFilter<"InterviewFeedback">
   weaknesses?: Prisma.StringNullableListFilter<"InterviewFeedback">
+  questionResponses?: Prisma.JsonNullableFilter<"InterviewFeedback">
   notes?: Prisma.StringNullableFilter<"InterviewFeedback"> | string | null
   isDraft?: Prisma.BoolFilter<"InterviewFeedback"> | boolean
   submittedAt?: Prisma.DateTimeNullableFilter<"InterviewFeedback"> | Date | string | null
@@ -695,6 +714,7 @@ export type InterviewFeedbackCreateWithoutAssignmentInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -710,6 +730,7 @@ export type InterviewFeedbackUncheckedCreateWithoutAssignmentInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -750,6 +771,7 @@ export type InterviewFeedbackCreateManyParticipantInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -763,6 +785,7 @@ export type InterviewFeedbackUpdateWithoutParticipantInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -778,6 +801,7 @@ export type InterviewFeedbackUncheckedUpdateWithoutParticipantInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -792,6 +816,7 @@ export type InterviewFeedbackUncheckedUpdateManyWithoutParticipantInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -806,6 +831,7 @@ export type InterviewFeedbackCreateManyAssignmentInput = {
   endorsement?: $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackCreatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackCreateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   isDraft?: boolean
   submittedAt?: Date | string | null
@@ -819,6 +845,7 @@ export type InterviewFeedbackUpdateWithoutAssignmentInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -834,6 +861,7 @@ export type InterviewFeedbackUncheckedUpdateWithoutAssignmentInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -848,6 +876,7 @@ export type InterviewFeedbackUncheckedUpdateManyWithoutAssignmentInput = {
   endorsement?: Prisma.NullableEnumEndorsementLevelFieldUpdateOperationsInput | $Enums.EndorsementLevel | null
   strengths?: Prisma.InterviewFeedbackUpdatestrengthsInput | string[]
   weaknesses?: Prisma.InterviewFeedbackUpdateweaknessesInput | string[]
+  questionResponses?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDraft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -865,6 +894,7 @@ export type InterviewFeedbackSelect<ExtArgs extends runtime.Types.Extensions.Int
   endorsement?: boolean
   strengths?: boolean
   weaknesses?: boolean
+  questionResponses?: boolean
   notes?: boolean
   isDraft?: boolean
   submittedAt?: boolean
@@ -882,6 +912,7 @@ export type InterviewFeedbackSelectCreateManyAndReturn<ExtArgs extends runtime.T
   endorsement?: boolean
   strengths?: boolean
   weaknesses?: boolean
+  questionResponses?: boolean
   notes?: boolean
   isDraft?: boolean
   submittedAt?: boolean
@@ -899,6 +930,7 @@ export type InterviewFeedbackSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   endorsement?: boolean
   strengths?: boolean
   weaknesses?: boolean
+  questionResponses?: boolean
   notes?: boolean
   isDraft?: boolean
   submittedAt?: boolean
@@ -916,6 +948,7 @@ export type InterviewFeedbackSelectScalar = {
   endorsement?: boolean
   strengths?: boolean
   weaknesses?: boolean
+  questionResponses?: boolean
   notes?: boolean
   isDraft?: boolean
   submittedAt?: boolean
@@ -923,7 +956,7 @@ export type InterviewFeedbackSelectScalar = {
   updatedAt?: boolean
 }
 
-export type InterviewFeedbackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "assignmentId" | "score" | "endorsement" | "strengths" | "weaknesses" | "notes" | "isDraft" | "submittedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["interviewFeedback"]>
+export type InterviewFeedbackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "participantId" | "assignmentId" | "score" | "endorsement" | "strengths" | "weaknesses" | "questionResponses" | "notes" | "isDraft" | "submittedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["interviewFeedback"]>
 export type InterviewFeedbackInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   participant?: boolean | Prisma.InterviewParticipantDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.InterviewerAssignmentDefaultArgs<ExtArgs>
@@ -951,6 +984,7 @@ export type $InterviewFeedbackPayload<ExtArgs extends runtime.Types.Extensions.I
     endorsement: $Enums.EndorsementLevel | null
     strengths: string[]
     weaknesses: string[]
+    questionResponses: runtime.JsonValue | null
     notes: string | null
     isDraft: boolean
     submittedAt: Date | null
@@ -1388,6 +1422,7 @@ export interface InterviewFeedbackFieldRefs {
   readonly endorsement: Prisma.FieldRef<"InterviewFeedback", 'EndorsementLevel'>
   readonly strengths: Prisma.FieldRef<"InterviewFeedback", 'String[]'>
   readonly weaknesses: Prisma.FieldRef<"InterviewFeedback", 'String[]'>
+  readonly questionResponses: Prisma.FieldRef<"InterviewFeedback", 'Json'>
   readonly notes: Prisma.FieldRef<"InterviewFeedback", 'String'>
   readonly isDraft: Prisma.FieldRef<"InterviewFeedback", 'Boolean'>
   readonly submittedAt: Prisma.FieldRef<"InterviewFeedback", 'DateTime'>

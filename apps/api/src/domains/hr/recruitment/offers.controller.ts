@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import type { OfferResponseDto as OfferResponseContract } from '@repo/types';
 import { OfferPermissions } from '../../../core/rbac/constants/permissions.constants';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
@@ -108,7 +109,7 @@ export class OffersController {
   create(
     @Body() body: CreateOfferDto,
     @Req() req: Request & { user?: AuthPrincipal },
-  ) {
+  ): Promise<OfferResponseContract> {
     const user = req.user as AuthPrincipal | undefined;
     if (!user)
       throw new ForbiddenException('Authenticated user context is required');
@@ -128,7 +129,7 @@ export class OffersController {
     'List of offers',
     offerListResponseEnvelope,
   )
-  list(@Query() query: OfferListQueryDto) {
+  list(@Query() query: OfferListQueryDto): Promise<OfferResponseContract[]> {
     return this.listOffers.execute(query);
   }
 
@@ -146,7 +147,7 @@ export class OffersController {
     'Offer details',
     offerResponseEnvelope,
   )
-  get(@Param('id') id: string) {
+  get(@Param('id') id: string): Promise<OfferResponseContract> {
     return this.getOfferById.execute(id);
   }
 
@@ -175,7 +176,10 @@ export class OffersController {
     'Updated offer',
     offerResponseEnvelope,
   )
-  update(@Param('id') id: string, @Body() body: UpdateOfferDto) {
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateOfferDto,
+  ): Promise<OfferResponseContract> {
     return this.updateOfferById.execute(id, body);
   }
 
@@ -200,7 +204,10 @@ export class OffersController {
     },
   })
   @ApiEnvelopeOkResponse(OfferResponseDto, 'Sent offer', offerResponseEnvelope)
-  send(@Param('id') id: string, @Body() body: SendOfferDto) {
+  send(
+    @Param('id') id: string,
+    @Body() body: SendOfferDto,
+  ): Promise<OfferResponseContract> {
     return this.sendOfferById.execute(id, body);
   }
 
@@ -226,7 +233,10 @@ export class OffersController {
     'Updated offer status',
     offerResponseEnvelope,
   )
-  respond(@Param('id') id: string, @Body() body: RespondOfferDto) {
+  respond(
+    @Param('id') id: string,
+    @Body() body: RespondOfferDto,
+  ): Promise<OfferResponseContract> {
     return this.respondOfferById.execute(id, body);
   }
 
@@ -255,7 +265,10 @@ export class OffersController {
     'Withdrawn offer',
     offerResponseEnvelope,
   )
-  withdraw(@Param('id') id: string, @Body() body: WithdrawOfferDto) {
+  withdraw(
+    @Param('id') id: string,
+    @Body() body: WithdrawOfferDto,
+  ): Promise<OfferResponseContract> {
     return this.withdrawOfferById.execute(id, body);
   }
 }

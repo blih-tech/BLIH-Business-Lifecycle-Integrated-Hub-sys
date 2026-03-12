@@ -15,6 +15,7 @@ export const EMPLOYMENT_TYPES = [
 ] as const;
 
 export type PayFrequency = 'MONTHLY' | 'BIWEEKLY' | 'WEEKLY' | 'ANNUAL';
+export const PAY_FREQUENCIES = ['MONTHLY', 'BIWEEKLY', 'WEEKLY', 'ANNUAL'] as const;
 
 export type CompensationComponentType =
   | 'ALLOWANCE'

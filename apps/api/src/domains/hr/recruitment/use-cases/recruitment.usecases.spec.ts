@@ -7,6 +7,12 @@ import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant
 import { ApproveJobUseCase, SubmitJobUseCase } from './jobs.usecases';
 import { UpdateApplicantStatusUseCase } from './applicants.usecases';
 import {
+  CreateInterviewQuestionUseCase,
+  DeactivateInterviewQuestionUseCase,
+  ListInterviewQuestionsUseCase,
+  UpdateInterviewQuestionUseCase,
+} from './interview-questions.usecases';
+import {
   CreateInterviewUseCase,
   UpdateInterviewParticipantAttendanceUseCase,
   UpdateInterviewUseCase,
@@ -175,7 +181,7 @@ describe('Recruitment UseCases', () => {
     const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
-    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
     expect(tx.jobApprovalStep.createMany).toHaveBeenCalledWith({
       data: [
         expect.objectContaining({ department: 'FINANCE', level: 1 }),
@@ -257,8 +263,8 @@ describe('Recruitment UseCases', () => {
         reason: 'CREATOR_HAS_HR_ROLE',
       },
     });
-    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
-    expect(result.requestForm?.hrApprovalStatus).toBe('APPROVED');
+    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status.approvals.hr).toBe('APPROVED');
   });
 
   it('allows HR approval while finance and gm are still pending', async () => {
@@ -305,8 +311,8 @@ describe('Recruitment UseCases', () => {
     expect(tx.jobApprovalStep.update).toHaveBeenCalledWith(
       expect.objectContaining({ where: { id: 'approval-hr' } }),
     );
-    expect(result.requestForm?.status).toBe('PENDING_FOR_APPROVAL');
-    expect(result.requestForm?.hrApprovalStatus).toBe('APPROVED');
+    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
+    expect(result.requestForm?.status.approvals.hr).toBe('APPROVED');
   });
 
   it('for multi-role approver decides only one stage per call (lowest level first)', async () => {
@@ -401,7 +407,7 @@ describe('Recruitment UseCases', () => {
       } as never,
     );
 
-    expect(rejected.requestForm?.status).toBe('REJECTED');
+    expect(rejected.requestForm?.status.workflow).toBe('REJECTED');
 
     const prismaFrozen = {
       job: {
@@ -785,5 +791,393 @@ describe('Recruitment UseCases', () => {
         score: 78,
       }),
     ).rejects.toBeInstanceOf(ForbiddenException);
+  });
+
+  it('creates a reusable interview question', async () => {
+    const now = new Date('2026-03-11T08:00:00.000Z');
+    const prisma = {
+      interviewQuestion: {
+        create: jest.fn().mockResolvedValue({
+          id: 'question-1',
+          question: 'Explain REST API principles',
+          description: null,
+          category: 'TECHNICAL',
+          type: 'TEXT',
+          options: [],
+          difficulty: 3,
+          tags: ['rest', 'api'],
+          createdById: 'user-1',
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
+        }),
+      },
+    };
+    const usecase = new CreateInterviewQuestionUseCase(prisma as never);
+
+    const result = await usecase.execute(
+      {
+        question: '  Explain REST API principles  ',
+        category: 'TECHNICAL',
+        type: 'TEXT',
+        difficulty: 3,
+        tags: ['REST', 'api', 'api'],
+      },
+      'user-1',
+    );
+
+    expect(result.question).toBe('Explain REST API principles');
+    expect(prisma.interviewQuestion.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          tags: ['rest', 'api'],
+          options: [],
+        }),
+      }),
+    );
+  });
+
+  it('rejects select question creation without options', async () => {
+    const prisma = {
+      interviewQuestion: {
+        create: jest.fn(),
+      },
+    };
+    const usecase = new CreateInterviewQuestionUseCase(prisma as never);
+
+    await expect(
+      usecase.execute(
+        {
+          question: 'Choose your primary stack',
+          type: 'SINGLE_SELECT',
+        },
+        'user-1',
+      ),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('updates and deactivates interview questions', async () => {
+    const now = new Date('2026-03-11T08:10:00.000Z');
+    const prisma = {
+      interviewQuestion: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'question-1',
+          question: 'Old',
+          description: null,
+          category: 'TECHNICAL',
+          type: 'TEXT',
+          options: [],
+          difficulty: 2,
+          tags: ['legacy'],
+          createdById: 'user-1',
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
+        }),
+        update: jest
+          .fn()
+          .mockResolvedValueOnce({
+            id: 'question-1',
+            question: 'Updated question',
+            description: null,
+            category: 'TECHNICAL',
+            type: 'TEXT',
+            options: [],
+            difficulty: 4,
+            tags: ['api'],
+            createdById: 'user-1',
+            isActive: true,
+            createdAt: now,
+            updatedAt: now,
+          })
+          .mockResolvedValueOnce({
+            id: 'question-1',
+            question: 'Updated question',
+            description: null,
+            category: 'TECHNICAL',
+            type: 'TEXT',
+            options: [],
+            difficulty: 4,
+            tags: ['api'],
+            createdById: 'user-1',
+            isActive: false,
+            createdAt: now,
+            updatedAt: now,
+          }),
+      },
+    };
+
+    const updateUsecase = new UpdateInterviewQuestionUseCase(prisma as never);
+    const deactivateUsecase = new DeactivateInterviewQuestionUseCase(
+      prisma as never,
+    );
+
+    const updated = await updateUsecase.execute('question-1', {
+      question: 'Updated question',
+      difficulty: 4,
+      tags: ['API'],
+    });
+    const deactivated = await deactivateUsecase.execute('question-1');
+
+    expect(updated.tags).toEqual(['api']);
+    expect(deactivated.isActive).toBe(false);
+  });
+
+  it('lists interview questions with default active filter', async () => {
+    const now = new Date('2026-03-11T08:15:00.000Z');
+    const prisma = {
+      interviewQuestion: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'question-1',
+            question: 'Explain REST API principles',
+            description: null,
+            category: 'TECHNICAL',
+            type: 'TEXT',
+            options: [],
+            difficulty: 3,
+            tags: ['rest', 'api'],
+            createdById: 'user-1',
+            isActive: true,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ]),
+      },
+    };
+    const usecase = new ListInterviewQuestionsUseCase(prisma as never);
+
+    await usecase.execute({
+      category: 'TECHNICAL',
+      tags: 'rest,api',
+      difficulty: 3,
+    });
+
+    expect(prisma.interviewQuestion.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          isActive: true,
+          category: 'TECHNICAL',
+          difficulty: 3,
+          tags: { hasSome: ['rest', 'api'] },
+        }),
+      }),
+    );
+  });
+
+  it('derives interview feedback score from question responses when score is omitted', async () => {
+    const now = new Date('2026-03-11T08:20:00.000Z');
+    const tx = {
+      interviewFeedback: {
+        upsert: jest.fn().mockResolvedValue({
+          id: 'feedback-1',
+          participantId: 'participant-1',
+          assignmentId: 'assignment-1',
+          score: 80,
+          endorsement: 'YES',
+          strengths: [],
+          weaknesses: [],
+          questionResponses: [
+            {
+              questionId: 'question-1',
+              question: 'Explain REST API principles',
+              category: 'TECHNICAL',
+              type: 'TEXT',
+              answer: 'Good answer',
+              score: 4,
+              maxScore: 5,
+              weight: 1,
+              notes: null,
+            },
+          ],
+          notes: null,
+          isDraft: false,
+          submittedAt: now,
+          createdAt: now,
+          updatedAt: now,
+          assignment: { interviewerId: 'user-1' },
+        }),
+      },
+      applicant: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+    };
+
+    const prisma = {
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'participant-1',
+          applicantId: 'applicant-1',
+        }),
+      },
+      interviewerAssignment: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'assignment-1' }),
+      },
+      interviewQuestion: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'question-1',
+            question: 'Explain REST API principles',
+            category: 'TECHNICAL',
+            type: 'TEXT',
+          },
+        ]),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+    const usecase = new UpsertInterviewFeedbackUseCase(prisma as never);
+
+    const result = await usecase.execute(
+      'session-1',
+      'participant-1',
+      'user-1',
+      {
+        endorsement: 'YES',
+        questionResponses: [
+          {
+            questionId: 'question-1',
+            question: 'ignored by bank snapshot',
+            category: 'BEHAVIORAL',
+            type: 'TEXT',
+            answer: 'Good answer',
+            score: 4,
+            maxScore: 5,
+            weight: 1,
+          },
+        ],
+      },
+    );
+
+    expect(result.score).toBe(80);
+    expect(tx.interviewFeedback.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          score: 80,
+        }),
+      }),
+    );
+  });
+
+  it('preserves manual score over computed score when score is provided', async () => {
+    const now = new Date('2026-03-11T08:25:00.000Z');
+    const tx = {
+      interviewFeedback: {
+        upsert: jest.fn().mockResolvedValue({
+          id: 'feedback-2',
+          participantId: 'participant-1',
+          assignmentId: 'assignment-1',
+          score: 50,
+          endorsement: null,
+          strengths: [],
+          weaknesses: [],
+          questionResponses: [],
+          notes: null,
+          isDraft: true,
+          submittedAt: null,
+          createdAt: now,
+          updatedAt: now,
+          assignment: { interviewerId: 'user-1' },
+        }),
+      },
+      applicant: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+    };
+    const prisma = {
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'participant-1',
+          applicantId: 'applicant-1',
+        }),
+      },
+      interviewerAssignment: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'assignment-1' }),
+      },
+      interviewQuestion: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+    const usecase = new UpsertInterviewFeedbackUseCase(prisma as never);
+
+    await usecase.execute('session-1', 'participant-1', 'user-1', {
+      score: 50,
+      isDraft: true,
+      questionResponses: [],
+    });
+
+    expect(tx.interviewFeedback.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          score: 50,
+        }),
+      }),
+    );
+  });
+
+  it('rejects unknown bank question ids and invalid answer shape', async () => {
+    const basePrisma = {
+      interviewParticipant: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'participant-1',
+          applicantId: 'applicant-1',
+        }),
+      },
+      interviewerAssignment: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'assignment-1' }),
+      },
+      $transaction: jest.fn(),
+    };
+
+    const unknownQuestionPrisma = {
+      ...basePrisma,
+      interviewQuestion: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+    };
+    const unknownQuestionUsecase = new UpsertInterviewFeedbackUseCase(
+      unknownQuestionPrisma as never,
+    );
+    await expect(
+      unknownQuestionUsecase.execute('session-1', 'participant-1', 'user-1', {
+        questionResponses: [
+          {
+            questionId: 'question-unknown',
+            question: 'ignored',
+            type: 'TEXT',
+            answer: 'answer',
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+
+    const invalidAnswerPrisma = {
+      ...basePrisma,
+      interviewQuestion: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'question-1',
+            question: 'Is CI configured?',
+            category: 'TECHNICAL',
+            type: 'BOOLEAN',
+          },
+        ]),
+      },
+    };
+    const invalidAnswerUsecase = new UpsertInterviewFeedbackUseCase(
+      invalidAnswerPrisma as never,
+    );
+    await expect(
+      invalidAnswerUsecase.execute('session-1', 'participant-1', 'user-1', {
+        questionResponses: [
+          {
+            questionId: 'question-1',
+            question: 'ignored',
+            type: 'BOOLEAN',
+            answer: 'yes',
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
   });
 });

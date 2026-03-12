@@ -2,6 +2,28 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import type { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
+import type {
+  ApplicantResponseDto,
+  ApplicantStatus,
+  ApprovalDecision,
+  InterviewAttendanceStatus,
+  InterviewFeedbackResponseDto,
+  InterviewQuestionDto,
+  InterviewQuestionResponseAnswer,
+  InterviewQuestionResponseItemDto,
+  InterviewResponseAssignmentDto,
+  InterviewResponseDto,
+  InterviewResponseInterviewerDto,
+  InterviewResponseParticipantApplicantDto,
+  InterviewResponseParticipantDto,
+  InterviewStatus,
+  JobApprovalDepartment,
+  JobApprovalStatus,
+  JobApplicationFieldType,
+  JobResponseDto,
+  JobWorkflowStatus,
+  OfferResponseDto,
+} from '@repo/types';
 
 export const jobInclude = {
   requestForm: {
@@ -39,9 +61,7 @@ export const applicantInclude = {
   statusHistory: { orderBy: { changedAt: 'desc' as const } },
 };
 
-type ApprovalStage = 'FINANCE' | 'GM' | 'HR_REVIEW';
-type ApprovalDecision = 'PENDING' | 'APPROVED' | 'REJECTED';
-type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
+type ApprovalDepartment = JobApprovalDepartment;
 type ApprovalStepStatus =
   | 'PENDING_FOR_APPROVAL'
   | 'REQUEST_REVIEW'
@@ -50,7 +70,7 @@ type ApprovalStepStatus =
 
 export interface ApprovalState {
   id: string;
-  stage: ApprovalStage;
+  department: ApprovalDepartment;
   decision: ApprovalDecision;
 }
 
@@ -71,10 +91,189 @@ interface SubmitReadinessPayload {
   responsibilities: unknown[];
 }
 
-function departmentToStage(department: string): ApprovalStage {
-  if (department === 'FINANCE') return 'FINANCE';
-  if (department === 'GM') return 'GM';
-  return 'HR_REVIEW';
+const JOB_APPLICANT_FIELD_METADATA: Record<
+  string,
+  {
+    label: string;
+    type: JobApplicationFieldType;
+    helpText: string | null;
+    options: string[];
+  }
+> = {
+  PHONE: {
+    label: 'Phone Number',
+    type: 'TEXT',
+    helpText: 'Primary contact phone number including country code.',
+    options: [],
+  },
+  LINKEDIN_URL: {
+    label: 'LinkedIn URL',
+    type: 'TEXT',
+    helpText: 'Candidate LinkedIn profile URL.',
+    options: [],
+  },
+  PORTFOLIO_URL: {
+    label: 'Portfolio URL',
+    type: 'TEXT',
+    helpText: 'Candidate portfolio or personal website URL.',
+    options: [],
+  },
+  GITHUB_URL: {
+    label: 'GitHub URL',
+    type: 'TEXT',
+    helpText: 'Candidate GitHub profile URL.',
+    options: [],
+  },
+  EXPECTED_SALARY: {
+    label: 'Expected Salary',
+    type: 'NUMBER',
+    helpText: 'Candidate salary expectation for the role.',
+    options: [],
+  },
+  COVER_LETTER: {
+    label: 'Cover Letter',
+    type: 'TEXTAREA',
+    helpText: 'Candidate motivation and fit for the role.',
+    options: [],
+  },
+};
+
+interface JobApplicationSectionFieldMetadata {
+  key: string;
+  label: string;
+  type: JobApplicationFieldType;
+  required: boolean;
+  helpText: string | null;
+  options: string[];
+  order: number;
+}
+
+const JOB_APPLICATION_SECTION_METADATA: Record<
+  string,
+  {
+    label: string;
+    type: 'SECTION';
+    helpText: string | null;
+    options: string[];
+    fields: JobApplicationSectionFieldMetadata[];
+  }
+> = {
+  EDUCATION: {
+    label: 'Education',
+    type: 'SECTION',
+    helpText: 'Collect education history entries.',
+    options: [],
+    fields: [
+      {
+        key: 'INSTITUTION',
+        label: 'Institution',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Name of school, college, or university.',
+        options: [],
+        order: 1,
+      },
+      {
+        key: 'DEGREE',
+        label: 'Degree',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Degree or qualification obtained.',
+        options: [],
+        order: 2,
+      },
+      {
+        key: 'FIELD',
+        label: 'Field of Study',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Major or specialization.',
+        options: [],
+        order: 3,
+      },
+      {
+        key: 'START_DATE',
+        label: 'Start Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Education start date.',
+        options: [],
+        order: 4,
+      },
+      {
+        key: 'END_DATE',
+        label: 'End Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Education completion date.',
+        options: [],
+        order: 5,
+      },
+    ],
+  },
+  EXPERIENCE: {
+    label: 'Experience',
+    type: 'SECTION',
+    helpText: 'Collect professional experience entries.',
+    options: [],
+    fields: [
+      {
+        key: 'COMPANY',
+        label: 'Company',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Employer or organization name.',
+        options: [],
+        order: 1,
+      },
+      {
+        key: 'TITLE',
+        label: 'Job Title',
+        type: 'TEXT',
+        required: true,
+        helpText: 'Role title held by the applicant.',
+        options: [],
+        order: 2,
+      },
+      {
+        key: 'START_DATE',
+        label: 'Start Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Employment start date.',
+        options: [],
+        order: 3,
+      },
+      {
+        key: 'END_DATE',
+        label: 'End Date',
+        type: 'DATE',
+        required: false,
+        helpText: 'Employment end date.',
+        options: [],
+        order: 4,
+      },
+      {
+        key: 'DESCRIPTION',
+        label: 'Description',
+        type: 'TEXTAREA',
+        required: false,
+        helpText: 'Key responsibilities and impact.',
+        options: [],
+        order: 5,
+      },
+    ],
+  },
+};
+
+function humanizeKey(key: string) {
+  return key
+    .toLowerCase()
+    .split('_')
+    .map((segment) =>
+      segment.length > 0 ? segment[0]!.toUpperCase() + segment.slice(1) : '',
+    )
+    .join(' ');
 }
 
 function stepStatusToDecision(status: string): ApprovalDecision {
@@ -84,31 +283,30 @@ function stepStatusToDecision(status: string): ApprovalDecision {
 }
 
 function buildStageStatusSnapshot(approvals: any[]) {
-  const decisions: Record<ApprovalStage, ApprovalDecision> = {
+  const decisions: Record<ApprovalDepartment, ApprovalDecision> = {
     FINANCE: 'PENDING',
     GM: 'PENDING',
-    HR_REVIEW: 'PENDING',
+    HR: 'PENDING',
   };
 
   for (const approval of approvals ?? []) {
-    const stage = departmentToStage(
-      (approval.department as ApprovalDepartment | undefined) ?? 'HR',
-    );
+    const department =
+      (approval.department as ApprovalDepartment | undefined) ?? 'HR';
     const decision = stepStatusToDecision(
       (approval.status as ApprovalStepStatus | undefined) ??
         'PENDING_FOR_APPROVAL',
     );
-    decisions[stage] = decision;
+    decisions[department] = decision;
   }
 
   return {
     financeApprovalStatus: approvalDecisionToStageStatus(decisions.FINANCE),
     gmApprovalStatus: approvalDecisionToStageStatus(decisions.GM),
-    hrApprovalStatus: approvalDecisionToStageStatus(decisions.HR_REVIEW),
+    hrApprovalStatus: approvalDecisionToStageStatus(decisions.HR),
   };
 }
 
-const APPLICANT_TRANSITIONS: Record<string, string[]> = {
+const APPLICANT_TRANSITIONS: Record<ApplicantStatus, ApplicantStatus[]> = {
   APPLIED: ['SCREENING'],
   SCREENING: ['SHORTLISTED', 'REJECTED', 'WITHDRAWN'],
   SHORTLISTED: ['INTERVIEW', 'REJECTED', 'WITHDRAWN'],
@@ -120,14 +318,17 @@ const APPLICANT_TRANSITIONS: Record<string, string[]> = {
   WITHDRAWN: [],
 };
 
-const INTERVIEW_TRANSITIONS: Record<string, string[]> = {
+const INTERVIEW_TRANSITIONS: Record<InterviewStatus, InterviewStatus[]> = {
   SCHEDULED: ['COMPLETED', 'CANCELLED', 'NO_SHOW'],
   COMPLETED: [],
   CANCELLED: [],
   NO_SHOW: [],
 };
 
-const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<string, string[]> = {
+const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<
+  InterviewAttendanceStatus,
+  InterviewAttendanceStatus[]
+> = {
   SCHEDULED: ['ATTENDING', 'NO_SHOW', 'CANCELLED'],
   ATTENDING: ['COMPLETED', 'CANCELLED'],
   NO_SHOW: [],
@@ -135,26 +336,30 @@ const INTERVIEW_ATTENDANCE_TRANSITIONS: Record<string, string[]> = {
   CANCELLED: [],
 };
 
-export function currentApprovalStage(status: string) {
+export function currentApprovalStage(
+  status: JobWorkflowStatus,
+): JobApprovalDepartment | null {
   if (status !== 'PENDING_FOR_APPROVAL') return null;
   return 'FINANCE';
 }
 
-export function requiredRoleForStage(stage: 'FINANCE' | 'GM' | 'HR_REVIEW') {
-  if (stage === 'FINANCE') return SYSTEM_ROLES.FINANCE_MANAGER;
-  if (stage === 'GM') return SYSTEM_ROLES.SUPERADMIN;
+export function requiredRoleForStage(department: JobApprovalDepartment) {
+  if (department === 'FINANCE') return SYSTEM_ROLES.FINANCE_MANAGER;
+  if (department === 'GM') return SYSTEM_ROLES.SUPERADMIN;
   return SYSTEM_ROLES.HR_MANAGER;
 }
 
 export function isApprovalStageActionable(
-  stage: ApprovalStage,
+  department: ApprovalDepartment,
   approvals: ApprovalState[],
 ) {
   if (approvals.some((approval) => approval.decision === 'REJECTED')) {
     return false;
   }
 
-  const current = approvals.find((approval) => approval.stage === stage);
+  const current = approvals.find(
+    (approval) => approval.department === department,
+  );
   if (!current) {
     throw new BadRequestException('Missing approval stage configuration');
   }
@@ -162,10 +367,14 @@ export function isApprovalStageActionable(
   return current.decision === 'PENDING';
 }
 
-export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {
-  const finance = approvals.find((approval) => approval.stage === 'FINANCE');
-  const gm = approvals.find((approval) => approval.stage === 'GM');
-  const hr = approvals.find((approval) => approval.stage === 'HR_REVIEW');
+export function computeJobStatusFromApprovals(
+  approvals: ApprovalState[],
+): JobWorkflowStatus {
+  const finance = approvals.find(
+    (approval) => approval.department === 'FINANCE',
+  );
+  const gm = approvals.find((approval) => approval.department === 'GM');
+  const hr = approvals.find((approval) => approval.department === 'HR');
 
   if (!finance || !gm || !hr) {
     throw new BadRequestException('Missing approval stage configuration');
@@ -189,12 +398,12 @@ export function computeJobStatusFromApprovals(approvals: ApprovalState[]) {
 export function approvalDecisionToStageStatus(decision: ApprovalDecision) {
   if (decision === 'APPROVED') return 'APPROVED' as const;
   if (decision === 'REJECTED') return 'REJECTED' as const;
-  return 'PENDING_FOR_APPROVAL' as const;
+  return 'PENDING_FOR_APPROVAL' as JobApprovalStatus;
 }
 
 export function assertApplicantTransition(
-  currentStatus: string,
-  nextStatus: string,
+  currentStatus: ApplicantStatus,
+  nextStatus: ApplicantStatus,
 ) {
   if (currentStatus === nextStatus) return;
   const allowed = APPLICANT_TRANSITIONS[currentStatus] ?? [];
@@ -206,8 +415,8 @@ export function assertApplicantTransition(
 }
 
 export function assertInterviewTransition(
-  currentStatus: string,
-  nextStatus: string,
+  currentStatus: InterviewStatus,
+  nextStatus: InterviewStatus,
 ) {
   if (currentStatus === nextStatus) return;
   const allowed = INTERVIEW_TRANSITIONS[currentStatus] ?? [];
@@ -219,8 +428,8 @@ export function assertInterviewTransition(
 }
 
 export function assertInterviewAttendanceTransition(
-  currentStatus: string,
-  nextStatus: string,
+  currentStatus: InterviewAttendanceStatus,
+  nextStatus: InterviewAttendanceStatus,
 ) {
   if (currentStatus === nextStatus) return;
   const allowed = INTERVIEW_ATTENDANCE_TRANSITIONS[currentStatus] ?? [];
@@ -396,7 +605,11 @@ export function normalizeSkillArray(values: string[] | null | undefined) {
   return normalized;
 }
 
-export function mapJob(job: any) {
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
+export function mapJob(job: any): JobResponseDto {
   const requestForm = job.requestForm;
   const requestApprovals = requestForm?.approvals ?? [];
   const stageStatuses = buildStageStatusSnapshot(requestApprovals);
@@ -417,11 +630,15 @@ export function mapJob(job: any) {
           workMode: requestForm.workMode,
           urgency: requestForm.urgency,
           neededByDate: dateToIso(requestForm.neededByDate),
-          status: requestForm.status,
+          status: {
+            workflow: requestForm.status,
+            approvals: {
+              finance: stageStatuses.financeApprovalStatus,
+              gm: stageStatuses.gmApprovalStatus,
+              hr: stageStatuses.hrApprovalStatus,
+            },
+          },
           priority: requestForm.priority,
-          financeApprovalStatus: stageStatuses.financeApprovalStatus,
-          gmApprovalStatus: stageStatuses.gmApprovalStatus,
-          hrApprovalStatus: stageStatuses.hrApprovalStatus,
           draftedAt: dateToIso(requestForm.draftedAt),
           pendingApprovalAt: dateToIso(requestForm.pendingApprovalAt),
           readyToPostAt: dateToIso(requestForm.readyToPostAt),
@@ -474,6 +691,12 @@ export function mapJob(job: any) {
           jobId: applicationForm.jobId,
           applicantFields: (applicationForm.applicantFields ?? []).map(
             (field: any, index: number) => ({
+              ...(JOB_APPLICANT_FIELD_METADATA[field.key] ?? {
+                label: humanizeKey(field.key),
+                type: 'TEXT',
+                helpText: null,
+                options: [],
+              }),
               id: field.id,
               key: field.key,
               enabled: field.enabled,
@@ -482,13 +705,38 @@ export function mapJob(job: any) {
             }),
           ),
           sections: (applicationForm.sections ?? []).map(
-            (section: any, index: number) => ({
-              id: section.id,
-              key: section.key,
-              enabled: section.enabled,
-              required: section.required,
-              order: section.order ?? index + 1,
-            }),
+            (section: any, index: number) => {
+              const sectionMetadata = JOB_APPLICATION_SECTION_METADATA[
+                section.key
+              ] ?? {
+                label: humanizeKey(section.key),
+                type: 'SECTION' as const,
+                helpText: null,
+                options: [],
+                fields: [],
+              };
+
+              return {
+                id: section.id,
+                key: section.key,
+                label: sectionMetadata.label,
+                type: sectionMetadata.type,
+                enabled: section.enabled,
+                required: section.required,
+                helpText: sectionMetadata.helpText,
+                options: [...sectionMetadata.options],
+                fields: sectionMetadata.fields.map((field) => ({
+                  key: field.key,
+                  label: field.label,
+                  type: field.type,
+                  required: field.required,
+                  helpText: field.helpText,
+                  options: [...field.options],
+                  order: field.order,
+                })),
+                order: section.order ?? index + 1,
+              };
+            },
           ),
           customFields: (applicationForm.customFields ?? []).map(
             (field: any) => ({
@@ -503,7 +751,7 @@ export function mapJob(job: any) {
         }
       : null,
     approvals: requestApprovals.map((approval: any) => {
-      const stage = departmentToStage(approval.department);
+      const department = (approval.department ?? 'HR') as ApprovalDepartment;
       const decision = stepStatusToDecision(approval.status);
       const latestHistory = approval.history?.[0];
       const autoApprovalReason =
@@ -513,9 +761,9 @@ export function mapJob(job: any) {
 
       return {
         id: approval.id,
-        stage,
+        department,
         level: approval.level,
-        requiredRole: requiredRoleForStage(stage),
+        requiredRole: requiredRoleForStage(department),
         approverId: approval.approverId ?? null,
         decision,
         autoApproved: autoApprovalReason !== null,
@@ -528,7 +776,7 @@ export function mapJob(job: any) {
   };
 }
 
-export function mapApplicant(applicant: any) {
+export function mapApplicant(applicant: any): ApplicantResponseDto {
   return {
     id: applicant.id,
     jobId: applicant.jobId,
@@ -557,7 +805,7 @@ export function mapApplicant(applicant: any) {
     coverLetter: applicant.coverLetter ?? null,
     sourceSnapshot: toObjectRecord(applicant.sourceSnapshot),
     customFieldValues: toObjectRecord(applicant.customFieldValues),
-    appliedAt: dateToIso(applicant.appliedAt),
+    appliedAt: applicant.appliedAt.toISOString(),
     screeningAt: dateToIso(applicant.screeningAt),
     shortlistedAt: dateToIso(applicant.shortlistedAt),
     interviewAt: dateToIso(applicant.interviewAt),
@@ -600,7 +848,7 @@ export function mapApplicant(applicant: any) {
   };
 }
 
-export function mapOffer(offer: any) {
+export function mapOffer(offer: any): OfferResponseDto {
   return {
     id: offer.id,
     jobId: offer.jobId,
@@ -625,7 +873,9 @@ export function mapOffer(offer: any) {
   };
 }
 
-function mapInterviewParticipant(participant: any) {
+function mapInterviewParticipant(
+  participant: any,
+): InterviewResponseParticipantDto {
   return {
     id: participant.id,
     sessionId: participant.sessionId,
@@ -633,18 +883,20 @@ function mapInterviewParticipant(participant: any) {
     attendanceStatus: participant.attendanceStatus,
     createdAt: participant.createdAt.toISOString(),
     applicant: participant.applicant
-      ? {
+      ? ({
           id: participant.applicant.id,
           firstName: participant.applicant.firstName,
           lastName: participant.applicant.lastName,
           email: participant.applicant.email,
           status: participant.applicant.status,
-        }
+        } satisfies InterviewResponseParticipantApplicantDto)
       : null,
   };
 }
 
-function mapInterviewerAssignment(assignment: any) {
+function mapInterviewerAssignment(
+  assignment: any,
+): InterviewResponseAssignmentDto {
   return {
     id: assignment.id,
     sessionId: assignment.sessionId,
@@ -652,22 +904,98 @@ function mapInterviewerAssignment(assignment: any) {
     role: assignment.role ?? null,
     createdAt: assignment.createdAt.toISOString(),
     interviewer: assignment.interviewer
-      ? {
+      ? ({
           id: assignment.interviewer.id,
           firstName: assignment.interviewer.firstName,
           lastName: assignment.interviewer.lastName,
           email: assignment.interviewer.email,
           status: assignment.interviewer.status,
-        }
+        } satisfies InterviewResponseInterviewerDto)
       : null,
   };
 }
 
-export function mapInterviewFeedback(feedback: any) {
+function normalizeInterviewResponseAnswer(
+  answer: unknown,
+): InterviewQuestionResponseAnswer {
+  if (answer == null) return null;
+  if (typeof answer === 'string') return answer;
+  if (typeof answer === 'boolean') return answer;
+  if (typeof answer === 'number' && Number.isFinite(answer)) return answer;
+  if (Array.isArray(answer) && answer.every((item) => typeof item === 'string'))
+    return answer;
+  return null;
+}
+
+function mapInterviewQuestionResponseItem(
+  item: unknown,
+): InterviewQuestionResponseItemDto | null {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) {
+    return null;
+  }
+
+  const row = item as Record<string, unknown>;
+  const score =
+    typeof row.score === 'number' && Number.isFinite(row.score)
+      ? row.score
+      : null;
+  const maxScore =
+    typeof row.maxScore === 'number' && Number.isFinite(row.maxScore)
+      ? row.maxScore
+      : null;
+  const weight =
+    typeof row.weight === 'number' && Number.isFinite(row.weight)
+      ? row.weight
+      : null;
+
+  return {
+    questionId: typeof row.questionId === 'string' ? row.questionId : null,
+    question: typeof row.question === 'string' ? row.question : '',
+    category:
+      typeof row.category === 'string'
+        ? (row.category as InterviewQuestionResponseItemDto['category'])
+        : null,
+    type:
+      typeof row.type === 'string'
+        ? (row.type as InterviewQuestionResponseItemDto['type'])
+        : 'TEXT',
+    answer: normalizeInterviewResponseAnswer(row.answer),
+    score,
+    maxScore,
+    weight,
+    notes: typeof row.notes === 'string' ? row.notes : null,
+  };
+}
+
+export function mapInterviewQuestion(row: any): InterviewQuestionDto {
+  return {
+    id: row.id,
+    question: row.question,
+    description: row.description ?? null,
+    category: row.category ?? null,
+    type: row.type,
+    options: row.options ?? [],
+    difficulty: typeof row.difficulty === 'number' ? row.difficulty : null,
+    tags: row.tags ?? [],
+    createdById: row.createdById,
+    isActive: Boolean(row.isActive),
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+export function mapInterviewFeedback(
+  feedback: any,
+): InterviewFeedbackResponseDto {
   const score =
     typeof feedback.score === 'number' && Number.isFinite(feedback.score)
       ? feedback.score
       : null;
+  const questionResponses = Array.isArray(feedback.questionResponses)
+    ? feedback.questionResponses
+        .map((item: unknown) => mapInterviewQuestionResponseItem(item))
+        .filter(isDefined)
+    : null;
 
   return {
     id: feedback.id,
@@ -678,6 +1006,7 @@ export function mapInterviewFeedback(feedback: any) {
     endorsement: feedback.endorsement ?? null,
     strengths: feedback.strengths ?? [],
     weaknesses: feedback.weaknesses ?? [],
+    questionResponses,
     notes: feedback.notes ?? null,
     isDraft: Boolean(feedback.isDraft),
     submittedAt: dateToIso(feedback.submittedAt),
@@ -686,7 +1015,7 @@ export function mapInterviewFeedback(feedback: any) {
   };
 }
 
-export function mapInterview(session: any) {
+export function mapInterview(session: any): InterviewResponseDto {
   const sessionFeedbacks = Array.isArray(session.feedbacks)
     ? session.feedbacks
     : (session.participants ?? []).flatMap(

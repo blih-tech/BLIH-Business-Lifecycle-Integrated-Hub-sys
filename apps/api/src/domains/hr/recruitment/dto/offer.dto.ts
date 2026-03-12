@@ -8,32 +8,27 @@ import {
   IsUUID,
   Matches,
 } from 'class-validator';
+import {
+  EMPLOYMENT_TYPES,
+  OFFER_STATUSES,
+  PAY_FREQUENCIES,
+  RESPOND_OFFER_DECISIONS,
+} from '@repo/types';
+import type {
+  CreateOfferDto as CreateOfferDtoType,
+  EmploymentType,
+  OfferListQueryDto as OfferListQueryDtoType,
+  OfferResponseDto as OfferResponseDtoType,
+  OfferDecision,
+  OfferStatus,
+  PayFrequency,
+  RespondOfferDto as RespondOfferDtoType,
+  SendOfferDto as SendOfferDtoType,
+  UpdateOfferDto as UpdateOfferDtoType,
+  WithdrawOfferDto as WithdrawOfferDtoType,
+} from '@repo/types';
 
-export const OFFER_STATUSES = [
-  'DRAFT',
-  'SENT',
-  'ACCEPTED',
-  'DECLINED',
-  'EXPIRED',
-  'WITHDRAWN',
-] as const;
-
-export const PAY_FREQUENCIES = [
-  'MONTHLY',
-  'BIWEEKLY',
-  'WEEKLY',
-  'ANNUAL',
-] as const;
-
-export const EMPLOYMENT_TYPES = [
-  'FULL_TIME',
-  'PART_TIME',
-  'CONTRACT',
-  'INTERN',
-  'TEMPORARY',
-] as const;
-
-export class CreateOfferDto {
+export class CreateOfferDto implements CreateOfferDtoType {
   @ApiProperty({ example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374' })
   @IsUUID()
   jobId!: string;
@@ -97,29 +92,31 @@ export class CreateOfferDto {
   expiresAt?: string | null;
 }
 
-export class UpdateOfferDto extends PartialType(CreateOfferDto) {}
+export class UpdateOfferDto
+  extends PartialType(CreateOfferDto)
+  implements UpdateOfferDtoType {}
 
-export class SendOfferDto {
+export class SendOfferDto implements SendOfferDtoType {
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsDateString()
   expiresAt?: string | null;
 }
 
-export class RespondOfferDto {
-  @ApiProperty({ enum: ['ACCEPTED', 'DECLINED'] })
-  @IsEnum(['ACCEPTED', 'DECLINED'])
-  decision!: 'ACCEPTED' | 'DECLINED';
+export class RespondOfferDto implements RespondOfferDtoType {
+  @ApiProperty({ enum: RESPOND_OFFER_DECISIONS })
+  @IsEnum(RESPOND_OFFER_DECISIONS)
+  decision!: OfferDecision;
 }
 
-export class WithdrawOfferDto {
+export class WithdrawOfferDto implements WithdrawOfferDtoType {
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
   reason?: string | null;
 }
 
-export class OfferResponseDto {
+export class OfferResponseDto implements OfferResponseDtoType {
   @ApiProperty()
   id!: string;
 
@@ -133,7 +130,7 @@ export class OfferResponseDto {
   createdById!: string;
 
   @ApiProperty({ enum: OFFER_STATUSES })
-  status!: (typeof OFFER_STATUSES)[number];
+  status!: OfferStatus;
 
   @ApiPropertyOptional({ nullable: true })
   salary!: string | null;
@@ -145,10 +142,10 @@ export class OfferResponseDto {
   startDate!: string | null;
 
   @ApiPropertyOptional({ enum: PAY_FREQUENCIES, nullable: true })
-  payFrequency!: (typeof PAY_FREQUENCIES)[number] | null;
+  payFrequency!: PayFrequency | null;
 
   @ApiPropertyOptional({ enum: EMPLOYMENT_TYPES, nullable: true })
-  employmentType!: (typeof EMPLOYMENT_TYPES)[number] | null;
+  employmentType!: EmploymentType | null;
 
   @ApiPropertyOptional({ nullable: true })
   bonus!: string | null;
@@ -181,11 +178,11 @@ export class OfferResponseDto {
   updatedAt!: string;
 }
 
-export class OfferListQueryDto {
+export class OfferListQueryDto implements OfferListQueryDtoType {
   @ApiPropertyOptional({ enum: OFFER_STATUSES })
   @IsOptional()
   @IsEnum(OFFER_STATUSES)
-  status?: (typeof OFFER_STATUSES)[number];
+  status?: OfferStatus;
 
   @ApiPropertyOptional()
   @IsOptional()

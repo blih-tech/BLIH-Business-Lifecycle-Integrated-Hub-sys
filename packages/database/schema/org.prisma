@@ -13,7 +13,7 @@ model Department {
   positions               Position[]
   employmentHistory       UserEmploymentHistory[]
   jobs                    Job[]
-  jobRequestForms         JobRequestForm[]          @relation("JobRequestDepartment")
+  jobRequestForms         JobRequestForm[]         @relation("JobRequestDepartment")
   okrs                    Okr[]
   performanceCalibrations PerformanceCalibration[]
   trainingBudgets         TrainingBudget[]
@@ -50,7 +50,7 @@ model Position {
   jobDescriptions      JobDescription[]
   employmentHistory    UserEmploymentHistory[]
   jobs                 Job[]
-  jobRequestForms      JobRequestForm[]             @relation("JobRequestPosition")
+  jobRequestForms      JobRequestForm[]          @relation("JobRequestPosition")
   successionPlans      SuccessionPlan[]
   promotionSourceFor   PromotionProposal[]       @relation("PromotionProposalFromPosition")
   promotionTargetFor   PromotionProposal[]       @relation("PromotionProposalToPosition")
