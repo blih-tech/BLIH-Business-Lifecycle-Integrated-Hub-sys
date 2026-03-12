@@ -605,6 +605,7 @@ export class AuthController {
         subject: '65c827f5-96d6-4ad7-8f4a-80df9794ac2d',
         sessionId: '4f5c57c7-4f17-4171-a23a-53f38eb9f7c8',
         tokenTypeHint: 'refresh_token',
+        reason: 'user_logout',
       },
     },
   })

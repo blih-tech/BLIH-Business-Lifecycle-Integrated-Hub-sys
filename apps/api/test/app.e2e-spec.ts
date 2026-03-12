@@ -9,10 +9,15 @@ import { KeycloakTokenService } from '../src/platform/keycloak/keycloak-token.se
 import { ValidationPipe } from '../src/shared/pipes/validation.pipe';
 
 const getCookie = (
-  setCookie: string[] | undefined,
+  setCookie: string | string[] | undefined,
   name: string,
 ): string | undefined =>
-  setCookie?.find((cookie) => cookie.startsWith(`${name}=`));
+  (Array.isArray(setCookie)
+    ? setCookie
+    : typeof setCookie === 'string'
+      ? [setCookie]
+      : []
+  ).find((cookie) => cookie.startsWith(`${name}=`));
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -164,7 +169,7 @@ describe('AppController (e2e)', () => {
     expect(authorizationUrl.searchParams.get('state')).toBeTruthy();
     expect(authorizationUrl.searchParams.get('prompt')).toBe('login');
 
-    const cookies = response.headers['set-cookie'] as string[] | undefined;
+    const cookies = response.headers['set-cookie'];
     expect(getCookie(cookies, 'kc_state')).toBeDefined();
     expect(getCookie(cookies, 'kc_verifier')).toBeDefined();
     expect(getCookie(cookies, 'kc_redirect')).toBeDefined();
@@ -176,7 +181,7 @@ describe('AppController (e2e)', () => {
       .expect(302);
 
     expect(response.headers.location).toBe('/login');
-    const cookies = response.headers['set-cookie'] as string[] | undefined;
+    const cookies = response.headers['set-cookie'];
     expect(getCookie(cookies, 'kc_state')).toBeDefined();
     expect(getCookie(cookies, 'kc_verifier')).toBeDefined();
     expect(getCookie(cookies, 'kc_redirect')).toBeDefined();
@@ -204,7 +209,7 @@ describe('AppController (e2e)', () => {
       .expect(302);
 
     expect(response.headers.location).toBe('/dashboard');
-    const cookies = response.headers['set-cookie'] as string[] | undefined;
+    const cookies = response.headers['set-cookie'];
     expect(getCookie(cookies, 'kc_access')).toBeDefined();
     expect(getCookie(cookies, 'kc_refresh')).toBeDefined();
     expect(getCookie(cookies, 'kc_id')).toBeDefined();
@@ -229,7 +234,7 @@ describe('AppController (e2e)', () => {
       '/login',
     );
 
-    const cookies = response.headers['set-cookie'] as string[] | undefined;
+    const cookies = response.headers['set-cookie'];
     expect(getCookie(cookies, 'kc_access')).toBeDefined();
     expect(getCookie(cookies, 'kc_refresh')).toBeDefined();
     expect(getCookie(cookies, 'kc_id')).toBeDefined();
