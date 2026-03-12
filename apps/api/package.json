@@ -110,6 +110,7 @@
     ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1",
+      "^@repo/types$": "<rootDir>/../../../packages/types/src/index.ts",
       "^@repo/database/prisma-client$": "<rootDir>/platform/prisma/prisma-client.jest.ts",
       "^@repo/database/generated/enums$": "<rootDir>/../../../packages/database/src/generated/enums.ts"
     },
