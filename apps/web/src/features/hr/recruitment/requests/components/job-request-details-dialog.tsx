@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 
-type JobRequestDetailsVariant = 'active' | 'by_me' | 'closed';
+type JobRequestDetailsVariant = 'active' | 'by_me' | 'closed' | 'posted';
 
 type JobRequestDetailsDialogProps = {
   request: FullJobRequest | null;

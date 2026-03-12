@@ -7,60 +7,23 @@ import { CreateRequestDialog } from "@/features/hr/recruitment/requests/componen
 import { JobRequestDetailsDialog } from "@/features/hr/recruitment/requests/components/job-request-details-dialog";
 import { JobRequestCard } from "@/features/hr/recruitment/requests/components/job-request-card";
 import { JobRequestJustifyDialog } from "@/features/hr/recruitment/requests/components/job-request-justify-dialog";
-import type {
-  FullJobRequest,
-  JobRequestDepartment,
-  JobRequestPriority,
-} from "@/features/hr/recruitment/requests/types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
+import type { FullJobRequest, JobRequestPriority } from "@/features/hr/recruitment/requests/types";
 
 type JobRequestsSectionProps = {
   items: FullJobRequest[];
   currentUserName: string;
 };
 
-function departmentLabel(department: JobRequestDepartment) {
-  if (department === "technical") return "Technical";
-  if (department === "creative") return "Creative";
-  return "Digital Marketing";
-}
-
 export function JobRequestsSection({ items, currentUserName }: JobRequestsSectionProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [departmentFilter, setDepartmentFilter] = useState<JobRequestDepartment | "all">("all");
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
   const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
   const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
   const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
-  const departmentOptions = useMemo(
-    () =>
-      Array.from(new Set(items.map((item) => item.requestForm.department as JobRequestDepartment))).map(
-        (department) => ({
-          value: department,
-          label: departmentLabel(department),
-        }),
-      ),
-    [items],
-  );
 
-  const filteredItems = useMemo(
-    () =>
-      items.filter((item) => {
-        const matchesDepartment =
-          departmentFilter === "all" || item.requestForm.department === departmentFilter;
-
-        return matchesDepartment;
-      }),
-    [departmentFilter, items],
-  );
+  const filteredItems = useMemo(() => items, [items]);
   const filteredRequestEntries = useMemo(
     () =>
       filteredItems.map((request) => ({
@@ -102,63 +65,26 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
 
   return (
     <>
-      <section className="space-y-3">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground">Filters</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Narrow the request list by department.
-            </p>
-          </div>
-
-          <div className="grid gap-3 md:min-w-[260px] md:grid-cols-1">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                Department
-              </p>
-              <Select
-                value={departmentFilter}
-                onValueChange={(value) =>
-                  setDepartmentFilter(value as JobRequestDepartment | "all")
-                }
-              >
-                <SelectTrigger className="w-full bg-background">
-                  <SelectValue placeholder="Filter by department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Departments</SelectItem>
-                  {departmentOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      {filteredItems.length > 0 ? (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {filteredRequestEntries.map(({ request }, index) => (
+            <JobRequestCard
+              key={`${request.requestForm.jobTitle}-${index}`}
+              item={request}
+              priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
+              onClick={() => setSelectedRequestIndex(index)}
+              onJustifyClick={() => setJustifyRequestIndex(index)}
+            />
+          ))}
         </div>
-
-        {filteredItems.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {filteredRequestEntries.map(({ request }, index) => (
-              <JobRequestCard
-                key={`${request.requestForm.jobTitle}-${index}`}
-                item={request}
-                priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
-                onClick={() => setSelectedRequestIndex(index)}
-                onJustifyClick={() => setJustifyRequestIndex(index)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center">
-            <p className="text-sm font-semibold text-foreground">No matching requests</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Try changing the department filter.
-            </p>
-          </div>
-        )}
-      </section>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center">
+          <p className="text-sm font-semibold text-foreground">No requests</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            No requests are available for this section yet.
+          </p>
+        </div>
+      )}
 
       <JobRequestDetailsDialog
         request={selectedRequest}

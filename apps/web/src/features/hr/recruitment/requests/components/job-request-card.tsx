@@ -4,6 +4,7 @@ import type {
   JobRequestPriority,
 } from "@/features/hr/recruitment/requests/types";
 import type { MouseEvent } from "react";
+import { Clock } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
 type JobRequestCardProps = {
@@ -88,13 +89,21 @@ export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobR
             {departmentLabel(item.requestForm.department as JobRequestDepartment)}
           </span>
         </div>
-        <span
-          className={`inline-flex items-center justify-center text-[12px] font-medium leading-[16px] ${priorityBadgeClasses(
-            priority,
-          )}`}
-        >
-          {priorityLabel(priority)}
-        </span>
+        <div className="flex items-center gap-[8px]">
+          {item.status === "closed" ? (
+            <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] bg-black px-[8px] py-[2px] text-[12px] font-medium leading-[16px] text-white">
+              Declined
+            </span>
+          ) : (
+            <span
+              className={`inline-flex items-center justify-center text-[12px] font-medium leading-[16px] ${priorityBadgeClasses(
+                priority,
+              )}`}
+            >
+              {priorityLabel(priority)}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="mt-[24px] flex items-end justify-between">
@@ -117,26 +126,37 @@ export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobR
           </div>
         </div>
         <div className="flex items-start gap-[8px]">
-          <Button
-            type="button"
-            size="sm"
-            className="h-[32px] w-[88px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
-            onClick={handleActionClick}
-          >
-            Approve
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-[32px] w-[77px] rounded-[6px] border border-[#e5e5e5] bg-white px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-black shadow-none hover:bg-white hover:text-black"
-            onClick={(event) => {
-              handleActionClick(event);
-              onJustifyClick?.();
-            }}
-          >
-            Justify
-          </Button>
+          {item.status === "closed" ? null : item.status === "by_me" ? (
+            <div className="flex h-[32px] items-center gap-[8px] rounded-[8px] bg-[#e9f0fe] px-[12px]">
+              <Clock className="h-[16px] w-[16px] text-[#1e66f7]" />
+              <span className="text-[14px] leading-[20px] tracking-[-0.2px] text-black">
+                Waiting other approvals
+              </span>
+            </div>
+          ) : (
+            <>
+              <Button
+                type="button"
+                size="sm"
+                className="h-[32px] w-[88px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
+                onClick={handleActionClick}
+              >
+                Approve
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-[32px] w-[77px] rounded-[6px] border border-[#e5e5e5] bg-white px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-black shadow-none hover:bg-white hover:text-black"
+                onClick={(event) => {
+                  handleActionClick(event);
+                  onJustifyClick?.();
+                }}
+              >
+                Justify
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
