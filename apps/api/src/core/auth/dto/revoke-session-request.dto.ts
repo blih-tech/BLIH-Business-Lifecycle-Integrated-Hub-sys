@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsIn, IsOptional, IsString } from 'class-validator';
+import type { RevokeSessionRequestDto as RevokeSessionRequestDtoType } from '@repo/types';
 
-export class RevokeSessionRequestDto {
+export class RevokeSessionRequestDto implements RevokeSessionRequestDtoType {
   @ApiProperty({
     description: 'Token to revoke.',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',

@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import type { ExchangeTokenRequestDto as ExchangeTokenRequestDtoType } from '@repo/types';
 
-export class ExchangeTokenRequestDto {
+export class ExchangeTokenRequestDto implements ExchangeTokenRequestDtoType {
   @ApiProperty({
     description: 'Subject access token used for token exchange.',
     example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',

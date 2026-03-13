@@ -26,10 +26,16 @@ import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { AUDIT_ACTIONS } from '../../shared/constants/audit-actions.constant';
 import { buildRequestContext } from '../../shared/utils/request.util';
+import type {
+  AuthCallbackQueryDto as AuthCallbackQueryDtoType,
+  AuthLoginQueryDto as AuthLoginQueryDtoType,
+  AuthLogoutQueryDto as AuthLogoutQueryDtoType,
+} from '@repo/types';
 import { ExchangeTokenRequestDto } from './dto/exchange-token-request.dto';
 import { IntrospectTokenRequestDto } from './dto/introspect-token-request.dto';
 import { RefreshTokenRequestDto } from './dto/refresh-token-request.dto';
 import { RevokeSessionRequestDto } from './dto/revoke-session-request.dto';
+import { RevokeSessionResponseDto } from './dto/revoke-session-response.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { ValidateTokenRequestDto } from './dto/validate-token-request.dto';
 import { AuthMeResponseDto } from './dto/auth-me-response.dto';
@@ -100,8 +106,9 @@ export class AuthController {
     },
   })
   login(
-    @Query('redirect') redirectPath: string | undefined,
-    @Query('prompt') prompt: string | undefined,
+    @Query('redirect')
+    redirectPath: AuthLoginQueryDtoType['redirect'] | undefined,
+    @Query('prompt') prompt: AuthLoginQueryDtoType['prompt'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): void {
@@ -158,11 +165,13 @@ export class AuthController {
     name: 'code',
     required: false,
     description: 'Authorization code returned by Keycloak.',
+    schema: { type: 'string' },
   })
   @ApiQuery({
     name: 'state',
     required: false,
     description: 'Opaque state value returned by Keycloak.',
+    schema: { type: 'string' },
   })
   @ApiResponse({
     status: 302,
@@ -182,8 +191,8 @@ export class AuthController {
     },
   })
   async callback(
-    @Query('code') code: string | undefined,
-    @Query('state') state: string | undefined,
+    @Query('code') code: AuthCallbackQueryDtoType['code'] | undefined,
+    @Query('state') state: AuthCallbackQueryDtoType['state'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
@@ -318,7 +327,8 @@ export class AuthController {
     },
   })
   async logout(
-    @Query('redirect') redirectPath: string | undefined,
+    @Query('redirect')
+    redirectPath: AuthLogoutQueryDtoType['redirect'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
@@ -599,6 +609,7 @@ export class AuthController {
   })
   @ApiCreatedResponse({
     description: 'Token/session revocation completed.',
+    type: RevokeSessionResponseDto,
     schema: {
       example: {
         revoked: true,
