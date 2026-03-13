@@ -419,7 +419,6 @@ model Offer {
   applicantId          String                @map("applicant_id") @db.Uuid
   applicant            Applicant             @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   onboardingId         String?               @unique @map("onboarding_id") @db.Uuid
-  onboarding           Onboarding?           @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
   createdById          String                @map("created_by_id") @db.Uuid
   createdBy            User                  @relation("OfferCreator", fields: [createdById], references: [id], onDelete: Restrict)
   status               OfferStatus           @default(DRAFT)
@@ -437,7 +436,6 @@ model Offer {
   expiresAt            DateTime?             @map("expires_at")
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
-  onboardingChecklists OnboardingChecklist[]
 
   @@unique([jobId, applicantId])
   @@index([jobId])

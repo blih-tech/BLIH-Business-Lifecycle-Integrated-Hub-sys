@@ -184,7 +184,6 @@ export type EmployeeWhereInput = {
   employeeDocuments?: Prisma.EmployeeDocumentListRelationFilter
   contracts?: Prisma.ContractListRelationFilter
   onboardings?: Prisma.OnboardingListRelationFilter
-  onboardingChecklists?: Prisma.OnboardingChecklistListRelationFilter
   assetProvisionings?: Prisma.AssetProvisioningListRelationFilter
   policyAcknowledgements?: Prisma.PolicyAcknowledgementListRelationFilter
   probationKpiPlans?: Prisma.ProbationKpiPlanListRelationFilter
@@ -240,7 +239,6 @@ export type EmployeeOrderByWithRelationInput = {
   employeeDocuments?: Prisma.EmployeeDocumentOrderByRelationAggregateInput
   contracts?: Prisma.ContractOrderByRelationAggregateInput
   onboardings?: Prisma.OnboardingOrderByRelationAggregateInput
-  onboardingChecklists?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
   assetProvisionings?: Prisma.AssetProvisioningOrderByRelationAggregateInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementOrderByRelationAggregateInput
   probationKpiPlans?: Prisma.ProbationKpiPlanOrderByRelationAggregateInput
@@ -299,7 +297,6 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   employeeDocuments?: Prisma.EmployeeDocumentListRelationFilter
   contracts?: Prisma.ContractListRelationFilter
   onboardings?: Prisma.OnboardingListRelationFilter
-  onboardingChecklists?: Prisma.OnboardingChecklistListRelationFilter
   assetProvisionings?: Prisma.AssetProvisioningListRelationFilter
   policyAcknowledgements?: Prisma.PolicyAcknowledgementListRelationFilter
   probationKpiPlans?: Prisma.ProbationKpiPlanListRelationFilter
@@ -374,7 +371,6 @@ export type EmployeeCreateInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -429,7 +425,6 @@ export type EmployeeUncheckedCreateInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -484,7 +479,6 @@ export type EmployeeUpdateInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -539,7 +533,6 @@ export type EmployeeUncheckedUpdateInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1011,20 +1004,6 @@ export type EmployeeUpdateOneRequiredWithoutOnboardingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOnboardingsInput, Prisma.EmployeeUpdateWithoutOnboardingsInput>, Prisma.EmployeeUncheckedUpdateWithoutOnboardingsInput>
 }
 
-export type EmployeeCreateNestedOneWithoutOnboardingChecklistsInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingChecklistsInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingChecklistsInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOnboardingChecklistsInput
-  connect?: Prisma.EmployeeWhereUniqueInput
-}
-
-export type EmployeeUpdateOneRequiredWithoutOnboardingChecklistsNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingChecklistsInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingChecklistsInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOnboardingChecklistsInput
-  upsert?: Prisma.EmployeeUpsertWithoutOnboardingChecklistsInput
-  connect?: Prisma.EmployeeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOnboardingChecklistsInput, Prisma.EmployeeUpdateWithoutOnboardingChecklistsInput>, Prisma.EmployeeUncheckedUpdateWithoutOnboardingChecklistsInput>
-}
-
 export type EmployeeCreateNestedOneWithoutAssetProvisioningsInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAssetProvisioningsInput, Prisma.EmployeeUncheckedCreateWithoutAssetProvisioningsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAssetProvisioningsInput
@@ -1353,7 +1332,6 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -1407,7 +1385,6 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1477,7 +1454,6 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -1531,7 +1507,6 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1585,7 +1560,6 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -1639,7 +1613,6 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1709,7 +1682,6 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -1763,7 +1735,6 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1817,7 +1788,6 @@ export type EmployeeCreateWithoutAttendanceLogsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -1871,7 +1841,6 @@ export type EmployeeUncheckedCreateWithoutAttendanceLogsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1941,7 +1910,6 @@ export type EmployeeUpdateWithoutAttendanceLogsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -1995,7 +1963,6 @@ export type EmployeeUncheckedUpdateWithoutAttendanceLogsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2049,7 +2016,6 @@ export type EmployeeCreateWithoutAttendanceCorrectionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -2103,7 +2069,6 @@ export type EmployeeUncheckedCreateWithoutAttendanceCorrectionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2173,7 +2138,6 @@ export type EmployeeUpdateWithoutAttendanceCorrectionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -2227,7 +2191,6 @@ export type EmployeeUncheckedUpdateWithoutAttendanceCorrectionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2281,7 +2244,6 @@ export type EmployeeCreateWithoutOvertimeRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -2335,7 +2297,6 @@ export type EmployeeUncheckedCreateWithoutOvertimeRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2405,7 +2366,6 @@ export type EmployeeUpdateWithoutOvertimeRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -2459,7 +2419,6 @@ export type EmployeeUncheckedUpdateWithoutOvertimeRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2513,7 +2472,6 @@ export type EmployeeCreateWithoutFlexWorkRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -2567,7 +2525,6 @@ export type EmployeeUncheckedCreateWithoutFlexWorkRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2637,7 +2594,6 @@ export type EmployeeUpdateWithoutFlexWorkRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -2691,7 +2647,6 @@ export type EmployeeUncheckedUpdateWithoutFlexWorkRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2745,7 +2700,6 @@ export type EmployeeCreateWithoutTimesheetsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -2799,7 +2753,6 @@ export type EmployeeUncheckedCreateWithoutTimesheetsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2869,7 +2822,6 @@ export type EmployeeUpdateWithoutTimesheetsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -2923,7 +2875,6 @@ export type EmployeeUncheckedUpdateWithoutTimesheetsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2976,7 +2927,6 @@ export type EmployeeCreateWithoutEmployeeDocumentsInput = {
   lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -3030,7 +2980,6 @@ export type EmployeeUncheckedCreateWithoutEmployeeDocumentsInput = {
   lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3100,7 +3049,6 @@ export type EmployeeUpdateWithoutEmployeeDocumentsInput = {
   lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -3154,7 +3102,6 @@ export type EmployeeUncheckedUpdateWithoutEmployeeDocumentsInput = {
   lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3208,7 +3155,6 @@ export type EmployeeCreateWithoutContractsInput = {
   lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -3262,7 +3208,6 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3332,7 +3277,6 @@ export type EmployeeUpdateWithoutContractsInput = {
   lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -3386,7 +3330,6 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3441,7 +3384,6 @@ export type EmployeeCreateWithoutIncidentReportsFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -3495,7 +3437,6 @@ export type EmployeeUncheckedCreateWithoutIncidentReportsFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3565,7 +3506,6 @@ export type EmployeeUpdateWithoutIncidentReportsFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -3619,7 +3559,6 @@ export type EmployeeUncheckedUpdateWithoutIncidentReportsFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3673,7 +3612,6 @@ export type EmployeeCreateWithoutDisciplinaryActionsSubjectInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -3727,7 +3665,6 @@ export type EmployeeUncheckedCreateWithoutDisciplinaryActionsSubjectInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3797,7 +3734,6 @@ export type EmployeeUpdateWithoutDisciplinaryActionsSubjectInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -3851,7 +3787,6 @@ export type EmployeeUncheckedUpdateWithoutDisciplinaryActionsSubjectInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3905,7 +3840,6 @@ export type EmployeeCreateWithoutGrievancesFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -3959,7 +3893,6 @@ export type EmployeeUncheckedCreateWithoutGrievancesFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4029,7 +3962,6 @@ export type EmployeeUpdateWithoutGrievancesFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -4083,7 +4015,6 @@ export type EmployeeUncheckedUpdateWithoutGrievancesFiledInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4137,7 +4068,6 @@ export type EmployeeCreateWithoutRecognitionsReceivedInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -4191,7 +4121,6 @@ export type EmployeeUncheckedCreateWithoutRecognitionsReceivedInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4261,7 +4190,6 @@ export type EmployeeUpdateWithoutRecognitionsReceivedInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -4315,7 +4243,6 @@ export type EmployeeUncheckedUpdateWithoutRecognitionsReceivedInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4369,7 +4296,6 @@ export type EmployeeCreateWithoutSurveyResponsesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -4423,7 +4349,6 @@ export type EmployeeUncheckedCreateWithoutSurveyResponsesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4493,7 +4418,6 @@ export type EmployeeUpdateWithoutSurveyResponsesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -4547,7 +4471,6 @@ export type EmployeeUncheckedUpdateWithoutSurveyResponsesInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4601,7 +4524,6 @@ export type EmployeeCreateWithoutMediationAsRequesterInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -4655,7 +4577,6 @@ export type EmployeeUncheckedCreateWithoutMediationAsRequesterInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4714,7 +4635,6 @@ export type EmployeeCreateWithoutMediationAsOtherPartyInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -4768,7 +4688,6 @@ export type EmployeeUncheckedCreateWithoutMediationAsOtherPartyInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4838,7 +4757,6 @@ export type EmployeeUpdateWithoutMediationAsRequesterInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -4892,7 +4810,6 @@ export type EmployeeUncheckedUpdateWithoutMediationAsRequesterInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4957,7 +4874,6 @@ export type EmployeeUpdateWithoutMediationAsOtherPartyInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -5011,7 +4927,6 @@ export type EmployeeUncheckedUpdateWithoutMediationAsOtherPartyInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5065,7 +4980,6 @@ export type EmployeeCreateWithoutEmployeeSkillsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -5119,7 +5033,6 @@ export type EmployeeUncheckedCreateWithoutEmployeeSkillsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5189,7 +5102,6 @@ export type EmployeeUpdateWithoutEmployeeSkillsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -5243,7 +5155,6 @@ export type EmployeeUncheckedUpdateWithoutEmployeeSkillsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5297,7 +5208,6 @@ export type EmployeeCreateWithoutTrainingRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -5351,7 +5261,6 @@ export type EmployeeUncheckedCreateWithoutTrainingRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5421,7 +5330,6 @@ export type EmployeeUpdateWithoutTrainingRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -5475,7 +5383,6 @@ export type EmployeeUncheckedUpdateWithoutTrainingRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5529,7 +5436,6 @@ export type EmployeeCreateWithoutTrainingCompletionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -5583,7 +5489,6 @@ export type EmployeeUncheckedCreateWithoutTrainingCompletionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5653,7 +5558,6 @@ export type EmployeeUpdateWithoutTrainingCompletionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -5707,7 +5611,6 @@ export type EmployeeUncheckedUpdateWithoutTrainingCompletionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5761,7 +5664,6 @@ export type EmployeeCreateWithoutTrainingFeedbackSubmissionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -5815,7 +5717,6 @@ export type EmployeeUncheckedCreateWithoutTrainingFeedbackSubmissionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5885,7 +5786,6 @@ export type EmployeeUpdateWithoutTrainingFeedbackSubmissionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -5939,7 +5839,6 @@ export type EmployeeUncheckedUpdateWithoutTrainingFeedbackSubmissionsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5993,7 +5892,6 @@ export type EmployeeCreateWithoutResignationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -6047,7 +5945,6 @@ export type EmployeeUncheckedCreateWithoutResignationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6117,7 +6014,6 @@ export type EmployeeUpdateWithoutResignationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -6171,7 +6067,6 @@ export type EmployeeUncheckedUpdateWithoutResignationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6225,7 +6120,6 @@ export type EmployeeCreateWithoutOffboardingChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -6279,7 +6173,6 @@ export type EmployeeUncheckedCreateWithoutOffboardingChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6349,7 +6242,6 @@ export type EmployeeUpdateWithoutOffboardingChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -6403,7 +6295,6 @@ export type EmployeeUncheckedUpdateWithoutOffboardingChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6457,7 +6348,6 @@ export type EmployeeCreateWithoutExitInterviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -6511,7 +6401,6 @@ export type EmployeeUncheckedCreateWithoutExitInterviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6581,7 +6470,6 @@ export type EmployeeUpdateWithoutExitInterviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -6635,7 +6523,6 @@ export type EmployeeUncheckedUpdateWithoutExitInterviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6689,7 +6576,6 @@ export type EmployeeCreateWithoutFinalSettlementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -6743,7 +6629,6 @@ export type EmployeeUncheckedCreateWithoutFinalSettlementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6813,7 +6698,6 @@ export type EmployeeUpdateWithoutFinalSettlementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -6867,7 +6751,6 @@ export type EmployeeUncheckedUpdateWithoutFinalSettlementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6921,7 +6804,6 @@ export type EmployeeCreateWithoutAssetReturnsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -6975,7 +6857,6 @@ export type EmployeeUncheckedCreateWithoutAssetReturnsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7045,7 +6926,6 @@ export type EmployeeUpdateWithoutAssetReturnsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -7099,7 +6979,6 @@ export type EmployeeUncheckedUpdateWithoutAssetReturnsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7153,7 +7032,6 @@ export type EmployeeCreateWithoutComplianceChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -7207,7 +7085,6 @@ export type EmployeeUncheckedCreateWithoutComplianceChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7277,7 +7154,6 @@ export type EmployeeUpdateWithoutComplianceChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -7331,7 +7207,6 @@ export type EmployeeUncheckedUpdateWithoutComplianceChecklistsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7384,7 +7259,6 @@ export type EmployeeCreateWithoutOnboardingsInput = {
   lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -7438,7 +7312,6 @@ export type EmployeeUncheckedCreateWithoutOnboardingsInput = {
   lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7508,7 +7381,6 @@ export type EmployeeUpdateWithoutOnboardingsInput = {
   lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -7562,239 +7434,6 @@ export type EmployeeUncheckedUpdateWithoutOnboardingsInput = {
   lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-  assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationConfirmations?: Prisma.ProbationConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  leaveBalances?: Prisma.LeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
-  attendanceLogs?: Prisma.AttendanceLogUncheckedUpdateManyWithoutEmployeeNestedInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  overtimeRequests?: Prisma.OvertimeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  timesheets?: Prisma.TimesheetUncheckedUpdateManyWithoutEmployeeNestedInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedUpdateManyWithoutEmployeeNestedInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
-  performanceReviews?: Prisma.PerformanceReviewUncheckedUpdateManyWithoutEmployeeNestedInput
-  okrs?: Prisma.OkrUncheckedUpdateManyWithoutEmployeeNestedInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutCandidateEmployeeNestedInput
-  promotionProposals?: Prisma.PromotionProposalUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingCompletions?: Prisma.TrainingCompletionUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedUpdateManyWithoutParticipantNestedInput
-  employeeSkills?: Prisma.EmployeeSkillUncheckedUpdateManyWithoutEmployeeNestedInput
-  incidentReportsFiled?: Prisma.IncidentReportUncheckedUpdateManyWithoutEmployeeNestedInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedUpdateManyWithoutEmployeeNestedInput
-  grievancesFiled?: Prisma.GrievanceUncheckedUpdateManyWithoutEmployeeNestedInput
-  recognitionsReceived?: Prisma.RecognitionUncheckedUpdateManyWithoutNomineeEmployeeNestedInput
-  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutEmployeeNestedInput
-  mediationAsRequester?: Prisma.ConflictMediationUncheckedUpdateManyWithoutRequesterEmployeeNestedInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedUpdateManyWithoutOtherPartyEmployeeNestedInput
-  resignations?: Prisma.ResignationUncheckedUpdateManyWithoutEmployeeNestedInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-  exitInterviews?: Prisma.ExitInterviewUncheckedUpdateManyWithoutEmployeeNestedInput
-  finalSettlements?: Prisma.FinalSettlementUncheckedUpdateManyWithoutEmployeeNestedInput
-  assetReturns?: Prisma.AssetReturnUncheckedUpdateManyWithoutEmployeeNestedInput
-  complianceChecklists?: Prisma.ComplianceChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeCreateWithoutOnboardingChecklistsInput = {
-  id?: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
-  profile?: Prisma.UserProfileCreateNestedOneWithoutEmployeeInput
-  employment?: Prisma.UserEmploymentCreateNestedOneWithoutEmployeeInput
-  compensation?: Prisma.UserCompensationCreateNestedOneWithoutEmployeeInput
-  compensationHistory?: Prisma.UserCompensationHistoryCreateNestedManyWithoutEmployeeInput
-  compensationComponents?: Prisma.CompensationComponentCreateNestedManyWithoutEmployeeInput
-  lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
-  employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
-  contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
-  onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
-  probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
-  probationConfirmations?: Prisma.ProbationConfirmationCreateNestedManyWithoutEmployeeInput
-  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
-  leaveBalances?: Prisma.LeaveBalanceCreateNestedManyWithoutEmployeeInput
-  attendanceLogs?: Prisma.AttendanceLogCreateNestedManyWithoutEmployeeInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutEmployeeInput
-  overtimeRequests?: Prisma.OvertimeRequestCreateNestedManyWithoutEmployeeInput
-  flexWorkRequests?: Prisma.FlexWorkRequestCreateNestedManyWithoutEmployeeInput
-  timesheets?: Prisma.TimesheetCreateNestedManyWithoutEmployeeInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutEmployeeInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentCreateNestedManyWithoutEmployeeInput
-  internalTransferRequests?: Prisma.InternalTransferRequestCreateNestedManyWithoutEmployeeInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestCreateNestedManyWithoutEmployeeInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleCreateNestedManyWithoutEmployeeInput
-  performanceReviews?: Prisma.PerformanceReviewCreateNestedManyWithoutEmployeeInput
-  okrs?: Prisma.OkrCreateNestedManyWithoutEmployeeInput
-  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutCandidateEmployeeInput
-  promotionProposals?: Prisma.PromotionProposalCreateNestedManyWithoutEmployeeInput
-  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutEmployeeInput
-  trainingCompletions?: Prisma.TrainingCompletionCreateNestedManyWithoutEmployeeInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackCreateNestedManyWithoutParticipantInput
-  employeeSkills?: Prisma.EmployeeSkillCreateNestedManyWithoutEmployeeInput
-  incidentReportsFiled?: Prisma.IncidentReportCreateNestedManyWithoutEmployeeInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionCreateNestedManyWithoutEmployeeInput
-  grievancesFiled?: Prisma.GrievanceCreateNestedManyWithoutEmployeeInput
-  recognitionsReceived?: Prisma.RecognitionCreateNestedManyWithoutNomineeEmployeeInput
-  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutEmployeeInput
-  mediationAsRequester?: Prisma.ConflictMediationCreateNestedManyWithoutRequesterEmployeeInput
-  mediationAsOtherParty?: Prisma.ConflictMediationCreateNestedManyWithoutOtherPartyEmployeeInput
-  resignations?: Prisma.ResignationCreateNestedManyWithoutEmployeeInput
-  offboardingChecklists?: Prisma.OffboardingChecklistCreateNestedManyWithoutEmployeeInput
-  exitInterviews?: Prisma.ExitInterviewCreateNestedManyWithoutEmployeeInput
-  finalSettlements?: Prisma.FinalSettlementCreateNestedManyWithoutEmployeeInput
-  assetReturns?: Prisma.AssetReturnCreateNestedManyWithoutEmployeeInput
-  complianceChecklists?: Prisma.ComplianceChecklistCreateNestedManyWithoutEmployeeInput
-}
-
-export type EmployeeUncheckedCreateWithoutOnboardingChecklistsInput = {
-  id?: string
-  userId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutEmployeeInput
-  employment?: Prisma.UserEmploymentUncheckedCreateNestedOneWithoutEmployeeInput
-  compensation?: Prisma.UserCompensationUncheckedCreateNestedOneWithoutEmployeeInput
-  compensationHistory?: Prisma.UserCompensationHistoryUncheckedCreateNestedManyWithoutEmployeeInput
-  compensationComponents?: Prisma.CompensationComponentUncheckedCreateNestedManyWithoutEmployeeInput
-  lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
-  employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
-  contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
-  probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
-  probationConfirmations?: Prisma.ProbationConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  leaveBalances?: Prisma.LeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
-  attendanceLogs?: Prisma.AttendanceLogUncheckedCreateNestedManyWithoutEmployeeInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  overtimeRequests?: Prisma.OvertimeRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  timesheets?: Prisma.TimesheetUncheckedCreateNestedManyWithoutEmployeeInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedCreateNestedManyWithoutEmployeeInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
-  performanceReviews?: Prisma.PerformanceReviewUncheckedCreateNestedManyWithoutEmployeeInput
-  okrs?: Prisma.OkrUncheckedCreateNestedManyWithoutEmployeeInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutCandidateEmployeeInput
-  promotionProposals?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingCompletions?: Prisma.TrainingCompletionUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedCreateNestedManyWithoutParticipantInput
-  employeeSkills?: Prisma.EmployeeSkillUncheckedCreateNestedManyWithoutEmployeeInput
-  incidentReportsFiled?: Prisma.IncidentReportUncheckedCreateNestedManyWithoutEmployeeInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedCreateNestedManyWithoutEmployeeInput
-  grievancesFiled?: Prisma.GrievanceUncheckedCreateNestedManyWithoutEmployeeInput
-  recognitionsReceived?: Prisma.RecognitionUncheckedCreateNestedManyWithoutNomineeEmployeeInput
-  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutEmployeeInput
-  mediationAsRequester?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutRequesterEmployeeInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutOtherPartyEmployeeInput
-  resignations?: Prisma.ResignationUncheckedCreateNestedManyWithoutEmployeeInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
-  exitInterviews?: Prisma.ExitInterviewUncheckedCreateNestedManyWithoutEmployeeInput
-  finalSettlements?: Prisma.FinalSettlementUncheckedCreateNestedManyWithoutEmployeeInput
-  assetReturns?: Prisma.AssetReturnUncheckedCreateNestedManyWithoutEmployeeInput
-  complianceChecklists?: Prisma.ComplianceChecklistUncheckedCreateNestedManyWithoutEmployeeInput
-}
-
-export type EmployeeCreateOrConnectWithoutOnboardingChecklistsInput = {
-  where: Prisma.EmployeeWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingChecklistsInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingChecklistsInput>
-}
-
-export type EmployeeUpsertWithoutOnboardingChecklistsInput = {
-  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOnboardingChecklistsInput, Prisma.EmployeeUncheckedUpdateWithoutOnboardingChecklistsInput>
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingChecklistsInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingChecklistsInput>
-  where?: Prisma.EmployeeWhereInput
-}
-
-export type EmployeeUpdateToOneWithWhereWithoutOnboardingChecklistsInput = {
-  where?: Prisma.EmployeeWhereInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOnboardingChecklistsInput, Prisma.EmployeeUncheckedUpdateWithoutOnboardingChecklistsInput>
-}
-
-export type EmployeeUpdateWithoutOnboardingChecklistsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
-  profile?: Prisma.UserProfileUpdateOneWithoutEmployeeNestedInput
-  employment?: Prisma.UserEmploymentUpdateOneWithoutEmployeeNestedInput
-  compensation?: Prisma.UserCompensationUpdateOneWithoutEmployeeNestedInput
-  compensationHistory?: Prisma.UserCompensationHistoryUpdateManyWithoutEmployeeNestedInput
-  compensationComponents?: Prisma.CompensationComponentUpdateManyWithoutEmployeeNestedInput
-  lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
-  employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
-  contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
-  onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
-  probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
-  probationConfirmations?: Prisma.ProbationConfirmationUpdateManyWithoutEmployeeNestedInput
-  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
-  leaveBalances?: Prisma.LeaveBalanceUpdateManyWithoutEmployeeNestedInput
-  attendanceLogs?: Prisma.AttendanceLogUpdateManyWithoutEmployeeNestedInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutEmployeeNestedInput
-  overtimeRequests?: Prisma.OvertimeRequestUpdateManyWithoutEmployeeNestedInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUpdateManyWithoutEmployeeNestedInput
-  timesheets?: Prisma.TimesheetUpdateManyWithoutEmployeeNestedInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUpdateManyWithoutEmployeeNestedInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUpdateManyWithoutEmployeeNestedInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUpdateManyWithoutEmployeeNestedInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUpdateManyWithoutEmployeeNestedInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUpdateManyWithoutEmployeeNestedInput
-  performanceReviews?: Prisma.PerformanceReviewUpdateManyWithoutEmployeeNestedInput
-  okrs?: Prisma.OkrUpdateManyWithoutEmployeeNestedInput
-  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutCandidateEmployeeNestedInput
-  promotionProposals?: Prisma.PromotionProposalUpdateManyWithoutEmployeeNestedInput
-  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutEmployeeNestedInput
-  trainingCompletions?: Prisma.TrainingCompletionUpdateManyWithoutEmployeeNestedInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUpdateManyWithoutParticipantNestedInput
-  employeeSkills?: Prisma.EmployeeSkillUpdateManyWithoutEmployeeNestedInput
-  incidentReportsFiled?: Prisma.IncidentReportUpdateManyWithoutEmployeeNestedInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUpdateManyWithoutEmployeeNestedInput
-  grievancesFiled?: Prisma.GrievanceUpdateManyWithoutEmployeeNestedInput
-  recognitionsReceived?: Prisma.RecognitionUpdateManyWithoutNomineeEmployeeNestedInput
-  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutEmployeeNestedInput
-  mediationAsRequester?: Prisma.ConflictMediationUpdateManyWithoutRequesterEmployeeNestedInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUpdateManyWithoutOtherPartyEmployeeNestedInput
-  resignations?: Prisma.ResignationUpdateManyWithoutEmployeeNestedInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUpdateManyWithoutEmployeeNestedInput
-  exitInterviews?: Prisma.ExitInterviewUpdateManyWithoutEmployeeNestedInput
-  finalSettlements?: Prisma.FinalSettlementUpdateManyWithoutEmployeeNestedInput
-  assetReturns?: Prisma.AssetReturnUpdateManyWithoutEmployeeNestedInput
-  complianceChecklists?: Prisma.ComplianceChecklistUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeUncheckedUpdateWithoutOnboardingChecklistsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutEmployeeNestedInput
-  employment?: Prisma.UserEmploymentUncheckedUpdateOneWithoutEmployeeNestedInput
-  compensation?: Prisma.UserCompensationUncheckedUpdateOneWithoutEmployeeNestedInput
-  compensationHistory?: Prisma.UserCompensationHistoryUncheckedUpdateManyWithoutEmployeeNestedInput
-  compensationComponents?: Prisma.CompensationComponentUncheckedUpdateManyWithoutEmployeeNestedInput
-  lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
-  employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
-  contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7849,7 +7488,6 @@ export type EmployeeCreateWithoutAssetProvisioningsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
   probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
@@ -7903,7 +7541,6 @@ export type EmployeeUncheckedCreateWithoutAssetProvisioningsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
   probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7973,7 +7610,6 @@ export type EmployeeUpdateWithoutAssetProvisioningsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
   probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
@@ -8027,7 +7663,6 @@ export type EmployeeUncheckedUpdateWithoutAssetProvisioningsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
   probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8081,7 +7716,6 @@ export type EmployeeCreateWithoutPolicyAcknowledgementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
   probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
@@ -8135,7 +7769,6 @@ export type EmployeeUncheckedCreateWithoutPolicyAcknowledgementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
   probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8205,7 +7838,6 @@ export type EmployeeUpdateWithoutPolicyAcknowledgementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
   probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
@@ -8259,7 +7891,6 @@ export type EmployeeUncheckedUpdateWithoutPolicyAcknowledgementsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
   probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8313,7 +7944,6 @@ export type EmployeeCreateWithoutProbationKpiPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
@@ -8367,7 +7997,6 @@ export type EmployeeUncheckedCreateWithoutProbationKpiPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8437,7 +8066,6 @@ export type EmployeeUpdateWithoutProbationKpiPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
@@ -8491,7 +8119,6 @@ export type EmployeeUncheckedUpdateWithoutProbationKpiPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8545,7 +8172,6 @@ export type EmployeeCreateWithoutProbationEvaluationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -8599,7 +8225,6 @@ export type EmployeeUncheckedCreateWithoutProbationEvaluationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8669,7 +8294,6 @@ export type EmployeeUpdateWithoutProbationEvaluationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -8723,7 +8347,6 @@ export type EmployeeUncheckedUpdateWithoutProbationEvaluationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8777,7 +8400,6 @@ export type EmployeeCreateWithoutProbationConfirmationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -8831,7 +8453,6 @@ export type EmployeeUncheckedCreateWithoutProbationConfirmationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8901,7 +8522,6 @@ export type EmployeeUpdateWithoutProbationConfirmationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -8955,7 +8575,6 @@ export type EmployeeUncheckedUpdateWithoutProbationConfirmationsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9009,7 +8628,6 @@ export type EmployeeCreateWithoutPerformanceReviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -9063,7 +8681,6 @@ export type EmployeeUncheckedCreateWithoutPerformanceReviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9133,7 +8750,6 @@ export type EmployeeUpdateWithoutPerformanceReviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -9187,7 +8803,6 @@ export type EmployeeUncheckedUpdateWithoutPerformanceReviewsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9241,7 +8856,6 @@ export type EmployeeCreateWithoutOkrsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -9295,7 +8909,6 @@ export type EmployeeUncheckedCreateWithoutOkrsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9365,7 +8978,6 @@ export type EmployeeUpdateWithoutOkrsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -9419,7 +9031,6 @@ export type EmployeeUncheckedUpdateWithoutOkrsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9473,7 +9084,6 @@ export type EmployeeCreateWithoutWorkScheduleAssignmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -9527,7 +9137,6 @@ export type EmployeeUncheckedCreateWithoutWorkScheduleAssignmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9597,7 +9206,6 @@ export type EmployeeUpdateWithoutWorkScheduleAssignmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -9651,7 +9259,6 @@ export type EmployeeUncheckedUpdateWithoutWorkScheduleAssignmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9705,7 +9312,6 @@ export type EmployeeCreateWithoutSuccessionPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -9759,7 +9365,6 @@ export type EmployeeUncheckedCreateWithoutSuccessionPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9829,7 +9434,6 @@ export type EmployeeUpdateWithoutSuccessionPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -9883,7 +9487,6 @@ export type EmployeeUncheckedUpdateWithoutSuccessionPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9937,7 +9540,6 @@ export type EmployeeCreateWithoutPromotionProposalsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -9991,7 +9593,6 @@ export type EmployeeUncheckedCreateWithoutPromotionProposalsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10061,7 +9662,6 @@ export type EmployeeUpdateWithoutPromotionProposalsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -10115,7 +9715,6 @@ export type EmployeeUncheckedUpdateWithoutPromotionProposalsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10169,7 +9768,6 @@ export type EmployeeCreateWithoutCareerDevelopmentPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -10223,7 +9821,6 @@ export type EmployeeUncheckedCreateWithoutCareerDevelopmentPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10293,7 +9890,6 @@ export type EmployeeUpdateWithoutCareerDevelopmentPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -10347,7 +9943,6 @@ export type EmployeeUncheckedUpdateWithoutCareerDevelopmentPlansInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10401,7 +9996,6 @@ export type EmployeeCreateWithoutTrainingNeedsAssessmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -10455,7 +10049,6 @@ export type EmployeeUncheckedCreateWithoutTrainingNeedsAssessmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10525,7 +10118,6 @@ export type EmployeeUpdateWithoutTrainingNeedsAssessmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -10579,7 +10171,6 @@ export type EmployeeUncheckedUpdateWithoutTrainingNeedsAssessmentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10633,7 +10224,6 @@ export type EmployeeCreateWithoutInternalTransferRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -10687,7 +10277,6 @@ export type EmployeeUncheckedCreateWithoutInternalTransferRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10757,7 +10346,6 @@ export type EmployeeUpdateWithoutInternalTransferRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -10811,7 +10399,6 @@ export type EmployeeUncheckedUpdateWithoutInternalTransferRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10865,7 +10452,6 @@ export type EmployeeCreateWithoutSalaryAdjustmentRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -10919,7 +10505,6 @@ export type EmployeeUncheckedCreateWithoutSalaryAdjustmentRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10989,7 +10574,6 @@ export type EmployeeUpdateWithoutSalaryAdjustmentRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -11043,7 +10627,6 @@ export type EmployeeUncheckedUpdateWithoutSalaryAdjustmentRequestsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11096,7 +10679,6 @@ export type EmployeeCreateWithoutUserInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -11150,7 +10732,6 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11220,7 +10801,6 @@ export type EmployeeUpdateWithoutUserInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -11274,7 +10854,6 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11328,7 +10907,6 @@ export type EmployeeCreateWithoutProfileInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -11382,7 +10960,6 @@ export type EmployeeUncheckedCreateWithoutProfileInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11452,7 +11029,6 @@ export type EmployeeUpdateWithoutProfileInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -11506,7 +11082,6 @@ export type EmployeeUncheckedUpdateWithoutProfileInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11560,7 +11135,6 @@ export type EmployeeCreateWithoutEmploymentInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -11614,7 +11188,6 @@ export type EmployeeUncheckedCreateWithoutEmploymentInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11684,7 +11257,6 @@ export type EmployeeUpdateWithoutEmploymentInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -11738,7 +11310,6 @@ export type EmployeeUncheckedUpdateWithoutEmploymentInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11792,7 +11363,6 @@ export type EmployeeCreateWithoutCompensationInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -11846,7 +11416,6 @@ export type EmployeeUncheckedCreateWithoutCompensationInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11916,7 +11485,6 @@ export type EmployeeUpdateWithoutCompensationInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -11970,7 +11538,6 @@ export type EmployeeUncheckedUpdateWithoutCompensationInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12024,7 +11591,6 @@ export type EmployeeCreateWithoutCompensationHistoryInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -12078,7 +11644,6 @@ export type EmployeeUncheckedCreateWithoutCompensationHistoryInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12148,7 +11713,6 @@ export type EmployeeUpdateWithoutCompensationHistoryInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -12202,7 +11766,6 @@ export type EmployeeUncheckedUpdateWithoutCompensationHistoryInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12256,7 +11819,6 @@ export type EmployeeCreateWithoutCompensationComponentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -12310,7 +11872,6 @@ export type EmployeeUncheckedCreateWithoutCompensationComponentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12380,7 +11941,6 @@ export type EmployeeUpdateWithoutCompensationComponentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -12434,7 +11994,6 @@ export type EmployeeUncheckedUpdateWithoutCompensationComponentsInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12488,7 +12047,6 @@ export type EmployeeCreateWithoutLifecycleInput = {
   employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
@@ -12542,7 +12100,6 @@ export type EmployeeUncheckedCreateWithoutLifecycleInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
   onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12612,7 +12169,6 @@ export type EmployeeUpdateWithoutLifecycleInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
@@ -12666,7 +12222,6 @@ export type EmployeeUncheckedUpdateWithoutLifecycleInput = {
   employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardingChecklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
   assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
   policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
   probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12718,7 +12273,6 @@ export type EmployeeCountOutputType = {
   employeeDocuments: number
   contracts: number
   onboardings: number
-  onboardingChecklists: number
   assetProvisionings: number
   policyAcknowledgements: number
   probationKpiPlans: number
@@ -12765,7 +12319,6 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   employeeDocuments?: boolean | EmployeeCountOutputTypeCountEmployeeDocumentsArgs
   contracts?: boolean | EmployeeCountOutputTypeCountContractsArgs
   onboardings?: boolean | EmployeeCountOutputTypeCountOnboardingsArgs
-  onboardingChecklists?: boolean | EmployeeCountOutputTypeCountOnboardingChecklistsArgs
   assetProvisionings?: boolean | EmployeeCountOutputTypeCountAssetProvisioningsArgs
   policyAcknowledgements?: boolean | EmployeeCountOutputTypeCountPolicyAcknowledgementsArgs
   probationKpiPlans?: boolean | EmployeeCountOutputTypeCountProbationKpiPlansArgs
@@ -12849,13 +12402,6 @@ export type EmployeeCountOutputTypeCountContractsArgs<ExtArgs extends runtime.Ty
  */
 export type EmployeeCountOutputTypeCountOnboardingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OnboardingWhereInput
-}
-
-/**
- * EmployeeCountOutputType without action
- */
-export type EmployeeCountOutputTypeCountOnboardingChecklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OnboardingChecklistWhereInput
 }
 
 /**
@@ -13140,7 +12686,6 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   employeeDocuments?: boolean | Prisma.Employee$employeeDocumentsArgs<ExtArgs>
   contracts?: boolean | Prisma.Employee$contractsArgs<ExtArgs>
   onboardings?: boolean | Prisma.Employee$onboardingsArgs<ExtArgs>
-  onboardingChecklists?: boolean | Prisma.Employee$onboardingChecklistsArgs<ExtArgs>
   assetProvisionings?: boolean | Prisma.Employee$assetProvisioningsArgs<ExtArgs>
   policyAcknowledgements?: boolean | Prisma.Employee$policyAcknowledgementsArgs<ExtArgs>
   probationKpiPlans?: boolean | Prisma.Employee$probationKpiPlansArgs<ExtArgs>
@@ -13217,7 +12762,6 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   employeeDocuments?: boolean | Prisma.Employee$employeeDocumentsArgs<ExtArgs>
   contracts?: boolean | Prisma.Employee$contractsArgs<ExtArgs>
   onboardings?: boolean | Prisma.Employee$onboardingsArgs<ExtArgs>
-  onboardingChecklists?: boolean | Prisma.Employee$onboardingChecklistsArgs<ExtArgs>
   assetProvisionings?: boolean | Prisma.Employee$assetProvisioningsArgs<ExtArgs>
   policyAcknowledgements?: boolean | Prisma.Employee$policyAcknowledgementsArgs<ExtArgs>
   probationKpiPlans?: boolean | Prisma.Employee$probationKpiPlansArgs<ExtArgs>
@@ -13278,7 +12822,6 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     employeeDocuments: Prisma.$EmployeeDocumentPayload<ExtArgs>[]
     contracts: Prisma.$ContractPayload<ExtArgs>[]
     onboardings: Prisma.$OnboardingPayload<ExtArgs>[]
-    onboardingChecklists: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
     assetProvisionings: Prisma.$AssetProvisioningPayload<ExtArgs>[]
     policyAcknowledgements: Prisma.$PolicyAcknowledgementPayload<ExtArgs>[]
     probationKpiPlans: Prisma.$ProbationKpiPlanPayload<ExtArgs>[]
@@ -13727,7 +13270,6 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   employeeDocuments<T extends Prisma.Employee$employeeDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$employeeDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contracts<T extends Prisma.Employee$contractsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   onboardings<T extends Prisma.Employee$onboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$onboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  onboardingChecklists<T extends Prisma.Employee$onboardingChecklistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$onboardingChecklistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assetProvisionings<T extends Prisma.Employee$assetProvisioningsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$assetProvisioningsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetProvisioningPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   policyAcknowledgements<T extends Prisma.Employee$policyAcknowledgementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$policyAcknowledgementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PolicyAcknowledgementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   probationKpiPlans<T extends Prisma.Employee$probationKpiPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$probationKpiPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProbationKpiPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14407,30 +13949,6 @@ export type Employee$onboardingsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.OnboardingScalarFieldEnum | Prisma.OnboardingScalarFieldEnum[]
-}
-
-/**
- * Employee.onboardingChecklists
- */
-export type Employee$onboardingChecklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OnboardingChecklist
-   */
-  select?: Prisma.OnboardingChecklistSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the OnboardingChecklist
-   */
-  omit?: Prisma.OnboardingChecklistOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingChecklistInclude<ExtArgs> | null
-  where?: Prisma.OnboardingChecklistWhereInput
-  orderBy?: Prisma.OnboardingChecklistOrderByWithRelationInput | Prisma.OnboardingChecklistOrderByWithRelationInput[]
-  cursor?: Prisma.OnboardingChecklistWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OnboardingChecklistScalarFieldEnum | Prisma.OnboardingChecklistScalarFieldEnum[]
 }
 
 /**
