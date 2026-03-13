@@ -37,8 +37,8 @@ function getFileName(value: string) {
   }
 
   try {
-    const cleaned = value.split("?")[0];
-    const name = cleaned.split("/").pop();
+    const cleaned = value.split("?")[0] ?? value;
+    const name = cleaned.split("/").pop() ?? "";
     return name ? decodeURIComponent(name) : "Applicant CV.pdf";
   } catch {
     return "Applicant CV.pdf";

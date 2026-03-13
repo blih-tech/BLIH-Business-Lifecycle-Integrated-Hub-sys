@@ -149,13 +149,13 @@ export function DailyCheckinsSection() {
             setPage(1);
           }}
           status={status}
-          onStatusChange={(value) => {
-            setStatus(value);
+          onStatusChange={(value: string) => {
+            setStatus(value as CheckinStatus | "all");
             setPage(1);
           }}
           viewMode={viewMode}
-          onViewModeChange={(value) => {
-            setViewMode(value);
+          onViewModeChange={(value: string) => {
+            setViewMode(value as CheckinViewMode);
             setPage(1);
           }}
           departments={checkinDepartments}
@@ -166,7 +166,7 @@ export function DailyCheckinsSection() {
 
           <div className="flex items-center gap-2">
             <span>Sort by:</span>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as CheckinSort)}>
+            <Select value={sortBy} onValueChange={(value: string) => setSortBy(value as CheckinSort)}>
               <SelectTrigger
                 size="sm"
                 className="h-7 w-[138px] rounded-none border-0 border-b border-border bg-transparent px-1 text-xs text-foreground shadow-none"
