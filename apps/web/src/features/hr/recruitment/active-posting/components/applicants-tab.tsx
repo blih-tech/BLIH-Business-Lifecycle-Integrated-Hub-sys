@@ -327,6 +327,7 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
 
       <CandidateDetailDialog
         candidate={selectedCandidate}
+        job={job}
         open={selectedCandidate !== null}
         onOpenChange={(open) => {
           if (!open) {
