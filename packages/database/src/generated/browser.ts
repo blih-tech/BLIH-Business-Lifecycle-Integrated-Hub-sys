@@ -313,21 +313,6 @@ export type AssetProvisioning = Prisma.AssetProvisioningModel
  */
 export type PolicyAcknowledgement = Prisma.PolicyAcknowledgementModel
 /**
- * Model ProbationKpiPlan
- * 
- */
-export type ProbationKpiPlan = Prisma.ProbationKpiPlanModel
-/**
- * Model ProbationEvaluation
- * 
- */
-export type ProbationEvaluation = Prisma.ProbationEvaluationModel
-/**
- * Model ProbationConfirmation
- * 
- */
-export type ProbationConfirmation = Prisma.ProbationConfirmationModel
-/**
  * Model Department
  * 
  */
@@ -392,6 +377,21 @@ export type KeyResultUpdate = Prisma.KeyResultUpdateModel
  * 
  */
 export type OkrManagerReview = Prisma.OkrManagerReviewModel
+/**
+ * Model ProbationKpiPlan
+ * 
+ */
+export type ProbationKpiPlan = Prisma.ProbationKpiPlanModel
+/**
+ * Model ProbationEvaluation
+ * 
+ */
+export type ProbationEvaluation = Prisma.ProbationEvaluationModel
+/**
+ * Model ProbationConfirmation
+ * 
+ */
+export type ProbationConfirmation = Prisma.ProbationConfirmationModel
 /**
  * Model JobRequestForm
  * 

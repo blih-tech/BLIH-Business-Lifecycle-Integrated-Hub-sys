@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   AssetProvisioningResponseDto,
@@ -62,8 +63,13 @@ export class CreateAssetProvisioningUseCase {
     const record = await this.prisma.assetProvisioning.create({
       data: {
         employeeId: dto.employeeId,
-        equipment: dto.equipment ?? undefined,
-        platformPermissions: dto.platformPermissions ?? undefined,
+        equipment:
+          (dto.equipment as unknown as Prisma.InputJsonValue | undefined) ??
+          undefined,
+        platformPermissions:
+          (dto.platformPermissions as unknown as
+            | Prisma.InputJsonValue
+            | undefined) ?? undefined,
         financeApprovalRequired: dto.financeApprovalRequired ?? false,
       },
     });

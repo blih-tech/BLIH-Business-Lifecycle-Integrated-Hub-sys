@@ -208,6 +208,7 @@ export class RespondOfferUseCase {
         jobId: true,
         applicantId: true,
         onboardingId: true,
+        startDate: true,
       },
     });
     if (!existing) throw new NotFoundException('Offer not found');
@@ -236,7 +237,11 @@ export class RespondOfferUseCase {
       // ACCEPTED => create Employee + Onboarding and mark applicant hired
       const employee = await tx.employee.create({ data: {} });
       const onboarding = await tx.onboarding.create({
-        data: { employeeId: employee.id, status: 'PENDING' },
+        data: {
+          employeeId: employee.id,
+          status: 'PENDING',
+          joinDate: existing.startDate ?? now,
+        },
       });
 
       await tx.offer.update({

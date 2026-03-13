@@ -1032,6 +1032,36 @@ export type EmployeeUpdateOneRequiredWithoutPolicyAcknowledgementsNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPolicyAcknowledgementsInput, Prisma.EmployeeUpdateWithoutPolicyAcknowledgementsInput>, Prisma.EmployeeUncheckedUpdateWithoutPolicyAcknowledgementsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutPerformanceReviewsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPerformanceReviewsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutPerformanceReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPerformanceReviewsInput
+  upsert?: Prisma.EmployeeUpsertWithoutPerformanceReviewsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPerformanceReviewsInput, Prisma.EmployeeUpdateWithoutPerformanceReviewsInput>, Prisma.EmployeeUncheckedUpdateWithoutPerformanceReviewsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutOkrsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOkrsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutOkrsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOkrsInput
+  upsert?: Prisma.EmployeeUpsertWithoutOkrsInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOkrsInput, Prisma.EmployeeUpdateWithoutOkrsInput>, Prisma.EmployeeUncheckedUpdateWithoutOkrsInput>
+}
+
 export type EmployeeCreateNestedOneWithoutProbationKpiPlansInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutProbationKpiPlansInput, Prisma.EmployeeUncheckedCreateWithoutProbationKpiPlansInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutProbationKpiPlansInput
@@ -1072,36 +1102,6 @@ export type EmployeeUpdateOneRequiredWithoutProbationConfirmationsNestedInput = 
   upsert?: Prisma.EmployeeUpsertWithoutProbationConfirmationsInput
   connect?: Prisma.EmployeeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutProbationConfirmationsInput, Prisma.EmployeeUpdateWithoutProbationConfirmationsInput>, Prisma.EmployeeUncheckedUpdateWithoutProbationConfirmationsInput>
-}
-
-export type EmployeeCreateNestedOneWithoutPerformanceReviewsInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPerformanceReviewsInput
-  connect?: Prisma.EmployeeWhereUniqueInput
-}
-
-export type EmployeeUpdateOneRequiredWithoutPerformanceReviewsNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPerformanceReviewsInput
-  upsert?: Prisma.EmployeeUpsertWithoutPerformanceReviewsInput
-  connect?: Prisma.EmployeeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPerformanceReviewsInput, Prisma.EmployeeUpdateWithoutPerformanceReviewsInput>, Prisma.EmployeeUncheckedUpdateWithoutPerformanceReviewsInput>
-}
-
-export type EmployeeCreateNestedOneWithoutOkrsInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOkrsInput
-  connect?: Prisma.EmployeeWhereUniqueInput
-}
-
-export type EmployeeUpdateOneWithoutOkrsNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOkrsInput
-  upsert?: Prisma.EmployeeUpsertWithoutOkrsInput
-  disconnect?: Prisma.EmployeeWhereInput | boolean
-  delete?: Prisma.EmployeeWhereInput | boolean
-  connect?: Prisma.EmployeeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOkrsInput, Prisma.EmployeeUpdateWithoutOkrsInput>, Prisma.EmployeeUncheckedUpdateWithoutOkrsInput>
 }
 
 export type EmployeeCreateNestedOneWithoutWorkScheduleAssignmentsInput = {
@@ -7930,6 +7930,462 @@ export type EmployeeUncheckedUpdateWithoutPolicyAcknowledgementsInput = {
   complianceChecklists?: Prisma.ComplianceChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
+export type EmployeeCreateWithoutPerformanceReviewsInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutEmployeeInput
+  employment?: Prisma.UserEmploymentCreateNestedOneWithoutEmployeeInput
+  compensation?: Prisma.UserCompensationCreateNestedOneWithoutEmployeeInput
+  compensationHistory?: Prisma.UserCompensationHistoryCreateNestedManyWithoutEmployeeInput
+  compensationComponents?: Prisma.CompensationComponentCreateNestedManyWithoutEmployeeInput
+  lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
+  employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
+  contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
+  onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
+  assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
+  probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
+  probationConfirmations?: Prisma.ProbationConfirmationCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.LeaveBalanceCreateNestedManyWithoutEmployeeInput
+  attendanceLogs?: Prisma.AttendanceLogCreateNestedManyWithoutEmployeeInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutEmployeeInput
+  overtimeRequests?: Prisma.OvertimeRequestCreateNestedManyWithoutEmployeeInput
+  flexWorkRequests?: Prisma.FlexWorkRequestCreateNestedManyWithoutEmployeeInput
+  timesheets?: Prisma.TimesheetCreateNestedManyWithoutEmployeeInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutEmployeeInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentCreateNestedManyWithoutEmployeeInput
+  internalTransferRequests?: Prisma.InternalTransferRequestCreateNestedManyWithoutEmployeeInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestCreateNestedManyWithoutEmployeeInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleCreateNestedManyWithoutEmployeeInput
+  okrs?: Prisma.OkrCreateNestedManyWithoutEmployeeInput
+  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutCandidateEmployeeInput
+  promotionProposals?: Prisma.PromotionProposalCreateNestedManyWithoutEmployeeInput
+  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutEmployeeInput
+  trainingCompletions?: Prisma.TrainingCompletionCreateNestedManyWithoutEmployeeInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackCreateNestedManyWithoutParticipantInput
+  employeeSkills?: Prisma.EmployeeSkillCreateNestedManyWithoutEmployeeInput
+  incidentReportsFiled?: Prisma.IncidentReportCreateNestedManyWithoutEmployeeInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionCreateNestedManyWithoutEmployeeInput
+  grievancesFiled?: Prisma.GrievanceCreateNestedManyWithoutEmployeeInput
+  recognitionsReceived?: Prisma.RecognitionCreateNestedManyWithoutNomineeEmployeeInput
+  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutEmployeeInput
+  mediationAsRequester?: Prisma.ConflictMediationCreateNestedManyWithoutRequesterEmployeeInput
+  mediationAsOtherParty?: Prisma.ConflictMediationCreateNestedManyWithoutOtherPartyEmployeeInput
+  resignations?: Prisma.ResignationCreateNestedManyWithoutEmployeeInput
+  offboardingChecklists?: Prisma.OffboardingChecklistCreateNestedManyWithoutEmployeeInput
+  exitInterviews?: Prisma.ExitInterviewCreateNestedManyWithoutEmployeeInput
+  finalSettlements?: Prisma.FinalSettlementCreateNestedManyWithoutEmployeeInput
+  assetReturns?: Prisma.AssetReturnCreateNestedManyWithoutEmployeeInput
+  complianceChecklists?: Prisma.ComplianceChecklistCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutPerformanceReviewsInput = {
+  id?: string
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  employment?: Prisma.UserEmploymentUncheckedCreateNestedOneWithoutEmployeeInput
+  compensation?: Prisma.UserCompensationUncheckedCreateNestedOneWithoutEmployeeInput
+  compensationHistory?: Prisma.UserCompensationHistoryUncheckedCreateNestedManyWithoutEmployeeInput
+  compensationComponents?: Prisma.CompensationComponentUncheckedCreateNestedManyWithoutEmployeeInput
+  lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
+  employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
+  assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
+  probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
+  probationConfirmations?: Prisma.ProbationConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.LeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  attendanceLogs?: Prisma.AttendanceLogUncheckedCreateNestedManyWithoutEmployeeInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  overtimeRequests?: Prisma.OvertimeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timesheets?: Prisma.TimesheetUncheckedCreateNestedManyWithoutEmployeeInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedCreateNestedManyWithoutEmployeeInput
+  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  okrs?: Prisma.OkrUncheckedCreateNestedManyWithoutEmployeeInput
+  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutCandidateEmployeeInput
+  promotionProposals?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingCompletions?: Prisma.TrainingCompletionUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedCreateNestedManyWithoutParticipantInput
+  employeeSkills?: Prisma.EmployeeSkillUncheckedCreateNestedManyWithoutEmployeeInput
+  incidentReportsFiled?: Prisma.IncidentReportUncheckedCreateNestedManyWithoutEmployeeInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedCreateNestedManyWithoutEmployeeInput
+  grievancesFiled?: Prisma.GrievanceUncheckedCreateNestedManyWithoutEmployeeInput
+  recognitionsReceived?: Prisma.RecognitionUncheckedCreateNestedManyWithoutNomineeEmployeeInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  mediationAsRequester?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutRequesterEmployeeInput
+  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutOtherPartyEmployeeInput
+  resignations?: Prisma.ResignationUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
+  exitInterviews?: Prisma.ExitInterviewUncheckedCreateNestedManyWithoutEmployeeInput
+  finalSettlements?: Prisma.FinalSettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  assetReturns?: Prisma.AssetReturnUncheckedCreateNestedManyWithoutEmployeeInput
+  complianceChecklists?: Prisma.ComplianceChecklistUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutPerformanceReviewsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
+}
+
+export type EmployeeUpsertWithoutPerformanceReviewsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedUpdateWithoutPerformanceReviewsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutPerformanceReviewsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedUpdateWithoutPerformanceReviewsInput>
+}
+
+export type EmployeeUpdateWithoutPerformanceReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutEmployeeNestedInput
+  employment?: Prisma.UserEmploymentUpdateOneWithoutEmployeeNestedInput
+  compensation?: Prisma.UserCompensationUpdateOneWithoutEmployeeNestedInput
+  compensationHistory?: Prisma.UserCompensationHistoryUpdateManyWithoutEmployeeNestedInput
+  compensationComponents?: Prisma.CompensationComponentUpdateManyWithoutEmployeeNestedInput
+  lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
+  employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
+  contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
+  onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
+  assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
+  probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
+  probationConfirmations?: Prisma.ProbationConfirmationUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.LeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  attendanceLogs?: Prisma.AttendanceLogUpdateManyWithoutEmployeeNestedInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutEmployeeNestedInput
+  overtimeRequests?: Prisma.OvertimeRequestUpdateManyWithoutEmployeeNestedInput
+  flexWorkRequests?: Prisma.FlexWorkRequestUpdateManyWithoutEmployeeNestedInput
+  timesheets?: Prisma.TimesheetUpdateManyWithoutEmployeeNestedInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUpdateManyWithoutEmployeeNestedInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUpdateManyWithoutEmployeeNestedInput
+  internalTransferRequests?: Prisma.InternalTransferRequestUpdateManyWithoutEmployeeNestedInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUpdateManyWithoutEmployeeNestedInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleUpdateManyWithoutEmployeeNestedInput
+  okrs?: Prisma.OkrUpdateManyWithoutEmployeeNestedInput
+  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutCandidateEmployeeNestedInput
+  promotionProposals?: Prisma.PromotionProposalUpdateManyWithoutEmployeeNestedInput
+  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutEmployeeNestedInput
+  trainingCompletions?: Prisma.TrainingCompletionUpdateManyWithoutEmployeeNestedInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUpdateManyWithoutParticipantNestedInput
+  employeeSkills?: Prisma.EmployeeSkillUpdateManyWithoutEmployeeNestedInput
+  incidentReportsFiled?: Prisma.IncidentReportUpdateManyWithoutEmployeeNestedInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUpdateManyWithoutEmployeeNestedInput
+  grievancesFiled?: Prisma.GrievanceUpdateManyWithoutEmployeeNestedInput
+  recognitionsReceived?: Prisma.RecognitionUpdateManyWithoutNomineeEmployeeNestedInput
+  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutEmployeeNestedInput
+  mediationAsRequester?: Prisma.ConflictMediationUpdateManyWithoutRequesterEmployeeNestedInput
+  mediationAsOtherParty?: Prisma.ConflictMediationUpdateManyWithoutOtherPartyEmployeeNestedInput
+  resignations?: Prisma.ResignationUpdateManyWithoutEmployeeNestedInput
+  offboardingChecklists?: Prisma.OffboardingChecklistUpdateManyWithoutEmployeeNestedInput
+  exitInterviews?: Prisma.ExitInterviewUpdateManyWithoutEmployeeNestedInput
+  finalSettlements?: Prisma.FinalSettlementUpdateManyWithoutEmployeeNestedInput
+  assetReturns?: Prisma.AssetReturnUpdateManyWithoutEmployeeNestedInput
+  complianceChecklists?: Prisma.ComplianceChecklistUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutPerformanceReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  employment?: Prisma.UserEmploymentUncheckedUpdateOneWithoutEmployeeNestedInput
+  compensation?: Prisma.UserCompensationUncheckedUpdateOneWithoutEmployeeNestedInput
+  compensationHistory?: Prisma.UserCompensationHistoryUncheckedUpdateManyWithoutEmployeeNestedInput
+  compensationComponents?: Prisma.CompensationComponentUncheckedUpdateManyWithoutEmployeeNestedInput
+  lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
+  employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
+  assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
+  probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
+  probationConfirmations?: Prisma.ProbationConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.LeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  attendanceLogs?: Prisma.AttendanceLogUncheckedUpdateManyWithoutEmployeeNestedInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  overtimeRequests?: Prisma.OvertimeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timesheets?: Prisma.TimesheetUncheckedUpdateManyWithoutEmployeeNestedInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  okrs?: Prisma.OkrUncheckedUpdateManyWithoutEmployeeNestedInput
+  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutCandidateEmployeeNestedInput
+  promotionProposals?: Prisma.PromotionProposalUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingCompletions?: Prisma.TrainingCompletionUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedUpdateManyWithoutParticipantNestedInput
+  employeeSkills?: Prisma.EmployeeSkillUncheckedUpdateManyWithoutEmployeeNestedInput
+  incidentReportsFiled?: Prisma.IncidentReportUncheckedUpdateManyWithoutEmployeeNestedInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedUpdateManyWithoutEmployeeNestedInput
+  grievancesFiled?: Prisma.GrievanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  recognitionsReceived?: Prisma.RecognitionUncheckedUpdateManyWithoutNomineeEmployeeNestedInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  mediationAsRequester?: Prisma.ConflictMediationUncheckedUpdateManyWithoutRequesterEmployeeNestedInput
+  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedUpdateManyWithoutOtherPartyEmployeeNestedInput
+  resignations?: Prisma.ResignationUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
+  exitInterviews?: Prisma.ExitInterviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  finalSettlements?: Prisma.FinalSettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  assetReturns?: Prisma.AssetReturnUncheckedUpdateManyWithoutEmployeeNestedInput
+  complianceChecklists?: Prisma.ComplianceChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutOkrsInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutEmployeeInput
+  employment?: Prisma.UserEmploymentCreateNestedOneWithoutEmployeeInput
+  compensation?: Prisma.UserCompensationCreateNestedOneWithoutEmployeeInput
+  compensationHistory?: Prisma.UserCompensationHistoryCreateNestedManyWithoutEmployeeInput
+  compensationComponents?: Prisma.CompensationComponentCreateNestedManyWithoutEmployeeInput
+  lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
+  employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
+  contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
+  onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
+  assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
+  probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
+  probationConfirmations?: Prisma.ProbationConfirmationCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.LeaveBalanceCreateNestedManyWithoutEmployeeInput
+  attendanceLogs?: Prisma.AttendanceLogCreateNestedManyWithoutEmployeeInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutEmployeeInput
+  overtimeRequests?: Prisma.OvertimeRequestCreateNestedManyWithoutEmployeeInput
+  flexWorkRequests?: Prisma.FlexWorkRequestCreateNestedManyWithoutEmployeeInput
+  timesheets?: Prisma.TimesheetCreateNestedManyWithoutEmployeeInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutEmployeeInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentCreateNestedManyWithoutEmployeeInput
+  internalTransferRequests?: Prisma.InternalTransferRequestCreateNestedManyWithoutEmployeeInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestCreateNestedManyWithoutEmployeeInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleCreateNestedManyWithoutEmployeeInput
+  performanceReviews?: Prisma.PerformanceReviewCreateNestedManyWithoutEmployeeInput
+  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutCandidateEmployeeInput
+  promotionProposals?: Prisma.PromotionProposalCreateNestedManyWithoutEmployeeInput
+  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutEmployeeInput
+  trainingCompletions?: Prisma.TrainingCompletionCreateNestedManyWithoutEmployeeInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackCreateNestedManyWithoutParticipantInput
+  employeeSkills?: Prisma.EmployeeSkillCreateNestedManyWithoutEmployeeInput
+  incidentReportsFiled?: Prisma.IncidentReportCreateNestedManyWithoutEmployeeInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionCreateNestedManyWithoutEmployeeInput
+  grievancesFiled?: Prisma.GrievanceCreateNestedManyWithoutEmployeeInput
+  recognitionsReceived?: Prisma.RecognitionCreateNestedManyWithoutNomineeEmployeeInput
+  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutEmployeeInput
+  mediationAsRequester?: Prisma.ConflictMediationCreateNestedManyWithoutRequesterEmployeeInput
+  mediationAsOtherParty?: Prisma.ConflictMediationCreateNestedManyWithoutOtherPartyEmployeeInput
+  resignations?: Prisma.ResignationCreateNestedManyWithoutEmployeeInput
+  offboardingChecklists?: Prisma.OffboardingChecklistCreateNestedManyWithoutEmployeeInput
+  exitInterviews?: Prisma.ExitInterviewCreateNestedManyWithoutEmployeeInput
+  finalSettlements?: Prisma.FinalSettlementCreateNestedManyWithoutEmployeeInput
+  assetReturns?: Prisma.AssetReturnCreateNestedManyWithoutEmployeeInput
+  complianceChecklists?: Prisma.ComplianceChecklistCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutOkrsInput = {
+  id?: string
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  employment?: Prisma.UserEmploymentUncheckedCreateNestedOneWithoutEmployeeInput
+  compensation?: Prisma.UserCompensationUncheckedCreateNestedOneWithoutEmployeeInput
+  compensationHistory?: Prisma.UserCompensationHistoryUncheckedCreateNestedManyWithoutEmployeeInput
+  compensationComponents?: Prisma.CompensationComponentUncheckedCreateNestedManyWithoutEmployeeInput
+  lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
+  employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
+  assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
+  probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
+  probationConfirmations?: Prisma.ProbationConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.LeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  attendanceLogs?: Prisma.AttendanceLogUncheckedCreateNestedManyWithoutEmployeeInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  overtimeRequests?: Prisma.OvertimeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timesheets?: Prisma.TimesheetUncheckedCreateNestedManyWithoutEmployeeInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedCreateNestedManyWithoutEmployeeInput
+  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  performanceReviews?: Prisma.PerformanceReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutCandidateEmployeeInput
+  promotionProposals?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingCompletions?: Prisma.TrainingCompletionUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedCreateNestedManyWithoutParticipantInput
+  employeeSkills?: Prisma.EmployeeSkillUncheckedCreateNestedManyWithoutEmployeeInput
+  incidentReportsFiled?: Prisma.IncidentReportUncheckedCreateNestedManyWithoutEmployeeInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedCreateNestedManyWithoutEmployeeInput
+  grievancesFiled?: Prisma.GrievanceUncheckedCreateNestedManyWithoutEmployeeInput
+  recognitionsReceived?: Prisma.RecognitionUncheckedCreateNestedManyWithoutNomineeEmployeeInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  mediationAsRequester?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutRequesterEmployeeInput
+  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutOtherPartyEmployeeInput
+  resignations?: Prisma.ResignationUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
+  exitInterviews?: Prisma.ExitInterviewUncheckedCreateNestedManyWithoutEmployeeInput
+  finalSettlements?: Prisma.FinalSettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  assetReturns?: Prisma.AssetReturnUncheckedCreateNestedManyWithoutEmployeeInput
+  complianceChecklists?: Prisma.ComplianceChecklistUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutOkrsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
+}
+
+export type EmployeeUpsertWithoutOkrsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOkrsInput, Prisma.EmployeeUncheckedUpdateWithoutOkrsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutOkrsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOkrsInput, Prisma.EmployeeUncheckedUpdateWithoutOkrsInput>
+}
+
+export type EmployeeUpdateWithoutOkrsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutEmployeeNestedInput
+  employment?: Prisma.UserEmploymentUpdateOneWithoutEmployeeNestedInput
+  compensation?: Prisma.UserCompensationUpdateOneWithoutEmployeeNestedInput
+  compensationHistory?: Prisma.UserCompensationHistoryUpdateManyWithoutEmployeeNestedInput
+  compensationComponents?: Prisma.CompensationComponentUpdateManyWithoutEmployeeNestedInput
+  lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
+  employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
+  contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
+  onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
+  assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
+  probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
+  probationConfirmations?: Prisma.ProbationConfirmationUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.LeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  attendanceLogs?: Prisma.AttendanceLogUpdateManyWithoutEmployeeNestedInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutEmployeeNestedInput
+  overtimeRequests?: Prisma.OvertimeRequestUpdateManyWithoutEmployeeNestedInput
+  flexWorkRequests?: Prisma.FlexWorkRequestUpdateManyWithoutEmployeeNestedInput
+  timesheets?: Prisma.TimesheetUpdateManyWithoutEmployeeNestedInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUpdateManyWithoutEmployeeNestedInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUpdateManyWithoutEmployeeNestedInput
+  internalTransferRequests?: Prisma.InternalTransferRequestUpdateManyWithoutEmployeeNestedInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUpdateManyWithoutEmployeeNestedInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleUpdateManyWithoutEmployeeNestedInput
+  performanceReviews?: Prisma.PerformanceReviewUpdateManyWithoutEmployeeNestedInput
+  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutCandidateEmployeeNestedInput
+  promotionProposals?: Prisma.PromotionProposalUpdateManyWithoutEmployeeNestedInput
+  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutEmployeeNestedInput
+  trainingCompletions?: Prisma.TrainingCompletionUpdateManyWithoutEmployeeNestedInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUpdateManyWithoutParticipantNestedInput
+  employeeSkills?: Prisma.EmployeeSkillUpdateManyWithoutEmployeeNestedInput
+  incidentReportsFiled?: Prisma.IncidentReportUpdateManyWithoutEmployeeNestedInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUpdateManyWithoutEmployeeNestedInput
+  grievancesFiled?: Prisma.GrievanceUpdateManyWithoutEmployeeNestedInput
+  recognitionsReceived?: Prisma.RecognitionUpdateManyWithoutNomineeEmployeeNestedInput
+  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutEmployeeNestedInput
+  mediationAsRequester?: Prisma.ConflictMediationUpdateManyWithoutRequesterEmployeeNestedInput
+  mediationAsOtherParty?: Prisma.ConflictMediationUpdateManyWithoutOtherPartyEmployeeNestedInput
+  resignations?: Prisma.ResignationUpdateManyWithoutEmployeeNestedInput
+  offboardingChecklists?: Prisma.OffboardingChecklistUpdateManyWithoutEmployeeNestedInput
+  exitInterviews?: Prisma.ExitInterviewUpdateManyWithoutEmployeeNestedInput
+  finalSettlements?: Prisma.FinalSettlementUpdateManyWithoutEmployeeNestedInput
+  assetReturns?: Prisma.AssetReturnUpdateManyWithoutEmployeeNestedInput
+  complianceChecklists?: Prisma.ComplianceChecklistUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutOkrsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  employment?: Prisma.UserEmploymentUncheckedUpdateOneWithoutEmployeeNestedInput
+  compensation?: Prisma.UserCompensationUncheckedUpdateOneWithoutEmployeeNestedInput
+  compensationHistory?: Prisma.UserCompensationHistoryUncheckedUpdateManyWithoutEmployeeNestedInput
+  compensationComponents?: Prisma.CompensationComponentUncheckedUpdateManyWithoutEmployeeNestedInput
+  lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
+  employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
+  assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
+  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
+  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
+  probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
+  probationConfirmations?: Prisma.ProbationConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.LeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  attendanceLogs?: Prisma.AttendanceLogUncheckedUpdateManyWithoutEmployeeNestedInput
+  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  overtimeRequests?: Prisma.OvertimeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timesheets?: Prisma.TimesheetUncheckedUpdateManyWithoutEmployeeNestedInput
+  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  performanceReviews?: Prisma.PerformanceReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutCandidateEmployeeNestedInput
+  promotionProposals?: Prisma.PromotionProposalUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingCompletions?: Prisma.TrainingCompletionUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedUpdateManyWithoutParticipantNestedInput
+  employeeSkills?: Prisma.EmployeeSkillUncheckedUpdateManyWithoutEmployeeNestedInput
+  incidentReportsFiled?: Prisma.IncidentReportUncheckedUpdateManyWithoutEmployeeNestedInput
+  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedUpdateManyWithoutEmployeeNestedInput
+  grievancesFiled?: Prisma.GrievanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  recognitionsReceived?: Prisma.RecognitionUncheckedUpdateManyWithoutNomineeEmployeeNestedInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  mediationAsRequester?: Prisma.ConflictMediationUncheckedUpdateManyWithoutRequesterEmployeeNestedInput
+  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedUpdateManyWithoutOtherPartyEmployeeNestedInput
+  resignations?: Prisma.ResignationUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
+  exitInterviews?: Prisma.ExitInterviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  finalSettlements?: Prisma.FinalSettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  assetReturns?: Prisma.AssetReturnUncheckedUpdateManyWithoutEmployeeNestedInput
+  complianceChecklists?: Prisma.ComplianceChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
 export type EmployeeCreateWithoutProbationKpiPlansInput = {
   id?: string
   createdAt?: Date | string
@@ -8593,462 +9049,6 @@ export type EmployeeUncheckedUpdateWithoutProbationConfirmationsInput = {
   workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
   performanceReviews?: Prisma.PerformanceReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   okrs?: Prisma.OkrUncheckedUpdateManyWithoutEmployeeNestedInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutCandidateEmployeeNestedInput
-  promotionProposals?: Prisma.PromotionProposalUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingCompletions?: Prisma.TrainingCompletionUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedUpdateManyWithoutParticipantNestedInput
-  employeeSkills?: Prisma.EmployeeSkillUncheckedUpdateManyWithoutEmployeeNestedInput
-  incidentReportsFiled?: Prisma.IncidentReportUncheckedUpdateManyWithoutEmployeeNestedInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedUpdateManyWithoutEmployeeNestedInput
-  grievancesFiled?: Prisma.GrievanceUncheckedUpdateManyWithoutEmployeeNestedInput
-  recognitionsReceived?: Prisma.RecognitionUncheckedUpdateManyWithoutNomineeEmployeeNestedInput
-  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutEmployeeNestedInput
-  mediationAsRequester?: Prisma.ConflictMediationUncheckedUpdateManyWithoutRequesterEmployeeNestedInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedUpdateManyWithoutOtherPartyEmployeeNestedInput
-  resignations?: Prisma.ResignationUncheckedUpdateManyWithoutEmployeeNestedInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-  exitInterviews?: Prisma.ExitInterviewUncheckedUpdateManyWithoutEmployeeNestedInput
-  finalSettlements?: Prisma.FinalSettlementUncheckedUpdateManyWithoutEmployeeNestedInput
-  assetReturns?: Prisma.AssetReturnUncheckedUpdateManyWithoutEmployeeNestedInput
-  complianceChecklists?: Prisma.ComplianceChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeCreateWithoutPerformanceReviewsInput = {
-  id?: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
-  profile?: Prisma.UserProfileCreateNestedOneWithoutEmployeeInput
-  employment?: Prisma.UserEmploymentCreateNestedOneWithoutEmployeeInput
-  compensation?: Prisma.UserCompensationCreateNestedOneWithoutEmployeeInput
-  compensationHistory?: Prisma.UserCompensationHistoryCreateNestedManyWithoutEmployeeInput
-  compensationComponents?: Prisma.CompensationComponentCreateNestedManyWithoutEmployeeInput
-  lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
-  employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
-  contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
-  onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
-  probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
-  probationConfirmations?: Prisma.ProbationConfirmationCreateNestedManyWithoutEmployeeInput
-  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
-  leaveBalances?: Prisma.LeaveBalanceCreateNestedManyWithoutEmployeeInput
-  attendanceLogs?: Prisma.AttendanceLogCreateNestedManyWithoutEmployeeInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutEmployeeInput
-  overtimeRequests?: Prisma.OvertimeRequestCreateNestedManyWithoutEmployeeInput
-  flexWorkRequests?: Prisma.FlexWorkRequestCreateNestedManyWithoutEmployeeInput
-  timesheets?: Prisma.TimesheetCreateNestedManyWithoutEmployeeInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutEmployeeInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentCreateNestedManyWithoutEmployeeInput
-  internalTransferRequests?: Prisma.InternalTransferRequestCreateNestedManyWithoutEmployeeInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestCreateNestedManyWithoutEmployeeInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleCreateNestedManyWithoutEmployeeInput
-  okrs?: Prisma.OkrCreateNestedManyWithoutEmployeeInput
-  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutCandidateEmployeeInput
-  promotionProposals?: Prisma.PromotionProposalCreateNestedManyWithoutEmployeeInput
-  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutEmployeeInput
-  trainingCompletions?: Prisma.TrainingCompletionCreateNestedManyWithoutEmployeeInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackCreateNestedManyWithoutParticipantInput
-  employeeSkills?: Prisma.EmployeeSkillCreateNestedManyWithoutEmployeeInput
-  incidentReportsFiled?: Prisma.IncidentReportCreateNestedManyWithoutEmployeeInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionCreateNestedManyWithoutEmployeeInput
-  grievancesFiled?: Prisma.GrievanceCreateNestedManyWithoutEmployeeInput
-  recognitionsReceived?: Prisma.RecognitionCreateNestedManyWithoutNomineeEmployeeInput
-  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutEmployeeInput
-  mediationAsRequester?: Prisma.ConflictMediationCreateNestedManyWithoutRequesterEmployeeInput
-  mediationAsOtherParty?: Prisma.ConflictMediationCreateNestedManyWithoutOtherPartyEmployeeInput
-  resignations?: Prisma.ResignationCreateNestedManyWithoutEmployeeInput
-  offboardingChecklists?: Prisma.OffboardingChecklistCreateNestedManyWithoutEmployeeInput
-  exitInterviews?: Prisma.ExitInterviewCreateNestedManyWithoutEmployeeInput
-  finalSettlements?: Prisma.FinalSettlementCreateNestedManyWithoutEmployeeInput
-  assetReturns?: Prisma.AssetReturnCreateNestedManyWithoutEmployeeInput
-  complianceChecklists?: Prisma.ComplianceChecklistCreateNestedManyWithoutEmployeeInput
-}
-
-export type EmployeeUncheckedCreateWithoutPerformanceReviewsInput = {
-  id?: string
-  userId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutEmployeeInput
-  employment?: Prisma.UserEmploymentUncheckedCreateNestedOneWithoutEmployeeInput
-  compensation?: Prisma.UserCompensationUncheckedCreateNestedOneWithoutEmployeeInput
-  compensationHistory?: Prisma.UserCompensationHistoryUncheckedCreateNestedManyWithoutEmployeeInput
-  compensationComponents?: Prisma.CompensationComponentUncheckedCreateNestedManyWithoutEmployeeInput
-  lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
-  employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
-  contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
-  probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
-  probationConfirmations?: Prisma.ProbationConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  leaveBalances?: Prisma.LeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
-  attendanceLogs?: Prisma.AttendanceLogUncheckedCreateNestedManyWithoutEmployeeInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  overtimeRequests?: Prisma.OvertimeRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  timesheets?: Prisma.TimesheetUncheckedCreateNestedManyWithoutEmployeeInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedCreateNestedManyWithoutEmployeeInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
-  okrs?: Prisma.OkrUncheckedCreateNestedManyWithoutEmployeeInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutCandidateEmployeeInput
-  promotionProposals?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingCompletions?: Prisma.TrainingCompletionUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedCreateNestedManyWithoutParticipantInput
-  employeeSkills?: Prisma.EmployeeSkillUncheckedCreateNestedManyWithoutEmployeeInput
-  incidentReportsFiled?: Prisma.IncidentReportUncheckedCreateNestedManyWithoutEmployeeInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedCreateNestedManyWithoutEmployeeInput
-  grievancesFiled?: Prisma.GrievanceUncheckedCreateNestedManyWithoutEmployeeInput
-  recognitionsReceived?: Prisma.RecognitionUncheckedCreateNestedManyWithoutNomineeEmployeeInput
-  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutEmployeeInput
-  mediationAsRequester?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutRequesterEmployeeInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutOtherPartyEmployeeInput
-  resignations?: Prisma.ResignationUncheckedCreateNestedManyWithoutEmployeeInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
-  exitInterviews?: Prisma.ExitInterviewUncheckedCreateNestedManyWithoutEmployeeInput
-  finalSettlements?: Prisma.FinalSettlementUncheckedCreateNestedManyWithoutEmployeeInput
-  assetReturns?: Prisma.AssetReturnUncheckedCreateNestedManyWithoutEmployeeInput
-  complianceChecklists?: Prisma.ComplianceChecklistUncheckedCreateNestedManyWithoutEmployeeInput
-}
-
-export type EmployeeCreateOrConnectWithoutPerformanceReviewsInput = {
-  where: Prisma.EmployeeWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
-}
-
-export type EmployeeUpsertWithoutPerformanceReviewsInput = {
-  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedUpdateWithoutPerformanceReviewsInput>
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedCreateWithoutPerformanceReviewsInput>
-  where?: Prisma.EmployeeWhereInput
-}
-
-export type EmployeeUpdateToOneWithWhereWithoutPerformanceReviewsInput = {
-  where?: Prisma.EmployeeWhereInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutPerformanceReviewsInput, Prisma.EmployeeUncheckedUpdateWithoutPerformanceReviewsInput>
-}
-
-export type EmployeeUpdateWithoutPerformanceReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
-  profile?: Prisma.UserProfileUpdateOneWithoutEmployeeNestedInput
-  employment?: Prisma.UserEmploymentUpdateOneWithoutEmployeeNestedInput
-  compensation?: Prisma.UserCompensationUpdateOneWithoutEmployeeNestedInput
-  compensationHistory?: Prisma.UserCompensationHistoryUpdateManyWithoutEmployeeNestedInput
-  compensationComponents?: Prisma.CompensationComponentUpdateManyWithoutEmployeeNestedInput
-  lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
-  employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
-  contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
-  onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
-  probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
-  probationConfirmations?: Prisma.ProbationConfirmationUpdateManyWithoutEmployeeNestedInput
-  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
-  leaveBalances?: Prisma.LeaveBalanceUpdateManyWithoutEmployeeNestedInput
-  attendanceLogs?: Prisma.AttendanceLogUpdateManyWithoutEmployeeNestedInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutEmployeeNestedInput
-  overtimeRequests?: Prisma.OvertimeRequestUpdateManyWithoutEmployeeNestedInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUpdateManyWithoutEmployeeNestedInput
-  timesheets?: Prisma.TimesheetUpdateManyWithoutEmployeeNestedInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUpdateManyWithoutEmployeeNestedInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUpdateManyWithoutEmployeeNestedInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUpdateManyWithoutEmployeeNestedInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUpdateManyWithoutEmployeeNestedInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUpdateManyWithoutEmployeeNestedInput
-  okrs?: Prisma.OkrUpdateManyWithoutEmployeeNestedInput
-  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutCandidateEmployeeNestedInput
-  promotionProposals?: Prisma.PromotionProposalUpdateManyWithoutEmployeeNestedInput
-  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutEmployeeNestedInput
-  trainingCompletions?: Prisma.TrainingCompletionUpdateManyWithoutEmployeeNestedInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUpdateManyWithoutParticipantNestedInput
-  employeeSkills?: Prisma.EmployeeSkillUpdateManyWithoutEmployeeNestedInput
-  incidentReportsFiled?: Prisma.IncidentReportUpdateManyWithoutEmployeeNestedInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUpdateManyWithoutEmployeeNestedInput
-  grievancesFiled?: Prisma.GrievanceUpdateManyWithoutEmployeeNestedInput
-  recognitionsReceived?: Prisma.RecognitionUpdateManyWithoutNomineeEmployeeNestedInput
-  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutEmployeeNestedInput
-  mediationAsRequester?: Prisma.ConflictMediationUpdateManyWithoutRequesterEmployeeNestedInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUpdateManyWithoutOtherPartyEmployeeNestedInput
-  resignations?: Prisma.ResignationUpdateManyWithoutEmployeeNestedInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUpdateManyWithoutEmployeeNestedInput
-  exitInterviews?: Prisma.ExitInterviewUpdateManyWithoutEmployeeNestedInput
-  finalSettlements?: Prisma.FinalSettlementUpdateManyWithoutEmployeeNestedInput
-  assetReturns?: Prisma.AssetReturnUpdateManyWithoutEmployeeNestedInput
-  complianceChecklists?: Prisma.ComplianceChecklistUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeUncheckedUpdateWithoutPerformanceReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutEmployeeNestedInput
-  employment?: Prisma.UserEmploymentUncheckedUpdateOneWithoutEmployeeNestedInput
-  compensation?: Prisma.UserCompensationUncheckedUpdateOneWithoutEmployeeNestedInput
-  compensationHistory?: Prisma.UserCompensationHistoryUncheckedUpdateManyWithoutEmployeeNestedInput
-  compensationComponents?: Prisma.CompensationComponentUncheckedUpdateManyWithoutEmployeeNestedInput
-  lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
-  employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
-  contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationConfirmations?: Prisma.ProbationConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  leaveBalances?: Prisma.LeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
-  attendanceLogs?: Prisma.AttendanceLogUncheckedUpdateManyWithoutEmployeeNestedInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  overtimeRequests?: Prisma.OvertimeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  timesheets?: Prisma.TimesheetUncheckedUpdateManyWithoutEmployeeNestedInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedUpdateManyWithoutEmployeeNestedInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
-  okrs?: Prisma.OkrUncheckedUpdateManyWithoutEmployeeNestedInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutCandidateEmployeeNestedInput
-  promotionProposals?: Prisma.PromotionProposalUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingCompletions?: Prisma.TrainingCompletionUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedUpdateManyWithoutParticipantNestedInput
-  employeeSkills?: Prisma.EmployeeSkillUncheckedUpdateManyWithoutEmployeeNestedInput
-  incidentReportsFiled?: Prisma.IncidentReportUncheckedUpdateManyWithoutEmployeeNestedInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedUpdateManyWithoutEmployeeNestedInput
-  grievancesFiled?: Prisma.GrievanceUncheckedUpdateManyWithoutEmployeeNestedInput
-  recognitionsReceived?: Prisma.RecognitionUncheckedUpdateManyWithoutNomineeEmployeeNestedInput
-  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutEmployeeNestedInput
-  mediationAsRequester?: Prisma.ConflictMediationUncheckedUpdateManyWithoutRequesterEmployeeNestedInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedUpdateManyWithoutOtherPartyEmployeeNestedInput
-  resignations?: Prisma.ResignationUncheckedUpdateManyWithoutEmployeeNestedInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-  exitInterviews?: Prisma.ExitInterviewUncheckedUpdateManyWithoutEmployeeNestedInput
-  finalSettlements?: Prisma.FinalSettlementUncheckedUpdateManyWithoutEmployeeNestedInput
-  assetReturns?: Prisma.AssetReturnUncheckedUpdateManyWithoutEmployeeNestedInput
-  complianceChecklists?: Prisma.ComplianceChecklistUncheckedUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeCreateWithoutOkrsInput = {
-  id?: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
-  profile?: Prisma.UserProfileCreateNestedOneWithoutEmployeeInput
-  employment?: Prisma.UserEmploymentCreateNestedOneWithoutEmployeeInput
-  compensation?: Prisma.UserCompensationCreateNestedOneWithoutEmployeeInput
-  compensationHistory?: Prisma.UserCompensationHistoryCreateNestedManyWithoutEmployeeInput
-  compensationComponents?: Prisma.CompensationComponentCreateNestedManyWithoutEmployeeInput
-  lifecycle?: Prisma.UserLifecycleCreateNestedOneWithoutEmployeeInput
-  employeeDocuments?: Prisma.EmployeeDocumentCreateNestedManyWithoutEmployeeInput
-  contracts?: Prisma.ContractCreateNestedManyWithoutEmployeeInput
-  onboardings?: Prisma.OnboardingCreateNestedManyWithoutEmployeeInput
-  assetProvisionings?: Prisma.AssetProvisioningCreateNestedManyWithoutEmployeeInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanCreateNestedManyWithoutEmployeeInput
-  probationEvaluations?: Prisma.ProbationEvaluationCreateNestedManyWithoutEmployeeInput
-  probationConfirmations?: Prisma.ProbationConfirmationCreateNestedManyWithoutEmployeeInput
-  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
-  leaveBalances?: Prisma.LeaveBalanceCreateNestedManyWithoutEmployeeInput
-  attendanceLogs?: Prisma.AttendanceLogCreateNestedManyWithoutEmployeeInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutEmployeeInput
-  overtimeRequests?: Prisma.OvertimeRequestCreateNestedManyWithoutEmployeeInput
-  flexWorkRequests?: Prisma.FlexWorkRequestCreateNestedManyWithoutEmployeeInput
-  timesheets?: Prisma.TimesheetCreateNestedManyWithoutEmployeeInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanCreateNestedManyWithoutEmployeeInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentCreateNestedManyWithoutEmployeeInput
-  internalTransferRequests?: Prisma.InternalTransferRequestCreateNestedManyWithoutEmployeeInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestCreateNestedManyWithoutEmployeeInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleCreateNestedManyWithoutEmployeeInput
-  performanceReviews?: Prisma.PerformanceReviewCreateNestedManyWithoutEmployeeInput
-  successionPlans?: Prisma.SuccessionPlanCreateNestedManyWithoutCandidateEmployeeInput
-  promotionProposals?: Prisma.PromotionProposalCreateNestedManyWithoutEmployeeInput
-  trainingRequests?: Prisma.TrainingRequestCreateNestedManyWithoutEmployeeInput
-  trainingCompletions?: Prisma.TrainingCompletionCreateNestedManyWithoutEmployeeInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackCreateNestedManyWithoutParticipantInput
-  employeeSkills?: Prisma.EmployeeSkillCreateNestedManyWithoutEmployeeInput
-  incidentReportsFiled?: Prisma.IncidentReportCreateNestedManyWithoutEmployeeInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionCreateNestedManyWithoutEmployeeInput
-  grievancesFiled?: Prisma.GrievanceCreateNestedManyWithoutEmployeeInput
-  recognitionsReceived?: Prisma.RecognitionCreateNestedManyWithoutNomineeEmployeeInput
-  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutEmployeeInput
-  mediationAsRequester?: Prisma.ConflictMediationCreateNestedManyWithoutRequesterEmployeeInput
-  mediationAsOtherParty?: Prisma.ConflictMediationCreateNestedManyWithoutOtherPartyEmployeeInput
-  resignations?: Prisma.ResignationCreateNestedManyWithoutEmployeeInput
-  offboardingChecklists?: Prisma.OffboardingChecklistCreateNestedManyWithoutEmployeeInput
-  exitInterviews?: Prisma.ExitInterviewCreateNestedManyWithoutEmployeeInput
-  finalSettlements?: Prisma.FinalSettlementCreateNestedManyWithoutEmployeeInput
-  assetReturns?: Prisma.AssetReturnCreateNestedManyWithoutEmployeeInput
-  complianceChecklists?: Prisma.ComplianceChecklistCreateNestedManyWithoutEmployeeInput
-}
-
-export type EmployeeUncheckedCreateWithoutOkrsInput = {
-  id?: string
-  userId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutEmployeeInput
-  employment?: Prisma.UserEmploymentUncheckedCreateNestedOneWithoutEmployeeInput
-  compensation?: Prisma.UserCompensationUncheckedCreateNestedOneWithoutEmployeeInput
-  compensationHistory?: Prisma.UserCompensationHistoryUncheckedCreateNestedManyWithoutEmployeeInput
-  compensationComponents?: Prisma.CompensationComponentUncheckedCreateNestedManyWithoutEmployeeInput
-  lifecycle?: Prisma.UserLifecycleUncheckedCreateNestedOneWithoutEmployeeInput
-  employeeDocuments?: Prisma.EmployeeDocumentUncheckedCreateNestedManyWithoutEmployeeInput
-  contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutEmployeeInput
-  onboardings?: Prisma.OnboardingUncheckedCreateNestedManyWithoutEmployeeInput
-  assetProvisionings?: Prisma.AssetProvisioningUncheckedCreateNestedManyWithoutEmployeeInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedCreateNestedManyWithoutEmployeeInput
-  probationEvaluations?: Prisma.ProbationEvaluationUncheckedCreateNestedManyWithoutEmployeeInput
-  probationConfirmations?: Prisma.ProbationConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  leaveBalances?: Prisma.LeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
-  attendanceLogs?: Prisma.AttendanceLogUncheckedCreateNestedManyWithoutEmployeeInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  overtimeRequests?: Prisma.OvertimeRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  timesheets?: Prisma.TimesheetUncheckedCreateNestedManyWithoutEmployeeInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedCreateNestedManyWithoutEmployeeInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
-  performanceReviews?: Prisma.PerformanceReviewUncheckedCreateNestedManyWithoutEmployeeInput
-  successionPlans?: Prisma.SuccessionPlanUncheckedCreateNestedManyWithoutCandidateEmployeeInput
-  promotionProposals?: Prisma.PromotionProposalUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingRequests?: Prisma.TrainingRequestUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingCompletions?: Prisma.TrainingCompletionUncheckedCreateNestedManyWithoutEmployeeInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUncheckedCreateNestedManyWithoutParticipantInput
-  employeeSkills?: Prisma.EmployeeSkillUncheckedCreateNestedManyWithoutEmployeeInput
-  incidentReportsFiled?: Prisma.IncidentReportUncheckedCreateNestedManyWithoutEmployeeInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUncheckedCreateNestedManyWithoutEmployeeInput
-  grievancesFiled?: Prisma.GrievanceUncheckedCreateNestedManyWithoutEmployeeInput
-  recognitionsReceived?: Prisma.RecognitionUncheckedCreateNestedManyWithoutNomineeEmployeeInput
-  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutEmployeeInput
-  mediationAsRequester?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutRequesterEmployeeInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUncheckedCreateNestedManyWithoutOtherPartyEmployeeInput
-  resignations?: Prisma.ResignationUncheckedCreateNestedManyWithoutEmployeeInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUncheckedCreateNestedManyWithoutEmployeeInput
-  exitInterviews?: Prisma.ExitInterviewUncheckedCreateNestedManyWithoutEmployeeInput
-  finalSettlements?: Prisma.FinalSettlementUncheckedCreateNestedManyWithoutEmployeeInput
-  assetReturns?: Prisma.AssetReturnUncheckedCreateNestedManyWithoutEmployeeInput
-  complianceChecklists?: Prisma.ComplianceChecklistUncheckedCreateNestedManyWithoutEmployeeInput
-}
-
-export type EmployeeCreateOrConnectWithoutOkrsInput = {
-  where: Prisma.EmployeeWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
-}
-
-export type EmployeeUpsertWithoutOkrsInput = {
-  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOkrsInput, Prisma.EmployeeUncheckedUpdateWithoutOkrsInput>
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOkrsInput, Prisma.EmployeeUncheckedCreateWithoutOkrsInput>
-  where?: Prisma.EmployeeWhereInput
-}
-
-export type EmployeeUpdateToOneWithWhereWithoutOkrsInput = {
-  where?: Prisma.EmployeeWhereInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOkrsInput, Prisma.EmployeeUncheckedUpdateWithoutOkrsInput>
-}
-
-export type EmployeeUpdateWithoutOkrsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
-  profile?: Prisma.UserProfileUpdateOneWithoutEmployeeNestedInput
-  employment?: Prisma.UserEmploymentUpdateOneWithoutEmployeeNestedInput
-  compensation?: Prisma.UserCompensationUpdateOneWithoutEmployeeNestedInput
-  compensationHistory?: Prisma.UserCompensationHistoryUpdateManyWithoutEmployeeNestedInput
-  compensationComponents?: Prisma.CompensationComponentUpdateManyWithoutEmployeeNestedInput
-  lifecycle?: Prisma.UserLifecycleUpdateOneWithoutEmployeeNestedInput
-  employeeDocuments?: Prisma.EmployeeDocumentUpdateManyWithoutEmployeeNestedInput
-  contracts?: Prisma.ContractUpdateManyWithoutEmployeeNestedInput
-  onboardings?: Prisma.OnboardingUpdateManyWithoutEmployeeNestedInput
-  assetProvisionings?: Prisma.AssetProvisioningUpdateManyWithoutEmployeeNestedInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUpdateManyWithoutEmployeeNestedInput
-  probationEvaluations?: Prisma.ProbationEvaluationUpdateManyWithoutEmployeeNestedInput
-  probationConfirmations?: Prisma.ProbationConfirmationUpdateManyWithoutEmployeeNestedInput
-  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
-  leaveBalances?: Prisma.LeaveBalanceUpdateManyWithoutEmployeeNestedInput
-  attendanceLogs?: Prisma.AttendanceLogUpdateManyWithoutEmployeeNestedInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutEmployeeNestedInput
-  overtimeRequests?: Prisma.OvertimeRequestUpdateManyWithoutEmployeeNestedInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUpdateManyWithoutEmployeeNestedInput
-  timesheets?: Prisma.TimesheetUpdateManyWithoutEmployeeNestedInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUpdateManyWithoutEmployeeNestedInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUpdateManyWithoutEmployeeNestedInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUpdateManyWithoutEmployeeNestedInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUpdateManyWithoutEmployeeNestedInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUpdateManyWithoutEmployeeNestedInput
-  performanceReviews?: Prisma.PerformanceReviewUpdateManyWithoutEmployeeNestedInput
-  successionPlans?: Prisma.SuccessionPlanUpdateManyWithoutCandidateEmployeeNestedInput
-  promotionProposals?: Prisma.PromotionProposalUpdateManyWithoutEmployeeNestedInput
-  trainingRequests?: Prisma.TrainingRequestUpdateManyWithoutEmployeeNestedInput
-  trainingCompletions?: Prisma.TrainingCompletionUpdateManyWithoutEmployeeNestedInput
-  trainingFeedbackSubmissions?: Prisma.TrainingFeedbackUpdateManyWithoutParticipantNestedInput
-  employeeSkills?: Prisma.EmployeeSkillUpdateManyWithoutEmployeeNestedInput
-  incidentReportsFiled?: Prisma.IncidentReportUpdateManyWithoutEmployeeNestedInput
-  disciplinaryActionsSubject?: Prisma.DisciplinaryActionUpdateManyWithoutEmployeeNestedInput
-  grievancesFiled?: Prisma.GrievanceUpdateManyWithoutEmployeeNestedInput
-  recognitionsReceived?: Prisma.RecognitionUpdateManyWithoutNomineeEmployeeNestedInput
-  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutEmployeeNestedInput
-  mediationAsRequester?: Prisma.ConflictMediationUpdateManyWithoutRequesterEmployeeNestedInput
-  mediationAsOtherParty?: Prisma.ConflictMediationUpdateManyWithoutOtherPartyEmployeeNestedInput
-  resignations?: Prisma.ResignationUpdateManyWithoutEmployeeNestedInput
-  offboardingChecklists?: Prisma.OffboardingChecklistUpdateManyWithoutEmployeeNestedInput
-  exitInterviews?: Prisma.ExitInterviewUpdateManyWithoutEmployeeNestedInput
-  finalSettlements?: Prisma.FinalSettlementUpdateManyWithoutEmployeeNestedInput
-  assetReturns?: Prisma.AssetReturnUpdateManyWithoutEmployeeNestedInput
-  complianceChecklists?: Prisma.ComplianceChecklistUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeUncheckedUpdateWithoutOkrsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutEmployeeNestedInput
-  employment?: Prisma.UserEmploymentUncheckedUpdateOneWithoutEmployeeNestedInput
-  compensation?: Prisma.UserCompensationUncheckedUpdateOneWithoutEmployeeNestedInput
-  compensationHistory?: Prisma.UserCompensationHistoryUncheckedUpdateManyWithoutEmployeeNestedInput
-  compensationComponents?: Prisma.CompensationComponentUncheckedUpdateManyWithoutEmployeeNestedInput
-  lifecycle?: Prisma.UserLifecycleUncheckedUpdateOneWithoutEmployeeNestedInput
-  employeeDocuments?: Prisma.EmployeeDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
-  contracts?: Prisma.ContractUncheckedUpdateManyWithoutEmployeeNestedInput
-  onboardings?: Prisma.OnboardingUncheckedUpdateManyWithoutEmployeeNestedInput
-  assetProvisionings?: Prisma.AssetProvisioningUncheckedUpdateManyWithoutEmployeeNestedInput
-  policyAcknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationKpiPlans?: Prisma.ProbationKpiPlanUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationEvaluations?: Prisma.ProbationEvaluationUncheckedUpdateManyWithoutEmployeeNestedInput
-  probationConfirmations?: Prisma.ProbationConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  leaveBalances?: Prisma.LeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
-  attendanceLogs?: Prisma.AttendanceLogUncheckedUpdateManyWithoutEmployeeNestedInput
-  attendanceCorrections?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  overtimeRequests?: Prisma.OvertimeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  flexWorkRequests?: Prisma.FlexWorkRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  timesheets?: Prisma.TimesheetUncheckedUpdateManyWithoutEmployeeNestedInput
-  careerDevelopmentPlans?: Prisma.CareerDevelopmentPlanUncheckedUpdateManyWithoutEmployeeNestedInput
-  trainingNeedsAssessments?: Prisma.TrainingNeedsAssessmentUncheckedUpdateManyWithoutEmployeeNestedInput
-  internalTransferRequests?: Prisma.InternalTransferRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  salaryAdjustmentRequests?: Prisma.SalaryAdjustmentRequestUncheckedUpdateManyWithoutEmployeeNestedInput
-  workScheduleAssignments?: Prisma.UserWorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
-  performanceReviews?: Prisma.PerformanceReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   successionPlans?: Prisma.SuccessionPlanUncheckedUpdateManyWithoutCandidateEmployeeNestedInput
   promotionProposals?: Prisma.PromotionProposalUncheckedUpdateManyWithoutEmployeeNestedInput
   trainingRequests?: Prisma.TrainingRequestUncheckedUpdateManyWithoutEmployeeNestedInput
