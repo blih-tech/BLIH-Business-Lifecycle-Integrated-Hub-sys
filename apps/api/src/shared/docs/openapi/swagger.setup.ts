@@ -21,6 +21,26 @@ function normalizeBaseUrl(url: string): string {
   return normalized || DEFAULT_KEYCLOAK_BASE_URL;
 }
 
+function hasPrefixedApiPaths(
+  document: OpenAPIObject,
+  apiPrefix: string,
+): boolean {
+  const normalizedPrefix = `/${normalizePath(apiPrefix)}`;
+  return Object.keys(document.paths ?? {}).some(
+    (path) =>
+      path === normalizedPrefix || path.startsWith(`${normalizedPrefix}/`),
+  );
+}
+
+export function resolveApiServerUrl(
+  document: OpenAPIObject,
+  apiPrefix: string,
+): string {
+  return hasPrefixedApiPaths(document, apiPrefix)
+    ? '/'
+    : `/${normalizePath(apiPrefix)}`;
+}
+
 const DOC_TIMESTAMP = '2026-02-20T12:00:00.000Z';
 const DOC_REQUEST_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 const DOC_VERSION = 'v1';
@@ -996,7 +1016,6 @@ export function setupSwagger(app: INestApplication): void {
 \n\n${exportLinks}`,
     )
     .setVersion('1.0.0')
-    .addServer(`/${apiPrefix}`, 'Versioned API base path')
     .addBearerAuth(
       {
         type: 'http',
@@ -1016,6 +1035,13 @@ export function setupSwagger(app: INestApplication): void {
     operationIdFactory: (controllerKey: string, methodKey: string) =>
       `${controllerKey.replace(/Controller$/, '')}_${methodKey}`.toLowerCase(),
   });
+
+  document.servers = [
+    {
+      url: resolveApiServerUrl(document, apiPrefix),
+      description: 'Application origin',
+    },
+  ];
 
   enforceUnifiedSchemas(document);
   addKeycloakLoginOperation(

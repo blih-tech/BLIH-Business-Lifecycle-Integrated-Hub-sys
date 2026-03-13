@@ -2,6 +2,7 @@ import type { OpenAPIObject } from '@nestjs/swagger';
 import {
   addKeycloakLoginOperation,
   enforceUnifiedSchemas,
+  resolveApiServerUrl,
 } from './swagger.setup';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -640,5 +641,51 @@ describe('enforceUnifiedSchemas', () => {
       operation.responses?.['200']?.content?.['application/json']?.schema
         ?.properties?.access_token?.type,
     ).toBe('string');
+  });
+});
+
+describe('resolveApiServerUrl', () => {
+  it('uses the application origin when document paths already include the api prefix', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/auth/login': {
+          get: {
+            responses: {
+              '302': {
+                description: 'redirect',
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    expect(resolveApiServerUrl(doc, 'api/v1')).toBe('/');
+  });
+
+  it('uses the configured api prefix when document paths are not prefixed', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/auth/login': {
+          get: {
+            responses: {
+              '302': {
+                description: 'redirect',
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    expect(resolveApiServerUrl(doc, 'api/v1')).toBe('/api/v1');
   });
 });
