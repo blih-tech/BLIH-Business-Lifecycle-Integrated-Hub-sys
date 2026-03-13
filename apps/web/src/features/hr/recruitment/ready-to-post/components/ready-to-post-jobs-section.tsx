@@ -33,7 +33,6 @@ export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
           <JobPostCard
             key={`${item.jobDetailsForm.jobTitle}-${index}`}
             item={item}
-            requestId={requestIdLabel(index)}
             onPreviewClick={() => setPreviewIndex(index)}
           />
         ))}
