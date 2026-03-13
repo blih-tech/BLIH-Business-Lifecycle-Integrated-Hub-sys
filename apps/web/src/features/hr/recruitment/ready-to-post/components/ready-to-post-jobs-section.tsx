@@ -10,10 +10,6 @@ type ReadyToPostJobsSectionProps = {
   items: ReadyToPostJob[];
 };
 
-function requestIdLabel(index: number) {
-  return `REQ-${String(index + 1).padStart(3, "0")}`;
-}
-
 export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
@@ -21,11 +17,6 @@ export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
     () => (previewIndex === null ? null : items[previewIndex] ?? null),
     [items, previewIndex],
   );
-  const previewRequestId = useMemo(
-    () => (previewIndex === null ? null : requestIdLabel(previewIndex)),
-    [previewIndex],
-  );
-
   return (
     <>
       <section className="space-y-3">
@@ -40,7 +31,6 @@ export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
 
       <JobPostPreviewDialog
         item={previewItem}
-        requestId={previewRequestId}
         onOpenChange={(isOpen) => {
           if (!isOpen) setPreviewIndex(null);
         }}
