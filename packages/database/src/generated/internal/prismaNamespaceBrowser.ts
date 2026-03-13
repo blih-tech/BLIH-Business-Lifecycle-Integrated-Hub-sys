@@ -1169,11 +1169,6 @@ export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
   onboardingTaskId: 'onboardingTaskId',
   onboardingId: 'onboardingId',
-<<<<<<< HEAD
-  offerId: 'offerId',
-  joinDate: 'joinDate',
-=======
->>>>>>> origin/feat/onboarding
   overseerId: 'overseerId',
   status: 'status',
   teamLeadVerifiedAt: 'teamLeadVerifiedAt',

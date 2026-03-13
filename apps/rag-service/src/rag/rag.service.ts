@@ -5,6 +5,14 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
+interface CvAnalysisResult {
+  score?: number;
+  strengths?: string[];
+  weaknesses?: string[];
+  recommendation?: 'STRONG_RECOMMEND' | 'RECOMMEND' | 'CONSIDER' | 'REJECT';
+  summary?: string;
+}
+
 @Injectable()
 export class RagService {
   private readonly logger = new Logger(RagService.name);
@@ -141,7 +149,7 @@ export class RagService {
 
     return { description: response.content as string };
   }
-  transcribeAudio(_fileBuffer: Buffer): Promise<{ text: string }> {
+  transcribeAudio(): Promise<{ text: string }> {
     this.logger.warn(
       'Audio transcription called - ensure Whisper service is configured.',
     );
@@ -215,27 +223,27 @@ ${question}
   }
 
   async analyzeCv(cvText: string, jobDescription: string) {
-    const prompt = `
+  const prompt = `
 ### ROLE
-You are a Technical Headhunter with a reputation for being extremely strict. 
+You are a Technical Headhunter with a reputation for being extremely strict.
 You are performing a Binary Skill Gap Audit. Do NOT award points for "transferable skills" if the core technical requirements are missing.
 
 ### SCORING SYSTEM (WEIGHTED)
-- TECHNICAL STACK (60 pts): Does the candidate know the exact languages/frameworks listed? 
+- TECHNICAL STACK (60 pts): Does the candidate know the exact languages/frameworks listed?
   - Deduct 20 points for every missing CORE requirement (e.g., TypeScript, NestJS).
 - DOMAIN EXPERIENCE (25 pts): Is their past work in the same field (Software Engineering/AI)?
   - Business Management experience = 0 points in this section for an Engineering role.
 - SOFT SKILLS & LEADERSHIP (15 pts): Professionalism and communication.
 
 ### AUTO-FAIL RULES
-- If the candidate is from a completely unrelated field (e.g., Manager applying for Engineer), the score MUST be below 25.
+- If the candidate is from a completely unrelated field, the score MUST be below 25.
 - If the candidate lacks ALL technical requirements, the recommendation MUST be REJECT.
 
 ### RECOMMENDATION LOGIC
-- Score >= 85: STRONG_RECOMMEND (Perfect technical and cultural fit)
-- Score 70-84: RECOMMEND (Strong tech skills, minor experience gaps)
-- Score 50-69: CONSIDER (Has some tech skills but needs training)
-- Score < 50: REJECT (Missing core tech stack or unrelated background)
+- Score >= 85: STRONG_RECOMMEND
+- Score 70-84: RECOMMEND
+- Score 50-69: CONSIDER
+- Score < 50: REJECT
 
 ### INPUT DATA
 JOB DESCRIPTION:
@@ -254,45 +262,45 @@ ${cvText}
 }
 `;
 
-    const response = await this.llm.invoke([
-      {
-        role: 'system',
-        content:
-          'You are a senior HR recruiter specialized in talent evaluation. You output strictly valid JSON using the provided schema.',
-      },
-      {
-        role: 'user',
-        content: prompt,
-      },
-    ]);
+  const response = await this.llm.invoke([
+    {
+      role: 'system',
+      content:
+        'You are a senior HR recruiter specialized in talent evaluation. Output strictly valid JSON.',
+    },
+    {
+      role: 'user',
+      content: prompt,
+    },
+  ]);
 
-    try {
-      const jsonMatch = (response.content as string).match(/\{[\s\S]*\}/);
-      const jsonString = jsonMatch
-        ? jsonMatch[0]
-        : (response.content as string);
-      const result = JSON.parse(jsonString);
+  try {
+    const content = response.content as string;
 
-      return {
-        score: Number(result.score) || 0,
-        strengths: Array.isArray(result.strengths) ? result.strengths : [],
-        weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : [],
-        recommendation: String(result.recommendation || 'CONSIDER'),
-        summary: String(result.summary || response.content),
-      };
-    } catch {
-      this.logger.error(
-        'AI returned invalid JSON, falling back to raw content',
-      );
-      return {
-        score: 0,
-        strengths: [],
-        weaknesses: [],
-        recommendation: 'CONSIDER',
-        summary: response.content as string,
-      };
-    }
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    const jsonString = jsonMatch ? jsonMatch[0] : content;
+
+    const result: CvAnalysisResult = JSON.parse(jsonString);
+
+    return {
+      score: Number(result.score ?? 0),
+      strengths: Array.isArray(result.strengths) ? result.strengths : [],
+      weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : [],
+      recommendation: result.recommendation ?? 'CONSIDER',
+      summary: result.summary ?? content,
+    };
+  } catch (error) {
+    this.logger.error('AI returned invalid JSON, falling back to raw content');
+
+    return {
+      score: 0,
+      strengths: [],
+      weaknesses: [],
+      recommendation: 'CONSIDER',
+      summary: response.content as string,
+    };
   }
+}
   status() {
     return {
       status: 'AI Service is online',
