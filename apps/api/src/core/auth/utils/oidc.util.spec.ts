@@ -1,16 +1,22 @@
 import {
+  AUTH_COOKIE_NAMES,
   buildAuthorizeUrl,
+  buildCookieOptions,
   createOidcAuthRequestContext,
+  parseCookieHeader,
   resolveSafeRedirectPath,
 } from './oidc.util';
 
 describe('oidc.util', () => {
   it('creates PKCE auth request context with url-safe values', () => {
-    const context = createOidcAuthRequestContext();
+    const context = createOidcAuthRequestContext({
+      nonceEnabled: true,
+    });
 
     expect(context.state).toMatch(/^[A-Za-z0-9_-]+$/);
     expect(context.codeVerifier).toMatch(/^[A-Za-z0-9_-]+$/);
     expect(context.codeChallenge).toMatch(/^[A-Za-z0-9_-]+$/);
+    expect(context.nonce).toMatch(/^[A-Za-z0-9_-]+$/);
   });
 
   it('builds encoded authorize URL with required parameters', () => {
@@ -22,6 +28,9 @@ describe('oidc.util', () => {
       scopes: 'openid profile email',
       state: 'test-state',
       codeChallenge: 'challenge-value',
+      nonce: 'nonce-value',
+      authorizationUrl:
+        'http://localhost:8080/realms/blih/protocol/openid-connect/auth',
     });
 
     const parsed = new URL(url);
@@ -32,6 +41,7 @@ describe('oidc.util', () => {
     );
     expect(parsed.searchParams.get('code_challenge')).toBe('challenge-value');
     expect(parsed.searchParams.get('code_challenge_method')).toBe('S256');
+    expect(parsed.searchParams.get('nonce')).toBe('nonce-value');
   });
 
   it('rejects unsafe redirects and keeps safe relative redirects', () => {
@@ -42,5 +52,36 @@ describe('oidc.util', () => {
       '/login',
     );
     expect(resolveSafeRedirectPath('//evil.local', '/login')).toBe('/login');
+  });
+
+  it('parses cookies and preserves auth cookie names', () => {
+    const cookies = parseCookieHeader(
+      `${AUTH_COOKIE_NAMES.access}=abc123; ${AUTH_COOKIE_NAMES.refresh}=refresh%20token`,
+    );
+
+    expect(cookies[AUTH_COOKIE_NAMES.access]).toBe('abc123');
+    expect(cookies[AUTH_COOKIE_NAMES.refresh]).toBe('refresh token');
+  });
+
+  it('builds cookie options with enforced flags', () => {
+    expect(
+      buildCookieOptions(
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          domain: 'localhost',
+          path: '/',
+        },
+        60000,
+      ),
+    ).toMatchObject({
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      domain: 'localhost',
+      path: '/',
+      maxAge: 60000,
+    });
   });
 });

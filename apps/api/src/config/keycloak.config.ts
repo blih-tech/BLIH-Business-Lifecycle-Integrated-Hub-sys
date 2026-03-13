@@ -9,6 +9,11 @@ export interface KeycloakConfig {
   clientSecret: string;
   authClientId: string;
   authClientSecret: string;
+  authorizationUrl: string;
+  tokenUrl: string;
+  logoutUrl: string;
+  userInfoUrl: string;
+  jwksUrl: string;
   authRedirectUri: string;
   authScopes: string;
   adminClientId: string;
@@ -20,6 +25,8 @@ export interface KeycloakConfig {
   internalAuthSharedSecret: string;
   enforceMfaForPrivileged: boolean;
   policyVersion: string;
+  jwksCacheTtlSeconds: number;
+  jwksCacheMaxKeys: number;
 }
 
 export default registerAs(
@@ -32,6 +39,11 @@ export default registerAs(
     clientSecret: env.KEYCLOAK_CLIENT_SECRET,
     authClientId: env.KEYCLOAK_AUTH_CLIENT_ID,
     authClientSecret: env.KEYCLOAK_AUTH_CLIENT_SECRET,
+    authorizationUrl: env.KEYCLOAK_AUTHORIZATION_URL,
+    tokenUrl: env.KEYCLOAK_TOKEN_URL,
+    logoutUrl: env.KEYCLOAK_LOGOUT_URL,
+    userInfoUrl: env.KEYCLOAK_USERINFO_URL,
+    jwksUrl: env.KEYCLOAK_JWKS_URL,
     authRedirectUri: env.KEYCLOAK_AUTH_REDIRECT_URI,
     authScopes: env.KEYCLOAK_AUTH_SCOPES,
     adminClientId: env.KEYCLOAK_ADMIN_CLIENT_ID,
@@ -43,5 +55,7 @@ export default registerAs(
     internalAuthSharedSecret: env.INTERNAL_AUTH_SHARED_SECRET,
     enforceMfaForPrivileged: env.ENFORCE_MFA_FOR_PRIVILEGED,
     policyVersion: env.AUTH_POLICY_VERSION,
+    jwksCacheTtlSeconds: env.JWKS_CACHE_TTL_SECONDS,
+    jwksCacheMaxKeys: env.JWKS_CACHE_MAX_KEYS,
   }),
 );

@@ -5,6 +5,7 @@ import type { OpenAPIObject } from '@nestjs/swagger';
 import { RESPONSE_MESSAGE_EXTENSION } from '../../decorators/response-message.decorator';
 import {
   SWAGGER_BEARER_AUTH_NAME,
+  SWAGGER_COOKIE_AUTH_NAME,
   SWAGGER_DEFAULT_DOCS_PATH,
   SWAGGER_JSON_SPEC_PATH,
   SWAGGER_TAGS,
@@ -1013,6 +1014,8 @@ export function setupSwagger(app: INestApplication): void {
 
 **Response envelope:** All HTTP responses return a standard envelope: \`success\`, \`message\`, \`data\`, \`error\`, and \`meta\` (\`timestamp\`, \`requestId\`, \`version\`, with optional \`pagination\`).
 
+**Browser auth cookies:** \`kc_access\` is the primary authentication artifact for browser requests. \`kc_refresh\` is used only for refresh rotation. \`kc_id\` is optional and never authorizes API requests.
+
 \n\n${exportLinks}`,
     )
     .setVersion('1.0.0')
@@ -1024,6 +1027,16 @@ export function setupSwagger(app: INestApplication): void {
         description: 'Keycloak access token',
       },
       SWAGGER_BEARER_AUTH_NAME,
+    )
+    .addCookieAuth(
+      'kc_access',
+      {
+        type: 'apiKey',
+        in: 'cookie',
+        description:
+          'Primary browser auth cookie. kc_refresh is refresh-only and kc_id is optional identity/logout support.',
+      },
+      SWAGGER_COOKIE_AUTH_NAME,
     );
 
   for (const tag of SWAGGER_TAGS) {

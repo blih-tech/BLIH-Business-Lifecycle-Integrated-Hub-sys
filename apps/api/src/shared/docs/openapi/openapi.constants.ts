@@ -1,4 +1,5 @@
 export const SWAGGER_BEARER_AUTH_NAME = 'access-token';
+export const SWAGGER_COOKIE_AUTH_NAME = 'kc-access-cookie';
 
 export const SWAGGER_DEFAULT_DOCS_PATH = 'api/docs';
 
@@ -15,7 +16,7 @@ export const SWAGGER_TAGS: ReadonlyArray<{
   {
     name: 'Auth',
     description:
-      'OIDC browser login/callback/logout plus token validation, introspection, refresh, and session APIs.',
+      'OIDC browser login/callback/logout plus token validation, introspection, refresh, and session APIs. kc_access is the primary browser auth cookie; kc_refresh is refresh-only; kc_id is optional.',
   },
   {
     name: 'Users',

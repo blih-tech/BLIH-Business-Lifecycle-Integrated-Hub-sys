@@ -7,6 +7,7 @@ import {
   Query,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -44,10 +45,12 @@ import { IntrospectTokenUseCase } from './use-cases/introspect-token.usecase';
 import { RevokeSessionUseCase } from './use-cases/revoke-session.usecase';
 import { ValidateTokenUseCase } from './use-cases/validate-token.usecase';
 import { KeycloakTokenService } from '../../platform/keycloak/keycloak-token.service';
+import { KeycloakIdTokenValidationError } from '../../platform/keycloak/keycloak.errors';
 import { env } from '../../config/env.config';
 import { AuthPrincipal } from '../../shared/interfaces/auth-principal.interface';
 import {
   AUTH_COOKIE_NAMES,
+  type AuthCookieSettings,
   buildAuthorizeUrl,
   buildClearCookieOptions,
   buildCookieOptions,
@@ -100,7 +103,7 @@ export class AuthController {
       },
       'Set-Cookie': {
         description:
-          'Transient OIDC cookies: kc_state, kc_verifier, kc_redirect.',
+          'Transient OIDC cookies: kc_state, kc_verifier, kc_redirect, and kc_nonce when nonce validation is enabled.',
         schema: { type: 'string' },
       },
     },
@@ -112,7 +115,11 @@ export class AuthController {
     @Req() request: Request,
     @Res() response: Response,
   ): void {
-    const authRequest = createOidcAuthRequestContext();
+    const authRequest = createOidcAuthRequestContext({
+      pkceEnabled: env.AUTH_PKCE_ENABLED,
+      pkceMethod: env.AUTH_PKCE_METHOD,
+      nonceEnabled: env.AUTH_NONCE_ENABLED,
+    });
     const safeRedirectPath = resolveSafeRedirectPath(
       redirectPath,
       env.AUTH_POST_LOGIN_REDIRECT_URI,
@@ -123,32 +130,45 @@ export class AuthController {
       clientId: env.KEYCLOAK_AUTH_CLIENT_ID,
       redirectUri: env.KEYCLOAK_AUTH_REDIRECT_URI,
       scopes: env.KEYCLOAK_AUTH_SCOPES,
+      authorizationUrl: env.KEYCLOAK_AUTHORIZATION_URL,
       state: authRequest.state,
       codeChallenge: authRequest.codeChallenge,
+      pkceMethod: env.AUTH_PKCE_METHOD,
+      nonce: authRequest.nonce,
       prompt,
     });
 
     const transientCookieMaxAge = env.AUTH_STATE_TTL_SECONDS * 1000;
     const cookieOptions = buildCookieOptions(
-      env.AUTH_COOKIE_SECURE,
-      env.AUTH_COOKIE_SAME_SITE,
+      this.getCookieSettings(),
       transientCookieMaxAge,
     );
 
     response.cookie(AUTH_COOKIE_NAMES.state, authRequest.state, cookieOptions);
-    response.cookie(
-      AUTH_COOKIE_NAMES.verifier,
-      authRequest.codeVerifier,
-      cookieOptions,
-    );
+    if (authRequest.codeVerifier) {
+      response.cookie(
+        AUTH_COOKIE_NAMES.verifier,
+        authRequest.codeVerifier,
+        cookieOptions,
+      );
+    }
     response.cookie(
       AUTH_COOKIE_NAMES.redirect,
       safeRedirectPath,
       cookieOptions,
     );
+    if (authRequest.nonce) {
+      response.cookie(
+        AUTH_COOKIE_NAMES.nonce,
+        authRequest.nonce,
+        cookieOptions,
+      );
+    }
 
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGIN_INITIATED, {
       redirectPath: safeRedirectPath,
+      pkceEnabled: env.AUTH_PKCE_ENABLED,
+      nonceEnabled: env.AUTH_NONCE_ENABLED,
     });
 
     response.redirect(302, authorizeUrl);
@@ -185,7 +205,7 @@ export class AuthController {
       },
       'Set-Cookie': {
         description:
-          'Auth cookies on success (kc_access/kc_refresh/kc_id) and transient cookie cleanup.',
+          'Auth cookies on success (kc_access primary auth, kc_refresh refresh-only, kc_id optional) and transient cookie cleanup.',
         schema: { type: 'string' },
       },
     },
@@ -198,6 +218,7 @@ export class AuthController {
   ): Promise<void> {
     const storedState = readCookie(request, AUTH_COOKIE_NAMES.state);
     const codeVerifier = readCookie(request, AUTH_COOKIE_NAMES.verifier);
+    const storedNonce = readCookie(request, AUTH_COOKIE_NAMES.nonce);
     const requestedRedirectPath = readCookie(
       request,
       AUTH_COOKIE_NAMES.redirect,
@@ -212,7 +233,8 @@ export class AuthController {
       !state ||
       !storedState ||
       state !== storedState ||
-      !codeVerifier
+      (env.AUTH_PKCE_ENABLED && !codeVerifier) ||
+      (env.AUTH_NONCE_ENABLED && !storedNonce)
     ) {
       this.clearTransientCookies(response);
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_FAILURE, {
@@ -232,12 +254,27 @@ export class AuthController {
         env.KEYCLOAK_AUTH_REDIRECT_URI,
       );
 
+      if (env.AUTH_NONCE_ENABLED) {
+        if (!tokenResponse.id_token) {
+          throw new KeycloakIdTokenValidationError(
+            'Missing ID token for nonce validation',
+            'invalid_id_token',
+          );
+        }
+
+        await this.tokenService.validateIdToken(
+          tokenResponse.id_token,
+          env.KEYCLOAK_REALM,
+          env.KEYCLOAK_AUTH_CLIENT_ID,
+          storedNonce,
+        );
+      }
+
       response.cookie(
         AUTH_COOKIE_NAMES.access,
         tokenResponse.access_token,
         buildCookieOptions(
-          env.AUTH_COOKIE_SECURE,
-          env.AUTH_COOKIE_SAME_SITE,
+          this.getCookieSettings(),
           (tokenResponse.expires_in ?? 300) * 1000,
         ),
       );
@@ -247,9 +284,9 @@ export class AuthController {
           AUTH_COOKIE_NAMES.refresh,
           tokenResponse.refresh_token,
           buildCookieOptions(
-            env.AUTH_COOKIE_SECURE,
-            env.AUTH_COOKIE_SAME_SITE,
-            (tokenResponse.refresh_expires_in ?? 1800) * 1000,
+            this.getCookieSettings(),
+            (tokenResponse.refresh_expires_in ??
+              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
           ),
         );
       }
@@ -259,12 +296,16 @@ export class AuthController {
           AUTH_COOKIE_NAMES.id,
           tokenResponse.id_token,
           buildCookieOptions(
-            env.AUTH_COOKIE_SECURE,
-            env.AUTH_COOKIE_SAME_SITE,
+            this.getCookieSettings(),
             (tokenResponse.refresh_expires_in ??
               tokenResponse.expires_in ??
-              1800) * 1000,
+              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
           ),
+        );
+      } else {
+        response.clearCookie(
+          AUTH_COOKIE_NAMES.id,
+          buildClearCookieOptions(this.getCookieSettings()),
         );
       }
 
@@ -281,6 +322,19 @@ export class AuthController {
       );
       response.redirect(302, successRedirectPath);
     } catch (error: unknown) {
+      if (error instanceof KeycloakIdTokenValidationError) {
+        this.clearTransientCookies(response);
+        this.clearAuthCookies(response);
+        this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_FAILURE, {
+          reason: error.reason,
+        });
+        response.redirect(
+          302,
+          this.appendErrorCode(loginErrorPath, error.reason),
+        );
+        return;
+      }
+
       this.clearTransientCookies(response);
 
       const keycloakError = this.extractKeycloakErrorCode(error);
@@ -345,6 +399,8 @@ export class AuthController {
           refreshToken,
           env.KEYCLOAK_REALM,
           'refresh_token',
+          env.KEYCLOAK_AUTH_CLIENT_ID,
+          env.KEYCLOAK_AUTH_CLIENT_SECRET,
         );
       } catch (error: unknown) {
         this.logger.warn(
@@ -375,6 +431,7 @@ export class AuthController {
       buildEndSessionUrl({
         keycloakUrl: env.KEYCLOAK_URL,
         realm: env.KEYCLOAK_REALM,
+        logoutUrl: env.KEYCLOAK_LOGOUT_URL,
         idToken,
         postLogoutRedirectUri,
       }),
@@ -532,21 +589,27 @@ export class AuthController {
   @ApiOperation({
     summary: 'Refresh token',
     description:
-      'Refreshes an access token using a refresh token and returns a new access and refresh token pair.',
+      'Browser mode reads kc_refresh from the HttpOnly cookie, rotates kc_access and kc_refresh, and returns session metadata. Utility mode accepts a refresh token in the request body and returns raw tokens for non-browser clients.',
   })
   @ApiBody({
     type: RefreshTokenRequestDto,
+    required: false,
     examples: {
       refresh: {
-        summary: 'Refresh token payload',
+        summary: 'Utility mode refresh payload',
         value: {
           token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         },
       },
+      browserCookieMode: {
+        summary: 'Browser cookie mode',
+        value: {},
+      },
     },
   })
   @ApiCreatedResponse({
-    description: 'Token refresh succeeded.',
+    description:
+      'Token refresh succeeded. Browser mode returns rotated cookies; utility mode returns raw tokens in the response body.',
     type: TokenResponseDto,
     schema: {
       example: {
@@ -555,8 +618,6 @@ export class AuthController {
         scopes: ['openid', 'profile', 'email'],
         roles: [],
         permissions: [],
-        accessToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-        refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
       },
     },
   })
@@ -570,19 +631,91 @@ export class AuthController {
     unauthorized: 'Invalid or expired refresh token',
   })
   @ResponseMessage('Token refreshed successfully')
-  async refresh(@Body() dto: RefreshTokenRequestDto) {
-    const refreshed = await this.tokenService.refreshToken(
-      dto.token,
-      env.KEYCLOAK_REALM,
-    );
+  async refresh(
+    @Body() dto: RefreshTokenRequestDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const cookieRefreshToken = readCookie(request, AUTH_COOKIE_NAMES.refresh);
+    const refreshToken = cookieRefreshToken ?? dto.token;
+    const isBrowserCookieMode = Boolean(cookieRefreshToken);
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Missing refresh token');
+    }
+
+    let refreshed: Awaited<ReturnType<KeycloakTokenService['refreshToken']>>;
+    try {
+      refreshed = await this.tokenService.refreshToken(
+        refreshToken,
+        env.KEYCLOAK_REALM,
+        isBrowserCookieMode
+          ? env.KEYCLOAK_AUTH_CLIENT_ID
+          : env.KEYCLOAK_CLIENT_ID,
+        isBrowserCookieMode
+          ? env.KEYCLOAK_AUTH_CLIENT_SECRET
+          : env.KEYCLOAK_CLIENT_SECRET,
+      );
+    } catch (error) {
+      if (isBrowserCookieMode) {
+        this.clearAuthCookies(response);
+      }
+      throw error;
+    }
+
+    if (isBrowserCookieMode) {
+      if (!refreshed.refresh_token) {
+        this.clearAuthCookies(response);
+        throw new UnauthorizedException(
+          'Refresh token rotation failed: missing replacement refresh token',
+        );
+      }
+
+      response.cookie(
+        AUTH_COOKIE_NAMES.access,
+        refreshed.access_token,
+        buildCookieOptions(
+          this.getCookieSettings(),
+          (refreshed.expires_in ?? 300) * 1000,
+        ),
+      );
+      response.cookie(
+        AUTH_COOKIE_NAMES.refresh,
+        refreshed.refresh_token,
+        buildCookieOptions(
+          this.getCookieSettings(),
+          (refreshed.refresh_expires_in ?? env.AUTH_REFRESH_TOKEN_TTL_SECONDS) *
+            1000,
+        ),
+      );
+
+      if (refreshed.id_token) {
+        response.cookie(
+          AUTH_COOKIE_NAMES.id,
+          refreshed.id_token,
+          buildCookieOptions(
+            this.getCookieSettings(),
+            (refreshed.refresh_expires_in ??
+              refreshed.expires_in ??
+              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
+          ),
+        );
+      } else {
+        response.clearCookie(
+          AUTH_COOKIE_NAMES.id,
+          buildClearCookieOptions(this.getCookieSettings()),
+        );
+      }
+    }
+
     return {
       active: true,
       policyVersion: env.AUTH_POLICY_VERSION,
       scopes: refreshed.scope?.split(' ').filter(Boolean) ?? [],
       roles: [],
       permissions: [],
-      accessToken: refreshed.access_token,
-      refreshToken: refreshed.refresh_token,
+      accessToken: isBrowserCookieMode ? undefined : refreshed.access_token,
+      refreshToken: isBrowserCookieMode ? undefined : refreshed.refresh_token,
     };
   }
 
@@ -649,7 +782,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Get authenticated user',
     description:
-      'Returns the authenticated user profile and resolved access context for the current bearer token.',
+      'Returns the authenticated user profile and resolved access context for the current kc_access cookie or bearer access token.',
   })
   @ApiOkResponse({
     description: 'Authenticated user and auth context.',
@@ -698,25 +831,30 @@ export class AuthController {
   }
 
   private clearTransientCookies(response: Response): void {
-    const clearOptions = buildClearCookieOptions(
-      env.AUTH_COOKIE_SECURE,
-      env.AUTH_COOKIE_SAME_SITE,
-    );
+    const clearOptions = buildClearCookieOptions(this.getCookieSettings());
 
     response.clearCookie(AUTH_COOKIE_NAMES.state, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.verifier, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.redirect, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.nonce, clearOptions);
   }
 
   private clearAuthCookies(response: Response): void {
-    const clearOptions = buildClearCookieOptions(
-      env.AUTH_COOKIE_SECURE,
-      env.AUTH_COOKIE_SAME_SITE,
-    );
+    const clearOptions = buildClearCookieOptions(this.getCookieSettings());
 
     response.clearCookie(AUTH_COOKIE_NAMES.access, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.refresh, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.id, clearOptions);
+  }
+
+  private getCookieSettings(): AuthCookieSettings {
+    return {
+      httpOnly: env.AUTH_COOKIE_HTTP_ONLY,
+      secure: env.AUTH_COOKIE_SECURE,
+      sameSite: env.AUTH_COOKIE_SAME_SITE,
+      domain: env.AUTH_COOKIE_DOMAIN || undefined,
+      path: env.AUTH_COOKIE_PATH,
+    };
   }
 
   private logAuthEvent(

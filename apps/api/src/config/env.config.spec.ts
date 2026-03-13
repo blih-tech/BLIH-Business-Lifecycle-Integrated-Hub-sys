@@ -6,9 +6,22 @@ describe('env.config', () => {
   const originalKeycloakClientSecret = process.env.KEYCLOAK_CLIENT_SECRET;
   const originalAuthClientId = process.env.KEYCLOAK_AUTH_CLIENT_ID;
   const originalAuthClientSecret = process.env.KEYCLOAK_AUTH_CLIENT_SECRET;
+  const originalAuthorizationUrl = process.env.KEYCLOAK_AUTHORIZATION_URL;
+  const originalTokenUrl = process.env.KEYCLOAK_TOKEN_URL;
+  const originalLogoutUrl = process.env.KEYCLOAK_LOGOUT_URL;
+  const originalUserInfoUrl = process.env.KEYCLOAK_USERINFO_URL;
+  const originalJwksUrl = process.env.KEYCLOAK_JWKS_URL;
   const originalAuthRedirectUri = process.env.KEYCLOAK_AUTH_REDIRECT_URI;
+  const originalAuthCookieHttpOnly = process.env.AUTH_COOKIE_HTTP_ONLY;
   const originalAuthCookieSecure = process.env.AUTH_COOKIE_SECURE;
+  const originalAuthCookieDomain = process.env.AUTH_COOKIE_DOMAIN;
+  const originalAuthCookiePath = process.env.AUTH_COOKIE_PATH;
   const originalAuthCookieSameSite = process.env.AUTH_COOKIE_SAME_SITE;
+  const originalAuthNonceEnabled = process.env.AUTH_NONCE_ENABLED;
+  const originalAuthPkceEnabled = process.env.AUTH_PKCE_ENABLED;
+  const originalAuthPkceMethod = process.env.AUTH_PKCE_METHOD;
+  const originalJwksCacheTtlSeconds = process.env.JWKS_CACHE_TTL_SECONDS;
+  const originalJwksCacheMaxKeys = process.env.JWKS_CACHE_MAX_KEYS;
   const originalEnforceMfa = process.env.ENFORCE_MFA_FOR_PRIVILEGED;
 
   afterEach(() => {
@@ -48,16 +61,94 @@ describe('env.config', () => {
       process.env.KEYCLOAK_AUTH_REDIRECT_URI = originalAuthRedirectUri;
     }
 
+    if (originalAuthorizationUrl === undefined) {
+      delete process.env.KEYCLOAK_AUTHORIZATION_URL;
+    } else {
+      process.env.KEYCLOAK_AUTHORIZATION_URL = originalAuthorizationUrl;
+    }
+
+    if (originalTokenUrl === undefined) {
+      delete process.env.KEYCLOAK_TOKEN_URL;
+    } else {
+      process.env.KEYCLOAK_TOKEN_URL = originalTokenUrl;
+    }
+
+    if (originalLogoutUrl === undefined) {
+      delete process.env.KEYCLOAK_LOGOUT_URL;
+    } else {
+      process.env.KEYCLOAK_LOGOUT_URL = originalLogoutUrl;
+    }
+
+    if (originalUserInfoUrl === undefined) {
+      delete process.env.KEYCLOAK_USERINFO_URL;
+    } else {
+      process.env.KEYCLOAK_USERINFO_URL = originalUserInfoUrl;
+    }
+
+    if (originalJwksUrl === undefined) {
+      delete process.env.KEYCLOAK_JWKS_URL;
+    } else {
+      process.env.KEYCLOAK_JWKS_URL = originalJwksUrl;
+    }
+
+    if (originalAuthCookieHttpOnly === undefined) {
+      delete process.env.AUTH_COOKIE_HTTP_ONLY;
+    } else {
+      process.env.AUTH_COOKIE_HTTP_ONLY = originalAuthCookieHttpOnly;
+    }
+
     if (originalAuthCookieSecure === undefined) {
       delete process.env.AUTH_COOKIE_SECURE;
     } else {
       process.env.AUTH_COOKIE_SECURE = originalAuthCookieSecure;
     }
 
+    if (originalAuthCookieDomain === undefined) {
+      delete process.env.AUTH_COOKIE_DOMAIN;
+    } else {
+      process.env.AUTH_COOKIE_DOMAIN = originalAuthCookieDomain;
+    }
+
+    if (originalAuthCookiePath === undefined) {
+      delete process.env.AUTH_COOKIE_PATH;
+    } else {
+      process.env.AUTH_COOKIE_PATH = originalAuthCookiePath;
+    }
+
     if (originalAuthCookieSameSite === undefined) {
       delete process.env.AUTH_COOKIE_SAME_SITE;
     } else {
       process.env.AUTH_COOKIE_SAME_SITE = originalAuthCookieSameSite;
+    }
+
+    if (originalAuthNonceEnabled === undefined) {
+      delete process.env.AUTH_NONCE_ENABLED;
+    } else {
+      process.env.AUTH_NONCE_ENABLED = originalAuthNonceEnabled;
+    }
+
+    if (originalAuthPkceEnabled === undefined) {
+      delete process.env.AUTH_PKCE_ENABLED;
+    } else {
+      process.env.AUTH_PKCE_ENABLED = originalAuthPkceEnabled;
+    }
+
+    if (originalAuthPkceMethod === undefined) {
+      delete process.env.AUTH_PKCE_METHOD;
+    } else {
+      process.env.AUTH_PKCE_METHOD = originalAuthPkceMethod;
+    }
+
+    if (originalJwksCacheTtlSeconds === undefined) {
+      delete process.env.JWKS_CACHE_TTL_SECONDS;
+    } else {
+      process.env.JWKS_CACHE_TTL_SECONDS = originalJwksCacheTtlSeconds;
+    }
+
+    if (originalJwksCacheMaxKeys === undefined) {
+      delete process.env.JWKS_CACHE_MAX_KEYS;
+    } else {
+      process.env.JWKS_CACHE_MAX_KEYS = originalJwksCacheMaxKeys;
     }
 
     if (originalEnforceMfa === undefined) {
@@ -88,17 +179,54 @@ describe('env.config', () => {
   it('reads dedicated auth client settings for authorization-code flow', () => {
     process.env.KEYCLOAK_AUTH_CLIENT_ID = 'runtime-auth-client-id';
     process.env.KEYCLOAK_AUTH_CLIENT_SECRET = 'runtime-auth-client-secret';
+    process.env.KEYCLOAK_AUTHORIZATION_URL =
+      'http://localhost:8080/realms/blih/protocol/openid-connect/auth';
+    process.env.KEYCLOAK_TOKEN_URL =
+      'http://localhost:8080/realms/blih/protocol/openid-connect/token';
+    process.env.KEYCLOAK_LOGOUT_URL =
+      'http://localhost:8080/realms/blih/protocol/openid-connect/logout';
+    process.env.KEYCLOAK_USERINFO_URL =
+      'http://localhost:8080/realms/blih/protocol/openid-connect/userinfo';
+    process.env.KEYCLOAK_JWKS_URL =
+      'http://localhost:8080/realms/blih/protocol/openid-connect/certs';
     process.env.KEYCLOAK_AUTH_REDIRECT_URI =
       'http://localhost:5000/api/v1/auth/callback';
+    process.env.AUTH_COOKIE_HTTP_ONLY = 'true';
+    process.env.AUTH_COOKIE_DOMAIN = 'localhost';
+    process.env.AUTH_COOKIE_PATH = '/';
     process.env.AUTH_COOKIE_SAME_SITE = 'strict';
+    process.env.AUTH_NONCE_ENABLED = 'true';
+    process.env.AUTH_PKCE_ENABLED = 'true';
+    process.env.AUTH_PKCE_METHOD = 'S256';
+    process.env.JWKS_CACHE_TTL_SECONDS = '7200';
+    process.env.JWKS_CACHE_MAX_KEYS = '8';
     resetEnvCache();
 
     expect(env.KEYCLOAK_AUTH_CLIENT_ID).toBe('runtime-auth-client-id');
     expect(env.KEYCLOAK_AUTH_CLIENT_SECRET).toBe('runtime-auth-client-secret');
+    expect(env.KEYCLOAK_AUTHORIZATION_URL).toContain(
+      '/protocol/openid-connect/auth',
+    );
+    expect(env.KEYCLOAK_TOKEN_URL).toContain('/protocol/openid-connect/token');
+    expect(env.KEYCLOAK_LOGOUT_URL).toContain(
+      '/protocol/openid-connect/logout',
+    );
+    expect(env.KEYCLOAK_USERINFO_URL).toContain(
+      '/protocol/openid-connect/userinfo',
+    );
+    expect(env.KEYCLOAK_JWKS_URL).toContain('/protocol/openid-connect/certs');
     expect(env.KEYCLOAK_AUTH_REDIRECT_URI).toBe(
       'http://localhost:5000/api/v1/auth/callback',
     );
+    expect(env.AUTH_COOKIE_HTTP_ONLY).toBe(true);
+    expect(env.AUTH_COOKIE_DOMAIN).toBe('localhost');
+    expect(env.AUTH_COOKIE_PATH).toBe('/');
     expect(env.AUTH_COOKIE_SAME_SITE).toBe('strict');
+    expect(env.AUTH_NONCE_ENABLED).toBe(true);
+    expect(env.AUTH_PKCE_ENABLED).toBe(true);
+    expect(env.AUTH_PKCE_METHOD).toBe('S256');
+    expect(env.JWKS_CACHE_TTL_SECONDS).toBe(7200);
+    expect(env.JWKS_CACHE_MAX_KEYS).toBe(8);
   });
 
   it('derives AUTH_COOKIE_SECURE default from production node env', () => {

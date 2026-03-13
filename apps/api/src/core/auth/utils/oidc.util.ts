@@ -1,5 +1,5 @@
-import { createHash, randomBytes } from 'crypto';
-import type { CookieOptions, Request } from 'express';
+import { createHash, randomBytes } from 'node:crypto';
+import type { CookieOptions } from 'express';
 import {
   KEYCLOAK_AUTH_PATH,
   KEYCLOAK_LOGOUT_PATH,
@@ -9,6 +9,7 @@ export const AUTH_COOKIE_NAMES = {
   state: 'kc_state',
   verifier: 'kc_verifier',
   redirect: 'kc_redirect',
+  nonce: 'kc_nonce',
   access: 'kc_access',
   refresh: 'kc_refresh',
   id: 'kc_id',
@@ -16,87 +17,151 @@ export const AUTH_COOKIE_NAMES = {
 
 export type AuthCookieSameSite = 'lax' | 'strict' | 'none';
 
-export interface OidcAuthRequestContext {
-  state: string;
-  codeVerifier: string;
-  codeChallenge: string;
+export interface AuthCookieSettings {
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: AuthCookieSameSite;
+  domain?: string;
+  path: string;
 }
 
-interface AuthorizeUrlOptions {
+export interface CreateOidcAuthRequestOptions {
+  pkceEnabled?: boolean;
+  pkceMethod?: 'S256';
+  nonceEnabled?: boolean;
+}
+
+export interface OidcAuthRequestContext {
+  state: string;
+  codeVerifier?: string;
+  codeChallenge?: string;
+  nonce?: string;
+}
+
+export interface BuildAuthorizeUrlOptions {
   keycloakUrl: string;
   realm: string;
   clientId: string;
   redirectUri: string;
   scopes: string;
   state: string;
-  codeChallenge: string;
+  codeChallenge?: string;
+  pkceMethod?: 'S256';
   prompt?: string;
+  nonce?: string;
+  authorizationUrl?: string;
 }
 
-interface EndSessionUrlOptions {
+export interface BuildEndSessionUrlOptions {
   keycloakUrl: string;
   realm: string;
   idToken: string;
   postLogoutRedirectUri: string;
+  logoutUrl?: string;
 }
 
-function base64UrlEncode(buffer: Buffer): string {
-  return buffer
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/g, '');
+type CookieReadable =
+  | {
+      cookies?: Record<string, unknown>;
+      headers?: Record<string, string | string[] | undefined>;
+    }
+  | undefined;
+
+const DEFAULT_STATE_BYTES = 32;
+const DEFAULT_CODE_VERIFIER_BYTES = 64;
+const DEFAULT_NONCE_BYTES = 32;
+
+function trimTrailingSlashes(value: string): string {
+  return value.trim().replace(/\/+$/, '');
 }
 
-function normalizeKeycloakBaseUrl(keycloakUrl: string): string {
-  return keycloakUrl.replace(/\/+$/, '');
+function createRandomUrlSafeValue(byteLength: number): string {
+  return randomBytes(byteLength).toString('base64url');
 }
 
-function normalizePath(path: string): string {
-  const trimmed = path.trim();
-  if (!trimmed || !trimmed.startsWith('/') || trimmed.startsWith('//')) {
-    return '/';
+function buildRealmEndpoint(
+  keycloakUrl: string,
+  realm: string,
+  path: string,
+): string {
+  return `${trimTrailingSlashes(keycloakUrl)}/realms/${encodeURIComponent(
+    realm,
+  )}${path}`;
+}
+
+export function createOidcAuthRequestContext(
+  options: CreateOidcAuthRequestOptions = {},
+): OidcAuthRequestContext {
+  const pkceEnabled = options.pkceEnabled ?? true;
+  const pkceMethod = options.pkceMethod ?? 'S256';
+  const nonceEnabled = options.nonceEnabled ?? false;
+  const state = createRandomUrlSafeValue(DEFAULT_STATE_BYTES);
+  const codeVerifier = pkceEnabled
+    ? createRandomUrlSafeValue(DEFAULT_CODE_VERIFIER_BYTES)
+    : undefined;
+  const codeChallenge =
+    pkceEnabled && codeVerifier
+      ? createHash('sha256').update(codeVerifier).digest('base64url')
+      : undefined;
+
+  if (pkceEnabled && pkceMethod !== 'S256') {
+    throw new Error(`Unsupported PKCE method: ${pkceMethod}`);
   }
-
-  return trimmed;
-}
-
-export function createOidcAuthRequestContext(): OidcAuthRequestContext {
-  const state = base64UrlEncode(randomBytes(16));
-  const codeVerifier = base64UrlEncode(randomBytes(32));
-  const codeChallenge = base64UrlEncode(
-    createHash('sha256').update(codeVerifier).digest(),
-  );
 
   return {
     state,
     codeVerifier,
     codeChallenge,
+    nonce: nonceEnabled
+      ? createRandomUrlSafeValue(DEFAULT_NONCE_BYTES)
+      : undefined,
   };
 }
 
-export function buildAuthorizeUrl(options: AuthorizeUrlOptions): string {
+export function buildAuthorizeUrl(options: BuildAuthorizeUrlOptions): string {
   const url = new URL(
-    `${normalizeKeycloakBaseUrl(options.keycloakUrl)}/realms/${options.realm}${KEYCLOAK_AUTH_PATH}`,
+    options.authorizationUrl ||
+      buildRealmEndpoint(
+        options.keycloakUrl,
+        options.realm,
+        KEYCLOAK_AUTH_PATH,
+      ),
   );
+
+  url.search = '';
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('client_id', options.clientId);
   url.searchParams.set('redirect_uri', options.redirectUri);
   url.searchParams.set('scope', options.scopes);
   url.searchParams.set('state', options.state);
-  url.searchParams.set('code_challenge', options.codeChallenge);
-  url.searchParams.set('code_challenge_method', 'S256');
-  if (options.prompt?.trim()) {
-    url.searchParams.set('prompt', options.prompt.trim());
+
+  if (options.prompt) {
+    url.searchParams.set('prompt', options.prompt);
+  }
+
+  if (options.codeChallenge) {
+    url.searchParams.set('code_challenge', options.codeChallenge);
+    url.searchParams.set('code_challenge_method', options.pkceMethod ?? 'S256');
+  }
+
+  if (options.nonce) {
+    url.searchParams.set('nonce', options.nonce);
   }
 
   return url.toString();
 }
 
-export function buildEndSessionUrl(options: EndSessionUrlOptions): string {
+export function buildEndSessionUrl(options: BuildEndSessionUrlOptions): string {
   const url = new URL(
-    `${normalizeKeycloakBaseUrl(options.keycloakUrl)}/realms/${options.realm}${KEYCLOAK_LOGOUT_PATH}`,
+    options.logoutUrl ||
+      buildRealmEndpoint(
+        options.keycloakUrl,
+        options.realm,
+        KEYCLOAK_LOGOUT_PATH,
+      ),
   );
+
+  url.search = '';
   url.searchParams.set('id_token_hint', options.idToken);
   url.searchParams.set(
     'post_logout_redirect_uri',
@@ -105,24 +170,52 @@ export function buildEndSessionUrl(options: EndSessionUrlOptions): string {
   return url.toString();
 }
 
-export function parseCookieHeader(
-  headerValue: string | string[] | undefined,
-): Record<string, string> {
-  const source = Array.isArray(headerValue) ? headerValue[0] : headerValue;
-  if (!source) {
-    return {};
-  }
+export function buildCookieOptions(
+  settings: AuthCookieSettings,
+  maxAge: number,
+): CookieOptions {
+  return {
+    httpOnly: settings.httpOnly,
+    secure: settings.secure,
+    sameSite: settings.sameSite,
+    domain: settings.domain || undefined,
+    path: settings.path,
+    maxAge,
+  };
+}
 
+export function buildClearCookieOptions(
+  settings: AuthCookieSettings,
+): CookieOptions {
+  return {
+    httpOnly: settings.httpOnly,
+    secure: settings.secure,
+    sameSite: settings.sameSite,
+    domain: settings.domain || undefined,
+    path: settings.path,
+  };
+}
+
+export function parseCookieHeader(
+  header: string | string[] | undefined,
+): Record<string, string> {
+  const raw = Array.isArray(header) ? header.join('; ') : (header ?? '');
   const cookies: Record<string, string> = {};
-  for (const part of source.split(';')) {
-    const [rawName, ...rawValue] = part.split('=');
-    const name = rawName?.trim();
-    if (!name) {
+
+  for (const segment of raw.split(';')) {
+    const trimmed = segment.trim();
+    if (!trimmed) {
       continue;
     }
 
-    const value = rawValue.join('=').trim();
-    if (!value) {
+    const separatorIndex = trimmed.indexOf('=');
+    if (separatorIndex <= 0) {
+      continue;
+    }
+
+    const name = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim();
+    if (!name) {
       continue;
     }
 
@@ -137,57 +230,51 @@ export function parseCookieHeader(
 }
 
 export function readCookie(
-  request: Pick<Request, 'headers'>,
-  cookieName: string,
+  source: CookieReadable,
+  name: string,
 ): string | undefined {
-  return parseCookieHeader(request.headers.cookie)[cookieName];
+  if (!source) {
+    return undefined;
+  }
+
+  const directCookie = source.cookies?.[name];
+  if (typeof directCookie === 'string') {
+    return directCookie;
+  }
+  if (typeof directCookie === 'number' || typeof directCookie === 'boolean') {
+    return String(directCookie);
+  }
+
+  return parseCookieHeader(source.headers?.cookie)[name];
 }
 
 export function resolveSafeRedirectPath(
-  redirectPath: string | undefined,
+  input: string | undefined,
   fallbackPath: string,
 ): string {
-  const fallback = normalizePath(fallbackPath);
-  if (!redirectPath) {
-    return fallback;
-  }
-
-  const candidate = redirectPath.trim();
-  if (!candidate.startsWith('/') || candidate.startsWith('//')) {
-    return fallback;
-  }
-  if (candidate.includes('://')) {
-    return fallback;
-  }
-  if (candidate.includes('\r') || candidate.includes('\n')) {
-    return fallback;
-  }
-
-  return candidate;
+  const fallback = normalizeRedirectPath(fallbackPath) ?? '/';
+  const candidate = normalizeRedirectPath(input);
+  return candidate ?? fallback;
 }
 
-export function buildCookieOptions(
-  secure: boolean,
-  sameSite: AuthCookieSameSite,
-  maxAgeMs: number,
-): CookieOptions {
-  return {
-    httpOnly: true,
-    secure,
-    sameSite,
-    path: '/',
-    maxAge: maxAgeMs,
-  };
-}
+function normalizeRedirectPath(path: string | undefined): string | undefined {
+  if (!path) {
+    return undefined;
+  }
 
-export function buildClearCookieOptions(
-  secure: boolean,
-  sameSite: AuthCookieSameSite,
-): CookieOptions {
-  return {
-    httpOnly: true,
-    secure,
-    sameSite,
-    path: '/',
-  };
+  const trimmed = path.trim();
+  if (!trimmed.startsWith('/') || trimmed.startsWith('//')) {
+    return undefined;
+  }
+
+  try {
+    const parsed = new URL(trimmed, 'http://localhost');
+    if (parsed.origin !== 'http://localhost') {
+      return undefined;
+    }
+
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return undefined;
+  }
 }

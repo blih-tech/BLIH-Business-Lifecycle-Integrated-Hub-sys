@@ -23,6 +23,11 @@ export const envValidationSchema = Joi.object({
   KEYCLOAK_CLIENT_SECRET: Joi.string().allow('').default(''),
   KEYCLOAK_AUTH_CLIENT_ID: Joi.string().default('blih-system-auth'),
   KEYCLOAK_AUTH_CLIENT_SECRET: Joi.string().allow('').default(''),
+  KEYCLOAK_AUTHORIZATION_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_TOKEN_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_LOGOUT_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_USERINFO_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_JWKS_URL: Joi.string().uri().allow('').default(''),
   KEYCLOAK_AUTH_REDIRECT_URI: Joi.string()
     .uri()
     .default('http://localhost:5000/api/v1/auth/callback'),
@@ -38,14 +43,26 @@ export const envValidationSchema = Joi.object({
   AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/'),
   AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/login'),
   AUTH_STATE_TTL_SECONDS: Joi.number().integer().min(60).default(600),
+  AUTH_REFRESH_TOKEN_TTL_SECONDS: Joi.number()
+    .integer()
+    .min(60)
+    .default(2592000),
+  AUTH_COOKIE_HTTP_ONLY: Joi.boolean().default(true),
   AUTH_COOKIE_SECURE: Joi.boolean().when('NODE_ENV', {
     is: 'production',
     then: Joi.boolean().default(true),
     otherwise: Joi.boolean().default(false),
   }),
+  AUTH_COOKIE_DOMAIN: Joi.string().allow('').default(''),
+  AUTH_COOKIE_PATH: Joi.string().default('/'),
   AUTH_COOKIE_SAME_SITE: Joi.string()
     .valid('lax', 'strict', 'none')
     .default('lax'),
+  AUTH_NONCE_ENABLED: Joi.boolean().default(true),
+  AUTH_PKCE_ENABLED: Joi.boolean().default(true),
+  AUTH_PKCE_METHOD: Joi.string().valid('S256').default('S256'),
+  JWKS_CACHE_TTL_SECONDS: Joi.number().integer().min(60).default(3600),
+  JWKS_CACHE_MAX_KEYS: Joi.number().integer().min(1).default(5),
 
   SMTP_ENABLED: Joi.boolean().default(false),
   SMTP_HOST: Joi.string().default('localhost'),
@@ -86,6 +103,11 @@ export type EnvValues = {
   KEYCLOAK_CLIENT_SECRET: string;
   KEYCLOAK_AUTH_CLIENT_ID: string;
   KEYCLOAK_AUTH_CLIENT_SECRET: string;
+  KEYCLOAK_AUTHORIZATION_URL: string;
+  KEYCLOAK_TOKEN_URL: string;
+  KEYCLOAK_LOGOUT_URL: string;
+  KEYCLOAK_USERINFO_URL: string;
+  KEYCLOAK_JWKS_URL: string;
   KEYCLOAK_AUTH_REDIRECT_URI: string;
   KEYCLOAK_AUTH_SCOPES: string;
   KEYCLOAK_ADMIN_CLIENT_ID: string;
@@ -99,8 +121,17 @@ export type EnvValues = {
   AUTH_POST_LOGIN_REDIRECT_URI: string;
   AUTH_POST_LOGOUT_REDIRECT_URI: string;
   AUTH_STATE_TTL_SECONDS: number;
+  AUTH_REFRESH_TOKEN_TTL_SECONDS: number;
+  AUTH_COOKIE_HTTP_ONLY: boolean;
   AUTH_COOKIE_SECURE: boolean;
+  AUTH_COOKIE_DOMAIN: string;
+  AUTH_COOKIE_PATH: string;
   AUTH_COOKIE_SAME_SITE: 'lax' | 'strict' | 'none';
+  AUTH_NONCE_ENABLED: boolean;
+  AUTH_PKCE_ENABLED: boolean;
+  AUTH_PKCE_METHOD: 'S256';
+  JWKS_CACHE_TTL_SECONDS: number;
+  JWKS_CACHE_MAX_KEYS: number;
   SMTP_ENABLED: boolean;
   SMTP_HOST: string;
   SMTP_PORT: number;
@@ -137,6 +168,11 @@ const readRawEnv = () => ({
   KEYCLOAK_CLIENT_SECRET: process.env.KEYCLOAK_CLIENT_SECRET,
   KEYCLOAK_AUTH_CLIENT_ID: process.env.KEYCLOAK_AUTH_CLIENT_ID,
   KEYCLOAK_AUTH_CLIENT_SECRET: process.env.KEYCLOAK_AUTH_CLIENT_SECRET,
+  KEYCLOAK_AUTHORIZATION_URL: process.env.KEYCLOAK_AUTHORIZATION_URL,
+  KEYCLOAK_TOKEN_URL: process.env.KEYCLOAK_TOKEN_URL,
+  KEYCLOAK_LOGOUT_URL: process.env.KEYCLOAK_LOGOUT_URL,
+  KEYCLOAK_USERINFO_URL: process.env.KEYCLOAK_USERINFO_URL,
+  KEYCLOAK_JWKS_URL: process.env.KEYCLOAK_JWKS_URL,
   KEYCLOAK_AUTH_REDIRECT_URI: process.env.KEYCLOAK_AUTH_REDIRECT_URI,
   KEYCLOAK_AUTH_SCOPES: process.env.KEYCLOAK_AUTH_SCOPES,
   KEYCLOAK_ADMIN_CLIENT_ID: process.env.KEYCLOAK_ADMIN_CLIENT_ID,
@@ -150,8 +186,17 @@ const readRawEnv = () => ({
   AUTH_POST_LOGIN_REDIRECT_URI: process.env.AUTH_POST_LOGIN_REDIRECT_URI,
   AUTH_POST_LOGOUT_REDIRECT_URI: process.env.AUTH_POST_LOGOUT_REDIRECT_URI,
   AUTH_STATE_TTL_SECONDS: process.env.AUTH_STATE_TTL_SECONDS,
+  AUTH_REFRESH_TOKEN_TTL_SECONDS: process.env.AUTH_REFRESH_TOKEN_TTL_SECONDS,
+  AUTH_COOKIE_HTTP_ONLY: process.env.AUTH_COOKIE_HTTP_ONLY,
   AUTH_COOKIE_SECURE: process.env.AUTH_COOKIE_SECURE,
+  AUTH_COOKIE_DOMAIN: process.env.AUTH_COOKIE_DOMAIN,
+  AUTH_COOKIE_PATH: process.env.AUTH_COOKIE_PATH,
   AUTH_COOKIE_SAME_SITE: process.env.AUTH_COOKIE_SAME_SITE,
+  AUTH_NONCE_ENABLED: process.env.AUTH_NONCE_ENABLED,
+  AUTH_PKCE_ENABLED: process.env.AUTH_PKCE_ENABLED,
+  AUTH_PKCE_METHOD: process.env.AUTH_PKCE_METHOD,
+  JWKS_CACHE_TTL_SECONDS: process.env.JWKS_CACHE_TTL_SECONDS,
+  JWKS_CACHE_MAX_KEYS: process.env.JWKS_CACHE_MAX_KEYS,
   SMTP_ENABLED: process.env.SMTP_ENABLED,
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_PORT: process.env.SMTP_PORT,

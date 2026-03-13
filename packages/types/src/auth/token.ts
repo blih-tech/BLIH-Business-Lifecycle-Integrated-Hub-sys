@@ -26,7 +26,7 @@ export interface ExchangeTokenRequestDto {
 }
 
 export interface RefreshTokenRequestDto {
-  token: string;
+  token?: string;
 }
 
 export interface RevokeSessionRequestDto {

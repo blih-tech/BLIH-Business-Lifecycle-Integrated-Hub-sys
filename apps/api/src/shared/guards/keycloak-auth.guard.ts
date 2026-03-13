@@ -22,6 +22,7 @@ import type {
   KeycloakUserInfoResponse,
 } from '../../platform/keycloak/keycloak.types';
 import { UserPermissionSnapshotService } from '../../core/rbac/user-permission-snapshot.service';
+import { AUTH_COOKIE_NAMES, readCookie } from '../../core/auth/utils/oidc.util';
 
 @Injectable()
 export class KeycloakAuthGuard implements CanActivate {
@@ -62,8 +63,7 @@ export class KeycloakAuthGuard implements CanActivate {
       return true;
     }
 
-    const authorization = this.getHeader(request.headers, 'authorization');
-    const token = extractBearerToken(authorization);
+    const token = this.resolveAccessToken(request.headers);
     const realm = this.resolveRealm();
 
     let payload: KeycloakTokenPayload;
@@ -297,6 +297,18 @@ export class KeycloakAuthGuard implements CanActivate {
 
     const normalized = value.trim();
     return normalized.length > 0 ? normalized : undefined;
+  }
+
+  private resolveAccessToken(
+    headers: Record<string, string | string[] | undefined>,
+  ): string {
+    const cookieToken = readCookie({ headers }, AUTH_COOKIE_NAMES.access);
+    if (cookieToken) {
+      return cookieToken;
+    }
+
+    const authorization = this.getHeader(headers, 'authorization');
+    return extractBearerToken(authorization);
   }
 
   private getHeader(
