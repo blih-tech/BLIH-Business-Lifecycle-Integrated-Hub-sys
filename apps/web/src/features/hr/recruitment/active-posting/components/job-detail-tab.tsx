@@ -1,9 +1,8 @@
-import { ChevronUp, Pencil } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
 import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
 
 type JobDetailTabProps = {
   job: ActiveJobItem;
@@ -274,23 +273,6 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Button
-          type="button"
-          variant="outline"
-          className="h-[36px] w-full rounded-[6px] border-[#ff3b30] text-sm text-[#ff3b30] hover:bg-[#fff1f0]"
-        >
-          Close Job
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-[36px] w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-white"
-        >
-          <Pencil className="h-4 w-4" />
-          Edit Job
-        </Button>
-      </div>
     </section>
   );
 }
