@@ -15,7 +15,7 @@ type CachedJwkSetMethod = (
   forceRefresh?: boolean,
 ) => Promise<JSONWebKeySet>;
 
-type KeycloakTokenServiceTestAccess = KeycloakTokenService & {
+type KeycloakTokenServiceTestAccess = {
   getCachedJwkSet: CachedJwkSetMethod;
   jwksByUrl: Map<
     string,
@@ -25,6 +25,11 @@ type KeycloakTokenServiceTestAccess = KeycloakTokenService & {
     }
   >;
 };
+
+const getServiceAccess = (
+  service: KeycloakTokenService,
+): KeycloakTokenServiceTestAccess =>
+  service as unknown as KeycloakTokenServiceTestAccess;
 
 const createJwksResponse = (keys: JWK[]): AxiosResponse<JSONWebKeySet> =>
   ({
@@ -144,7 +149,7 @@ describe('KeycloakTokenService', () => {
       of(createJwksResponse([createDummyRsaJwk('kid-1')])),
     );
 
-    const serviceAccess = service as KeycloakTokenServiceTestAccess;
+    const serviceAccess = getServiceAccess(service);
 
     await serviceAccess.getCachedJwkSet(JWKS_URL, 'kid-1');
     await serviceAccess.getCachedJwkSet(JWKS_URL, 'kid-1');
@@ -197,7 +202,7 @@ describe('KeycloakTokenService', () => {
         ),
       );
 
-    const serviceAccess = service as KeycloakTokenServiceTestAccess;
+    const serviceAccess = getServiceAccess(service);
 
     await serviceAccess.getCachedJwkSet(JWKS_URL, 'kid-a');
 
