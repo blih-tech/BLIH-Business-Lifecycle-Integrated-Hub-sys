@@ -5,11 +5,24 @@ export const Prisma = {
   DbNull: null,
 } as const;
 
-const createDelegate = () =>
+const createDelegate = (delegateName: string | symbol) =>
   new Proxy(
     {},
     {
-      get: () => async () => {
+      get: (_target, property) => async () => {
+        if (
+          delegateName === 'auditLog' &&
+          (property === 'create' || property === 'update')
+        ) {
+          return {};
+        }
+        if (delegateName === 'auditLog' && property === 'findMany') {
+          return [];
+        }
+        if (delegateName === 'auditLog' && property === 'count') {
+          return 0;
+        }
+
         throw new Error(
           'PrismaClient mock delegate called without a test-level stub.',
         );
@@ -24,7 +37,7 @@ export class PrismaClient {
         if (prop in target) {
           return Reflect.get(target, prop, receiver);
         }
-        return createDelegate();
+        return createDelegate(prop);
       },
     });
   }

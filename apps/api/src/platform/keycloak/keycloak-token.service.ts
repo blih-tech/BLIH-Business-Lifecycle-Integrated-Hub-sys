@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
+import type { JWK, JSONWebKeySet } from 'jose';
 import keycloakConfig from '../../config/keycloak.config';
 import {
   KEYCLOAK_JWKS_PATH,
@@ -25,16 +26,21 @@ import {
   KeycloakUserInfoResponse,
 } from './keycloak.types';
 
-interface CachedJwksEntry {
-  remote: unknown;
+interface CachedJwkEntry {
+  key: JWK;
   expiresAt: number;
+  lastAccessedAt: number;
+}
+
+interface CachedJwksStore {
+  keysByKid: Map<string, CachedJwkEntry>;
   lastAccessedAt: number;
 }
 
 @Injectable()
 export class KeycloakTokenService {
   private readonly logger = new Logger(KeycloakTokenService.name);
-  private readonly jwksByKey = new Map<string, CachedJwksEntry>();
+  private readonly jwksByUrl = new Map<string, CachedJwksStore>();
 
   constructor(
     private readonly httpService: HttpService,
@@ -239,26 +245,10 @@ export class KeycloakTokenService {
     token: string,
     realm = this.keycloak.realm,
   ): Promise<KeycloakTokenPayload> {
-    const issuer = this.resolveIssuer(realm);
-    const jwksUrl = this.resolveJwksUrl(realm);
-    this.logger.debug(
-      `validateAccessToken realm=${realm} issuer=${issuer} jwksUrl=${jwksUrl} expectedAudience=${this.keycloak.expectedAudience}`,
-    );
-
-    const { jwtVerify, createRemoteJWKSet } = await import('jose');
-    const jwks = this.getOrCreateJwks(jwksUrl, createRemoteJWKSet);
     const expectedAudience = this.keycloak.expectedAudience;
 
     try {
-      const normalizedToken = this.normalizeCompactJwtToken(token);
-      this.assertJwtFormat(normalizedToken);
-
-      // Access tokens may omit aud and only carry azp, so verify issuer first,
-      // then validate aud/azp explicitly.
-      const verification = await jwtVerify(normalizedToken, jwks as any, {
-        issuer,
-      });
-      const payload = verification.payload as KeycloakTokenPayload;
+      const payload = await this.verifyJwtToken(token, realm);
 
       const audOk =
         payload.aud != null
@@ -300,20 +290,8 @@ export class KeycloakTokenService {
     clientId = this.keycloak.authClientId,
     expectedNonce?: string,
   ): Promise<KeycloakTokenPayload> {
-    const issuer = this.resolveIssuer(realm);
-    const jwksUrl = this.resolveJwksUrl(realm);
-    const { jwtVerify, createRemoteJWKSet } = await import('jose');
-    const jwks = this.getOrCreateJwks(jwksUrl, createRemoteJWKSet);
-
     try {
-      const normalizedToken = this.normalizeCompactJwtToken(token);
-      this.assertJwtFormat(normalizedToken);
-
-      const verification = await jwtVerify(normalizedToken, jwks as any, {
-        issuer,
-        audience: clientId,
-      });
-      const payload = verification.payload as KeycloakTokenPayload;
+      const payload = await this.verifyJwtToken(token, realm, clientId);
 
       if (expectedNonce && payload.nonce !== expectedNonce) {
         throw new KeycloakIdTokenValidationError(
@@ -427,58 +405,195 @@ export class KeycloakTokenService {
     return normalized ? normalized : fallbackUrl;
   }
 
-  private getOrCreateJwks(
-    cacheKey: string,
-    createRemoteJWKSet: (url: URL) => unknown,
-  ): unknown {
-    const now = Date.now();
-    this.evictExpiredJwksEntries(now);
+  private async verifyJwtToken(
+    token: string,
+    realm: string,
+    audience?: string,
+  ): Promise<KeycloakTokenPayload> {
+    const issuer = this.resolveIssuer(realm);
+    const jwksUrl = this.resolveJwksUrl(realm);
+    const { createLocalJWKSet, decodeProtectedHeader, jwtVerify } =
+      await import('jose');
+    const normalizedToken = this.normalizeCompactJwtToken(token);
+    this.assertJwtFormat(normalizedToken);
 
-    const cached = this.jwksByKey.get(cacheKey);
-    if (cached) {
-      cached.lastAccessedAt = now;
-      return cached.remote;
+    const protectedHeader = decodeProtectedHeader(normalizedToken);
+    const kid =
+      typeof protectedHeader.kid === 'string' && protectedHeader.kid.trim()
+        ? protectedHeader.kid
+        : undefined;
+
+    try {
+      const jwks = await this.getCachedJwkSet(jwksUrl, kid);
+      const verification = await jwtVerify(
+        normalizedToken,
+        createLocalJWKSet(jwks),
+        {
+          issuer,
+          audience,
+        },
+      );
+      return verification.payload as KeycloakTokenPayload;
+    } catch (error) {
+      if (kid && this.isUnknownKidError(error)) {
+        this.logger.debug(`Unknown kid ${kid}; forcing JWKS refresh`);
+        const refreshedJwks = await this.getCachedJwkSet(jwksUrl, kid, true);
+        const verification = await jwtVerify(
+          normalizedToken,
+          createLocalJWKSet(refreshedJwks),
+          {
+            issuer,
+            audience,
+          },
+        );
+        return verification.payload as KeycloakTokenPayload;
+      }
+
+      throw error;
     }
-
-    this.evictLeastRecentlyUsedJwksEntry();
-
-    const jwksUrl = new URL(cacheKey);
-    this.logger.debug(`JWKS fetch ${jwksUrl.toString()}`);
-    const remote = createRemoteJWKSet(jwksUrl);
-    this.jwksByKey.set(cacheKey, {
-      remote,
-      expiresAt: now + this.keycloak.jwksCacheTtlSeconds * 1000,
-      lastAccessedAt: now,
-    });
-    return remote;
   }
 
-  private evictExpiredJwksEntries(now: number): void {
-    for (const [key, entry] of this.jwksByKey.entries()) {
+  private async getCachedJwkSet(
+    jwksUrl: string,
+    preferredKid?: string,
+    forceRefresh = false,
+  ): Promise<JSONWebKeySet> {
+    const store = await this.getOrCreateJwksStore(
+      jwksUrl,
+      preferredKid,
+      forceRefresh,
+    );
+    this.touchCachedKey(store, preferredKid);
+
+    return {
+      keys: Array.from(store.keysByKid.values()).map((entry) => entry.key),
+    };
+  }
+
+  private async getOrCreateJwksStore(
+    jwksUrl: string,
+    preferredKid?: string,
+    forceRefresh = false,
+  ): Promise<CachedJwksStore> {
+    const now = Date.now();
+    let store = this.jwksByUrl.get(jwksUrl);
+    if (!store) {
+      store = {
+        keysByKid: new Map<string, CachedJwkEntry>(),
+        lastAccessedAt: now,
+      };
+      this.jwksByUrl.set(jwksUrl, store);
+    }
+    this.evictExpiredJwksEntries(store, now);
+    store.lastAccessedAt = now;
+
+    if (
+      forceRefresh ||
+      store.keysByKid.size === 0 ||
+      (preferredKid && !store.keysByKid.has(preferredKid))
+    ) {
+      await this.refreshJwksStore(jwksUrl, store, preferredKid);
+    }
+
+    return store;
+  }
+
+  private async refreshJwksStore(
+    jwksUrl: string,
+    store: CachedJwksStore,
+    preferredKid?: string,
+  ): Promise<void> {
+    const response = await firstValueFrom(
+      this.httpService.get<JSONWebKeySet>(jwksUrl),
+    );
+    const keys = Array.isArray(response.data?.keys) ? response.data.keys : [];
+    const now = Date.now();
+    const expiresAt = now + this.keycloak.jwksCacheTtlSeconds * 1000;
+    const nextKeys = new Map<string, CachedJwkEntry>();
+
+    this.logger.debug(`JWKS fetch ${jwksUrl}`);
+
+    for (const jwk of keys) {
+      const kid = this.getJwkIdentifier(jwk);
+      nextKeys.set(kid, {
+        key: jwk,
+        expiresAt,
+        lastAccessedAt: now,
+      });
+    }
+
+    store.keysByKid = nextKeys;
+    store.lastAccessedAt = now;
+    this.evictLeastRecentlyUsedJwksEntry(store, preferredKid);
+  }
+
+  private evictExpiredJwksEntries(store: CachedJwksStore, now: number): void {
+    for (const [key, entry] of store.keysByKid.entries()) {
       if (entry.expiresAt <= now) {
-        this.jwksByKey.delete(key);
+        store.keysByKid.delete(key);
       }
     }
   }
 
-  private evictLeastRecentlyUsedJwksEntry(): void {
-    if (this.jwksByKey.size < this.keycloak.jwksCacheMaxKeys) {
+  private evictLeastRecentlyUsedJwksEntry(
+    store: CachedJwksStore,
+    preserveKid?: string,
+  ): void {
+    while (store.keysByKid.size > this.keycloak.jwksCacheMaxKeys) {
+      let oldestKey: string | undefined;
+      let oldestAccessedAt = Number.POSITIVE_INFINITY;
+
+      for (const [key, entry] of store.keysByKid.entries()) {
+        if (key === preserveKid) {
+          continue;
+        }
+
+        if (entry.lastAccessedAt < oldestAccessedAt) {
+          oldestAccessedAt = entry.lastAccessedAt;
+          oldestKey = key;
+        }
+      }
+
+      if (!oldestKey) {
+        return;
+      }
+
+      store.keysByKid.delete(oldestKey);
+    }
+  }
+
+  private touchCachedKey(store: CachedJwksStore, kid?: string): void {
+    store.lastAccessedAt = Date.now();
+    if (!kid) {
       return;
     }
 
-    let oldestKey: string | undefined;
-    let oldestAccessedAt = Number.POSITIVE_INFINITY;
+    const entry = store.keysByKid.get(kid);
+    if (entry) {
+      entry.lastAccessedAt = store.lastAccessedAt;
+    }
+  }
 
-    for (const [key, entry] of this.jwksByKey.entries()) {
-      if (entry.lastAccessedAt < oldestAccessedAt) {
-        oldestAccessedAt = entry.lastAccessedAt;
-        oldestKey = key;
-      }
+  private getJwkIdentifier(jwk: JWK): string {
+    if (typeof jwk.kid === 'string' && jwk.kid.trim()) {
+      return jwk.kid;
     }
 
-    if (oldestKey) {
-      this.jwksByKey.delete(oldestKey);
-    }
+    return JSON.stringify({
+      kty: jwk.kty,
+      crv: jwk.crv,
+      x: jwk.x,
+      y: jwk.y,
+      n: jwk.n,
+      e: jwk.e,
+    });
+  }
+
+  private isUnknownKidError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /kid|no applicable key|no matching key/i.test(error.message)
+    );
   }
 
   private trimTrailingSlashes(value: string): string {

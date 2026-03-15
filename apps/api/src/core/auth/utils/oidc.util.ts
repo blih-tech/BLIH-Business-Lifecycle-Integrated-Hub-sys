@@ -10,6 +10,7 @@ export const AUTH_COOKIE_NAMES = {
   verifier: 'kc_verifier',
   redirect: 'kc_redirect',
   nonce: 'kc_nonce',
+  csrf: 'kc_csrf',
   access: 'kc_access',
   refresh: 'kc_refresh',
   id: 'kc_id',
@@ -70,6 +71,7 @@ type CookieReadable =
 const DEFAULT_STATE_BYTES = 32;
 const DEFAULT_CODE_VERIFIER_BYTES = 64;
 const DEFAULT_NONCE_BYTES = 32;
+const DEFAULT_CSRF_BYTES = 32;
 
 function trimTrailingSlashes(value: string): string {
   return value.trim().replace(/\/+$/, '');
@@ -77,6 +79,15 @@ function trimTrailingSlashes(value: string): string {
 
 function createRandomUrlSafeValue(byteLength: number): string {
   return randomBytes(byteLength).toString('base64url');
+}
+
+function normalizeAllowedRedirectPrefix(prefix: string): string | undefined {
+  const normalized = normalizeRedirectPath(prefix);
+  if (!normalized) {
+    return undefined;
+  }
+
+  return normalized === '/' ? normalized : normalized.replace(/\/+$/, '');
 }
 
 function buildRealmEndpoint(
@@ -116,6 +127,10 @@ export function createOidcAuthRequestContext(
       ? createRandomUrlSafeValue(DEFAULT_NONCE_BYTES)
       : undefined,
   };
+}
+
+export function createCsrfToken(): string {
+  return createRandomUrlSafeValue(DEFAULT_CSRF_BYTES);
 }
 
 export function buildAuthorizeUrl(options: BuildAuthorizeUrlOptions): string {
@@ -181,6 +196,16 @@ export function buildCookieOptions(
     domain: settings.domain || undefined,
     path: settings.path,
     maxAge,
+  };
+}
+
+export function buildReadableCookieOptions(
+  settings: AuthCookieSettings,
+  maxAge: number,
+): CookieOptions {
+  return {
+    ...buildCookieOptions(settings, maxAge),
+    httpOnly: false,
   };
 }
 
@@ -251,10 +276,61 @@ export function readCookie(
 export function resolveSafeRedirectPath(
   input: string | undefined,
   fallbackPath: string,
+  allowedPrefixes: string[] = ['/'],
 ): string {
   const fallback = normalizeRedirectPath(fallbackPath) ?? '/';
   const candidate = normalizeRedirectPath(input);
-  return candidate ?? fallback;
+  if (!candidate) {
+    return fallback;
+  }
+
+  return isAllowedRedirectPath(candidate, allowedPrefixes)
+    ? candidate
+    : fallback;
+}
+
+export function parseAllowedRedirectPathPrefixes(value: string): string[] {
+  const prefixes = value
+    .split(',')
+    .map((entry) => normalizeAllowedRedirectPrefix(entry.trim()))
+    .filter((entry): entry is string => Boolean(entry));
+
+  if (prefixes.length === 0) {
+    return ['/'];
+  }
+
+  return [...new Set(prefixes)];
+}
+
+export function isAllowedRedirectPath(
+  candidatePath: string,
+  allowedPrefixes: string[],
+): boolean {
+  const candidate = new URL(candidatePath, 'http://localhost');
+  const candidatePathname = candidate.pathname.replace(/\/+$/, '') || '/';
+
+  return allowedPrefixes.some((prefix) => {
+    const normalizedPrefix = normalizeAllowedRedirectPrefix(prefix);
+    if (!normalizedPrefix) {
+      return false;
+    }
+
+    if (normalizedPrefix === '/') {
+      return candidatePathname === '/';
+    }
+
+    return (
+      candidatePathname === normalizedPrefix ||
+      candidatePathname.startsWith(`${normalizedPrefix}/`)
+    );
+  });
+}
+
+export function buildFrontendRedirectUrl(
+  frontendBaseUrl: string,
+  path: string,
+): string {
+  return new URL(path, frontendBaseUrl).toString();
 }
 
 function normalizeRedirectPath(path: string | undefined): string | undefined {

@@ -39,9 +39,13 @@ export const envValidationSchema = Joi.object({
   INTERNAL_AUTH_SHARED_SECRET: Joi.string().allow('').default(''),
   ENFORCE_MFA_FOR_PRIVILEGED: Joi.boolean().default(false),
   AUTH_POLICY_VERSION: Joi.string().default('1.0'),
-  AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/login'),
+  AUTH_FRONTEND_BASE_URL: Joi.string().uri().default('http://localhost:3000'),
+  AUTH_ALLOWED_REDIRECT_PATH_PREFIXES: Joi.string().default(
+    '/,/auth,/dashboard,/no-access',
+  ),
+  AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/auth/signin'),
   AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/'),
-  AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/login'),
+  AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/auth/signin'),
   AUTH_STATE_TTL_SECONDS: Joi.number().integer().min(60).default(600),
   AUTH_REFRESH_TOKEN_TTL_SECONDS: Joi.number()
     .integer()
@@ -61,6 +65,11 @@ export const envValidationSchema = Joi.object({
   AUTH_NONCE_ENABLED: Joi.boolean().default(true),
   AUTH_PKCE_ENABLED: Joi.boolean().default(true),
   AUTH_PKCE_METHOD: Joi.string().valid('S256').default('S256'),
+  AUTH_LOGIN_RATE_LIMIT_POINTS: Joi.number().integer().min(1).default(10),
+  AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS: Joi.number()
+    .integer()
+    .min(1)
+    .default(60),
   JWKS_CACHE_TTL_SECONDS: Joi.number().integer().min(60).default(3600),
   JWKS_CACHE_MAX_KEYS: Joi.number().integer().min(1).default(5),
 
@@ -73,7 +82,11 @@ export const envValidationSchema = Joi.object({
   EMAIL_FROM: Joi.string().default('BLIH <noreply@blih.local>'),
 
   SWAGGER_ENABLED: Joi.boolean().default(true),
-  CORS_ORIGIN: Joi.string().default('*'),
+  CORS_ORIGIN: Joi.when('NODE_ENV', {
+    is: 'production',
+    then: Joi.string().invalid('*').required(),
+    otherwise: Joi.string().default('*'),
+  }),
   VERBOSE_REQUEST_LOGGING: Joi.boolean().default(false),
 
   AUDIT_RETENTION_DAYS: Joi.number().integer().min(30).default(2555),
@@ -117,6 +130,8 @@ export type EnvValues = {
   INTERNAL_AUTH_SHARED_SECRET: string;
   ENFORCE_MFA_FOR_PRIVILEGED: boolean;
   AUTH_POLICY_VERSION: string;
+  AUTH_FRONTEND_BASE_URL: string;
+  AUTH_ALLOWED_REDIRECT_PATH_PREFIXES: string;
   AUTH_LOGIN_ERROR_REDIRECT_URI: string;
   AUTH_POST_LOGIN_REDIRECT_URI: string;
   AUTH_POST_LOGOUT_REDIRECT_URI: string;
@@ -130,6 +145,8 @@ export type EnvValues = {
   AUTH_NONCE_ENABLED: boolean;
   AUTH_PKCE_ENABLED: boolean;
   AUTH_PKCE_METHOD: 'S256';
+  AUTH_LOGIN_RATE_LIMIT_POINTS: number;
+  AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS: number;
   JWKS_CACHE_TTL_SECONDS: number;
   JWKS_CACHE_MAX_KEYS: number;
   SMTP_ENABLED: boolean;
@@ -182,6 +199,9 @@ const readRawEnv = () => ({
   INTERNAL_AUTH_SHARED_SECRET: process.env.INTERNAL_AUTH_SHARED_SECRET,
   ENFORCE_MFA_FOR_PRIVILEGED: process.env.ENFORCE_MFA_FOR_PRIVILEGED,
   AUTH_POLICY_VERSION: process.env.AUTH_POLICY_VERSION,
+  AUTH_FRONTEND_BASE_URL: process.env.AUTH_FRONTEND_BASE_URL,
+  AUTH_ALLOWED_REDIRECT_PATH_PREFIXES:
+    process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES,
   AUTH_LOGIN_ERROR_REDIRECT_URI: process.env.AUTH_LOGIN_ERROR_REDIRECT_URI,
   AUTH_POST_LOGIN_REDIRECT_URI: process.env.AUTH_POST_LOGIN_REDIRECT_URI,
   AUTH_POST_LOGOUT_REDIRECT_URI: process.env.AUTH_POST_LOGOUT_REDIRECT_URI,
@@ -195,6 +215,9 @@ const readRawEnv = () => ({
   AUTH_NONCE_ENABLED: process.env.AUTH_NONCE_ENABLED,
   AUTH_PKCE_ENABLED: process.env.AUTH_PKCE_ENABLED,
   AUTH_PKCE_METHOD: process.env.AUTH_PKCE_METHOD,
+  AUTH_LOGIN_RATE_LIMIT_POINTS: process.env.AUTH_LOGIN_RATE_LIMIT_POINTS,
+  AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS:
+    process.env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS,
   JWKS_CACHE_TTL_SECONDS: process.env.JWKS_CACHE_TTL_SECONDS,
   JWKS_CACHE_MAX_KEYS: process.env.JWKS_CACHE_MAX_KEYS,
   SMTP_ENABLED: process.env.SMTP_ENABLED,

@@ -23,6 +23,8 @@ import type {
 } from '../../platform/keycloak/keycloak.types';
 import { UserPermissionSnapshotService } from '../../core/rbac/user-permission-snapshot.service';
 import { AUTH_COOKIE_NAMES, readCookie } from '../../core/auth/utils/oidc.util';
+import { buildRequestContext } from '../utils/request.util';
+import { AUDIT_ACTIONS } from '../constants/audit-actions.constant';
 
 @Injectable()
 export class KeycloakAuthGuard implements CanActivate {
@@ -71,6 +73,19 @@ export class KeycloakAuthGuard implements CanActivate {
       payload = await this.tokenService.validateAccessToken(token, realm);
     } catch (error) {
       if (error instanceof KeycloakTokenValidationError) {
+        const requestContext = buildRequestContext(
+          request as unknown as Parameters<typeof buildRequestContext>[0],
+        );
+        this.logger.warn(
+          JSON.stringify({
+            action: AUDIT_ACTIONS.AUTH_TOKEN_VALIDATION_FAILURE,
+            timestamp: new Date().toISOString(),
+            requestId: requestContext.requestId,
+            ipAddress: requestContext.ipAddress,
+            userAgent: requestContext.userAgent,
+            reason: error.message,
+          }),
+        );
         throw new UnauthorizedException('Invalid or expired access token');
       }
       throw error;

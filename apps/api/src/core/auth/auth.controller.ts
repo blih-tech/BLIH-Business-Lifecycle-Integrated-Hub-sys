@@ -40,6 +40,7 @@ import { RevokeSessionResponseDto } from './dto/revoke-session-response.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { ValidateTokenRequestDto } from './dto/validate-token-request.dto';
 import { AuthMeResponseDto } from './dto/auth-me-response.dto';
+import { AuthRateLimitService } from './auth-rate-limit.service';
 import { ExchangeTokenUseCase } from './use-cases/exchange-token.usecase';
 import { IntrospectTokenUseCase } from './use-cases/introspect-token.usecase';
 import { RevokeSessionUseCase } from './use-cases/revoke-session.usecase';
@@ -55,7 +56,11 @@ import {
   buildClearCookieOptions,
   buildCookieOptions,
   buildEndSessionUrl,
+  buildFrontendRedirectUrl,
+  buildReadableCookieOptions,
+  createCsrfToken,
   createOidcAuthRequestContext,
+  parseAllowedRedirectPathPrefixes,
   readCookie,
   resolveSafeRedirectPath,
 } from './utils/oidc.util';
@@ -71,6 +76,7 @@ export class AuthController {
     private readonly exchangeTokenUseCase: ExchangeTokenUseCase,
     private readonly revokeSessionUseCase: RevokeSessionUseCase,
     private readonly tokenService: KeycloakTokenService,
+    private readonly authRateLimitService: AuthRateLimitService,
   ) {}
 
   @Public()
@@ -79,7 +85,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Start Keycloak authorization code login',
     description:
-      'Generates PKCE + state values, stores transient cookies, and redirects to the Keycloak authorize endpoint.',
+      'Generates PKCE + state values, stores transient cookies, and redirects to the Keycloak authorize endpoint. Swagger Try it out uses fetch and will not complete the browser navigation to Keycloak; open this URL directly in a browser for the real login flow.',
   })
   @ApiQuery({
     name: 'redirect',
@@ -108,13 +114,26 @@ export class AuthController {
       },
     },
   })
-  login(
+  async login(
     @Query('redirect')
     redirectPath: AuthLoginQueryDtoType['redirect'] | undefined,
     @Query('prompt') prompt: AuthLoginQueryDtoType['prompt'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
+    const allowedRedirectPrefixes = this.getAllowedRedirectPrefixes();
+    const requestContext = buildRequestContext(request);
+    try {
+      await this.authRateLimitService.consumeLoginAttempt(
+        requestContext.ipAddress,
+      );
+    } catch (error) {
+      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGIN_FAILURE, {
+        reason: 'rate_limited',
+      });
+      throw error;
+    }
+
     const authRequest = createOidcAuthRequestContext({
       pkceEnabled: env.AUTH_PKCE_ENABLED,
       pkceMethod: env.AUTH_PKCE_METHOD,
@@ -123,6 +142,7 @@ export class AuthController {
     const safeRedirectPath = resolveSafeRedirectPath(
       redirectPath,
       env.AUTH_POST_LOGIN_REDIRECT_URI,
+      allowedRedirectPrefixes,
     );
     const authorizeUrl = buildAuthorizeUrl({
       keycloakUrl: env.KEYCLOAK_URL,
@@ -179,7 +199,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Handle Keycloak authorization callback',
     description:
-      'Validates callback state, exchanges authorization code for tokens, sets auth cookies, and redirects the browser.',
+      'Validates callback state, exchanges authorization code for tokens, validates nonce/id_token when enabled, sets auth cookies, and redirects the browser. This is a browser redirect endpoint, not a JSON API flow.',
   })
   @ApiQuery({
     name: 'code',
@@ -216,6 +236,7 @@ export class AuthController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
+    const allowedRedirectPrefixes = this.getAllowedRedirectPrefixes();
     const storedState = readCookie(request, AUTH_COOKIE_NAMES.state);
     const codeVerifier = readCookie(request, AUTH_COOKIE_NAMES.verifier);
     const storedNonce = readCookie(request, AUTH_COOKIE_NAMES.nonce);
@@ -226,7 +247,9 @@ export class AuthController {
     const loginErrorPath = resolveSafeRedirectPath(
       undefined,
       env.AUTH_LOGIN_ERROR_REDIRECT_URI,
+      allowedRedirectPrefixes,
     );
+    const loginErrorUrl = this.buildFrontendRedirect(loginErrorPath);
 
     if (
       !code ||
@@ -240,7 +263,7 @@ export class AuthController {
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_FAILURE, {
         reason: 'invalid_state_or_missing_cookie',
       });
-      response.redirect(302, loginErrorPath);
+      response.redirect(302, loginErrorUrl);
       return;
     }
 
@@ -253,22 +276,25 @@ export class AuthController {
         env.KEYCLOAK_AUTH_CLIENT_SECRET,
         env.KEYCLOAK_AUTH_REDIRECT_URI,
       );
-
-      if (env.AUTH_NONCE_ENABLED) {
-        if (!tokenResponse.id_token) {
-          throw new KeycloakIdTokenValidationError(
-            'Missing ID token for nonce validation',
-            'invalid_id_token',
-          );
-        }
-
-        await this.tokenService.validateIdToken(
-          tokenResponse.id_token,
-          env.KEYCLOAK_REALM,
-          env.KEYCLOAK_AUTH_CLIENT_ID,
-          storedNonce,
+      if (!tokenResponse.refresh_token) {
+        throw new UnauthorizedException(
+          'Missing refresh token from authorization code exchange',
         );
       }
+      if (!tokenResponse.id_token) {
+        throw new KeycloakIdTokenValidationError(
+          'Missing ID token from authorization code exchange',
+          'invalid_id_token',
+        );
+      }
+
+      const validatedIdToken = await this.tokenService.validateIdToken(
+        tokenResponse.id_token,
+        env.KEYCLOAK_REALM,
+        env.KEYCLOAK_AUTH_CLIENT_ID,
+        env.AUTH_NONCE_ENABLED ? storedNonce : undefined,
+      );
+      const csrfToken = createCsrfToken();
 
       response.cookie(
         AUTH_COOKIE_NAMES.access,
@@ -279,48 +305,51 @@ export class AuthController {
         ),
       );
 
-      if (tokenResponse.refresh_token) {
-        response.cookie(
-          AUTH_COOKIE_NAMES.refresh,
-          tokenResponse.refresh_token,
-          buildCookieOptions(
-            this.getCookieSettings(),
-            (tokenResponse.refresh_expires_in ??
-              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
-          ),
-        );
-      }
-
-      if (tokenResponse.id_token) {
-        response.cookie(
-          AUTH_COOKIE_NAMES.id,
-          tokenResponse.id_token,
-          buildCookieOptions(
-            this.getCookieSettings(),
-            (tokenResponse.refresh_expires_in ??
-              tokenResponse.expires_in ??
-              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
-          ),
-        );
-      } else {
-        response.clearCookie(
-          AUTH_COOKIE_NAMES.id,
-          buildClearCookieOptions(this.getCookieSettings()),
-        );
-      }
+      response.cookie(
+        AUTH_COOKIE_NAMES.refresh,
+        tokenResponse.refresh_token,
+        buildCookieOptions(
+          this.getCookieSettings(),
+          (tokenResponse.refresh_expires_in ??
+            env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
+        ),
+      );
+      response.cookie(
+        AUTH_COOKIE_NAMES.id,
+        tokenResponse.id_token,
+        buildCookieOptions(
+          this.getCookieSettings(),
+          (tokenResponse.refresh_expires_in ??
+            tokenResponse.expires_in ??
+            env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
+        ),
+      );
+      response.cookie(
+        AUTH_COOKIE_NAMES.csrf,
+        csrfToken,
+        buildReadableCookieOptions(
+          this.getCookieSettings(),
+          (tokenResponse.refresh_expires_in ??
+            env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
+        ),
+      );
 
       this.clearTransientCookies(response);
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_TOKEN_EXCHANGE_SUCCESS, {
         hasRefreshToken: Boolean(tokenResponse.refresh_token),
         hasIdToken: Boolean(tokenResponse.id_token),
+        subject: validatedIdToken.sub,
       });
-      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS);
+      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS, {
+        subject: validatedIdToken.sub,
+      });
 
       const successRedirectPath = resolveSafeRedirectPath(
         requestedRedirectPath,
         env.AUTH_POST_LOGIN_REDIRECT_URI,
+        allowedRedirectPrefixes,
       );
-      response.redirect(302, successRedirectPath);
+      response.redirect(302, this.buildFrontendRedirect(successRedirectPath));
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
         this.clearTransientCookies(response);
@@ -330,7 +359,7 @@ export class AuthController {
         });
         response.redirect(
           302,
-          this.appendErrorCode(loginErrorPath, error.reason),
+          this.appendErrorCode(loginErrorUrl, error.reason),
         );
         return;
       }
@@ -347,7 +376,7 @@ export class AuthController {
         reason: errorCode,
       });
 
-      response.redirect(302, this.appendErrorCode(loginErrorPath, errorCode));
+      response.redirect(302, this.appendErrorCode(loginErrorUrl, errorCode));
     }
   }
 
@@ -357,7 +386,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Logout current browser session',
     description:
-      'Clears auth cookies, optionally revokes refresh token, and redirects through Keycloak end-session when an ID token is present.',
+      'Clears auth cookies, optionally revokes refresh token, and redirects through Keycloak end-session when an ID token is present. Swagger Try it out will not complete the browser logout navigation.',
   })
   @ApiQuery({
     name: 'redirect',
@@ -386,12 +415,18 @@ export class AuthController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
+    const allowedRedirectPrefixes = this.getAllowedRedirectPrefixes();
+    const accessToken = readCookie(request, AUTH_COOKIE_NAMES.access);
     const refreshToken = readCookie(request, AUTH_COOKIE_NAMES.refresh);
     const idToken = readCookie(request, AUTH_COOKIE_NAMES.id);
     const safePostLogoutPath = resolveSafeRedirectPath(
       redirectPath,
       env.AUTH_POST_LOGOUT_REDIRECT_URI,
+      allowedRedirectPrefixes,
     );
+    const postLogoutRedirectUrl =
+      this.buildFrontendRedirect(safePostLogoutPath);
+    const subject = await this.resolveSubjectFromAccessToken(accessToken);
 
     if (refreshToken) {
       try {
@@ -413,18 +448,13 @@ export class AuthController {
     this.clearTransientCookies(response);
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGOUT, {
       hasIdToken: Boolean(idToken),
+      subject,
     });
 
     if (!idToken) {
-      response.redirect(302, safePostLogoutPath);
+      response.redirect(302, postLogoutRedirectUrl);
       return;
     }
-
-    const baseUrl = `${request.protocol}://${request.get('host')}`;
-    const postLogoutRedirectUri = new URL(
-      safePostLogoutPath,
-      baseUrl,
-    ).toString();
 
     response.redirect(
       302,
@@ -433,7 +463,7 @@ export class AuthController {
         realm: env.KEYCLOAK_REALM,
         logoutUrl: env.KEYCLOAK_LOGOUT_URL,
         idToken,
-        postLogoutRedirectUri,
+        postLogoutRedirectUri: postLogoutRedirectUrl,
       }),
     );
   }
@@ -659,6 +689,9 @@ export class AuthController {
     } catch (error) {
       if (isBrowserCookieMode) {
         this.clearAuthCookies(response);
+        this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_REFRESH_FAILURE, {
+          reason: 'refresh_request_failed',
+        });
       }
       throw error;
     }
@@ -666,10 +699,14 @@ export class AuthController {
     if (isBrowserCookieMode) {
       if (!refreshed.refresh_token) {
         this.clearAuthCookies(response);
+        this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_REFRESH_FAILURE, {
+          reason: 'missing_replacement_refresh_token',
+        });
         throw new UnauthorizedException(
           'Refresh token rotation failed: missing replacement refresh token',
         );
       }
+      const csrfToken = createCsrfToken();
 
       response.cookie(
         AUTH_COOKIE_NAMES.access,
@@ -706,6 +743,20 @@ export class AuthController {
           buildClearCookieOptions(this.getCookieSettings()),
         );
       }
+      response.cookie(
+        AUTH_COOKIE_NAMES.csrf,
+        csrfToken,
+        buildReadableCookieOptions(
+          this.getCookieSettings(),
+          (refreshed.refresh_expires_in ?? env.AUTH_REFRESH_TOKEN_TTL_SECONDS) *
+            1000,
+        ),
+      );
+      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_REFRESH_SUCCESS, {
+        subject: await this.resolveSubjectFromAccessToken(
+          refreshed.access_token,
+        ),
+      });
     }
 
     return {
@@ -841,10 +892,12 @@ export class AuthController {
 
   private clearAuthCookies(response: Response): void {
     const clearOptions = buildClearCookieOptions(this.getCookieSettings());
+    const clearReadableOptions = this.getReadableCookieClearOptions();
 
     response.clearCookie(AUTH_COOKIE_NAMES.access, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.refresh, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.id, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.csrf, clearReadableOptions);
   }
 
   private getCookieSettings(): AuthCookieSettings {
@@ -855,6 +908,23 @@ export class AuthController {
       domain: env.AUTH_COOKIE_DOMAIN || undefined,
       path: env.AUTH_COOKIE_PATH,
     };
+  }
+
+  private getReadableCookieClearOptions() {
+    return {
+      ...buildClearCookieOptions(this.getCookieSettings()),
+      httpOnly: false,
+    };
+  }
+
+  private getAllowedRedirectPrefixes(): string[] {
+    return parseAllowedRedirectPathPrefixes(
+      env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES,
+    );
+  }
+
+  private buildFrontendRedirect(path: string): string {
+    return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
   }
 
   private logAuthEvent(
@@ -870,9 +940,29 @@ export class AuthController {
         requestId: requestContext.requestId,
         ipAddress: requestContext.ipAddress,
         userAgent: requestContext.userAgent,
+        subject:
+          typeof metadata.subject === 'string' ? metadata.subject : undefined,
         ...metadata,
       }),
     );
+  }
+
+  private async resolveSubjectFromAccessToken(
+    accessToken: string | undefined,
+  ): Promise<string | undefined> {
+    if (!accessToken) {
+      return undefined;
+    }
+
+    try {
+      const payload = await this.tokenService.validateAccessToken(
+        accessToken,
+        env.KEYCLOAK_REALM,
+      );
+      return typeof payload.sub === 'string' ? payload.sub : undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   private appendErrorCode(path: string, code: string): string {

@@ -20,9 +20,16 @@ describe('env.config', () => {
   const originalAuthNonceEnabled = process.env.AUTH_NONCE_ENABLED;
   const originalAuthPkceEnabled = process.env.AUTH_PKCE_ENABLED;
   const originalAuthPkceMethod = process.env.AUTH_PKCE_METHOD;
+  const originalAuthFrontendBaseUrl = process.env.AUTH_FRONTEND_BASE_URL;
+  const originalAllowedRedirectPrefixes =
+    process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES;
+  const originalLoginRateLimitPoints = process.env.AUTH_LOGIN_RATE_LIMIT_POINTS;
+  const originalLoginRateLimitWindowSeconds =
+    process.env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS;
   const originalJwksCacheTtlSeconds = process.env.JWKS_CACHE_TTL_SECONDS;
   const originalJwksCacheMaxKeys = process.env.JWKS_CACHE_MAX_KEYS;
   const originalEnforceMfa = process.env.ENFORCE_MFA_FOR_PRIVILEGED;
+  const originalCorsOrigin = process.env.CORS_ORIGIN;
 
   afterEach(() => {
     if (originalNodeEnv === undefined) {
@@ -139,6 +146,32 @@ describe('env.config', () => {
       process.env.AUTH_PKCE_METHOD = originalAuthPkceMethod;
     }
 
+    if (originalAuthFrontendBaseUrl === undefined) {
+      delete process.env.AUTH_FRONTEND_BASE_URL;
+    } else {
+      process.env.AUTH_FRONTEND_BASE_URL = originalAuthFrontendBaseUrl;
+    }
+
+    if (originalAllowedRedirectPrefixes === undefined) {
+      delete process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES;
+    } else {
+      process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES =
+        originalAllowedRedirectPrefixes;
+    }
+
+    if (originalLoginRateLimitPoints === undefined) {
+      delete process.env.AUTH_LOGIN_RATE_LIMIT_POINTS;
+    } else {
+      process.env.AUTH_LOGIN_RATE_LIMIT_POINTS = originalLoginRateLimitPoints;
+    }
+
+    if (originalLoginRateLimitWindowSeconds === undefined) {
+      delete process.env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS;
+    } else {
+      process.env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS =
+        originalLoginRateLimitWindowSeconds;
+    }
+
     if (originalJwksCacheTtlSeconds === undefined) {
       delete process.env.JWKS_CACHE_TTL_SECONDS;
     } else {
@@ -155,6 +188,12 @@ describe('env.config', () => {
       delete process.env.ENFORCE_MFA_FOR_PRIVILEGED;
     } else {
       process.env.ENFORCE_MFA_FOR_PRIVILEGED = originalEnforceMfa;
+    }
+
+    if (originalCorsOrigin === undefined) {
+      delete process.env.CORS_ORIGIN;
+    } else {
+      process.env.CORS_ORIGIN = originalCorsOrigin;
     }
 
     resetEnvCache();
@@ -198,6 +237,11 @@ describe('env.config', () => {
     process.env.AUTH_NONCE_ENABLED = 'true';
     process.env.AUTH_PKCE_ENABLED = 'true';
     process.env.AUTH_PKCE_METHOD = 'S256';
+    process.env.AUTH_FRONTEND_BASE_URL = 'http://localhost:3000';
+    process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES =
+      '/,/auth,/dashboard,/no-access';
+    process.env.AUTH_LOGIN_RATE_LIMIT_POINTS = '25';
+    process.env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS = '120';
     process.env.JWKS_CACHE_TTL_SECONDS = '7200';
     process.env.JWKS_CACHE_MAX_KEYS = '8';
     resetEnvCache();
@@ -225,6 +269,12 @@ describe('env.config', () => {
     expect(env.AUTH_NONCE_ENABLED).toBe(true);
     expect(env.AUTH_PKCE_ENABLED).toBe(true);
     expect(env.AUTH_PKCE_METHOD).toBe('S256');
+    expect(env.AUTH_FRONTEND_BASE_URL).toBe('http://localhost:3000');
+    expect(env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES).toBe(
+      '/,/auth,/dashboard,/no-access',
+    );
+    expect(env.AUTH_LOGIN_RATE_LIMIT_POINTS).toBe(25);
+    expect(env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS).toBe(120);
     expect(env.JWKS_CACHE_TTL_SECONDS).toBe(7200);
     expect(env.JWKS_CACHE_MAX_KEYS).toBe(8);
   });
@@ -235,5 +285,15 @@ describe('env.config', () => {
     resetEnvCache();
 
     expect(env.AUTH_COOKIE_SECURE).toBe(true);
+  });
+
+  it('rejects wildcard CORS in production with credentials enabled', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.CORS_ORIGIN = '*';
+    resetEnvCache();
+
+    expect(() => env.CORS_ORIGIN).toThrow(
+      `Env validation failed: "CORS_ORIGIN" contains an invalid value`,
+    );
   });
 });
