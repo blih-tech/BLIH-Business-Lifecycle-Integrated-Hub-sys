@@ -281,6 +281,7 @@ describe('env.config', () => {
 
   it('derives AUTH_COOKIE_SECURE default from production node env', () => {
     process.env.NODE_ENV = 'production';
+    process.env.CORS_ORIGIN = 'https://app.example.com';
     delete process.env.AUTH_COOKIE_SECURE;
     resetEnvCache();
 
