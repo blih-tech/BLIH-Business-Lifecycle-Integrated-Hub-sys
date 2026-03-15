@@ -33,11 +33,42 @@ BEGIN
   END IF;
 END $$;
 
--- 3) Applicant waitlist timestamp
-ALTER TABLE "Applicant"
-  ADD COLUMN IF NOT EXISTS "waitlist_at" TIMESTAMP(3);
+-- 2a) Ensure shared enums exist (created later in onboarding migration)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'EmploymentType') THEN
+    CREATE TYPE "EmploymentType" AS ENUM (
+      'FULL_TIME',
+      'PART_TIME',
+      'CONTRACT',
+      'INTERN',
+      'TEMPORARY'
+    );
+  END IF;
+END $$;
 
-CREATE INDEX IF NOT EXISTS "Applicant_waitlist_at_idx" ON "Applicant"("waitlist_at");
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'PayFrequency') THEN
+    CREATE TYPE "PayFrequency" AS ENUM (
+      'MONTHLY',
+      'BIWEEKLY',
+      'WEEKLY',
+      'ANNUAL'
+    );
+  END IF;
+END $$;
+
+-- 3) Applicant waitlist timestamp (only if Applicant exists)
+DO $$
+BEGIN
+  IF to_regclass('public."Applicant"') IS NOT NULL THEN
+    ALTER TABLE "Applicant"
+      ADD COLUMN IF NOT EXISTS "waitlist_at" TIMESTAMP(3);
+
+    CREATE INDEX IF NOT EXISTS "Applicant_waitlist_at_idx" ON "Applicant"("waitlist_at");
+  END IF;
+END $$;
 
 -- 4) Create Offer table
 CREATE TABLE IF NOT EXISTS "Offer" (
@@ -74,25 +105,29 @@ CREATE INDEX IF NOT EXISTS "Offer_created_by_id_idx" ON "Offer"("created_by_id")
 
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_job_id_fkey') THEN
+  IF to_regclass('public."Job"') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_job_id_fkey') THEN
     ALTER TABLE "Offer"
       ADD CONSTRAINT "Offer_job_id_fkey"
       FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_applicant_id_fkey') THEN
+  IF to_regclass('public."Applicant"') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_applicant_id_fkey') THEN
     ALTER TABLE "Offer"
       ADD CONSTRAINT "Offer_applicant_id_fkey"
       FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_created_by_id_fkey') THEN
+  IF to_regclass('public."User"') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_created_by_id_fkey') THEN
     ALTER TABLE "Offer"
       ADD CONSTRAINT "Offer_created_by_id_fkey"
       FOREIGN KEY ("created_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_onboarding_id_fkey') THEN
+  IF to_regclass('public."Onboarding"') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Offer_onboarding_id_fkey') THEN
     ALTER TABLE "Offer"
       ADD CONSTRAINT "Offer_onboarding_id_fkey"
       FOREIGN KEY ("onboarding_id") REFERENCES "Onboarding"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -120,7 +155,12 @@ BEGIN
 END $$;
 
 -- Create index + FK to Offer (ignore if already there)
-CREATE INDEX IF NOT EXISTS "OnboardingChecklist_offer_id_idx" ON "OnboardingChecklist"("offer_id");
+DO $$
+BEGIN
+  IF to_regclass('public."OnboardingChecklist"') IS NOT NULL THEN
+    CREATE INDEX IF NOT EXISTS "OnboardingChecklist_offer_id_idx" ON "OnboardingChecklist"("offer_id");
+  END IF;
+END $$;
 
 DO $$
 BEGIN
@@ -193,4 +233,3 @@ BEGIN
     DROP TYPE "HiringDecisionOutcome";
   END IF;
 END $$;
-

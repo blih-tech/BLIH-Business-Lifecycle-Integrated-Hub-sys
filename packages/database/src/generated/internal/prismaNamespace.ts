@@ -443,9 +443,6 @@ export const ModelName = {
   OnboardingTask: 'OnboardingTask',
   AssetProvisioning: 'AssetProvisioning',
   PolicyAcknowledgement: 'PolicyAcknowledgement',
-  ProbationKpiPlan: 'ProbationKpiPlan',
-  ProbationEvaluation: 'ProbationEvaluation',
-  ProbationConfirmation: 'ProbationConfirmation',
   Department: 'Department',
   JobGrade: 'JobGrade',
   Position: 'Position',
@@ -459,6 +456,9 @@ export const ModelName = {
   KeyResult: 'KeyResult',
   KeyResultUpdate: 'KeyResultUpdate',
   OkrManagerReview: 'OkrManagerReview',
+  ProbationKpiPlan: 'ProbationKpiPlan',
+  ProbationEvaluation: 'ProbationEvaluation',
+  ProbationConfirmation: 'ProbationConfirmation',
   JobRequestForm: 'JobRequestForm',
   Job: 'Job',
   JobApplicationForm: 'JobApplicationForm',
@@ -526,7 +526,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiCvScreeningInsight" | "aiSkillExtraction" | "aiExperienceAnalysis" | "aiEducationAnalysis" | "aiCvComparison" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "jobRequestForm" | "job" | "jobApplicationForm" | "jobApplicationFormField" | "jobApplicationFormSection" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApprovalStep" | "jobApprovalHistory" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interviewSession" | "interviewParticipant" | "interviewerAssignment" | "interviewFeedback" | "interviewQuestion" | "offer" | "cvScreening" | "cvScreeningCriteria" | "cvScreeningQuestion" | "cvScreeningResponse" | "cvScreeningWorkflow" | "cvScreeningWorkflowStage" | "cvScreeningDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
+    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiCvScreeningInsight" | "aiSkillExtraction" | "aiExperienceAnalysis" | "aiEducationAnalysis" | "aiCvComparison" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "jobRequestForm" | "job" | "jobApplicationForm" | "jobApplicationFormField" | "jobApplicationFormSection" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApprovalStep" | "jobApprovalHistory" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interviewSession" | "interviewParticipant" | "interviewerAssignment" | "interviewFeedback" | "interviewQuestion" | "offer" | "cvScreening" | "cvScreeningCriteria" | "cvScreeningQuestion" | "cvScreeningResponse" | "cvScreeningWorkflow" | "cvScreeningWorkflowStage" | "cvScreeningDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4896,228 +4896,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    ProbationKpiPlan: {
-      payload: Prisma.$ProbationKpiPlanPayload<ExtArgs>
-      fields: Prisma.ProbationKpiPlanFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ProbationKpiPlanFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ProbationKpiPlanFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
-        }
-        findFirst: {
-          args: Prisma.ProbationKpiPlanFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ProbationKpiPlanFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
-        }
-        findMany: {
-          args: Prisma.ProbationKpiPlanFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>[]
-        }
-        create: {
-          args: Prisma.ProbationKpiPlanCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
-        }
-        createMany: {
-          args: Prisma.ProbationKpiPlanCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ProbationKpiPlanCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>[]
-        }
-        delete: {
-          args: Prisma.ProbationKpiPlanDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
-        }
-        update: {
-          args: Prisma.ProbationKpiPlanUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
-        }
-        deleteMany: {
-          args: Prisma.ProbationKpiPlanDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ProbationKpiPlanUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ProbationKpiPlanUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>[]
-        }
-        upsert: {
-          args: Prisma.ProbationKpiPlanUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
-        }
-        aggregate: {
-          args: Prisma.ProbationKpiPlanAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateProbationKpiPlan>
-        }
-        groupBy: {
-          args: Prisma.ProbationKpiPlanGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProbationKpiPlanGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ProbationKpiPlanCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProbationKpiPlanCountAggregateOutputType> | number
-        }
-      }
-    }
-    ProbationEvaluation: {
-      payload: Prisma.$ProbationEvaluationPayload<ExtArgs>
-      fields: Prisma.ProbationEvaluationFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ProbationEvaluationFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ProbationEvaluationFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
-        }
-        findFirst: {
-          args: Prisma.ProbationEvaluationFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ProbationEvaluationFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
-        }
-        findMany: {
-          args: Prisma.ProbationEvaluationFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>[]
-        }
-        create: {
-          args: Prisma.ProbationEvaluationCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
-        }
-        createMany: {
-          args: Prisma.ProbationEvaluationCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ProbationEvaluationCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>[]
-        }
-        delete: {
-          args: Prisma.ProbationEvaluationDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
-        }
-        update: {
-          args: Prisma.ProbationEvaluationUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
-        }
-        deleteMany: {
-          args: Prisma.ProbationEvaluationDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ProbationEvaluationUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ProbationEvaluationUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>[]
-        }
-        upsert: {
-          args: Prisma.ProbationEvaluationUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
-        }
-        aggregate: {
-          args: Prisma.ProbationEvaluationAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateProbationEvaluation>
-        }
-        groupBy: {
-          args: Prisma.ProbationEvaluationGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProbationEvaluationGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ProbationEvaluationCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProbationEvaluationCountAggregateOutputType> | number
-        }
-      }
-    }
-    ProbationConfirmation: {
-      payload: Prisma.$ProbationConfirmationPayload<ExtArgs>
-      fields: Prisma.ProbationConfirmationFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ProbationConfirmationFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ProbationConfirmationFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
-        }
-        findFirst: {
-          args: Prisma.ProbationConfirmationFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ProbationConfirmationFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
-        }
-        findMany: {
-          args: Prisma.ProbationConfirmationFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>[]
-        }
-        create: {
-          args: Prisma.ProbationConfirmationCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
-        }
-        createMany: {
-          args: Prisma.ProbationConfirmationCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ProbationConfirmationCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>[]
-        }
-        delete: {
-          args: Prisma.ProbationConfirmationDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
-        }
-        update: {
-          args: Prisma.ProbationConfirmationUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
-        }
-        deleteMany: {
-          args: Prisma.ProbationConfirmationDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ProbationConfirmationUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ProbationConfirmationUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>[]
-        }
-        upsert: {
-          args: Prisma.ProbationConfirmationUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
-        }
-        aggregate: {
-          args: Prisma.ProbationConfirmationAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateProbationConfirmation>
-        }
-        groupBy: {
-          args: Prisma.ProbationConfirmationGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProbationConfirmationGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ProbationConfirmationCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProbationConfirmationCountAggregateOutputType> | number
-        }
-      }
-    }
     Department: {
       payload: Prisma.$DepartmentPayload<ExtArgs>
       fields: Prisma.DepartmentFieldRefs
@@ -6077,6 +5855,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OkrManagerReviewCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OkrManagerReviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProbationKpiPlan: {
+      payload: Prisma.$ProbationKpiPlanPayload<ExtArgs>
+      fields: Prisma.ProbationKpiPlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProbationKpiPlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProbationKpiPlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
+        }
+        findFirst: {
+          args: Prisma.ProbationKpiPlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProbationKpiPlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
+        }
+        findMany: {
+          args: Prisma.ProbationKpiPlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>[]
+        }
+        create: {
+          args: Prisma.ProbationKpiPlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
+        }
+        createMany: {
+          args: Prisma.ProbationKpiPlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProbationKpiPlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>[]
+        }
+        delete: {
+          args: Prisma.ProbationKpiPlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
+        }
+        update: {
+          args: Prisma.ProbationKpiPlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProbationKpiPlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProbationKpiPlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProbationKpiPlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProbationKpiPlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationKpiPlanPayload>
+        }
+        aggregate: {
+          args: Prisma.ProbationKpiPlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProbationKpiPlan>
+        }
+        groupBy: {
+          args: Prisma.ProbationKpiPlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProbationKpiPlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProbationKpiPlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProbationKpiPlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProbationEvaluation: {
+      payload: Prisma.$ProbationEvaluationPayload<ExtArgs>
+      fields: Prisma.ProbationEvaluationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProbationEvaluationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProbationEvaluationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
+        }
+        findFirst: {
+          args: Prisma.ProbationEvaluationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProbationEvaluationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
+        }
+        findMany: {
+          args: Prisma.ProbationEvaluationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>[]
+        }
+        create: {
+          args: Prisma.ProbationEvaluationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
+        }
+        createMany: {
+          args: Prisma.ProbationEvaluationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProbationEvaluationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>[]
+        }
+        delete: {
+          args: Prisma.ProbationEvaluationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
+        }
+        update: {
+          args: Prisma.ProbationEvaluationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProbationEvaluationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProbationEvaluationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProbationEvaluationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProbationEvaluationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationEvaluationPayload>
+        }
+        aggregate: {
+          args: Prisma.ProbationEvaluationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProbationEvaluation>
+        }
+        groupBy: {
+          args: Prisma.ProbationEvaluationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProbationEvaluationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProbationEvaluationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProbationEvaluationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProbationConfirmation: {
+      payload: Prisma.$ProbationConfirmationPayload<ExtArgs>
+      fields: Prisma.ProbationConfirmationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProbationConfirmationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProbationConfirmationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
+        }
+        findFirst: {
+          args: Prisma.ProbationConfirmationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProbationConfirmationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
+        }
+        findMany: {
+          args: Prisma.ProbationConfirmationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>[]
+        }
+        create: {
+          args: Prisma.ProbationConfirmationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
+        }
+        createMany: {
+          args: Prisma.ProbationConfirmationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProbationConfirmationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>[]
+        }
+        delete: {
+          args: Prisma.ProbationConfirmationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
+        }
+        update: {
+          args: Prisma.ProbationConfirmationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProbationConfirmationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProbationConfirmationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProbationConfirmationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProbationConfirmationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProbationConfirmationPayload>
+        }
+        aggregate: {
+          args: Prisma.ProbationConfirmationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProbationConfirmation>
+        }
+        groupBy: {
+          args: Prisma.ProbationConfirmationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProbationConfirmationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProbationConfirmationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProbationConfirmationCountAggregateOutputType> | number
         }
       }
     }
@@ -10927,6 +10927,7 @@ export const OnboardingScalarFieldEnum = {
   employeeId: 'employeeId',
   status: 'status',
   startedAt: 'startedAt',
+  joinDate: 'joinDate',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -10937,13 +10938,9 @@ export type OnboardingScalarFieldEnum = (typeof OnboardingScalarFieldEnum)[keyof
 
 export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
+  onboardingTaskId: 'onboardingTaskId',
   onboardingId: 'onboardingId',
-  offerId: 'offerId',
-  joinDate: 'joinDate',
   overseerId: 'overseerId',
-  totalItems: 'totalItems',
-  completedItems: 'completedItems',
   status: 'status',
   teamLeadVerifiedAt: 'teamLeadVerifiedAt',
   ceoSignOffRequired: 'ceoSignOffRequired',
@@ -10957,14 +10954,9 @@ export type OnboardingChecklistScalarFieldEnum = (typeof OnboardingChecklistScal
 
 export const OnboardingTaskScalarFieldEnum = {
   id: 'id',
-  checklistId: 'checklistId',
   department: 'department',
   title: 'title',
   description: 'description',
-  dueDate: 'dueDate',
-  assignedToId: 'assignedToId',
-  status: 'status',
-  completedAt: 'completedAt',
   completedById: 'completedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -11003,67 +10995,6 @@ export const PolicyAcknowledgementScalarFieldEnum = {
 } as const
 
 export type PolicyAcknowledgementScalarFieldEnum = (typeof PolicyAcknowledgementScalarFieldEnum)[keyof typeof PolicyAcknowledgementScalarFieldEnum]
-
-
-export const ProbationKpiPlanScalarFieldEnum = {
-  id: 'id',
-  employeeId: 'employeeId',
-  supervisorId: 'supervisorId',
-  probationStart: 'probationStart',
-  probationEnd: 'probationEnd',
-  goals: 'goals',
-  development: 'development',
-  employeeEndorsedAt: 'employeeEndorsedAt',
-  supervisorEndorsedAt: 'supervisorEndorsedAt',
-  hrEndorsedAt: 'hrEndorsedAt',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ProbationKpiPlanScalarFieldEnum = (typeof ProbationKpiPlanScalarFieldEnum)[keyof typeof ProbationKpiPlanScalarFieldEnum]
-
-
-export const ProbationEvaluationScalarFieldEnum = {
-  id: 'id',
-  employeeId: 'employeeId',
-  probationPlanId: 'probationPlanId',
-  round: 'round',
-  evaluationDate: 'evaluationDate',
-  performanceScore: 'performanceScore',
-  attitudeScore: 'attitudeScore',
-  potentialScore: 'potentialScore',
-  overallScore: 'overallScore',
-  strengths: 'strengths',
-  improvements: 'improvements',
-  recommendation: 'recommendation',
-  evaluatorComments: 'evaluatorComments',
-  employeeComments: 'employeeComments',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ProbationEvaluationScalarFieldEnum = (typeof ProbationEvaluationScalarFieldEnum)[keyof typeof ProbationEvaluationScalarFieldEnum]
-
-
-export const ProbationConfirmationScalarFieldEnum = {
-  id: 'id',
-  employeeId: 'employeeId',
-  reviewSummary: 'reviewSummary',
-  verdict: 'verdict',
-  extension: 'extension',
-  termination: 'termination',
-  confirmation: 'confirmation',
-  hrCheckedAt: 'hrCheckedAt',
-  ceoSignOffAt: 'ceoSignOffAt',
-  employeeNotifiedAt: 'employeeNotifiedAt',
-  archivedInEmployeeFile: 'archivedInEmployeeFile',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ProbationConfirmationScalarFieldEnum = (typeof ProbationConfirmationScalarFieldEnum)[keyof typeof ProbationConfirmationScalarFieldEnum]
 
 
 export const DepartmentScalarFieldEnum = {
@@ -11265,6 +11196,67 @@ export const OkrManagerReviewScalarFieldEnum = {
 } as const
 
 export type OkrManagerReviewScalarFieldEnum = (typeof OkrManagerReviewScalarFieldEnum)[keyof typeof OkrManagerReviewScalarFieldEnum]
+
+
+export const ProbationKpiPlanScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  supervisorId: 'supervisorId',
+  probationStart: 'probationStart',
+  probationEnd: 'probationEnd',
+  goals: 'goals',
+  development: 'development',
+  employeeEndorsedAt: 'employeeEndorsedAt',
+  supervisorEndorsedAt: 'supervisorEndorsedAt',
+  hrEndorsedAt: 'hrEndorsedAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProbationKpiPlanScalarFieldEnum = (typeof ProbationKpiPlanScalarFieldEnum)[keyof typeof ProbationKpiPlanScalarFieldEnum]
+
+
+export const ProbationEvaluationScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  probationPlanId: 'probationPlanId',
+  round: 'round',
+  evaluationDate: 'evaluationDate',
+  performanceScore: 'performanceScore',
+  attitudeScore: 'attitudeScore',
+  potentialScore: 'potentialScore',
+  overallScore: 'overallScore',
+  strengths: 'strengths',
+  improvements: 'improvements',
+  recommendation: 'recommendation',
+  evaluatorComments: 'evaluatorComments',
+  employeeComments: 'employeeComments',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProbationEvaluationScalarFieldEnum = (typeof ProbationEvaluationScalarFieldEnum)[keyof typeof ProbationEvaluationScalarFieldEnum]
+
+
+export const ProbationConfirmationScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  reviewSummary: 'reviewSummary',
+  verdict: 'verdict',
+  extension: 'extension',
+  termination: 'termination',
+  confirmation: 'confirmation',
+  hrCheckedAt: 'hrCheckedAt',
+  ceoSignOffAt: 'ceoSignOffAt',
+  employeeNotifiedAt: 'employeeNotifiedAt',
+  archivedInEmployeeFile: 'archivedInEmployeeFile',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProbationConfirmationScalarFieldEnum = (typeof ProbationConfirmationScalarFieldEnum)[keyof typeof ProbationConfirmationScalarFieldEnum]
 
 
 export const JobRequestFormScalarFieldEnum = {
@@ -12916,20 +12908,6 @@ export type ListEnumOnboardingTaskDepartmentFieldRefInput<$PrismaModel> = FieldR
 
 
 /**
- * Reference to a field of type 'OnboardingTaskStatus'
- */
-export type EnumOnboardingTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingTaskStatus'>
-    
-
-
-/**
- * Reference to a field of type 'OnboardingTaskStatus[]'
- */
-export type ListEnumOnboardingTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingTaskStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'AssetProvisioningStatus'
  */
 export type EnumAssetProvisioningStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetProvisioningStatus'>
@@ -12940,76 +12918,6 @@ export type EnumAssetProvisioningStatusFieldRefInput<$PrismaModel> = FieldRefInp
  * Reference to a field of type 'AssetProvisioningStatus[]'
  */
 export type ListEnumAssetProvisioningStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetProvisioningStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationPlanStatus'
- */
-export type EnumProbationPlanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationPlanStatus'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationPlanStatus[]'
- */
-export type ListEnumProbationPlanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationPlanStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationEvaluationRound'
- */
-export type EnumProbationEvaluationRoundFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationRound'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationEvaluationRound[]'
- */
-export type ListEnumProbationEvaluationRoundFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationRound[]'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationRecommendation'
- */
-export type EnumProbationRecommendationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationRecommendation'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationRecommendation[]'
- */
-export type ListEnumProbationRecommendationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationRecommendation[]'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationEvaluationStatus'
- */
-export type EnumProbationEvaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationStatus'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationEvaluationStatus[]'
- */
-export type ListEnumProbationEvaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationConfirmationVerdict'
- */
-export type EnumProbationConfirmationVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationConfirmationVerdict'>
-    
-
-
-/**
- * Reference to a field of type 'ProbationConfirmationVerdict[]'
- */
-export type ListEnumProbationConfirmationVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationConfirmationVerdict[]'>
     
 
 
@@ -13136,6 +13044,76 @@ export type EnumOkrManagerReviewDecisionFieldRefInput<$PrismaModel> = FieldRefIn
  * Reference to a field of type 'OkrManagerReviewDecision[]'
  */
 export type ListEnumOkrManagerReviewDecisionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OkrManagerReviewDecision[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationPlanStatus'
+ */
+export type EnumProbationPlanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationPlanStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationPlanStatus[]'
+ */
+export type ListEnumProbationPlanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationPlanStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationEvaluationRound'
+ */
+export type EnumProbationEvaluationRoundFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationRound'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationEvaluationRound[]'
+ */
+export type ListEnumProbationEvaluationRoundFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationRound[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationRecommendation'
+ */
+export type EnumProbationRecommendationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationRecommendation'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationRecommendation[]'
+ */
+export type ListEnumProbationRecommendationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationRecommendation[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationEvaluationStatus'
+ */
+export type EnumProbationEvaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationEvaluationStatus[]'
+ */
+export type ListEnumProbationEvaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationEvaluationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationConfirmationVerdict'
+ */
+export type EnumProbationConfirmationVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationConfirmationVerdict'>
+    
+
+
+/**
+ * Reference to a field of type 'ProbationConfirmationVerdict[]'
+ */
+export type ListEnumProbationConfirmationVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProbationConfirmationVerdict[]'>
     
 
 
@@ -13936,9 +13914,6 @@ export type GlobalOmitConfig = {
   onboardingTask?: Prisma.OnboardingTaskOmit
   assetProvisioning?: Prisma.AssetProvisioningOmit
   policyAcknowledgement?: Prisma.PolicyAcknowledgementOmit
-  probationKpiPlan?: Prisma.ProbationKpiPlanOmit
-  probationEvaluation?: Prisma.ProbationEvaluationOmit
-  probationConfirmation?: Prisma.ProbationConfirmationOmit
   department?: Prisma.DepartmentOmit
   jobGrade?: Prisma.JobGradeOmit
   position?: Prisma.PositionOmit
@@ -13952,6 +13927,9 @@ export type GlobalOmitConfig = {
   keyResult?: Prisma.KeyResultOmit
   keyResultUpdate?: Prisma.KeyResultUpdateOmit
   okrManagerReview?: Prisma.OkrManagerReviewOmit
+  probationKpiPlan?: Prisma.ProbationKpiPlanOmit
+  probationEvaluation?: Prisma.ProbationEvaluationOmit
+  probationConfirmation?: Prisma.ProbationConfirmationOmit
   jobRequestForm?: Prisma.JobRequestFormOmit
   job?: Prisma.JobOmit
   jobApplicationForm?: Prisma.JobApplicationFormOmit

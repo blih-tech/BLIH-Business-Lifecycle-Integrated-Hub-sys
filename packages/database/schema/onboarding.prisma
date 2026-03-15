@@ -4,14 +4,15 @@
 model Onboarding {
   id          String                @id @default(uuid()) @db.Uuid
   employeeId  String                @map("employee_id") @db.Uuid
-  employee    Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   status      OnboardingStatus      @default(PENDING)
   startedAt   DateTime?             @map("started_at")
+  joinDate    DateTime              @map("join_date") @db.Date
   completedAt DateTime?             @map("completed_at")
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
-  offer       Offer?
   checklists  OnboardingChecklist[]
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
   @@index([status])
@@ -19,51 +20,35 @@ model Onboarding {
 
 model OnboardingChecklist {
   id                 String                    @id @default(uuid()) @db.Uuid
-  employeeId         String                    @map("employee_id") @db.Uuid
-  employee           Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  onboardingTaskId   String?                   @map("onboarding_task_id") @db.Uuid
   onboardingId       String?                   @map("onboarding_id") @db.Uuid
-  onboarding         Onboarding?               @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
-  offerId            String?                   @map("offer_id") @db.Uuid
-  offer              Offer?                    @relation(fields: [offerId], references: [id], onDelete: SetNull)
-  joinDate           DateTime                  @map("join_date") @db.Date
   overseerId         String?                   @map("overseer_id") @db.Uuid
-  overseer           User?                     @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
-  totalItems         Int                       @default(0) @map("total_items")
-  completedItems     Int                       @default(0) @map("completed_items")
   status             OnboardingChecklistStatus @default(NOT_STARTED)
   teamLeadVerifiedAt DateTime?                 @map("team_lead_verified_at")
   ceoSignOffRequired Boolean                   @default(false) @map("ceo_sign_off_required")
   ceoSignOffAt       DateTime?                 @map("ceo_sign_off_at")
   createdAt          DateTime                  @default(now())
   updatedAt          DateTime                  @updatedAt
-  tasks              OnboardingTask[]
 
-  @@index([employeeId])
+  onboarding     Onboarding?     @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
+  onboardingTask OnboardingTask? @relation(fields: [onboardingTaskId], references: [id], onDelete: SetNull)
+  overseer       User?           @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
+
+  @@unique([onboardingId, onboardingTaskId])
   @@index([onboardingId])
-  @@index([offerId])
   @@index([status])
 }
 
 model OnboardingTask {
   id            String                   @id @default(uuid()) @db.Uuid
-  checklistId   String                   @map("checklist_id") @db.Uuid
-  checklist     OnboardingChecklist      @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   department    OnboardingTaskDepartment
   title         String
   description   String?                  @db.Text
-  dueDate       DateTime?                @map("due_date") @db.Date
-  assignedToId  String?                  @map("assigned_to_id") @db.Uuid
-  assignedTo    User?                    @relation("OnboardingTaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  status        OnboardingTaskStatus     @default(PENDING)
-  completedAt   DateTime?                @map("completed_at")
   completedById String?                  @map("completed_by_id") @db.Uuid
   completedBy   User?                    @relation("OnboardingTaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
   createdAt     DateTime                 @default(now())
   updatedAt     DateTime                 @updatedAt
-
-  @@index([checklistId])
-  @@index([assignedToId])
-  @@index([status])
+  checklist     OnboardingChecklist[]
 }
 
 model AssetProvisioning {
@@ -98,69 +83,4 @@ model PolicyAcknowledgement {
 
   @@index([employeeId])
   @@index([verifiedById])
-}
-
-model ProbationKpiPlan {
-  id                   String                @id @default(uuid()) @db.Uuid
-  employeeId           String                @map("employee_id") @db.Uuid
-  employee             Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  supervisorId         String?               @map("supervisor_id") @db.Uuid
-  probationStart       DateTime              @map("probation_start") @db.Date
-  probationEnd         DateTime              @map("probation_end") @db.Date
-  goals                Json?                 @db.JsonB
-  development          Json?                 @db.JsonB
-  employeeEndorsedAt   DateTime?             @map("employee_endorsed_at")
-  supervisorEndorsedAt DateTime?             @map("supervisor_endorsed_at")
-  hrEndorsedAt         DateTime?             @map("hr_endorsed_at")
-  status               ProbationPlanStatus   @default(DRAFT)
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  evaluations          ProbationEvaluation[]
-
-  @@index([employeeId])
-  @@index([supervisorId])
-}
-
-model ProbationEvaluation {
-  id                String                    @id @default(uuid()) @db.Uuid
-  employeeId        String                    @map("employee_id") @db.Uuid
-  employee          Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  probationPlanId   String                    @map("probation_plan_id") @db.Uuid
-  probationPlan     ProbationKpiPlan          @relation(fields: [probationPlanId], references: [id], onDelete: Cascade)
-  round             ProbationEvaluationRound
-  evaluationDate    DateTime                  @map("evaluation_date") @db.Date
-  performanceScore  Int?                      @map("performance_score")
-  attitudeScore     Int?                      @map("attitude_score")
-  potentialScore    Int?                      @map("potential_score")
-  overallScore      Decimal?                  @map("overall_score") @db.Decimal(5, 2)
-  strengths         Json?                     @db.JsonB
-  improvements      Json?                     @db.JsonB
-  recommendation    ProbationRecommendation   @default(CONFIRM)
-  evaluatorComments String?                   @map("evaluator_comments") @db.Text
-  employeeComments  String?                   @map("employee_comments") @db.Text
-  status            ProbationEvaluationStatus @default(DRAFT)
-  createdAt         DateTime                  @default(now())
-  updatedAt         DateTime                  @updatedAt
-
-  @@index([employeeId])
-  @@index([probationPlanId])
-}
-
-model ProbationConfirmation {
-  id                     String                       @id @default(uuid()) @db.Uuid
-  employeeId             String                       @map("employee_id") @db.Uuid
-  employee               Employee                     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  reviewSummary          Json?                        @map("review_summary") @db.JsonB
-  verdict                ProbationConfirmationVerdict
-  extension              Json?                        @db.JsonB
-  termination            Json?                        @db.JsonB
-  confirmation           Json?                        @db.JsonB
-  hrCheckedAt            DateTime?                    @map("hr_checked_at")
-  ceoSignOffAt           DateTime?                    @map("ceo_sign_off_at")
-  employeeNotifiedAt     DateTime?                    @map("employee_notified_at")
-  archivedInEmployeeFile Boolean                      @default(false) @map("archived_in_employee_file")
-  createdAt              DateTime                     @default(now())
-  updatedAt              DateTime                     @updatedAt
-
-  @@index([employeeId])
 }
