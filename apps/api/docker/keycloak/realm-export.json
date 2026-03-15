@@ -126,7 +126,226 @@
       { "name": "brain_viewer", "description": "Brain Viewer" }
     ]
   },
+  "users": [
+    {
+      "id": "8b3e1b7b-6f8a-4e25-8f91-0c5b2df59a11",
+      "username": "admin1",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["superadmin"],
+      "requiredActions": []
+    },
+    {
+      "id": "f0b80ac1-b79d-47e3-8821-5a94a541f101",
+      "username": "hr.manager",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Helen",
+      "lastName": "Manager",
+      "email": "hr.manager@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["hr_manager"],
+      "requiredActions": []
+    },
+    {
+      "id": "913bbf35-61c3-4f53-b2b0-f6c37af23222",
+      "username": "finance.manager",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Fiona",
+      "lastName": "Manager",
+      "email": "finance.manager@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["finance_manager"],
+      "requiredActions": []
+    },
+    {
+      "id": "d8f27025-93d0-4702-8aef-14a6d3ef4333",
+      "username": "pm.lead",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Paul",
+      "lastName": "Lead",
+      "email": "pm.lead@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["pm_lead"],
+      "requiredActions": []
+    },
+    {
+      "id": "9a4fb822-7b0e-44a9-b5cd-09a32e2c5444",
+      "username": "crm.lead",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Chris",
+      "lastName": "Lead",
+      "email": "crm.lead@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["crm_lead"],
+      "requiredActions": []
+    },
+    {
+      "id": "6c44188f-d70a-414c-89c8-93c0b6ad6555",
+      "username": "brain.admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Bria",
+      "lastName": "Admin",
+      "email": "brain.admin@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["brain_admin"],
+      "requiredActions": []
+    }
+  ],
   "clientScopes": [
+    {
+      "name": "openid",
+      "description": "OpenID Connect required scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${openidScopeConsentText}"
+      }
+    },
+    {
+      "name": "profile",
+      "description": "OpenID Connect built-in scope: profile",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${profileScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "full name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-full-name-mapper",
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "given name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "firstName",
+            "claim.name": "given_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "family name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "lastName",
+            "claim.name": "family_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "username",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "description": "OpenID Connect built-in scope: email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${emailScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "email",
+            "claim.name": "email",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "email verified",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "emailVerified",
+            "claim.name": "email_verified",
+            "jsonType.label": "boolean",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
     {
       "name": "basic",
       "protocol": "openid-connect",
