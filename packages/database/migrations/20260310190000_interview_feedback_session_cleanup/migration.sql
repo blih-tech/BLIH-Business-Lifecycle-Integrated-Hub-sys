@@ -1,8 +1,13 @@
 -- Remove redundant InterviewFeedback.session_id and normalize feedback draft semantics.
 -- Also remove duplicated ApplicantStatusHistory.createdAt event timestamp.
 
-ALTER TABLE "ApplicantStatusHistory"
-  DROP COLUMN IF EXISTS "createdAt";
+DO $$
+BEGIN
+  IF to_regclass('public."ApplicantStatusHistory"') IS NOT NULL THEN
+    ALTER TABLE "ApplicantStatusHistory"
+      DROP COLUMN IF EXISTS "createdAt";
+  END IF;
+END $$;
 
 ALTER TABLE "InterviewFeedback"
   DROP CONSTRAINT IF EXISTS "InterviewFeedback_session_id_fkey";

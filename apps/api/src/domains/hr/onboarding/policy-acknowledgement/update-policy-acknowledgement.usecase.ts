@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   PolicyAcknowledgementResponseDto,
@@ -51,7 +52,9 @@ export class UpdatePolicyAcknowledgementUseCase {
     const record = await this.prisma.policyAcknowledgement.update({
       where: { id },
       data: {
-        ...(dto.policies !== undefined && { policies: dto.policies }),
+        ...(dto.policies !== undefined && {
+          policies: dto.policies as unknown as Prisma.InputJsonValue,
+        }),
         ...(dto.allAcknowledged !== undefined && {
           allAcknowledged: dto.allAcknowledged,
         }),
