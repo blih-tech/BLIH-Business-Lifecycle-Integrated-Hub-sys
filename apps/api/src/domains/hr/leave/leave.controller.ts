@@ -17,7 +17,7 @@ import type {
 } from '@repo/types';
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { LeavePermissions } from '../../../core/rbac/constants/permissions.constants';
+import { LeavePermissions } from '@repo/types/rbac';
 import {
   ApiDefaultErrors,
   ApiEnvelopeArrayResponse,

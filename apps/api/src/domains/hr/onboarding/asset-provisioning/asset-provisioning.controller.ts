@@ -14,7 +14,7 @@ import { randomUUID } from 'crypto';
 import { Roles } from '../../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../../shared/guards/rbac.guard';
-import { AssetProvisioningPermissions } from '../../../../core/rbac/constants/permissions.constants';
+import { AssetProvisioningPermissions } from '@repo/types/rbac';
 import {
   AssetProvisioningListQueryDto,
   CreateAssetProvisioningDto,

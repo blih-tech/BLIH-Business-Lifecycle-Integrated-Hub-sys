@@ -23,7 +23,7 @@ import { ResponseMessage } from '../../shared/decorators/response-message.decora
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
-import { UserPermissions } from '../rbac/constants/permissions.constants';
+import { UserPermissions } from '@repo/types/rbac';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

@@ -17,7 +17,7 @@ import type {
   UpdateSelfAssessmentDto,
   UpdateManagerReviewDto,
 } from '@repo/types';
-import { PerformancePermissions } from '../../../core/rbac/constants/permissions.constants';
+import { PerformancePermissions } from '@repo/types/rbac';
 import {
   ApiDefaultErrors,
   ApiEnvelopeArrayResponse,

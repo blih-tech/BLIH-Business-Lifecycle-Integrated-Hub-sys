@@ -14,7 +14,7 @@ import type {
   RenewCertificationDto,
   UpdateCertificationDto,
 } from '@repo/types';
-import { CertificationPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { CertificationPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

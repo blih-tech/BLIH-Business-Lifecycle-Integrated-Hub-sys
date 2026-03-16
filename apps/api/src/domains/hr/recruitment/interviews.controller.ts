@@ -16,7 +16,7 @@ import type {
   InterviewFeedbackResponseDto as InterviewFeedbackResponseContract,
   InterviewResponseDto as InterviewResponseContract,
 } from '@repo/types';
-import { InterviewPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { InterviewPermissions } from '@repo/types/rbac';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {

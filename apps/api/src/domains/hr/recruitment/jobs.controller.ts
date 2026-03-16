@@ -18,10 +18,7 @@ import type {
   JobSkillsResponseDto as JobSkillsResponseContract,
   JobToolsResponseDto as JobToolsResponseContract,
 } from '@repo/types';
-import {
-  JobApprovalPermissions,
-  JobPermissions,
-} from '../../../core/rbac/constants/permissions.constants';
+import { JobApprovalPermissions, JobPermissions } from '@repo/types/rbac';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {

@@ -8,7 +8,7 @@ import {
   ApiProtected,
   ActionSuccessResponseDto,
 } from '../../../shared/docs/openapi';
-import { OnboardingPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { OnboardingPermissions } from '@repo/types/rbac';
 import {
   CreateOnboardingDto,
   OnboardingResponseDto,

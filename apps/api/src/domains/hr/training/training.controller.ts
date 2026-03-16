@@ -25,7 +25,7 @@ import type {
   UpdateTrainingNeedsAssessmentDto,
   ReviewTrainingNeedsAssessmentDto,
 } from '@repo/types';
-import { TrainingPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { TrainingPermissions } from '@repo/types/rbac';
 import { ApiProtected } from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';

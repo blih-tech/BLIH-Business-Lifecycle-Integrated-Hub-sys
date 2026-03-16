@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { TrainingAnalyticsPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { TrainingAnalyticsPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';

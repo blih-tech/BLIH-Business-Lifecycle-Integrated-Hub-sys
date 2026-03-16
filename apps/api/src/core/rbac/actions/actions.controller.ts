@@ -21,7 +21,7 @@ import {
 import { ApiDefaultErrors, ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
-import { SystemPermissionPermissions } from '../constants/permissions.constants';
+import { SystemPermissionPermissions } from '@repo/types/rbac';
 import { ActionResponseDto } from './dto/action-response.dto';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';

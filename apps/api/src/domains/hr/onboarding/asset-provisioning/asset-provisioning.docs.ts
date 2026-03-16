@@ -7,7 +7,7 @@ import {
   ApiEnvelopeOkResponse,
   ApiProtected,
 } from '../../../../shared/docs/openapi';
-import { AssetProvisioningPermissions } from '../../../../core/rbac/constants/permissions.constants';
+import { AssetProvisioningPermissions } from '@repo/types/rbac';
 import {
   AssetProvisioningResponseDto,
   CreateAssetProvisioningDto,

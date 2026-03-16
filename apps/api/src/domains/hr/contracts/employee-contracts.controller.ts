@@ -17,10 +17,7 @@ import {
 } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
-import {
-  EmployeePermissions,
-  UserProfilePermissions,
-} from '../../../core/rbac/constants/permissions.constants';
+import { EmployeePermissions, UserProfilePermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { ListEmployeeContractsUseCase } from './use-cases/list-employee-contracts.usecase';
 import { CreateContractUseCase } from './use-cases/create-contract.usecase';

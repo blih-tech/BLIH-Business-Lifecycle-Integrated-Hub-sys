@@ -13,7 +13,7 @@ import {
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type { ApplicantResponseDto as ApplicantResponseContract } from '@repo/types';
-import { ApplicantPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { ApplicantPermissions } from '@repo/types/rbac';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
