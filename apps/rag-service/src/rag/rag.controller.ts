@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Get, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { RagService } from './rag.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -7,7 +14,14 @@ export class RagController {
   constructor(private readonly ragService: RagService) {}
 
   @Post('ingest-text')
-  async ingestText(@Body() data: { text: string; source: string; metadata?: any }) {
+  async ingestText(
+    @Body()
+    data: {
+      text: string;
+      source: string;
+      metadata?: Record<string, any>;
+    },
+  ) {
     console.log(`Received document from source: ${data.source}`);
     return await this.ragService.ingest(data.text, data.source, data.metadata);
   }
@@ -35,20 +49,23 @@ export class RagController {
       filter?: any;
     },
   ) {
-    return await this.ragService.askQuestion(body.question, body.history || [], body.filter);
+    return await this.ragService.askQuestion(
+      body.question,
+      body.history || [],
+      body.filter,
+    );
   }
 
   @Post('analyze-cv')
-async analyzeCv(
-  @Body()
-  body: {
-    
-    cvText: string;
-    jobDescription: string;
-  },
-) {
-  return this.ragService.analyzeCv(body.cvText, body.jobDescription);
-}
+  async analyzeCv(
+    @Body()
+    body: {
+      cvText: string;
+      jobDescription: string;
+    },
+  ) {
+    return this.ragService.analyzeCv(body.cvText, body.jobDescription);
+  }
 
   @Get('status')
   status() {
