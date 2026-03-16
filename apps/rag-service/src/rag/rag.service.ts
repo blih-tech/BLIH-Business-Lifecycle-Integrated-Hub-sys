@@ -149,14 +149,15 @@ export class RagService {
 
     return { description: response.content as string };
   }
-  transcribeAudio(): Promise<{ text: string }> {
-    this.logger.warn(
-      'Audio transcription called - ensure Whisper service is configured.',
-    );
-    return Promise.resolve({
-      text: 'Audio transcription placeholder: User mentioned a task update.',
-    });
-  }
+  transcribeAudio(fileBuffer: Buffer): Promise<{ text: string }> {
+  this.logger.warn(
+    `Audio transcription called (Buffer size: ${fileBuffer.length}) - ensure Whisper service is configured.`,
+  );
+
+  return Promise.resolve({
+    text: 'Audio transcription placeholder: User mentioned a task update.',
+  });
+}
 
   async askQuestion(
     question: string,
