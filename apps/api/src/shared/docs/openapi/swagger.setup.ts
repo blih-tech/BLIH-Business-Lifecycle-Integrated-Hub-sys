@@ -5,6 +5,7 @@ import type { OpenAPIObject } from '@nestjs/swagger';
 import { RESPONSE_MESSAGE_EXTENSION } from '../../decorators/response-message.decorator';
 import {
   SWAGGER_BEARER_AUTH_NAME,
+  SWAGGER_COOKIE_AUTH_NAME,
   SWAGGER_DEFAULT_DOCS_PATH,
   SWAGGER_JSON_SPEC_PATH,
   SWAGGER_TAGS,
@@ -16,10 +17,39 @@ function normalizePath(path: string): string {
   return path.replace(/^\/+/, '').replace(/\/+$/, '');
 }
 
+function normalizeBaseUrl(url: string): string {
+  const normalized = url.trim().replace(/\/+$/, '');
+  return normalized || DEFAULT_KEYCLOAK_BASE_URL;
+}
+
+function hasPrefixedApiPaths(
+  document: OpenAPIObject,
+  apiPrefix: string,
+): boolean {
+  const normalizedPrefix = `/${normalizePath(apiPrefix)}`;
+  return Object.keys(document.paths ?? {}).some(
+    (path) =>
+      path === normalizedPrefix || path.startsWith(`${normalizedPrefix}/`),
+  );
+}
+
+export function resolveApiServerUrl(
+  document: OpenAPIObject,
+  apiPrefix: string,
+): string {
+  return hasPrefixedApiPaths(document, apiPrefix)
+    ? '/'
+    : `/${normalizePath(apiPrefix)}`;
+}
+
 const DOC_TIMESTAMP = '2026-02-20T12:00:00.000Z';
 const DOC_REQUEST_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 const DOC_VERSION = 'v1';
 const DOC_SUCCESS_MESSAGE = 'Request processed successfully';
+const KEYCLOAK_LOGIN_PATH = '/realms/{realm}/protocol/openid-connect/token';
+const DEFAULT_KEYCLOAK_BASE_URL = 'http://localhost:8080';
+const DEFAULT_KEYCLOAK_REALM = 'blih';
+const DEFAULT_KEYCLOAK_CLIENT_ID = 'blih-system-auth';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
@@ -27,6 +57,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isSuccessStatusCode(statusCode: string): boolean {
   return /^2\d{2}$/.test(statusCode);
+}
+
+function isRedirectStatusCode(statusCode: string): boolean {
+  return /^3\d{2}$/.test(statusCode);
 }
 
 function methodNeedsSuccessResponse(method: string): boolean {
@@ -219,11 +253,16 @@ function ensureSuccessResponse(
 
   const responses = operation.responses as Record<string, unknown>;
   const existingSuccess = Object.keys(responses).find(isSuccessStatusCode);
+  const existingRedirect = Object.keys(responses).find(isRedirectStatusCode);
   if (existingSuccess) {
     const response = responses[existingSuccess];
     if (isRecord(response)) {
       ensureJsonMedia(response);
     }
+    return;
+  }
+
+  if (existingRedirect) {
     return;
   }
 
@@ -667,6 +706,10 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
       for (const [statusCode, response] of Object.entries(
         operation.responses,
       )) {
+        if (isRedirectStatusCode(statusCode)) {
+          continue;
+        }
+
         if (!isRecord(response)) {
           continue;
         }
@@ -737,6 +780,221 @@ export function enforceUnifiedSchemas(document: OpenAPIObject): void {
   }
 }
 
+export function addKeycloakLoginOperation(
+  document: OpenAPIObject,
+  keycloakBaseUrl: string,
+  defaultRealm: string,
+  defaultClientId: string,
+): void {
+  if (!isRecord(document.paths)) {
+    document.paths = {};
+  }
+
+  const paths = document.paths as Record<string, unknown>;
+  const existingPath = paths[KEYCLOAK_LOGIN_PATH];
+  const pathItem = isRecord(existingPath) ? existingPath : {};
+  const normalizedKeycloakBaseUrl = normalizeBaseUrl(keycloakBaseUrl);
+
+  pathItem.post = {
+    tags: ['Auth'],
+    summary: 'Keycloak login (token endpoint)',
+    description:
+      'Direct token issuance by Keycloak for password, client credentials, and refresh grants. This operation is external to the BLIH API service.',
+    operationId: 'keycloak_login',
+    servers: [
+      {
+        url: normalizedKeycloakBaseUrl,
+        description: 'Keycloak base URL',
+      },
+    ],
+    parameters: [
+      {
+        name: 'realm',
+        in: 'path',
+        required: true,
+        description: 'Target Keycloak realm.',
+        schema: {
+          type: 'string',
+          default: defaultRealm,
+        },
+      },
+    ],
+    requestBody: {
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {
+          schema: {
+            type: 'object',
+            required: ['grant_type', 'client_id'],
+            properties: {
+              grant_type: {
+                type: 'string',
+                enum: [
+                  'authorization_code',
+                  'password',
+                  'client_credentials',
+                  'refresh_token',
+                ],
+                default: 'authorization_code',
+              },
+              client_id: {
+                type: 'string',
+                default: defaultClientId,
+              },
+              client_secret: {
+                type: 'string',
+              },
+              username: {
+                type: 'string',
+                description: 'Required when grant_type=password.',
+              },
+              password: {
+                type: 'string',
+                format: 'password',
+                description: 'Required when grant_type=password.',
+              },
+              scope: {
+                type: 'string',
+                example: 'openid profile email',
+              },
+              refresh_token: {
+                type: 'string',
+                description: 'Required when grant_type=refresh_token.',
+              },
+              code: {
+                type: 'string',
+                description: 'Required when grant_type=authorization_code.',
+              },
+              redirect_uri: {
+                type: 'string',
+                format: 'uri',
+                description:
+                  'Required when grant_type=authorization_code. Must match client redirect URI.',
+              },
+              code_verifier: {
+                type: 'string',
+                description:
+                  'PKCE code verifier required when grant_type=authorization_code.',
+              },
+            },
+          },
+          examples: {
+            authorizationCodeGrant: {
+              summary: 'Authorization code flow with PKCE',
+              value: {
+                grant_type: 'authorization_code',
+                client_id: defaultClientId,
+                code: '3f95f8f9-1f31-40c1-9ed7-8eb7f0f3866f',
+                redirect_uri: 'http://localhost:5000/api/v1/auth/callback',
+                code_verifier: 'mX1j2N9Q8kP0pV2Yb9JQjTg7oQWJ5u0rZkQ1m3s9v7A',
+              },
+            },
+            passwordGrant: {
+              summary: 'User login with username/password',
+              value: {
+                grant_type: 'password',
+                client_id: defaultClientId,
+                username: 'admin',
+                password: 'admin',
+              },
+            },
+            clientCredentialsGrant: {
+              summary: 'Service account login',
+              value: {
+                grant_type: 'client_credentials',
+                client_id: defaultClientId,
+                client_secret: 'your-client-secret',
+              },
+            },
+            refreshTokenGrant: {
+              summary: 'Refresh access token',
+              value: {
+                grant_type: 'refresh_token',
+                client_id: defaultClientId,
+                refresh_token: 'your-refresh-token',
+              },
+            },
+          },
+        },
+      },
+    },
+    responses: {
+      '200': {
+        description: 'Token issued by Keycloak.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              required: ['access_token', 'token_type', 'expires_in'],
+              properties: {
+                access_token: { type: 'string' },
+                expires_in: { type: 'number' },
+                refresh_expires_in: { type: 'number' },
+                refresh_token: { type: 'string' },
+                token_type: { type: 'string', example: 'Bearer' },
+                id_token: { type: 'string' },
+                'not-before-policy': { type: 'number' },
+                session_state: { type: 'string' },
+                scope: { type: 'string' },
+              },
+            },
+            example: {
+              access_token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
+              expires_in: 300,
+              refresh_expires_in: 1800,
+              refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+              token_type: 'Bearer',
+              id_token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjQxNmQifQ...',
+              'not-before-policy': 0,
+              session_state: 'f0f4e9a0-2e06-4f66-94af-0d2d68ab4ac4',
+              scope: 'openid profile email',
+            },
+          },
+        },
+      },
+      '400': {
+        description: 'Invalid grant or malformed request body.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string' },
+                error_description: { type: 'string' },
+              },
+            },
+            example: {
+              error: 'invalid_grant',
+              error_description: 'Invalid user credentials',
+            },
+          },
+        },
+      },
+      '401': {
+        description: 'Client authentication failed.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string' },
+                error_description: { type: 'string' },
+              },
+            },
+            example: {
+              error: 'unauthorized_client',
+              error_description:
+                'Invalid client credentials or client is not allowed',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  paths[KEYCLOAK_LOGIN_PATH] = pathItem;
+}
+
 export function setupSwagger(app: INestApplication): void {
   const configService = app.get(ConfigService);
   const apiPrefix = normalizePath(
@@ -756,10 +1014,11 @@ export function setupSwagger(app: INestApplication): void {
 
 **Response envelope:** All HTTP responses return a standard envelope: \`success\`, \`message\`, \`data\`, \`error\`, and \`meta\` (\`timestamp\`, \`requestId\`, \`version\`, with optional \`pagination\`).
 
+**Browser auth cookies:** \`kc_access\` is the primary authentication artifact for browser requests. \`kc_refresh\` is used only for refresh rotation. \`kc_id\` is optional and never authorizes API requests.
+
 \n\n${exportLinks}`,
     )
     .setVersion('1.0.0')
-    .addServer(`/${apiPrefix}`, 'Versioned API base path')
     .addBearerAuth(
       {
         type: 'http',
@@ -768,6 +1027,16 @@ export function setupSwagger(app: INestApplication): void {
         description: 'Keycloak access token',
       },
       SWAGGER_BEARER_AUTH_NAME,
+    )
+    .addCookieAuth(
+      'kc_access',
+      {
+        type: 'apiKey',
+        in: 'cookie',
+        description:
+          'Primary browser auth cookie. kc_refresh is refresh-only and kc_id is optional identity/logout support.',
+      },
+      SWAGGER_COOKIE_AUTH_NAME,
     );
 
   for (const tag of SWAGGER_TAGS) {
@@ -780,7 +1049,23 @@ export function setupSwagger(app: INestApplication): void {
       `${controllerKey.replace(/Controller$/, '')}_${methodKey}`.toLowerCase(),
   });
 
+  document.servers = [
+    {
+      url: resolveApiServerUrl(document, apiPrefix),
+      description: 'Application origin',
+    },
+  ];
+
   enforceUnifiedSchemas(document);
+  addKeycloakLoginOperation(
+    document,
+    configService.get<string>('KEYCLOAK_URL', DEFAULT_KEYCLOAK_BASE_URL),
+    configService.get<string>('KEYCLOAK_REALM', DEFAULT_KEYCLOAK_REALM),
+    configService.get<string>(
+      'KEYCLOAK_AUTH_CLIENT_ID',
+      DEFAULT_KEYCLOAK_CLIENT_ID,
+    ),
+  );
 
   SwaggerModule.setup(docsPath, app, document, {
     useGlobalPrefix: true,

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Enhanced Production Deployment Script for BLIH System
+# Includes comprehensive validation, rollback, and monitoring
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
@@ -11,16 +14,39 @@ PREVIOUS_RELEASE_FILE="${PREVIOUS_RELEASE_FILE:-previous-release.env}"
 COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-blih-system-prod}"
 export COMPOSE_PROJECT_NAME
 
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+log_info() {
+  echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+log_error() {
+  echo -e "${RED}[ERROR]${NC} $1"
+}
+
+log_step() {
+  echo -e "${BLUE}[STEP]${NC} $1"
+}
+
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
-    echo "Missing required command: $1"
+    log_error "Missing required command: $1"
     exit 1
   fi
 }
 
 require_file() {
   if [[ ! -f "$1" ]]; then
-    echo "Missing required file: $1"
+    log_error "Missing required file: $1"
     exit 1
   fi
 }
@@ -28,8 +54,70 @@ require_file() {
 require_env() {
   local name="$1"
   if [[ -z "${!name:-}" ]]; then
-    echo "Missing required environment variable: $name"
+    log_error "Missing required environment variable: $name"
     exit 1
+  fi
+}
+
+validate_environment() {
+  log_step "Validating environment configuration..."
+  
+  # Check required environment variables
+  require_env "API_IMAGE"
+  require_env "API_MIGRATOR_IMAGE"
+  require_env "KEYCLOAK_IMAGE"
+  require_env "GHCR_USERNAME"
+  require_env "GHCR_TOKEN"
+  
+  # Validate port configuration
+  if [[ -n "${API_PORT:-}" ]]; then
+    if [[ "$API_PORT" -lt 1024 || "$API_PORT" -gt 65535 ]]; then
+      log_error "Invalid API port: $API_PORT (must be 1024-65535)"
+      exit 1
+    fi
+    log_info "API port configured: $API_PORT"
+  fi
+  
+  # Check if ports are available (basic check)
+  if command -v netstat >/dev/null 2>&1; then
+    if netstat -tuln | grep -q ":${API_PORT:-5000} "; then
+      log_warn "Port ${API_PORT:-5000} appears to be in use"
+    fi
+  fi
+}
+
+pre_deployment_checks() {
+  log_step "Running pre-deployment checks..."
+  
+  # Check Docker daemon
+  if ! docker info >/dev/null 2>&1; then
+    log_error "Docker daemon is not running"
+    exit 1
+  fi
+  
+  # Check available disk space
+  AVAILABLE_SPACE=$(df . | tail -1 | awk '{print $4}')
+  REQUIRED_SPACE=2097152 # 2GB in KB
+  if [[ "$AVAILABLE_SPACE" -lt "$REQUIRED_SPACE" ]]; then
+    log_error "Insufficient disk space. Required: 2GB, Available: $((AVAILABLE_SPACE/1024/1024))GB"
+    exit 1
+  fi
+  
+  # Check Docker Compose version
+  if ! docker compose version >/dev/null 2>&1; then
+    log_error "Docker Compose is not available or version is incompatible"
+    exit 1
+  fi
+  
+  log_info "Pre-deployment checks passed"
+}
+
+backup_current_release() {
+  log_step "Backing up current release..."
+  
+  if [[ -f "$RELEASE_FILE" ]]; then
+    cp "$RELEASE_FILE" "$PREVIOUS_RELEASE_FILE"
+    log_info "Current release backed up to $PREVIOUS_RELEASE_FILE"
   fi
 }
 
@@ -40,16 +128,17 @@ API_MIGRATOR_IMAGE=${API_MIGRATOR_IMAGE}
 KEYCLOAK_IMAGE=${KEYCLOAK_IMAGE}
 GIT_SHA=${GIT_SHA:-unknown}
 DEPLOYED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+API_PORT=${API_PORT:-5000}
 EOF
 }
 
 rollback() {
   if [[ ! -f "$PREVIOUS_RELEASE_FILE" ]]; then
-    echo "No previous release marker found. Rollback not available."
+    log_error "No previous release marker found. Rollback not available."
     return 1
   fi
 
-  echo "Starting rollback using $PREVIOUS_RELEASE_FILE"
+  log_step "Starting rollback using $PREVIOUS_RELEASE_FILE"
   # shellcheck disable=SC1090
   source "$PREVIOUS_RELEASE_FILE"
 
@@ -59,65 +148,126 @@ rollback() {
   export API_IMAGE
   export KEYCLOAK_IMAGE
 
+  log_info "Pulling previous images..."
   docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
+  
+  log_info "Starting previous containers..."
   docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
-  ./healthcheck.sh
-  cp "$PREVIOUS_RELEASE_FILE" "$RELEASE_FILE"
-  echo "Rollback finished successfully."
+  
+  log_info "Running health checks..."
+  if ./healthcheck.sh; then
+    cp "$PREVIOUS_RELEASE_FILE" "$RELEASE_FILE"
+    log_info "Rollback finished successfully ✅"
+  else
+    log_error "Rollback health checks failed"
+    return 1
+  fi
 }
 
-require_cmd docker
-require_cmd curl
-require_file "$COMPOSE_FILE"
-require_file "$ENV_FILE"
+cleanup_docker_resources() {
+  log_step "Cleaning up Docker resources..."
+  
+  # Remove unused images
+  docker image prune -f >/dev/null 2>&1 || true
+  
+  # Remove unused containers
+  docker container prune -f >/dev/null 2>&1 || true
+  
+  # Remove unused networks (except blih-network)
+  docker network prune -f --filter "name!=blih-network" >/dev/null 2>&1 || true
+  
+  log_info "Docker cleanup completed"
+}
 
-require_env API_IMAGE
-require_env API_MIGRATOR_IMAGE
-require_env KEYCLOAK_IMAGE
-require_env GHCR_USERNAME
-require_env GHCR_TOKEN
-
-if [[ -f "$RELEASE_FILE" ]]; then
-  cp "$RELEASE_FILE" "$PREVIOUS_RELEASE_FILE"
-fi
-
-echo "Logging in to GHCR"
-printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-
-export API_IMAGE
-export API_MIGRATOR_IMAGE
-export KEYCLOAK_IMAGE
-
-echo "Pulling release images"
-docker pull "$API_IMAGE"
-docker pull "$API_MIGRATOR_IMAGE"
-docker pull "$KEYCLOAK_IMAGE"
-
-deploy_ok=false
-if docker run --rm --env-file "$ENV_FILE" "$API_MIGRATOR_IMAGE"; then
-  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans; then
-    if ./healthcheck.sh; then
-      deploy_ok=true
-    fi
+# Main deployment function
+deploy() {
+  log_info "Starting BLIH Production Deployment"
+  log_info "=================================="
+  
+  # Validation
+  validate_environment
+  pre_deployment_checks
+  backup_current_release
+  
+  # Login to registry
+  log_step "Logging in to GitHub Container Registry..."
+  printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+  
+  # Export variables for compose
+  export API_IMAGE
+  export API_MIGRATOR_IMAGE
+  export KEYCLOAK_IMAGE
+  
+  # Pull images
+  log_step "Pulling release images..."
+  docker pull "$API_IMAGE"
+  docker pull "$API_MIGRATOR_IMAGE"
+  docker pull "$KEYCLOAK_IMAGE"
+  
+  # Run database migrations
+  log_step "Running database migrations..."
+  if docker run --rm --env-file "$ENV_FILE" --network blih-network "$API_MIGRATOR_IMAGE"; then
+    log_info "Database migrations completed successfully"
+  else
+    log_error "Database migrations failed"
+    return 1
   fi
-fi
+  
+  # Start services
+  log_step "Starting production services..."
+  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans; then
+    log_info "Services started successfully"
+  else
+    log_error "Failed to start services"
+    return 1
+  fi
+  
+  # Health checks
+  log_step "Running comprehensive health checks..."
+  if ./healthcheck.sh; then
+    log_info "Health checks passed ✅"
+    deploy_ok=true
+  else
+    log_error "Health checks failed"
+    deploy_ok=false
+  fi
+  
+  # Post-deployment actions
+  if [[ "$deploy_ok" == true ]]; then
+    write_release_file
+    cleanup_docker_resources
+    docker logout ghcr.io >/dev/null 2>&1 || true
+    
+    log_info "=================================="
+    log_info "Deployment completed successfully ✅"
+    log_info "API is running on port: ${API_PORT:-5000}"
+    log_info "Deployed at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+    exit 0
+  fi
+}
 
-if [[ "$deploy_ok" == true ]]; then
-  write_release_file
-
-  echo "Cleaning up unused Docker resources..."
-  docker system prune -af || true
-
+# Rollback on failure
+handle_failure() {
+  log_error "Deployment failed, attempting automatic rollback..."
+  rollback || true
+  cleanup_docker_resources
   docker logout ghcr.io >/dev/null 2>&1 || true
-  echo "Deployment completed successfully."
-  exit 0
-fi
+  exit 1
+}
 
-echo "Deployment failed, attempting automatic rollback."
-rollback || true
+# Main execution
+main() {
+  require_cmd docker
+  require_cmd curl
+  require_file "$COMPOSE_FILE"
+  require_file "$ENV_FILE"
+  
+  # Set up error handling
+  trap handle_failure ERR
+  
+  # Execute deployment
+  deploy
+}
 
-echo "Cleaning up unused Docker resources..."
-docker system prune -af || true
-
-docker logout ghcr.io >/dev/null 2>&1 || true
-exit 1
+# Execute main function
+main "$@"
