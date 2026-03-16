@@ -14,7 +14,7 @@ services:
       KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       DATABASE_URL: ${DATABASE_URL}
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/init-scripts:/docker-entrypoint-initdb.d:ro
@@ -36,9 +36,11 @@ services:
       KC_DB_URL: ${KEYCLOAK_DB_URL:-jdbc:postgresql://postgres:5432/keycloak}
       KC_DB_USERNAME: ${KEYCLOAK_DB_USERNAME:-postgres}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-admin1234}
-      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED:-true}
-      KC_HOSTNAME_STRICT: ${KC_HOSTNAME_STRICT:-false}
-      KC_HOSTNAME_STRICT_HTTPS: ${KC_HOSTNAME_STRICT_HTTPS:-false}
+      KC_HOSTNAME: keycloak.blihmarketing.com
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: 'true'
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
       BLIH_KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
     ports:
       - '${KEYCLOAK_PORT:-127.0.0.1:8080:8080}'
@@ -72,13 +74,14 @@ services:
       API_HOST: 0.0.0.0
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-admin1234}@postgres:5432/${API_DB_NAME:-blih-system}
       KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_JWKS_URL: http://keycloak:8080/realms/${KEYCLOAK_REALM:-blih}/protocol/openid-connect/certs
-      JWT_EXPECTED_ISSUER: http://keycloak:8080/realms/${KEYCLOAK_REALM:-blih}
+      KEYCLOAK_JWKS_URL: https://keycloak.blihmarketing.com/realms/${KEYCLOAK_REALM:-blih}/protocol/openid-connect/certs
+      JWT_EXPECTED_ISSUER: https://keycloak.blihmarketing.com/realms/${KEYCLOAK_REALM:-blih}
       RABBITMQ_ENABLED: 'false'
       SMTP_ENABLED: 'true'
       SMTP_HOST: mailhog
       SMTP_PORT: 1025
       SMTP_SECURE: 'false'
+    command: ['node', 'apps/api/dist/apps/api/src/main']
     ports:
       - '5000:5000'
     depends_on:
