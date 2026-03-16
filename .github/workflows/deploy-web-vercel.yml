@@ -32,9 +32,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.TEAM_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  VERCEL_TOKEN: ${{ secrets.CICD_ID }}
 
 jobs:
   preview:
