@@ -4,8 +4,6 @@ import { QdrantVectorStore } from '@langchain/qdrant';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
-import { AIMessage } from '@langchain/core/messages';
-
 
 interface CvAnalysisResult {
   score?: number;
@@ -133,7 +131,7 @@ export class RagService {
       model: 'llava:7b',
     });
 
-    const response = await visionModel.invoke([
+    const response = (await visionModel.invoke([
       {
         role: 'user',
         content: [
@@ -147,9 +145,9 @@ export class RagService {
           },
         ],
       },
-    ]) as AIMessage;
+    ])) as { content: string };
 
-    return { description: response.content as string };
+    return { description: response.content };
   }
   transcribeAudio(fileBuffer: Buffer): Promise<{ text: string }> {
     this.logger.warn(
@@ -218,9 +216,9 @@ ${question}
 ### ANSWER (Concise and Accurate):
     `;
 
-    const response = await this.llm.invoke(prompt);
+    const response = (await this.llm.invoke(prompt)) as { content: string };
     return {
-      answer: response.content as string,
+      answer: response.content,
       sources: relevantDocs.map((d) => d.metadata.source),
     };
   }
@@ -278,12 +276,15 @@ ${cvText}
     ]);
 
     try {
-      const content = response.content as string;
+      const responseTyped = response as { content: string };
+      const content = responseTyped.content;
 
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       const jsonString = jsonMatch ? jsonMatch[0] : content;
 
-      const result: CvAnalysisResult = JSON.parse(jsonString);
+      const result: CvAnalysisResult = JSON.parse(
+        jsonString,
+      ) as CvAnalysisResult;
 
       return {
         score: Number(result.score ?? 0),
