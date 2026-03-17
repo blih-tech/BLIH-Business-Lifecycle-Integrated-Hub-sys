@@ -1,18 +1,15 @@
-import {
-  BriefcaseBusiness,
-  CalendarClock,
-  CircleDollarSign,
-  MapPin,
-  ShieldCheck,
-  UserRound,
-} from "lucide-react";
+﻿'use client';
+
+import { ChevronUp, Clock, Pencil } from 'lucide-react';
+import { useState } from 'react';
 
 import type {
   ApprovalProgressState,
   FullJobRequest,
   JobRequestDepartment,
-} from "@/features/hr/recruitment/requests/types";
-import { Button } from "@/shared/components/ui/button";
+} from '@/features/hr/recruitment/requests/types';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -20,375 +17,557 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
+} from '@/shared/components/ui/dialog';
+
+type JobRequestDetailsVariant = 'active' | 'by_me' | 'closed' | 'posted';
 
 type JobRequestDetailsDialogProps = {
   request: FullJobRequest | null;
   currentUserName: string;
+  variant?: JobRequestDetailsVariant;
   onOpenChange: (isOpen: boolean) => void;
   onApprove: () => void;
   onJustify: () => void;
+  onEdit?: () => void;
 };
 
-type OverviewStatProps = {
-  icon: typeof BriefcaseBusiness;
-  label: string;
-  value: string;
+type EmployeeCardProps = {
+  name: string;
+  role?: string;
+  department?: string;
+  variant?: 'stacked' | 'inline';
 };
 
-type InfoItemProps = {
-  label: string;
-  value: string;
-};
-
-type ListSectionProps = {
-  title: string;
+type BulletListProps = {
   items: string[];
+};
+
+type InfoBlockProps = {
+  label: string;
+  value: string;
+  valueBadge?: boolean;
 };
 
 function formatRichText(value: string) {
   const trimmedValue = value.trim();
-  if (!trimmedValue) return "";
+  if (!trimmedValue) return '';
   if (/<[a-z][\s\S]*>/i.test(trimmedValue)) return trimmedValue;
 
   return trimmedValue
     .split(/\n{2,}/)
-    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br />")}</p>`)
-    .join("");
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, '<br />')}</p>`)
+    .join('');
 }
 
 function departmentLabel(department: JobRequestDepartment) {
-  if (department === "technical") return "TECHNICAL DEPT.";
-  if (department === "creative") return "CREATIVE DEPT.";
-  return "DIGITAL MARKETING DEPT.";
+  if (department === 'technical') return 'TECHNICAL DEPT.';
+  if (department === 'creative') return 'CREATIVE DEPT.';
+  return 'DIGITAL MARKETING DEPT.';
 }
 
-function employmentTypeLabel(value: FullJobRequest["jobDetailsForm"]["employmentType"]) {
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
-  return "Intern";
+function employmentTypeLabel(
+  value: FullJobRequest['jobDetailsForm']['employmentType'],
+) {
+  if (value === 'full_time') return 'Full-time';
+  if (value === 'part_time') return 'Part-time';
+  if (value === 'contract') return 'Contract';
+  return 'Intern';
 }
 
-function workModeLabel(value: FullJobRequest["jobDetailsForm"]["workMode"]) {
-  if (value === "on_site") return "On-site";
-  if (value === "hybrid") return "Hybrid";
-  return "Remote";
-}
-
-function requestTypeLabel(value: FullJobRequest["requestForm"]["requestType"]) {
-  if (value === "replacement") return "Replacement";
-  return "New Role";
-}
-
-function urgencyLabel(value: FullJobRequest["requestForm"]["urgency"]) {
-  if (value === "high") return "High";
-  if (value === "medium") return "Medium";
-  return "Low";
-}
-
-function urgencyClass(value: FullJobRequest["requestForm"]["urgency"]) {
-  if (value === "high") return "border-primary/15 bg-primary/10 text-primary";
-  if (value === "medium") return "border-border bg-muted text-foreground";
-  return "border-border bg-muted text-muted-foreground";
-}
-
-function progressLabel(status: ApprovalProgressState) {
-  if (status === "approved") return "Approved";
-  if (status === "requested_review") return "Review Requested";
-  if (status === "rejected") return "Rejected";
-  return "Pending";
-}
-
-function progressClass(status: ApprovalProgressState) {
-  if (status === "approved") return "border-emerald-200 bg-emerald-50 text-emerald-800";
-  if (status === "requested_review") return "border-amber-200 bg-amber-50 text-amber-800";
-  if (status === "rejected") return "border-red-200 bg-red-50 text-red-800";
-  return "border-border bg-muted text-muted-foreground";
-}
-
-function salaryLabel(request: FullJobRequest) {
-  const { salaryMode, salaryRangeMin, salaryRangeMax, salaryCurrency } = request.jobDetailsForm;
-  if (salaryMode === "negotiable") return "Negotiable";
-  if (salaryMode === "competitive") return "Competitive";
-  if (salaryMode === "fixed") return `${salaryCurrency} ${salaryRangeMin}`;
-  if (salaryMode === "range") return `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`;
-  return "Not specified";
-}
-
-function isOwnRequest(requestedBy: string, currentUserName: string) {
-  return requestedBy.trim().toLowerCase() === currentUserName.trim().toLowerCase();
+function urgencyLabel(value: FullJobRequest['requestForm']['urgency']) {
+  if (value === 'high') return 'High';
+  if (value === 'medium') return 'Medium';
+  return 'Low';
 }
 
 function formatValue(value: string) {
   return value
-    .split("_")
+    .split('_')
     .map((part) => (part ? part[0]!.toUpperCase() + part.slice(1) : part))
-    .join(" ");
+    .join(' ');
 }
 
-function OverviewStat({ icon: Icon, label, value }: OverviewStatProps) {
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const initials = parts.slice(0, 2).map((part) => part[0]!.toUpperCase());
+  return initials.join('') || '--';
+}
+
+function formatPositions(openings?: string) {
+  if (!openings) return '1 Position';
+  const numeric = Number(openings);
+  if (Number.isNaN(numeric) || numeric <= 0) return openings;
+  return `${numeric} Position${numeric === 1 ? '' : 's'}`;
+}
+
+function EmployeeCard({
+  name,
+  role,
+  department,
+  variant = 'inline',
+}: EmployeeCardProps) {
   return (
-    <div className="rounded-xl border border-border/70 bg-background px-3 py-3">
-      <div className="flex items-start gap-2.5">
-        <div className="rounded-lg border border-border bg-muted/60 p-2 text-muted-foreground">
-          <Icon className="h-4 w-4" />
-        </div>
-        <div className="min-w-0">
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            {label}
+    <div
+      className={`flex items-center gap-2 ${variant === 'stacked' ? 'items-start' : ''}`}
+    >
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e66f7] text-sm font-semibold text-white">
+        {getInitials(name)}
+      </div>
+      <div
+        className={
+          variant === 'stacked' ? 'space-y-1' : 'flex items-center gap-2'
+        }
+      >
+        <div className={variant === 'stacked' ? 'space-y-0.5' : ''}>
+          <p className="text-sm font-semibold tracking-[-0.2px] text-black">
+            {name}
           </p>
-          <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
+          {role ? <p className="text-[12px] text-[#666]">{role}</p> : null}
         </div>
-      </div>
-    </div>
-  );
-}
-
-function InfoItem({ label, value }: InfoItemProps) {
-  return (
-    <div className="space-y-1 rounded-lg border border-border/70 bg-background px-3 py-3">
-      <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="text-sm font-medium text-foreground">{value}</p>
-    </div>
-  );
-}
-
-function ListSection({ title, items }: ListSectionProps) {
-  return (
-    <section className="space-y-3 rounded-2xl border border-border/70 bg-card px-4 py-4">
-      <div>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-      </div>
-      <div className="grid gap-2">
-        {items.map((item) => (
-          <div
-            key={`${title}-${item}`}
-            className="rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground"
+        {department ? (
+          <Badge
+            variant="secondary"
+            className="rounded-[4px] bg-[#e9f0fe] px-1.5 py-0.5 text-[12px] font-semibold uppercase text-[#1e66f7]"
           >
-            {item}
-          </div>
-        ))}
+            {department}
+          </Badge>
+        ) : null}
       </div>
-    </section>
+    </div>
+  );
+}
+
+function BulletList({ items }: BulletListProps) {
+  if (items.length === 0) {
+    return <p className="text-sm text-[#666]">No details provided.</p>;
+  }
+
+  return (
+    <ul className="space-y-1">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="relative pl-4 text-sm text-[#666] before:absolute before:left-0 before:text-[#1e66f7] before:content-['•']"
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function InfoBlock({ label, value, valueBadge }: InfoBlockProps) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[12px] text-[#666]">{label}</p>
+      {valueBadge ? (
+        <Badge
+          variant="outline"
+          className="rounded-[6px] border-[#1e66f7] px-2 py-0.5 text-[12px] font-medium text-[#1e66f7]"
+        >
+          {value}
+        </Badge>
+      ) : (
+        <p className="text-sm tracking-[-0.2px] text-black">{value}</p>
+      )}
+    </div>
   );
 }
 
 export function JobRequestDetailsDialog({
   request,
   currentUserName,
+  variant,
   onOpenChange,
   onApprove,
   onJustify,
+  onEdit,
 }: JobRequestDetailsDialogProps) {
-  const ownRequest = request ? isOwnRequest(request.requestForm.requestedBy, currentUserName) : false;
+  const [isCommitteeOpen, setIsCommitteeOpen] = useState(true);
+  const [isRevisionsOpen, setIsRevisionsOpen] = useState(true);
+  const [isApprovedOpen, setIsApprovedOpen] = useState(true);
+  const dialogVariant = variant ?? 'active';
+  const ownRequest = request
+    ? request.requestForm.requestedBy.trim().toLowerCase() ===
+      currentUserName.trim().toLowerCase()
+    : false;
+
+  const hiringCommittee = request
+    ? [
+        {
+          name: request.requestForm.requestedBy,
+          role: formatValue(request.requestForm.position),
+          department: departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          ),
+        },
+      ]
+    : [];
+
+  const revisionSources = request
+    ? (
+        Object.entries(request.progress) as [
+          string,
+          { status: ApprovalProgressState },
+        ][]
+      )
+        .filter(
+          ([, step]) =>
+            step.status === 'requested_review' || step.status === 'rejected',
+        )
+        .map(([key]) => ({
+          name: `${key.toUpperCase()} Reviewer`,
+          role: 'Review Team',
+          department: departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          ),
+        }))
+    : [];
+
+  const approvedBy = request
+    ? (
+        Object.entries(request.progress) as [
+          string,
+          { status: ApprovalProgressState },
+        ][]
+      )
+        .filter(([, step]) => step.status === 'approved')
+        .map(([key]) => ({
+          name: `${key.toUpperCase()} Approver`,
+          role: 'Approval Team',
+          department: departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          ),
+        }))
+    : [];
 
   return (
     <Dialog open={request !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[88vh] w-[97vw] overflow-y-auto p-0 sm:max-w-[1080px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2">
+      <DialogContent className="max-h-[88vh] w-[96vw] overflow-y-auto rounded-[24px] border border-[#e5e5e5] bg-white p-0 sm:max-w-[920px] [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
         {request ? (
           <>
-            <DialogHeader className="border-b border-border/70 bg-muted/20 px-5 py-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex rounded-md border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-foreground">
-                      {departmentLabel(request.requestForm.department as JobRequestDepartment)}
-                    </span>
-                    <span
-                      className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] font-medium ${urgencyClass(
-                        request.requestForm.urgency,
-                      )}`}
-                    >
-                      {urgencyLabel(request.requestForm.urgency)} Priority
-                    </span>
-                    <span className="inline-flex rounded-md border border-border bg-background px-2 py-0.5 text-[11px] text-muted-foreground">
-                      {request.status === "posted" ? "Posted" : "Pending"}
-                    </span>
-                  </div>
-                  <div>
-                    <DialogTitle className="text-xl font-semibold tracking-tight text-foreground">
+            <DialogHeader className="p-6">
+              <div className="flex w-full flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0 flex-1 space-y-4">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
                       {request.jobDetailsForm.jobTitle}
                     </DialogTitle>
-                    <DialogDescription className="mt-1 text-sm text-muted-foreground">
-                      {request.jobDetailsForm.location} · {employmentTypeLabel(request.jobDetailsForm.employmentType)} ·{" "}
-                      {workModeLabel(request.jobDetailsForm.workMode)}
-                    </DialogDescription>
+                    <Badge
+                      variant="outline"
+                      className="rounded-[4px] border-[#1e66f7] px-2 py-0.5 text-[12px] font-medium text-[#1e66f7]"
+                    >
+                      {formatValue(request.jobDetailsForm.experienceLevel)}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-6 text-sm text-[#666]">
+                    <Badge
+                      variant="secondary"
+                      className="rounded-[4px] bg-[#e9f0fe] px-1.5 py-0.5 text-[12px] font-semibold uppercase text-[#1e66f7]"
+                    >
+                      {departmentLabel(
+                        request.requestForm.department as JobRequestDepartment,
+                      )}
+                    </Badge>
+                    <span>
+                      {employmentTypeLabel(
+                        request.jobDetailsForm.employmentType,
+                      )}
+                    </span>
+                    <span>{formatPositions(request.requestForm.openings)}</span>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-                <OverviewStat
-                  icon={CalendarClock}
-                  label="Needed By"
-                  value={request.requestForm.neededByDate}
-                />
-                <OverviewStat
-                  icon={CircleDollarSign}
-                  label="Salary"
-                  value={salaryLabel(request)}
-                />
-                <OverviewStat
-                  icon={MapPin}
-                  label="Location"
-                  value={request.jobDetailsForm.location}
-                />
-                <OverviewStat
-                  icon={UserRound}
-                  label="Requested By"
-                  value={request.requestForm.requestedBy}
-                />
+                {dialogVariant === 'by_me' ? (
+                  <div className="ml-auto flex items-center gap-2 rounded-[8px] bg-[#e9f0fe] px-3 py-2">
+                    <Clock className="h-4 w-4 text-[#1e66f7]" />
+                    <span className="text-sm tracking-[-0.2px] text-black">
+                      Waiting other approvals
+                    </span>
+                  </div>
+                ) : null}
+                {dialogVariant === 'closed' ? (
+                  <div className="flex h-[22px] items-center rounded-[4px] bg-black px-2 py-0.5">
+                    <span className="text-[12px] font-medium text-white">
+                      Declined
+                    </span>
+                  </div>
+                ) : null}
               </div>
             </DialogHeader>
 
-            <div className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="space-y-4">
-                <section className="rounded-2xl border border-border/70 bg-card px-4 py-4">
-                  <div className="mb-3">
-                    <p className="text-sm font-semibold text-foreground">Request Overview</p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Internal request context and hiring setup.
-                    </p>
-                  </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <InfoItem label="Position" value={formatValue(request.requestForm.position)} />
-                    <InfoItem label="Request Type" value={requestTypeLabel(request.requestForm.requestType)} />
-                    <InfoItem label="Department" value={departmentLabel(request.requestForm.department as JobRequestDepartment)} />
-                    <InfoItem label="Experience Level" value={formatValue(request.jobDetailsForm.experienceLevel)} />
-                    <InfoItem label="Employment Type" value={employmentTypeLabel(request.jobDetailsForm.employmentType)} />
-                    <InfoItem label="Work Mode" value={workModeLabel(request.jobDetailsForm.workMode)} />
-                    {request.requestForm.requestType === "replacement" ? (
-                      <InfoItem label="Replace For" value={request.requestForm.replaceFor || "Not provided"} />
-                    ) : null}
-                  </div>
-                </section>
+            <div className="border-t border-[#e5e5e5]" />
 
-                <section className="rounded-2xl border border-border/70 bg-card px-4 py-4">
-                  <div className="mb-3">
-                    <p className="text-sm font-semibold text-foreground">Role Details</p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Public-facing information for the job post.
-                    </p>
+            <div className="grid gap-6 p-6">
+              <section className="rounded-[8px] bg-[#f3f3f3] p-4">
+                <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                  Job Request Details
+                </p>
+                <div className="mt-4 grid gap-4 md:grid-cols-3">
+                  <div className="space-y-4">
+                    <InfoBlock
+                      label="Priority"
+                      value={urgencyLabel(request.requestForm.urgency)}
+                      valueBadge
+                    />
+                    <InfoBlock
+                      label="Date Requested"
+                      value={request.requestForm.createdDate || 'Not set'}
+                    />
                   </div>
                   <div className="space-y-4">
-                    <div className="rounded-xl border border-border/70 bg-background px-3 py-3">
-                      <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                        Job Summary
-                      </p>
-                      <div
-                        className="mt-2 space-y-2 text-sm leading-6 text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5"
+                    <InfoBlock
+                      label="Due Date"
+                      value={request.requestForm.neededByDate}
+                    />
+                    <InfoBlock
+                      label="Expected Date"
+                      value={request.requestForm.neededByDate}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[12px] text-[#666]">Requested By</p>
+                    <EmployeeCard
+                      name={request.requestForm.requestedBy}
+                      role={formatValue(request.requestForm.position)}
+                      department={departmentLabel(
+                        request.requestForm.department as JobRequestDepartment,
+                      )}
+                      variant="stacked"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Job Overview
+                    </p>
+                    <DialogDescription className="text-sm leading-5 text-[#666]">
+                      <span
                         dangerouslySetInnerHTML={{
-                          __html: formatRichText(request.jobDetailsForm.jobSummary),
+                          __html: formatRichText(
+                            request.jobDetailsForm.jobSummary,
+                          ),
                         }}
                       />
-                    </div>
-
+                    </DialogDescription>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Requirements
+                    </p>
+                    <BulletList items={request.jobDetailsForm.requirements} />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Qualifications
+                    </p>
+                    <BulletList
+                      items={request.jobDetailsForm.keyResponsibilities}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Importance of this Hire
+                    </p>
+                    <p className="text-sm leading-5 text-[#666]">
+                      {request.requestForm.businessJustification}
+                    </p>
                     {request.jobDetailsForm.whyJoinUs ? (
-                      <div className="rounded-xl border border-border/70 bg-background px-3 py-3">
-                        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                          Why Join Us
-                        </p>
-                        <p className="mt-2 text-sm leading-6 text-foreground">
-                          {request.jobDetailsForm.whyJoinUs}
-                        </p>
-                      </div>
+                      <p className="text-sm leading-5 text-[#666]">
+                        {request.jobDetailsForm.whyJoinUs}
+                      </p>
                     ) : null}
-
-                    <div className="grid gap-4 xl:grid-cols-2">
-                      <ListSection title="Key Responsibilities" items={request.jobDetailsForm.keyResponsibilities} />
-                      <ListSection title="Requirements" items={request.jobDetailsForm.requirements} />
-                    </div>
-
-                    <div className="grid gap-4 xl:grid-cols-2">
-                      {request.jobDetailsForm.preferredSkills.length > 0 ? (
-                        <ListSection title="Preferred Skills" items={request.jobDetailsForm.preferredSkills} />
-                      ) : null}
-                      {request.jobDetailsForm.benefits.length > 0 ? (
-                        <ListSection title="Benefits" items={request.jobDetailsForm.benefits} />
-                      ) : null}
-                    </div>
                   </div>
-                </section>
-              </div>
+                </div>
+              </section>
 
-              <div className="space-y-4">
-                <section className="rounded-2xl border border-border/70 bg-card px-4 py-4">
-                  <div className="mb-3 flex items-start gap-2.5">
-                    <div className="rounded-lg border border-border bg-muted/60 p-2 text-muted-foreground">
-                      <BriefcaseBusiness className="h-4 w-4" />
+              <section className="grid gap-4 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                    onClick={() => setIsCommitteeOpen((prev) => !prev)}
+                  >
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Hiring Committee
+                    </p>
+                    <ChevronUp
+                      className={`h-4 w-4 text-[#1e66f7] ${isCommitteeOpen ? '' : 'rotate-180'}`}
+                    />
+                  </button>
+                  {isCommitteeOpen ? (
+                    <div className="space-y-3">
+                      {hiringCommittee.map((member) => (
+                        <EmployeeCard
+                          key={member.name}
+                          name={member.name}
+                          role={member.role}
+                          department={member.department}
+                        />
+                      ))}
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">Business Justification</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Reason for opening this role.
+                  ) : null}
+                </div>
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                      onClick={() => setIsRevisionsOpen((prev) => !prev)}
+                    >
+                      <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                        Revisions From
                       </p>
-                    </div>
-                  </div>
-                  <p className="text-sm leading-6 text-foreground">
-                    {request.requestForm.businessJustification}
-                  </p>
-                </section>
-
-                <section className="rounded-2xl border border-border/70 bg-card px-4 py-4">
-                  <div className="mb-3 flex items-start gap-2.5">
-                    <div className="rounded-lg border border-border bg-muted/60 p-2 text-muted-foreground">
-                      <ShieldCheck className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">Approval Progress</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Current decision state across the review flow.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    {(["jm", "hr", "finance"] as const).map((key) => {
-                      const step = request.progress[key];
-                      const label = key === "jm" ? "JM" : key === "hr" ? "HR" : "Finance";
-                      return (
-                        <div
-                          key={key}
-                          className="rounded-xl border border-border/70 bg-background px-3 py-3"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <p className="text-sm font-medium text-foreground">{label}</p>
-                            <span
-                              className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] font-medium ${progressClass(step.status)}`}
-                            >
-                              {progressLabel(step.status)}
-                            </span>
-                          </div>
-                          {step.justification ? (
-                            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                              {step.justification}
-                            </p>
-                          ) : null}
+                      <ChevronUp
+                        className={`h-4 w-4 text-[#1e66f7] ${isRevisionsOpen ? '' : 'rotate-180'}`}
+                      />
+                    </button>
+                    {isRevisionsOpen ? (
+                      revisionSources.length > 0 ? (
+                        <div className="space-y-3">
+                          {revisionSources.map((member) => (
+                            <div key={member.name} className="space-y-1">
+                              <EmployeeCard
+                                name={member.name}
+                                role={member.role}
+                                department={member.department}
+                              />
+                              <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
+                                <Clock className="h-3.5 w-3.5 text-[#1e66f7]" />
+                                <span>02:33 PM · Dec 30, 2025</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      );
-                    })}
+                      ) : (
+                        <p className="text-sm text-[#666]">
+                          No revisions requested.
+                        </p>
+                      )
+                    ) : null}
                   </div>
-                </section>
-              </div>
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                      onClick={() => setIsApprovedOpen((prev) => !prev)}
+                    >
+                      <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                        Approved By
+                      </p>
+                      <ChevronUp
+                        className={`h-4 w-4 text-[#1e66f7] ${isApprovedOpen ? '' : 'rotate-180'}`}
+                      />
+                    </button>
+                    {isApprovedOpen ? (
+                      approvedBy.length > 0 ? (
+                        <div className="space-y-3">
+                          {approvedBy.map((member) => (
+                            <div key={member.name} className="space-y-1">
+                              <EmployeeCard
+                                name={member.name}
+                                role={member.role}
+                                department={member.department}
+                              />
+                              <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
+                                <Clock className="h-3.5 w-3.5 text-[#1e66f7]" />
+                                <span>02:33 PM · Dec 30, 2025</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[#666]">No approvals yet.</p>
+                      )
+                    ) : null}
+                  </div>
+                </div>
+              </section>
             </div>
 
-            <DialogFooter className="border-t border-border/70 px-5 py-4">
-              {ownRequest ? (
-                <div className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-                  Waiting for other reviewers to make a decision on this request.
+            <DialogFooter className="gap-3 border-t border-[#e5e5e5] p-6">
+              {dialogVariant === 'active' ? (
+                ownRequest ? (
+                  <div className="w-full rounded-[8px] border border-[#e5e5e5] bg-[#f3f3f3] px-4 py-3 text-sm text-[#666]">
+                    Waiting for other reviewers to make a decision on this
+                    request.
+                  </div>
+                ) : (
+                  <div className="grid w-full gap-3 md:grid-cols-3">
+                    <Button
+                      type="button"
+                      className="h-9 w-full rounded-[6px] bg-[#1e66f7] text-sm text-white hover:bg-[#1b5ce0]"
+                      onClick={onApprove}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
+                      onClick={onJustify}
+                    >
+                      Justify
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
+                      onClick={onEdit}
+                      disabled={!onEdit}
+                    >
+                      <Pencil className="h-4 w-4" />
+                      Edit
+                    </Button>
+                  </div>
+                )
+              ) : null}
+              {dialogVariant === 'by_me' ? (
+                <div className="grid w-full gap-3 md:grid-cols-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 w-full rounded-[6px] border-[#ff3b30] text-sm text-[#ff3b30] hover:bg-[#fff1f0]"
+                  >
+                    Terminate
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
+                    onClick={onEdit}
+                    disabled={!onEdit}
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Edit Job
+                  </Button>
                 </div>
-              ) : (
-                <>
-                  <Button type="button" variant="outline" className="cursor-pointer" onClick={onJustify}>
-                    Justify
+              ) : null}
+              {dialogVariant === 'closed' ? (
+                <div className="grid w-full gap-3 md:grid-cols-2">
+                  <Button
+                    type="button"
+                    className="h-9 w-full rounded-[6px] bg-[#1e66f7] text-sm text-white hover:bg-[#1b5ce0]"
+                  >
+                    Re-Request
                   </Button>
-                  <Button type="button" className="cursor-pointer" onClick={onApprove}>
-                    Approve
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
+                    onClick={onEdit}
+                    disabled={!onEdit}
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Edit Job
                   </Button>
-                </>
-              )}
+                </div>
+              ) : null}
             </DialogFooter>
           </>
         ) : null}

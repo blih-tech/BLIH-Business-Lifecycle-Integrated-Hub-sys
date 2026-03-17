@@ -19,14 +19,27 @@ function createCandidate(candidate: {
   portfolioUrl: string;
   linkedinUrl: string;
   resumeUrl: string;
+  email?: string;
+  experienceYears?: string;
+  dueDate?: string;
+  expectedDate?: string;
+  additionalLink?: string;
   salaryExpectation: string;
   noticePeriod: string;
   location: string;
   summary: string;
+  goodFit?: string;
   strengths: string[];
   concerns: string[];
   recommendation: string;
 }) {
+  const email = candidate.email ?? "applicant@gmail.com";
+  const experienceYears = candidate.experienceYears ?? "3+";
+  const dueDate = candidate.dueDate ?? candidate.listedAt;
+  const expectedDate = candidate.expectedDate ?? candidate.listedAt;
+  const additionalLink = candidate.additionalLink ?? candidate.linkedinUrl;
+  const goodFit = candidate.goodFit ?? candidate.summary;
+
   return {
     id: candidate.id,
     fullName: candidate.fullName,
@@ -34,15 +47,21 @@ function createCandidate(candidate: {
     listedAt: candidate.listedAt,
     rating: candidate.rating,
     answers: [
+      { id: `${candidate.id}-a0`, label: "Due Date", value: dueDate, type: "date" as const },
+      { id: `${candidate.id}-a0b`, label: "Expected Date", value: expectedDate, type: "date" as const },
       { id: `${candidate.id}-a1`, label: "Full Name", value: candidate.fullName, type: "text" as const },
+      { id: `${candidate.id}-a1b`, label: "Email Address", value: email, type: "text" as const },
+      { id: `${candidate.id}-a1c`, label: "Years of Experience on the Field", value: experienceYears, type: "text" as const },
       { id: `${candidate.id}-a2`, label: "Phone Number", value: candidate.phone, type: "text" as const },
       { id: `${candidate.id}-a3`, label: "Current Location", value: candidate.location, type: "text" as const },
       { id: `${candidate.id}-a4`, label: "Salary Expectation", value: candidate.salaryExpectation, type: "number" as const },
       { id: `${candidate.id}-a5`, label: "Notice Period", value: candidate.noticePeriod, type: "text" as const },
       { id: `${candidate.id}-a6`, label: "Portfolio", value: candidate.portfolioUrl, type: "link" as const },
-      { id: `${candidate.id}-a7`, label: "LinkedIn Profile", value: candidate.linkedinUrl, type: "link" as const },
+      { id: `${candidate.id}-a7`, label: "Link to Portfolio", value: candidate.portfolioUrl, type: "link" as const },
+      { id: `${candidate.id}-a7b`, label: "Additional Link", value: additionalLink, type: "link" as const },
       { id: `${candidate.id}-a8`, label: "Resume / CV", value: candidate.resumeUrl, type: "file" as const },
-      { id: `${candidate.id}-a9`, label: "Why Join Us", value: candidate.summary, type: "textarea" as const },
+      { id: `${candidate.id}-a9`, label: "Why Do You Want to Us?", value: candidate.summary, type: "textarea" as const },
+      { id: `${candidate.id}-a10`, label: "What makes You a Good Fit?", value: goodFit, type: "textarea" as const },
     ],
     aiAnalysis: {
       score: candidate.rating,
