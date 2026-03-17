@@ -60,6 +60,7 @@ export function ShortlistedTab({ job }: ShortlistedTabProps) {
 
       <CandidateDetailDialog
         candidate={selectedCandidate}
+        job={job}
         open={selectedCandidate !== null}
         onOpenChange={(open) => {
           if (!open) {

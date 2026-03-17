@@ -249,7 +249,7 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
                         {field.type === 'select' ? (
                           <Select
                             value={typeof value === 'string' ? value : ''}
-                            onValueChange={(nextValue) =>
+                            onValueChange={(nextValue: string) =>
                               setFieldValue(field.key, nextValue)
                             }
                           >

@@ -19,6 +19,8 @@ export const createRequestFormSchema = z
       .string()
       .trim()
       .min(20, "Business justification must be at least 20 characters"),
+    openings: z.string().trim().optional(),
+    createdDate: z.string().trim().optional(),
     employmentType: z.enum(["full_time", "part_time", "contract", "intern"], {
       error: () => "Employment type is required",
     }),
