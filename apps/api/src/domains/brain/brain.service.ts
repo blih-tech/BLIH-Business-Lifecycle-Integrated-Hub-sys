@@ -10,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 import { parseCv } from './utils/cv-parser';
 import { ScreeningRecommendation } from '../../platform/prisma/prisma-client';
+import FormData from 'form-data';
 
 const recommendationMap = {
   SHORTLIST: ScreeningRecommendation.STRONG_RECOMMEND,
@@ -195,14 +196,21 @@ export class BrainService {
 
   private async analyzeImage(imageBuffer: Buffer): Promise<string> {
     const formData = new FormData();
-    const uint8Array = new Uint8Array(imageBuffer);
-    const fileValue = new Blob([uint8Array], { type: 'image/jpeg' });
-    formData.append('file', fileValue, 'image.jpg');
+
+    formData.append('file', imageBuffer, {
+      filename: 'image.jpg',
+      contentType: 'image/jpeg',
+    });
 
     try {
       const response = await firstValueFrom(
-        this.httpService.post(`${this.ragUrl}/ai/vision`, formData),
+        this.httpService.post(`${this.ragUrl}/rag/ai/vision`, formData, {
+          headers: {
+            ...formData.getHeaders(),
+          },
+        }),
       );
+
       return response.data.description;
     } catch (error) {
       this.logger.error(`Vision analysis failed: ${error.message}`);
@@ -218,7 +226,7 @@ export class BrainService {
 
     try {
       const response = await firstValueFrom(
-        this.httpService.post(`${this.ragUrl}/ai/transcribe`, formData),
+        this.httpService.post(`${this.ragUrl}/rag/ai/transcribe`, formData),
       );
       return response.data.text;
     } catch (error) {

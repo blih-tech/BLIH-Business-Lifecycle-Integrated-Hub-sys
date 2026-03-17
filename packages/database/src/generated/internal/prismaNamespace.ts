@@ -12920,6 +12920,7 @@ export type EnumAssetProvisioningStatusFieldRefInput<$PrismaModel> = FieldRefInp
 export type ListEnumAssetProvisioningStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetProvisioningStatus[]'>
     
 
+
 /**
  * Reference to a field of type 'ReviewPeriodType'
  */

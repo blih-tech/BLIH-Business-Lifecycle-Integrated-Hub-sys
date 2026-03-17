@@ -35,6 +35,17 @@ export class RagService {
     });
   }
 
+  private extractAnswer(response: unknown): string {
+    if (response && typeof response === 'object' && 'content' in response) {
+      const content = (response as { content: unknown }).content;
+      if (typeof content === 'string') {
+        return content;
+      }
+    }
+    this.logger.warn('Unexpected Ollama response format - using empty string');
+    return '';
+  }
+
   async clearCollection() {
     try {
       await fetch(`${this.qdrantUrl}/collections/${this.collectionName}`, {
@@ -128,10 +139,10 @@ export class RagService {
 
     const visionModel = new ChatOllama({
       baseUrl: process.env.OLLAMA_BASE_URL,
-      model: 'llava',
+      model: 'llava:7b',
     });
 
-    const response = await visionModel.invoke([
+    const response = (await visionModel.invoke([
       {
         role: 'user',
         content: [
@@ -145,19 +156,19 @@ export class RagService {
           },
         ],
       },
-    ]);
+    ])) as { content: string };
 
-    return { description: response.content as string };
+    return { description: String(response.content) };
   }
   transcribeAudio(fileBuffer: Buffer): Promise<{ text: string }> {
-  this.logger.warn(
-    `Audio transcription called (Buffer size: ${fileBuffer.length}) - ensure Whisper service is configured.`,
-  );
+    this.logger.warn(
+      `Audio transcription called (Buffer size: ${fileBuffer.length}) - ensure Whisper service is configured.`,
+    );
 
-  return Promise.resolve({
-    text: 'Audio transcription placeholder: User mentioned a task update.',
-  });
-}
+    return Promise.resolve({
+      text: 'Audio transcription placeholder: User mentioned a task update.',
+    });
+  }
 
   async askQuestion(
     question: string,
@@ -217,14 +228,20 @@ ${question}
     `;
 
     const response = await this.llm.invoke(prompt);
+
     return {
-      answer: response.content as string,
-      sources: relevantDocs.map((d) => d.metadata.source),
+      answer: this.extractAnswer(response),
+     sources: relevantDocs.map((d) => {
+      const metadata = d.metadata as { source?: unknown };
+      return typeof metadata.source === 'string'
+        ? metadata.source
+        : 'unknown';
+    }),
     };
   }
 
   async analyzeCv(cvText: string, jobDescription: string) {
-  const prompt = `
+    const prompt = `
 ### ROLE
 You are a Technical Headhunter with a reputation for being extremely strict.
 You are performing a Binary Skill Gap Audit. Do NOT award points for "transferable skills" if the core technical requirements are missing.
@@ -263,45 +280,50 @@ ${cvText}
 }
 `;
 
-  const response = await this.llm.invoke([
-    {
-      role: 'system',
-      content:
-        'You are a senior HR recruiter specialized in talent evaluation. Output strictly valid JSON.',
-    },
-    {
-      role: 'user',
-      content: prompt,
-    },
-  ]);
+    const response = await this.llm.invoke([
+      {
+        role: 'system',
+        content:
+          'You are a senior HR recruiter specialized in talent evaluation. Output strictly valid JSON.',
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ]);
 
-  try {
-    const content = response.content as string;
+    try {
+      const responseTyped = response as { content: string };
+      const content = responseTyped.content;
 
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    const jsonString = jsonMatch ? jsonMatch[0] : content;
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      const jsonString = jsonMatch ? jsonMatch[0] : content;
 
-    const result: CvAnalysisResult = JSON.parse(jsonString);
+      const result: CvAnalysisResult = JSON.parse(
+        jsonString,
+      ) as CvAnalysisResult;
 
-    return {
-      score: Number(result.score ?? 0),
-      strengths: Array.isArray(result.strengths) ? result.strengths : [],
-      weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : [],
-      recommendation: result.recommendation ?? 'CONSIDER',
-      summary: result.summary ?? content,
-    };
-  } catch (error) {
-    this.logger.error('AI returned invalid JSON, falling back to raw content');
+      return {
+        score: Number(result.score ?? 0),
+        strengths: Array.isArray(result.strengths) ? result.strengths : [],
+        weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : [],
+        recommendation: result.recommendation ?? 'CONSIDER',
+        summary: result.summary ?? content,
+      };
+    } catch {
+      this.logger.error(
+        'AI returned invalid JSON, falling back to raw content',
+      );
 
-    return {
-      score: 0,
-      strengths: [],
-      weaknesses: [],
-      recommendation: 'CONSIDER',
-      summary: response.content as string,
-    };
+      return {
+        score: 0,
+        strengths: [],
+        weaknesses: [],
+        recommendation: 'CONSIDER',
+        summary: this.extractAnswer(response),
+      };
+    }
   }
-}
   status() {
     return {
       status: 'AI Service is online',
