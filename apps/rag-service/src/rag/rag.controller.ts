@@ -29,7 +29,7 @@ export class RagController {
   @Post('ai/vision')
   @UseInterceptors(FileInterceptor('file'))
   async analyzeImage(@UploadedFile() file: Express.Multer.File) {
-    console.log("FILE RECIVED", file);
+    console.log('FILE RECIVED', file);
     if (!file) throw new Error('No image file provided');
     return await this.ragService.analyzeImage(file.buffer);
   }
