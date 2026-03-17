@@ -4,6 +4,7 @@ import { QdrantVectorStore } from '@langchain/qdrant';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
+import { AIMessage } from '@langchain/core/messages';
 
 
 interface CvAnalysisResult {
@@ -146,7 +147,7 @@ export class RagService {
           },
         ],
       },
-    ]);
+    ]) as AIMessage;
 
     return { description: response.content as string };
   }
@@ -291,7 +292,7 @@ ${cvText}
         recommendation: result.recommendation ?? 'CONSIDER',
         summary: result.summary ?? content,
       };
-    } catch (error) {
+    } catch {
       this.logger.error(
         'AI returned invalid JSON, falling back to raw content',
       );
