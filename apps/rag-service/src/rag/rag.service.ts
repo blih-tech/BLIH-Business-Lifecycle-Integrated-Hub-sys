@@ -158,7 +158,7 @@ export class RagService {
       },
     ])) as { content: string };
 
-    return { description: response.content };
+    return { description: String(response.content) };
   }
   transcribeAudio(fileBuffer: Buffer): Promise<{ text: string }> {
     this.logger.warn(
@@ -230,7 +230,7 @@ ${question}
     const response = await this.llm.invoke(prompt);
 
     return {
-      answer: this.extractAnswer(response) as string,
+      answer: this.extractAnswer(response),
       sources: relevantDocs.map((d) => d.metadata.source),
     };
   }
@@ -315,7 +315,7 @@ ${cvText}
         strengths: [],
         weaknesses: [],
         recommendation: 'CONSIDER',
-        summary: response.content as string,
+        summary: this.extractAnswer(response),
       };
     }
   }
