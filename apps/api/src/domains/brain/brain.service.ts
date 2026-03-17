@@ -32,7 +32,7 @@ export class BrainService {
     fileBuffer: Buffer,
     fileName: string,
     module: string,
-    userId?: string,
+    userId: string,
   ) {
     try {
       const extractedText = await parseCv(fileBuffer);
@@ -42,8 +42,8 @@ export class BrainService {
           text: extractedText,
           source: fileName,
           metadata: {
-            module,
-            userId,
+            module: module,
+            userId: userId,
           },
         }),
       );
@@ -127,7 +127,12 @@ export class BrainService {
         const transcription = await this.transcribeAudio(file.buffer);
         processedQuestion = `${transcription} ${question || ''}`.trim();
       } else if (mimeType === 'application/pdf') {
-        await this.processAndIngest(file.buffer, file.originalname, module);
+        await this.processAndIngest(
+          file.buffer,
+          file.originalname,
+          module,
+          userId,
+        );
         contextExtension = `[Context added from: ${file.originalname}] `;
       }
     }
@@ -159,15 +164,8 @@ export class BrainService {
         content: m.content,
       })),
       filter: {
-        must: [
-          { key: 'metadata.module', match: { value: module } },
-          {
-            should: [
-              { key: 'metadata.userId', match: { value: module } },
-              { key: 'metadate.isPublic', match: { value: true } },
-            ],
-          },
-        ],
+        must: [{ key: 'module', match: { value: module } }],
+        should: [{ key: 'userId', match: { value: userId } }],
       },
     };
 
@@ -409,7 +407,7 @@ export class BrainService {
     );
     results.sort((a, b) => b.score - a.score);
 
-    return { totalCandidates: results.length, rankedCandidates: results };
+    return { totalApplicants: results.length, rankedApplicants: results };
   }
 
   async getEmployeeInsights(employeeId: string) {
