@@ -36,15 +36,15 @@ export class RagService {
   }
 
   private extractAnswer(response: unknown): string {
-  if (response && typeof response === 'object' && 'content' in response) {
-    const content = (response as { content: unknown }).content;
-    if (typeof content === 'string') {
-      return content;
+    if (response && typeof response === 'object' && 'content' in response) {
+      const content = (response as { content: unknown }).content;
+      if (typeof content === 'string') {
+        return content;
+      }
     }
+    this.logger.warn('Unexpected Ollama response format - using empty string');
+    return '';
   }
-  this.logger.warn('Unexpected Ollama response format - using empty string');
-  return '';
-}
 
   async clearCollection() {
     try {
