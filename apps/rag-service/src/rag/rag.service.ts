@@ -35,6 +35,17 @@ export class RagService {
     });
   }
 
+  private extractAnswer(response: unknown): string {
+  if (response && typeof response === 'object' && 'content' in response) {
+    const content = (response as { content: unknown }).content;
+    if (typeof content === 'string') {
+      return content;
+    }
+  }
+  this.logger.warn('Unexpected Ollama response format - using empty string');
+  return '';
+}
+
   async clearCollection() {
     try {
       await fetch(`${this.qdrantUrl}/collections/${this.collectionName}`, {
@@ -216,15 +227,13 @@ ${question}
 ### ANSWER (Concise and Accurate):
     `;
 
-    const rawResponse = await this.llm.invoke(prompt);
-
-    const response = rawResponse as { content: string };  
+    const response = await this.llm.invoke(prompt);
 
     return {
-      answer: response.content,
+      answer: this.extractAnswer(response),
       sources: relevantDocs.map((d) => d.metadata.source),
     };
-      }
+  }
 
   async analyzeCv(cvText: string, jobDescription: string) {
     const prompt = `
