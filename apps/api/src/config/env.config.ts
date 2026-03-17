@@ -12,12 +12,26 @@ export const envValidationSchema = Joi.object({
     .uri({ scheme: ['postgres', 'postgresql'] })
     .default('postgresql://postgres:postgres@localhost:5432/blih_core'),
   SKIP_DATABASE_CONNECT: Joi.boolean().default(false),
+  DATABASE_POOL_SIZE: Joi.number().integer().min(1).default(10),
+  DATABASE_TIMEOUT_MS: Joi.number().integer().min(1).default(5000),
+  DATABASE_IDLE_TIMEOUT_MS: Joi.number().integer().min(1).default(300000),
 
   KEYCLOAK_ENABLED: Joi.boolean().default(true),
   KEYCLOAK_URL: Joi.string().uri().default('http://localhost:8080'),
   KEYCLOAK_REALM: Joi.string().default('blih'),
   KEYCLOAK_CLIENT_ID: Joi.string().default('blih-system-api'),
   KEYCLOAK_CLIENT_SECRET: Joi.string().allow('').default(''),
+  KEYCLOAK_AUTH_CLIENT_ID: Joi.string().default('blih-system-auth'),
+  KEYCLOAK_AUTH_CLIENT_SECRET: Joi.string().allow('').default(''),
+  KEYCLOAK_AUTHORIZATION_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_TOKEN_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_LOGOUT_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_USERINFO_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_JWKS_URL: Joi.string().uri().allow('').default(''),
+  KEYCLOAK_AUTH_REDIRECT_URI: Joi.string()
+    .uri()
+    .default('http://localhost:5000/api/v1/auth/callback'),
+  KEYCLOAK_AUTH_SCOPES: Joi.string().default('openid profile email'),
   KEYCLOAK_ADMIN_CLIENT_ID: Joi.string().default('admin-cli'),
   KEYCLOAK_ADMIN_USERNAME: Joi.string().allow('').default(''),
   KEYCLOAK_ADMIN_PASSWORD: Joi.string().allow('').default(''),
@@ -25,16 +39,39 @@ export const envValidationSchema = Joi.object({
   INTERNAL_AUTH_SHARED_SECRET: Joi.string().allow('').default(''),
   ENFORCE_MFA_FOR_PRIVILEGED: Joi.boolean().default(false),
   AUTH_POLICY_VERSION: Joi.string().default('1.0'),
-
-  RABBITMQ_ENABLED: Joi.boolean().default(false),
-  RABBITMQ_URL: Joi.string()
-    .uri({ scheme: ['amqp', 'amqps'] })
-    .default('amqp://guest:guest@localhost:5672'),
-  RABBITMQ_EXCHANGE: Joi.string().default('blih.events'),
-  RABBITMQ_DLQ: Joi.string().default('system.dlq'),
-  EVENT_CONTRACT_VERSION: Joi.string().default('1.0'),
-  EVENT_SCHEMA_PREFIX: Joi.string().default('blih.event'),
-  EVENT_SUPPORTED_MAJOR_VERSION: Joi.string().default('1'),
+  AUTH_FRONTEND_BASE_URL: Joi.string().uri().default('http://localhost:3000'),
+  AUTH_ALLOWED_REDIRECT_PATH_PREFIXES: Joi.string().default(
+    '/,/auth,/dashboard,/no-access',
+  ),
+  AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/auth/signin'),
+  AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/'),
+  AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/auth/signin'),
+  AUTH_STATE_TTL_SECONDS: Joi.number().integer().min(60).default(600),
+  AUTH_REFRESH_TOKEN_TTL_SECONDS: Joi.number()
+    .integer()
+    .min(60)
+    .default(2592000),
+  AUTH_COOKIE_HTTP_ONLY: Joi.boolean().default(true),
+  AUTH_COOKIE_SECURE: Joi.boolean().when('NODE_ENV', {
+    is: 'production',
+    then: Joi.boolean().default(true),
+    otherwise: Joi.boolean().default(false),
+  }),
+  AUTH_COOKIE_DOMAIN: Joi.string().allow('').default(''),
+  AUTH_COOKIE_PATH: Joi.string().default('/'),
+  AUTH_COOKIE_SAME_SITE: Joi.string()
+    .valid('lax', 'strict', 'none')
+    .default('lax'),
+  AUTH_NONCE_ENABLED: Joi.boolean().default(true),
+  AUTH_PKCE_ENABLED: Joi.boolean().default(true),
+  AUTH_PKCE_METHOD: Joi.string().valid('S256').default('S256'),
+  AUTH_LOGIN_RATE_LIMIT_POINTS: Joi.number().integer().min(1).default(10),
+  AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS: Joi.number()
+    .integer()
+    .min(1)
+    .default(60),
+  JWKS_CACHE_TTL_SECONDS: Joi.number().integer().min(60).default(3600),
+  JWKS_CACHE_MAX_KEYS: Joi.number().integer().min(1).default(5),
 
   SMTP_ENABLED: Joi.boolean().default(false),
   SMTP_HOST: Joi.string().default('localhost'),
@@ -45,7 +82,11 @@ export const envValidationSchema = Joi.object({
   EMAIL_FROM: Joi.string().default('BLIH <noreply@blih.local>'),
 
   SWAGGER_ENABLED: Joi.boolean().default(true),
-  CORS_ORIGIN: Joi.string().default('*'),
+  CORS_ORIGIN: Joi.when('NODE_ENV', {
+    is: 'production',
+    then: Joi.string().invalid('*').required(),
+    otherwise: Joi.string().default('*'),
+  }),
   VERBOSE_REQUEST_LOGGING: Joi.boolean().default(false),
 
   AUDIT_RETENTION_DAYS: Joi.number().integer().min(30).default(2555),
@@ -65,11 +106,23 @@ export type EnvValues = {
   API_PREFIX: string;
   DATABASE_URL: string;
   SKIP_DATABASE_CONNECT: boolean;
+  DATABASE_POOL_SIZE: number;
+  DATABASE_TIMEOUT_MS: number;
+  DATABASE_IDLE_TIMEOUT_MS: number;
   KEYCLOAK_ENABLED: boolean;
   KEYCLOAK_URL: string;
   KEYCLOAK_REALM: string;
   KEYCLOAK_CLIENT_ID: string;
   KEYCLOAK_CLIENT_SECRET: string;
+  KEYCLOAK_AUTH_CLIENT_ID: string;
+  KEYCLOAK_AUTH_CLIENT_SECRET: string;
+  KEYCLOAK_AUTHORIZATION_URL: string;
+  KEYCLOAK_TOKEN_URL: string;
+  KEYCLOAK_LOGOUT_URL: string;
+  KEYCLOAK_USERINFO_URL: string;
+  KEYCLOAK_JWKS_URL: string;
+  KEYCLOAK_AUTH_REDIRECT_URI: string;
+  KEYCLOAK_AUTH_SCOPES: string;
   KEYCLOAK_ADMIN_CLIENT_ID: string;
   KEYCLOAK_ADMIN_USERNAME: string;
   KEYCLOAK_ADMIN_PASSWORD: string;
@@ -77,13 +130,25 @@ export type EnvValues = {
   INTERNAL_AUTH_SHARED_SECRET: string;
   ENFORCE_MFA_FOR_PRIVILEGED: boolean;
   AUTH_POLICY_VERSION: string;
-  RABBITMQ_ENABLED: boolean;
-  RABBITMQ_URL: string;
-  RABBITMQ_EXCHANGE: string;
-  RABBITMQ_DLQ: string;
-  EVENT_CONTRACT_VERSION: string;
-  EVENT_SCHEMA_PREFIX: string;
-  EVENT_SUPPORTED_MAJOR_VERSION: string;
+  AUTH_FRONTEND_BASE_URL: string;
+  AUTH_ALLOWED_REDIRECT_PATH_PREFIXES: string;
+  AUTH_LOGIN_ERROR_REDIRECT_URI: string;
+  AUTH_POST_LOGIN_REDIRECT_URI: string;
+  AUTH_POST_LOGOUT_REDIRECT_URI: string;
+  AUTH_STATE_TTL_SECONDS: number;
+  AUTH_REFRESH_TOKEN_TTL_SECONDS: number;
+  AUTH_COOKIE_HTTP_ONLY: boolean;
+  AUTH_COOKIE_SECURE: boolean;
+  AUTH_COOKIE_DOMAIN: string;
+  AUTH_COOKIE_PATH: string;
+  AUTH_COOKIE_SAME_SITE: 'lax' | 'strict' | 'none';
+  AUTH_NONCE_ENABLED: boolean;
+  AUTH_PKCE_ENABLED: boolean;
+  AUTH_PKCE_METHOD: 'S256';
+  AUTH_LOGIN_RATE_LIMIT_POINTS: number;
+  AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS: number;
+  JWKS_CACHE_TTL_SECONDS: number;
+  JWKS_CACHE_MAX_KEYS: number;
   SMTP_ENABLED: boolean;
   SMTP_HOST: string;
   SMTP_PORT: number;
@@ -110,11 +175,23 @@ const readRawEnv = () => ({
   API_PREFIX: process.env.API_PREFIX,
   DATABASE_URL: process.env.DATABASE_URL,
   SKIP_DATABASE_CONNECT: process.env.SKIP_DATABASE_CONNECT,
+  DATABASE_POOL_SIZE: process.env.DATABASE_POOL_SIZE,
+  DATABASE_TIMEOUT_MS: process.env.DATABASE_TIMEOUT_MS,
+  DATABASE_IDLE_TIMEOUT_MS: process.env.DATABASE_IDLE_TIMEOUT_MS,
   KEYCLOAK_ENABLED: process.env.KEYCLOAK_ENABLED,
   KEYCLOAK_URL: process.env.KEYCLOAK_URL,
   KEYCLOAK_REALM: process.env.KEYCLOAK_REALM,
   KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID,
   KEYCLOAK_CLIENT_SECRET: process.env.KEYCLOAK_CLIENT_SECRET,
+  KEYCLOAK_AUTH_CLIENT_ID: process.env.KEYCLOAK_AUTH_CLIENT_ID,
+  KEYCLOAK_AUTH_CLIENT_SECRET: process.env.KEYCLOAK_AUTH_CLIENT_SECRET,
+  KEYCLOAK_AUTHORIZATION_URL: process.env.KEYCLOAK_AUTHORIZATION_URL,
+  KEYCLOAK_TOKEN_URL: process.env.KEYCLOAK_TOKEN_URL,
+  KEYCLOAK_LOGOUT_URL: process.env.KEYCLOAK_LOGOUT_URL,
+  KEYCLOAK_USERINFO_URL: process.env.KEYCLOAK_USERINFO_URL,
+  KEYCLOAK_JWKS_URL: process.env.KEYCLOAK_JWKS_URL,
+  KEYCLOAK_AUTH_REDIRECT_URI: process.env.KEYCLOAK_AUTH_REDIRECT_URI,
+  KEYCLOAK_AUTH_SCOPES: process.env.KEYCLOAK_AUTH_SCOPES,
   KEYCLOAK_ADMIN_CLIENT_ID: process.env.KEYCLOAK_ADMIN_CLIENT_ID,
   KEYCLOAK_ADMIN_USERNAME: process.env.KEYCLOAK_ADMIN_USERNAME,
   KEYCLOAK_ADMIN_PASSWORD: process.env.KEYCLOAK_ADMIN_PASSWORD,
@@ -122,13 +199,27 @@ const readRawEnv = () => ({
   INTERNAL_AUTH_SHARED_SECRET: process.env.INTERNAL_AUTH_SHARED_SECRET,
   ENFORCE_MFA_FOR_PRIVILEGED: process.env.ENFORCE_MFA_FOR_PRIVILEGED,
   AUTH_POLICY_VERSION: process.env.AUTH_POLICY_VERSION,
-  RABBITMQ_ENABLED: process.env.RABBITMQ_ENABLED,
-  RABBITMQ_URL: process.env.RABBITMQ_URL,
-  RABBITMQ_EXCHANGE: process.env.RABBITMQ_EXCHANGE,
-  RABBITMQ_DLQ: process.env.RABBITMQ_DLQ,
-  EVENT_CONTRACT_VERSION: process.env.EVENT_CONTRACT_VERSION,
-  EVENT_SCHEMA_PREFIX: process.env.EVENT_SCHEMA_PREFIX,
-  EVENT_SUPPORTED_MAJOR_VERSION: process.env.EVENT_SUPPORTED_MAJOR_VERSION,
+  AUTH_FRONTEND_BASE_URL: process.env.AUTH_FRONTEND_BASE_URL,
+  AUTH_ALLOWED_REDIRECT_PATH_PREFIXES:
+    process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES,
+  AUTH_LOGIN_ERROR_REDIRECT_URI: process.env.AUTH_LOGIN_ERROR_REDIRECT_URI,
+  AUTH_POST_LOGIN_REDIRECT_URI: process.env.AUTH_POST_LOGIN_REDIRECT_URI,
+  AUTH_POST_LOGOUT_REDIRECT_URI: process.env.AUTH_POST_LOGOUT_REDIRECT_URI,
+  AUTH_STATE_TTL_SECONDS: process.env.AUTH_STATE_TTL_SECONDS,
+  AUTH_REFRESH_TOKEN_TTL_SECONDS: process.env.AUTH_REFRESH_TOKEN_TTL_SECONDS,
+  AUTH_COOKIE_HTTP_ONLY: process.env.AUTH_COOKIE_HTTP_ONLY,
+  AUTH_COOKIE_SECURE: process.env.AUTH_COOKIE_SECURE,
+  AUTH_COOKIE_DOMAIN: process.env.AUTH_COOKIE_DOMAIN,
+  AUTH_COOKIE_PATH: process.env.AUTH_COOKIE_PATH,
+  AUTH_COOKIE_SAME_SITE: process.env.AUTH_COOKIE_SAME_SITE,
+  AUTH_NONCE_ENABLED: process.env.AUTH_NONCE_ENABLED,
+  AUTH_PKCE_ENABLED: process.env.AUTH_PKCE_ENABLED,
+  AUTH_PKCE_METHOD: process.env.AUTH_PKCE_METHOD,
+  AUTH_LOGIN_RATE_LIMIT_POINTS: process.env.AUTH_LOGIN_RATE_LIMIT_POINTS,
+  AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS:
+    process.env.AUTH_LOGIN_RATE_LIMIT_WINDOW_SECONDS,
+  JWKS_CACHE_TTL_SECONDS: process.env.JWKS_CACHE_TTL_SECONDS,
+  JWKS_CACHE_MAX_KEYS: process.env.JWKS_CACHE_MAX_KEYS,
   SMTP_ENABLED: process.env.SMTP_ENABLED,
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_PORT: process.env.SMTP_PORT,

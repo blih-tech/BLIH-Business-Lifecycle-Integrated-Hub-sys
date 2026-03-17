@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { UserResponseDto as UserResponseDtoType } from '@repo/types';
 
-export class UserResponseDto {
+export class UserResponseDto implements UserResponseDtoType {
   @ApiProperty({
     description: 'Internal UUID of the user record.',
     example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
@@ -51,10 +52,11 @@ export class UserResponseDto {
   status!: string;
 
   @ApiPropertyOptional({
-    description: 'User job position.',
-    example: 'Finance Analyst',
+    description: 'Department id derived from the user employment position.',
+    example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+    nullable: true,
   })
-  position?: string;
+  departmentId?: string | null;
 
   @ApiProperty({
     description: 'Persisted effective permission keys for this user.',

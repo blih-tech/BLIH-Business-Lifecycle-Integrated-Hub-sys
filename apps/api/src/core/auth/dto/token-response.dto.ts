@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { TokenResponseDto as TokenResponseDtoType } from '@repo/types';
 
-export class TokenResponseDto {
+export class TokenResponseDto implements TokenResponseDtoType {
   @ApiProperty({
     description: 'Whether token/session context is currently valid.',
     example: true,
@@ -48,13 +49,15 @@ export class TokenResponseDto {
   permissions!: string[];
 
   @ApiPropertyOptional({
-    description: 'Access token returned by refresh or exchange operations.',
+    description:
+      'Access token returned for utility token flows. Browser cookie mode uses the kc_access HttpOnly cookie instead.',
     example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   accessToken?: string;
 
   @ApiPropertyOptional({
-    description: 'Refresh token returned by refresh or exchange operations.',
+    description:
+      'Refresh token returned for utility token flows. Browser cookie mode keeps this value in the kc_refresh HttpOnly cookie and rotates it after successful refresh.',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   refreshToken?: string;

@@ -1,98 +1,107 @@
 # BLIH Core Integration Patterns
 
 ## Table of Contents
+
 1. [Integration Overview](#integration-overview)
 2. [Integration Types](#integration-types)
 3. [Authentication & Authorization](#authentication--authorization)
-4. [Event-Driven Integration](#event-driven-integration)
-5. [API Integration Patterns](#api-integration-patterns)
-6. [Database Integration](#database-integration)
-7. [Third-Party Integrations](#third-party-integrations)
-8. [Integration Security](#integration-security)
-9. [Monitoring & Troubleshooting](#monitoring--troubleshooting)
-10. [Best Practices](#best-practices)
+4. [API Integration Patterns](#api-integration-patterns)
+5. [Database Integration](#database-integration)
+6. [Third-Party Integrations](#third-party-integrations)
+7. [Integration Security](#integration-security)
+8. [Monitoring & Troubleshooting](#monitoring--troubleshooting)
+9. [Best Practices](#best-practices)
 
 ---
 
 ## Integration Overview
 
 ### Integration Philosophy
+
 BLIH Core Platform follows a **composable integration approach** with:
-- **Event-driven architecture** for loose coupling
+
 - **API-first design** for synchronous operations
+- **Direct module communication** for internal operations
 - **Secure by default** with comprehensive authentication
 - **Backward compatibility** for version management
 - **Observability** for all integration points
 
 ### Integration Categories
-| Category | Purpose | Protocol | Use Cases |
-|----------|---------|----------|-----------|
-| **Internal** | Module-to-module communication | Events, REST API | HR → Finance, CRM → Projects |
-| **External** | Third-party system integration | REST API, Webhooks, SFTP | Payroll, Email, SMS |
-| **Data Sync** | Bidirectional data synchronization | Events, Scheduled Jobs | HRIS, Accounting |
-| **Analytics** | Business intelligence & reporting | Export APIs, Data Lake | Power BI, Tableau |
+
+| Category      | Purpose                            | Protocol                 | Use Cases                    |
+| ------------- | ---------------------------------- | ------------------------ | ---------------------------- |
+| **Internal**  | Module-to-module communication     | REST API                 | HR → Finance, CRM → Projects |
+| **External**  | Third-party system integration     | REST API, Webhooks, SFTP | Payroll, Email, SMS          |
+| **Data Sync** | Bidirectional data synchronization | REST API, Scheduled Jobs | HRIS, Accounting             |
+| **Analytics** | Business intelligence & reporting  | Export APIs, Data Lake   | Power BI, Tableau            |
 
 ---
 
 ## Integration Types
 
-### 1. Event-Driven Integration
+### 1. Direct API Integration
 
 **Architecture:**
+
 ```
-┌─────────────┐    Event     ┌─────────────┐    Event     ┌─────────────┐
-│   Source    │──────────────▶│   Core      │──────────────▶│  Target     │
-│   Module    │               │  Platform   │               │   System    │
+┌─────────────┐   API Call   ┌─────────────┐   API Call   ┌─────────────┐
+│   Source    │──────────────▶│   Target    │──────────────▶│   Target    │
+│   Module    │               │   Module    │               │   System    │
 └─────────────┘               └─────────────┘               └─────────────┘
        │                             │                             │
        ▼                             ▼                             ▼
 ┌─────────────┐               ┌─────────────┐               ┌─────────────┐
-│   Event     │               │   Event     │               │   Event     │
-│   Publisher │               │   Broker    │               │  Consumer   │
+│   HTTP      │               │   HTTP      │               │   HTTP      │
+│   Client    │               │   Server    │               │   Server    │
 └─────────────┘               └─────────────┘               └─────────────┘
 ```
 
-**Event Types:**
+**API Request Examples:**
+
 ```javascript
-// Employee Events
+// Employee Creation API
+POST /api/v1/hr/employees
 {
-  "eventType": "hr.employee.created",
-  "eventId": "evt_123456789",
-  "timestamp": "2026-02-10T11:57:00Z",
-  "source": "hr-module",
-  "data": {
-    "employeeId": "EMP001",
-    "firstName": "John",
-    "lastName": "Doe",
-    "department": "IT",
-    "position": "Software Engineer"
-  },
-  "metadata": {
-    "version": "1.0",
-    "correlationId": "corr_123456789",
-    "userId": "admin"
-  }
+  "firstName": "John",
+  "lastName": "Doe",
+  "department": "IT",
+  "position": "Software Engineer",
+  "email": "john.doe@company.com"
 }
 
-// Financial Events
+// Response
 {
-  "eventType": "finance.invoice.created",
-  "eventId": "evt_123456790",
-  "timestamp": "2026-02-10T11:57:00Z",
-  "source": "finance-module",
-  "data": {
-    "invoiceId": "INV001",
-    "customerId": "CUST001",
-    "amount": 15000.00,
-    "currency": "ETB",
-    "dueDate": "2026-03-10"
-  }
+  "id": "emp_123456789",
+  "employeeId": "EMP001",
+  "firstName": "John",
+  "lastName": "Doe",
+  "department": "IT",
+  "position": "Software Engineer",
+  "email": "john.doe@company.com",
+  "createdAt": "2026-02-10T11:57:00Z"
+}
+
+// Financial Integration API
+POST /api/v1/finance/invoices
+{
+  "customerId": "CUST001",
+  "amount": 15000.00,
+  "currency": "ETB",
+  "dueDate": "2026-03-10",
+  "items": [
+    {
+      "description": "Software Development Services",
+      "quantity": 1,
+      "unitPrice": 15000.00
+    }
+  ]
 }
 ```
 
 ### 2. REST API Integration
 
 **Authentication Flow:**
+
 ```
 ┌─────────────┐    1. Login    ┌─────────────┐    2. Token     ┌─────────────┐
 │   Client    │──────────────▶│   Keycloak  │◀───────────────│   Client    │
@@ -108,6 +117,7 @@ BLIH Core Platform follows a **composable integration approach** with:
 ```
 
 **API Request Example:**
+
 ```javascript
 // Authentication
 POST /api/v1/auth/login
@@ -139,6 +149,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ## Authentication & Authorization
 
 ### JWT Token Structure
+
 ```javascript
 // Header
 {
@@ -169,6 +180,7 @@ HMACSHA256(
 ```
 
 ### OAuth 2.0 Flow
+
 ```javascript
 // Authorization Code Flow
 1. GET /oauth/authorize?
@@ -203,6 +215,7 @@ HMACSHA256(
 ```
 
 ### API Key Authentication
+
 ```javascript
 // API Key Generation
 POST /api/v1/integrations/api-keys
@@ -231,172 +244,10 @@ X-API-Key: bl_live_51f2a8b9c3d7e6f4a1b2c3d4e5f6a7b8
 
 ---
 
-## Event-Driven Integration
-
-### Event Publishing Pattern
-```javascript
-// Publisher Implementation
-class EventPublisher {
-  constructor(rabbitmqClient) {
-    this.client = rabbitmqClient;
-    this.exchange = 'blih.events';
-  }
-
-  async publish(eventType, data, metadata = {}) {
-    const event = {
-      eventType,
-      eventId: this.generateEventId(),
-      timestamp: new Date().toISOString(),
-      source: metadata.source || 'unknown',
-      data,
-      metadata: {
-        version: '1.0',
-        correlationId: metadata.correlationId || this.generateCorrelationId(),
-        userId: metadata.userId,
-        ...metadata
-      }
-    };
-
-    await this.client.publish(this.exchange, '', Buffer.from(JSON.stringify(event)));
-    return event;
-  }
-
-  generateEventId() {
-    return `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  generateCorrelationId() {
-    return `corr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-}
-
-// Usage
-const publisher = new EventPublisher(rabbitmqClient);
-
-await publisher.publish('hr.employee.created', {
-  employeeId: 'EMP001',
-  firstName: 'John',
-  lastName: 'Doe'
-}, {
-  source: 'hr-module',
-  userId: 'admin'
-});
-```
-
-### Event Consumer Pattern
-```javascript
-// Consumer Implementation
-class EventConsumer {
-  constructor(rabbitmqClient) {
-    this.client = rabbitmqClient;
-    this.exchange = 'blih.events';
-    this.handlers = new Map();
-  }
-
-  async subscribe(queueName, eventTypes, handler) {
-    const channel = await this.client.createChannel();
-    
-    await channel.assertQueue(queueName, { durable: true });
-    await channel.bindQueue(queueName, this.exchange, '');
-    
-    eventTypes.forEach(eventType => {
-      this.handlers.set(eventType, handler);
-    });
-
-    channel.consume(queueName, async (msg) => {
-      if (msg) {
-        try {
-          const event = JSON.parse(msg.content.toString());
-          const handler = this.handlers.get(event.eventType);
-          
-          if (handler) {
-            await handler(event);
-            channel.ack(msg);
-          } else {
-            console.warn(`No handler for event type: ${event.eventType}`);
-            channel.nack(msg, false, false);
-          }
-        } catch (error) {
-          console.error('Error processing event:', error);
-          channel.nack(msg, false, true); // Requeue
-        }
-      }
-    });
-  }
-}
-
-// Usage
-const consumer = new EventConsumer(rabbitmqClient);
-
-await consumer.subscribe('finance-events', [
-  'hr.employee.created',
-  'hr.employee.updated',
-  'hr.salary.changed'
-], async (event) => {
-  if (event.eventType === 'hr.employee.created') {
-    await financeService.createEmployeeAccount(event.data);
-  }
-});
-```
-
-### Event Sourcing Pattern
-```javascript
-// Event Store Implementation
-class EventStore {
-  constructor(database) {
-    this.db = database;
-  }
-
-  async saveEvent(aggregateId, event) {
-    const eventRecord = {
-      id: this.generateId(),
-      aggregateId,
-      eventType: event.eventType,
-      eventData: event.data,
-      eventMetadata: event.metadata,
-      timestamp: event.timestamp,
-      version: await this.getNextVersion(aggregateId)
-    };
-
-    await this.db.collection('events').insertOne(eventRecord);
-    return eventRecord;
-  }
-
-  async getEvents(aggregateId, fromVersion = 0) {
-    return await this.db.collection('events')
-      .find({ aggregateId, version: { $gt: fromVersion } })
-      .sort({ version: 1 })
-      .toArray();
-  }
-
-  async replayAggregate(aggregateId, aggregateClass) {
-    const events = await this.getEvents(aggregateId);
-    const aggregate = new aggregateClass();
-    
-    for (const event of events) {
-      aggregate.apply(event);
-    }
-    
-    return aggregate;
-  }
-
-  generateId() {
-    return `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  async getNextVersion(aggregateId) {
-    const lastEvent = await this.db.collection('events')
-      .findOne({ aggregateId }, { sort: { version: -1 } });
-    return lastEvent ? lastEvent.version + 1 : 1;
-  }
-}
-```
-
----
-
 ## API Integration Patterns
 
 ### 1. Synchronous API Pattern
+
 ```javascript
 // API Client Implementation
 class BLIHApiClient {
@@ -407,8 +258,8 @@ class BLIHApiClient {
       baseURL,
       headers: {
         'X-API-Key': apiKey,
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
@@ -430,7 +281,10 @@ class BLIHApiClient {
   }
 
   async updateEmployee(employeeId, updates) {
-    const response = await this.axios.patch(`/api/v1/employees/${employeeId}`, updates);
+    const response = await this.axios.patch(
+      `/api/v1/employees/${employeeId}`,
+      updates,
+    );
     return response.data;
   }
 
@@ -445,10 +299,14 @@ class BLIHApiClient {
 const client = new BLIHApiClient('https://blih.company.com', 'your_api_key');
 
 const employee = await client.getEmployee('EMP001');
-const employees = await client.getEmployees({ department: 'IT', status: 'ACTIVE' });
+const employees = await client.getEmployees({
+  department: 'IT',
+  status: 'ACTIVE',
+});
 ```
 
 ### 2. Batch Processing Pattern
+
 ```javascript
 // Batch Processor Implementation
 class BatchProcessor {
@@ -464,7 +322,7 @@ class BatchProcessor {
 
     for (const batch of batches) {
       const batchResults = await Promise.all(
-        batch.map(item => processor(item))
+        batch.map((item) => processor(item)),
       );
       results.push(...batchResults);
     }
@@ -506,10 +364,12 @@ const employees = [
   // ... more employees
 ];
 
-const { results, failed } = await batchProcessor.processEmployeesWithRetry(employees);
+const { results, failed } =
+  await batchProcessor.processEmployeesWithRetry(employees);
 ```
 
 ### 3. Webhook Pattern
+
 ```javascript
 // Webhook Handler Implementation
 class WebhookHandler {
@@ -548,7 +408,7 @@ class WebhookHandler {
       .createHmac('sha256', this.secret)
       .update(JSON.stringify(payload))
       .digest('hex');
-    
+
     return `sha256=${expectedSignature}` === signature;
   }
 }
@@ -562,7 +422,7 @@ const webhookHandler = new WebhookHandler('your_webhook_secret', {
   'employee.updated': (event) => {
     console.log('Employee updated:', event.data);
     // Update external system
-  }
+  },
 });
 
 // Express.js endpoint
@@ -576,6 +436,7 @@ app.post('/webhook/blih', (req, res) => {
 ## Database Integration
 
 ### 1. Direct Database Integration
+
 ```javascript
 // Database Connector Implementation
 class BLIHDatabaseConnector {
@@ -655,7 +516,7 @@ const dbConnector = new BLIHDatabaseConnector({
   port: 5432,
   database: 'blih_core',
   user: 'blih_user',
-  password: 'secure_password'
+  password: 'secure_password',
 });
 
 await dbConnector.connect();
@@ -665,13 +526,14 @@ const newEmployee = await dbConnector.createEmployee({
   firstName: 'John',
   lastName: 'Doe',
   department: 'IT',
-  position: 'Software Engineer'
+  position: 'Software Engineer',
 });
 
 await dbConnector.close();
 ```
 
 ### 2. Change Data Capture (CDC) Pattern
+
 ```javascript
 // CDC Implementation
 class CDCListener {
@@ -689,7 +551,7 @@ class CDCListener {
 
   async processChanges() {
     const changes = await this.getChanges(this.lastProcessedId);
-    
+
     for (const change of changes) {
       await this.publishChangeEvent(change);
       this.lastProcessedId = change.id;
@@ -703,7 +565,7 @@ class CDCListener {
       ORDER BY id ASC 
       LIMIT 100
     `;
-    
+
     return await this.dbConnector.query(query, [lastId]);
   }
 
@@ -715,18 +577,22 @@ class CDCListener {
         table: change.table_name,
         operation: change.operation,
         userId: change.user_id,
-        timestamp: change.timestamp
-      }
+        timestamp: change.timestamp,
+      },
     };
 
-    await this.eventPublisher.publish(event.eventType, event.data, event.metadata);
+    await this.eventPublisher.publish(
+      event.eventType,
+      event.data,
+      event.metadata,
+    );
   }
 
   mapOperationToEvent(operation) {
     const mapping = {
-      'INSERT': 'record.created',
-      'UPDATE': 'record.updated',
-      'DELETE': 'record.deleted'
+      INSERT: 'record.created',
+      UPDATE: 'record.updated',
+      DELETE: 'record.deleted',
     };
     return mapping[operation] || 'record.changed';
   }
@@ -742,6 +608,7 @@ await cdcListener.start();
 ## Third-Party Integrations
 
 ### 1. Payroll System Integration
+
 ```javascript
 // Payroll Integration
 class PayrollIntegration {
@@ -753,7 +620,7 @@ class PayrollIntegration {
   async syncEmployees() {
     // Get employees from BLIH
     const blihEmployees = await this.blihClient.getEmployees({
-      status: 'ACTIVE'
+      status: 'ACTIVE',
     });
 
     // Get employees from payroll system
@@ -764,8 +631,10 @@ class PayrollIntegration {
     const newEmployees = [];
 
     for (const blihEmp of blihEmployees) {
-      const payrollEmp = payrollEmployees.find(p => p.employeeId === blihEmp.employeeId);
-      
+      const payrollEmp = payrollEmployees.find(
+        (p) => p.employeeId === blihEmp.employeeId,
+      );
+
       if (!payrollEmp) {
         newEmployees.push(this.mapToPayrollFormat(blihEmp));
       } else if (this.hasChanges(blihEmp, payrollEmp)) {
@@ -795,22 +664,25 @@ class PayrollIntegration {
       position: blihEmployee.position,
       salary: blihEmployee.salary,
       bankAccount: blihEmployee.bankAccount,
-      taxId: blihEmployee.taxId
+      taxId: blihEmployee.taxId,
     };
   }
 
   hasChanges(blihEmp, payrollEmp) {
-    return blihEmp.firstName !== payrollEmp.firstName ||
-           blihEmp.lastName !== payrollEmp.lastName ||
-           blihEmp.email !== payrollEmp.email ||
-           blihEmp.department !== payrollEmp.department ||
-           blihEmp.position !== payrollEmp.position ||
-           blihEmp.salary !== payrollEmp.salary;
+    return (
+      blihEmp.firstName !== payrollEmp.firstName ||
+      blihEmp.lastName !== payrollEmp.lastName ||
+      blihEmp.email !== payrollEmp.email ||
+      blihEmp.department !== payrollEmp.department ||
+      blihEmp.position !== payrollEmp.position ||
+      blihEmp.salary !== payrollEmp.salary
+    );
   }
 }
 ```
 
 ### 2. Email Service Integration
+
 ```javascript
 // Email Integration
 class EmailIntegration {
@@ -821,7 +693,7 @@ class EmailIntegration {
 
   async sendEmail(to, subject, templateName, data) {
     const nodemailer = require('nodemailer');
-    
+
     // Create transporter
     const transporter = nodemailer.createTransporter({
       host: this.smtpConfig.host,
@@ -829,8 +701,8 @@ class EmailIntegration {
       secure: this.smtpConfig.secure,
       auth: {
         user: this.smtpConfig.user,
-        pass: this.smtpConfig.password
-      }
+        pass: this.smtpConfig.password,
+      },
     });
 
     // Render template
@@ -841,24 +713,19 @@ class EmailIntegration {
       from: this.smtpConfig.from,
       to,
       subject,
-      html
+      html,
     });
 
     return info;
   }
 
   async sendWelcomeEmail(employee) {
-    await this.sendEmail(
-      employee.email,
-      'Welcome to BLIH!',
-      'welcome-email',
-      {
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        department: employee.department,
-        position: employee.position
-      }
-    );
+    await this.sendEmail(employee.email, 'Welcome to BLIH!', 'welcome-email', {
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      department: employee.department,
+      position: employee.position,
+    });
   }
 
   async sendLeaveNotification(employee, leaveRequest) {
@@ -868,14 +735,15 @@ class EmailIntegration {
       'leave-notification',
       {
         employee: employee,
-        leaveRequest: leaveRequest
-      }
+        leaveRequest: leaveRequest,
+      },
     );
   }
 }
 ```
 
 ### 3. SMS Service Integration
+
 ```javascript
 // SMS Integration
 class SMSIntegration {
@@ -888,7 +756,7 @@ class SMSIntegration {
       const result = await this.smsProvider.send({
         to,
         message,
-        from: 'BLIH'
+        from: 'BLIH',
       });
       return result;
     } catch (error) {
@@ -914,6 +782,7 @@ class SMSIntegration {
 ## Integration Security
 
 ### 1. API Security
+
 ```javascript
 // API Security Middleware
 class APISecurityMiddleware {
@@ -931,7 +800,9 @@ class APISecurityMiddleware {
 
       // Clean old entries
       if (this.rateLimitStore.has(key)) {
-        const requests = this.rateLimitStore.get(key).filter(time => time > windowStart);
+        const requests = this.rateLimitStore
+          .get(key)
+          .filter((time) => time > windowStart);
         this.rateLimitStore.set(key, requests);
       } else {
         this.rateLimitStore.set(key, []);
@@ -942,7 +813,7 @@ class APISecurityMiddleware {
       if (requests.length >= this.rateLimitMax) {
         return res.status(429).json({
           error: 'Too many requests',
-          retryAfter: Math.ceil(this.rateLimitWindow / 1000)
+          retryAfter: Math.ceil(this.rateLimitWindow / 1000),
         });
       }
 
@@ -955,7 +826,7 @@ class APISecurityMiddleware {
   validateApiKey() {
     return async (req, res, next) => {
       const apiKey = req.headers['x-api-key'];
-      
+
       if (!apiKey) {
         return res.status(401).json({ error: 'API key required' });
       }
@@ -982,6 +853,7 @@ class APISecurityMiddleware {
 ```
 
 ### 2. Data Encryption
+
 ```javascript
 // Data Encryption Utilities
 class DataEncryption {
@@ -994,16 +866,16 @@ class DataEncryption {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(this.algorithm, this.secretKey);
     cipher.setAAD(Buffer.from('blih-data', 'utf8'));
-    
+
     let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     const authTag = cipher.getAuthTag();
-    
+
     return {
       encrypted,
       iv: iv.toString('hex'),
-      authTag: authTag.toString('hex')
+      authTag: authTag.toString('hex'),
     };
   }
 
@@ -1011,21 +883,25 @@ class DataEncryption {
     const decipher = crypto.createDecipher(this.algorithm, this.secretKey);
     decipher.setAAD(Buffer.from('blih-data', 'utf8'));
     decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-    
+
     let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     return JSON.parse(decrypted);
   }
 
   hashPassword(password) {
     const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    const hash = crypto
+      .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+      .toString('hex');
     return { salt, hash };
   }
 
   verifyPassword(password, salt, hash) {
-    const hashVerify = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    const hashVerify = crypto
+      .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+      .toString('hex');
     return hash === hashVerify;
   }
 }
@@ -1036,6 +912,7 @@ class DataEncryption {
 ## Monitoring & Troubleshooting
 
 ### 1. Integration Monitoring
+
 ```javascript
 // Integration Monitor
 class IntegrationMonitor {
@@ -1044,22 +921,22 @@ class IntegrationMonitor {
       requests: 0,
       errors: 0,
       responseTime: [],
-      lastError: null
+      lastError: null,
     };
   }
 
   trackRequest(startTime, success = true, error = null) {
     const responseTime = Date.now() - startTime;
-    
+
     this.metrics.requests++;
     this.metrics.responseTime.push(responseTime);
-    
+
     if (!success) {
       this.metrics.errors++;
       this.metrics.lastError = {
         timestamp: new Date().toISOString(),
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       };
     }
 
@@ -1070,20 +947,23 @@ class IntegrationMonitor {
   }
 
   getMetrics() {
-    const avgResponseTime = this.metrics.responseTime.length > 0
-      ? this.metrics.responseTime.reduce((a, b) => a + b, 0) / this.metrics.responseTime.length
-      : 0;
+    const avgResponseTime =
+      this.metrics.responseTime.length > 0
+        ? this.metrics.responseTime.reduce((a, b) => a + b, 0) /
+          this.metrics.responseTime.length
+        : 0;
 
-    const errorRate = this.metrics.requests > 0
-      ? (this.metrics.errors / this.metrics.requests) * 100
-      : 0;
+    const errorRate =
+      this.metrics.requests > 0
+        ? (this.metrics.errors / this.metrics.requests) * 100
+        : 0;
 
     return {
       totalRequests: this.metrics.requests,
       totalErrors: this.metrics.errors,
       errorRate: errorRate.toFixed(2) + '%',
       averageResponseTime: Math.round(avgResponseTime) + 'ms',
-      lastError: this.metrics.lastError
+      lastError: this.metrics.lastError,
     };
   }
 
@@ -1092,13 +972,14 @@ class IntegrationMonitor {
       requests: 0,
       errors: 0,
       responseTime: [],
-      lastError: null
+      lastError: null,
     };
   }
 }
 ```
 
 ### 2. Error Handling & Retry Logic
+
 ```javascript
 // Retry Handler
 class RetryHandler {
@@ -1110,28 +991,34 @@ class RetryHandler {
 
   async executeWithRetry(operation, context = {}) {
     let lastError;
-    
+
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
         const result = await operation();
         return result;
       } catch (error) {
         lastError = error;
-        
+
         if (attempt === this.maxRetries) {
-          throw new Error(`Operation failed after ${this.maxRetries + 1} attempts: ${error.message}`);
+          throw new Error(
+            `Operation failed after ${this.maxRetries + 1} attempts: ${error.message}`,
+          );
         }
 
-        const delay = this.retryDelay * Math.pow(this.backoffMultiplier, attempt);
-        console.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error.message);
-        
+        const delay =
+          this.retryDelay * Math.pow(this.backoffMultiplier, attempt);
+        console.warn(
+          `Attempt ${attempt + 1} failed, retrying in ${delay}ms:`,
+          error.message,
+        );
+
         await this.sleep(delay);
       }
     }
   }
 
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -1139,7 +1026,7 @@ class RetryHandler {
 const retryHandler = new RetryHandler({
   maxRetries: 3,
   retryDelay: 1000,
-  backoffMultiplier: 2
+  backoffMultiplier: 2,
 });
 
 const result = await retryHandler.executeWithRetry(async () => {
@@ -1154,21 +1041,25 @@ const result = await retryHandler.executeWithRetry(async () => {
 ### 1. Integration Design Principles
 
 **1. Loose Coupling**
+
 - Use events for asynchronous communication
 - Avoid direct database access between modules
 - Implement versioned APIs
 
 **2. Fault Tolerance**
+
 - Implement retry logic with exponential backoff
 - Use circuit breakers for external services
 - Provide fallback mechanisms
 
 **3. Security First**
+
 - Always authenticate and authorize
 - Encrypt sensitive data in transit and at rest
 - Use API keys with limited scope and expiration
 
 **4. Observability**
+
 - Log all integration events
 - Monitor performance metrics
 - Implement health checks
@@ -1176,6 +1067,7 @@ const result = await retryHandler.executeWithRetry(async () => {
 ### 2. Performance Optimization
 
 **1. Caching Strategy**
+
 ```javascript
 // Cache Implementation
 class IntegrationCache {
@@ -1203,11 +1095,13 @@ class IntegrationCache {
 ```
 
 **2. Batch Processing**
+
 - Process multiple items in single requests
 - Use bulk operations for database writes
 - Implement parallel processing where possible
 
 **3. Connection Pooling**
+
 - Reuse database connections
 - Implement HTTP connection pooling
 - Configure appropriate pool sizes
@@ -1215,6 +1109,7 @@ class IntegrationCache {
 ### 3. Error Handling Guidelines
 
 **1. Error Classification**
+
 ```javascript
 // Error Types
 class IntegrationError extends Error {
@@ -1246,6 +1141,7 @@ class AuthenticationError extends IntegrationError {
 ```
 
 **2. Error Recovery**
+
 - Implement automatic retry for transient errors
 - Provide manual retry options for persistent errors
 - Log detailed error information for debugging
@@ -1253,6 +1149,7 @@ class AuthenticationError extends IntegrationError {
 ### 4. Testing Strategies
 
 **1. Unit Testing**
+
 ```javascript
 // Example Unit Test
 describe('BLIH API Client', () => {
@@ -1263,7 +1160,7 @@ describe('BLIH API Client', () => {
     mockAxios = {
       get: jest.fn(),
       post: jest.fn(),
-      patch: jest.fn()
+      patch: jest.fn(),
     };
     apiClient = new BLIHApiClient('https://test.com', 'test_key');
     apiClient.axios = mockAxios;
@@ -1274,7 +1171,7 @@ describe('BLIH API Client', () => {
     mockAxios.get.mockResolvedValue({ data: mockEmployee });
 
     const result = await apiClient.getEmployee('EMP001');
-    
+
     expect(result).toEqual(mockEmployee);
     expect(mockAxios.get).toHaveBeenCalledWith('/api/v1/employees/EMP001');
   });
@@ -1282,23 +1179,26 @@ describe('BLIH API Client', () => {
   test('should handle employee not found', async () => {
     mockAxios.get.mockRejectedValue({ response: { status: 404 } });
 
-    await expect(apiClient.getEmployee('EMP001'))
-      .rejects.toThrow('Employee EMP001 not found');
+    await expect(apiClient.getEmployee('EMP001')).rejects.toThrow(
+      'Employee EMP001 not found',
+    );
   });
 });
 ```
 
 **2. Integration Testing**
+
 - Test with real API endpoints
 - Use test environments with test data
 - Verify end-to-end workflows
 
 **3. Contract Testing**
+
 - Define API contracts
 - Verify compliance with contracts
 - Test backward compatibility
 
 ---
 
-*Documentation Version: 1.0*  
-*Last Updated: February 2026*
+_Documentation Version: 1.0_  
+_Last Updated: February 2026_
