@@ -1,7 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type {
+  ApiResponse,
+  ApiResponseError,
+  ApiResponseFieldError,
+  ApiResponseMeta,
+  ApiResponsePaginationMeta,
+  PaginatedResult,
+  PaginationInput,
+} from '@repo/types';
 
 /** API version for meta (e.g. "v1"). */
 export const API_VERSION = 'v1';
+
+/** Default success message when no per-route message is set. */
+export const DEFAULT_SUCCESS_MESSAGE = 'Request processed successfully';
 
 /** Standard error codes for the response envelope (aligned with HTTP and validation). */
 export enum ErrorCode {
@@ -20,64 +32,15 @@ export enum ErrorCode {
   GATEWAY_TIMEOUT = 'GATEWAY_TIMEOUT',
 }
 
-/** Default success message when no per-route message is set. */
-export const DEFAULT_SUCCESS_MESSAGE = 'Request processed successfully';
-
-export interface ApiResponseFieldError {
-  field: string;
-  message: string;
-}
-
-export interface ApiResponseError {
-  code: string;
-  details?: string;
-  fieldErrors?: ApiResponseFieldError[];
-}
-
-export interface ApiResponsePaginationMeta {
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
-
-export interface ApiResponseMeta {
-  timestamp: string;
-  requestId: string;
-  version: string;
-  pagination?: ApiResponsePaginationMeta;
-}
-
-export type ApiResponse<T> = {
-  success: boolean;
-  message: string;
-  data: T | null;
-  error: ApiResponseError | null;
-  meta: ApiResponseMeta;
+export type {
+  ApiResponse,
+  ApiResponseError,
+  ApiResponseFieldError,
+  ApiResponseMeta,
+  ApiResponsePaginationMeta,
+  PaginatedResult,
+  PaginationInput,
 };
-
-export interface PaginationInput {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
-}
-
-export interface PaginatedResult<T> {
-  items: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
 
 /** Pagination info in envelope meta (uses totalItems per spec). */
 export class ResponseEnvelopePaginationDto implements ApiResponsePaginationMeta {

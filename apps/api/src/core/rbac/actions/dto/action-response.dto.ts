@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { ActionResponseDto as ActionResponseDtoType } from '@repo/types';
 
-export class ActionResponseDto {
+export class ActionResponseDto implements ActionResponseDtoType {
   @ApiProperty({ example: '8b76752b-df18-45bc-af74-1ea9a0db2e40' })
   id!: string;
 

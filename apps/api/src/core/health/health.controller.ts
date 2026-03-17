@@ -9,11 +9,13 @@ import {
 } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
 import { Public } from '../../shared/decorators/public.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import {
   ApiErrorResponseDto,
   createEnvelopeErrorExample,
 } from '../../shared/docs/openapi';
 import { PrismaService } from '../../platform/prisma/prisma.service';
+import { HealthCheckResponseDto } from './dto/health-check-response.dto';
 
 @ApiTags('Health')
 @Controller('health')
@@ -29,22 +31,11 @@ export class HealthController {
   @ApiOperation({
     summary: 'Health check',
     description:
-      'Returns health state of core dependencies (database, keycloak, rabbitmq, smtp). Public endpoint.',
+      'Returns the aggregated health state of the database, Keycloak, and SMTP configuration.',
   })
   @ApiOkResponse({
     description: 'Health check result.',
-    schema: {
-      example: {
-        status: 'up',
-        checks: {
-          database: { status: 'up' },
-          keycloak: { status: 'up' },
-          rabbitmq: { status: 'up', mode: 'disabled' },
-          smtp: { status: 'up', mode: 'disabled' },
-        },
-        timestamp: '2026-02-15T12:00:00.000Z',
-      },
-    },
+    type: HealthCheckResponseDto,
   })
   @ApiInternalServerErrorResponse({
     description: 'Unexpected health check failure.',
@@ -57,11 +48,11 @@ export class HealthController {
       }),
     },
   })
+  @ResponseMessage('Health status retrieved successfully')
   async check() {
     const checks = {
       database: await this.databaseCheck(),
       keycloak: await this.keycloakCheck(),
-      rabbitmq: this.rabbitCheck(),
       smtp: this.smtpCheck(),
     };
 
@@ -96,14 +87,6 @@ export class HealthController {
     } catch (error) {
       return { status: 'down' as const, error: this.getMessage(error) };
     }
-  }
-
-  private rabbitCheck() {
-    const enabled =
-      this.configService.get<string>('RABBITMQ_ENABLED', 'false') === 'true';
-    return enabled
-      ? { status: 'up' as const }
-      : { status: 'up' as const, mode: 'disabled' };
   }
 
   private smtpCheck() {

@@ -2,15 +2,15 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsIn,
   IsInt,
   IsOptional,
   IsString,
   Max,
   Min,
 } from 'class-validator';
+import type { ListRolesQueryDto as ListRolesQueryDtoType } from '@repo/types';
 
-export class ListRolesQueryDto {
+export class ListRolesQueryDto implements ListRolesQueryDtoType {
   @ApiPropertyOptional({
     description: 'Page number (1-based).',
     example: 1,
@@ -41,16 +41,6 @@ export class ListRolesQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
-
-  @ApiPropertyOptional({
-    description: 'Filter by role data scope.',
-    enum: ['global', 'organization', 'department', 'self'],
-    example: 'organization',
-  })
-  @IsOptional()
-  @IsString()
-  @IsIn(['global', 'organization', 'department', 'self'])
-  dataScope?: 'global' | 'organization' | 'department' | 'self';
 
   @ApiPropertyOptional({
     description: 'Filter by system role flag.',

@@ -1,8 +1,8 @@
 {
-  "id": "blih",
-  "realm": "blih",
+  "id": "blih-dev",
+  "realm": "blih-dev",
   "enabled": true,
-  "displayName": "BLIH System",
+  "displayName": "BLIH System dev",
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
@@ -11,34 +11,39 @@
   "bruteForceProtected": true,
   "clients": [
     {
-      "clientId": "blih-system-frontend",
-      "name": "BLIH System Frontend",
+      "clientId": "blih-system-auth",
+      "name": "BLIH System Auth Backend",
       "enabled": true,
-      "publicClient": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "my-blih-auth-secret-2026",
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
+      "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
-      "redirectUris": [
-        "http://localhost:3000/api/auth/callback/keycloak",
-        "http://localhost:3000/*"
-      ],
+      "redirectUris": ["http://localhost:5000/api/v1/auth/callback"],
       "webOrigins": ["http://localhost:3000"],
-      "protocol": "openid-connect",
-      "defaultClientScopes": ["basic", "roles", "audience-blih-api"]
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "email",
+        "roles",
+        "audience-blih-api"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:3000/*"
+      }
     },
     {
       "clientId": "blih-system-api",
       "name": "BLIH System API",
       "enabled": true,
-      "publicClient": false,
-      "secret": "my-blih-dev-secret-2024",
-      "directAccessGrantsEnabled": false,
-      "standardFlowEnabled": true,
-      "serviceAccountsEnabled": true,
-      "redirectUris": ["http://localhost:3001/*"],
-      "webOrigins": [],
       "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "my-blih-api-secret-2026",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
       "defaultClientScopes": ["basic", "roles"],
       "authorizationServicesEnabled": false
     }
@@ -109,83 +114,245 @@
           "realm": ["brain_admin", "brain_viewer"]
         }
       },
-      {
-        "name": "hr_manager",
-        "description": "HR Manager"
-      },
-      {
-        "name": "hr_assistant",
-        "description": "HR Assistant"
-      },
-      {
-        "name": "finance_manager",
-        "description": "Finance Manager"
-      },
-      {
-        "name": "finance_accountant",
-        "description": "Finance Accountant"
-      },
-      {
-        "name": "pm_lead",
-        "description": "PM Lead"
-      },
-      {
-        "name": "pm_member",
-        "description": "PM Member"
-      },
-      {
-        "name": "crm_lead",
-        "description": "CRM Lead"
-      },
-      {
-        "name": "crm_agent",
-        "description": "CRM Agent"
-      },
-      {
-        "name": "brain_admin",
-        "description": "Brain Admin"
-      },
-      {
-        "name": "brain_viewer",
-        "description": "Brain Viewer"
-      }
+      { "name": "hr_manager", "description": "HR Manager" },
+      { "name": "hr_assistant", "description": "HR Assistant" },
+      { "name": "finance_manager", "description": "Finance Manager" },
+      { "name": "finance_accountant", "description": "Finance Accountant" },
+      { "name": "pm_lead", "description": "PM Lead" },
+      { "name": "pm_member", "description": "PM Member" },
+      { "name": "crm_lead", "description": "CRM Lead" },
+      { "name": "crm_agent", "description": "CRM Agent" },
+      { "name": "brain_admin", "description": "Brain Admin" },
+      { "name": "brain_viewer", "description": "Brain Viewer" }
     ]
   },
+  "users": [
+    {
+      "id": "8b3e1b7b-6f8a-4e25-8f91-0c5b2df59a11",
+      "username": "admin1",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["superadmin"],
+      "requiredActions": []
+    },
+    {
+      "id": "f0b80ac1-b79d-47e3-8821-5a94a541f101",
+      "username": "hr.manager",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Helen",
+      "lastName": "Manager",
+      "email": "hr.manager@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["hr_manager"],
+      "requiredActions": []
+    },
+    {
+      "id": "913bbf35-61c3-4f53-b2b0-f6c37af23222",
+      "username": "finance.manager",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Fiona",
+      "lastName": "Manager",
+      "email": "finance.manager@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["finance_manager"],
+      "requiredActions": []
+    },
+    {
+      "id": "d8f27025-93d0-4702-8aef-14a6d3ef4333",
+      "username": "pm.lead",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Paul",
+      "lastName": "Lead",
+      "email": "pm.lead@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["pm_lead"],
+      "requiredActions": []
+    },
+    {
+      "id": "9a4fb822-7b0e-44a9-b5cd-09a32e2c5444",
+      "username": "crm.lead",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Chris",
+      "lastName": "Lead",
+      "email": "crm.lead@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["crm_lead"],
+      "requiredActions": []
+    },
+    {
+      "id": "6c44188f-d70a-414c-89c8-93c0b6ad6555",
+      "username": "brain.admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Bria",
+      "lastName": "Admin",
+      "email": "brain.admin@blih.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["brain_admin"],
+      "requiredActions": []
+    }
+  ],
   "clientScopes": [
     {
+      "name": "openid",
+      "description": "OpenID Connect required scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${openidScopeConsentText}"
+      }
+    },
+    {
+      "name": "profile",
+      "description": "OpenID Connect built-in scope: profile",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${profileScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "full name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-full-name-mapper",
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "given name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "firstName",
+            "claim.name": "given_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "family name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "lastName",
+            "claim.name": "family_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "username",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "description": "OpenID Connect built-in scope: email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${emailScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "email",
+            "claim.name": "email",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "email verified",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "emailVerified",
+            "claim.name": "email_verified",
+            "jsonType.label": "boolean",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
       "name": "basic",
-      "description": "OpenID Connect scope for add all basic claims to the token",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "false",
         "display.on.consent.screen": "false"
-      },
-      "protocolMappers": [
-        {
-          "name": "auth_time",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usersessionmodel-note-mapper",
-          "consentRequired": false,
-          "config": {
-            "user.session.note": "AUTH_TIME",
-            "id.token.claim": "true",
-            "introspection.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "auth_time",
-            "jsonType.label": "long"
-          }
-        },
-        {
-          "name": "sub",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-sub-mapper",
-          "consentRequired": false,
-          "config": {
-            "introspection.token.claim": "true",
-            "access.token.claim": "true"
-          }
-        }
-      ]
+      }
     },
     {
       "name": "roles",
@@ -220,117 +387,11 @@
           "protocolMapper": "oidc-audience-mapper",
           "config": {
             "included.client.audience": "blih-system-api",
-            "id.token.claim": "true",
-            "access.token.claim": "true"
+            "access.token.claim": "true",
+            "id.token.claim": "true"
           }
         }
       ]
-    }
-  ],
-  "authenticationFlows": [],
-  "requiredActions": [],
-  "users": [
-    {
-      "username": "admin1",
-      "email": "admin@example.com",
-      "firstName": "Admin",
-      "lastName": "User",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "admin123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["superadmin"],
-      "clientRoles": {}
-    },
-    {
-      "username": "user1",
-      "email": "user1@example.com",
-      "firstName": "Regular",
-      "lastName": "User",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "user123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["hr_manager"],
-      "clientRoles": {}
-    },
-    {
-      "username": "finance1",
-      "email": "finance1@example.com",
-      "firstName": "Finance",
-      "lastName": "User",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "finance123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["finance_manager"],
-      "clientRoles": {}
-    },
-    {
-      "username": "pm1",
-      "email": "pm1@example.com",
-      "firstName": "Project",
-      "lastName": "Manager",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "pm123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["pm_lead"],
-      "clientRoles": {}
-    },
-    {
-      "username": "crm1",
-      "email": "crm1@example.com",
-      "firstName": "CRM",
-      "lastName": "Lead",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "crm123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["crm_lead"],
-      "clientRoles": {}
-    },
-    {
-      "username": "brain1",
-      "email": "brain1@example.com",
-      "firstName": "Brain",
-      "lastName": "Admin",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "brain123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["brain_admin"],
-      "clientRoles": {}
     }
   ]
 }

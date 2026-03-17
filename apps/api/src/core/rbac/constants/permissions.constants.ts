@@ -8,6 +8,54 @@ export const UserPermissions = {
   ASSIGN_ROLE: 'user:assign-role',
 } as const;
 
+export const UserProfilePermissions = {
+  VIEW: 'user_profile:view',
+  UPDATE: 'user_profile:update',
+} as const;
+
+export const UserEmploymentPermissions = {
+  VIEW: 'user_employment:view',
+  UPDATE: 'user_employment:update',
+} as const;
+
+export const UserCompensationPermissions = {
+  VIEW: 'user_compensation:view',
+  UPDATE: 'user_compensation:update',
+  HISTORY_VIEW: 'user_compensation_history:view',
+  HISTORY_CREATE: 'user_compensation_history:create',
+  COMPONENT_VIEW: 'user_compensation:view_components',
+  COMPONENT_MANAGE: 'user_compensation:manage_components',
+} as const;
+
+export const UserLifecyclePermissions = {
+  VIEW: 'user_lifecycle:view',
+  UPDATE: 'user_lifecycle:update',
+} as const;
+
+export const DepartmentPermissions = {
+  VIEW: 'department:view',
+  CREATE: 'department:create',
+  UPDATE: 'department:update',
+  DELETE: 'department:delete',
+  ALL: 'department:*',
+} as const;
+
+export const PositionPermissions = {
+  VIEW: 'position:view',
+  CREATE: 'position:create',
+  UPDATE: 'position:update',
+  DELETE: 'position:delete',
+  ALL: 'position:*',
+} as const;
+
+export const JobGradePermissions = {
+  VIEW: 'job_grade:view',
+  CREATE: 'job_grade:create',
+  UPDATE: 'job_grade:update',
+  DELETE: 'job_grade:delete',
+  ALL: 'job_grade:*',
+} as const;
+
 export const SystemRolePermissions = {
   VIEW: 'system_role:view',
   CREATE: 'system_role:create',
@@ -71,6 +119,61 @@ export const LeavePermissions = {
   APPROVE: 'leave:approve',
   REJECT: 'leave:reject',
   ALL: 'leave:*',
+} as const;
+
+export const AttendancePermissions = {
+  VIEW: 'attendance:view',
+  CREATE: 'attendance:create',
+  UPDATE: 'attendance:update',
+  ALL: 'attendance:*',
+} as const;
+
+export const AttendanceCorrectionPermissions = {
+  VIEW: 'attendance_correction:view',
+  CREATE: 'attendance_correction:create',
+  UPDATE: 'attendance_correction:update',
+  APPROVE: 'attendance_correction:approve',
+  REJECT: 'attendance_correction:reject',
+  ALL: 'attendance_correction:*',
+} as const;
+
+export const OvertimePermissions = {
+  VIEW: 'overtime:view',
+  CREATE: 'overtime:create',
+  UPDATE: 'overtime:update',
+  APPROVE: 'overtime:approve',
+  REJECT: 'overtime:reject',
+  ALL: 'overtime:*',
+} as const;
+
+export const FlexWorkPermissions = {
+  VIEW: 'flex_work:view',
+  CREATE: 'flex_work:create',
+  UPDATE: 'flex_work:update',
+  APPROVE: 'flex_work:approve',
+  REJECT: 'flex_work:reject',
+  ALL: 'flex_work:*',
+} as const;
+
+export const PunctualityPermissions = {
+  VIEW: 'punctuality:view',
+  ALERT: 'punctuality:alert',
+  ALL: 'punctuality:*',
+} as const;
+
+export const TimesheetPermissions = {
+  VIEW: 'timesheet:view',
+  CREATE: 'timesheet:create',
+  UPDATE: 'timesheet:update',
+  APPROVE: 'timesheet:approve',
+  REJECT: 'timesheet:reject',
+  ALL: 'timesheet:*',
+} as const;
+
+export const AttendanceReportPermissions = {
+  VIEW: 'attendance_report:view',
+  EXPORT: 'attendance_report:export',
+  ALL: 'attendance_report:*',
 } as const;
 
 export const HrPayrollPermissions = {
@@ -144,10 +247,274 @@ export const BrainConfigPermissions = {
   ALL: 'brain_config:*',
 } as const;
 
+export const JobPermissions = {
+  VIEW: 'job:view',
+  CREATE: 'job:create',
+  UPDATE: 'job:update',
+  DELETE: 'job:delete',
+  SUBMIT: 'job:submit',
+  PUBLISH: 'job:publish',
+  CLOSE: 'job:close',
+  MANAGE_SKILLS: 'job:manage_skills',
+  MANAGE_TOOLS: 'job:manage_tools',
+  MANAGE_RESPONSIBILITIES: 'job:manage_responsibilities',
+  ALL: 'job:*',
+} as const;
+
+export const JobApprovalPermissions = {
+  VIEW: 'job_approval:view',
+  DECIDE: 'job_approval:decide',
+  ALL: 'job_approval:*',
+} as const;
+
+export const CandidatePermissions = {
+  VIEW: 'candidate:view',
+  CREATE: 'candidate:create',
+  UPDATE: 'candidate:update',
+  DELETE: 'candidate:delete',
+  ALL: 'candidate:*',
+} as const;
+
+export const JobApplicationPermissions = {
+  VIEW: 'job_application:view',
+  CREATE: 'job_application:create',
+  UPDATE: 'job_application:update',
+  DELETE: 'job_application:delete',
+  ALL: 'job_application:*',
+} as const;
+
+export const ApplicantPermissions = {
+  VIEW: 'applicant:view',
+  CREATE: 'applicant:create',
+  UPDATE: 'applicant:update',
+  DELETE: 'applicant:delete',
+  ALL: 'applicant:*',
+} as const;
+
+export const InterviewPermissions = {
+  VIEW: 'interview:view',
+  CREATE: 'interview:create',
+  UPDATE: 'interview:update',
+  SUBMIT_FEEDBACK: 'interview:submit_feedback',
+  DELETE: 'interview:delete',
+  ALL: 'interview:*',
+} as const;
+
+export const OfferPermissions = {
+  VIEW: 'offer:view',
+  CREATE: 'offer:create',
+  UPDATE: 'offer:update',
+  SEND: 'offer:send',
+  RESPOND: 'offer:respond',
+  WITHDRAW: 'offer:withdraw',
+  DELETE: 'offer:delete',
+  ALL: 'offer:*',
+} as const;
+
+export const OnboardingPermissions = {
+  VIEW: 'onboarding:view',
+  CREATE: 'onboarding:create',
+  UPDATE: 'onboarding:update',
+  DELETE: 'onboarding:delete',
+  ALL: 'onboarding:*',
+} as const;
+
+export const OnboardingTaskPermissions = {
+  VIEW: 'onboarding_task:view',
+  CREATE: 'onboarding_task:create',
+  UPDATE: 'onboarding_task:update',
+  DELETE: 'onboarding_task:delete',
+  ALL: 'onboarding_task:*',
+} as const;
+
+export const OnboardingChecklistPermissions = {
+  VIEW: 'onboarding_checklist:view',
+  CREATE: 'onboarding_checklist:create',
+  UPDATE: 'onboarding_checklist:update',
+  ALL: 'onboarding_checklist:*',
+} as const;
+
+export const AssetProvisioningPermissions = {
+  VIEW: 'asset_provisioning:view',
+  CREATE: 'asset_provisioning:create',
+  UPDATE: 'asset_provisioning:update',
+  APPROVE: 'asset_provisioning:approve',
+  ALL: 'asset_provisioning:*',
+} as const;
+
+export const PolicyAcknowledgementPermissions = {
+  VIEW: 'policy_acknowledgement:view',
+  CREATE: 'policy_acknowledgement:create',
+  VERIFY: 'policy_acknowledgement:verify',
+  GRANT_ACCESS: 'policy_acknowledgement:grant_access',
+  ALL: 'policy_acknowledgement:*',
+} as const;
+
+export const ProbationPlanPermissions = {
+  VIEW: 'probation_plan:view',
+  CREATE: 'probation_plan:create',
+  UPDATE: 'probation_plan:update',
+  ENDORSE: 'probation_plan:endorse',
+  ALL: 'probation_plan:*',
+} as const;
+
+export const ProbationEvaluationPermissions = {
+  VIEW: 'probation_evaluation:view',
+  CREATE: 'probation_evaluation:create',
+  UPDATE: 'probation_evaluation:update',
+  APPROVE: 'probation_evaluation:approve',
+  ALL: 'probation_evaluation:*',
+} as const;
+
+export const ProbationConfirmationPermissions = {
+  VIEW: 'probation_confirmation:view',
+  CREATE: 'probation_confirmation:create',
+  UPDATE: 'probation_confirmation:update',
+  SIGN_OFF: 'probation_confirmation:sign_off',
+  ALL: 'probation_confirmation:*',
+} as const;
+
+export const PerformancePermissions = {
+  VIEW: 'performance:view',
+  CREATE: 'performance:create',
+  UPDATE_SELF: 'performance:update_self',
+  UPDATE_MANAGER: 'performance:update_manager',
+  UPDATE_FEEDBACK: 'performance:update_feedback',
+  COMPLETE: 'performance:complete',
+  VIEW_SUMMARY: 'performance:view_summary',
+  MANAGE_PERIODS: 'performance:manage_periods',
+  CALIBRATE: 'performance:calibrate',
+  ALL: 'performance:*',
+} as const;
+
+export const OkrPermissions = {
+  VIEW: 'okr:view',
+  CREATE: 'okr:create',
+  UPDATE: 'okr:update',
+  UPDATE_KEY_RESULT: 'okr:update_key_result',
+  VIEW_CHECKINS: 'okr:view_checkins',
+  MANAGER_REVIEW: 'okr:manager_review',
+  REWEIGHT: 'okr:reweight',
+  ALL: 'okr:*',
+} as const;
+
+export const SuccessionPlanPermissions = {
+  VIEW: 'succession_plan:view',
+  CREATE: 'succession_plan:create',
+  UPDATE: 'succession_plan:update',
+  ALL: 'succession_plan:*',
+} as const;
+
+export const PromotionProposalPermissions = {
+  VIEW: 'promotion_proposal:view',
+  CREATE: 'promotion_proposal:create',
+  REVIEW: 'promotion_proposal:review',
+  ALL: 'promotion_proposal:*',
+} as const;
+
+export const TrainingPermissions = {
+  VIEW: 'training:view',
+  CREATE: 'training:create',
+  APPROVE: 'training:approve',
+  MANAGE_SKILLS: 'training:manage_skills',
+  MANAGE_BUDGET: 'training:manage_budget',
+  SKILL_GAP: 'training:skill_gap',
+  ASSESS_NEEDS: 'training:assess_needs',
+  ALL: 'training:*',
+} as const;
+
+export const TrainingFeedbackPermissions = {
+  VIEW: 'training_feedback:view',
+  CREATE: 'training_feedback:create',
+  MANAGE: 'training_feedback:manage',
+  ALL: 'training_feedback:*',
+} as const;
+
+export const TrainingAnalyticsPermissions = {
+  VIEW: 'training_analytics:view',
+  ROI: 'training_analytics:roi',
+  REPORT: 'training_analytics:report',
+  ALL: 'training_analytics:*',
+} as const;
+
+export const CertificationPermissions = {
+  VIEW: 'certification:view',
+  CREATE: 'certification:create',
+  UPDATE: 'certification:update',
+  RENEW: 'certification:renew',
+  ALL: 'certification:*',
+} as const;
+
+export const TrainingCompliancePermissions = {
+  VIEW: 'training_compliance:view',
+  AUDIT: 'training_compliance:audit',
+  REPORT: 'training_compliance:report',
+  ALL: 'training_compliance:*',
+} as const;
+
+export const CareerDevelopmentPermissions = {
+  VIEW: 'career_development:view',
+  CREATE: 'career_development:create',
+  UPDATE: 'career_development:update',
+  MANAGE: 'career_development:manage',
+  ALL: 'career_development:*',
+} as const;
+
+export const InternalTransferPermissions = {
+  VIEW: 'internal_transfer:view',
+  CREATE: 'internal_transfer:create',
+  UPDATE: 'internal_transfer:update',
+  APPROVE: 'internal_transfer:approve',
+  REJECT: 'internal_transfer:reject',
+  ALL: 'internal_transfer:*',
+} as const;
+
+export const SalaryAdjustmentPermissions = {
+  VIEW: 'salary_adjustment:view',
+  CREATE: 'salary_adjustment:create',
+  UPDATE: 'salary_adjustment:update',
+  APPROVE: 'salary_adjustment:approve',
+  REJECT: 'salary_adjustment:reject',
+  ALL: 'salary_adjustment:*',
+} as const;
+
+export const RelationsPermissions = {
+  VIEW: 'relations:view',
+  CREATE: 'relations:create',
+  UPDATE: 'relations:update',
+  APPROVE: 'relations:approve',
+  RESPOND: 'relations:respond',
+  RESULTS: 'relations:results',
+  ALL: 'relations:*',
+} as const;
+
+export const OffboardingPermissions = {
+  VIEW: 'offboarding:view',
+  CREATE: 'offboarding:create',
+  UPDATE: 'offboarding:update',
+  APPROVE: 'offboarding:approve',
+  COMPLETE: 'offboarding:complete',
+  ALL: 'offboarding:*',
+} as const;
+
 export const PermissionGroups = {
   user: UserPermissions,
+  user_profile: UserProfilePermissions,
+  user_employment: UserEmploymentPermissions,
+  user_compensation: UserCompensationPermissions,
+  user_lifecycle: UserLifecyclePermissions,
+  department: DepartmentPermissions,
+  position: PositionPermissions,
+  job_grade: JobGradePermissions,
   employee: EmployeePermissions,
   leave: LeavePermissions,
+  attendance: AttendancePermissions,
+  attendance_correction: AttendanceCorrectionPermissions,
+  overtime: OvertimePermissions,
+  flex_work: FlexWorkPermissions,
+  punctuality: PunctualityPermissions,
+  timesheet: TimesheetPermissions,
+  attendance_report: AttendanceReportPermissions,
   hr_payroll: HrPayrollPermissions,
   invoice: InvoicePermissions,
   expense: ExpensePermissions,
@@ -158,6 +525,33 @@ export const PermissionGroups = {
   deal: DealPermissions,
   pipeline: PipelinePermissions,
   brain_config: BrainConfigPermissions,
+  job: JobPermissions,
+  job_approval: JobApprovalPermissions,
+  applicant: ApplicantPermissions,
+  interview: InterviewPermissions,
+  offer: OfferPermissions,
+  onboarding: OnboardingPermissions,
+  onboarding_task: OnboardingTaskPermissions,
+  onboarding_checklist: OnboardingChecklistPermissions,
+  asset_provisioning: AssetProvisioningPermissions,
+  policy_acknowledgement: PolicyAcknowledgementPermissions,
+  probation_plan: ProbationPlanPermissions,
+  probation_evaluation: ProbationEvaluationPermissions,
+  probation_confirmation: ProbationConfirmationPermissions,
+  performance: PerformancePermissions,
+  okr: OkrPermissions,
+  succession_plan: SuccessionPlanPermissions,
+  promotion_proposal: PromotionProposalPermissions,
+  training: TrainingPermissions,
+  training_feedback: TrainingFeedbackPermissions,
+  training_analytics: TrainingAnalyticsPermissions,
+  certification: CertificationPermissions,
+  training_compliance: TrainingCompliancePermissions,
+  career_development: CareerDevelopmentPermissions,
+  internal_transfer: InternalTransferPermissions,
+  salary_adjustment: SalaryAdjustmentPermissions,
+  relations: RelationsPermissions,
+  offboarding: OffboardingPermissions,
   system_role: SystemRolePermissions,
   system_permission: SystemPermissionPermissions,
   system_resource: SystemResourcePermissions,

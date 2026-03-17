@@ -4,6 +4,8 @@ export * from './decorators/api-pagination.decorator';
 export * from './decorators/api-protected.decorator';
 export * from './dto/api-error-response.dto';
 export * from './dto/api-success-envelope.dto';
+export * from './dto/action-success-response.dto';
+export * from './dto/generic-resource-response.dto';
 export * from './dto/pagination.dto';
 export * from './openapi.constants';
 export * from './openapi.examples';

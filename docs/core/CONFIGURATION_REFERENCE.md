@@ -108,49 +108,6 @@ POSTGRES_CONNECTION_TIMEOUT=5000
 # Default: 5000
 # Range: 1000-30000
 
-# -----------------------------------------
-# MongoDB (Document Database)
-# -----------------------------------------
-MONGODB_HOST=mongodb
-# Description: MongoDB server hostname
-# Default: mongodb
-# Required: Yes
-
-MONGODB_PORT=27017
-# Description: MongoDB server port
-# Default: 27017
-# Required: Yes
-
-MONGODB_DB=blih_prod
-# Description: MongoDB database name
-# Default: blih_dev
-# Required: Yes
-
-MONGODB_USER=blih_user
-# Description: MongoDB username
-# Default: None
-# Required: Yes
-
-MONGODB_PASSWORD=<strong-password>
-# Description: MongoDB password
-# Default: None
-# Required: Yes
-# Min length: 12
-
-MONGODB_URL=mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DB}?authSource=admin
-# Description: MongoDB connection string
-# Required: No (auto-generated)
-
-# MongoDB Options
-MONGODB_POOL_SIZE=10
-# Description: Connection pool size
-# Default: 10
-# Range: 5-50
-
-MONGODB_AUTO_INDEX=true
-# Description: Auto-create indexes
-# Default: true
-# Values: true, false
 
 # -----------------------------------------
 # Redis (Cache & Sessions)
@@ -165,52 +122,26 @@ REDIS_PORT=6379
 # Default: 6379
 # Required: Yes
 
-REDIS_PASSWORD=<password>
-# Description: Redis password (leave empty for no auth)
+REDIS_PASSWORD=<strong-password>
+# Description: Redis password
 # Default: None
-# Required: No
+# Required: Yes
+# Min length: 12
 
-REDIS_DB=0
-# Description: Redis database number
-# Default: 0
-# Range: 0-15
+REDIS_URL=redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
+# Description: Redis connection string
+# Required: No (auto-generated)
+
+# Redis Options
+REDIS_POOL_SIZE=10
+# Description: Connection pool size
+# Default: 10
+# Range: 5-50
 
 REDIS_TTL=3600
 # Description: Default cache TTL in seconds
 # Default: 3600 (1 hour)
 # Range: 60-86400
-
-# -----------------------------------------
-#RabbitMQ (Message Queue / Event Bus)
-# -----------------------------------------
-RABBITMQ_HOST=rabbitmq
-# Description: RabbitMQ server hostname
-# Default: rabbitmq
-# Required: Yes
-
-RABBITMQ_PORT=5672
-# Description: RabbitMQ AMQP port
-# Default: 5672
-# Required: Yes
-
-RABBITMQ_USER=blih_user
-# Description: RabbitMQ username
-# Default: guest
-# Required: Yes
-
-RABBITMQ_PASSWORD=<password>
-# Description: RabbitMQ password
-# Default: guest
-# Required: Yes
-
-RABBITMQ_VHOST=/blih
-# Description: RabbitMQ virtual host
-# Default: /
-# Required: No
-
-RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/${RABBITMQ_VHOST}
-# Description: Full AMQP connection string
-# Required: No (auto-generated)
 
 # -----------------------------------------
 # Qdrant (Vector Database for AI)
@@ -614,30 +545,6 @@ max_wal_size = 4GB
 max_worker_processes = 8
 max_parallel_workers_per_gather = 4
 max_parallel_workers = 8
-```
-
-### 2.2 MongoDB Tuning
-
-**`mongod.conf`:**
-
-```yaml
-storage:
-  dbPath: /data/db
-  wiredTiger:
-    engineConfig:
-      cacheSizeGB: 2
-      journalCompressor: snappy
-
-net:
-  port: 27017
-  bindIp: 0.0.0.0
-  maxIncomingConnections: 1000
-
-replication:
-  replSetName: rs0
-
-security:
-  authorization: enabled
 ```
 
 ---

@@ -1,0 +1,221 @@
+// Attendance and leave models
+// This file contains leave requests, attendance logs, overtime, flex work, and timesheets
+
+model LeaveRequest {
+  id                 String             @id @default(uuid()) @db.Uuid
+  requestId          String             @unique @map("request_id") @db.VarChar(32)
+  employeeId         String             @map("employee_id") @db.Uuid
+  employee           Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType          LeaveType          @map("leave_type")
+  startDate          DateTime           @map("start_date") @db.Date
+  endDate            DateTime           @map("end_date") @db.Date
+  daysRequested      Decimal            @map("days_requested") @db.Decimal(5, 2)
+  reason             String?            @db.Text
+  description        String?            @db.Text
+  contactDuringLeave Json?              @map("contact_during_leave") @db.JsonB
+  handoverDelegateId String?            @map("handover_delegate_id") @db.Uuid
+  handoverDelegate   User?              @relation("LeaveRequestHandoverDelegate", fields: [handoverDelegateId], references: [id], onDelete: SetNull)
+  handoverNotes      String?            @map("handover_notes") @db.Text
+  startHalfDay       Boolean            @default(false) @map("start_half_day")
+  endHalfDay         Boolean            @default(false) @map("end_half_day")
+  balanceSnapshot    Json?              @map("balance_snapshot") @db.JsonB
+  submittedAt        DateTime?          @map("submitted_at")
+  approvalSteps      LeaveApproval[]    @relation("LeaveRequestApprovals")
+  status             LeaveRequestStatus @default(DRAFT)
+  approvedById       String?            @map("approved_by_id") @db.Uuid
+  approvedBy         User?              @relation("LeaveRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt         DateTime?          @map("approved_at")
+  rejectionReason    String?            @map("rejection_reason") @db.Text
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
+  @@index([startDate, endDate])
+  @@index([approvedById])
+  @@index([submittedAt])
+}
+
+model LeaveApproval {
+  id             String           @id @default(uuid()) @db.Uuid
+  leaveRequestId String           @map("leave_request_id") @db.Uuid
+  leaveRequest   LeaveRequest     @relation("LeaveRequestApprovals", fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  approverId     String           @map("approver_id") @db.Uuid
+  approver       User             @relation("LeaveApprovalApprover", fields: [approverId], references: [id], onDelete: Restrict)
+  level          Int
+  decision       ApprovalDecision @default(PENDING)
+  comments       String?          @db.Text
+  decidedAt      DateTime?        @map("decided_at")
+  createdAt      DateTime         @default(now())
+
+  @@unique([leaveRequestId, level])
+  @@index([leaveRequestId])
+  @@index([approverId])
+}
+
+model LeaveBalance {
+  id          String    @id @default(uuid()) @db.Uuid
+  employeeId  String    @map("employee_id") @db.Uuid
+  leaveType   LeaveType @map("leave_type")
+  year        Int
+  totalDays   Decimal   @map("total_days") @db.Decimal(5, 2)
+  usedDays    Decimal   @default(0) @map("used_days") @db.Decimal(5, 2)
+  pendingDays Decimal   @default(0) @map("pending_days") @db.Decimal(5, 2)
+  carriedOver Decimal?  @default(0) @map("carried_over") @db.Decimal(5, 2)
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([employeeId, leaveType, year])
+  @@index([employeeId])
+}
+
+model AttendanceLog {
+  id                 String                        @id @default(uuid()) @db.Uuid
+  employeeId         String                        @map("employee_id") @db.Uuid
+  employee           Employee                      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  correctionRequests AttendanceCorrectionRequest[]
+  overtimeRequests   OvertimeRequest[]
+  date               DateTime                      @db.Date
+  checkInAt          DateTime?                     @map("check_in_at")
+  checkOutAt         DateTime?                     @map("check_out_at")
+  totalMinutes       Int?                          @map("total_minutes")
+  status             AttendanceStatus              @default(PRESENT)
+  isAutoCalculated   Boolean                       @default(true) @map("is_auto_calculated")
+  overtimeMinutes    Int?                          @map("overtime_minutes")
+  overtimeApproved   Boolean                       @default(false) @map("overtime_approved")
+  checkInMethod      String?                       @map("check_in_method") @db.VarChar(32)
+  checkOutMethod     String?                       @map("check_out_method") @db.VarChar(32)
+  checkInIp          String?                       @map("check_in_ip") @db.VarChar(64)
+  checkInLocation    Json?                         @map("check_in_location") @db.JsonB
+  reconciledAt       DateTime?                     @map("reconciled_at")
+  notes              String?                       @db.Text
+  createdAt          DateTime                      @default(now())
+  updatedAt          DateTime                      @updatedAt
+
+  @@unique([employeeId, date])
+  @@index([employeeId])
+  @@index([employeeId, date])
+  @@index([date])
+  @@index([status])
+}
+
+model AttendanceCorrectionRequest {
+  id                  String                @id @default(uuid()) @db.Uuid
+  requestId           String                @unique @map("request_id") @db.VarChar(32)
+  employeeId          String                @map("employee_id") @db.Uuid
+  employee            Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  attendanceLogId     String?               @map("attendance_log_id") @db.Uuid
+  attendanceLog       AttendanceLog?        @relation(fields: [attendanceLogId], references: [id], onDelete: SetNull)
+  date                DateTime              @db.Date
+  requestedCheckInAt  DateTime?             @map("requested_check_in_at")
+  requestedCheckOutAt DateTime?             @map("requested_check_out_at")
+  requestedStatus     AttendanceStatus?     @map("requested_status")
+  reason              String                @db.Text
+  notes               String?               @db.Text
+  status              RequestWorkflowStatus @default(DRAFT)
+  submittedAt         DateTime?             @map("submitted_at")
+  approvedById        String?               @map("approved_by_id") @db.Uuid
+  approvedBy          User?                 @relation("AttendanceCorrectionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt          DateTime?             @map("approved_at")
+  rejectionReason     String?               @map("rejection_reason") @db.Text
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  @@index([employeeId])
+  @@index([attendanceLogId])
+  @@index([date])
+  @@index([status])
+  @@index([approvedById])
+}
+
+model OvertimeRequest {
+  id               String                @id @default(uuid()) @db.Uuid
+  requestId        String                @unique @map("request_id") @db.VarChar(32)
+  employeeId       String                @map("employee_id") @db.Uuid
+  employee         Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  attendanceLogId  String?               @map("attendance_log_id") @db.Uuid
+  attendanceLog    AttendanceLog?        @relation(fields: [attendanceLogId], references: [id], onDelete: SetNull)
+  date             DateTime              @db.Date
+  requestedMinutes Int                   @map("requested_minutes")
+  reason           String                @db.Text
+  notes            String?               @db.Text
+  status           RequestWorkflowStatus @default(DRAFT)
+  submittedAt      DateTime?             @map("submitted_at")
+  approvedById     String?               @map("approved_by_id") @db.Uuid
+  approvedBy       User?                 @relation("OvertimeRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt       DateTime?             @map("approved_at")
+  rejectionReason  String?               @map("rejection_reason") @db.Text
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@index([employeeId])
+  @@index([attendanceLogId])
+  @@index([date])
+  @@index([status])
+  @@index([approvedById])
+}
+
+model FlexWorkRequest {
+  id                   String                @id @default(uuid()) @db.Uuid
+  requestId            String                @unique @map("request_id") @db.VarChar(32)
+  employeeId           String                @map("employee_id") @db.Uuid
+  employee             Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  requestType          FlexWorkRequestType   @map("request_type")
+  startDate            DateTime              @map("start_date") @db.Date
+  endDate              DateTime              @map("end_date") @db.Date
+  requestedStartMinute Int?                  @map("requested_start_minute")
+  requestedEndMinute   Int?                  @map("requested_end_minute")
+  reason               String                @db.Text
+  details              Json?                 @db.JsonB
+  status               RequestWorkflowStatus @default(DRAFT)
+  submittedAt          DateTime?             @map("submitted_at")
+  approvedById         String?               @map("approved_by_id") @db.Uuid
+  approvedBy           User?                 @relation("FlexWorkRequestApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt           DateTime?             @map("approved_at")
+  rejectionReason      String?               @map("rejection_reason") @db.Text
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+
+  @@index([employeeId])
+  @@index([requestType])
+  @@index([startDate, endDate])
+  @@index([status])
+  @@index([approvedById])
+}
+
+model Timesheet {
+  id                  String                @id @default(uuid()) @db.Uuid
+  timesheetId         String                @unique @map("timesheet_id") @db.VarChar(32)
+  employeeId          String                @map("employee_id") @db.Uuid
+  employee            Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  periodStart         DateTime              @map("period_start") @db.Date
+  periodEnd           DateTime              @map("period_end") @db.Date
+  trackedDays         Int                   @default(0) @map("tracked_days")
+  workedDays          Int                   @default(0) @map("worked_days")
+  leaveDays           Decimal               @default(0) @map("leave_days") @db.Decimal(5, 2)
+  absenceDays         Decimal               @default(0) @map("absence_days") @db.Decimal(5, 2)
+  remoteDays          Int                   @default(0) @map("remote_days")
+  lateCount           Int                   @default(0) @map("late_count")
+  earlyDepartureCount Int                   @default(0) @map("early_departure_count")
+  totalWorkedMinutes  Int                   @default(0) @map("total_worked_minutes")
+  overtimeMinutes     Int                   @default(0) @map("overtime_minutes")
+  attendanceRate      Decimal               @default(0) @map("attendance_rate") @db.Decimal(5, 2)
+  punctualityRate     Decimal               @default(0) @map("punctuality_rate") @db.Decimal(5, 2)
+  sourceSnapshot      Json?                 @map("source_snapshot") @db.JsonB
+  notes               String?               @db.Text
+  status              RequestWorkflowStatus @default(DRAFT)
+  submittedAt         DateTime?             @map("submitted_at")
+  approvedById        String?               @map("approved_by_id") @db.Uuid
+  approvedBy          User?                 @relation("TimesheetApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt          DateTime?             @map("approved_at")
+  rejectionReason     String?               @map("rejection_reason") @db.Text
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  @@unique([employeeId, periodStart, periodEnd])
+  @@index([employeeId])
+  @@index([periodStart, periodEnd])
+  @@index([status])
+  @@index([approvedById])
+}

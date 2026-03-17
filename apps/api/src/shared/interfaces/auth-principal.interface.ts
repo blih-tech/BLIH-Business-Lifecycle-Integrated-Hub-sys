@@ -14,5 +14,5 @@ export interface AuthPrincipal {
   lastName?: string;
   phone?: string;
   status?: string;
-  position?: string;
+  departmentId?: string | null;
 }

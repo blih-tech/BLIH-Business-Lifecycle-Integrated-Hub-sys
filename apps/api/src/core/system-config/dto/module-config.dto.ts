@@ -1,7 +1,8 @@
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { ModuleConfigDto as ModuleConfigDtoType } from '@repo/types';
 
-export class ModuleConfigDto {
+export class ModuleConfigDto implements ModuleConfigDtoType {
   @ApiProperty({
     description: 'Module identifier.',
     example: 'finance',

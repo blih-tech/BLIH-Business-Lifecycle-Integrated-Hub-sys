@@ -9,8 +9,8 @@ You now have a **centralized development database environment on VPS** for team 
 ### Docker Configuration
 
 - ✅ `docker-compose.yml` - Main Docker Compose file with all services
-- ✅ `docker/init-scripts/01-init-databases.sql` - Creates both databases
-- ✅ `docker/init-scripts/02-configure-remote-access.sql` - Remote access setup
+- ✅ `docker/init-scripts/01-init-databases.sh` - Creates both databases
+- ✅ `docker/init-scripts/02-configure-remote-access.sh` - Remote access setup
 
 ### Environment Files
 

@@ -8,13 +8,6 @@ export class GetResourceUseCase {
   async execute(resourceId: string) {
     const resource = await this.prisma.permissionResource.findUnique({
       where: { id: resourceId },
-      include: {
-        module: {
-          select: {
-            name: true,
-          },
-        },
-      },
     });
 
     if (!resource) {
@@ -23,8 +16,6 @@ export class GetResourceUseCase {
 
     return {
       id: resource.id,
-      moduleId: resource.moduleId,
-      module: resource.module.name,
       name: resource.name,
       description: resource.description,
       createdAt: resource.createdAt,

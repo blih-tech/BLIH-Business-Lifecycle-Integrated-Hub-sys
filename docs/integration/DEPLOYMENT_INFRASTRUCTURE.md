@@ -36,8 +36,8 @@ This document provides comprehensive deployment infrastructure for BLIH system w
 ┌─────────────────────────────────────────────────────────────────┐
 │                Data Layer                                    │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐ │
-│  │  MongoDB    │ │   Qdrant    │ │      Ollama        │ │
-│  │(Documents)  │ │ (Vectors)   │ │     (LLM)          │ │
+│  │ PostgreSQL  │ │   Qdrant    │ │      Ollama        │ │
+│  │(Primary DB) │ │ (Vectors)   │ │     (LLM)          │ │
 │  └─────────────┘ └─────────────┘ └─────────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -86,8 +86,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/ssl
@@ -106,7 +106,7 @@ services:
 
   # Frontend Application
   frontend:
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile.prod
     environment:
@@ -124,17 +124,17 @@ services:
 
   # Backend API
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.prod
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=mongodb://mongodb:27017/blih
+      - DATABASE_URL=postgresql://postgres:5432/blih
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
       - KEYCLOAK_URL=${KEYCLOAK_URL}
     depends_on:
-      - mongodb
+      - postgres
       - redis
       - keycloak
     restart: unless-stopped
@@ -149,20 +149,20 @@ services:
 
   # RAG Service
   rag-service:
-    build: 
+    build:
       context: ./rag-service
       dockerfile: Dockerfile.prod
     environment:
       - NODE_ENV=production
       - QDRANT_URL=http://qdrant:6333
       - OLLAMA_URL=http://ollama:11434
-      - MONGODB_URL=mongodb://mongodb:27017/blih-rag
+      - DATABASE_URL=postgresql://postgres:5432/blih-rag
       - CPU_AWARE=true
       - MAX_CONCURRENT_QUERIES=50
     depends_on:
       - qdrant
       - ollama
-      - mongodb
+      - postgres
     restart: unless-stopped
     deploy:
       resources:
@@ -177,7 +177,7 @@ services:
   qdrant:
     image: qdrant/qdrant:latest
     ports:
-      - "6333:6333"
+      - '6333:6333'
     volumes:
       - qdrant_data:/qdrant/storage
     environment:
@@ -199,7 +199,7 @@ services:
   ollama:
     image: ollama/ollama:latest
     ports:
-      - "11434:11434"
+      - '11434:11434'
     volumes:
       - ollama_data:/root/.ollama
     environment:
@@ -218,18 +218,18 @@ services:
           cpus: '4.0'
           memory: 16G
 
-  # Document Database
-  mongodb:
-    image: mongo:7.0
+  # Primary Database
+  postgres:
+    image: postgres:16
     ports:
-      - "27017:27017"
+      - '5432:5432'
     volumes:
-      - mongodb_data:/data/db
-      - ./mongodb/mongod.conf:/etc/mongod.conf
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=blih
+      - POSTGRES_DB=blih
+      - POSTGRES_USER=blih_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     restart: unless-stopped
     deploy:
       resources:
@@ -244,7 +244,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
       - ./redis/redis.conf:/etc/redis/redis.conf
@@ -263,7 +263,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
@@ -306,8 +306,8 @@ services:
   minio:
     image: minio/minio:latest
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - '9000:9000'
+      - '9001:9001'
     volumes:
       - minio_data:/data
     environment:
@@ -328,7 +328,7 @@ services:
   n8n:
     image: n8nio/n8n:latest
     ports:
-      - "5678:5678"
+      - '5678:5678'
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
@@ -353,7 +353,7 @@ volumes:
     driver: local
   ollama_data:
     driver: local
-  mongodb_data:
+  postgres_data:
     driver: local
   redis_data:
     driver: local
@@ -390,11 +390,11 @@ metadata:
   name: blih-config
   namespace: blih
 data:
-  NODE_ENV: "production"
-  CPU_AWARE: "true"
-  MAX_CONCURRENT_QUERIES: "100"
-  EMBEDDING_MODEL: "all-MiniLM-L6-v2"
-  LLM_MODEL: "llama3:8b-q4_K_M"
+  NODE_ENV: 'production'
+  CPU_AWARE: 'true'
+  MAX_CONCURRENT_QUERIES: '100'
+  EMBEDDING_MODEL: 'all-MiniLM-L6-v2'
+  LLM_MODEL: 'llama3:8b-q4_K_M'
 ```
 
 ### Deployment Manifests
@@ -417,35 +417,35 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
-        image: blih/backend:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          valueFrom:
-            configMapKeyRef:
-              name: blih-config
-              key: NODE_ENV
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1000m"
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: backend
+          image: blih/backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: blih-config
+                  key: NODE_ENV
+          resources:
+            requests:
+              memory: '2Gi'
+              cpu: '1000m'
+            limits:
+              memory: '4Gi'
+              cpu: '2000m'
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 
 ---
 # RAG Service Deployment
@@ -465,23 +465,23 @@ spec:
         app: rag-service
     spec:
       containers:
-      - name: rag-service
-        image: blih/rag-service:latest
-        ports:
-        - containerPort: 3001
-        env:
-        - name: CPU_AWARE
-          valueFrom:
-            configMapKeyRef:
-              name: blih-config
-              key: CPU_AWARE
-        resources:
-          requests:
-            memory: "4Gi"
-            cpu: "2000m"
-          limits:
-            memory: "8Gi"
-            cpu: "4000m"
+        - name: rag-service
+          image: blih/rag-service:latest
+          ports:
+            - containerPort: 3001
+          env:
+            - name: CPU_AWARE
+              valueFrom:
+                configMapKeyRef:
+                  name: blih-config
+                  key: CPU_AWARE
+          resources:
+            requests:
+              memory: '4Gi'
+              cpu: '2000m'
+            limits:
+              memory: '8Gi'
+              cpu: '4000m'
 ```
 
 ### Service Configuration
@@ -497,9 +497,9 @@ spec:
   selector:
     app: backend
   ports:
-  - protocol: TCP
-    port: 3000
-    targetPort: 3000
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
   type: ClusterIP
 
 ---
@@ -513,9 +513,9 @@ spec:
   selector:
     app: rag-service
   ports:
-  - protocol: TCP
-    port: 3001
-    targetPort: 3001
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
   type: ClusterIP
 
 ---
@@ -528,34 +528,34 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit: '100'
 spec:
   tls:
-  - hosts:
-    - api.blih.company.com
-    - app.blih.company.com
-    secretName: blih-tls
+    - hosts:
+        - api.blih.company.com
+        - app.blih.company.com
+      secretName: blih-tls
   rules:
-  - host: api.blih.company.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: backend-service
-            port:
-              number: 3000
-  - host: app.blih.company.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 3000
+    - host: api.blih.company.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 3000
+    - host: app.blih.company.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 3000
 ```
 
 ## Network Configuration
@@ -582,14 +582,14 @@ server {
 server {
     listen 443 ssl http2;
     server_name api.blih.company.com;
-    
+
     ssl_certificate /etc/ssl/api.blih.company.com.crt;
     ssl_certificate_key /etc/ssl/api.blih.company.com.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
-    
+
     client_max_body_size 100M;
-    
+
     location /api/rag/ {
         proxy_pass http://rag-service;
         proxy_set_header Host $host;
@@ -600,7 +600,7 @@ server {
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
     }
-    
+
     location /api/ {
         proxy_pass http://backend;
         proxy_set_header Host $host;
@@ -637,7 +637,7 @@ ufw allow 80/tcp
 ufw allow 443/tcp
 
 # Allow internal services
-ufw allow from 172.20.0.0/16 to any port 27017  # MongoDB
+ufw allow from 172.20.0.0/16 to any port 5432  # PostgreSQL
 ufw allow from 172.20.0.0/16 to any port 6333  # Qdrant
 ufw allow from 172.20.0.0/16 to any port 11434 # Ollama
 ufw allow from 172.20.0.0/16 to any port 6379  # Redis
@@ -679,7 +679,7 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  - "alert_rules.yml"
+  - 'alert_rules.yml'
 
 scrape_configs:
   - job_name: 'backend'
@@ -700,9 +700,9 @@ scrape_configs:
     metrics_path: '/metrics'
     scrape_interval: 30s
 
-  - job_name: 'mongodb'
+  - job_name: 'postgres'
     static_configs:
-      - targets: ['mongodb-exporter:9216']
+      - targets: ['postgres-exporter:9187']
     scrape_interval: 30s
 
   - job_name: 'node-exporter'
@@ -768,9 +768,8 @@ RETENTION_DAYS=30
 # Create backup directory
 mkdir -p $BACKUP_DIR/$DATE
 
-# MongoDB backup
-docker exec mongodb mongodump --out /tmp/backup
-docker cp mongodb:/tmp/backup $BACKUP_DIR/$DATE/mongodb
+# PostgreSQL backup
+docker exec postgres pg_dump -U blih_user blih > $BACKUP_DIR/$DATE/postgres.sql
 
 # Qdrant backup
 docker exec qdrant wget http://localhost:6333/snapshots -O backup.snapshot
@@ -844,24 +843,14 @@ echo 'performance' > /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 ```yaml
 # Docker daemon configuration
 {
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "10m",
-    "max-file": "3"
-  },
-  "storage-driver": "overlay2",
-  "storage-opts": [
-    "overlay2.override_kernel_check=true"
-  ],
-  "default-ulimits": {
-    "nofile": {
-      "Name": "nofile",
-      "Hard": 64000,
-      "Soft": 64000
-    }
-  },
-  "max-concurrent-downloads": 10,
-  "max-concurrent-uploads": 5
+  'log-driver': 'json-file',
+  'log-opts': { 'max-size': '10m', 'max-file': '3' },
+  'storage-driver': 'overlay2',
+  'storage-opts': ['overlay2.override_kernel_check=true'],
+  'default-ulimits':
+    { 'nofile': { 'Name': 'nofile', 'Hard': 64000, 'Soft': 64000 } },
+  'max-concurrent-downloads': 10,
+  'max-concurrent-uploads': 5,
 }
 ```
 
@@ -940,9 +929,8 @@ echo "Rollback completed!"
 ```bash
 # .env.production
 # Database Configuration
-MONGO_ROOT_USERNAME=admin
-MONGO_ROOT_PASSWORD=your_secure_password
-DATABASE_URL=mongodb://admin:your_secure_password@mongodb:27017/blih?authSource=admin
+POSTGRES_PASSWORD=your_secure_password
+DATABASE_URL=postgresql://blih_user:your_secure_password@postgres:5432/blih
 
 # Authentication
 JWT_SECRET=your_jwt_secret_key_here
@@ -976,33 +964,36 @@ CLOUD_BACKUP_ENABLED=false
 ### Common Issues
 
 1. **High Memory Usage**
+
    ```bash
    # Check memory usage
    docker stats
-   
+
    # Restart memory-heavy services
    docker-compose restart rag-service
-   
+
    # Clear Ollama cache
    docker exec ollama ollama rm unused
    ```
 
 2. **Slow Query Performance**
+
    ```bash
    # Check Qdrant performance
    curl http://localhost:6333/telemetry
-   
+
    # Optimize vector search
    docker exec qdrant qdrant-cli collections update --collection-name documents --hnsw-config '{"m": 16, "ef_construct": 128}'
    ```
 
 3. **Database Connection Issues**
+
    ```bash
-   # Check MongoDB status
-   docker exec mongodb mongo --eval "db.adminCommand('ismaster')"
-   
-   # Restart MongoDB
-   docker-compose restart mongodb
+   # Check PostgreSQL status
+   docker exec postgres pg_isready -U blih_user
+
+   # Restart PostgreSQL
+   docker-compose restart postgres
    ```
 
 ### Log Analysis

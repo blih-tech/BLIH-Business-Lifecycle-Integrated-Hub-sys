@@ -21,9 +21,14 @@ export class ValidationPipe extends NestValidationPipe {
               ? Object.values(e.constraints)[0]
               : 'Invalid value',
         }));
+        const primaryError = fieldErrors[0]?.message ?? 'Invalid request data';
+        const details =
+          fieldErrors.length > 1
+            ? `${fieldErrors.length} fields are invalid. Review fieldErrors for the complete list.`
+            : primaryError;
         return new BadRequestException({
-          message: 'Validation failed',
-          details: 'One or more fields are invalid',
+          message: `Validation failed: ${primaryError}`,
+          details,
           fieldErrors,
         });
       },

@@ -1,9 +1,8 @@
-import { IsArray, IsIn, IsOptional, IsString, Matches } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { CreateRoleDto as CreateRoleDtoType } from '@repo/types';
 
-const PERMISSION_KEY_PATTERN = '^[a-z0-9_]+:[a-z0-9_*-]+$';
-
-export class CreateRoleDto {
+export class CreateRoleDto implements CreateRoleDtoType {
   @ApiProperty({
     description: 'Machine-readable role name.',
     example: 'finance.approver',
@@ -20,54 +19,17 @@ export class CreateRoleDto {
 
   @ApiPropertyOptional({
     description: 'Role description used in governance UI.',
-    example: 'Can approve finance documents inside scoped organization.',
+    example: 'Can approve finance documents for the assigned scope.',
   })
   @IsOptional()
   @IsString()
   description?: string;
 
   @ApiPropertyOptional({
-    description:
-      'Optional single permission key to bind to this role (legacy input).',
-    pattern: PERMISSION_KEY_PATTERN,
-    example: 'invoice:approve',
+    description: 'Optional parent role id for hierarchical role inheritance.',
+    example: '8b76752b-df18-45bc-af74-1ea9a0db2e40',
   })
   @IsOptional()
-  @Matches(new RegExp(PERMISSION_KEY_PATTERN), {
-    message:
-      'Permission key must be resource:action (2-part only, e.g. invoice:approve)',
-  })
-  permission?: string;
-
-  @ApiPropertyOptional({
-    description: 'Optional multiple permission keys to bind to this role.',
-    type: [String],
-    pattern: PERMISSION_KEY_PATTERN,
-    example: ['invoice:approve', 'expense:view'],
-  })
-  @IsOptional()
-  @IsArray()
-  @Matches(new RegExp(PERMISSION_KEY_PATTERN), {
-    each: true,
-    message: 'Each permission key must be resource:action (2-part only)',
-  })
-  permissions?: string[];
-
-  @ApiPropertyOptional({
-    description: 'Optional parent role name for hierarchical role inheritance.',
-    example: 'finance',
-  })
-  @IsOptional()
-  @IsString()
-  parentRoleName?: string;
-
-  @ApiPropertyOptional({
-    description: 'Role data scope strategy.',
-    enum: ['global', 'self'],
-    example: 'global',
-  })
-  @IsOptional()
-  @IsString()
-  @IsIn(['global', 'self'])
-  dataScope?: 'global' | 'self';
+  @IsUUID()
+  parentRoleId?: string;
 }
