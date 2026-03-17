@@ -10,49 +10,119 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./shared": {
-      "types": "./dist/shared/index.d.ts"
+      "types": "./dist/shared/index.d.ts",
+      "import": "./dist/shared/index.js",
+      "default": "./dist/shared/index.js"
     },
     "./shared/*": {
-      "types": "./dist/shared/*.d.ts"
+      "types": "./dist/shared/*.d.ts",
+      "import": "./dist/shared/*.js",
+      "default": "./dist/shared/*.js"
     },
     "./auth": {
-      "types": "./dist/auth/index.d.ts"
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js",
+      "default": "./dist/auth/index.js"
     },
     "./auth/*": {
-      "types": "./dist/auth/*.d.ts"
+      "types": "./dist/auth/*.d.ts",
+      "import": "./dist/auth/*.js",
+      "default": "./dist/auth/*.js"
     },
     "./users": {
-      "types": "./dist/users/index.d.ts"
+      "types": "./dist/users/index.d.ts",
+      "import": "./dist/users/index.js",
+      "default": "./dist/users/index.js"
     },
     "./users/*": {
-      "types": "./dist/users/*.d.ts"
+      "types": "./dist/users/*.d.ts",
+      "import": "./dist/users/*.js",
+      "default": "./dist/users/*.js"
+    },
+    "./employees": {
+      "types": "./dist/employees/index.d.ts",
+      "import": "./dist/employees/index.js",
+      "default": "./dist/employees/index.js"
+    },
+    "./employees/*": {
+      "types": "./dist/employees/*.d.ts",
+      "import": "./dist/employees/*.js",
+      "default": "./dist/employees/*.js"
+    },
+    "./positions": {
+      "types": "./dist/positions/index.d.ts",
+      "import": "./dist/positions/index.js",
+      "default": "./dist/positions/index.js"
+    },
+    "./positions/*": {
+      "types": "./dist/positions/*.d.ts",
+      "import": "./dist/positions/*.js",
+      "default": "./dist/positions/*.js"
     },
     "./audit": {
-      "types": "./dist/audit/index.d.ts"
+      "types": "./dist/audit/index.d.ts",
+      "import": "./dist/audit/index.js",
+      "default": "./dist/audit/index.js"
     },
     "./audit/*": {
-      "types": "./dist/audit/*.d.ts"
+      "types": "./dist/audit/*.d.ts",
+      "import": "./dist/audit/*.js",
+      "default": "./dist/audit/*.js"
     },
     "./system-config": {
-      "types": "./dist/system-config/index.d.ts"
+      "types": "./dist/system-config/index.d.ts",
+      "import": "./dist/system-config/index.js",
+      "default": "./dist/system-config/index.js"
     },
     "./system-config/*": {
-      "types": "./dist/system-config/*.d.ts"
+      "types": "./dist/system-config/*.d.ts",
+      "import": "./dist/system-config/*.js",
+      "default": "./dist/system-config/*.js"
     },
     "./rbac": {
-      "types": "./dist/rbac/index.d.ts"
+      "types": "./dist/rbac/index.d.ts",
+      "import": "./dist/rbac/index.js",
+      "default": "./dist/rbac/index.js"
     },
     "./rbac/*": {
-      "types": "./dist/rbac/*.d.ts"
+      "types": "./dist/rbac/*.d.ts",
+      "import": "./dist/rbac/*.js",
+      "default": "./dist/rbac/*.js"
     },
     "./notifications": {
-      "types": "./dist/notifications/index.d.ts"
+      "types": "./dist/notifications/index.d.ts",
+      "import": "./dist/notifications/index.js",
+      "default": "./dist/notifications/index.js"
     },
     "./notifications/*": {
-      "types": "./dist/notifications/*.d.ts"
+      "types": "./dist/notifications/*.d.ts",
+      "import": "./dist/notifications/*.js",
+      "default": "./dist/notifications/*.js"
+    },
+    "./recruitment": {
+      "types": "./dist/recruitment/index.d.ts",
+      "import": "./dist/recruitment/index.js",
+      "default": "./dist/recruitment/index.js"
+    },
+    "./recruitment/*": {
+      "types": "./dist/recruitment/*.d.ts",
+      "import": "./dist/recruitment/*.js",
+      "default": "./dist/recruitment/*.js"
+    },
+    "./hr": {
+      "types": "./dist/hr/index.d.ts",
+      "import": "./dist/hr/index.js",
+      "default": "./dist/hr/index.js"
+    },
+    "./hr/*": {
+      "types": "./dist/hr/*.d.ts",
+      "import": "./dist/hr/*.js",
+      "default": "./dist/hr/*.js"
     }
   },
   "scripts": {

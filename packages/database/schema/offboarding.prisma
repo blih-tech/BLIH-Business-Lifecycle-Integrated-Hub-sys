@@ -159,4 +159,3 @@ model ComplianceChecklist {
   @@index([employeeId])
   @@index([resignationId])
 }
-

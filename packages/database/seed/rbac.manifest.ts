@@ -43,6 +43,7 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
     description: 'Recruitment interview scheduling and feedback',
   },
   { name: 'onboarding', description: 'Onboarding workflows' },
+  { name: 'onboarding_task', description: 'Onboarding task records' },
   { name: 'probation', description: 'Probation workflows' },
   { name: 'onboarding_checklist', description: 'Onboarding checklist records' },
   { name: 'asset_provisioning', description: 'Asset provisioning workflows' },

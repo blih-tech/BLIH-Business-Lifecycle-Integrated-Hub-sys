@@ -104,6 +104,62 @@ describe('KeycloakAuthGuard', () => {
     expect(principal.email).toBe('user1');
   });
 
+  it('uses kc_access cookie as the primary browser authentication artifact', async () => {
+    tokenService.validateAccessToken.mockResolvedValue({
+      sub: 'cookie-user-1',
+      iss: 'http://localhost:8080/realms/blih',
+      azp: 'blih-system-auth',
+      realm_access: { roles: ['hr_manager'] },
+      scope: 'openid profile email',
+    });
+    mapper.toPrincipal.mockReturnValue({
+      sub: 'cookie-user-1',
+      email: 'cookie-user@example.com',
+      realm: 'blih',
+      policyVersion: '1.0',
+      roles: ['hr_manager'],
+      permissions: [],
+      scopes: ['openid', 'profile', 'email'],
+    });
+
+    const guard = new KeycloakAuthGuard(
+      reflector,
+      tokenService as never,
+      mapper as never,
+      principalEnrichment as never,
+      userPermissionSnapshot as never,
+      baseKeycloakConfig as never,
+    );
+    const { context } = createHttpContext({
+      cookie: 'kc_access=cookie-access-token; kc_refresh=refresh-only-token',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(tokenService.validateAccessToken).toHaveBeenCalledWith(
+      'cookie-access-token',
+      'blih',
+    );
+  });
+
+  it('does not authorize from kc_refresh or kc_id cookies', async () => {
+    const guard = new KeycloakAuthGuard(
+      reflector,
+      tokenService as never,
+      mapper as never,
+      principalEnrichment as never,
+      userPermissionSnapshot as never,
+      baseKeycloakConfig as never,
+    );
+    const { context } = createHttpContext({
+      cookie: 'kc_refresh=refresh-only-token; kc_id=id-token',
+    });
+
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      'Missing Authorization header',
+    );
+    expect(tokenService.validateAccessToken).not.toHaveBeenCalled();
+  });
+
   it('rejects request when subject is still missing after userinfo fallback', async () => {
     tokenService.validateAccessToken.mockResolvedValue({
       iss: 'http://localhost:8080/realms/blih',

@@ -1,6 +1,9 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiExtension } from '@nestjs/swagger';
-import { SWAGGER_BEARER_AUTH_NAME } from '../openapi.constants';
+import { ApiBearerAuth, ApiCookieAuth, ApiExtension } from '@nestjs/swagger';
+import {
+  SWAGGER_BEARER_AUTH_NAME,
+  SWAGGER_COOKIE_AUTH_NAME,
+} from '../openapi.constants';
 import {
   ApiForbiddenError,
   ApiUnauthorizedError,
@@ -18,9 +21,10 @@ export function ApiProtected(options: ApiProtectedOptions) {
 
   return applyDecorators(
     ApiBearerAuth(SWAGGER_BEARER_AUTH_NAME),
+    ApiCookieAuth(SWAGGER_COOKIE_AUTH_NAME),
     ApiUnauthorizedError(
       options.path,
-      'Unauthorized: missing or invalid bearer access token',
+      'Unauthorized: missing or invalid kc_access cookie or bearer access token',
     ),
     ApiForbiddenError(
       options.path,
