@@ -25,10 +25,14 @@ export const jobExample = {
     workMode: 'HYBRID',
     urgency: 'HIGH',
     neededByDate: '2026-03-30T00:00:00.000Z',
-    status: 'PENDING_FOR_APPROVAL',
-    financeApprovalStatus: 'PENDING_FOR_APPROVAL',
-    gmApprovalStatus: 'PENDING_FOR_APPROVAL',
-    hrApprovalStatus: 'PENDING_FOR_APPROVAL',
+    status: {
+      workflow: 'PENDING_FOR_APPROVAL',
+      approvals: {
+        finance: 'PENDING_FOR_APPROVAL',
+        gm: 'PENDING_FOR_APPROVAL',
+        hr: 'PENDING_FOR_APPROVAL',
+      },
+    },
     priority: 'MEDIUM',
     draftedAt: '2026-03-05T09:00:00.000Z',
     pendingApprovalAt: '2026-03-05T09:10:00.000Z',
@@ -103,22 +107,34 @@ export const jobExample = {
       {
         id: '8f9f5f06-09db-4c74-ad79-3527cfbfed8f',
         key: 'PHONE',
+        label: 'Phone Number',
+        type: 'TEXT',
         enabled: true,
         required: false,
+        helpText: 'Primary contact phone number including country code.',
+        options: [],
         order: 1,
       },
       {
         id: 'f6e1afc2-bf26-45a9-9fb8-f4fc6bf0f9f0',
         key: 'LINKEDIN_URL',
+        label: 'LinkedIn URL',
+        type: 'TEXT',
         enabled: true,
         required: false,
+        helpText: 'Candidate LinkedIn profile URL.',
+        options: [],
         order: 2,
       },
       {
         id: 'd8e0cf72-90b2-4f7f-8704-7f91bf6bcc5e',
         key: 'EXPECTED_SALARY',
+        label: 'Expected Salary',
+        type: 'NUMBER',
         enabled: true,
         required: false,
+        helpText: 'Candidate salary expectation for the role.',
+        options: [],
         order: 3,
       },
     ],
@@ -126,15 +142,117 @@ export const jobExample = {
       {
         id: 'bcc7f621f-b6cd-4916-a5fd-bf61b2abf5c4',
         key: 'EDUCATION',
+        label: 'Education',
+        type: 'SECTION',
         enabled: true,
         required: false,
+        helpText: 'Collect education history entries.',
+        options: [],
+        fields: [
+          {
+            key: 'INSTITUTION',
+            label: 'Institution',
+            type: 'TEXT',
+            required: true,
+            helpText: 'Name of school, college, or university.',
+            options: [],
+            order: 1,
+          },
+          {
+            key: 'DEGREE',
+            label: 'Degree',
+            type: 'TEXT',
+            required: true,
+            helpText: 'Degree or qualification obtained.',
+            options: [],
+            order: 2,
+          },
+          {
+            key: 'FIELD',
+            label: 'Field of Study',
+            type: 'TEXT',
+            required: true,
+            helpText: 'Major or specialization.',
+            options: [],
+            order: 3,
+          },
+          {
+            key: 'START_DATE',
+            label: 'Start Date',
+            type: 'DATE',
+            required: false,
+            helpText: 'Education start date.',
+            options: [],
+            order: 4,
+          },
+          {
+            key: 'END_DATE',
+            label: 'End Date',
+            type: 'DATE',
+            required: false,
+            helpText: 'Education completion date.',
+            options: [],
+            order: 5,
+          },
+        ],
         order: 1,
       },
       {
         id: 'acc7f621f-b6cd-4916-a5fd-bf61b2abf5c4',
         key: 'EXPERIENCE',
+        label: 'Experience',
+        type: 'SECTION',
         enabled: true,
         required: false,
+        helpText: 'Collect professional experience entries.',
+        options: [],
+        fields: [
+          {
+            key: 'COMPANY',
+            label: 'Company',
+            type: 'TEXT',
+            required: true,
+            helpText: 'Employer or organization name.',
+            options: [],
+            order: 1,
+          },
+          {
+            key: 'TITLE',
+            label: 'Job Title',
+            type: 'TEXT',
+            required: true,
+            helpText: 'Role title held by the applicant.',
+            options: [],
+            order: 2,
+          },
+          {
+            key: 'START_DATE',
+            label: 'Start Date',
+            type: 'DATE',
+            required: false,
+            helpText: 'Employment start date.',
+            options: [],
+            order: 3,
+          },
+          {
+            key: 'END_DATE',
+            label: 'End Date',
+            type: 'DATE',
+            required: false,
+            helpText: 'Employment end date.',
+            options: [],
+            order: 4,
+          },
+          {
+            key: 'DESCRIPTION',
+            label: 'Description',
+            type: 'TEXTAREA',
+            required: false,
+            helpText: 'Key responsibilities and impact.',
+            options: [],
+            order: 5,
+          },
+        ],
         order: 2,
       },
     ],
@@ -170,8 +288,6 @@ export const applicantExample = {
   currentPosition: 'Senior Engineer',
   yearsExperience: 6,
   location: 'Addis Ababa, Ethiopia',
-  country: 'Ethiopia',
-  city: 'Addis Ababa',
   nationality: 'Ethiopian',
   expectedSalary: '145000.00',
   currentSalary: '125000.00',
@@ -186,6 +302,7 @@ export const applicantExample = {
   screeningAt: '2026-03-05T15:00:00.000Z',
   shortlistedAt: null,
   interviewAt: null,
+  waitlistAt: null,
   offerAt: null,
   hiredAt: null,
   rejectedAt: null,
@@ -208,27 +325,133 @@ export const applicantExample = {
   updatedAt: '2026-03-05T09:00:00.000Z',
 };
 
-export const interviewExample = {
-  id: 'd85dc0db-d6dc-49b8-b91f-b6dd0ffea88a',
+export const offerExample = {
+  id: 'c2a7d7e8-6a7f-4b58-9b92-0c2b6c4f77c1',
+  jobId: jobExample.job.id,
   applicantId: applicantExample.id,
+  createdById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
+  status: 'SENT',
+  salary: '145000.00',
+  currency: 'USD',
+  startDate: '2026-04-01T00:00:00.000Z',
+  payFrequency: 'MONTHLY',
+  employmentType: 'FULL_TIME',
+  bonus: '5000.00',
+  equity: null,
+  offerLetterUrl: 'https://cdn.example.com/offers/offer-letter.pdf',
+  notes: 'Offer sent after final interview.',
+  sentAt: '2026-03-20T10:00:00.000Z',
+  respondedAt: null,
+  expiresAt: '2026-03-31T23:59:59.000Z',
+  onboardingId: null,
+  createdAt: '2026-03-20T09:55:00.000Z',
+  updatedAt: '2026-03-20T10:00:00.000Z',
+};
+
+export const interviewExample = {
+  id: 'af0f3efe-e71b-4b73-a9ef-2b6f8dcba123',
+  jobId: jobExample.job.id,
   type: 'TECHNICAL',
   round: 1,
   status: 'SCHEDULED',
   scheduledAt: '2026-03-10T10:00:00.000Z',
-  startedAt: null,
-  completedAt: null,
-  durationMinutes: null,
-  interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+  durationMinutes: 90,
   location: null,
   meetingUrl: null,
-  interviewers: [{ name: 'Tech Lead', role: 'Panelist' }],
-  feedback: null,
-  endorsement: null,
-  score: null,
-  nextAction: 'Submit feedback',
-  notes: null,
+  createdById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
+  participants: [
+    {
+      id: '6bd5ff77-f43d-4385-ad6b-87945c131ec3',
+      sessionId: 'af0f3efe-e71b-4b73-a9ef-2b6f8dcba123',
+      applicantId: applicantExample.id,
+      attendanceStatus: 'SCHEDULED',
+      applicant: {
+        id: applicantExample.id,
+        firstName: applicantExample.firstName,
+        lastName: applicantExample.lastName,
+        email: applicantExample.email,
+        status: applicantExample.status,
+      },
+      createdAt: '2026-03-05T09:15:00.000Z',
+    },
+  ],
+  interviewers: [
+    {
+      id: '833be5c5-f4f8-4686-830a-a4e61f3af4d5',
+      sessionId: 'af0f3efe-e71b-4b73-a9ef-2b6f8dcba123',
+      interviewerId: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+      role: 'Panelist',
+      interviewer: {
+        id: 'f8ef7938-8b1e-4a6e-bd25-c61432540273',
+        firstName: 'Liya',
+        lastName: 'Tekle',
+        email: 'liya.tekle@example.com',
+        status: 'ACTIVE',
+      },
+      createdAt: '2026-03-05T09:15:00.000Z',
+    },
+  ],
+  feedbacks: [],
   createdAt: '2026-03-05T09:15:00.000Z',
   updatedAt: '2026-03-05T09:15:00.000Z',
+};
+
+export const interviewFeedbackExample = {
+  id: 'de55a2d6-7df0-4324-8151-c478226cde2a',
+  participantId: interviewExample.participants[0].id,
+  assignmentId: interviewExample.interviewers[0].id,
+  interviewerId: interviewExample.interviewers[0].interviewerId,
+  score: 84.5,
+  endorsement: 'YES',
+  strengths: ['Strong system design', 'Clear communication'],
+  weaknesses: ['Needs deeper PostgreSQL tuning experience'],
+  questionResponses: [
+    {
+      questionId: 'dfef45a5-6bf0-4b6a-a30f-7885fbe7c89d',
+      question: 'Explain REST API principles',
+      category: 'TECHNICAL',
+      type: 'TEXT',
+      answer:
+        'Candidate explained constraints, statelessness, resource naming, and status code semantics.',
+      score: 4,
+      maxScore: 5,
+      weight: 1,
+      notes: 'Strong understanding',
+    },
+    {
+      questionId: null,
+      question: 'Describe a conflict you resolved in a project team',
+      category: 'BEHAVIORAL',
+      type: 'TEXTAREA',
+      answer:
+        'Candidate described a production incident conflict and a clear resolution process.',
+      score: 3,
+      maxScore: 5,
+      weight: 1,
+      notes: 'Good communication and ownership',
+    },
+  ],
+  notes: 'Recommended to proceed to final round.',
+  isDraft: false,
+  submittedAt: '2026-03-10T12:05:00.000Z',
+  createdAt: '2026-03-10T12:05:00.000Z',
+  updatedAt: '2026-03-10T12:05:00.000Z',
+};
+
+export const interviewQuestionExample = {
+  id: 'dfef45a5-6bf0-4b6a-a30f-7885fbe7c89d',
+  question: 'Explain REST API principles',
+  description:
+    'Assess understanding of REST constraints and practical API design.',
+  category: 'TECHNICAL',
+  type: 'TEXT',
+  options: [],
+  difficulty: 3,
+  tags: ['rest', 'api', 'backend'],
+  createdById: '2bfec9e4-4f25-4f60-9167-5a74e1ef9f05',
+  isActive: true,
+  createdAt: '2026-03-05T09:20:00.000Z',
+  updatedAt: '2026-03-05T09:20:00.000Z',
 };
 
 export const jobResponseEnvelope = envelope('Created job', jobExample);
@@ -253,10 +476,32 @@ export const applicantListResponseEnvelope = envelope('List of applicants', [
   applicantExample,
 ]);
 
+export const offerResponseEnvelope = envelope('Created offer', offerExample);
+export const offerListResponseEnvelope = envelope('List of offers', [
+  offerExample,
+]);
+
 export const interviewResponseEnvelope = envelope(
-  'Created interview',
+  'Created interview session',
   interviewExample,
 );
-export const interviewListResponseEnvelope = envelope('List of interviews', [
-  interviewExample,
-]);
+export const interviewListResponseEnvelope = envelope(
+  'List of interview sessions',
+  [interviewExample],
+);
+export const interviewFeedbackResponseEnvelope = envelope(
+  'Upserted interview feedback',
+  interviewFeedbackExample,
+);
+export const interviewFeedbackListResponseEnvelope = envelope(
+  'List interview participant feedback',
+  [interviewFeedbackExample],
+);
+export const interviewQuestionResponseEnvelope = envelope(
+  'Created interview question',
+  interviewQuestionExample,
+);
+export const interviewQuestionListResponseEnvelope = envelope(
+  'List of interview questions',
+  [interviewQuestionExample],
+);

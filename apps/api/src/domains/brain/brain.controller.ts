@@ -8,6 +8,7 @@ import {
   UploadedFile,
   Request,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { BrainService } from './brain.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -17,14 +18,37 @@ export class BrainController {
   constructor(private readonly brainService: BrainService) {}
 
   @Post('chat')
+  @UseInterceptors(FileInterceptor('file'))
   async chat(
-    @Body() body: { userId: string; question: string; module: string },
+    @Body()
+    body: {
+      userId: string;
+      question: string;
+      module: string;
+      sessionId?: string;
+    },
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     return this.brainService.handleChat(
       body.userId,
       body.question,
       body.module,
+      body.sessionId,
+      file,
     );
+  }
+
+  @Get('sessions/:userId')
+  async getSessions(
+    @Param('userId') userId: string,
+    @Query('module') module?: string,
+  ) {
+    return this.brainService.getUserChatSessions(userId, module);
+  }
+
+  @Get('history/:sessionId')
+  async getHistory(@Param('sessionId') sessionId: string) {
+    return this.brainService.getChatHistory(sessionId);
   }
 
   @Post('analyze-cv')

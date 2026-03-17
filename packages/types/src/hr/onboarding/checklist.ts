@@ -15,7 +15,7 @@ export type OnboardingTaskStatus =
 export interface CreateOnboardingChecklistDto {
   employeeId: string;
   onboardingId?: string | null;
-  hiringDecisionId?: string | null;
+  offerId?: string | null;
   joinDate: string;
   overseerId?: string | null;
   ceoSignOffRequired?: boolean;
@@ -54,7 +54,7 @@ export interface OnboardingChecklistResponseDto {
   id: string;
   employeeId: string;
   onboardingId: string | null;
-  hiringDecisionId: string | null;
+  offerId: string | null;
   joinDate: string;
   overseerId: string | null;
   totalItems: number;
