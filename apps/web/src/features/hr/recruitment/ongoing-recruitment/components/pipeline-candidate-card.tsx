@@ -1,3 +1,5 @@
+import type React from "react";
+
 import { Bot, MoreHorizontal } from "lucide-react";
 
 import type { OngoingPipelineCandidate } from "@/features/hr/recruitment/ongoing-recruitment/types";
@@ -52,7 +54,7 @@ export function PipelineCandidateCard({
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 rounded-[6px]"
-                  onClick={(event) => event.stopPropagation()}
+                  onClick={(event: React.MouseEvent<HTMLElement>) => event.stopPropagation()}
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
@@ -61,7 +63,7 @@ export function PipelineCandidateCard({
                 {variant === "shortlist" ? (
                   <>
                     <DropdownMenuItem
-                      onClick={(event) => {
+                      onClick={(event: React.MouseEvent<HTMLElement>) => {
                         event.stopPropagation();
                         onMoveToInterview?.(candidate.id);
                       }}
@@ -70,7 +72,7 @@ export function PipelineCandidateCard({
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       variant="destructive"
-                      onClick={(event) => {
+                      onClick={(event: React.MouseEvent<HTMLElement>) => {
                         event.stopPropagation();
                         onReject?.(candidate.id);
                       }}
@@ -83,7 +85,7 @@ export function PipelineCandidateCard({
                 {variant === "rejected" ? (
                   <>
                     <DropdownMenuItem
-                      onClick={(event) => {
+                      onClick={(event: React.MouseEvent<HTMLElement>) => {
                         event.stopPropagation();
                         onMoveToShortlist?.(candidate.id);
                       }}
@@ -91,7 +93,7 @@ export function PipelineCandidateCard({
                       Move to Shortlist
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={(event) => {
+                      onClick={(event: React.MouseEvent<HTMLElement>) => {
                         event.stopPropagation();
                         onMoveToInterview?.(candidate.id);
                       }}

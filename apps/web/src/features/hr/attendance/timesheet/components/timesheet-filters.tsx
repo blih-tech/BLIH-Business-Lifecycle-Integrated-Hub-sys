@@ -71,7 +71,7 @@ export function TimesheetFilters({
           </SelectContent>
         </Select>
 
-        <Select value={status} onValueChange={(value) => onStatusChange(value as "all" | TimesheetStatus)}>
+        <Select value={status} onValueChange={(value: string) => onStatusChange(value as "all" | TimesheetStatus)}>
           <SelectTrigger size="sm" className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm">
             <SelectValue />
           </SelectTrigger>
@@ -83,7 +83,7 @@ export function TimesheetFilters({
           </SelectContent>
         </Select>
 
-        <Select value={viewMode} onValueChange={(value) => onViewModeChange(value as TimesheetViewMode)}>
+        <Select value={viewMode} onValueChange={(value: string) => onViewModeChange(value as TimesheetViewMode)}>
           <SelectTrigger size="sm" className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm">
             <SelectValue />
           </SelectTrigger>
