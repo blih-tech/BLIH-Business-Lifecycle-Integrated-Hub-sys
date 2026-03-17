@@ -29,6 +29,7 @@ export class RagController {
   @Post('ai/vision')
   @UseInterceptors(FileInterceptor('file'))
   async analyzeImage(@UploadedFile() file: Express.Multer.File) {
+    console.log("FILE RECIVED", file);
     if (!file) throw new Error('No image file provided');
     return await this.ragService.analyzeImage(file.buffer);
   }
@@ -46,7 +47,7 @@ export class RagController {
     body: {
       question: string;
       history?: { role: string; content: string }[];
-      filter?: any;
+      filter?: Record<string, unknown>;
     },
   ) {
     return await this.ragService.askQuestion(

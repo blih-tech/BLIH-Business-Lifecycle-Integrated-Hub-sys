@@ -125,10 +125,15 @@ export class RagService {
 
   async analyzeImage(fileBuffer: Buffer): Promise<{ description: string }> {
     const base64Image = fileBuffer.toString('base64');
+    const controller = new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+    }, 30000); 
 
     const visionModel = new ChatOllama({
       baseUrl: process.env.OLLAMA_BASE_URL,
-      model: 'llava',
+      model: 'llava:7b',
     });
 
     const response = await visionModel.invoke([
