@@ -1,0 +1,22 @@
+export type ArchiveEmployee = {
+  id: string;
+  initials: string;
+  name: string;
+  role: string;
+  department: string;
+  email: string;
+  phone: string;
+  exitedAt: string;
+  startDate: string;
+  endDate: string;
+  totalTenure: string;
+  salary: string;
+  resignationDate: string;
+  leavingReason: string;
+  clearanceStatus: 'Completed' | 'Pending';
+  avgScore: number;
+  archivedFiles: number;
+  documents: string[];
+  technicalDepartmentLabel: string;
+};
+

@@ -1,0 +1,148 @@
+name: Deploy Web to Vercel
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/web/**'
+      - 'packages/ui/**'
+      - 'packages/types/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'apps/web/**'
+      - 'packages/ui/**'
+      - 'packages/types/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: deploy-web-vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.TEAM_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  VERCEL_TOKEN: ${{ secrets.CICD_ID }}
+
+jobs:
+  preview:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          # Use npm install instead of ci for better compatibility
+          # and to avoid Windows file permission issues
+          npm install --workspaces --include-workspace-root --include=optional
+
+      - name: Validate Vercel secrets
+        run: |
+          : "${VERCEL_TOKEN:?VERCEL_TOKEN secret is required}"
+          : "${VERCEL_ORG_ID:?VERCEL_ORG_ID secret is required}"
+          : "${VERCEL_PROJECT_ID:?VERCEL_PROJECT_ID secret is required}"
+
+      - name: Verify web
+        run: |
+          npm run lint --workspace web
+          npm run check-types --workspace web
+
+      - name: Pull Vercel preview environment
+        run: npx vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+
+      - name: Build preview deployment
+        run: npx vercel build --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+
+      - name: Deploy preview
+        id: deploy_preview
+        run: |
+          url="$(npx vercel deploy --prebuilt --token="$VERCEL_TOKEN")"
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+        working-directory: apps/web
+
+      - name: Comment preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = process.env.PREVIEW_URL;
+            if (!url) return;
+            const body = `Vercel preview deployment: ${url}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+        env:
+          PREVIEW_URL: ${{ steps.deploy_preview.outputs.url }}
+
+  production:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          # Use npm install instead of ci for better compatibility
+          # and to avoid Windows file permission issues
+          npm install --workspaces --include-workspace-root --include=optional
+
+      - name: Validate Vercel secrets
+        run: |
+          : "${VERCEL_TOKEN:?VERCEL_TOKEN secret is required}"
+          : "${VERCEL_ORG_ID:?VERCEL_ORG_ID secret is required}"
+          : "${VERCEL_PROJECT_ID:?VERCEL_PROJECT_ID secret is required}"
+
+      - name: Verify web
+        run: |
+          npm run lint --workspace web
+          npm run check-types --workspace web
+
+      - name: Pull Vercel production environment
+        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+
+      - name: Build production deployment
+        run: npx vercel build --prod --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+
+      - name: Deploy production
+        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+        working-directory: apps/web

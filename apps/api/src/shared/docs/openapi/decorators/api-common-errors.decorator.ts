@@ -9,13 +9,58 @@ import {
 import { ApiErrorResponseDto } from '../dto/api-error-response.dto';
 import { createEnvelopeErrorExample } from '../openapi.examples';
 
+function parseFieldError(message: string): { field: string; message: string } {
+  const mustIndex = message.indexOf(' must ');
+  if (mustIndex > 0) {
+    return { field: message.slice(0, mustIndex).trim(), message };
+  }
+
+  const shouldIndex = message.indexOf(' should ');
+  if (shouldIndex > 0) {
+    return { field: message.slice(0, shouldIndex).trim(), message };
+  }
+
+  return { field: 'field', message };
+}
+
+function buildValidationExample(error: string | Record<string, unknown>) {
+  if (typeof error === 'string') {
+    return createEnvelopeErrorExample({
+      message: `Validation failed: ${error}`,
+      code: 'VALIDATION_ERROR',
+      details: error,
+      fieldErrors: [parseFieldError(error)],
+    });
+  }
+
+  const rawMessage = error.message;
+  const messages = Array.isArray(rawMessage)
+    ? rawMessage.filter((value): value is string => typeof value === 'string')
+    : typeof rawMessage === 'string'
+      ? [rawMessage]
+      : [];
+
+  const primaryError = messages[0] ?? 'Invalid request data';
+
+  return createEnvelopeErrorExample({
+    message: `Validation failed: ${primaryError}`,
+    code: 'VALIDATION_ERROR',
+    details:
+      messages.length > 1
+        ? `${messages.length} fields are invalid. Review fieldErrors for the complete list.`
+        : primaryError,
+    fieldErrors:
+      messages.length > 0 ? messages.map(parseFieldError) : undefined,
+  });
+}
+
 export function ApiUnauthorizedError(path: string, message: string) {
   return ApiUnauthorizedResponse({
     type: ApiErrorResponseDto,
-    description: 'Authentication failure.',
+    description: message,
     schema: {
       example: createEnvelopeErrorExample({
-        message: 'Unauthorized',
+        message,
         code: 'UNAUTHORIZED',
         details: message,
       }),
@@ -26,10 +71,10 @@ export function ApiUnauthorizedError(path: string, message: string) {
 export function ApiForbiddenError(path: string, message: string) {
   return ApiForbiddenResponse({
     type: ApiErrorResponseDto,
-    description: 'Authorization failure.',
+    description: message,
     schema: {
       example: createEnvelopeErrorExample({
-        message: 'Forbidden',
+        message,
         code: 'FORBIDDEN',
         details: message,
       }),
@@ -39,26 +84,14 @@ export function ApiForbiddenError(path: string, message: string) {
 
 export function ApiValidationError(
   path: string,
-  // Kept for API compatibility with ApiDefaultErrors; example uses fixed fieldErrors.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error: string | Record<string, unknown>,
 ) {
   return ApiBadRequestResponse({
     type: ApiErrorResponseDto,
-    description: `Request validation error (${path}).`,
+    description:
+      typeof error === 'string' ? error : `Request validation error (${path}).`,
     schema: {
-      example: createEnvelopeErrorExample({
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: 'One or more fields are invalid',
-        fieldErrors: [
-          { field: 'email', message: 'Invalid email format' },
-          {
-            field: 'password',
-            message: 'Password must be at least 8 characters',
-          },
-        ],
-      }),
+      example: buildValidationExample(error),
     },
   });
 }
@@ -66,10 +99,10 @@ export function ApiValidationError(
 export function ApiNotFoundError(path: string, message: string) {
   return ApiNotFoundResponse({
     type: ApiErrorResponseDto,
-    description: 'Requested resource was not found.',
+    description: message,
     schema: {
       example: createEnvelopeErrorExample({
-        message: 'Resource not found',
+        message,
         code: 'NOT_FOUND',
         details: message,
       }),
@@ -80,10 +113,10 @@ export function ApiNotFoundError(path: string, message: string) {
 export function ApiConflictError(path: string, message: string) {
   return ApiConflictResponse({
     type: ApiErrorResponseDto,
-    description: `Request conflict (${path}).`,
+    description: message,
     schema: {
       example: createEnvelopeErrorExample({
-        message: 'Conflict',
+        message,
         code: 'CONFLICT',
         details: message,
       }),

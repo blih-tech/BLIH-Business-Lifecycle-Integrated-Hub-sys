@@ -1,0 +1,86 @@
+// Onboarding Models
+// This file contains Onboarding, OnboardingChecklist, OnboardingTask, AssetProvisioning, PolicyAcknowledgement, ProbationKpiPlan, ProbationEvaluation, and ProbationConfirmation models
+
+model Onboarding {
+  id          String                @id @default(uuid()) @db.Uuid
+  employeeId  String                @map("employee_id") @db.Uuid
+  status      OnboardingStatus      @default(PENDING)
+  startedAt   DateTime?             @map("started_at")
+  joinDate    DateTime              @map("join_date") @db.Date
+  completedAt DateTime?             @map("completed_at")
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  checklists  OnboardingChecklist[]
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([status])
+}
+
+model OnboardingChecklist {
+  id                 String                    @id @default(uuid()) @db.Uuid
+  onboardingTaskId   String?                   @map("onboarding_task_id") @db.Uuid
+  onboardingId       String?                   @map("onboarding_id") @db.Uuid
+  overseerId         String?                   @map("overseer_id") @db.Uuid
+  status             OnboardingChecklistStatus @default(NOT_STARTED)
+  teamLeadVerifiedAt DateTime?                 @map("team_lead_verified_at")
+  ceoSignOffRequired Boolean                   @default(false) @map("ceo_sign_off_required")
+  ceoSignOffAt       DateTime?                 @map("ceo_sign_off_at")
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  onboarding     Onboarding?     @relation(fields: [onboardingId], references: [id], onDelete: SetNull)
+  onboardingTask OnboardingTask? @relation(fields: [onboardingTaskId], references: [id], onDelete: SetNull)
+  overseer       User?           @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
+
+  @@unique([onboardingId, onboardingTaskId])
+  @@index([onboardingId])
+  @@index([status])
+}
+
+model OnboardingTask {
+  id            String                   @id @default(uuid()) @db.Uuid
+  department    OnboardingTaskDepartment
+  title         String
+  description   String?                  @db.Text
+  completedById String?                  @map("completed_by_id") @db.Uuid
+  completedBy   User?                    @relation("OnboardingTaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  checklist     OnboardingChecklist[]
+}
+
+model AssetProvisioning {
+  id                      String                  @id @default(uuid()) @db.Uuid
+  employeeId              String                  @map("employee_id") @db.Uuid
+  employee                Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  equipment               Json?                   @db.JsonB
+  platformPermissions     Json?                   @db.JsonB
+  itSupervisorApprovedAt  DateTime?               @map("it_supervisor_approved_at")
+  adminApprovedAt         DateTime?               @map("admin_approved_at")
+  financeApprovalRequired Boolean                 @default(false) @map("finance_approval_required")
+  status                  AssetProvisioningStatus @default(PENDING)
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  @@index([employeeId])
+}
+
+model PolicyAcknowledgement {
+  id                    String    @id @default(uuid()) @db.Uuid
+  employeeId            String    @map("employee_id") @db.Uuid
+  employee              Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  policies              Json?     @db.JsonB
+  allAcknowledged       Boolean   @default(false) @map("all_acknowledged")
+  confirmedAt           DateTime? @map("confirmed_at")
+  systemAccessGrantedAt DateTime? @map("system_access_granted_at")
+  verifiedById          String?   @map("verified_by_id") @db.Uuid
+  verifiedBy            User?     @relation("PolicyAcknowledgementVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt            DateTime? @map("verified_at")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([employeeId])
+  @@index([verifiedById])
+}

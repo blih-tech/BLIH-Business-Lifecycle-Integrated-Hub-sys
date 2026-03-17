@@ -23,12 +23,12 @@
 
 ### 1.1 Backup Types
 
-| Type | Frequency | Retention | Purpose |
-|------|-----------|-----------|---------|
-| **Full Backup** | Daily (2 AM) | 30 days | Complete system snapshot |
-| **Incremental** | Hourly | 7 days | Changes since last backup |
-| **Transaction Log** | Continuous | 7 days | Point-in-time recovery |
-| **Configuration** | On change | 90 days | System settings |
+| Type                | Frequency    | Retention | Purpose                   |
+| ------------------- | ------------ | --------- | ------------------------- |
+| **Full Backup**     | Daily (2 AM) | 30 days   | Complete system snapshot  |
+| **Incremental**     | Hourly       | 7 days    | Changes since last backup |
+| **Transaction Log** | Continuous   | 7 days    | Point-in-time recovery    |
+| **Configuration**   | On change    | 90 days   | System settings           |
 
 ### 1.2 Automated Backup Script
 
@@ -49,7 +49,7 @@ RETENTION_DAYS=30
 S3_BUCKET="${BACKUP_S3_BUCKET:-blih-backups}"
 
 # Ensure backup directory exists
-mkdir -p "$BACKUP_DIR"/{postgres,mongodb,qdrant,configs}
+mkdir -p "$BACKUP_DIR"/{postgres,qdrant,configs}
 
 echo "🔄 Starting BLIH backup - $DATE"
 
@@ -60,19 +60,6 @@ echo "📦 Backing up PostgreSQL..."
 docker exec blih-postgres pg_dumpall -U blih_user > "$BACKUP_DIR/postgres/postgres_$DATE.sql"
 gzip "$BACKUP_DIR/postgres/postgres_$DATE.sql"
 echo "✅ PostgreSQL backup complete"
-
-#-------------------------------------------
-# 2. MongoDB Backup
-#-------------------------------------------
-echo "📦 Backing up MongoDB..."
-docker exec blih-mongodb mongodump \
-  --uri="mongodb://blih_user:${MONGODB_PASSWORD}@localhost:27017" \
-  --out="/tmp/mongodump_$DATE"
-
-docker cp blih-mongodb:/tmp/mongodump_$DATE "$BACKUP_DIR/mongodb/"
-tar -czf "$BACKUP_DIR/mongodb/mongodb_$DATE.tar.gz" -C "$BACKUP_DIR/mongodb" "mongodump_$DATE"
-rm -rf "$BACKUP_DIR/mongodb/mongodump_$DATE"
-echo "✅ MongoDB backup complete"
 
 #-------------------------------------------
 # 3. Qdrant Backup
@@ -162,6 +149,7 @@ fi
 ```
 
 **Make executable and schedule:**
+
 ```bash
 chmod +x scripts/backup-all.sh
 
@@ -198,12 +186,12 @@ echo "✅ Incremental backup complete"
 
 ### 2.1 Recovery Point Objective (RPO) & Recovery Time Objective (RTO)
 
-| Scenario | RPO | RTO | Strategy |
-|----------|-----|-----|----------|
-| **Database Corruption** | 1 hour | 2 hours | Restore from hourly backup |
-| **Server Failure** | 24 hours | 4 hours | Restore to new server |
-| **Data Center Loss** | 24 hours | 8 hours | Restore from S3 backup |
-| **Accidental Deletion** | Real-time | 1 hour | Transaction logs |
+| Scenario                | RPO       | RTO     | Strategy                   |
+| ----------------------- | --------- | ------- | -------------------------- |
+| **Database Corruption** | 1 hour    | 2 hours | Restore from hourly backup |
+| **Server Failure**      | 24 hours  | 4 hours | Restore to new server      |
+| **Data Center Loss**    | 24 hours  | 8 hours | Restore from S3 backup     |
+| **Accidental Deletion** | Real-time | 1 hour  | Transaction logs           |
 
 ### 2.2 PostgreSQL Recovery
 
@@ -249,32 +237,7 @@ docker exec blih-postgres pg_restore \
   /backups/postgres_20260210.backup
 ```
 
-### 2.3 MongoDB Recovery
-
-```bash
-#!/bin/bash
-# Restore MongoDB from backup
-
-BACKUP_FILE="$1"
-
-echo "🔄 Restoring MongoDB from $BACKUP_FILE"
-
-# Extract backup
-tar -xzf "$BACKUP_FILE" -C /tmp/
-
-# Restore
-docker exec -it blih-mongodb mongorestore \
-  --uri="mongodb://blih_user:${MONGODB_PASSWORD}@localhost:27017" \
-  --drop \
-  /tmp/mongodump_*/
-
-# Cleanup
-rm -rf /tmp/mongodump_*
-
-echo "✅ MongoDB restore complete"
-```
-
-### 2.4 Complete System Recovery
+### 2.3 Qdrant Recovery
 
 **`scripts/disaster-recovery.sh`:**
 
@@ -297,10 +260,7 @@ docker-compose down
 # 2. Restore PostgreSQL
 ./scripts/restore-postgres.sh "/opt/blih/backups/postgres/postgres_${BACKUP_DATE}.sql.gz"
 
-# 3. Restore MongoDB
-./scripts/restore-mongodb.sh "/opt/blih/backups/mongodb/mongodb_${BACKUP_DATE}.tar.gz"
-
-# 4. Restore Qdrant
+# 3. Restore Qdrant
 tar -xzf "/opt/blih/backups/qdrant/qdrant_${BACKUP_DATE}.tar.gz" -C /
 docker volume create qdrant_data
 docker run --rm -v qdrant_data:/dest -v /qdrant/storage:/src alpine cp -r /src/. /dest/
@@ -371,7 +331,7 @@ export class DataMigrationService {
       // Fetch batch from old database
       const employees = await this.oldDb.query(
         'SELECT * FROM employees_old LIMIT $1 OFFSET $2',
-        [batchSize, offset]
+        [batchSize, offset],
       );
 
       if (employees.length === 0) break;
@@ -422,15 +382,15 @@ export class DataMigrationService {
 
 ### 4.1 Retention Policies
 
-| Data Type | Retention Period | Archive After | Delete After |
-|-----------|------------------|---------------|--------------|
-| **Audit Logs** | Indefinite | 1 year | Never |
-| **Employee Records** | 7 years (legal) | 2 years | 7 years post-termination |
-| **Financial Records** | 7 years (tax law) | 1 year | 7 years |
-| **CRM Data** | Active + 5 years | 2 years | 5 years post-last-contact |
-| **Session Data** | 24 hours | N/A | 24 hours |
-| **Temporary Files** | 7 days | N/A | 7 days |
-| **Backups** | 30 days | 30 days (cold storage) | 90 days |
+| Data Type             | Retention Period  | Archive After          | Delete After              |
+| --------------------- | ----------------- | ---------------------- | ------------------------- |
+| **Audit Logs**        | Indefinite        | 1 year                 | Never                     |
+| **Employee Records**  | 7 years (legal)   | 2 years                | 7 years post-termination  |
+| **Financial Records** | 7 years (tax law) | 1 year                 | 7 years                   |
+| **CRM Data**          | Active + 5 years  | 2 years                | 5 years post-last-contact |
+| **Session Data**      | 24 hours          | N/A                    | 24 hours                  |
+| **Temporary Files**   | 7 days            | N/A                    | 7 days                    |
+| **Backups**           | 30 days           | 30 days (cold storage) | 90 days                   |
 
 ### 4.2 Automated Data Archival
 
@@ -458,11 +418,17 @@ docker exec blih-postgres psql -U blih_user -d blih_prod << EOF
     AND termination_date < '$ARCHIVE_DATE';
 EOF
 
-# Archive MongoDB documents
-docker exec blih-mongodb mongosh blih_prod --eval "
-  db.activities.find({
-    createdAt: { \$lt: new Date('$ARCHIVE_DATE') }
-  }).forEach(doc => {
+# Archive PostgreSQL records
+docker exec blih-postgres psql -U blih_user -d blih_prod -c "
+  INSERT INTO audit_logs_archived
+  SELECT * FROM audit_logs
+  WHERE created_at < '$ARCHIVE_DATE'
+    AND termination_date < '$ARCHIVE_DATE';
+
+  DELETE FROM audit_logs
+  WHERE created_at < '$ARCHIVE_DATE'
+    AND termination_date < '$ARCHIVE_DATE';
+EOF
     db.activities_archive.insert(doc);
     db.activities.remove({ _id: doc._id });
   });
@@ -507,34 +473,6 @@ docker exec blih-postgres psql -U blih_user -d blih_prod << EOF
 EOF
 
 echo "✅ PostgreSQL maintenance complete"
-```
-
-### 5.2 MongoDB Maintenance
-
-```bash
-#!/bin/bash
-# MongoDB maintenance
-
-echo "🔧 Running MongoDB maintenance..."
-
-docker exec blih-mongodb mongosh blih_prod --eval "
-  // Compact collections
-  db.getCollectionNames().forEach(col => {
-    print('Compacting ' + col);
-    db.runCommand({ compact: col });
-  });
-
-  // Rebuild indexes
-  db.getCollectionNames().forEach(col => {
-    print('Reindexing ' + col);
-    db[col].reIndex();
-  });
-
-  // Database stats
-  printjson(db.stats());
-"
-
-echo "✅ MongoDB maintenance complete"
 ```
 
 ---
@@ -656,6 +594,7 @@ GROUP BY user_id;
 ## Quick Reference
 
 ### Backup Commands
+
 ```bash
 # Full backup
 ./scripts/backup-all.sh
@@ -668,6 +607,7 @@ find /opt/blih/backups -name "*.gz" -exec gzip -t {} \;
 ```
 
 ### Maintenance Schedule
+
 ```
 Daily    (2 AM): Full backup
 Hourly   (0:00): Incremental backup (WAL)

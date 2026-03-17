@@ -3,7 +3,7 @@ import {
   NotificationChannel,
   NotificationStatus,
   Prisma,
-} from '@prisma/client';
+} from '../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { NotificationMessage } from '../../../shared/interfaces/notification-message.interface';
 import { NotificationsGateway } from '../notifications.gateway';

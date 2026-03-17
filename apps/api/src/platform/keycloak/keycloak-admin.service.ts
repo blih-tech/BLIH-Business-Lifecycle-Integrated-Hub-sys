@@ -1,4 +1,4 @@
-import { HttpService } from '@nestjs/axios';
+﻿import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
@@ -6,6 +6,33 @@ import keycloakConfig from '../../config/keycloak.config';
 import { KeycloakRealmNotFoundError } from './keycloak.errors';
 import { KeycloakTokenService } from './keycloak-token.service';
 import { KeycloakUserRepresentation, RealmSummary } from './keycloak.types';
+
+interface KeycloakAdminRequestDetails {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  url: string;
+  data?: unknown;
+}
+
+interface KeycloakAdminResponseDetails {
+  status?: number;
+  statusText?: string;
+  data?: unknown;
+  headers?: Record<string, unknown>;
+}
+
+export class KeycloakAdminRequestError extends Error {
+  readonly response?: KeycloakAdminResponseDetails;
+
+  constructor(
+    message: string,
+    readonly request: KeycloakAdminRequestDetails,
+    response?: KeycloakAdminResponseDetails,
+  ) {
+    super(message);
+    this.name = 'KeycloakAdminRequestError';
+    this.response = response;
+  }
+}
 
 @Injectable()
 export class KeycloakAdminService {
@@ -236,19 +263,83 @@ export class KeycloakAdminService {
   ) {
     const token = await this.getAdminToken();
     const url = `${this.keycloak.url}${path}`;
+    const requestDetails: KeycloakAdminRequestDetails = {
+      method,
+      url,
+      data,
+    };
 
     this.logger.verbose(`${method} ${url}`);
 
-    return firstValueFrom(
-      this.httpService.request<TData>({
-        method,
-        url,
-        data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    );
+    try {
+      return await firstValueFrom(
+        this.httpService.request<TData>({
+          method,
+          url,
+          data,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      );
+    } catch (error: unknown) {
+      const responseDetails = this.extractResponseDetails(error);
+      this.logger.error(
+        JSON.stringify({
+          action: 'keycloak.admin.request.failure',
+          request: requestDetails,
+          response: responseDetails,
+        }),
+      );
+
+      throw new KeycloakAdminRequestError(
+        this.buildRequestErrorMessage(requestDetails, responseDetails),
+        requestDetails,
+        responseDetails,
+      );
+    }
+  }
+
+  private buildRequestErrorMessage(
+    request: KeycloakAdminRequestDetails,
+    response?: KeycloakAdminResponseDetails,
+  ): string {
+    const status = response?.status ?? 'unknown';
+    const statusText = response?.statusText ?? 'Request failed';
+
+    return `Keycloak admin request failed: ${request.method} ${request.url} -> ${status} ${statusText}`;
+  }
+
+  private extractResponseDetails(
+    error: unknown,
+  ): KeycloakAdminResponseDetails | undefined {
+    if (!error || typeof error !== 'object' || !('response' in error)) {
+      return undefined;
+    }
+
+    const response = (
+      error as {
+        response?: {
+          status?: number;
+          statusText?: string;
+          data?: unknown;
+          headers?: unknown;
+        };
+      }
+    ).response;
+    if (!response) {
+      return undefined;
+    }
+
+    return {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.data,
+      headers:
+        response.headers && typeof response.headers === 'object'
+          ? (response.headers as Record<string, unknown>)
+          : undefined,
+    };
   }
 
   private async getAdminToken(): Promise<string> {

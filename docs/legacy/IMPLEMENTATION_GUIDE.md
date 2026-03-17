@@ -5,6 +5,7 @@
 This guide provides a **realistic, actionable roadmap** for building BLIH Version 1.0. The 3-month timeline is aggressive but achievable with disciplined scope, parallel development, and pragmatic technology choices.
 
 **Key Reality Check:**
+
 - ✅ Achievable: Core Platform + 2-3 modules + Brain foundation
 - ⚠️ Risky: All 5 modules fully production-ready
 - ❌ Unrealistic: Full ISO certification evidence in 3 months (needs operational history)
@@ -18,7 +19,7 @@ This guide provides a **realistic, actionable roadmap** for building BLIH Versio
 ```
 blih-system/
 ├── packages/
-│   ├── core-platform/          # Core services (auth, audit, events)
+│   ├── core-platform/          # Core services (auth, audit)
 │   │   ├── backend/            # NestJS services
 │   │   ├── frontend/           # Shared UI components
 │   │   └── shared/             # TypeScript types, utils
@@ -26,8 +27,8 @@ blih-system/
 │   ├── module-hr/              # HR Module
 │   │   ├── backend/
 │   │   ├── frontend/
-│   │   ├── database/           # MongoDB schemas, migrations
-│   │   ├── events/             # Event publishers/subscribers
+│   │   ├── database/           # PostgreSQL schemas, migrations
+│   │   ├── api/                # API integration layer
 │   │   └── permissions/        # RBAC definitions
 │   │
 │   ├── module-crm/             # CRM Module (same structure)
@@ -37,7 +38,7 @@ blih-system/
 │   │
 │   └── shared/                 # Common utilities
 │       ├── types/              # Shared TypeScript interfaces
-│       ├── events/             # Event type definitions
+│       ├── contracts/          # API contract definitions
 │       └── guards/             # NestJS guards (RBAC, audit)
 │
 ├── infrastructure/
@@ -62,12 +63,14 @@ blih-system/
 ```
 
 **Why Monorepo?**
+
 - Shared types prevent API drift
 - Easier cross-module refactoring
 - Single CI/CD pipeline
 - Atomic commits across modules
 
 **Alternative: Multi-repo** (if teams are geographically distributed)
+
 - Each module in separate repo
 - Shared package registry for types
 - More complex CI/CD coordination
@@ -79,28 +82,30 @@ blih-system/
 ### 2.1 Backend Stack
 
 **Core Framework: NestJS**
+
 - ✅ Built-in dependency injection
 - ✅ Modular architecture (perfect for BLIH)
 - ✅ TypeScript-first
 - ✅ Excellent Keycloak integration
-- ✅ Built-in event emitters (can extend to RabbitMQ)
+- ✅ Built-in HTTP client for API integration
 
 **Database Choices:**
-- **MongoDB**: HR, CRM, Projects, Brain (flexible schemas, document storage)
-  - Use Mongoose for ODM
-  - Version: 7.x (latest stable)
-- **PostgreSQL**: Finance (ACID guarantees)
-  - Use TypeORM or Prisma
+
+- **PostgreSQL**: All modules (HR, CRM, Projects, Finance, Brain)
+  - Use Prisma for ORM
+  - Version: 16.x (latest stable)
+  - ACID transactions for all data
   - Version: 16.x
 
-**Event Bus:**
-- **Primary: RabbitMQ** (production-grade, reliable)
-  - Use `@nestjs/microservices` with RabbitMQ transport
-  - Dead letter queues for failed events
-- **Alternative: Redis Streams** (simpler, but less reliable)
-  - Use if RabbitMQ is overkill initially
+**API Integration:**
+
+- **Direct API calls** between modules
+  - Use HTTP clients for synchronous communication
+  - Implement retry logic and circuit breakers
+  - Use shared API contracts for type safety
 
 **Identity & Access:**
+
 - **Keycloak** (containerized)
   - Realm: `blih-realm`
   - JWT tokens
@@ -110,46 +115,55 @@ blih-system/
 ### 2.2 Frontend Stack
 
 **Framework: Next.js 14+ (App Router)**
+
 - ✅ Server-side rendering
 - ✅ API routes (can proxy to backend)
 - ✅ Built-in authentication helpers
 - ✅ TypeScript support
 
 **UI Library:**
+
 - **shadcn/ui** (recommended) or **Ant Design**
   - shadcn: More customizable, modern
   - Ant Design: Faster to build, more components out-of-box
 
 **State Management:**
+
 - **TanStack Query (React Query)** for server state
 - **Zustand** or **Jotai** for client state (minimal)
 
 **Forms:**
+
 - **React Hook Form** + **Zod** (type-safe validation)
 
 ### 2.3 Infrastructure Stack
 
 **Containerization:**
+
 - **Docker** + **Docker Compose** (development)
 - **Docker Swarm** or **Kubernetes** (production, optional)
 
 **Object Storage:**
+
 - **MinIO** (S3-compatible, on-premises)
   - Encrypted buckets
   - Versioning enabled
 
 **Vector Search:**
+
 - **Qdrant** (for AI Brain module)
   - Local deployment
   - Embeddings via local LLM or pre-computed
 
 **AI/LLM:**
+
 - **Ollama** (local LLM runner)
   - Models: Llama 3 8B or Mistral 7B
   - No internet required
 - **Alternative: OpenAI API** (if internet allowed, not recommended for air-gapped)
 
 **Workflow Automation:**
+
 - **n8n** (containerized)
   - Visual workflow builder
   - Integrates with BLIH event bus
@@ -157,14 +171,17 @@ blih-system/
 ### 2.4 Development Tools
 
 **Package Management:**
+
 - **pnpm** (faster, better monorepo support) or **npm workspaces**
 
 **Code Quality:**
+
 - **ESLint** + **Prettier**
 - **Husky** (pre-commit hooks)
 - **TypeScript strict mode**
 
 **Testing:**
+
 - **Jest** (unit tests)
 - **Supertest** (API tests)
 - **Playwright** (E2E tests)
@@ -178,21 +195,24 @@ blih-system/
 **Goal:** Core infrastructure operational
 
 **Deliverables:**
+
 1. ✅ Docker Compose setup with all services
 2. ✅ Keycloak realm configured
-3. ✅ MongoDB + PostgreSQL running
+3. ✅ PostgreSQL running
 4. ✅ Basic NestJS backend with health check
 5. ✅ Next.js frontend with login page
-6. ✅ Central audit log service (MongoDB collection)
-7. ✅ Event bus (RabbitMQ) connected
+6. ✅ Central audit log service (PostgreSQL table)
+7. ✅ API integration layer configured
 
 **Critical Path:**
+
 - Day 1-3: Docker Compose + databases
 - Day 4-7: Keycloak integration + JWT validation
 - Day 8-10: Audit logging middleware
-- Day 11-14: Event bus + first event published
+- Day 11-14: API integration + first cross-module call
 
 **Team:**
+
 - 1 Backend Lead (Core Platform)
 - 1 DevOps Engineer
 - 1 Frontend Dev (login UI)
@@ -204,6 +224,7 @@ blih-system/
 **Goal:** Governance layer fully functional
 
 **Deliverables:**
+
 1. ✅ RBAC system with granular permissions
 2. ✅ Permission guard (`@RequirePermission('HR:employee:view')`)
 3. ✅ Company context service (single `company_id`)
@@ -212,6 +233,7 @@ blih-system/
 6. ✅ Role assignment UI
 
 **RBAC Permission Format:**
+
 ```
 MODULE:RESOURCE:ACTION
 Examples:
@@ -223,6 +245,7 @@ Examples:
 ```
 
 **Implementation:**
+
 ```typescript
 // packages/core-platform/backend/src/permissions/permissions.decorator.ts
 export const RequirePermission = (...permissions: string[]) =>
@@ -232,7 +255,10 @@ export const RequirePermission = (...permissions: string[]) =>
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const required = this.reflector.get<string[]>('permissions', context.getHandler());
+    const required = this.reflector.get<string[]>(
+      'permissions',
+      context.getHandler(),
+    );
     const user = context.switchToHttp().getRequest().user;
     // Check user roles have required permissions
     return this.permissionService.hasPermissions(user, required);
@@ -241,6 +267,7 @@ export class PermissionsGuard implements CanActivate {
 ```
 
 **Team:**
+
 - 2 Backend Devs (Core Platform)
 - 1 Frontend Dev (Admin UI)
 
@@ -251,22 +278,26 @@ export class PermissionsGuard implements CanActivate {
 **Goal:** First business module + knowledge base foundation
 
 **Brain Module (Week 5):**
-- MongoDB collections: `policies`, `sops`, `decisions`, `lessons_learned`
+
+- PostgreSQL tables: `policies`, `sops`, `decisions`, `lessons_learned`
 - Version control for documents
-- Basic search (MongoDB text index)
-- Event observer (listens to all system events)smart phone
+- Basic search (PostgreSQL full-text search)
+- API integration layer (consumes data from other modules)
 
 **HR Module (Week 6):**
+
 - Employee CRUD
 - Contract management
 - Basic onboarding workflow
-- Publishes events: `hr.employee.hired`, `hr.employee.updated`
+- Makes API calls: `hr.employee.hired`, `hr.employee.updated`
 
 **Integration:**
-- HR events → Brain observer → stores patterns
+
+- HR API calls → Brain observer → stores patterns
 - HR UI integrated with Core Platform RBAC
 
 **Team:**
+
 - 1 Backend Dev (Brain)
 - 2 Backend Devs (HR)
 - 1 Frontend Dev (HR UI)
@@ -278,26 +309,30 @@ export class PermissionsGuard implements CanActivate {
 **Goal:** Sales-to-delivery pipeline operational
 
 **CRM Module:**
+
 - Leads, contacts, organizations
 - Deals and pipelines (kanban board)
-- Publishes: `crm.deal.won`, `crm.deal.lost`
+- Makes API calls: `crm.deal.won`, `crm.deal.lost`
 
 **Projects Module:**
-- Subscribes to `crm.deal.won`
+
+- Subscribes to `crm.deal.won` via API webhook
 - Auto-creates project with tasks
 - Time tracking basics
-- Publishes: `project.created`, `project.completed`
+- Makes API calls: `project.created`, `project.completed`
 
-**Event Flow:**
+**API Flow:**
+
 ```
 CRM: Deal Won
-  ↓ (event: crm.deal.won)
+  ↓ (API call: POST /projects)
 Projects: Create Project
-  ↓ (event: project.created)
+  ↓ (API call: POST /brain/observations)
 Brain: Log Pattern
 ```
 
 **Team:**
+
 - 2 Backend Devs (CRM)
 - 2 Backend Devs (Projects)
 - 2 Frontend Devs (CRM + Projects UI)
@@ -309,6 +344,7 @@ Brain: Log Pattern
 **Goal:** Financial operations + end-to-end workflows
 
 **Finance Module:**
+
 - PostgreSQL schema (ledger, transactions)
 - Payroll calculation (basic)
 - Invoice generation (from deals)
@@ -316,11 +352,13 @@ Brain: Log Pattern
 - Double-entry bookkeeping enforcement
 
 **Integration:**
+
 - `crm.deal.won` → Finance generates invoice
 - `hr.employee.hired` → Finance sets up payroll
 - `project.completed` → Finance recognizes revenue
 
 **Team:**
+
 - 2 Backend Devs (Finance - critical, needs senior)
 - 1 Frontend Dev (Finance UI)
 
@@ -331,17 +369,20 @@ Brain: Log Pattern
 **Goal:** AI assistance + compliance evidence generation
 
 **AI Chatbot:**
+
 - Qdrant vector store setup
 - Embedding generation (local LLM via Ollama)
 - Permission-gated queries
 - Response logging to audit
 
 **Compliance Extensions (Brain):**
-- Risk Register (MongoDB collection)
+
+- Risk Register (PostgreSQL table)
 - CAPA lifecycle (8 stages)
 - Management Review template
 
 **Team:**
+
 - 1 AI Engineer (Chatbot)
 - 1 Backend Dev (Compliance extensions)
 - 1 Frontend Dev (Compliance UI)
@@ -353,27 +394,32 @@ Brain: Log Pattern
 **Goal:** Production-ready deployment
 
 **Security:**
+
 - Encryption at rest (MinIO, database configs)
 - HTTPS enforcement
 - Secrets management (Docker secrets)
 - RBAC matrix testing
 
 **Performance:**
+
 - Database indexing
 - Query optimization
 - Caching (Redis) for frequent reads
 
 **Testing:**
+
 - E2E test suite
 - Load testing (simulate 50-100 users)
 - Audit trail verification
 
 **Pilot Deployment:**
+
 - Internal pilot with real data
 - Mock audit walkthrough
 - Bug fixes
 
 **Team:**
+
 - All hands on deck
 - Focus on stability, not features
 
@@ -390,51 +436,53 @@ Every module follows this pattern:
 ├── hr.module.ts              # Main module
 ├── hr.controller.ts         # REST endpoints
 ├── hr.service.ts            # Business logic
-├── entities/                # MongoDB schemas
+├── entities/                # PostgreSQL models
 │   └── employee.entity.ts
 ├── dto/                     # Data transfer objects
 │   └── create-employee.dto.ts
-├── events/                  # Event handling
-│   ├── hr.events.ts        # Event definitions
-│   └── hr.event-handler.ts # Subscribers
+├── api/                     # API integration
+│   ├── hr.api.ts          # API client definitions
+│   └── hr.webhooks.ts     # Webhook handlers
 └── permissions/            # RBAC definitions
     └── hr.permissions.ts
 ```
 
-### 4.2 Event-Driven Integration Pattern
+### 4.2 API-Based Integration Pattern
 
-**Event Definition (Shared):**
+**API Client (Shared):**
+
 ```typescript
-// packages/shared/events/hr.events.ts
-export class EmployeeHiredEvent {
-  constructor(
-    public readonly employeeId: string,
-    public readonly companyId: string,
-    public readonly timestamp: Date,
-  ) {}
+// packages/shared/clients/hr.client.ts
+export class HrApiClient {
+  constructor(private baseURL: string) {}
+
+  async notifyEmployeeHired(employeeId: string, companyId: string) {
+    await this.http.post('/api/v1/webhooks/employee-hired', {
+      employeeId,
+      companyId,
+      timestamp: new Date(),
+    });
+  }
 }
 ```
 
 **Publisher (HR Module):**
+
 ```typescript
 // module-hr/backend/src/hr.service.ts
 @Injectable()
 export class HrService {
   constructor(
-    private eventEmitter: EventEmitter2,
+    private apiClient: HrApiClient,
     private auditService: AuditService,
   ) {}
 
   async hireEmployee(dto: CreateEmployeeDto) {
     const employee = await this.employeeModel.create(dto);
-    
-    // Publish event
-    this.eventEmitter.emit('hr.employee.hired', new EmployeeHiredEvent(
-      employee.id,
-      this.companyId,
-      new Date(),
-    ));
-    
+
+    // Notify other modules via API
+    await this.apiClient.notifyEmployeeHired(employee.id, this.companyId);
+
     // Audit log
     await this.auditService.log({
       userId: this.currentUser.id,
@@ -442,22 +490,24 @@ export class HrService {
       action: 'employee.hired',
       resourceId: employee.id,
     });
-    
+
     return employee;
   }
 }
 ```
 
-**Subscriber (Finance Module):**
+**Webhook Handler (Finance Module):**
+
 ```typescript
-// module-finance/backend/src/finance.event-handler.ts
-@EventsHandler(EmployeeHiredEvent)
-export class FinanceEventHandler {
+// module-finance/backend/src/finance.webhook.controller.ts
+@Controller('webhooks')
+export class FinanceWebhookController {
   constructor(private financeService: FinanceService) {}
 
-  async handle(event: EmployeeHiredEvent) {
+  @Post('employee-hired')
+  async handleEmployeeHired(@Body() payload: EmployeeHiredPayload) {
     // Auto-setup payroll for new employee
-    await this.financeService.setupPayroll(event.employeeId);
+    await this.financeService.setupPayroll(payload.employeeId);
   }
 }
 ```
@@ -465,6 +515,7 @@ export class FinanceEventHandler {
 ### 4.3 RBAC Integration Pattern
 
 **Permission Definition:**
+
 ```typescript
 // module-hr/backend/src/permissions/hr.permissions.ts
 export const HR_PERMISSIONS = {
@@ -476,6 +527,7 @@ export const HR_PERMISSIONS = {
 ```
 
 **Controller Usage:**
+
 ```typescript
 // module-hr/backend/src/hr.controller.ts
 @Controller('hr/employees')
@@ -498,6 +550,7 @@ export class HrController {
 ### 4.4 Audit Logging Pattern
 
 **Central Audit Service:**
+
 ```typescript
 // packages/core-platform/backend/src/audit/audit.service.ts
 @Injectable()
@@ -525,6 +578,7 @@ export class AuditService {
 ```
 
 **Automatic Audit Middleware:**
+
 ```typescript
 // packages/core-platform/backend/src/audit/audit.middleware.ts
 @Injectable()
@@ -549,7 +603,7 @@ export class AuditMiddleware implements NestMiddleware {
 
 ## Part 5: Database Design Patterns
 
-### 5.1 MongoDB Schema Pattern (HR Example)
+### 5.1 PostgreSQL Schema Pattern (HR Example)
 
 ```typescript
 // module-hr/backend/src/entities/employee.entity.ts
@@ -737,17 +791,15 @@ export function PermissionGate({
 version: '3.8'
 
 services:
-  # Databases
-  mongodb:
-    image: mongo:7
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-
+  # Database
   postgres:
     image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: blih
+      POSTGRES_USER: blih_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -764,11 +816,6 @@ services:
     ports:
       - "8080:8080"
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
 
   minio:
     image: minio/minio
@@ -788,15 +835,11 @@ services:
   backend-core:
     build: ./packages/core-platform/backend
     depends_on:
-      - mongodb
       - postgres
       - keycloak
-      - rabbitmq
     environment:
-      MONGODB_URI: mongodb://mongodb:27017/blih
-      POSTGRES_URI: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/blih_finance
+      POSTGRES_URI: postgresql://blih_user:${POSTGRES_PASSWORD}@postgres:5432/blih
       KEYCLOAK_URL: http://keycloak:8080
-      RABBITMQ_URL: amqp://rabbitmq:5672
 
   frontend:
     build: ./packages/frontend
@@ -808,7 +851,6 @@ services:
       NEXT_PUBLIC_API_URL: http://localhost:4000
 
 volumes:
-  mongodb_data:
   postgres_data:
   minio_data:
   qdrant_data:
@@ -826,7 +868,6 @@ KEYCLOAK_ADMIN_PASSWORD=change-me
 KEYCLOAK_REALM=blih-realm
 
 # Databases
-MONGO_PASSWORD=change-me
 POSTGRES_PASSWORD=change-me
 
 # JWT
@@ -852,22 +893,30 @@ MINIO_ROOT_PASSWORD=change-me
 
 ## Part 8: Critical Implementation Challenges
 
-### 8.1 Event Bus Reliability
+### 8.1 API Integration Reliability
 
-**Problem:** Events can be lost or processed out of order.
+**Problem:** API calls can fail or timeout, causing data inconsistency.
 
 **Solutions:**
-- Use RabbitMQ with persistent queues
-- Implement idempotent event handlers
-- Dead letter queues for failed events
-- Event versioning for schema evolution
+
+- Implement retry logic with exponential backoff
+- Use circuit breakers for failing services
+- Implement idempotent API endpoints
+- API versioning for backward compatibility
 
 ```typescript
-// Event versioning example
-export class EmployeeHiredEvent {
-  version: 1; // Increment on schema changes
-  employeeId: string;
-  // ... other fields
+// API client with retry logic
+export class ApiClient {
+  async callWithRetry(url: string, data: any, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await this.http.post(url, data);
+      } catch (error) {
+        if (i === retries - 1) throw error;
+        await this.delay(Math.pow(2, i) * 1000); // Exponential backoff
+      }
+    }
+  }
 }
 ```
 
@@ -876,9 +925,10 @@ export class EmployeeHiredEvent {
 **Problem:** Audit logs can grow to millions of records.
 
 **Solutions:**
+
 - Index on `timestamp`, `userId`, `module`, `action`
 - Archive old logs (move to cold storage after 1 year)
-- Partition by date (MongoDB collections per month)
+- Partition by date (PostgreSQL tables per month)
 - Compress archived logs
 
 ### 8.3 RBAC Performance
@@ -886,6 +936,7 @@ export class EmployeeHiredEvent {
 **Problem:** Permission checks on every request can be slow.
 
 **Solutions:**
+
 - Cache user permissions in JWT token (refresh on role change)
 - Redis cache for permission lookups
 - Pre-compute permission matrices
@@ -895,6 +946,7 @@ export class EmployeeHiredEvent {
 **Problem:** AI might leak sensitive data or bypass permissions.
 
 **Solutions:**
+
 - Never give AI direct database access
 - Only use Brain-approved content (pre-filtered)
 - Log all queries and responses
@@ -939,16 +991,16 @@ async queryChatbot(userId: string, query: string) {
 ```typescript
 // module-hr/backend/src/hr.service.spec.ts
 describe('HrService', () => {
-  it('should create employee and emit event', async () => {
-    const eventEmitter = { emit: jest.fn() };
-    const service = new HrService(eventEmitter, auditService);
-    
+  it('should create employee and make API call', async () => {
+    const apiClient = { notifyEmployeeHired: jest.fn() };
+    const service = new HrService(apiClient, auditService);
+
     const employee = await service.hireEmployee({ firstName: 'John' });
-    
+
     expect(employee).toBeDefined();
-    expect(eventEmitter.emit).toHaveBeenCalledWith(
-      'hr.employee.hired',
-      expect.any(EmployeeHiredEvent),
+    expect(apiClient.notifyEmployeeHired).toHaveBeenCalledWith(
+      employee.id,
+      'BLIH',
     );
   });
 });
@@ -964,8 +1016,8 @@ describe('CRM → Projects Integration', () => {
     const deal = await crmApi.createDeal({ name: 'Test Deal' });
     await crmApi.markDealWon(deal.id);
 
-    // Wait for event processing
-    await waitForEvent('project.created');
+    // Wait for API processing
+    await waitForApiCall('POST', '/projects', { sourceDealId: deal.id });
 
     // Verify project created
     const projects = await projectsApi.list();
@@ -986,7 +1038,7 @@ test('employee onboarding workflow', async ({ page }) => {
   await page.click('button[type="submit"]');
 
   await expect(page.locator('.success-message')).toBeVisible();
-  
+
   // Verify audit log
   const auditLogs = await auditApi.list();
   expect(auditLogs).toContainEqual(
@@ -1004,21 +1056,22 @@ test('employee onboarding workflow', async ({ page }) => {
 
 ### 10.1 Revised Timeline (More Realistic)
 
-| Phase | Duration | Focus | Team Size |
-|-------|----------|-------|-----------|
-| Phase 0: Foundation | 2 weeks | Docker, Keycloak, Audit | 3 people |
-| Phase 1: Core Platform | 2 weeks | RBAC, Events, Notifications | 3 people |
-| Phase 2: Brain + HR | 2 weeks | Knowledge base + First module | 4 people |
-| Phase 3: CRM + Projects | 2 weeks | Sales pipeline | 4 people |
-| Phase 4: Finance | 2 weeks | Financial operations | 3 people |
-| Phase 5: AI + Compliance | 2 weeks | Chatbot + Risk/CAPA | 3 people |
-| Phase 6: Hardening | 2 weeks | Security, Performance, Testing | All hands |
+| Phase                    | Duration | Focus                                | Team Size |
+| ------------------------ | -------- | ------------------------------------ | --------- |
+| Phase 0: Foundation      | 2 weeks  | Docker, Keycloak, Audit              | 3 people  |
+| Phase 1: Core Platform   | 2 weeks  | RBAC, API Integration, Notifications | 3 people  |
+| Phase 2: Brain + HR      | 2 weeks  | Knowledge base + First module        | 4 people  |
+| Phase 3: CRM + Projects  | 2 weeks  | Sales pipeline                       | 4 people  |
+| Phase 4: Finance         | 2 weeks  | Financial operations                 | 3 people  |
+| Phase 5: AI + Compliance | 2 weeks  | Chatbot + Risk/CAPA                  | 3 people  |
+| Phase 6: Hardening       | 2 weeks  | Security, Performance, Testing       | All hands |
 
 **Total: 14 weeks (3.5 months)** - More realistic than 12 weeks
 
 ### 10.2 Team Composition
 
 **Minimum Viable Team:**
+
 - 1 Tech Lead / Architect
 - 3-4 Backend Developers (NestJS)
 - 2 Frontend Developers (Next.js)
@@ -1027,6 +1080,7 @@ test('employee onboarding workflow', async ({ page }) => {
 - 1 Product/Compliance Specialist (part-time)
 
 **Ideal Team:**
+
 - 2 Senior Backend (Core + Modules)
 - 3 Mid-level Backend (Modules)
 - 2 Frontend (UI + Dashboards)
@@ -1043,22 +1097,22 @@ test('employee onboarding workflow', async ({ page }) => {
 
 ### 11.1 Technical Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| Event bus bottleneck | Medium | High | Use RabbitMQ, implement circuit breakers |
-| Audit log performance | High | Medium | Indexing, archiving strategy |
-| RBAC complexity | Medium | High | Start simple, iterate |
-| Database migration failures | Low | High | Test migrations in staging |
-| AI chatbot security breach | Low | Critical | Sandbox, no DB access, extensive testing |
+| Risk                        | Probability | Impact   | Mitigation                               |
+| --------------------------- | ----------- | -------- | ---------------------------------------- |
+| API integration bottleneck  | Medium      | High     | Implement circuit breakers, retry logic  |
+| Audit log performance       | High        | Medium   | Indexing, archiving strategy             |
+| RBAC complexity             | Medium      | High     | Start simple, iterate                    |
+| Database migration failures | Low         | High     | Test migrations in staging               |
+| AI chatbot security breach  | Low         | Critical | Sandbox, no DB access, extensive testing |
 
 ### 11.2 Timeline Risks
 
-| Risk | Mitigation |
-|------|-----------|
-| Scope creep | Strict feature freeze after Week 10 |
+| Risk               | Mitigation                               |
+| ------------------ | ---------------------------------------- |
+| Scope creep        | Strict feature freeze after Week 10      |
 | Integration delays | Daily stand-ups, integration tests early |
-| Compliance gaps | Compliance specialist reviews weekly |
-| Team burnout | Realistic estimates, buffer time |
+| Compliance gaps    | Compliance specialist reviews weekly     |
+| Team burnout       | Realistic estimates, buffer time         |
 
 ---
 
@@ -1067,7 +1121,8 @@ test('employee onboarding workflow', async ({ page }) => {
 ### 12.1 MVP Definition (End of 3 Months)
 
 **Must Have:**
-- ✅ Core Platform (RBAC, Audit, Events) operational
+
+- ✅ Core Platform (RBAC, Audit, API Integration) operational
 - ✅ 2-3 Business Modules (HR + CRM minimum)
 - ✅ Brain foundation (policies, basic knowledge)
 - ✅ End-to-end workflow (deal → project → invoice)
@@ -1075,6 +1130,7 @@ test('employee onboarding workflow', async ({ page }) => {
 - ✅ Audit trail generating evidence
 
 **Nice to Have:**
+
 - ⚠️ All 5 modules (can defer Projects/Finance if needed)
 - ⚠️ Full AI Chatbot (can start with basic search)
 - ⚠️ Complete compliance extensions (Risk/CAPA can be v1.1)
@@ -1107,4 +1163,3 @@ test('employee onboarding workflow', async ({ page }) => {
 **Remember:** Compliance evidence needs operational history. You can build the system in 3 months, but genuine audit readiness requires 6-12 months of operational data.
 
 Good luck! 🚀
-

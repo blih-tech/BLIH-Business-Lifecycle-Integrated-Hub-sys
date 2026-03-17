@@ -1,14 +1,15 @@
 # BLIH Database Schema - HR Module
 
-**Database:** MongoDB (Primary) + PostgreSQL (Relational Data)  
-**Module:** HR (Human Resources / BLIH Team)  
-**Version:** 1.0  
+**Database:** PostgreSQL (Primary)
+**Module:** HR (Human Resources / BLIH Team)
+**Version:** 1.0
 **Last Updated:** February 2026  
 **Total Entities:** 50+ Collections/Tables
 
 ---
 
 ## Table of Contents
+
 1. [Schema Overview](#schema-overview)
 2. [Core Employee Collections](#core-employee-collections)
 3. [Sub-System 1: Recruitment & Hiring (6 Tables)](#sub-system-1-recruitment--hiring)
@@ -28,13 +29,13 @@
 
 ### Database Architecture
 
-| Database | Purpose | Collections/Tables |
-|----------|---------|-------------------|
-| **MongoDB** | Document storage, flexible schemas, audit logs | hr_employees, hr_forms, hr_workflows |
-| **PostgreSQL** | Relational data, reporting, analytics | payroll, attendance, structured queries |
-| **Qdrant** | Vector embeddings for semantic search | N/A (AI/ML purposes) |
+| Database       | Purpose                                                                | Tables                                                               |
+| -------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **PostgreSQL** | All HR data including documents, relational data, reporting, analytics | employees, forms, workflows, payroll, attendance, structured queries |
+| **Qdrant**     | Vector embeddings for semantic search                                  | N/A (AI/ML purposes)                                                 |
 
 ### Naming Conventions
+
 - **Collections:** `hr_{entity_name}` (e.g., `hr_employees`, `hr_leave_requests`)
 - **Fields:** snake_case (e.g., `employee_id`, `created_at`)
 - **Foreign Keys:** `{entity}_id` (e.g., `employee_id`, `department_id`)
@@ -44,19 +45,19 @@
 
 ## Core Employee Collections
 
-### 1. hr_employees (Master Employee Record)
+### 1. employees (Master Employee Record)
 
-**Database:** MongoDB  
+**Database:** PostgreSQL  
 **Description:** Central employee registry with all core data
 
-```javascript
+```sql
 {
   _id: ObjectId("..."),
-  
+
   // System Fields
   employee_id: "BLIH-EMP-000001",           // Unique employee identifier
   keycloak_user_id: "uuid",                 // SSO identity
-  
+
   // Personal Information
   personal_info: {
     first_name: "Jane",
@@ -65,7 +66,7 @@
     date_of_birth: ISODate("1990-05-15"),
     nationality: "Ethiopian",
     marital_status: "SINGLE",               // Enum: SINGLE, MARRIED, DIVORCED, WIDOWED
-    
+
     contact: {
       personal_email: "jane@example.com",
       work_email: "jane.smith@blihmarketing.com",
@@ -77,7 +78,7 @@
         phone: "+251933456789"
       }
     },
-    
+
     address: {
       street: "Bole Road",
       city: "Addis Ababa",
@@ -86,7 +87,7 @@
       postal_code: "1000"
     }
   },
-  
+
   // Employment Information
   employment: {
     status: "ACTIVE",                       // Enum: ACTIVE, ON_PROBATION, SUSPENDED, TERMINATED, RESIGNED
@@ -95,57 +96,57 @@
     position_id: ObjectId("..."),
     job_grade: "SENIOR",                    // Enum: JUNIOR, MID, SENIOR, LEAD, MANAGER, DIRECTOR, EXECUTIVE
     reporting_manager_id: ObjectId("..."),
-    
+
     hire_date: ISODate("2026-02-01"),
     probation_end_date: ISODate("2026-04-01"),
     contract_expiry: null,                  // Null for permanent
     termination_date: null,
-    
+
     work_location: "HYBRID",                // Enum: ON_SITE, REMOTE, HYBRID
     work_schedule: "STANDARD",            // Enum: STANDARD, SHIFT, FLEXIBLE
   },
-  
+
   // Compensation & Payroll
   compensation: {
     basic_salary: 45000.00,                 // ETB
     currency: "ETB",
-    
+
     allowances: [
       { type: "TRANSPORT", amount: 3000.00 },
       { type: "HOUSING", amount: 8000.00 },
       { type: "MOBILE", amount: 500.00 }
     ],
-    
+
     gross_salary: 56500.00,                 // Calculated
-    
+
     bank_details: {
       account_name: "Jane Smith",
       bank_name: "CBE",                     // Enum: CBE, AWASH, DASHEN, etc.
       account_number: "1000123456789",
       branch_code: "001"
     },
-    
+
     payroll_cycle: "MONTHLY",               // Enum: MONTHLY, BI_WEEKLY
     tax_category: "A",                      // Ethiopian tax category
     pension_number: "PN12345678"
   },
-  
+
   // Access & Security
   access: {
     system_email: "jane.smith@blihmarketing.com",
     access_level: "EMPLOYEE",               // Enum: EMPLOYEE, MANAGER, ADMIN, SUPER_ADMIN
-    
+
     assigned_assets: [
       { asset_id: ObjectId("..."), type: "LAPTOP", serial: "SN123456", assigned_date: ISODate(...) }
     ],
-    
+
     system_access: ["EMAIL", "CRM", "PROJECTS", "HR_PORTAL"],
-    
+
     permissions: [
       { module: "HR", resource: "leave", actions: ["view", "create", "edit"] }
     ]
   },
-  
+
   // Lifecycle Tracking
   lifecycle: {
     leave_balance: {
@@ -153,15 +154,15 @@
       sick: { entitled: 10, used: 0, remaining: 10 },
       emergency: { entitled: 5, used: 0, remaining: 5 }
     },
-    
+
     disciplinary_flags: 0,
     performance_score: 4.2,
-    
+
     renewal_alerts: [
       { type: "CONTRACT", due_date: ISODate("2027-02-01"), days_remaining: 365 }
     ]
   },
-  
+
   // Documents
   documents: [
     {
@@ -173,13 +174,13 @@
       verified: true
     }
   ],
-  
+
   // Metadata
   created_at: ISODate("2026-02-01T09:00:00Z"),
   updated_at: ISODate("2026-02-15T14:30:00Z"),
   created_by: ObjectId("..."),              // HR admin
   updated_by: ObjectId("..."),
-  
+
   // Soft Delete
   deleted_at: null,
   deleted_by: null,
@@ -188,14 +189,24 @@
 ```
 
 **Indexes:**
+
 ```javascript
-db.hr_employees.createIndex({ "employee_id": 1 }, { unique: true });
-db.hr_employees.createIndex({ "keycloak_user_id": 1 }, { unique: true });
-db.hr_employees.createIndex({ "personal_info.work_email": 1 }, { unique: true, sparse: true });
-db.hr_employees.createIndex({ "employment.status": 1, "employment.department_id": 1 });
-db.hr_employees.createIndex({ "employment.reporting_manager_id": 1 });
-db.hr_employees.createIndex({ "personal_info.last_name": 1, "personal_info.first_name": 1 });
-db.hr_employees.createIndex({ "is_deleted": 1 });
+db.hr_employees.createIndex({ employee_id: 1 }, { unique: true });
+db.hr_employees.createIndex({ keycloak_user_id: 1 }, { unique: true });
+db.hr_employees.createIndex(
+  { 'personal_info.work_email': 1 },
+  { unique: true, sparse: true },
+);
+db.hr_employees.createIndex({
+  'employment.status': 1,
+  'employment.department_id': 1,
+});
+db.hr_employees.createIndex({ 'employment.reporting_manager_id': 1 });
+db.hr_employees.createIndex({
+  'personal_info.last_name': 1,
+  'personal_info.first_name': 1,
+});
+db.hr_employees.createIndex({ is_deleted: 1 });
 ```
 
 ---
@@ -208,7 +219,7 @@ db.hr_employees.createIndex({ "is_deleted": 1 });
 {
   _id: ObjectId("..."),
   request_id: "REQ-2026-015",               // Format: REQ-{YYYY}-{NNN}
-  
+
   // Request Info
   position: {
     job_name: "Senior Backend Engineer",
@@ -217,13 +228,13 @@ db.hr_employees.createIndex({ "is_deleted": 1 });
     type: "NEW",                            // Enum: NEW, REPLACEMENT
     replacement_employee_id: null,            // If type=REPLACEMENT
   },
-  
+
   rationale: {
     motivation: "EXPANSION",                // Enum: EXPANSION, REPLACEMENT, NEW_OFFERING, SUCCESSION
     role_overview: "Responsible for API development...",
     organizational_impact: "Enable scaling of platform..."
   },
-  
+
   staffing: {
     current_count: 5,
     needed_count: 6,
@@ -232,16 +243,16 @@ db.hr_employees.createIndex({ "is_deleted": 1 });
     currency: "ETB",
     additional_perks: ["HEALTH_INSURANCE", "TRANSPORT"]
   },
-  
+
   schedule: {
     target_join_date: ISODate("2026-04-01"),
     priority: "HIGH",                       // Enum: LOW, MEDIUM, HIGH, URGENT
   },
-  
+
   // Workflow
   submitted_by: ObjectId("..."),            // Team Lead
   submitted_at: ISODate("2026-02-01T10:00:00Z"),
-  
+
   approvals: [
     {
       level: 1,
@@ -262,24 +273,28 @@ db.hr_employees.createIndex({ "is_deleted": 1 });
       acted_at: ISODate("2026-02-02T09:00:00Z")
     }
   ],
-  
+
   status: "COMPLETED",                      // Enum: DRAFT, PENDING, APPROVED, REJECTED, COMPLETED
-  
+
   // References
   linked_job_posting_id: ObjectId("..."),   // Once created
   linked_employee_id: ObjectId("..."),    // Once hired
-  
+
   created_at: ISODate("2026-02-01T10:00:00Z"),
   updated_at: ISODate("2026-02-02T09:00:00Z")
 }
 ```
 
 **Indexes:**
+
 ```javascript
-db.hr_recruitment_requests.createIndex({ "request_id": 1 }, { unique: true });
-db.hr_recruitment_requests.createIndex({ "position.team_id": 1, "status": 1 });
-db.hr_recruitment_requests.createIndex({ "approvals.approver_id": 1, "approvals.status": 1 });
-db.hr_recruitment_requests.createIndex({ "created_at": -1 });
+db.hr_recruitment_requests.createIndex({ request_id: 1 }, { unique: true });
+db.hr_recruitment_requests.createIndex({ 'position.team_id': 1, status: 1 });
+db.hr_recruitment_requests.createIndex({
+  'approvals.approver_id': 1,
+  'approvals.status': 1,
+});
+db.hr_recruitment_requests.createIndex({ created_at: -1 });
 ```
 
 ---
@@ -290,10 +305,10 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
 {
   _id: ObjectId("..."),
   posting_id: "POST-2026-012",
-  
+
   // Link to Request
   recruitment_request_id: ObjectId("..."),
-  
+
   // Position Details
   position: {
     job_name: "Senior Backend Engineer",
@@ -301,7 +316,7 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
     work_type: "FULL_TIME",                  // Enum: FULL_TIME, PART_TIME, CONTRACT
     work_mode: "HYBRID",                    // Enum: ON_SITE, REMOTE, HYBRID
   },
-  
+
   // Content
   description: {
     synopsis: "We're looking for an experienced backend engineer...",
@@ -313,44 +328,44 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
     qualifications: [
       "5+ years of experience",
       "Proficiency in Node.js or Python",
-      "Experience with PostgreSQL and MongoDB"
+      "Experience with PostgreSQL and advanced database concepts"
     ]
   },
-  
+
   prerequisites: {
     education: "Bachelor's in Computer Science or equivalent",
     experience_years: 5,
     languages: ["English"],
-    tech_skills: ["Node.js", "Python", "PostgreSQL", "MongoDB", "Docker"]
+    tech_skills: ["Node.js", "Python", "PostgreSQL", "Docker", "Kubernetes"]
   },
-  
+
   kpis: [
     { metric: "API response time", target: "< 200ms" },
     { metric: "Code review participation", target: "100%" }
   ],
-  
+
   // Distribution
   platforms: ["COMPANY_SITE", "LINKEDIN", "TELEGRAM"],
   external_urls: {
     company_site: "https://blihmarketing.com/careers/senior-backend-engineer",
     linkedin: "https://linkedin.com/jobs/view/..."
   },
-  
+
   // Status
   status: "ACTIVE",                         // Enum: DRAFT, ACTIVE, PAUSED, CLOSED, FILLED
-  
+
   // Dates
   posted_at: ISODate("2026-02-03T08:00:00Z"),
   expires_at: ISODate("2026-03-03T23:59:59Z"),
   closed_at: null,
-  
+
   // Approvals
   approved_by: [ObjectId("..."), ObjectId("...")], // Team Lead, CEO
-  
+
   // Knowledge Base
   archived_in_kb: true,
   kb_document_id: ObjectId("..."),
-  
+
   created_at: ISODate("2026-02-02T10:00:00Z"),
   updated_at: ISODate("2026-02-03T08:00:00Z")
 }
@@ -364,12 +379,12 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
 {
   _id: ObjectId("..."),
   candidate_id: "CAND-2026-1042",
-  
+
   // Source
   job_posting_id: ObjectId("..."),
   source: "LINKEDIN",                       // Enum: COMPANY_SITE, LINKEDIN, TELEGRAM, REFERRAL, AGENCY
   referral_employee_id: null,
-  
+
   // Personal Info
   personal_info: {
     first_name: "Alex",
@@ -380,7 +395,7 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
     phone: "+251944556677",
     location: "Addis Ababa, Ethiopia"
   },
-  
+
   // Career Data
   career: {
     education: [
@@ -399,12 +414,12 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
       }
     ],
     skills: ["Node.js", "Python", "AWS", "Kubernetes"],
-    
+
     resume_url: "/storage/resumes/alex_johnson.pdf",
     portfolio_url: "https://alexjohnson.dev",
     linkedin_url: "https://linkedin.com/in/alexjohnson"
   },
-  
+
   // Role-Specific Responses
   application_responses: {
     relevant_experience: "8 years building scalable APIs...",
@@ -416,16 +431,16 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
     motivation: "Excited about the tech stack and growth opportunities...",
     self_introduction: "I'm a passionate backend engineer..."
   },
-  
+
   // Pipeline Status
   status: "INTERVIEW_STAGE",                // Enum: NEW, SCREENING, SHORTLISTED, INTERVIEW_STAGE, OFFER_PENDING, HIRED, REJECTED, WITHDRAWN
-  
+
   pipeline: {
     applied_at: ISODate("2026-02-05T11:30:00Z"),
     screened_at: ISODate("2026-02-06T09:00:00Z"),
     screened_by: ObjectId("..."),
     screening_score: 4.5,
-    
+
     interviews: [
       {
         round: 1,
@@ -437,11 +452,11 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
         recommendation: "PROCEED"
       }
     ],
-    
+
     offer_extended_at: null,
     hired_at: null
   },
-  
+
   // Rejection (if applicable)
   rejection: {
     rejected_at: null,
@@ -449,19 +464,20 @@ db.hr_recruitment_requests.createIndex({ "created_at": -1 });
     reason: null,
     notification_sent: false
   },
-  
+
   created_at: ISODate("2026-02-05T11:30:00Z"),
   updated_at: ISODate("2026-02-10T16:00:00Z")
 }
 ```
 
 **Indexes:**
+
 ```javascript
-db.hr_candidates.createIndex({ "candidate_id": 1 }, { unique: true });
-db.hr_candidates.createIndex({ "personal_info.email": 1 });
-db.hr_candidates.createIndex({ "job_posting_id": 1, "status": 1 });
-db.hr_candidates.createIndex({ "pipeline.screening_score": -1 });
-db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
+db.hr_candidates.createIndex({ candidate_id: 1 }, { unique: true });
+db.hr_candidates.createIndex({ 'personal_info.email': 1 });
+db.hr_candidates.createIndex({ job_posting_id: 1, status: 1 });
+db.hr_candidates.createIndex({ 'pipeline.screening_score': -1 });
+db.hr_candidates.createIndex({ status: 1, 'pipeline.applied_at': -1 });
 ```
 
 ---
@@ -471,10 +487,10 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 ```javascript
 {
   _id: ObjectId("..."),
-  
+
   candidate_id: ObjectId("..."),
   job_posting_id: ObjectId("..."),
-  
+
   // Screening Data
   assessments: [
     {
@@ -508,30 +524,30 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       notes: "Clear, professional communication"
     }
   ],
-  
+
   // Calculated
   aggregate_rating: 4.0,                    // Weighted average
-  
+
   // Decision
   recommendation: "SELECT",                 // Enum: SELECT, PAUSE, DECLINE
   observations: "Strong candidate, proceed to interview",
-  
+
   next_phase: "INTERVIEW",                // Enum: INTERVIEW, DECLINE, RESERVE_POOL
-  
+
   // Workflow
   screened_by: ObjectId("..."),
   screened_at: ISODate("2026-02-06T09:15:00Z"),
-  
+
   approved_by: ObjectId("..."),             // Team Lead
   approved_at: ISODate("2026-02-06T14:00:00Z"),
-  
+
   // Actions
   interview_scheduled: true,
   interview_id: ObjectId("..."),
-  
+
   rejection_sent: false,
   rejection_sent_at: null,
-  
+
   created_at: ISODate("2026-02-06T09:15:00Z"),
   updated_at: ISODate("2026-02-06T14:00:00Z")
 }
@@ -544,15 +560,15 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 ```javascript
 {
   _id: ObjectId("..."),
-  
+
   candidate_id: ObjectId("..."),
   interview_round: 1,
   interview_type: "TECHNICAL",              // Enum: HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, FINAL
-  
+
   // Interview Details
   scheduled_at: ISODate("2026-02-10T14:00:00Z"),
   completed_at: ISODate("2026-02-10T15:30:00Z"),
-  
+
   interviewers: [
     {
       employee_id: ObjectId("..."),
@@ -565,7 +581,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       role: "HR Manager"
     }
   ],
-  
+
   // Ratings (1-5 scale)
   ratings: {
     technical_proficiency: { score: 5, notes: "Excellent problem-solving skills" },
@@ -575,22 +591,22 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     organizational_fit: { score: 4, notes: "Aligns with company values" },
     poise_demeanor: { score: 5, notes: "Professional and confident"
   },
-  
+
   total_rating: 4.5,                      // Average of all ratings
-  
+
   // Overall
   endorsement: "STRONG_YES",                // Enum: STRONG_YES, YES, UNCERTAIN, NO
   remarks: "Exceptional candidate, highly recommend for hire",
-  
+
   next_action: "OFFER",                   // Enum: FOLLOW_UP_INTERVIEW, ASSIGNMENT, OFFER, DECLINE
-  
+
   // Compiled by HR
   compiled_by: ObjectId("..."),
   compiled_at: ISODate("2026-02-10T16:00:00Z"),
-  
+
   // Ranking (if multiple candidates)
   ranking: 1,                               // 1 = top candidate
-  
+
   created_at: ISODate("2026-02-10T15:30:00Z"),
   updated_at: ISODate("2026-02-10T16:00:00Z")
 }
@@ -604,12 +620,12 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   decision_id: "DEC-2026-008",
-  
+
   // References
   candidate_id: ObjectId("..."),
   recruitment_request_id: ObjectId("..."),
   job_posting_id: ObjectId("..."),
-  
+
   // Candidate Info
   candidate_summary: {
     name: "Alex Johnson",
@@ -617,7 +633,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     team_id: ObjectId("..."),
     candidate_id: "CAND-2026-1042"
   },
-  
+
   // Offer Details
   offer: {
     total_pay: 55000,
@@ -627,22 +643,22 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     target_start_date: ISODate("2026-03-01"),
     work_type: "FULL_TIME"
   },
-  
+
   // Rationale
   selection_reasoning: "Top performer in interviews, excellent technical skills, good cultural fit",
   key_assets: ["8 years experience", "Strong Node.js background", "Leadership potential"],
-  
+
   // Supporting Files
   attachments: [
     { type: "RESUME", file_url: "/storage/...", uploaded_at: ISODate(...) },
     { type: "FEEDBACK", file_url: "/storage/...", uploaded_at: ISODate(...) },
     { type: "ASSESSMENT", file_url: "/storage/...", uploaded_at: ISODate(...) }
   ],
-  
+
   // Workflow
   submitted_by: ObjectId("..."),
   submitted_at: ISODate("2026-02-12T10:00:00Z"),
-  
+
   approvals: [
     {
       level: 1,
@@ -663,23 +679,23 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       acted_at: ISODate("2026-02-13T09:00:00Z")
     }
   ],
-  
+
   final_decision: "OFFER_APPROVED",       // Enum: OFFER_APPROVED, OFFER_DECLINED, SUSPENDED
-  
+
   // Post-Approval Actions
   offer_document_generated: true,
   offer_document_url: "/storage/offers/offer_alex_johnson.pdf",
   candidate_notified_at: ISODate("2026-02-13T10:00:00Z"),
-  
+
   // Result
   offer_accepted: true,
   accepted_at: ISODate("2026-02-14T08:30:00Z"),
-  
+
   employee_created: true,
   employee_id: ObjectId("..."),
   onboarding_initiated: true,
   onboarding_id: ObjectId("..."),
-  
+
   created_at: ISODate("2026-02-12T10:00:00Z"),
   updated_at: ISODate("2026-02-14T08:30:00Z")
 }
@@ -695,7 +711,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   checklist_id: "ONB-2026-015",
-  
+
   // Employee Reference
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
@@ -703,7 +719,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
   team_id: ObjectId("..."),
   join_date: ISODate("2026-03-01"),
   overseer_id: ObjectId("..."),
-  
+
   // Checklist Items by Department
   hr_duties: [
     { item: "Agreement Executed", status: "COMPLETED", completed_at: ISODate("2026-02-28"), completed_by: ObjectId("...") },
@@ -712,43 +728,43 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     { item: "Policies Distributed", status: "COMPLETED", completed_at: ISODate("2026-02-28"), completed_by: ObjectId("...") },
     { item: "Orientation Agenda Shared", status: "PENDING", due_date: ISODate("2026-03-01"), assigned_to: ObjectId("...") }
   ],
-  
+
   it_duties: [
     { item: "Email Setup", status: "COMPLETED", completed_at: ISODate("2026-02-28"), completed_by: ObjectId("...") },
     { item: "Platform Permissions Granted", status: "IN_PROGRESS", due_date: ISODate("2026-03-01"), assigned_to: ObjectId("...") },
     { item: "Applications Allocated", status: "PENDING", due_date: ISODate("2026-03-01"), assigned_to: ObjectId("...") }
   ],
-  
+
   admin_duties: [
     { item: "Station Readied", status: "COMPLETED", completed_at: ISODate("2026-02-28"), completed_by: ObjectId("...") },
     { item: "Entry Pass Issued", status: "PENDING", due_date: ISODate("2026-03-01"), assigned_to: ObjectId("...") },
     { item: "Equipment Delivered", status: "IN_PROGRESS", due_date: ISODate("2026-03-01"), assigned_to: ObjectId("...") }
   ],
-  
+
   team_duties: [
     { item: "Group Introduction", status: "SCHEDULED", scheduled_for: ISODate("2026-03-01T09:00:00Z"), assigned_to: ObjectId("...") },
     { item: "Learning/Observation Schedule", status: "PENDING", due_date: ISODate("2026-03-03"), assigned_to: ObjectId("...") },
     { item: "Initial Assignments", status: "PENDING", due_date: ISODate("2026-03-05"), assigned_to: ObjectId("...") }
   ],
-  
+
   // Progress
   total_items: 14,
   completed_items: 5,
   in_progress_items: 2,
   pending_items: 7,
   completion_percentage: 35.7,
-  
+
   // Approvals
   team_lead_verified: false,
   team_lead_verified_at: null,
-  
+
   ceo_sign_off_required: true,              // For senior positions
   ceo_sign_off: false,
   ceo_sign_off_at: null,
-  
+
   // Status
   status: "IN_PROGRESS",                  // Enum: NOT_STARTED, IN_PROGRESS, COMPLETED, OVERDUE
-  
+
   created_at: ISODate("2026-02-28T10:00:00Z"),
   updated_at: ISODate("2026-02-28T16:00:00Z")
 }
@@ -762,10 +778,10 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   profile_id: "NHP-2026-015",
-  
+
   // Link to Hiring Decision
   hiring_decision_id: ObjectId("..."),
-  
+
   // Core Data
   core_data: {
     full_name: "Alex Johnson",
@@ -780,7 +796,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       country: "Ethiopia"
     }
   },
-  
+
   // Work Data
   work_data: {
     role: "Senior Backend Engineer",
@@ -794,7 +810,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     join_date: ISODate("2026-03-01"),
     work_type: "FULL_TIME"
   },
-  
+
   // Documents
   documents: [
     { type: "RESUME", file_url: "/storage/...", uploaded_at: ISODate(...) },
@@ -802,29 +818,29 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     { type: "AGREEMENT", file_url: "/storage/...", uploaded_at: ISODate(...) },
     { type: "QUALIFICATIONS", file_url: "/storage/...", uploaded_at: ISODate(...) }
   ],
-  
+
   // System Account
   employee_id_generated: "BLIH-EMP-000045",
   account_created: true,
   account_created_at: ISODate("2026-02-28T12:00:00Z"),
-  
+
   // Workflow
   submitted_by: ObjectId("..."),
   submitted_at: ISODate("2026-02-28T10:00:00Z"),
-  
+
   approved_by: ObjectId("..."),             // HR Lead
   approved_at: ISODate("2026-02-28T14:00:00Z"),
-  
+
   // Sync Status
   synced_to_finance: true,
   synced_to_finance_at: ISODate("2026-02-28T14:30:00Z"),
-  
+
   synced_to_it: true,
   synced_to_it_at: ISODate("2026-02-28T14:30:00Z"),
-  
+
   synced_to_projects: true,
   synced_to_projects_at: ISODate("2026-02-28T14:30:00Z"),
-  
+
   created_at: ISODate("2026-02-28T10:00:00Z"),
   updated_at: ISODate("2026-02-28T14:30:00Z")
 }
@@ -838,12 +854,12 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   provisioning_id: "AST-2026-045",
-  
+
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   team_id: ObjectId("..."),
   role: "Senior Backend Engineer",
-  
+
   // Equipment Allocated
   equipment: [
     {
@@ -873,7 +889,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       condition_notes: "Ordered, pending delivery"
     }
   ],
-  
+
   // Platform Permissions
   platform_permissions: {
     email_storage: { granted: true, account_created: ISODate("2026-02-28") },
@@ -883,21 +899,21 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     creative_apps: { granted: false, reason: "Not required for role" },
     other: ["GitHub Enterprise", "AWS Console", "Docker Hub"]
   },
-  
+
   // Approvals
   it_supervisor_approved: true,
   it_supervisor_approved_at: ISODate("2026-02-28T11:00:00Z"),
   it_supervisor_id: ObjectId("..."),
-  
+
   admin_approved: true,
   admin_approved_at: ISODate("2026-02-28T13:00:00Z"),
   admin_id: ObjectId("..."),
-  
+
   finance_approval_required: false,         // Only if total value > threshold
-  
+
   // Status
   status: "COMPLETED",                    // Enum: PENDING, IN_PROGRESS, COMPLETED, PARTIAL
-  
+
   created_at: ISODate("2026-02-28T10:00:00Z"),
   updated_at: ISODate("2026-03-01T09:00:00Z")
 }
@@ -911,12 +927,12 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   acknowledgement_id: "PA-2026-045",
-  
+
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   team_id: ObjectId("..."),
   role: "Senior Backend Engineer",
-  
+
   // Policies Acknowledged
   policies: [
     {
@@ -983,21 +999,21 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       user_agent: "Mozilla/5.0..."
     }
   ],
-  
+
   all_acknowledged: true,
-  
+
   // Confirmation
   confirmation_statement: "I acknowledge and comprehend all policies",
   confirmed_at: ISODate("2026-03-01T10:45:00Z"),
-  
+
   // Access Activation
   system_access_granted: true,
   access_granted_at: ISODate("2026-03-01T10:46:00Z"),
-  
+
   // Verification
   verified_by: ObjectId("..."),             // HR
   verified_at: ISODate("2026-03-01T11:00:00Z"),
-  
+
   // Audit
   created_at: ISODate("2026-03-01T10:30:00Z"),
   updated_at: ISODate("2026-03-01T11:00:00Z")
@@ -1012,18 +1028,18 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   plan_id: "KPI-2026-045",
-  
+
   // Employee
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   supervisor_id: ObjectId("..."),
   team_id: ObjectId("..."),
   position: "Senior Backend Engineer",
-  
+
   // Timeline
   probation_start: ISODate("2026-03-01"),
   probation_end: ISODate("2026-04-30"),     // 60 days
-  
+
   // Goals (3-5 goals)
   goals: [
     {
@@ -1059,7 +1075,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       notes: "Share expertise with team"
     }
   ],
-  
+
   // Development Path
   development: {
     scheduled_sessions: [
@@ -1074,25 +1090,25 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       { name: "60-Day Decision", date: ISODate("2026-04-30"), type: "DECISION" }
     ]
   },
-  
+
   // Notifications
   day_30_alert_sent: false,
   day_55_alert_sent: false,
   day_60_alert_sent: false,
-  
+
   // Endorsements
   employee_endorsed: true,
   employee_endorsed_at: ISODate("2026-03-03T14:00:00Z"),
-  
+
   supervisor_endorsed: true,
   supervisor_endorsed_at: ISODate("2026-03-03T15:00:00Z"),
-  
+
   hr_endorsed: true,
   hr_endorsed_at: ISODate("2026-03-04T10:00:00Z"),
-  
+
   // Status
   status: "ACTIVE",                       // Enum: DRAFT, ACTIVE, COMPLETED, CANCELLED
-  
+
   created_at: ISODate("2026-03-03T09:00:00Z"),
   updated_at: ISODate("2026-03-04T10:00:00Z")
 }
@@ -1106,19 +1122,19 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   evaluation_id: "EVAL-2026-045",
-  
+
   // Link to Plan
   kpi_plan_id: ObjectId("..."),
-  
+
   // Employee
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   position: "Senior Backend Engineer",
-  
+
   // Evaluation Round (30-day, 55-day, or 60-day)
   evaluation_round: "DAY_60_FINAL",
   evaluation_date: ISODate("2026-04-30"),
-  
+
   // Goal Review
   goal_reviews: [
     {
@@ -1150,7 +1166,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       remark: "Proactive knowledge sharing"
     }
   ],
-  
+
   // Conduct & Ethics (1-5 ratings)
   conduct: {
     timekeeping: { score: 5, notes: "Always punctual" },
@@ -1158,48 +1174,48 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     drive: { score: 5, notes: "Highly motivated and proactive" },
     communication: { score: 4, notes: "Clear and professional" }
   },
-  
+
   average_rating: 4.6,                      // Calculated
-  
+
   // Supervisor Overview
   supervisor_assessment: {
     assets: ["Strong technical skills", "Quick learner", "Good team fit"],
     improvements: ["Can deepen domain knowledge", "Continue building stakeholder relationships"],
     recommendation: "CONFIRM"              // Enum: CONFIRM, EXTEND, TERMINATE
   },
-  
+
   // HR Assessment
   hr_remarks: "Strong performance throughout probation period",
   hr_verdict: "CONFIRM",
-  
+
   // Approvals
   employee_acknowledged: true,
   employee_acknowledged_at: ISODate("2026-04-30T14:00:00Z"),
-  
+
   supervisor_approved: true,
   supervisor_approved_at: ISODate("2026-04-30T15:00:00Z"),
   supervisor_id: ObjectId("..."),
-  
+
   hr_approved: true,
   hr_approved_at: ISODate("2026-05-01T10:00:00Z"),
   hr_id: ObjectId("..."),
-  
+
   ceo_approved: true,                       // For senior positions
   ceo_approved_at: ISODate("2026-05-01T11:00:00Z"),
   ceo_id: ObjectId("..."),
-  
+
   // Result
   final_decision: "CONFIRMED",              // Enum: CONFIRMED, EXTENDED, TERMINATED
-  
+
   // If Extended
   extension_days: null,
   new_end_date: null,
   extension_reason: null,
-  
+
   // System Updates
   employee_status_updated: true,
   status_updated_at: ISODate("2026-05-01T12:00:00Z"),
-  
+
   created_at: ISODate("2026-04-30T09:00:00Z"),
   updated_at: ISODate("2026-05-01T12:00:00Z")
 }
@@ -1213,14 +1229,14 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   confirmation_id: "CONF-2026-045",
-  
+
   // Employee
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   role: "Senior Backend Engineer",
   team_id: ObjectId("..."),
   start_date: ISODate("2026-03-01"),
-  
+
   // Review Overview
   review_summary: {
     goal_rating_average: 4.75,
@@ -1229,10 +1245,10 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     overall_fit_score: 5,
     general_remarks: "Exceeded expectations in all areas"
   },
-  
+
   // Verdict
   verdict: "CONFIRM",                       // Enum: CONFIRM, EXTEND, TERMINATE
-  
+
   // If Extended
   extension: {
     extended: false,
@@ -1240,7 +1256,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     new_end_date: null,
     conditions: null
   },
-  
+
   // If Terminated
   termination: {
     terminated: false,
@@ -1248,7 +1264,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     termination_reason: null,
     severance_details: null
   },
-  
+
   // If Confirmed
   confirmation: {
     confirmed: true,
@@ -1257,25 +1273,25 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     confirmation_letter_url: "/storage/letters/confirmation_alex.pdf",
     status_updated_to: "ACTIVE"
   },
-  
+
   // Approvals
   hr_checked: true,
   hr_checked_at: ISODate("2026-05-01T10:00:00Z"),
   hr_id: ObjectId("..."),
-  
+
   ceo_sign_off: true,
   ceo_sign_off_at: ISODate("2026-05-01T11:00:00Z"),
   ceo_id: ObjectId("..."),
-  
+
   // Notifications
   employee_notified: true,
   notified_at: ISODate("2026-05-01T12:00:00Z"),
   notification_method: "EMAIL",
-  
+
   // Archive
   archived_in_employee_file: true,
   archived_at: ISODate("2026-05-01T12:00:00Z"),
-  
+
   created_at: ISODate("2026-04-30T09:00:00Z"),
   updated_at: ISODate("2026-05-01T12:00:00Z")
 }
@@ -1291,7 +1307,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   jd_id: "JD-ENG-001",
-  
+
   // Position Info
   position: {
     team_id: ObjectId("..."),
@@ -1300,7 +1316,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     supervisor_level: "TEAM_LEAD",
     code: "ENG-BE-SR-001"
   },
-  
+
   // Content
   description: {
     summary: "Responsible for designing and implementing scalable backend services...",
@@ -1311,23 +1327,23 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       "Mentor junior developers",
       "Participate in code reviews"
     ],
-    tools_and_tech: ["Node.js", "Python", "PostgreSQL", "MongoDB", "Redis", "Docker", "Kubernetes"],
+    tools_and_tech: ["Node.js", "Python", "PostgreSQL", "Redis", "Docker", "Kubernetes"],
     work_hours: "40 hours/week, flexible timing",
-    
+
     required_skills: [
       { skill: "Node.js or Python", level: "EXPERT" },
       { skill: "SQL and NoSQL databases", level: "ADVANCED" },
       { skill: "API design", level: "EXPERT" },
       { skill: "Git version control", level: "INTERMEDIATE" }
     ],
-    
+
     preferred_skills: [
       { skill: "AWS/GCP/Azure", level: "INTERMEDIATE" },
       { skill: "Microservices architecture", level: "ADVANCED" },
       { skill: "GraphQL", level: "INTERMEDIATE" }
     ]
   },
-  
+
   // KPIs
   kpis: [
     { title: "API Performance", metric: "Response time < 200ms", target: "95% of requests", frequency: "MONTHLY", weight: 25 },
@@ -1335,7 +1351,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     { title: "Feature Delivery", metric: "On-time delivery", target: "90%", frequency: "QUARTERLY", weight: 25 },
     { title: "Team Contribution", metric: "Code reviews completed", target: "> 20/month", frequency: "MONTHLY", weight: 25 }
   ],
-  
+
   // Skills Matrix
   skills_matrix: [
     { skill: "Communication", level_required: 4, description: "Clear technical communication" },
@@ -1343,27 +1359,27 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     { skill: "Teamwork", level_required: 4, description: "Collaborates effectively" },
     { skill: "Leadership", level_required: 3, description: "Mentors junior developers" }
   ],
-  
+
   // System Links
   links: {
     team_goal_id: ObjectId("..."),
     okr_suggestions: ["Improve API performance", "Reduce technical debt"],
     review_form_template_id: ObjectId("...")
   },
-  
+
   // Document
   document_url: "/storage/jd/senior_backend_engineer_v3.pdf",
   version: 3,
   effective_date: ISODate("2026-01-01"),
-  
+
   // Approvals
   created_by: ObjectId("..."),
   approved_by: [ObjectId("..."), ObjectId("...")], // HR Supervisor, CEO
-  
+
   // Archive in KB
   archived_in_kb: true,
   kb_document_id: ObjectId("..."),
-  
+
   created_at: ISODate("2026-01-01T10:00:00Z"),
   updated_at: ISODate("2026-01-15T14:00:00Z")
 }
@@ -1377,21 +1393,21 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 {
   _id: ObjectId("..."),
   contract_id: "CONT-EMP-000045-001",
-  
+
   // Employee
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   employee_id_short: "BLIH-EMP-000045",
-  
+
   // Contract Info
   contract_type: "INITIAL",                 // Enum: INITIAL, RENEWAL, AMENDMENT, ADDENDUM
   contract_number: 1,                       // Sequence per employee
-  
+
   // Dates
   start_date: ISODate("2026-03-01"),
   end_date: null,                           // Null for permanent
   duration_months: null,
-  
+
   // Trial Period
   trial_period: {
     applies: true,
@@ -1401,7 +1417,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
     confirmed: true,
     confirmed_at: ISODate("2026-05-01")
   },
-  
+
   // Compensation
   compensation: {
     basic_salary: 55000,
@@ -1417,7 +1433,7 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
       paternity_days: 5
     }
   },
-  
+
   // Document
   contract_document_url: "/storage/contracts/alex_johnson_contract_001.pdf",
   signed_by_employee: true,
@@ -1425,27 +1441,27 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
   signed_by_company_rep: true,
   company_rep_id: ObjectId("..."),
   company_rep_signed_at: ISODate("2026-02-28T16:00:00Z"),
-  
+
   // Status
   status: "ACTIVE",                         // Enum: DRAFT, ACTIVE, EXPIRED, TERMINATED, RENEWED
-  
+
   // Alerts
   expiry_alert_30_sent: false,
   expiry_alert_60_sent: false,
   expiry_alert_90_sent: false,
-  
+
   // Sync to Finance
   synced_to_finance: true,
   synced_at: ISODate("2026-02-28T17:00:00Z"),
-  
+
   // Archive
   archived_in_kb: true,
   kb_document_id: ObjectId("..."),
-  
+
   // Audit
   created_by: ObjectId("..."),
   approved_by: ObjectId("..."),
-  
+
   created_at: ISODate("2026-02-28T10:00:00Z"),
   updated_at: ISODate("2026-05-01T12:00:00Z")
 }
@@ -1458,65 +1474,69 @@ db.hr_candidates.createIndex({ "status": 1, "pipeline.applied_at": -1 });
 ```javascript
 {
   _id: ObjectId("..."),
-  
+
   // Employee
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   employee_number: "BLIH-EMP-000045",
   role: "Senior Backend Engineer",
   team_id: ObjectId("..."),
-  
+
   // Change Details
   change: {
     prior_salary: 45000,
     new_salary: 55000,
     difference: 10000,
     percentage_increase: 22.2,
-    
+
     reason: "PROMOTION",                    // Enum: PROMOTION, INCREMENT, ADJUSTMENT, CORRECTION, MARKET_ADJUSTMENT
     effective_date: ISODate("2026-03-01"),
-    
+
     description: "Promotion to Senior Backend Engineer",
     approved_by: [ObjectId("..."), ObjectId("...")] // HR, CEO
   },
-  
+
   // Documents
   supporting_documents: [
     { type: "APPROVAL_DOCUMENT", url: "/storage/...", uploaded_at: ISODate(...) },
     { type: "PROMOTION_LETTER", url: "/storage/...", uploaded_at: ISODate(...) }
   ],
-  
+
   // Workflow
   submitted_by: ObjectId("..."),
   submitted_at: ISODate("2026-02-25T10:00:00Z"),
-  
+
   approved_by_finance_supervisor: ObjectId("..."),
   finance_approval_at: ISODate("2026-02-26T14:00:00Z"),
-  
+
   approved_by_ceo: ObjectId("..."),
   ceo_approval_at: ISODate("2026-02-27T10:00:00Z"),
-  
+
   // System Updates
   payroll_system_updated: true,
   payroll_updated_at: ISODate("2026-02-28T09:00:00Z"),
-  
+
   employee_notified: true,
   employee_notified_at: ISODate("2026-02-28T10:00:00Z"),
   notification_method: "EMAIL",
-  
+
   // Archive
   archived_in_employee_file: true,
   archived_at: ISODate("2026-02-28T10:00:00Z"),
-  
+
   created_at: ISODate("2026-02-25T10:00:00Z"),
   updated_at: ISODate("2026-02-28T10:00:00Z")
 }
 ```
 
 **Indexes:**
+
 ```javascript
-db.hr_salary_history.createIndex({ "employee_id": 1, "change.effective_date": -1 });
-db.hr_salary_history.createIndex({ "change.reason": 1, "created_at": -1 });
+db.hr_salary_history.createIndex({
+  employee_id: 1,
+  'change.effective_date': -1,
+});
+db.hr_salary_history.createIndex({ 'change.reason': 1, created_at: -1 });
 ```
 
 ---
@@ -1527,59 +1547,59 @@ db.hr_salary_history.createIndex({ "change.reason": 1, "created_at": -1 });
 {
   _id: ObjectId("..."),
   update_id: "DOCUP-2026-089",
-  
+
   // Employee
   employee_id: ObjectId("..."),
   employee_name: "Alex Johnson",
   employee_number: "BLIH-EMP-000045",
   team_id: ObjectId("..."),
   role: "Senior Backend Engineer",
-  
+
   // Document Info
   document_type: "QUALIFICATION",           // Enum: ID_RENEW, QUALIFICATION, HEALTH_REPORT, ACADEMIC, WORK_SAMPLES, OTHER
   document_type_other: null,
-  
+
   // Previous Document (if replacement)
   previous_document_id: ObjectId("..."),
   previous_document_archived: true,
-  
+
   // New Document
   new_document: {
     file_url: "/storage/docs/alex_masters_certificate.pdf",
     file_name: "alex_masters_certificate.pdf",
     file_size_bytes: 1245678,
     mime_type: "application/pdf",
-    
+
     issue_date: ISODate("2020-06-15"),
     expiry_date: null,                      // For permanent docs
-    
+
     verified: true,
     verified_by: ObjectId("..."),
     verified_at: ISODate("2026-02-20T11:00:00Z"),
-    
+
     // Expiry Alert (if applicable)
     expiry_alert_triggered: false,
     expiry_alert_date: null
   },
-  
+
   // Description
   description: "Master's degree in Computer Science from AAU",
-  
+
   // Workflow
   submitted_by: ObjectId("..."),            // Employee or HR
   submitted_at: ISODate("2026-02-19T14:00:00Z"),
-  
+
   approved_by: ObjectId("..."),             // HR Supervisor
   approved_at: ISODate("2026-02-20T11:00:00Z"),
-  
+
   // Sync to Training (for qualifications)
   synced_to_training_library: true,
   training_synced_at: ISODate("2026-02-20T12:00:00Z"),
-  
+
   // Update Employee Record
   employee_record_updated: true,
   employee_record_updated_at: ISODate("2026-02-20T12:00:00Z"),
-  
+
   created_at: ISODate("2026-02-19T14:00:00Z"),
   updated_at: ISODate("2026-02-20T12:00:00Z")
 }
@@ -3141,153 +3161,165 @@ db.hr_salary_history.createIndex({ "change.reason": 1, "created_at": -1 });
 ## Common Enums & Types
 
 ### Employee Status Enum
+
 ```javascript
 const EmployeeStatus = {
-  ACTIVE: "ACTIVE",
-  ON_PROBATION: "ON_PROBATION",
-  SUSPENDED: "SUSPENDED",
-  TERMINATED: "TERMINATED",
-  RESIGNED: "RESIGNED",
-  ON_LEAVE: "ON_LEAVE"
+  ACTIVE: 'ACTIVE',
+  ON_PROBATION: 'ON_PROBATION',
+  SUSPENDED: 'SUSPENDED',
+  TERMINATED: 'TERMINATED',
+  RESIGNED: 'RESIGNED',
+  ON_LEAVE: 'ON_LEAVE',
 };
 ```
 
 ### Employment Type Enum
+
 ```javascript
 const EmploymentType = {
-  FULL_TIME: "FULL_TIME",
-  PART_TIME: "PART_TIME",
-  CONTRACT: "CONTRACT",
-  INTERN: "INTERN",
-  CONSULTANT: "CONSULTANT"
+  FULL_TIME: 'FULL_TIME',
+  PART_TIME: 'PART_TIME',
+  CONTRACT: 'CONTRACT',
+  INTERN: 'INTERN',
+  CONSULTANT: 'CONSULTANT',
 };
 ```
 
 ### Job Grade Enum
+
 ```javascript
 const JobGrade = {
-  JUNIOR: "JUNIOR",
-  MID: "MID",
-  SENIOR: "SENIOR",
-  LEAD: "LEAD",
-  PRINCIPAL: "PRINCIPAL",
-  MANAGER: "MANAGER",
-  DIRECTOR: "DIRECTOR",
-  EXECUTIVE: "EXECUTIVE",
-  C_LEVEL: "C_LEVEL"
+  JUNIOR: 'JUNIOR',
+  MID: 'MID',
+  SENIOR: 'SENIOR',
+  LEAD: 'LEAD',
+  PRINCIPAL: 'PRINCIPAL',
+  MANAGER: 'MANAGER',
+  DIRECTOR: 'DIRECTOR',
+  EXECUTIVE: 'EXECUTIVE',
+  C_LEVEL: 'C_LEVEL',
 };
 ```
 
 ### Workflow Status Enum
+
 ```javascript
 const WorkflowStatus = {
-  DRAFT: "DRAFT",
-  PENDING: "PENDING",
-  IN_REVIEW: "IN_REVIEW",
-  APPROVED: "APPROVED",
-  REJECTED: "REJECTED",
-  CHANGES_REQUESTED: "CHANGES_REQUESTED",
-  COMPLETED: "COMPLETED",
-  CANCELLED: "CANCELLED",
-  EXPIRED: "EXPIRED"
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  IN_REVIEW: 'IN_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
 };
 ```
 
 ### Leave Type Enum
+
 ```javascript
 const LeaveType = {
-  ANNUAL: "ANNUAL",
-  SICK: "SICK",
-  MATERNITY: "MATERNITY",
-  PATERNITY: "PATERNITY",
-  BEREAVEMENT: "BEREAVEMENT",
-  UNPAID: "UNPAID",
-  STUDY: "STUDY",
-  EMERGENCY: "EMERGENCY",
-  COMPASSIONATE: "COMPASSIONATE"
+  ANNUAL: 'ANNUAL',
+  SICK: 'SICK',
+  MATERNITY: 'MATERNITY',
+  PATERNITY: 'PATERNITY',
+  BEREAVEMENT: 'BEREAVEMENT',
+  UNPAID: 'UNPAID',
+  STUDY: 'STUDY',
+  EMERGENCY: 'EMERGENCY',
+  COMPASSIONATE: 'COMPASSIONATE',
 };
 ```
 
 ### Attendance Status Enum
+
 ```javascript
 const AttendanceStatus = {
-  PRESENT: "PRESENT",
-  ABSENT: "ABSENT",
-  LATE: "LATE",
-  EARLY_DEPARTURE: "EARLY_DEPARTURE",
-  ON_LEAVE: "ON_LEAVE",
-  HALF_DAY: "HALF_DAY",
-  REMOTE: "REMOTE",
-  BUSINESS_TRIP: "BUSINESS_TRIP"
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EARLY_DEPARTURE: 'EARLY_DEPARTURE',
+  ON_LEAVE: 'ON_LEAVE',
+  HALF_DAY: 'HALF_DAY',
+  REMOTE: 'REMOTE',
+  BUSINESS_TRIP: 'BUSINESS_TRIP',
 };
 ```
 
 ### Performance Rating Enum
+
 ```javascript
 const PerformanceRating = {
-  BELOW_EXPECTATIONS: "BELOW_EXPECTATIONS",
-  MEETS_EXPECTATIONS: "MEETS_EXPECTATIONS",
-  EXCEEDS_EXPECTATIONS: "EXCEEDS_EXPECTATIONS",
-  OUTSTANDING: "OUTSTANDING"
+  BELOW_EXPECTATIONS: 'BELOW_EXPECTATIONS',
+  MEETS_EXPECTATIONS: 'MEETS_EXPECTATIONS',
+  EXCEEDS_EXPECTATIONS: 'EXCEEDS_EXPECTATIONS',
+  OUTSTANDING: 'OUTSTANDING',
 };
 ```
 
 ### OKR Status Enum
+
 ```javascript
 const OKRStatus = {
-  DRAFT: "DRAFT",
-  ACTIVE: "ACTIVE",
-  AT_RISK: "AT_RISK",
-  DELAYED: "DELAYED",
-  ACHIEVED: "ACHIEVED",
-  PARTIALLY_ACHIEVED: "PARTIALLY_ACHIEVED",
-  MISSED: "MISSED",
-  COMPLETED: "COMPLETED"
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  AT_RISK: 'AT_RISK',
+  DELAYED: 'DELAYED',
+  ACHIEVED: 'ACHIEVED',
+  PARTIALLY_ACHIEVED: 'PARTIALLY_ACHIEVED',
+  MISSED: 'MISSED',
+  COMPLETED: 'COMPLETED',
 };
 ```
 
 ### Training Status Enum
+
 ```javascript
 const TrainingStatus = {
-  REQUESTED: "REQUESTED",
-  APPROVED: "APPROVED",
-  SCHEDULED: "SCHEDULED",
-  IN_PROGRESS: "IN_PROGRESS",
-  COMPLETED: "COMPLETED",
-  CANCELLED: "CANCELLED",
-  NO_SHOW: "NO_SHOW"
+  REQUESTED: 'REQUESTED',
+  APPROVED: 'APPROVED',
+  SCHEDULED: 'SCHEDULED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  NO_SHOW: 'NO_SHOW',
 };
 ```
 
 ### Incident Severity Enum
+
 ```javascript
 const IncidentSeverity = {
-  LOW: "LOW",
-  MEDIUM: "MEDIUM",
-  HIGH: "HIGH",
-  CRITICAL: "CRITICAL"
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL',
 };
 ```
 
 ### Disciplinary Action Enum
+
 ```javascript
 const DisciplinaryAction = {
-  VERBAL_WARNING: "VERBAL_WARNING",
-  WRITTEN_WARNING: "WRITTEN_WARNING",
-  FINAL_WARNING: "FINAL_WARNING",
-  SUSPENSION: "SUSPENSION",
-  TERMINATION: "TERMINATION"
+  VERBAL_WARNING: 'VERBAL_WARNING',
+  WRITTEN_WARNING: 'WRITTEN_WARNING',
+  FINAL_WARNING: 'FINAL_WARNING',
+  SUSPENSION: 'SUSPENSION',
+  TERMINATION: 'TERMINATION',
 };
 ```
 
 ### Offboarding Status Enum
+
 ```javascript
 const OffboardingStatus = {
-  INITIATED: "INITIATED",
-  IN_PROGRESS: "IN_PROGRESS",
-  PENDING_CLEARANCE: "PENDING_CLEARANCE",
-  CLEARED: "CLEARED",
-  COMPLETED: "COMPLETED"
+  INITIATED: 'INITIATED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  PENDING_CLEARANCE: 'PENDING_CLEARANCE',
+  CLEARED: 'CLEARED',
+  COMPLETED: 'COMPLETED',
 };
 ```
 
@@ -3296,106 +3328,128 @@ const OffboardingStatus = {
 ## Indexes & Performance
 
 ### Primary Indexes
+
 ```javascript
 // Employee lookups
-db.hr_employees.createIndex({ "employee_id": 1 }, { unique: true });
-db.hr_employees.createIndex({ "keycloak_user_id": 1 }, { unique: true });
-db.hr_employees.createIndex({ "personal_info.work_email": 1 }, { unique: true, sparse: true });
+db.hr_employees.createIndex({ employee_id: 1 }, { unique: true });
+db.hr_employees.createIndex({ keycloak_user_id: 1 }, { unique: true });
+db.hr_employees.createIndex(
+  { 'personal_info.work_email': 1 },
+  { unique: true, sparse: true },
+);
 
 // Form lookups
-db.hr_recruitment_requests.createIndex({ "request_id": 1 }, { unique: true });
-db.hr_job_postings.createIndex({ "posting_id": 1 }, { unique: true });
-db.hr_candidates.createIndex({ "candidate_id": 1 }, { unique: true });
+db.hr_recruitment_requests.createIndex({ request_id: 1 }, { unique: true });
+db.hr_job_postings.createIndex({ posting_id: 1 }, { unique: true });
+db.hr_candidates.createIndex({ candidate_id: 1 }, { unique: true });
 
 // Attendance, Leave & Time Management
-db.hr_leave_requests.createIndex({ "employee_id": 1, "start_date": -1 });
-db.hr_leave_requests.createIndex({ "status": 1, "submitted_at": -1 });
-db.hr_attendance_logs.createIndex({ "employee_id": 1, "date": -1 });
-db.hr_attendance_logs.createIndex({ "date": 1, "status": 1 });
-db.hr_punctuality_records.createIndex({ "employee_id": 1, "violation_date": -1 });
-db.hr_timesheets.createIndex({ "employee_id": 1, "year": 1, "month": 1 });
-db.hr_timesheets.createIndex({ "status": 1, "submitted_at": -1 });
-db.hr_attendance_corrections.createIndex({ "employee_id": 1, "submitted_at": -1 });
-db.hr_overtime_requests.createIndex({ "employee_id": 1, "date": -1 });
-db.hr_overtime_requests.createIndex({ "status": 1, "submitted_at": -1 });
+db.hr_leave_requests.createIndex({ employee_id: 1, start_date: -1 });
+db.hr_leave_requests.createIndex({ status: 1, submitted_at: -1 });
+db.hr_attendance_logs.createIndex({ employee_id: 1, date: -1 });
+db.hr_attendance_logs.createIndex({ date: 1, status: 1 });
+db.hr_punctuality_records.createIndex({ employee_id: 1, violation_date: -1 });
+db.hr_timesheets.createIndex({ employee_id: 1, year: 1, month: 1 });
+db.hr_timesheets.createIndex({ status: 1, submitted_at: -1 });
+db.hr_attendance_corrections.createIndex({ employee_id: 1, submitted_at: -1 });
+db.hr_overtime_requests.createIndex({ employee_id: 1, date: -1 });
+db.hr_overtime_requests.createIndex({ status: 1, submitted_at: -1 });
 
 // Performance, OKRs & Career Development
-db.hr_performance_reviews.createIndex({ "employee_id": 1, "review_period.year": -1, "review_period.quarter": -1 });
-db.hr_okrs.createIndex({ "owner_id": 1, "year": 1, "quarter": 1 });
-db.hr_okrs.createIndex({ "overall_status": 1 });
-db.hr_development_plans.createIndex({ "employee_id": 1, "status": 1 });
-db.hr_transfer_requests.createIndex({ "employee_id": 1, "submitted_at": -1 });
-db.hr_transfer_requests.createIndex({ "status": 1 });
-db.hr_promotion_letters.createIndex({ "employee_id": 1, "created_at": -1 });
-db.hr_salary_adjustments.createIndex({ "employee_id": 1, "effective_date": -1 });
-db.hr_skill_assessments.createIndex({ "employee_id": 1, "assessment_date": -1 });
-db.hr_successor_nominations.createIndex({ "position_id": 1, "status": 1 });
-db.hr_career_paths.createIndex({ "department": 1, "active": 1 });
+db.hr_performance_reviews.createIndex({
+  employee_id: 1,
+  'review_period.year': -1,
+  'review_period.quarter': -1,
+});
+db.hr_okrs.createIndex({ owner_id: 1, year: 1, quarter: 1 });
+db.hr_okrs.createIndex({ overall_status: 1 });
+db.hr_development_plans.createIndex({ employee_id: 1, status: 1 });
+db.hr_transfer_requests.createIndex({ employee_id: 1, submitted_at: -1 });
+db.hr_transfer_requests.createIndex({ status: 1 });
+db.hr_promotion_letters.createIndex({ employee_id: 1, created_at: -1 });
+db.hr_salary_adjustments.createIndex({ employee_id: 1, effective_date: -1 });
+db.hr_skill_assessments.createIndex({ employee_id: 1, assessment_date: -1 });
+db.hr_successor_nominations.createIndex({ position_id: 1, status: 1 });
+db.hr_career_paths.createIndex({ department: 1, active: 1 });
 
 // Training & Skill Development
-db.hr_training_requests.createIndex({ "employee_id": 1, "submitted_at": -1 });
-db.hr_training_requests.createIndex({ "status": 1 });
-db.hr_training_feedback.createIndex({ "training_request_id": 1 });
-db.hr_skill_gap_analyses.createIndex({ "employee_id": 1, "status": 1 });
-db.hr_training_completions.createIndex({ "employee_id": 1, "completion_date": -1 });
+db.hr_training_requests.createIndex({ employee_id: 1, submitted_at: -1 });
+db.hr_training_requests.createIndex({ status: 1 });
+db.hr_training_feedback.createIndex({ training_request_id: 1 });
+db.hr_skill_gap_analyses.createIndex({ employee_id: 1, status: 1 });
+db.hr_training_completions.createIndex({ employee_id: 1, completion_date: -1 });
 
 // Employee Relations
-db.hr_pulse_surveys.createIndex({ "period.year": 1, "period.quarter": 1 });
-db.hr_pulse_surveys.createIndex({ "status": 1 });
-db.hr_disciplinary_actions.createIndex({ "employee_id": 1, "incident_date": -1 });
-db.hr_incident_reports.createIndex({ "incident_type": 1, "status": 1 });
-db.hr_incident_reports.createIndex({ "incident_date": -1 });
-db.hr_suggestion_submissions.createIndex({ "submitted_by": 1, "submitted_at": -1 });
-db.hr_employee_recognition.createIndex({ "nominee_id": 1, "nominated_at": -1 });
-db.hr_complaints.createIndex({ "complainant_id": 1, "submitted_at": -1 });
-db.hr_complaints.createIndex({ "status": 1 });
-db.hr_mediation_records.createIndex({ "party_a.employee_id": 1, "created_at": -1 });
+db.hr_pulse_surveys.createIndex({ 'period.year': 1, 'period.quarter': 1 });
+db.hr_pulse_surveys.createIndex({ status: 1 });
+db.hr_disciplinary_actions.createIndex({ employee_id: 1, incident_date: -1 });
+db.hr_incident_reports.createIndex({ incident_type: 1, status: 1 });
+db.hr_incident_reports.createIndex({ incident_date: -1 });
+db.hr_suggestion_submissions.createIndex({ submitted_by: 1, submitted_at: -1 });
+db.hr_employee_recognition.createIndex({ nominee_id: 1, nominated_at: -1 });
+db.hr_complaints.createIndex({ complainant_id: 1, submitted_at: -1 });
+db.hr_complaints.createIndex({ status: 1 });
+db.hr_mediation_records.createIndex({
+  'party_a.employee_id': 1,
+  created_at: -1,
+});
 
 // Exit, Offboarding & Compliance
-db.hr_resignation_notices.createIndex({ "employee_id": 1, "resignation_date": -1 });
-db.hr_resignation_notices.createIndex({ "status": 1 });
-db.hr_exit_interviews.createIndex({ "employee_id": 1 });
-db.hr_offboarding_checklists.createIndex({ "employee_id": 1, "status": 1 });
-db.hr_asset_returns.createIndex({ "employee_id": 1 });
-db.hr_final_settlements.createIndex({ "employee_id": 1 });
-db.hr_compliance_records.createIndex({ "employee_id": 1, "retention_end_date": 1 });
+db.hr_resignation_notices.createIndex({ employee_id: 1, resignation_date: -1 });
+db.hr_resignation_notices.createIndex({ status: 1 });
+db.hr_exit_interviews.createIndex({ employee_id: 1 });
+db.hr_offboarding_checklists.createIndex({ employee_id: 1, status: 1 });
+db.hr_asset_returns.createIndex({ employee_id: 1 });
+db.hr_final_settlements.createIndex({ employee_id: 1 });
+db.hr_compliance_records.createIndex({ employee_id: 1, retention_end_date: 1 });
 ```
 
 ### Performance Indexes
+
 ```javascript
 // Common query patterns
-db.hr_employees.createIndex({ "employment.status": 1, "employment.department_id": 1 });
-db.hr_employees.createIndex({ "employment.reporting_manager_id": 1 });
-db.hr_employees.createIndex({ "personal_info.last_name": 1, "personal_info.first_name": 1 });
+db.hr_employees.createIndex({
+  'employment.status': 1,
+  'employment.department_id': 1,
+});
+db.hr_employees.createIndex({ 'employment.reporting_manager_id': 1 });
+db.hr_employees.createIndex({
+  'personal_info.last_name': 1,
+  'personal_info.first_name': 1,
+});
 
 // Time-based queries
-db.hr_leave_requests.createIndex({ "leave_details.start_date": 1, "leave_details.end_date": 1 });
-db.hr_attendance_logs.createIndex({ "date": -1, "employee_id": 1 });
+db.hr_leave_requests.createIndex({
+  'leave_details.start_date': 1,
+  'leave_details.end_date': 1,
+});
+db.hr_attendance_logs.createIndex({ date: -1, employee_id: 1 });
 
 // Status-based queries
-db.hr_candidates.createIndex({ "job_posting_id": 1, "status": 1 });
-db.hr_onboarding_checklists.createIndex({ "status": 1, "join_date": 1 });
+db.hr_candidates.createIndex({ job_posting_id: 1, status: 1 });
+db.hr_onboarding_checklists.createIndex({ status: 1, join_date: 1 });
 ```
 
 ### Text Search Indexes
+
 ```javascript
 // For searching candidates, employees
 db.hr_candidates.createIndex({
-  "personal_info.first_name": "text",
-  "personal_info.last_name": "text",
-  "career.skills": "text"
+  'personal_info.first_name': 'text',
+  'personal_info.last_name': 'text',
+  'career.skills': 'text',
 });
 
 db.hr_employees.createIndex({
-  "personal_info.first_name": "text",
-  "personal_info.last_name": "text",
-  "employment.position": "text"
+  'personal_info.first_name': 'text',
+  'personal_info.last_name': 'text',
+  'employment.position': 'text',
 });
 ```
 
 ---
 
-*Schema Version: 1.0*  
-*Last Updated: February 2026*  
-*Total Collections Documented: 50*  
-*Total Forms Mapped: 50*
+_Schema Version: 1.0_  
+_Last Updated: February 2026_  
+_Total Collections Documented: 50_  
+_Total Forms Mapped: 50_
