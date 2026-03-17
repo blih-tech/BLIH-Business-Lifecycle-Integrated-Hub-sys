@@ -230,7 +230,7 @@ ${question}
     const response = await this.llm.invoke(prompt);
 
     return {
-      answer: this.extractAnswer(response),
+      answer: this.extractAnswer(response) as string,
       sources: relevantDocs.map((d) => d.metadata.source),
     };
   }
