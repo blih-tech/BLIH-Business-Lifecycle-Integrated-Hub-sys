@@ -37,6 +37,7 @@ import {
 import {
   applicantListResponseEnvelope,
   applicantResponseEnvelope,
+  bulkApplicantStatusResponseEnvelope,
 } from './recruitment.swagger-examples';
 import {
   BulkUpdateApplicantStatusUseCase,
@@ -160,6 +161,7 @@ export class ApplicantsController {
   @ApiEnvelopeOkResponse(
     BulkApplicantStatusResponseDto,
     'Bulk applicant status update result',
+    bulkApplicantStatusResponseEnvelope,
   )
   @ApiDefaultErrors({
     path: '/api/v1/hr/recruitment/applicants/bulk-status',
