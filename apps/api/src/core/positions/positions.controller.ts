@@ -25,7 +25,7 @@ import { ResponseMessage } from '../../shared/decorators/response-message.decora
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
-import { PositionPermissions } from '../rbac/constants/permissions.constants';
+import { PositionPermissions } from '@repo/types/rbac';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { ListPositionsQueryDto } from './dto/list-positions-query.dto';
 import { PositionResponseDto } from './dto/position-response.dto';

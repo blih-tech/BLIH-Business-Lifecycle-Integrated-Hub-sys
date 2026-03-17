@@ -85,6 +85,8 @@ jobs:
               - 'apps/web/**'
             api:
               - 'apps/api/**'
+            rag_service:
+              - 'apps/rag-service/**'
             types:
               - 'packages/types/**'
             shared_configs:
@@ -110,6 +112,13 @@ jobs:
           npm run check-types --workspace blih-system-backend
           npm run test --workspace blih-system-backend -- --ci --passWithNoTests
 
+      - name: Verify rag service
+        if: steps.changes.outputs.root == 'true' || steps.changes.outputs.rag_service == 'true' || steps.changes.outputs.shared_configs == 'true'
+        run: |
+          npm run lint:check --workspace rag-service
+          npm run check-types --workspace rag-service
+          npm run test --workspace rag-service -- --ci --passWithNoTests
+
       - name: No scoped verification needed
-        if: steps.changes.outputs.root != 'true' && steps.changes.outputs.web != 'true' && steps.changes.outputs.api != 'true' && steps.changes.outputs.types != 'true' && steps.changes.outputs.shared_configs != 'true'
+        if: steps.changes.outputs.root != 'true' && steps.changes.outputs.web != 'true' && steps.changes.outputs.api != 'true' && steps.changes.outputs.rag_service != 'true' && steps.changes.outputs.types != 'true' && steps.changes.outputs.shared_configs != 'true'
         run: echo "No application or shared workspace changes detected."

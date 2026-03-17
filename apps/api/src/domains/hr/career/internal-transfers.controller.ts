@@ -15,7 +15,7 @@ import type {
   RejectInternalTransferRequestDto,
   UpdateInternalTransferRequestDto,
 } from '@repo/types';
-import { InternalTransferPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { InternalTransferPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

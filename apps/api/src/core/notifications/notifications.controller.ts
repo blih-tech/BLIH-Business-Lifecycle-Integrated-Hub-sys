@@ -21,7 +21,7 @@ import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
 import { PrismaService } from '../../platform/prisma/prisma.service';
-import { SystemNotificationPermissions } from '../rbac/constants/permissions.constants';
+import { SystemNotificationPermissions } from '@repo/types/rbac';
 import { NotificationDto } from './dto/notification.dto';
 import { NotifySecurityEventUseCase } from './use-cases/notify-security-event.usecase';
 import { SendNotificationUseCase } from './use-cases/send-notification.usecase';

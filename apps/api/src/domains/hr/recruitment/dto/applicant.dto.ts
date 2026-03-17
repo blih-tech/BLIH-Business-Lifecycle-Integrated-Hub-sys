@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  ArrayUnique,
   IsArray,
   IsDateString,
   IsEmail,
@@ -16,7 +18,11 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { APPLICANT_STATUSES, CANDIDATE_SOURCES } from '@repo/types';
+import {
+  APPLICANT_STATUSES,
+  BULK_REVIEW_APPLICANT_STATUSES,
+  CANDIDATE_SOURCES,
+} from '@repo/types';
 import type {
   ApplicantEducationDto as ApplicantEducationDtoType,
   ApplicantExperienceDto as ApplicantExperienceDtoType,
@@ -24,6 +30,9 @@ import type {
   ApplicantResponseDto as ApplicantResponseDtoType,
   ApplicantStatus,
   ApplicantStatusHistoryDto as ApplicantStatusHistoryDtoType,
+  BulkApplicantStatusResponseDto as BulkApplicantStatusResponseDtoType,
+  BulkReviewApplicantStatus,
+  BulkUpdateApplicantStatusDto as BulkUpdateApplicantStatusDtoType,
   CandidateSource,
   CreateApplicantDto as CreateApplicantDtoType,
   UpdateApplicantDto as UpdateApplicantDtoType,
@@ -251,6 +260,25 @@ export class UpdateApplicantStatusDto implements UpdateApplicantStatusDtoType {
   notes?: string | null;
 }
 
+export class BulkUpdateApplicantStatusDto implements BulkUpdateApplicantStatusDtoType {
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsUUID(undefined, { each: true })
+  applicantIds!: string[];
+
+  @ApiProperty({ enum: BULK_REVIEW_APPLICANT_STATUSES })
+  @Transform(normalizeEnumValue)
+  @IsEnum(BULK_REVIEW_APPLICANT_STATUSES)
+  status!: BulkReviewApplicantStatus;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  notes?: string | null;
+}
+
 export class ApplicantEducationResponseDto extends ApplicantEducationInputDto {
   @ApiProperty()
   id!: string;
@@ -412,6 +440,20 @@ export class ApplicantResponseDto implements ApplicantResponseDtoType {
   updatedAt!: string;
 }
 
+export class BulkApplicantStatusResponseDto implements BulkApplicantStatusResponseDtoType {
+  @ApiProperty({ enum: BULK_REVIEW_APPLICANT_STATUSES })
+  status!: BulkReviewApplicantStatus;
+
+  @ApiProperty()
+  requestedCount!: number;
+
+  @ApiProperty()
+  updatedCount!: number;
+
+  @ApiProperty({ type: [ApplicantResponseDto] })
+  applicants!: ApplicantResponseDto[];
+}
+
 export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @ApiPropertyOptional({ enum: APPLICANT_STATUSES })
   @IsOptional()
@@ -428,4 +470,9 @@ export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @IsOptional()
   @IsEmail()
   email?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  search?: string;
 }

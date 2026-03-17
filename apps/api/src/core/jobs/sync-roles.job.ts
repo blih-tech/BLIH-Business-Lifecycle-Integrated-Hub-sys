@@ -5,10 +5,7 @@ import {
   KeycloakAdminService,
 } from '../../platform/keycloak/keycloak-admin.service';
 import { PrismaService } from '../../platform/prisma/prisma.service';
-import {
-  RBAC_ROLE_BY_NAME,
-  RBAC_ROLE_NAMES,
-} from '../rbac/constants/rbac.manifest';
+import { RBAC_ROLE_BY_NAME, RBAC_ROLE_NAMES } from '@repo/types/rbac';
 import { env } from '../../config/env.config';
 import { UserPermissionSnapshotService } from '../rbac/user-permission-snapshot.service';
 

@@ -21,7 +21,7 @@ import type {
   UpdateComplianceChecklistDto,
   CompleteOffboardingTaskDto,
 } from '@repo/types';
-import { OffboardingPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { OffboardingPermissions } from '@repo/types/rbac';
 import { ApiProtected } from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';

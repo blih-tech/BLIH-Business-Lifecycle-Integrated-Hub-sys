@@ -12,7 +12,7 @@ import { ResponseMessage } from '../../shared/decorators/response-message.decora
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
-import { SystemAuditPermissions } from '../rbac/constants/permissions.constants';
+import { SystemAuditPermissions } from '@repo/types/rbac';
 import { AuditQueryDto } from './dto/audit-query.dto';
 import { AuditRecordDto } from './dto/audit-record.dto';
 import { ExportAuditUseCase } from './use-cases/export-audit.usecase';

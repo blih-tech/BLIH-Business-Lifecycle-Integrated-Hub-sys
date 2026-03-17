@@ -475,6 +475,15 @@ export const applicantResponseEnvelope = envelope(
 export const applicantListResponseEnvelope = envelope('List of applicants', [
   applicantExample,
 ]);
+export const bulkApplicantStatusResponseEnvelope = envelope(
+  'Bulk applicant status update result',
+  {
+    status: 'SHORTLISTED',
+    requestedCount: 2,
+    updatedCount: 2,
+    applicants: [applicantExample],
+  },
+);
 
 export const offerResponseEnvelope = envelope('Created offer', offerExample);
 export const offerListResponseEnvelope = envelope('List of offers', [

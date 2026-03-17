@@ -7,7 +7,7 @@ import {
   ApiEnvelopeOkResponse,
   ApiProtected,
 } from '../../../../shared/docs/openapi';
-import { PolicyAcknowledgementPermissions } from '../../../../core/rbac/constants/permissions.constants';
+import { PolicyAcknowledgementPermissions } from '@repo/types/rbac';
 import {
   CreatePolicyAcknowledgementDto,
   PolicyAcknowledgementResponseDto,

@@ -13,7 +13,7 @@ import {
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type { OfferResponseDto as OfferResponseContract } from '@repo/types';
-import { OfferPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { OfferPermissions } from '@repo/types/rbac';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
@@ -207,8 +207,12 @@ export class OffersController {
   send(
     @Param('id') id: string,
     @Body() body: SendOfferDto,
+    @Req() req: Request & { user?: AuthPrincipal },
   ): Promise<OfferResponseContract> {
-    return this.sendOfferById.execute(id, body);
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.sendOfferById.execute(id, body, user.userId ?? user.sub);
   }
 
   @Post(':id/respond')
@@ -236,8 +240,12 @@ export class OffersController {
   respond(
     @Param('id') id: string,
     @Body() body: RespondOfferDto,
+    @Req() req: Request & { user?: AuthPrincipal },
   ): Promise<OfferResponseContract> {
-    return this.respondOfferById.execute(id, body);
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.respondOfferById.execute(id, body, user.userId ?? user.sub);
   }
 
   @Post(':id/withdraw')

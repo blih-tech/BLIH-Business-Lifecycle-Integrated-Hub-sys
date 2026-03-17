@@ -10,6 +10,7 @@ import { JobsController } from './jobs.controller';
 import { OffersController } from './offers.controller';
 import {
   ApproveJobUseCase,
+  BulkUpdateApplicantStatusUseCase,
   CloseJobUseCase,
   CreateApplicantUseCase,
   CreateInterviewUseCase,
@@ -59,6 +60,7 @@ const useCaseTokens = [
   UpsertJobResponsibilitiesUseCase,
   CreateApplicantUseCase,
   ListApplicantsUseCase,
+  BulkUpdateApplicantStatusUseCase,
   GetApplicantUseCase,
   UpdateApplicantUseCase,
   UpdateApplicantStatusUseCase,
@@ -130,6 +132,11 @@ const expectedOperations: Array<{
   },
   { path: '/hr/recruitment/applicants', method: 'post', expectsBody: true },
   { path: '/hr/recruitment/applicants', method: 'get', expectsBody: false },
+  {
+    path: '/hr/recruitment/applicants/bulk-status',
+    method: 'post',
+    expectsBody: true,
+  },
   {
     path: '/hr/recruitment/applicants/{id}',
     method: 'get',

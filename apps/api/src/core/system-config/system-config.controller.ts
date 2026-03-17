@@ -6,7 +6,7 @@ import { ResponseMessage } from '../../shared/decorators/response-message.decora
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
-import { SystemConfigPermissions } from '../rbac/constants/permissions.constants';
+import { SystemConfigPermissions } from '@repo/types/rbac';
 import { ModuleConfigDto } from './dto/module-config.dto';
 import { SecurityPolicyDto } from './dto/security-policy.dto';
 import { SystemConfigDto } from './dto/system-config.dto';

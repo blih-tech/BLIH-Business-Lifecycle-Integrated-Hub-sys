@@ -1,4 +1,4 @@
-import { AllPermissionSlugs } from './permissions.constants';
+import { AllPermissionSlugs } from './permissions.constants.js';
 
 export interface RbacRoleManifestEntry {
   name: string;

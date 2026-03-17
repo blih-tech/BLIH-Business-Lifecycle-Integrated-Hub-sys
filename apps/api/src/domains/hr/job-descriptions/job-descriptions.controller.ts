@@ -19,7 +19,7 @@ import {
 } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
-import { EmployeePermissions } from '../../../core/rbac/constants/permissions.constants';
+import { EmployeePermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import type {
   CreateJobDescriptionDto,

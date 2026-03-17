@@ -15,7 +15,7 @@ import type {
   CreateFeedbackTemplateDto,
   CreateTrainingFeedbackDto,
 } from '@repo/types';
-import { TrainingFeedbackPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { TrainingFeedbackPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

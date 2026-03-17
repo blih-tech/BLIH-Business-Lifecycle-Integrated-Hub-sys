@@ -15,7 +15,7 @@ import { randomUUID } from 'crypto';
 import { Roles } from '../../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../../shared/guards/rbac.guard';
-import { OnboardingTaskPermissions } from '../../../../core/rbac/constants/permissions.constants';
+import { OnboardingTaskPermissions } from '@repo/types/rbac';
 import {
   CreateOnboardingTaskDto,
   OnboardingTaskListQueryDto,

@@ -91,6 +91,10 @@ export class KeycloakAdminService {
     );
   }
 
+  async deleteUser(realm: string, userId: string): Promise<void> {
+    await this.adminRequest('DELETE', `/admin/realms/${realm}/users/${userId}`);
+  }
+
   async disableUser(realm: string, userId: string): Promise<void> {
     await this.adminRequest('PUT', `/admin/realms/${realm}/users/${userId}`, {
       enabled: false,
@@ -110,6 +114,24 @@ export class KeycloakAdminService {
         temporary: true,
         value: password,
       },
+    );
+  }
+
+  async executeActionsEmail(
+    realm: string,
+    userId: string,
+    actions: string[],
+    lifespanSeconds?: number,
+  ): Promise<void> {
+    const query =
+      lifespanSeconds && Number.isFinite(lifespanSeconds)
+        ? `?lifespan=${lifespanSeconds}`
+        : '';
+
+    await this.adminRequest(
+      'PUT',
+      `/admin/realms/${realm}/users/${userId}/execute-actions-email${query}`,
+      actions,
     );
   }
 

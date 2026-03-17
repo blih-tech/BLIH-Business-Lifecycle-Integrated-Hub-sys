@@ -23,7 +23,7 @@ import { ResponseMessage } from '../../../shared/decorators/response-message.dec
 import { ApiDefaultErrors, ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
-import { SystemRolePermissions } from '../constants/permissions.constants';
+import { SystemRolePermissions } from '@repo/types/rbac';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { ListRolesQueryDto } from './dto/list-roles-query.dto';

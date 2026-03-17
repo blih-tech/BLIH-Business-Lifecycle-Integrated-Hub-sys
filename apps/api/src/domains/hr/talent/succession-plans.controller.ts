@@ -13,7 +13,7 @@ import type {
   CreateSuccessionPlanDto,
   UpdateSuccessionPlanDto,
 } from '@repo/types';
-import { SuccessionPlanPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { SuccessionPlanPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

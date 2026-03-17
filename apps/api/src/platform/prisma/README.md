@@ -18,7 +18,7 @@ The database source of truth lives in `packages/database/`.
 
 ## Alignment with application
 
-- **Permission slugs**: 2-part format `resource:action` (e.g. `user:view`, `system_role:create`). Used by `User.permissions`, guards, and RBAC use cases. The canonical source is `packages/database/src/rbac/permissions.constants.ts`.
+- **Permission slugs**: 2-part format `resource:action` (e.g. `user:view`, `system_role:create`). Used by `User.permissions`, guards, and RBAC use cases. The canonical source is `packages/types/src/rbac/permissions.constants.ts`.
 - **PermissionResource**: Unique by `name` globally. The seed and app (e.g. `CreateScopeUseCase`, `CreateRoleUseCase`) use `findUnique({ where: { name } })` and upsert by resource name.
 - **Role**: Global (no `realmId`). Roles are upserted by `name`; hierarchy is set via `parentRoleId`. The manifest defines `RBAC_ROLES` with `parentRoleName`; the seed applies that to `parentRoleId`.
 - **User.permissions**: String array of permission slugs (and optionally `'*'` for superadmin). Populated by the seed’s `rebuildAllUserPermissions()` and by `UserPermissionSnapshotService` in the app.
