@@ -16,25 +16,19 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-
-const APPLICANT_STATUSES = [
-  'APPLIED',
-  'SCREENING',
-  'SHORTLISTED',
-  'INTERVIEW',
-  'OFFER',
-  'HIRED',
-  'REJECTED',
-  'WITHDRAWN',
-] as const;
-
-const CANDIDATE_SOURCES = [
-  'COMPANY_SITE',
-  'LINKEDIN',
-  'TELEGRAM',
-  'REFERRAL',
-  'AGENCY',
-] as const;
+import { APPLICANT_STATUSES, CANDIDATE_SOURCES } from '@repo/types';
+import type {
+  ApplicantEducationDto as ApplicantEducationDtoType,
+  ApplicantExperienceDto as ApplicantExperienceDtoType,
+  ApplicantListQueryDto as ApplicantListQueryDtoType,
+  ApplicantResponseDto as ApplicantResponseDtoType,
+  ApplicantStatus,
+  ApplicantStatusHistoryDto as ApplicantStatusHistoryDtoType,
+  CandidateSource,
+  CreateApplicantDto as CreateApplicantDtoType,
+  UpdateApplicantDto as UpdateApplicantDtoType,
+  UpdateApplicantStatusDto as UpdateApplicantStatusDtoType,
+} from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
@@ -44,7 +38,7 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
     .toUpperCase();
 };
 
-export class ApplicantEducationInputDto {
+export class ApplicantEducationInputDto implements ApplicantEducationDtoType {
   @ApiProperty({ example: 'Addis Ababa University' })
   @IsString()
   @IsNotEmpty()
@@ -71,7 +65,7 @@ export class ApplicantEducationInputDto {
   endDate?: string | null;
 }
 
-export class ApplicantExperienceInputDto {
+export class ApplicantExperienceInputDto implements ApplicantExperienceDtoType {
   @ApiProperty({ example: 'TechCorp' })
   @IsString()
   @IsNotEmpty()
@@ -98,7 +92,7 @@ export class ApplicantExperienceInputDto {
   description?: string | null;
 }
 
-export class CreateApplicantDto {
+export class CreateApplicantDto implements CreateApplicantDtoType {
   @ApiProperty({ example: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374' })
   @IsUUID()
   jobId!: string;
@@ -151,7 +145,7 @@ export class CreateApplicantDto {
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(CANDIDATE_SOURCES)
-  source?: (typeof CANDIDATE_SOURCES)[number];
+  source?: CandidateSource;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -179,16 +173,6 @@ export class CreateApplicantDto {
   @IsOptional()
   @IsString()
   location?: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsString()
-  country?: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsString()
-  city?: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -251,13 +235,15 @@ export class CreateApplicantDto {
   experiences?: ApplicantExperienceInputDto[];
 }
 
-export class UpdateApplicantDto extends PartialType(CreateApplicantDto) {}
+export class UpdateApplicantDto
+  extends PartialType(CreateApplicantDto)
+  implements UpdateApplicantDtoType {}
 
-export class UpdateApplicantStatusDto {
+export class UpdateApplicantStatusDto implements UpdateApplicantStatusDtoType {
   @ApiProperty({ enum: APPLICANT_STATUSES })
   @Transform(normalizeEnumValue)
   @IsEnum(APPLICANT_STATUSES)
-  status!: (typeof APPLICANT_STATUSES)[number];
+  status!: ApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -275,7 +261,7 @@ export class ApplicantExperienceResponseDto extends ApplicantExperienceInputDto 
   id!: string;
 }
 
-export class ApplicantStatusHistoryResponseDto {
+export class ApplicantStatusHistoryResponseDto implements ApplicantStatusHistoryDtoType {
   @ApiProperty()
   id!: string;
 
@@ -283,10 +269,10 @@ export class ApplicantStatusHistoryResponseDto {
   changedById!: string | null;
 
   @ApiPropertyOptional({ nullable: true, enum: APPLICANT_STATUSES })
-  fromStatus!: (typeof APPLICANT_STATUSES)[number] | null;
+  fromStatus!: ApplicantStatus | null;
 
   @ApiProperty({ enum: APPLICANT_STATUSES })
-  toStatus!: (typeof APPLICANT_STATUSES)[number];
+  toStatus!: ApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   notes!: string | null;
@@ -295,7 +281,7 @@ export class ApplicantStatusHistoryResponseDto {
   changedAt!: string;
 }
 
-export class ApplicantResponseDto {
+export class ApplicantResponseDto implements ApplicantResponseDtoType {
   @ApiProperty()
   id!: string;
 
@@ -330,7 +316,7 @@ export class ApplicantResponseDto {
   githubUrl!: string | null;
 
   @ApiProperty({ enum: CANDIDATE_SOURCES })
-  source!: (typeof CANDIDATE_SOURCES)[number];
+  source!: CandidateSource;
 
   @ApiPropertyOptional({ nullable: true })
   referredById!: string | null;
@@ -346,12 +332,6 @@ export class ApplicantResponseDto {
 
   @ApiPropertyOptional({ nullable: true })
   location!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  country!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  city!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   nationality!: string | null;
@@ -372,7 +352,7 @@ export class ApplicantResponseDto {
   skills!: string[];
 
   @ApiProperty({ enum: APPLICANT_STATUSES })
-  status!: (typeof APPLICANT_STATUSES)[number];
+  status!: ApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   coverLetter!: string | null;
@@ -394,6 +374,9 @@ export class ApplicantResponseDto {
 
   @ApiPropertyOptional({ nullable: true })
   interviewAt!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  waitlistAt!: string | null;
 
   @ApiPropertyOptional({ nullable: true })
   offerAt!: string | null;
@@ -429,12 +412,12 @@ export class ApplicantResponseDto {
   updatedAt!: string;
 }
 
-export class ApplicantListQueryDto {
+export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @ApiPropertyOptional({ enum: APPLICANT_STATUSES })
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(APPLICANT_STATUSES)
-  status?: (typeof APPLICANT_STATUSES)[number];
+  status?: ApplicantStatus;
 
   @ApiPropertyOptional()
   @IsOptional()

@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,73 +9,357 @@ import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   CreateInterviewDto,
+  InterviewFeedbackResponseDto,
   InterviewListQueryDto,
+  InterviewQuestionResponseInputItemDto,
+  InterviewResponseDto,
   UpdateInterviewDto,
-} from '../dto/interview.dto';
+  UpdateInterviewParticipantAttendanceDto,
+  UpsertInterviewFeedbackDto,
+} from '@repo/types';
 import {
+  assertInterviewAttendanceTransition,
   assertInterviewTransition,
-  buildInterviewMetadata,
   mapInterview,
-  parseInterviewMetadata,
+  mapInterviewFeedback,
   recalculateJobMetrics,
   touchApplicantActivity,
 } from './recruitment.usecase-helpers';
+
+const sessionInclude = {
+  participants: {
+    orderBy: { createdAt: 'asc' as const },
+    include: {
+      applicant: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          status: true,
+        },
+      },
+      feedbacks: {
+        orderBy: { updatedAt: 'desc' as const },
+        include: {
+          assignment: {
+            select: {
+              interviewerId: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  interviewers: {
+    orderBy: { createdAt: 'asc' as const },
+    include: {
+      interviewer: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          status: true,
+        },
+      },
+    },
+  },
+} satisfies Prisma.InterviewSessionInclude;
+
+function uniqueIds(ids: string[]) {
+  return [...new Set(ids)];
+}
+
+const QUESTION_RESPONSE_TYPES = new Set([
+  'TEXT',
+  'TEXTAREA',
+  'BOOLEAN',
+  'RATING',
+  'SINGLE_SELECT',
+  'MULTI_SELECT',
+]);
+
+type QuestionResponseType = NonNullable<
+  InterviewQuestionResponseInputItemDto['type']
+>;
+type QuestionResponseAnswer = string | boolean | number | string[] | null;
+
+interface NormalizedQuestionResponseItem {
+  questionId: string | null;
+  question: string;
+  category: string | null;
+  type: QuestionResponseType;
+  answer: QuestionResponseAnswer;
+  score: number | null;
+  maxScore: number | null;
+  weight: number | null;
+  notes: string | null;
+}
+
+function normalizeQuestionText(value: string) {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new BadRequestException(
+      'Each custom question response must include a question',
+    );
+  }
+  return normalized;
+}
+
+function normalizeNullableText(value: string | null | undefined) {
+  if (value == null) return null;
+  const normalized = value.trim();
+  return normalized || null;
+}
+
+function toNullableFiniteNumber(value: unknown, field: string) {
+  if (value == null) return null;
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new BadRequestException(
+      `Question response ${field} must be a valid number`,
+    );
+  }
+  return value;
+}
+
+function normalizeQuestionResponseAnswer(
+  type: QuestionResponseType,
+  answer: unknown,
+): QuestionResponseAnswer {
+  if (answer == null) return null;
+
+  if (type === 'TEXT' || type === 'TEXTAREA') {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException(
+        `Question response answer must be string for ${type}`,
+      );
+    }
+    return answer.trim();
+  }
+
+  if (type === 'BOOLEAN') {
+    if (typeof answer !== 'boolean') {
+      throw new BadRequestException(
+        'Question response answer must be boolean for BOOLEAN type',
+      );
+    }
+    return answer;
+  }
+
+  if (type === 'RATING') {
+    if (typeof answer !== 'number' || !Number.isFinite(answer)) {
+      throw new BadRequestException(
+        'Question response answer must be number for RATING type',
+      );
+    }
+    return answer;
+  }
+
+  if (type === 'SINGLE_SELECT') {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException(
+        'Question response answer must be string for SINGLE_SELECT type',
+      );
+    }
+    return answer.trim();
+  }
+
+  if (type === 'MULTI_SELECT') {
+    if (
+      !Array.isArray(answer) ||
+      answer.some((item) => typeof item !== 'string')
+    ) {
+      throw new BadRequestException(
+        'Question response answer must be string[] for MULTI_SELECT type',
+      );
+    }
+    return answer.map((item) => item.trim());
+  }
+
+  throw new BadRequestException('Unsupported question response type');
+}
+
+function computeScoreFromQuestionResponses(
+  items: NormalizedQuestionResponseItem[],
+) {
+  const scored = items.filter(
+    (item) => item.score != null && item.maxScore != null && item.maxScore > 0,
+  );
+  if (scored.length === 0) return null;
+
+  let weightedScore = 0;
+  let totalWeight = 0;
+  for (const item of scored) {
+    const weight = item.weight ?? 1;
+    weightedScore +=
+      ((item.score as number) / (item.maxScore as number)) * weight;
+    totalWeight += weight;
+  }
+
+  if (totalWeight <= 0) return null;
+
+  const score = (weightedScore / totalWeight) * 100;
+  return Math.round(score * 100) / 100;
+}
+
+function normalizeInterviewerPayload(
+  interviewers: CreateInterviewDto['interviewers'],
+) {
+  const map = new Map<string, { interviewerId: string; role: string | null }>();
+  for (const item of interviewers) {
+    if (!map.has(item.interviewerId)) {
+      map.set(item.interviewerId, {
+        interviewerId: item.interviewerId,
+        role: item.role ?? null,
+      });
+    }
+  }
+  return [...map.values()];
+}
+
+async function assertApplicantsBelongToJob(
+  prisma: PrismaService,
+  jobId: string,
+  applicantIds: string[],
+) {
+  const applicants = await prisma.applicant.findMany({
+    where: { id: { in: applicantIds } },
+    select: { id: true, jobId: true },
+  });
+
+  if (applicants.length !== applicantIds.length) {
+    throw new NotFoundException('One or more applicants were not found');
+  }
+
+  const invalid = applicants.find((applicant) => applicant.jobId !== jobId);
+  if (invalid) {
+    throw new BadRequestException(
+      'All applicants must belong to the session job',
+    );
+  }
+}
+
+async function assertInterviewersAreActiveEmployees(
+  prisma: PrismaService,
+  interviewerIds: string[],
+) {
+  const interviewers = await prisma.user.findMany({
+    where: {
+      id: { in: interviewerIds },
+      status: 'ACTIVE',
+      employee: { isNot: null },
+    },
+    select: { id: true },
+  });
+
+  if (interviewers.length !== interviewerIds.length) {
+    throw new BadRequestException(
+      'All interviewers must be active users linked to employee records',
+    );
+  }
+}
+
+async function assertNoActiveDuplicateRound(
+  prisma: PrismaService,
+  params: {
+    applicantIds: string[];
+    jobId: string;
+    round: number;
+    excludeSessionId?: string;
+  },
+) {
+  const duplicate = await prisma.interviewParticipant.findFirst({
+    where: {
+      applicantId: { in: params.applicantIds },
+      session: {
+        jobId: params.jobId,
+        round: params.round,
+        status: { not: 'CANCELLED' },
+        ...(params.excludeSessionId
+          ? { id: { not: params.excludeSessionId } }
+          : {}),
+      },
+      attendanceStatus: { not: 'CANCELLED' },
+    },
+    select: { id: true },
+  });
+
+  if (duplicate) {
+    throw new ConflictException(
+      'At least one applicant already has an active interview in this round',
+    );
+  }
+}
 
 @Injectable()
 export class CreateInterviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(dto: CreateInterviewDto) {
-    const applicant = await this.prisma.applicant.findUniqueOrThrow({
-      where: { id: dto.applicantId },
-      select: { id: true, jobId: true },
-    });
+  async execute(
+    dto: CreateInterviewDto,
+    createdById: string,
+  ): Promise<InterviewResponseDto> {
+    const applicantIds = uniqueIds(dto.applicantIds);
+    if (applicantIds.length === 0) {
+      throw new BadRequestException('At least one applicant is required');
+    }
+
+    const interviewerPayload = normalizeInterviewerPayload(dto.interviewers);
+    if (interviewerPayload.length === 0) {
+      throw new BadRequestException('At least one interviewer is required');
+    }
 
     const round = dto.round ?? 1;
-    const existing = await this.prisma.interview.findMany({
-      where: {
-        jobId: applicant.jobId,
-        applicantId: applicant.id,
-      },
-      select: { id: true, feedback: true },
+    await this.prisma.job.findUniqueOrThrow({
+      where: { id: dto.jobId },
+      select: { id: true },
     });
-    const duplicate = existing.find(
-      (interview) => parseInterviewMetadata(interview.feedback).round === round,
-    );
-    if (duplicate) {
-      throw new ConflictException('Interview round already exists');
-    }
+    await assertApplicantsBelongToJob(this.prisma, dto.jobId, applicantIds);
+    await assertNoActiveDuplicateRound(this.prisma, {
+      applicantIds,
+      jobId: dto.jobId,
+      round,
+    });
+
+    const interviewerIds = interviewerPayload.map((item) => item.interviewerId);
+    await assertInterviewersAreActiveEmployees(this.prisma, interviewerIds);
 
     const now = new Date();
     const created = await this.prisma.$transaction(async (tx) => {
-      const row = await tx.interview.create({
+      const row = await tx.interviewSession.create({
         data: {
-          jobId: applicant.jobId,
-          applicantId: applicant.id,
+          jobId: dto.jobId,
           type: dto.type,
+          round,
           status: dto.status ?? 'SCHEDULED',
-          scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : undefined,
-          startedAt: dto.startedAt ? new Date(dto.startedAt) : undefined,
-          completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
+          scheduledAt: new Date(dto.scheduledAt),
           durationMinutes: dto.durationMinutes ?? undefined,
-          interviewerId: dto.interviewerId,
           location: dto.location ?? undefined,
           meetingUrl: dto.meetingUrl ?? undefined,
-          notes: dto.notes ?? undefined,
-          feedback: buildInterviewMetadata({
-            applicantId: dto.applicantId,
-            round,
-            interviewers: dto.interviewers,
-            feedback: dto.feedback,
-            endorsement: dto.endorsement ?? null,
-            score: dto.score ?? null,
-            nextAction: dto.nextAction ?? null,
-          }) as Prisma.InputJsonValue,
+          createdById,
+          participants: {
+            create: applicantIds.map((applicantId) => ({
+              applicantId,
+              attendanceStatus: 'SCHEDULED',
+            })),
+          },
+          interviewers: {
+            create: interviewerPayload.map((interviewer) => ({
+              interviewerId: interviewer.interviewerId,
+              role: interviewer.role ?? undefined,
+            })),
+          },
         },
+        include: sessionInclude,
       });
 
-      await touchApplicantActivity(tx, applicant.id, now);
-      await recalculateJobMetrics(tx, applicant.jobId);
+      await Promise.all(
+        applicantIds.map((applicantId) =>
+          touchApplicantActivity(tx, applicantId, now),
+        ),
+      );
+      await recalculateJobMetrics(tx, dto.jobId);
       return row;
     });
 
@@ -85,16 +371,33 @@ export class CreateInterviewUseCase {
 export class ListInterviewsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: InterviewListQueryDto) {
-    const list = await this.prisma.interview.findMany({
+  async execute(query: InterviewListQueryDto): Promise<InterviewResponseDto[]> {
+    const list = await this.prisma.interviewSession.findMany({
       where: {
+        ...(query.jobId ? { jobId: query.jobId } : {}),
         ...(query.status ? { status: query.status } : {}),
-        ...(query.applicantId ? { applicantId: query.applicantId } : {}),
+        ...(query.type ? { type: query.type } : {}),
+        ...(query.round ? { round: query.round } : {}),
+        ...(query.applicantId
+          ? {
+              participants: {
+                some: { applicantId: query.applicantId },
+              },
+            }
+          : {}),
+        ...(query.interviewerId
+          ? {
+              interviewers: {
+                some: { interviewerId: query.interviewerId },
+              },
+            }
+          : {}),
       },
+      include: sessionInclude,
       orderBy: { createdAt: 'desc' },
     });
 
-    return list.map((interview) => mapInterview(interview));
+    return list.map((session) => mapInterview(session));
   }
 }
 
@@ -102,10 +405,13 @@ export class ListInterviewsUseCase {
 export class GetInterviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
-    const interview = await this.prisma.interview.findUnique({ where: { id } });
-    if (!interview) throw new NotFoundException('Interview not found');
-    return mapInterview(interview);
+  async execute(id: string): Promise<InterviewResponseDto> {
+    const session = await this.prisma.interviewSession.findUnique({
+      where: { id },
+      include: sessionInclude,
+    });
+    if (!session) throw new NotFoundException('Interview session not found');
+    return mapInterview(session);
   }
 }
 
@@ -113,93 +419,523 @@ export class GetInterviewUseCase {
 export class UpdateInterviewUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateInterviewDto) {
-    const existing = await this.prisma.interview.findUniqueOrThrow({
+  async execute(
+    id: string,
+    dto: UpdateInterviewDto,
+  ): Promise<InterviewResponseDto> {
+    const existing = await this.prisma.interviewSession.findUnique({
       where: { id },
-      select: {
-        id: true,
-        status: true,
-        jobId: true,
-        applicantId: true,
-        feedback: true,
+      include: {
+        participants: {
+          include: {
+            feedbacks: {
+              select: { id: true },
+            },
+          },
+        },
+        interviewers: {
+          include: {
+            feedbacks: {
+              select: { id: true },
+            },
+          },
+        },
       },
     });
+    if (!existing) throw new NotFoundException('Interview session not found');
 
     if (dto.status !== undefined) {
       assertInterviewTransition(existing.status, dto.status);
     }
-    const currentMetadata = parseInterviewMetadata(existing.feedback);
-    const applicant = dto.applicantId
-      ? await this.prisma.applicant.findUniqueOrThrow({
-          where: { id: dto.applicantId },
-          select: { id: true, jobId: true },
-        })
-      : null;
 
-    const nextMetadata = buildInterviewMetadata({
-      applicantId: dto.applicantId ?? currentMetadata.applicantId,
-      round: dto.round ?? currentMetadata.round,
-      interviewers:
-        dto.interviewers === undefined
-          ? currentMetadata.interviewers
-          : dto.interviewers,
-      feedback:
-        dto.feedback === undefined ? currentMetadata.feedback : dto.feedback,
-      endorsement:
-        dto.endorsement === undefined
-          ? currentMetadata.endorsement
-          : dto.endorsement,
-      score: dto.score === undefined ? currentMetadata.score : dto.score,
-      nextAction:
-        dto.nextAction === undefined
-          ? currentMetadata.nextAction
-          : dto.nextAction,
-    });
+    const round = dto.round ?? existing.round;
+    if (dto.round !== undefined && dto.applicantIds === undefined) {
+      const currentApplicantIds = existing.participants.map(
+        (participant) => participant.applicantId,
+      );
+      if (currentApplicantIds.length > 0) {
+        await assertNoActiveDuplicateRound(this.prisma, {
+          applicantIds: currentApplicantIds,
+          jobId: existing.jobId,
+          round,
+          excludeSessionId: existing.id,
+        });
+      }
+    }
 
     const now = new Date();
+
     const updated = await this.prisma.$transaction(async (tx) => {
-      const data: Prisma.InterviewUncheckedUpdateInput = {
-        feedback: nextMetadata as Prisma.InputJsonValue,
-      };
+      if (dto.applicantIds !== undefined) {
+        const applicantIds = uniqueIds(dto.applicantIds);
+        if (applicantIds.length === 0) {
+          throw new BadRequestException('At least one applicant is required');
+        }
 
-      if (applicant) {
-        data.jobId = applicant.jobId;
-        data.applicantId = applicant.id;
-      }
-      if (dto.type !== undefined) data.type = dto.type;
-      if (dto.status !== undefined) data.status = dto.status;
-      if (dto.scheduledAt !== undefined) {
-        data.scheduledAt = dto.scheduledAt ? new Date(dto.scheduledAt) : null;
-      }
-      if (dto.startedAt !== undefined) {
-        data.startedAt = dto.startedAt ? new Date(dto.startedAt) : null;
-      }
-      if (dto.completedAt !== undefined) {
-        data.completedAt = dto.completedAt ? new Date(dto.completedAt) : null;
-      }
-      if (dto.durationMinutes !== undefined) {
-        data.durationMinutes = dto.durationMinutes;
-      }
-      if (dto.interviewerId !== undefined)
-        data.interviewerId = dto.interviewerId;
-      if (dto.location !== undefined) data.location = dto.location;
-      if (dto.meetingUrl !== undefined) data.meetingUrl = dto.meetingUrl;
-      if (dto.notes !== undefined) data.notes = dto.notes;
+        await assertApplicantsBelongToJob(
+          tx as PrismaService,
+          existing.jobId,
+          applicantIds,
+        );
+        await assertNoActiveDuplicateRound(tx as PrismaService, {
+          applicantIds,
+          jobId: existing.jobId,
+          round,
+          excludeSessionId: existing.id,
+        });
 
-      const row = await tx.interview.update({
+        const currentByApplicant = new Map(
+          existing.participants.map((participant) => [
+            participant.applicantId,
+            participant,
+          ]),
+        );
+
+        const removeParticipants = existing.participants.filter(
+          (participant) => !applicantIds.includes(participant.applicantId),
+        );
+        if (
+          removeParticipants.some(
+            (participant) => (participant.feedbacks?.length ?? 0) > 0,
+          )
+        ) {
+          throw new BadRequestException(
+            'Cannot remove participants with submitted feedback',
+          );
+        }
+
+        if (removeParticipants.length > 0) {
+          await tx.interviewParticipant.deleteMany({
+            where: {
+              id: {
+                in: removeParticipants.map((participant) => participant.id),
+              },
+            },
+          });
+        }
+
+        const addApplicantIds = applicantIds.filter(
+          (applicantId) => !currentByApplicant.has(applicantId),
+        );
+        if (addApplicantIds.length > 0) {
+          await tx.interviewParticipant.createMany({
+            data: addApplicantIds.map((applicantId) => ({
+              sessionId: existing.id,
+              applicantId,
+              attendanceStatus: 'SCHEDULED',
+            })),
+          });
+        }
+      }
+
+      if (dto.interviewers !== undefined) {
+        const interviewers = normalizeInterviewerPayload(dto.interviewers);
+        if (interviewers.length === 0) {
+          throw new BadRequestException('At least one interviewer is required');
+        }
+
+        const interviewerIds = interviewers.map((item) => item.interviewerId);
+        await assertInterviewersAreActiveEmployees(
+          tx as PrismaService,
+          interviewerIds,
+        );
+
+        const interviewerById = new Map(
+          interviewers.map((item) => [item.interviewerId, item]),
+        );
+
+        const removeAssignments = existing.interviewers.filter(
+          (assignment) => !interviewerById.has(assignment.interviewerId),
+        );
+        if (
+          removeAssignments.some(
+            (assignment) => (assignment.feedbacks?.length ?? 0) > 0,
+          )
+        ) {
+          throw new BadRequestException(
+            'Cannot remove interviewer assignments with submitted feedback',
+          );
+        }
+
+        if (removeAssignments.length > 0) {
+          await tx.interviewerAssignment.deleteMany({
+            where: {
+              id: { in: removeAssignments.map((assignment) => assignment.id) },
+            },
+          });
+        }
+
+        const currentByInterviewerId = new Map(
+          existing.interviewers.map((assignment) => [
+            assignment.interviewerId,
+            assignment,
+          ]),
+        );
+
+        const addAssignments = interviewers.filter(
+          (assignment) => !currentByInterviewerId.has(assignment.interviewerId),
+        );
+
+        if (addAssignments.length > 0) {
+          await tx.interviewerAssignment.createMany({
+            data: addAssignments.map((assignment) => ({
+              sessionId: existing.id,
+              interviewerId: assignment.interviewerId,
+              role: assignment.role ?? undefined,
+            })),
+          });
+        }
+
+        const retainedAssignments = existing.interviewers.filter((assignment) =>
+          interviewerById.has(assignment.interviewerId),
+        );
+
+        for (const retained of retainedAssignments) {
+          const payload = interviewerById.get(retained.interviewerId);
+          await tx.interviewerAssignment.update({
+            where: { id: retained.id },
+            data: { role: payload?.role ?? null },
+          });
+        }
+      }
+
+      await tx.interviewSession.update({
         where: { id },
-        data,
+        data: {
+          ...(dto.type !== undefined ? { type: dto.type } : {}),
+          ...(dto.round !== undefined ? { round: dto.round } : {}),
+          ...(dto.status !== undefined ? { status: dto.status } : {}),
+          ...(dto.scheduledAt !== undefined
+            ? { scheduledAt: new Date(dto.scheduledAt) }
+            : {}),
+          ...(dto.durationMinutes !== undefined
+            ? { durationMinutes: dto.durationMinutes }
+            : {}),
+          ...(dto.location !== undefined ? { location: dto.location } : {}),
+          ...(dto.meetingUrl !== undefined
+            ? { meetingUrl: dto.meetingUrl }
+            : {}),
+        },
       });
 
-      await touchApplicantActivity(
-        tx,
-        applicant?.id ?? existing.applicantId,
-        now,
+      const row = await tx.interviewSession.findUniqueOrThrow({
+        where: { id },
+        include: sessionInclude,
+      });
+
+      await Promise.all(
+        row.participants.map((participant) =>
+          touchApplicantActivity(tx, participant.applicantId, now),
+        ),
       );
-      await recalculateJobMetrics(tx, applicant?.jobId ?? existing.jobId);
+      await recalculateJobMetrics(tx, row.jobId);
       return row;
     });
 
     return mapInterview(updated);
+  }
+}
+
+@Injectable()
+export class UpdateInterviewParticipantAttendanceUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async execute(
+    sessionId: string,
+    participantId: string,
+    dto: UpdateInterviewParticipantAttendanceDto,
+  ): Promise<InterviewResponseDto> {
+    const participant = await this.prisma.interviewParticipant.findFirst({
+      where: {
+        id: participantId,
+        sessionId,
+      },
+      include: {
+        session: {
+          select: {
+            id: true,
+            jobId: true,
+          },
+        },
+      },
+    });
+
+    if (!participant) {
+      throw new NotFoundException('Interview participant not found');
+    }
+
+    assertInterviewAttendanceTransition(
+      participant.attendanceStatus,
+      dto.attendanceStatus,
+    );
+
+    const now = new Date();
+    const updated = await this.prisma.$transaction(async (tx) => {
+      await tx.interviewParticipant.update({
+        where: { id: participant.id },
+        data: { attendanceStatus: dto.attendanceStatus },
+      });
+
+      await touchApplicantActivity(tx, participant.applicantId, now);
+      await recalculateJobMetrics(tx, participant.session.jobId);
+
+      return tx.interviewSession.findUniqueOrThrow({
+        where: { id: sessionId },
+        include: sessionInclude,
+      });
+    });
+
+    return mapInterview(updated);
+  }
+}
+
+@Injectable()
+export class UpsertInterviewFeedbackUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private async normalizeQuestionResponses(
+    payload: InterviewQuestionResponseInputItemDto[],
+  ) {
+    if (payload.length === 0) return [];
+
+    const questionIds = payload
+      .map((item) => item.questionId)
+      .filter((id): id is string => Boolean(id));
+
+    const bankQuestions =
+      questionIds.length === 0
+        ? []
+        : await this.prisma.interviewQuestion.findMany({
+            where: {
+              id: { in: questionIds },
+            },
+            select: {
+              id: true,
+              question: true,
+              category: true,
+              type: true,
+            },
+          });
+
+    const questionById = new Map(
+      bankQuestions.map((question) => [question.id, question] as const),
+    );
+
+    if (questionById.size !== new Set(questionIds).size) {
+      throw new BadRequestException(
+        'One or more questionIds do not exist in the interview question bank',
+      );
+    }
+
+    const normalized: NormalizedQuestionResponseItem[] = [];
+    for (const item of payload) {
+      const questionId = item.questionId ?? null;
+      const bankQuestion = questionId ? questionById.get(questionId) : null;
+
+      const type: QuestionResponseType = bankQuestion
+        ? (bankQuestion.type as QuestionResponseType)
+        : item.type;
+
+      if (!QUESTION_RESPONSE_TYPES.has(type)) {
+        throw new BadRequestException('Question response type is invalid');
+      }
+
+      const question = bankQuestion
+        ? bankQuestion.question
+        : normalizeQuestionText(item.question);
+
+      const score = toNullableFiniteNumber(item.score, 'score');
+      const maxScore = toNullableFiniteNumber(item.maxScore, 'maxScore');
+      const requestedWeight = toNullableFiniteNumber(item.weight, 'weight');
+      const weight = requestedWeight ?? 1;
+
+      if (score != null && score < 0) {
+        throw new BadRequestException('Question response score must be >= 0');
+      }
+
+      if (maxScore != null && maxScore <= 0) {
+        throw new BadRequestException('Question response maxScore must be > 0');
+      }
+
+      if (weight <= 0) {
+        throw new BadRequestException('Question response weight must be > 0');
+      }
+
+      if (score != null && maxScore == null) {
+        throw new BadRequestException(
+          'Question response maxScore is required when score is provided',
+        );
+      }
+
+      if (score != null && maxScore != null && score > maxScore) {
+        throw new BadRequestException(
+          'Question response score cannot exceed maxScore',
+        );
+      }
+
+      normalized.push({
+        questionId,
+        question,
+        category: bankQuestion
+          ? (bankQuestion.category ?? null)
+          : (item.category ?? null),
+        type,
+        answer: normalizeQuestionResponseAnswer(type, item.answer),
+        score,
+        maxScore,
+        weight,
+        notes: normalizeNullableText(item.notes),
+      });
+    }
+
+    return normalized;
+  }
+
+  async execute(
+    sessionId: string,
+    participantId: string,
+    interviewerUserId: string,
+    dto: UpsertInterviewFeedbackDto,
+  ): Promise<InterviewFeedbackResponseDto> {
+    const participant = await this.prisma.interviewParticipant.findFirst({
+      where: {
+        id: participantId,
+        sessionId,
+      },
+      select: {
+        id: true,
+        applicantId: true,
+      },
+    });
+
+    if (!participant) {
+      throw new NotFoundException('Interview participant not found');
+    }
+
+    const assignment = await this.prisma.interviewerAssignment.findUnique({
+      where: {
+        sessionId_interviewerId: {
+          sessionId,
+          interviewerId: interviewerUserId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!assignment) {
+      throw new ForbiddenException(
+        'Only assigned interviewers can submit feedback',
+      );
+    }
+
+    const normalizedQuestionResponses =
+      dto.questionResponses !== undefined
+        ? await this.normalizeQuestionResponses(dto.questionResponses)
+        : undefined;
+
+    const computedScore =
+      dto.score !== undefined
+        ? dto.score
+        : normalizedQuestionResponses !== undefined
+          ? computeScoreFromQuestionResponses(normalizedQuestionResponses)
+          : undefined;
+
+    const isDraft = dto.isDraft === true;
+    const now = new Date();
+    const feedback = await this.prisma.$transaction(async (tx) => {
+      const row = await tx.interviewFeedback.upsert({
+        where: {
+          participantId_assignmentId: {
+            participantId,
+            assignmentId: assignment.id,
+          },
+        },
+        create: {
+          participantId,
+          assignmentId: assignment.id,
+          score: computedScore,
+          endorsement: dto.endorsement ?? undefined,
+          strengths: dto.strengths ?? [],
+          weaknesses: dto.weaknesses ?? [],
+          questionResponses: normalizedQuestionResponses as unknown as
+            | Prisma.InputJsonValue
+            | undefined,
+          notes: dto.notes ?? undefined,
+          isDraft,
+          submittedAt: isDraft ? null : now,
+        },
+        update: {
+          ...(computedScore !== undefined ? { score: computedScore } : {}),
+          ...(dto.endorsement !== undefined
+            ? { endorsement: dto.endorsement }
+            : {}),
+          ...(dto.strengths !== undefined ? { strengths: dto.strengths } : {}),
+          ...(dto.weaknesses !== undefined
+            ? { weaknesses: dto.weaknesses }
+            : {}),
+          ...(normalizedQuestionResponses !== undefined
+            ? {
+                questionResponses:
+                  normalizedQuestionResponses as unknown as Prisma.InputJsonValue,
+              }
+            : {}),
+          ...(dto.notes !== undefined ? { notes: dto.notes } : {}),
+          isDraft,
+          submittedAt: isDraft ? null : now,
+        },
+        include: {
+          assignment: {
+            select: {
+              interviewerId: true,
+            },
+          },
+        },
+      });
+
+      await touchApplicantActivity(tx, participant.applicantId, now);
+      return row;
+    });
+
+    return mapInterviewFeedback(feedback);
+  }
+}
+
+@Injectable()
+export class ListInterviewParticipantFeedbackUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async execute(
+    sessionId: string,
+    participantId: string,
+  ): Promise<InterviewFeedbackResponseDto[]> {
+    const participant = await this.prisma.interviewParticipant.findFirst({
+      where: {
+        id: participantId,
+        sessionId,
+      },
+      select: { id: true },
+    });
+
+    if (!participant) {
+      throw new NotFoundException('Interview participant not found');
+    }
+
+    const feedback = await this.prisma.interviewFeedback.findMany({
+      where: {
+        participantId,
+      },
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        assignment: {
+          select: {
+            interviewerId: true,
+          },
+        },
+      },
+    });
+
+    return feedback.map((row) => mapInterviewFeedback(row));
   }
 }

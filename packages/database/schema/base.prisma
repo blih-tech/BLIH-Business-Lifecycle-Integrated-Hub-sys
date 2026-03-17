@@ -211,9 +211,19 @@ enum ApplicantStatus {
   SCREENING
   SHORTLISTED
   INTERVIEW
+  WAITLIST
   OFFER
   HIRED
   REJECTED
+  WITHDRAWN
+}
+
+enum OfferStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  DECLINED
+  EXPIRED
   WITHDRAWN
 }
 
@@ -232,6 +242,14 @@ enum InterviewStatus {
   NO_SHOW
 }
 
+enum InterviewAttendanceStatus {
+  SCHEDULED
+  ATTENDING
+  NO_SHOW
+  COMPLETED
+  CANCELLED
+}
+
 enum EndorsementLevel {
   STRONG_YES
   YES
@@ -239,10 +257,25 @@ enum EndorsementLevel {
   NO
 }
 
-enum HiringDecisionOutcome {
-  OFFER_APPROVED
-  OFFER_DECLINED
-  SUSPENDED
+enum InterviewQuestionCategory {
+  TECHNICAL
+  BEHAVIORAL
+  SITUATIONAL
+  PROBLEM_SOLVING
+  LEADERSHIP
+  COMMUNICATION
+  DOMAIN_KNOWLEDGE
+  CULTURAL_FIT
+  GENERAL
+}
+
+enum InterviewQuestionType {
+  TEXT
+  TEXTAREA
+  BOOLEAN
+  RATING
+  SINGLE_SELECT
+  MULTI_SELECT
 }
 
 // CV Screening Enums

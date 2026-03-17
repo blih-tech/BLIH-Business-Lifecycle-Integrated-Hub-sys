@@ -1,12 +1,27 @@
+import type { CandidateSource } from './jobs.js';
+
 export type ApplicantStatus =
   | 'APPLIED'
   | 'SCREENING'
   | 'SHORTLISTED'
   | 'INTERVIEW'
+  | 'WAITLIST'
   | 'OFFER'
   | 'HIRED'
   | 'REJECTED'
   | 'WITHDRAWN';
+
+export const APPLICANT_STATUSES = [
+  'APPLIED',
+  'SCREENING',
+  'SHORTLISTED',
+  'INTERVIEW',
+  'WAITLIST',
+  'OFFER',
+  'HIRED',
+  'REJECTED',
+  'WITHDRAWN',
+] as const;
 
 export interface ApplicantStatusHistoryDto {
   id: string;
@@ -44,14 +59,12 @@ export interface CreateApplicantDto {
   linkedinUrl?: string | null;
   portfolioUrl?: string | null;
   githubUrl?: string | null;
-  source?: 'COMPANY_SITE' | 'LINKEDIN' | 'TELEGRAM' | 'REFERRAL' | 'AGENCY';
+  source?: CandidateSource;
   referredById?: string | null;
   currentCompany?: string | null;
   currentPosition?: string | null;
   yearsExperience?: number | null;
   location?: string | null;
-  country?: string | null;
-  city?: string | null;
   nationality?: string | null;
   expectedSalary?: number | null;
   currentSalary?: number | null;
@@ -84,14 +97,12 @@ export interface ApplicantResponseDto {
   linkedinUrl: string | null;
   portfolioUrl: string | null;
   githubUrl: string | null;
-  source: 'COMPANY_SITE' | 'LINKEDIN' | 'TELEGRAM' | 'REFERRAL' | 'AGENCY';
+  source: CandidateSource;
   referredById: string | null;
   currentCompany: string | null;
   currentPosition: string | null;
   yearsExperience: number | null;
   location: string | null;
-  country: string | null;
-  city: string | null;
   nationality: string | null;
   expectedSalary: string | null;
   currentSalary: string | null;
@@ -106,6 +117,7 @@ export interface ApplicantResponseDto {
   screeningAt: string | null;
   shortlistedAt: string | null;
   interviewAt: string | null;
+  waitlistAt: string | null;
   offerAt: string | null;
   hiredAt: string | null;
   rejectedAt: string | null;
@@ -117,4 +129,10 @@ export interface ApplicantResponseDto {
   statusHistory: ApplicantStatusHistoryDto[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ApplicantListQueryDto {
+  status?: ApplicantStatus;
+  jobId?: string;
+  email?: string;
 }

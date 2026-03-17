@@ -8,10 +8,11 @@ import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   ApplicantListQueryDto,
+  ApplicantResponseDto,
   CreateApplicantDto,
   UpdateApplicantDto,
   UpdateApplicantStatusDto,
-} from '../dto/applicant.dto';
+} from '@repo/types';
 import { RecruitmentNotificationService } from '../recruitment-notification.service';
 import {
   applicantInclude,
@@ -177,7 +178,10 @@ export class CreateApplicantUseCase {
     private readonly notifications: RecruitmentNotificationService,
   ) {}
 
-  async execute(dto: CreateApplicantDto, changedById?: string) {
+  async execute(
+    dto: CreateApplicantDto,
+    changedById?: string,
+  ): Promise<ApplicantResponseDto> {
     const submittedEmail = dto.email.trim();
     const normalizedEmail = normalizeEmail(submittedEmail);
     const [job, referredBy] = await Promise.all([
@@ -292,8 +296,6 @@ export class CreateApplicantUseCase {
             currentPosition: dto.currentPosition ?? undefined,
             yearsExperience: dto.yearsExperience ?? undefined,
             location: dto.location ?? undefined,
-            country: dto.country ?? undefined,
-            city: dto.city ?? undefined,
             nationality: dto.nationality ?? undefined,
             expectedSalary: decimalOrUndefined(dto.expectedSalary),
             currentSalary: decimalOrUndefined(dto.currentSalary),
@@ -383,7 +385,7 @@ export class CreateApplicantUseCase {
 export class ListApplicantsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: ApplicantListQueryDto) {
+  async execute(query: ApplicantListQueryDto): Promise<ApplicantResponseDto[]> {
     const list = await this.prisma.applicant.findMany({
       where: {
         ...(query.status ? { status: query.status } : {}),
@@ -404,7 +406,7 @@ export class ListApplicantsUseCase {
 export class GetApplicantUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<ApplicantResponseDto> {
     const applicant = await this.prisma.applicant.findUnique({
       where: { id },
       include: applicantInclude,
@@ -418,7 +420,10 @@ export class GetApplicantUseCase {
 export class UpdateApplicantUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: UpdateApplicantDto) {
+  async execute(
+    id: string,
+    dto: UpdateApplicantDto,
+  ): Promise<ApplicantResponseDto> {
     const existing = await this.prisma.applicant.findUnique({
       where: { id },
       select: {
@@ -433,8 +438,6 @@ export class UpdateApplicantUseCase {
         currentPosition: true,
         yearsExperience: true,
         location: true,
-        country: true,
-        city: true,
         nationality: true,
         expectedSalary: true,
         currentSalary: true,
@@ -636,8 +639,6 @@ export class UpdateApplicantUseCase {
               yearsExperience: dto.yearsExperience,
             }),
             ...(dto.location !== undefined && { location: dto.location }),
-            ...(dto.country !== undefined && { country: dto.country }),
-            ...(dto.city !== undefined && { city: dto.city }),
             ...(dto.nationality !== undefined && {
               nationality: dto.nationality,
             }),
@@ -755,7 +756,7 @@ export class UpdateApplicantStatusUseCase {
     id: string,
     dto: UpdateApplicantStatusDto,
     changedById?: string,
-  ) {
+  ): Promise<ApplicantResponseDto> {
     const existing = await this.prisma.applicant.findUnique({
       where: { id },
       select: { id: true, status: true, jobId: true },
@@ -774,6 +775,7 @@ export class UpdateApplicantStatusUseCase {
       if (dto.status === 'SCREENING') data.screeningAt = now;
       if (dto.status === 'SHORTLISTED') data.shortlistedAt = now;
       if (dto.status === 'INTERVIEW') data.interviewAt = now;
+      if (dto.status === 'WAITLIST') data.waitlistAt = now;
       if (dto.status === 'OFFER') data.offerAt = now;
       if (dto.status === 'HIRED') data.hiredAt = now;
       if (dto.status === 'REJECTED') data.rejectedAt = now;
