@@ -216,12 +216,15 @@ ${question}
 ### ANSWER (Concise and Accurate):
     `;
 
-    const response = (await this.llm.invoke(prompt)) as { content: string };
+    const rawResponse = await this.llm.invoke(prompt);
+
+    const response = rawResponse as { content: string };  
+
     return {
       answer: response.content,
       sources: relevantDocs.map((d) => d.metadata.source),
     };
-  }
+      }
 
   async analyzeCv(cvText: string, jobDescription: string) {
     const prompt = `
