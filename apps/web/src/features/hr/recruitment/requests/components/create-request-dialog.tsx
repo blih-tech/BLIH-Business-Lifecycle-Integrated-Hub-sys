@@ -65,6 +65,8 @@ const defaultValues: CreateRequestFormValues = {
   requestType: 'new',
   replaceFor: '',
   businessJustification: '',
+  openings: '1',
+  createdDate: new Date().toISOString().slice(0, 10),
   employmentType: 'full_time',
   workMode: 'on_site',
   urgency: 'medium',

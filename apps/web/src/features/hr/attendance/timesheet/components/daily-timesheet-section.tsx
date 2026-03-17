@@ -151,13 +151,13 @@ export function DailyTimesheetSection() {
             setPage(1);
           }}
           status={status}
-          onStatusChange={(value) => {
-            setStatus(value);
+          onStatusChange={(value: string) => {
+            setStatus(value as "all" | TimesheetStatus);
             setPage(1);
           }}
           viewMode={viewMode}
-          onViewModeChange={(value) => {
-            setViewMode(value);
+          onViewModeChange={(value: string) => {
+            setViewMode(value as TimesheetViewMode);
             setPage(1);
           }}
           departments={timesheetDepartments}
@@ -168,7 +168,7 @@ export function DailyTimesheetSection() {
 
           <div className="flex items-center gap-2">
             <span>Sort by:</span>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as TimesheetSort)}>
+            <Select value={sortBy} onValueChange={(value: string) => setSortBy(value as TimesheetSort)}>
               <SelectTrigger
                 size="sm"
                 className="h-7 w-[138px] rounded-none border-0 border-b border-border bg-transparent px-1 text-xs text-foreground shadow-none"

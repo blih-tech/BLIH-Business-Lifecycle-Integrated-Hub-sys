@@ -68,6 +68,31 @@ export type ActiveJobItem = {
   keyResponsibilities: string[];
   requirements: string[];
   benefits: string[];
+  importanceOfHire: string[];
+  requestedBy: {
+    name: string;
+    role: string;
+    department: string;
+  };
+  hiringCommittee: Array<{
+    name: string;
+    role: string;
+    department: string;
+  }>;
+  revisionsFrom: Array<{
+    name: string;
+    role: string;
+    department: string;
+    time: string;
+    date: string;
+  }>;
+  approvedBy: Array<{
+    name: string;
+    role: string;
+    department: string;
+    time: string;
+    date: string;
+  }>;
   applicants: JobApplicant[];
   analytics: JobAnalyticsPoint[];
   topMatch: TopMatchCandidate;
