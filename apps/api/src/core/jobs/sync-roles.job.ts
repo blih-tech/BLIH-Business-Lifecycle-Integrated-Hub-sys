@@ -1,11 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { KeycloakAdminService } from '../../platform/keycloak/keycloak-admin.service';
+import {
+  KeycloakAdminRequestError,
+  KeycloakAdminService,
+} from '../../platform/keycloak/keycloak-admin.service';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 import {
   RBAC_ROLE_BY_NAME,
   RBAC_ROLE_NAMES,
-} from '@repo/database/seed/rbac.manifest';
+} from '../rbac/constants/rbac.manifest';
 import { env } from '../../config/env.config';
 import { UserPermissionSnapshotService } from '../rbac/user-permission-snapshot.service';
 
@@ -30,7 +33,17 @@ export class SyncRolesJob {
 
     const realmName = env.KEYCLOAK_REALM;
 
-    const roles = await this.keycloakAdmin.listRoles(realmName);
+    let roles: Record<string, unknown>[];
+    try {
+      roles = await this.keycloakAdmin.listRoles(realmName);
+    } catch (error: unknown) {
+      if (error instanceof KeycloakAdminRequestError) {
+        return;
+      }
+
+      throw error;
+    }
+
     const keycloakRoleNames = new Set(
       roles
         .map((role) => String(role.name ?? '').trim())

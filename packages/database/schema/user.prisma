@@ -25,12 +25,13 @@ model User {
   jobReplacementRequests           JobRequestForm[]              @relation("JobRequestReplacementUser")
   referredApplicants               Applicant[]                   @relation("ApplicantReferral")
   applicantStatusChanges           ApplicantStatusHistory[]      @relation("ApplicantStatusChangedBy")
-  conductedInterviews              Interview[]                   @relation("InterviewInterviewer")
-  submittedHiringDecisions         HiringDecision[]              @relation("HiringDecisionSubmittedBy")
+  createdInterviewSessions         InterviewSession[]            @relation("InterviewSessionCreator")
+  interviewerAssignments           InterviewerAssignment[]       @relation("InterviewSessionInterviewer")
+  createdInterviewQuestions        InterviewQuestion[]           @relation("InterviewQuestionCreator")
+  createdOffers                    Offer[]                       @relation("OfferCreator")
   jobApprovalSteps                 JobApprovalStep[]             @relation("JobApprovalStepApprover")
   jobApprovalHistoryChanges        JobApprovalHistory[]          @relation("JobApprovalHistoryUser")
   checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")
-  assignedOnboardingTasks          OnboardingTask[]              @relation("OnboardingTaskAssignee")
   completedOnboardingTasks         OnboardingTask[]              @relation("OnboardingTaskCompletedBy")
   policyAcknowledgementsVerified   PolicyAcknowledgement[]       @relation("PolicyAcknowledgementVerifiedBy")
   delegatedLeaveHandovers          LeaveRequest[]                @relation("LeaveRequestHandoverDelegate")
@@ -70,11 +71,11 @@ model User {
   exitInterviewsConducted          ExitInterview[]               @relation("ExitInterviewConductedBy")
   finalSettlementsApproved         FinalSettlement[]             @relation("FinalSettlementApprover")
   complianceChecklistsVerified     ComplianceChecklist[]         @relation("ComplianceChecklistVerifiedBy")
-  userLifecycleVerifications        UserLifecycle[]               @relation("UserLifecycleVerifiedBy")
-  cvScreeningsConducted             CvScreening[]                 @relation("CvScreeningReviewer")
+  userLifecycleVerifications       UserLifecycle[]               @relation("UserLifecycleVerifiedBy")
+  cvScreeningsConducted            CvScreening[]                 @relation("CvScreeningReviewer")
   cvScreeningWorkflowsCreated      CvScreeningWorkflow[]         @relation("CvScreeningWorkflowCreator")
-  cvScreeningStagesApproved         CvScreeningWorkflowStage[]    @relation("CvScreeningStageApprover")
-  cvScreeningDecisionsMade         CvScreeningDecision[]          @relation("CvScreeningDecisionMaker")
+  cvScreeningStagesApproved        CvScreeningWorkflowStage[]    @relation("CvScreeningStageApprover")
+  cvScreeningDecisionsMade         CvScreeningDecision[]         @relation("CvScreeningDecisionMaker")
 
   @@index([status])
 }
@@ -92,7 +93,6 @@ model Employee {
   employeeDocuments           EmployeeDocument[]
   contracts                   Contract[]
   onboardings                 Onboarding[]
-  onboardingChecklists        OnboardingChecklist[]
   assetProvisionings          AssetProvisioning[]
   policyAcknowledgements      PolicyAcknowledgement[]
   probationKpiPlans           ProbationKpiPlan[]

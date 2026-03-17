@@ -171,4 +171,3 @@ model OkrManagerReview {
   @@index([reviewerId])
   @@index([decision])
 }
-

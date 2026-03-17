@@ -173,4 +173,3 @@ model SkillGapAssessment {
   @@index([assessedById])
   @@index([assessedAt])
 }
-

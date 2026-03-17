@@ -300,6 +300,7 @@ export const ApplicantStatus = {
   SCREENING: 'SCREENING',
   SHORTLISTED: 'SHORTLISTED',
   INTERVIEW: 'INTERVIEW',
+  WAITLIST: 'WAITLIST',
   OFFER: 'OFFER',
   HIRED: 'HIRED',
   REJECTED: 'REJECTED',
@@ -307,6 +308,18 @@ export const ApplicantStatus = {
 } as const
 
 export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
+
+
+export const OfferStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus]
 
 
 export const InterviewType = {
@@ -330,6 +343,17 @@ export const InterviewStatus = {
 export type InterviewStatus = (typeof InterviewStatus)[keyof typeof InterviewStatus]
 
 
+export const InterviewAttendanceStatus = {
+  SCHEDULED: 'SCHEDULED',
+  ATTENDING: 'ATTENDING',
+  NO_SHOW: 'NO_SHOW',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type InterviewAttendanceStatus = (typeof InterviewAttendanceStatus)[keyof typeof InterviewAttendanceStatus]
+
+
 export const EndorsementLevel = {
   STRONG_YES: 'STRONG_YES',
   YES: 'YES',
@@ -340,13 +364,31 @@ export const EndorsementLevel = {
 export type EndorsementLevel = (typeof EndorsementLevel)[keyof typeof EndorsementLevel]
 
 
-export const HiringDecisionOutcome = {
-  OFFER_APPROVED: 'OFFER_APPROVED',
-  OFFER_DECLINED: 'OFFER_DECLINED',
-  SUSPENDED: 'SUSPENDED'
+export const InterviewQuestionCategory = {
+  TECHNICAL: 'TECHNICAL',
+  BEHAVIORAL: 'BEHAVIORAL',
+  SITUATIONAL: 'SITUATIONAL',
+  PROBLEM_SOLVING: 'PROBLEM_SOLVING',
+  LEADERSHIP: 'LEADERSHIP',
+  COMMUNICATION: 'COMMUNICATION',
+  DOMAIN_KNOWLEDGE: 'DOMAIN_KNOWLEDGE',
+  CULTURAL_FIT: 'CULTURAL_FIT',
+  GENERAL: 'GENERAL'
 } as const
 
-export type HiringDecisionOutcome = (typeof HiringDecisionOutcome)[keyof typeof HiringDecisionOutcome]
+export type InterviewQuestionCategory = (typeof InterviewQuestionCategory)[keyof typeof InterviewQuestionCategory]
+
+
+export const InterviewQuestionType = {
+  TEXT: 'TEXT',
+  TEXTAREA: 'TEXTAREA',
+  BOOLEAN: 'BOOLEAN',
+  RATING: 'RATING',
+  SINGLE_SELECT: 'SINGLE_SELECT',
+  MULTI_SELECT: 'MULTI_SELECT'
+} as const
+
+export type InterviewQuestionType = (typeof InterviewQuestionType)[keyof typeof InterviewQuestionType]
 
 
 export const CvScreeningRecommendation = {

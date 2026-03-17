@@ -3,12 +3,13 @@ import {
   Logger,
   BadRequestException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { PrismaService } from 'src/platform/prisma/prisma.service';
+import { PrismaService } from '../../platform/prisma/prisma.service';
 import { parseCv } from './utils/cv-parser';
-import { ScreeningRecommendation } from '@repo/database';
+import { ScreeningRecommendation } from '../../platform/prisma/prisma-client';
 
 const recommendationMap = {
   SHORTLIST: ScreeningRecommendation.STRONG_RECOMMEND,
@@ -27,11 +28,12 @@ export class BrainService {
     private readonly prisma: PrismaService,
   ) {}
 
-  /*
-  DOCUMENT INGESTION
-  */
-
-  async processAndIngest(fileBuffer: Buffer, fileName: string, module: string) {
+  async processAndIngest(
+    fileBuffer: Buffer,
+    fileName: string,
+    module: string,
+    userId: string,
+  ) {
     try {
       const extractedText = await parseCv(fileBuffer);
 
@@ -39,7 +41,10 @@ export class BrainService {
         this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
           text: extractedText,
           source: fileName,
-          metadata: { module },
+          metadata: {
+            module: module,
+            userId: userId,
+          },
         }),
       );
 
@@ -54,10 +59,6 @@ export class BrainService {
       throw new BadRequestException('Failed to process document');
     }
   }
-
-  /*
-  CV UPLOAD + PARSE
-  */
 
   async processCvUpload(
     fileBuffer: Buffer,
@@ -107,12 +108,64 @@ export class BrainService {
   RAG CHAT
   */
 
-  async handleChat(userId: string, question: string, module: string) {
+  async handleChat(
+    userId: string,
+    question: string,
+    module: string,
+    sessionId?: string,
+    file?: Express.Multer.File,
+  ) {
+    let processedQuestion = question || '';
+    let contextExtension = '';
+
+    if (file && file.size > 0) {
+      const mimeType = file.mimetype;
+      if (mimeType.startsWith('image/')) {
+        const visionDescription = await this.analyzeImage(file.buffer);
+        contextExtension = `[User uploaded an image. Description: ${visionDescription}] `;
+      } else if (mimeType.startsWith('audio/')) {
+        const transcription = await this.transcribeAudio(file.buffer);
+        processedQuestion = `${transcription} ${question || ''}`.trim();
+      } else if (mimeType === 'application/pdf') {
+        await this.processAndIngest(
+          file.buffer,
+          file.originalname,
+          module,
+          userId,
+        );
+        contextExtension = `[Context added from: ${file.originalname}] `;
+      }
+    }
+
+    let session = await this.prisma.aiChatSession.findFirst({
+      where: { id: sessionId, userId: userId },
+      include: { messages: { orderBy: { createdAt: 'asc' }, take: 10 } },
+    });
+
+    if (!session) {
+      session = await this.prisma.aiChatSession.create({
+        data: {
+          userId,
+          module,
+          title: processedQuestion.substring(0, 50) || 'New Chat',
+        },
+        include: { messages: true },
+      });
+      this.generateSmartTitle(session.id, processedQuestion).catch((err) =>
+        this.logger.error(`Title generation failed: ${err.message}`),
+      );
+    }
+
     const payload = {
       userId,
-      question,
+      question: `${contextExtension}${processedQuestion}`.trim(),
+      history: session.messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
       filter: {
-        must: [{ key: 'metadata.module', match: { value: module } }],
+        must: [{ key: 'module', match: { value: module } }],
+        should: [{ key: 'userId', match: { value: userId } }],
       },
     };
 
@@ -120,15 +173,121 @@ export class BrainService {
       this.httpService.post(`${this.ragUrl}/rag/ask`, payload),
     );
 
+    const aiAnswer = response.data.answer;
+
+    await this.prisma.aiChatMessage.createMany({
+      data: [
+        {
+          sessionId: session.id,
+          role: 'user',
+          content: question || '[File Upload]',
+        },
+        { sessionId: session.id, role: 'assistant', content: aiAnswer },
+      ],
+    });
+
     return {
-      answer: response.data.answer,
+      sessionId: session.id,
+      answer: aiAnswer,
       sources: response.data.sources,
     };
   }
 
-  /*
-  SINGLE CV ANALYSIS
-  */
+  private async analyzeImage(imageBuffer: Buffer): Promise<string> {
+    const formData = new FormData();
+    const uint8Array = new Uint8Array(imageBuffer);
+    const fileValue = new Blob([uint8Array], { type: 'image/jpeg' });
+    formData.append('file', fileValue, 'image.jpg');
+
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(`${this.ragUrl}/ai/vision`, formData),
+      );
+      return response.data.description;
+    } catch (error) {
+      this.logger.error(`Vision analysis failed: ${error.message}`);
+      return 'Unable to analyze image at this time.';
+    }
+  }
+
+  private async transcribeAudio(audioBuffer: Buffer): Promise<string> {
+    const formData = new FormData();
+    const uint8Array = new Uint8Array(audioBuffer);
+    const fileValue = new Blob([uint8Array], { type: 'audio/wav' });
+    formData.append('file', fileValue, 'voice.wav');
+
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(`${this.ragUrl}/ai/transcribe`, formData),
+      );
+      return response.data.text;
+    } catch (error) {
+      this.logger.error(`Transcription failed: ${error.message}`);
+      return '[Voice message - transcription failed]';
+    }
+  }
+
+  async getUserChatSessions(userId: string, module?: string) {
+    return this.prisma.aiChatSession.findMany({
+      where: {
+        userId,
+        ...(module && { module }),
+      },
+      orderBy: { updatedAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        module: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: { select: { messages: true } },
+      },
+    });
+  }
+
+  async getChatHistory(sessionId: string) {
+    const session = await this.prisma.aiChatSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        messages: {
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException('Chat session not found');
+    }
+
+    return session;
+  }
+
+  private async generateSmartTitle(sessionId: string, firstQuestion: string) {
+    try {
+      const payload = {
+        question: `Summarize this user request into a 3-5 word title. 
+                 Return ONLY the title text, no quotes or periods. 
+                 Request: "${firstQuestion}"`,
+        history: [],
+        filter: { must: [] },
+      };
+
+      const response = await firstValueFrom(
+        this.httpService.post(`${this.ragUrl}/rag/ask`, payload),
+      );
+
+      const smartTitle = response.data.answer.replace(/[".]/g, '').trim();
+
+      await this.prisma.aiChatSession.update({
+        where: { id: sessionId },
+        data: { title: smartTitle },
+      });
+
+      this.logger.log(`Session ${sessionId} renamed to: ${smartTitle}`);
+    } catch (error) {
+      this.logger.error(`Failed to generate smart title: ${error.message}`);
+    }
+  }
 
   async runCvAnalysis(applicantId: string, jobId: string, keycloakId: string) {
     await this.getInternalUserId(keycloakId || 'ai-system');
@@ -171,21 +330,20 @@ export class BrainService {
 
     await this.prisma.aiCvAnalysis.create({
       data: {
-        candidateId: applicant.id,
+        applicantId: applicant.id,
         jobId: jobId,
         score: result.score || 0,
         recommendation: finalRecommendation,
         strengths: result.strengths || [],
         weaknesses: result.weaknesses || [],
         aiSummary: result.summary || '',
+        confidence: result.confidence || 0,
+        modelVersion: result.modelVersion || '',
       },
     });
 
     return result;
   }
-  /*
-  MASS CV SCREENING (100+ CANDIDATES)
-  */
 
   async screenCandidatesForJob(jobId: string, keycloakId: string) {
     await this.getInternalUserId(keycloakId || 'ai-system');
@@ -219,13 +377,15 @@ export class BrainService {
 
         await this.prisma.aiCvAnalysis.create({
           data: {
-            candidateId: applicant.id,
+            applicantId: applicant.id,
             jobId: jobId,
             score: result.score || 0,
             recommendation: finalRecommendation,
             strengths: result.strengths || [],
             weaknesses: result.weaknesses || [],
             aiSummary: result.summary || '',
+            confidence: result.confidence || 0,
+            modelVersion: result.modelVersion || '',
           },
         });
 
@@ -247,12 +407,8 @@ export class BrainService {
     );
     results.sort((a, b) => b.score - a.score);
 
-    return { totalCandidates: results.length, rankedCandidates: results };
+    return { totalApplicants: results.length, rankedApplicants: results };
   }
-
-  /*
-  EMPLOYEE PERFORMANCE AI
-  */
 
   async getEmployeeInsights(employeeId: string) {
     this.logger.log(`Generating insights for ${employeeId}`);

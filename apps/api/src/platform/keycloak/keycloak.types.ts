@@ -16,6 +16,7 @@ export interface KeycloakTokenPayload extends JWTPayload {
   name?: string;
   scope?: string;
   azp?: string;
+  nonce?: string;
   session_state?: string;
   amr?: string[];
   realm_access?: KeycloakRealmAccess;

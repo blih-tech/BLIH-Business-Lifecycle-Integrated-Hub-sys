@@ -333,21 +333,6 @@ export type AssetProvisioning = Prisma.AssetProvisioningModel
  */
 export type PolicyAcknowledgement = Prisma.PolicyAcknowledgementModel
 /**
- * Model ProbationKpiPlan
- * 
- */
-export type ProbationKpiPlan = Prisma.ProbationKpiPlanModel
-/**
- * Model ProbationEvaluation
- * 
- */
-export type ProbationEvaluation = Prisma.ProbationEvaluationModel
-/**
- * Model ProbationConfirmation
- * 
- */
-export type ProbationConfirmation = Prisma.ProbationConfirmationModel
-/**
  * Model Department
  * 
  */
@@ -412,6 +397,21 @@ export type KeyResultUpdate = Prisma.KeyResultUpdateModel
  * 
  */
 export type OkrManagerReview = Prisma.OkrManagerReviewModel
+/**
+ * Model ProbationKpiPlan
+ * 
+ */
+export type ProbationKpiPlan = Prisma.ProbationKpiPlanModel
+/**
+ * Model ProbationEvaluation
+ * 
+ */
+export type ProbationEvaluation = Prisma.ProbationEvaluationModel
+/**
+ * Model ProbationConfirmation
+ * 
+ */
+export type ProbationConfirmation = Prisma.ProbationConfirmationModel
 /**
  * Model JobRequestForm
  * 
@@ -478,15 +478,35 @@ export type ApplicantEducation = Prisma.ApplicantEducationModel
  */
 export type ApplicantExperience = Prisma.ApplicantExperienceModel
 /**
- * Model Interview
+ * Model InterviewSession
  * 
  */
-export type Interview = Prisma.InterviewModel
+export type InterviewSession = Prisma.InterviewSessionModel
 /**
- * Model HiringDecision
+ * Model InterviewParticipant
  * 
  */
-export type HiringDecision = Prisma.HiringDecisionModel
+export type InterviewParticipant = Prisma.InterviewParticipantModel
+/**
+ * Model InterviewerAssignment
+ * 
+ */
+export type InterviewerAssignment = Prisma.InterviewerAssignmentModel
+/**
+ * Model InterviewFeedback
+ * 
+ */
+export type InterviewFeedback = Prisma.InterviewFeedbackModel
+/**
+ * Model InterviewQuestion
+ * 
+ */
+export type InterviewQuestion = Prisma.InterviewQuestionModel
+/**
+ * Model Offer
+ * 
+ */
+export type Offer = Prisma.OfferModel
 /**
  * Model CvScreening
  * 
