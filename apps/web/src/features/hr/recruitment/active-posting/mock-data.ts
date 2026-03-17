@@ -62,6 +62,10 @@ export const activePostingJobs: ActiveJobItem[] = [
       "We're looking for an experienced Frontend Developer to join our team and help build the next generation of our product platform.",
       "We're looking for an experienced Frontend Developer to join our team and help build the next generation of our product platform.",
     ],
+    importanceOfHire: [
+      "We're looking for an experienced Frontend Developer to join our team and help build the next generation of our product platform.",
+      "We're looking for an experienced Frontend Developer to join our team and help build the next generation of our product platform.",
+    ],
     requirements: [
       "7+ years in marketing",
       "Experience with digital marketing",
@@ -73,6 +77,60 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Health insurance",
       "Remote work",
       "Professional development budget",
+    ],
+    requestedBy: {
+      name: "Jessica Parker",
+      role: "Full Stack Developer",
+      department: "Technical Dept.",
+    },
+    hiringCommittee: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+      },
+    ],
+    revisionsFrom: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
+    ],
+    approvedBy: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
     ],
     applicants: [
       createApplicant({
@@ -351,6 +409,10 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Plan and execute user research sessions across hiring and onboarding modules.",
       "Create low and high-fidelity design systems aligned with product goals.",
     ],
+    importanceOfHire: [
+      "We're looking for a product-focused UI/UX Designer to lead user research, wireframing, and polished interface design for core HR workflows.",
+      "We're looking for a product-focused UI/UX Designer to lead user research, wireframing, and polished interface design for core HR workflows.",
+    ],
     requirements: [
       "5+ years in product design",
       "Strong Figma and prototyping skills",
@@ -362,6 +424,46 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Health insurance",
       "Hybrid work model",
       "Annual design conference budget",
+    ],
+    requestedBy: {
+      name: "Jessica Parker",
+      role: "Full Stack Developer",
+      department: "Creative Dept.",
+    },
+    hiringCommittee: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Creative Dept.",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Creative Dept.",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Creative Dept.",
+      },
+    ],
+    revisionsFrom: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Creative Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
+    ],
+    approvedBy: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Creative Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
     ],
     applicants: [
       createApplicant({
@@ -470,6 +572,10 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Develop dashboards for hiring funnels, conversion rates, and cycle time.",
       "Partner with HR and operations teams to define actionable KPIs.",
     ],
+    importanceOfHire: [
+      "We're hiring a Data Analyst to support people analytics, recruitment metrics, and executive reporting with reliable dashboards and insights.",
+      "We're hiring a Data Analyst to support people analytics, recruitment metrics, and executive reporting with reliable dashboards and insights.",
+    ],
     requirements: [
       "3+ years in analytics roles",
       "Advanced SQL and spreadsheet skills",
@@ -481,6 +587,41 @@ export const activePostingJobs: ActiveJobItem[] = [
       "Health insurance",
       "Learning stipend",
       "Flexible working hours",
+    ],
+    requestedBy: {
+      name: "Jessica Parker",
+      role: "Full Stack Developer",
+      department: "Technical Dept.",
+    },
+    hiringCommittee: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+      },
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+      },
+    ],
+    revisionsFrom: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
+    ],
+    approvedBy: [
+      {
+        name: "Jessica Parker",
+        role: "Full Stack Developer",
+        department: "Technical Dept.",
+        time: "02:33 PM",
+        date: "Dec 30, 2025",
+      },
     ],
     applicants: [
       createApplicant({
