@@ -9,6 +9,8 @@ import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type {
   ApplicantListQueryDto,
   ApplicantResponseDto,
+  BulkApplicantStatusResponseDto,
+  BulkUpdateApplicantStatusDto,
   CreateApplicantDto,
   UpdateApplicantDto,
   UpdateApplicantStatusDto,
@@ -23,6 +25,7 @@ import {
   normalizeSkillArray,
   recalculateJobMetrics,
   touchApplicantActivity,
+  transitionApplicantStatus,
 } from './recruitment.usecase-helpers';
 
 const dateOrUndefined = (value: string | null | undefined) =>
@@ -386,12 +389,32 @@ export class ListApplicantsUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: ApplicantListQueryDto): Promise<ApplicantResponseDto[]> {
+    const searchTerms =
+      query.search
+        ?.trim()
+        .split(/\s+/)
+        .filter((value) => value.length > 0) ?? [];
+
     const list = await this.prisma.applicant.findMany({
       where: {
         ...(query.status ? { status: query.status } : {}),
         ...(query.jobId ? { jobId: query.jobId } : {}),
         ...(query.email
           ? { emailNormalized: normalizeEmail(query.email) }
+          : {}),
+        ...(searchTerms.length > 0
+          ? {
+              AND: searchTerms.map((term) => ({
+                OR: [
+                  { firstName: { contains: term, mode: 'insensitive' } },
+                  { lastName: { contains: term, mode: 'insensitive' } },
+                  { email: { contains: term, mode: 'insensitive' } },
+                  { phone: { contains: term, mode: 'insensitive' } },
+                  { currentCompany: { contains: term, mode: 'insensitive' } },
+                  { currentPosition: { contains: term, mode: 'insensitive' } },
+                ],
+              })),
+            }
           : {}),
       },
       include: applicantInclude,
@@ -762,49 +785,100 @@ export class UpdateApplicantStatusUseCase {
       select: { id: true, status: true, jobId: true },
     });
     if (!existing) throw new NotFoundException('Applicant not found');
-    assertApplicantTransition(existing.status, dto.status);
 
     const now = new Date();
-    const statusChanged = existing.status !== dto.status;
     const updated = await this.prisma.$transaction(async (tx) => {
-      const data: Prisma.ApplicantUpdateInput = {
-        status: dto.status,
-        lastActivityAt: now,
-      };
-
-      if (dto.status === 'SCREENING') data.screeningAt = now;
-      if (dto.status === 'SHORTLISTED') data.shortlistedAt = now;
-      if (dto.status === 'INTERVIEW') data.interviewAt = now;
-      if (dto.status === 'WAITLIST') data.waitlistAt = now;
-      if (dto.status === 'OFFER') data.offerAt = now;
-      if (dto.status === 'HIRED') data.hiredAt = now;
-      if (dto.status === 'REJECTED') data.rejectedAt = now;
-      if (dto.status === 'WITHDRAWN') data.withdrawnAt = now;
-
-      const row = await tx.applicant.update({
+      await transitionApplicantStatus(tx, {
+        applicantId: id,
+        currentStatus: existing.status,
+        nextStatus: dto.status,
+        notes: dto.notes,
+        changedById,
+        at: now,
+      });
+      await recalculateJobMetrics(tx, existing.jobId);
+      return tx.applicant.findUniqueOrThrow({
         where: { id },
-        data,
         include: applicantInclude,
       });
-
-      if (statusChanged) {
-        await tx.applicantStatusHistory.create({
-          data: {
-            applicantId: id,
-            fromStatus: existing.status,
-            toStatus: dto.status,
-            notes: dto.notes ?? undefined,
-            changedById: changedById ?? undefined,
-            changedAt: now,
-          },
-        });
-      }
-
-      await touchApplicantActivity(tx, id, now);
-      await recalculateJobMetrics(tx, existing.jobId);
-      return row;
     });
 
     return mapApplicant(updated);
+  }
+}
+
+@Injectable()
+export class BulkUpdateApplicantStatusUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async execute(
+    dto: BulkUpdateApplicantStatusDto,
+    changedById?: string,
+  ): Promise<BulkApplicantStatusResponseDto> {
+    const applicantIds = [...new Set(dto.applicantIds.map((id) => id.trim()))];
+    const applicants = await this.prisma.applicant.findMany({
+      where: { id: { in: applicantIds } },
+      select: { id: true, status: true, jobId: true },
+    });
+
+    if (applicants.length !== applicantIds.length) {
+      const foundIds = new Set(applicants.map((applicant) => applicant.id));
+      const missingIds = applicantIds.filter((id) => !foundIds.has(id));
+      throw new NotFoundException(
+        `Applicants not found: ${missingIds.join(', ')}`,
+      );
+    }
+
+    const applicantsById = new Map(
+      applicants.map((applicant) => [applicant.id, applicant]),
+    );
+    for (const applicantId of applicantIds) {
+      const applicant = applicantsById.get(applicantId);
+      if (!applicant) continue;
+      assertApplicantTransition(applicant.status, dto.status);
+    }
+
+    const now = new Date();
+    const updatedApplicants = await this.prisma.$transaction(async (tx) => {
+      const affectedJobIds = new Set<string>();
+
+      for (const applicantId of applicantIds) {
+        const applicant = applicantsById.get(applicantId)!;
+        await transitionApplicantStatus(tx, {
+          applicantId,
+          currentStatus: applicant.status,
+          nextStatus: dto.status,
+          notes: dto.notes,
+          changedById,
+          at: now,
+        });
+        affectedJobIds.add(applicant.jobId);
+      }
+
+      for (const jobId of affectedJobIds) {
+        await recalculateJobMetrics(tx, jobId);
+      }
+
+      return tx.applicant.findMany({
+        where: { id: { in: applicantIds } },
+        include: applicantInclude,
+      });
+    });
+
+    const updatedById = new Map(
+      updatedApplicants.map((applicant) => [applicant.id, applicant]),
+    );
+
+    return {
+      status: dto.status,
+      requestedCount: applicantIds.length,
+      updatedCount: updatedApplicants.length,
+      applicants: applicantIds
+        .map((id) => updatedById.get(id))
+        .filter((applicant): applicant is (typeof updatedApplicants)[number] =>
+          Boolean(applicant),
+        )
+        .map((applicant) => mapApplicant(applicant)),
+    };
   }
 }

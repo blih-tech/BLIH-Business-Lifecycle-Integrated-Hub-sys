@@ -27,6 +27,8 @@ import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import type { AuthPrincipal } from '../../../shared/interfaces/auth-principal.interface';
 import {
   ApplicantListQueryDto,
+  BulkApplicantStatusResponseDto,
+  BulkUpdateApplicantStatusDto,
   ApplicantResponseDto,
   CreateApplicantDto,
   UpdateApplicantDto,
@@ -37,6 +39,7 @@ import {
   applicantResponseEnvelope,
 } from './recruitment.swagger-examples';
 import {
+  BulkUpdateApplicantStatusUseCase,
   CreateApplicantUseCase,
   GetApplicantUseCase,
   ListApplicantsUseCase,
@@ -51,6 +54,7 @@ export class ApplicantsController {
   constructor(
     private readonly createApplicant: CreateApplicantUseCase,
     private readonly listApplicants: ListApplicantsUseCase,
+    private readonly bulkUpdateApplicants: BulkUpdateApplicantStatusUseCase,
     private readonly getApplicantById: GetApplicantUseCase,
     private readonly updateApplicantById: UpdateApplicantUseCase,
     private readonly updateApplicantStatusById: UpdateApplicantStatusUseCase,
@@ -125,6 +129,51 @@ export class ApplicantsController {
     @Query() query: ApplicantListQueryDto,
   ): Promise<ApplicantResponseContract[]> {
     return this.listApplicants.execute(query);
+  }
+
+  @Post('bulk-status')
+  @Roles(ApplicantPermissions.UPDATE)
+  @Audit('recruitment.applicant.bulk_status', 'hr.applicant')
+  @ApiProtected({
+    path: '/api/v1/hr/recruitment/applicants/bulk-status',
+    roles: [ApplicantPermissions.UPDATE],
+  })
+  @ApiOperation({ summary: 'Bulk shortlist or reject applicants' })
+  @ApiBody({
+    type: BulkUpdateApplicantStatusDto,
+    description:
+      'Bulk review endpoint restricted to SHORTLISTED and REJECTED transitions. The batch is validated and applied atomically.',
+    examples: {
+      bulkShortlist: {
+        summary: 'Shortlist multiple applicants',
+        value: {
+          applicantIds: [
+            '8dea40a6-4ee2-4cca-9ff3-ac9e95e50384',
+            'd5711835-84d8-4f33-9adc-7ef0eaaf7b9b',
+          ],
+          status: 'SHORTLISTED',
+          notes: 'Passed HR screening.',
+        },
+      },
+    },
+  })
+  @ApiEnvelopeOkResponse(
+    BulkApplicantStatusResponseDto,
+    'Bulk applicant status update result',
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/applicants/bulk-status',
+    badRequest: 'Invalid bulk applicant status transition',
+    notFound: 'One or more applicants were not found',
+  })
+  bulkUpdateStatus(
+    @Body() body: BulkUpdateApplicantStatusDto,
+    @Req() req: Request & { user?: AuthPrincipal },
+  ) {
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user)
+      throw new ForbiddenException('Authenticated user context is required');
+    return this.bulkUpdateApplicants.execute(body, user.userId ?? user.sub);
   }
 
   @Get(':id')

@@ -69,6 +69,8 @@ export interface OfferResponseDto {
   respondedAt: string | null;
   expiresAt: string | null;
   onboardingId: string | null;
+  employeeId: string | null;
+  userId: string | null;
   createdAt: string;
   updatedAt: string;
 }

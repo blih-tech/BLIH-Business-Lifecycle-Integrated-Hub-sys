@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { NotificationsModule } from '../../core/notifications/notifications.module';
+import { UsersModule } from '../../core/users/users.module';
 import { EmployeesController } from './employees/employees.controller';
 import { EmployeeRecordsController } from './employees/employee-records.controller';
 import { ListEmployeesUseCase } from './employees/use-cases/list-employees.usecase';
@@ -23,9 +25,11 @@ import { ApplicantsController } from './recruitment/applicants.controller';
 import { InterviewsController } from './recruitment/interviews.controller';
 import { InterviewQuestionsController } from './recruitment/interview-questions.controller';
 import { OffersController } from './recruitment/offers.controller';
+import { RecruitmentTransitionService } from './recruitment/recruitment-transition.service';
 import { RecruitmentNotificationService } from './recruitment/recruitment-notification.service';
 import {
   ApproveJobUseCase,
+  BulkUpdateApplicantStatusUseCase,
   CloseJobUseCase,
   CreateApplicantUseCase,
   CreateOfferUseCase,
@@ -220,7 +224,7 @@ import { SalaryAdjustmentService } from './career/salary-adjustment.service';
 import { OnboardingModule } from './onboarding/onboarding.module';
 
 @Module({
-  imports: [OnboardingModule],
+  imports: [OnboardingModule, NotificationsModule, UsersModule],
   controllers: [
     EmployeesController,
     EmployeeRecordsController,
@@ -292,6 +296,7 @@ import { OnboardingModule } from './onboarding/onboarding.module';
     UpsertJobResponsibilitiesUseCase,
     CreateApplicantUseCase,
     ListApplicantsUseCase,
+    BulkUpdateApplicantStatusUseCase,
     GetApplicantUseCase,
     UpdateApplicantUseCase,
     UpdateApplicantStatusUseCase,
@@ -313,6 +318,7 @@ import { OnboardingModule } from './onboarding/onboarding.module';
     SendOfferUseCase,
     RespondOfferUseCase,
     WithdrawOfferUseCase,
+    RecruitmentTransitionService,
     RecruitmentNotificationService,
     CreateLeaveRequestUseCase,
     ListLeaveRequestsUseCase,

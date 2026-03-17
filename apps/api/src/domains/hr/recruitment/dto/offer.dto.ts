@@ -171,6 +171,12 @@ export class OfferResponseDto implements OfferResponseDtoType {
   @ApiPropertyOptional({ nullable: true })
   onboardingId!: string | null;
 
+  @ApiPropertyOptional({ nullable: true })
+  employeeId!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  userId!: string | null;
+
   @ApiProperty()
   createdAt!: string;
 
