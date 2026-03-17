@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
+import { ChevronLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,26 +16,16 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/shared/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
 import { Textarea } from '@/shared/components/ui/textarea';
 
 type JobRequestJustifyDialogProps = {
@@ -48,9 +39,6 @@ const justifySchema = z.object({
     .string()
     .trim()
     .min(20, 'Justification must be at least 20 characters'),
-  action: z.enum(['reject', 'review'], {
-    error: () => 'Please select an action',
-  }),
 });
 
 type JustifyFormValues = z.infer<typeof justifySchema>;
@@ -71,7 +59,6 @@ export function JobRequestJustifyDialog({
     mode: 'onChange',
     defaultValues: {
       justification: '',
-      action: undefined,
     },
   });
 
@@ -79,7 +66,6 @@ export function JobRequestJustifyDialog({
     if (!request) {
       form.reset({
         justification: '',
-        action: undefined,
       });
     }
   }, [form, request]);
@@ -88,127 +74,127 @@ export function JobRequestJustifyDialog({
     onOpenChange(false);
   }
 
-  function handleSubmit(values: JustifyFormValues) {
+  function handleSubmit(action: 'review' | 'reject') {
+    return (values: JustifyFormValues) => {
     if (!request || !requestId) return;
 
     const payload = {
       requestId,
-      action: values.action,
+        action,
       justification: values.justification,
     };
 
     console.log('jobRequestJustification', payload);
     closeDialog();
+    };
   }
 
   return (
     <Dialog open={request !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[96vw] p-0 sm:max-w-[640px]">
+      <DialogContent className="w-[96vw] rounded-[12px] border border-[#e5e5e5] bg-white p-0 sm:max-w-[640px]">
         {request ? (
           <>
-            <DialogHeader className="border-b border-border p-4">
-              <DialogTitle className="ui-section-title text-foreground">
-                Justify Decision
-              </DialogTitle>
-              <DialogDescription className="ui-body text-muted-foreground">
-                Add a clear reason and choose the next step for this request.
-              </DialogDescription>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
-                  {request.jobDetailsForm.jobTitle}
-                </span>
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {departmentLabel(request.requestForm.department as JobRequestDepartment)}
-                </span>
-                {requestId ? (
-                  <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                    {requestId}
-                  </span>
-                ) : null}
+            <DialogHeader className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1 space-y-4">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
+                      {request.jobDetailsForm.jobTitle}
+                    </DialogTitle>
+                    <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] border border-[#1e66f7] px-[9px] py-[3px] text-[12px] font-medium leading-[16px] text-[#1e66f7]">
+                      {request.jobDetailsForm.experienceLevel
+                        .split('_')
+                        .map((value) => value[0]?.toUpperCase() + value.slice(1))
+                        .join(' ')}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-6 text-[14px] leading-[20px] tracking-[-0.2px] text-[#666]">
+                    <span className="inline-flex items-center rounded-[4px] bg-[#e9f0fe] px-[4px] py-[2px] text-[12px] font-semibold uppercase leading-[16px] text-[#1e66f7]">
+                      {departmentLabel(
+                        request.requestForm.department as JobRequestDepartment,
+                      )}
+                    </span>
+                    <span>
+                      {request.jobDetailsForm.employmentType === 'full_time'
+                        ? 'Full-time'
+                        : request.jobDetailsForm.employmentType === 'part_time'
+                          ? 'Part-time'
+                          : request.jobDetailsForm.employmentType === 'contract'
+                            ? 'Contract'
+                            : 'Intern'}
+                    </span>
+                    <span>
+                      {request.requestForm.openings
+                        ? `${request.requestForm.openings} Position${request.requestForm.openings === '1' ? '' : 's'}`
+                        : '1 Position'}
+                    </span>
+                  </div>
+                </div>
               </div>
             </DialogHeader>
 
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(handleSubmit)}
+                onSubmit={form.handleSubmit(handleSubmit('review'))}
                 className="space-y-0"
               >
-                <div className="space-y-5 p-4">
-                  <div className="grid gap-5">
-                    <FormField
-                      control={form.control}
-                      name="action"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="ui-meta text-muted-foreground">
-                            Action
-                          </FormLabel>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full rounded-[6px] bg-background">
-                                <SelectValue placeholder="Select action" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="reject">Reject</SelectItem>
-                              <SelectItem value="review">Review</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormDescription className="text-xs">
-                            Choose whether to reject the request or send it back for review.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                <div className="border-t border-[#e5e5e5]" />
+                <div className="space-y-6 p-6">
+                  <div className="flex items-center gap-2 text-[12px] text-[#666]">
+                    <ChevronLeft className="h-4 w-4 text-[#1e66f7]" />
+                    <DialogClose asChild>
+                      <button
+                        type="button"
+                        className="text-[12px] text-[#666]"
+                        onClick={closeDialog}
+                      >
+                        Back
+                      </button>
+                    </DialogClose>
+                  </div>
 
+                  <div className="space-y-2">
+                    <DialogDescription className="text-center text-[16px] font-semibold tracking-[-0.4px] text-black">
+                      Write Your Reasons
+                    </DialogDescription>
                     <FormField
                       control={form.control}
                       name="justification"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="ui-meta text-muted-foreground">
-                            Justification
-                          </FormLabel>
                           <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder="Explain the decision and what the requester should do next."
-                              className="min-h-[180px] rounded-[10px] border-border bg-background"
-                            />
+                            <div className="rounded-[6px] border border-[#e5e5e5] p-[13px]">
+                              <Textarea
+                                {...field}
+                                placeholder="Your justification to make a revision or decline..."
+                                className="min-h-[211px] resize-none border-0 bg-[#f8f8f8]/60 p-3 text-[12px] text-[#6b7280] shadow-none focus-visible:ring-0"
+                              />
+                            </div>
                           </FormControl>
-                          <FormDescription className="text-xs">
-                            Keep it clear and actionable for the requester.
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                </div>
-
-                <DialogFooter className="border-t border-border p-4">
-                  <DialogClose asChild>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="submit"
+                      className="h-[32px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
+                      disabled={!form.formState.isValid}
+                    >
+                      Revise
+                    </Button>
                     <Button
                       type="button"
                       variant="outline"
-                      className="cursor-pointer"
-                      onClick={closeDialog}
+                      className="h-[32px] rounded-[6px] border-[#e5e5e5] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-black hover:bg-white"
+                      onClick={form.handleSubmit(handleSubmit('reject'))}
+                      disabled={!form.formState.isValid}
                     >
-                      Cancel
+                      Decline
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="cursor-pointer"
-                    disabled={!form.formState.isValid}
-                  >
-                    Done
-                  </Button>
-                </DialogFooter>
+                  </div>
+                </div>
               </form>
             </Form>
           </>

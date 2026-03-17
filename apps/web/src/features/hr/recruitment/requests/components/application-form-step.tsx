@@ -174,7 +174,7 @@ function CustomFieldCard({
               <FormLabel className="ui-meta text-muted-foreground">Field Type</FormLabel>
               <Select
                 value={field.value}
-                onValueChange={(value) => {
+                onValueChange={(value: string) => {
                   field.onChange(value);
                 }}
               >

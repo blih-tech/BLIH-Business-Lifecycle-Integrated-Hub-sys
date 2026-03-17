@@ -1,10 +1,7 @@
-import {
-  dailyAreaData,
-  monthlyFrequencyData,
-  recruitmentStats,
-} from "@/features/hr/recruitment/overview/mock-data";
+import { dailyAreaData, monthlyFrequencyData, recruitmentStats } from "@/features/hr/recruitment/overview/mock-data";
 import {
   JobApplicationFrequencyPanel,
+  RecruitmentOverviewAnalytics,
   StatsGrid,
 } from "@/features/hr/recruitment/overview/components";
 
@@ -19,6 +16,7 @@ export function RecruitmentOverviewContent() {
         monthlyData={monthlyFrequencyData}
         dailyData={dailyAreaData}
       />
+      <RecruitmentOverviewAnalytics />
     </main>
   );
 }

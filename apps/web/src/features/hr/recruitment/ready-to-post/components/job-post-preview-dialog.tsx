@@ -1,10 +1,14 @@
 "use client";
 
+import { ChevronUp, Pencil, Send } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import type { ApprovalProgressState } from "@/features/hr/recruitment/requests/types";
 import type {
   ReadyToPostDepartment,
   ReadyToPostJob,
-  ReadyToPostPriority,
 } from "@/features/hr/recruitment/ready-to-post/types";
+import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -17,8 +21,25 @@ import {
 
 type JobPostPreviewDialogProps = {
   item: ReadyToPostJob | null;
-  requestId: string | null;
   onOpenChange: (isOpen: boolean) => void;
+  onPost?: () => void;
+};
+
+type EmployeeCardProps = {
+  name: string;
+  role?: string;
+  department?: string;
+  variant?: "stacked" | "inline";
+};
+
+type BulletListProps = {
+  items: string[];
+};
+
+type InfoBlockProps = {
+  label: string;
+  value: string;
+  valueBadge?: boolean;
 };
 
 function departmentLabel(department: ReadyToPostDepartment) {
@@ -27,149 +48,429 @@ function departmentLabel(department: ReadyToPostDepartment) {
   return "DIGITAL MARKETING DEPT.";
 }
 
-function priorityClass(priority: ReadyToPostPriority) {
-  if (priority === "high") return "border-primary bg-[rgba(30,102,247,0.1)] text-primary";
-  if (priority === "medium") return "border-border bg-muted text-foreground";
-  return "border-border bg-muted text-muted-foreground";
-}
-
-function priorityFromUrgency(urgency: ReadyToPostJob["requestForm"]["urgency"]): ReadyToPostPriority {
-  if (urgency === "high") return "high";
-  if (urgency === "medium") return "medium";
-  return "low";
-}
-
-function employmentTypeLabel(value: ReadyToPostJob["jobDetailsForm"]["employmentType"]) {
+function employmentTypeLabel(
+  value: ReadyToPostJob["jobDetailsForm"]["employmentType"],
+) {
   if (value === "full_time") return "Full-time";
   if (value === "part_time") return "Part-time";
   if (value === "contract") return "Contract";
   return "Intern";
 }
 
-function workModeLabel(value: ReadyToPostJob["jobDetailsForm"]["workMode"]) {
-  if (value === "on_site") return "On-site";
-  if (value === "hybrid") return "Hybrid";
-  return "Remote";
+function urgencyLabel(value: ReadyToPostJob["requestForm"]["urgency"]) {
+  if (value === "high") return "High";
+  if (value === "medium") return "Medium";
+  return "Low";
 }
 
-function salaryLabel(item: ReadyToPostJob) {
-  const { salaryMode, salaryRangeMin, salaryRangeMax, salaryCurrency } = item.jobDetailsForm;
-  if (salaryMode === "negotiable") return "Negotiable";
-  if (salaryMode === "competitive") return "Competitive";
-  if (salaryMode === "range") return `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`;
-  return "Not specified";
+function formatValue(value: string) {
+  return value
+    .split("_")
+    .map((part) => (part ? part[0]!.toUpperCase() + part.slice(1) : part))
+    .join(" ");
 }
 
-type PreviewMetaItemProps = {
-  label: string;
-  value: string | number;
-};
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const initials = parts.slice(0, 2).map((part) => part[0]!.toUpperCase());
+  return initials.join("") || "--";
+}
 
-function PreviewMetaItem({ label, value }: PreviewMetaItemProps) {
+function formatPositions(openings?: string) {
+  if (!openings) return "1 Position";
+  const numeric = Number(openings);
+  if (Number.isNaN(numeric) || numeric <= 0) return openings;
+  return `${numeric} Position${numeric === 1 ? "" : "s"}`;
+}
+
+function EmployeeCard({
+  name,
+  role,
+  department,
+  variant = "inline",
+}: EmployeeCardProps) {
   return (
-    <div className="rounded-lg border border-border bg-card p-3">
-      <p className="ui-meta text-muted-foreground">{label}</p>
-      <p className="ui-body mt-1 font-semibold text-foreground">{value}</p>
+    <div
+      className={`flex items-center gap-2 ${variant === "stacked" ? "items-start" : ""}`}
+    >
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e66f7] text-sm font-semibold text-white">
+        {getInitials(name)}
+      </div>
+      <div className={variant === "stacked" ? "space-y-1" : "flex items-center gap-2"}>
+        <div className={variant === "stacked" ? "space-y-0.5" : ""}>
+          <p className="text-sm font-semibold tracking-[-0.2px] text-black">
+            {name}
+          </p>
+          {role ? <p className="text-[12px] text-[#666]">{role}</p> : null}
+        </div>
+        {department ? (
+          <Badge
+            variant="secondary"
+            className="rounded-[4px] bg-[#e9f0fe] px-1.5 py-0.5 text-[12px] font-semibold uppercase text-[#1e66f7]"
+          >
+            {department}
+          </Badge>
+        ) : null}
+      </div>
     </div>
   );
 }
 
-export function JobPostPreviewDialog({ item, requestId, onOpenChange }: JobPostPreviewDialogProps) {
+function BulletList({ items }: BulletListProps) {
+  if (items.length === 0) {
+    return <p className="text-sm text-[#666]">No details provided.</p>;
+  }
+
+  return (
+    <ul className="space-y-1">
+      {items.map((itemText) => (
+        <li
+          key={itemText}
+          className="relative pl-4 text-sm text-[#666] before:absolute before:left-0 before:text-[#1e66f7] before:content-['•']"
+        >
+          {itemText}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function InfoBlock({ label, value, valueBadge }: InfoBlockProps) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[12px] text-[#666]">{label}</p>
+      {valueBadge ? (
+        <Badge
+          variant="outline"
+          className="rounded-[6px] border-[#1e66f7] px-2 py-0.5 text-[12px] font-medium text-[#1e66f7]"
+        >
+          {value}
+        </Badge>
+      ) : (
+        <p className="text-sm tracking-[-0.2px] text-black">{value}</p>
+      )}
+    </div>
+  );
+}
+
+export function JobPostPreviewDialog({
+  item,
+  onOpenChange,
+  onPost,
+}: JobPostPreviewDialogProps) {
+  const [isCommitteeOpen, setIsCommitteeOpen] = useState(true);
+  const [isRevisionsOpen, setIsRevisionsOpen] = useState(true);
+  const [isApprovedOpen, setIsApprovedOpen] = useState(true);
+
+  const hiringCommittee = useMemo(
+    () =>
+      item
+        ? [
+            {
+              name: item.requestForm.requestedBy,
+              role: formatValue(item.requestForm.position),
+              department: departmentLabel(
+                item.requestForm.department as ReadyToPostDepartment,
+              ),
+            },
+          ]
+        : [],
+    [item],
+  );
+
+  const revisionSources = useMemo(
+    () =>
+      item
+        ? (
+            Object.entries(item.progress) as [
+              string,
+              { status: ApprovalProgressState },
+            ][]
+          )
+            .filter(
+              ([, step]) =>
+                step.status === "requested_review" || step.status === "rejected",
+            )
+            .map(([key]) => ({
+              name: `${key.toUpperCase()} Reviewer`,
+              role: "Review Team",
+              department: departmentLabel(
+                item.requestForm.department as ReadyToPostDepartment,
+              ),
+            }))
+        : [],
+    [item],
+  );
+
+  const approvedBy = useMemo(
+    () =>
+      item
+        ? (
+            Object.entries(item.progress) as [
+              string,
+              { status: ApprovalProgressState },
+            ][]
+          )
+            .filter(([, step]) => step.status === "approved")
+            .map(([key]) => ({
+              name: `${key.toUpperCase()} Approver`,
+              role: "Approval Team",
+              department: departmentLabel(
+                item.requestForm.department as ReadyToPostDepartment,
+              ),
+            }))
+        : [],
+    [item],
+  );
+
   return (
     <Dialog open={item !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[86vh] w-[96vw] overflow-y-auto p-0 sm:w-[92vw] sm:max-w-[1080px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2">
+      <DialogContent className="max-h-[88vh] w-[96vw] overflow-y-auto rounded-[24px] border border-[#e5e5e5] bg-white p-0 sm:max-w-[920px] [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
         {item ? (
           <>
-            <DialogHeader className="border-b border-border p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <DialogTitle className="ui-section-title text-foreground">{item.jobDetailsForm.jobTitle}</DialogTitle>
-                  <DialogDescription className="ui-body mt-1 text-muted-foreground">
-                    Public job post preview for review before publishing.
-                  </DialogDescription>
+            <DialogHeader className="p-6">
+              <div className="flex w-full flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0 flex-1 space-y-4">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
+                      {item.jobDetailsForm.jobTitle}
+                    </DialogTitle>
+                    <Badge
+                      variant="outline"
+                      className="rounded-[4px] border-[#1e66f7] px-2 py-0.5 text-[12px] font-medium text-[#1e66f7]"
+                    >
+                      {formatValue(item.jobDetailsForm.experienceLevel)}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-6 text-sm text-[#666]">
+                    <Badge
+                      variant="secondary"
+                      className="rounded-[4px] bg-[#e9f0fe] px-1.5 py-0.5 text-[12px] font-semibold uppercase text-[#1e66f7]"
+                    >
+                      {departmentLabel(
+                        item.requestForm.department as ReadyToPostDepartment,
+                      )}
+                    </Badge>
+                    <span>
+                      {employmentTypeLabel(item.jobDetailsForm.employmentType)}
+                    </span>
+                    <span>{formatPositions(item.requestForm.openings)}</span>
+                  </div>
                 </div>
-                <span
-                  className={`inline-flex rounded-md border px-2.5 py-1 text-xs font-medium ${priorityClass(priorityFromUrgency(item.requestForm.urgency))}`}
+                <Button
+                  type="button"
+                  className="h-[32px] gap-[8px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
+                  onClick={onPost}
                 >
-                  {priorityFromUrgency(item.requestForm.urgency).toUpperCase()} PRIORITY
-                </span>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {departmentLabel(item.requestForm.department as ReadyToPostDepartment)}
-                </span>
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {employmentTypeLabel(item.jobDetailsForm.employmentType)}
-                </span>
-                <span className="inline-flex rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {workModeLabel(item.jobDetailsForm.workMode)}
-                </span>
+                  <Send className="h-4 w-4" />
+                  Post Job
+                </Button>
               </div>
             </DialogHeader>
 
-            <div className="grid gap-4 p-5 lg:grid-cols-[1.15fr_0.85fr]">
-              <div className="space-y-4">
-                <section className="ui-surface p-4">
-                  <p className="ui-section-title text-foreground">Job Overview</p>
-                  <p className="ui-body mt-2 text-muted-foreground">{item.jobDetailsForm.jobSummary}</p>
-                </section>
+            <div className="border-t border-[#e5e5e5]" />
 
-                <section className="ui-surface p-4">
-                  <p className="ui-section-title text-foreground">Role Responsibilities</p>
-                  <ul className="mt-2 space-y-2">
-                    {item.jobDetailsForm.keyResponsibilities.map((responsibility) => (
-                      <li key={responsibility} className="ui-body flex items-start gap-2 text-muted-foreground">
-                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                        <span>{responsibility}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section className="ui-surface p-4">
-                  <p className="ui-section-title text-foreground">Requirements</p>
-                  <ul className="mt-2 space-y-2">
-                    {item.jobDetailsForm.requirements.map((requirement) => (
-                      <li key={requirement} className="ui-body flex items-start gap-2 text-muted-foreground">
-                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                        <span>{requirement}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </div>
-
-              <div className="space-y-4">
-                <section className="ui-surface p-4">
-                  <p className="ui-section-title text-foreground">Posting Details</p>
-                  <div className="mt-3 grid grid-cols-1 gap-2.5">
-                    <PreviewMetaItem label="Requisition ID" value={requestId ?? "REQ-000"} />
-                    <PreviewMetaItem label="Location" value={item.jobDetailsForm.location} />
-                    <PreviewMetaItem label="Salary Range" value={salaryLabel(item)} />
-                    <PreviewMetaItem label="Needed By" value={item.requestForm.neededByDate} />
-                    <PreviewMetaItem label="Expected Start" value={item.requestForm.neededByDate} />
+            <div className="grid gap-6 p-6">
+              <section className="rounded-[8px] bg-[#f3f3f3] p-4">
+                <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                  Job Request Details
+                </p>
+                <div className="mt-4 grid gap-4 md:grid-cols-3">
+                  <div className="space-y-4">
+                    <InfoBlock
+                      label="Priority"
+                      value={urgencyLabel(item.requestForm.urgency)}
+                      valueBadge
+                    />
+                    <InfoBlock
+                      label="Date Requested"
+                      value={item.requestForm.createdDate ?? "Not set"}
+                    />
                   </div>
-                </section>
+                  <div className="space-y-4">
+                    <InfoBlock
+                      label="Due Date"
+                      value={item.requestForm.neededByDate}
+                    />
+                    <InfoBlock
+                      label="Expected Date"
+                      value={item.requestForm.neededByDate}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[12px] text-[#666]">Requested By</p>
+                    <EmployeeCard
+                      name={item.requestForm.requestedBy}
+                      role={formatValue(item.requestForm.position)}
+                      department={departmentLabel(
+                        item.requestForm.department as ReadyToPostDepartment,
+                      )}
+                      variant="stacked"
+                    />
+                  </div>
+                </div>
+              </section>
 
-                {item.jobDetailsForm.benefits.length > 0 ? (
-                  <section className="ui-surface p-4">
-                    <p className="ui-section-title text-foreground">Benefits</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {item.jobDetailsForm.benefits.map((benefit) => (
-                        <span key={benefit} className="rounded-md border border-border bg-muted px-2 py-1 text-xs">
-                          {benefit}
-                        </span>
+              <section className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Job Overview
+                    </p>
+                    <DialogDescription className="text-sm leading-5 text-[#666]">
+                      {item.jobDetailsForm.jobSummary}
+                    </DialogDescription>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Requirements
+                    </p>
+                    <BulletList items={item.jobDetailsForm.requirements} />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Qualifications
+                    </p>
+                    <BulletList items={item.jobDetailsForm.keyResponsibilities} />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Importance of this Hire
+                    </p>
+                    <p className="text-sm leading-5 text-[#666]">
+                      {item.requestForm.businessJustification}
+                    </p>
+                    {item.jobDetailsForm.whyJoinUs ? (
+                      <p className="text-sm leading-5 text-[#666]">
+                        {item.jobDetailsForm.whyJoinUs}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </section>
+
+              <section className="grid gap-4 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                    onClick={() => setIsCommitteeOpen((prev) => !prev)}
+                  >
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Hiring Committee
+                    </p>
+                    <ChevronUp
+                      className={`h-4 w-4 text-[#1e66f7] ${isCommitteeOpen ? "" : "rotate-180"}`}
+                    />
+                  </button>
+                  {isCommitteeOpen ? (
+                    <div className="space-y-3">
+                      {hiringCommittee.map((member) => (
+                        <EmployeeCard
+                          key={member.name}
+                          name={member.name}
+                          role={member.role}
+                          department={member.department}
+                        />
                       ))}
                     </div>
-                  </section>
-                ) : null}
-              </div>
+                  ) : null}
+                </div>
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                      onClick={() => setIsRevisionsOpen((prev) => !prev)}
+                    >
+                      <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                        Revisions From
+                      </p>
+                      <ChevronUp
+                        className={`h-4 w-4 text-[#1e66f7] ${isRevisionsOpen ? "" : "rotate-180"}`}
+                      />
+                    </button>
+                    {isRevisionsOpen ? (
+                      revisionSources.length > 0 ? (
+                        <div className="space-y-3">
+                          {revisionSources.map((member) => (
+                            <div key={member.name} className="space-y-1">
+                              <EmployeeCard
+                                name={member.name}
+                                role={member.role}
+                                department={member.department}
+                              />
+                              <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
+                                <span>02:33 PM · Dec 30, 2025</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[#666]">
+                          No revisions requested.
+                        </p>
+                      )
+                    ) : null}
+                  </div>
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                      onClick={() => setIsApprovedOpen((prev) => !prev)}
+                    >
+                      <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                        Approved By
+                      </p>
+                      <ChevronUp
+                        className={`h-4 w-4 text-[#1e66f7] ${isApprovedOpen ? "" : "rotate-180"}`}
+                      />
+                    </button>
+                    {isApprovedOpen ? (
+                      approvedBy.length > 0 ? (
+                        <div className="space-y-3">
+                          {approvedBy.map((member) => (
+                            <div key={member.name} className="space-y-1">
+                              <EmployeeCard
+                                name={member.name}
+                                role={member.role}
+                                department={member.department}
+                              />
+                              <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
+                                <span>02:33 PM · Dec 30, 2025</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[#666]">No approvals yet.</p>
+                      )
+                    ) : null}
+                  </div>
+                </div>
+              </section>
             </div>
 
-            <DialogFooter className="border-t border-border p-5">
-              <Button type="button" variant="outline" className="cursor-pointer" onClick={() => onOpenChange(false)}>
-                Close Preview
-              </Button>
+            <DialogFooter className="gap-3 border-t border-[#e5e5e5] p-6">
+              <div className="grid w-full gap-3 md:grid-cols-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 w-full rounded-[6px] border-[#ff3b30] text-sm text-[#ff3b30] hover:bg-[#fff1f0]"
+                >
+                  Terminate
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
+                >
+                  <Pencil className="h-4 w-4" />
+                  Edit Job
+                </Button>
+              </div>
             </DialogFooter>
           </>
         ) : null}

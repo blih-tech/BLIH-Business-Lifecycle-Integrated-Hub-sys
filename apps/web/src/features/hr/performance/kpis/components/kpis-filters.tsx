@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { ArrowUpDown, ListFilter, Search } from "lucide-react";
 
 import { Input } from "@/shared/components/ui/input";
@@ -40,13 +42,13 @@ export function KpisFilters({
           <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => onSearchChange(event.target.value)}
             placeholder="Search by name..."
             className="h-8 rounded-[4px] border-input bg-white pl-9 text-sm"
           />
         </div>
 
-        <Select value={sortBy} onValueChange={(value) => onSortByChange(value as "name-asc" | "name-desc")}>
+        <Select value={sortBy} onValueChange={(value: string) => onSortByChange(value as "name-asc" | "name-desc")}>
           <SelectTrigger size="sm" className="h-8 min-w-[88px] rounded-[4px] border-input bg-white text-xs">
             <div className="inline-flex items-center gap-1">
               <ArrowUpDown className="h-3 w-3 text-muted-foreground" />

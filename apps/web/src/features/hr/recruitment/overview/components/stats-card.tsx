@@ -14,10 +14,10 @@ export function StatsCard({ label, value, icon }: StatsCardProps) {
   return (
     <article className="ui-surface p-4 md:p-5">
       <div className="flex items-start justify-between">
-        <p className="ui-label">{label}</p>
+        <p className="ui-label text-xs">{label}</p>
         <IconByType icon={icon} />
       </div>
-      <p className="mt-1 text-[36px] font-semibold leading-9 tracking-[0.0703px] text-black">{value}</p>
+      <p className="mt-1 text-[28px] font-semibold leading-7 tracking-[0.02em] text-black">{value}</p>
     </article>
   );
 }
