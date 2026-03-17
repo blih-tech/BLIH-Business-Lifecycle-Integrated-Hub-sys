@@ -1,0 +1,98 @@
+// Organization and Structure Models
+// This file contains Department, Position, JobGrade, and CountryReference models
+
+model Department {
+  id                      String                   @id @default(uuid()) @db.Uuid
+  name                    String                   @unique
+  description             String?
+  parentId                String?                  @map("parent_id") @db.Uuid
+  parent                  Department?              @relation("DepartmentHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children                Department[]             @relation("DepartmentHierarchy")
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  positions               Position[]
+  employmentHistory       UserEmploymentHistory[]
+  jobs                    Job[]
+  jobRequestForms         JobRequestForm[]         @relation("JobRequestDepartment")
+  okrs                    Okr[]
+  performanceCalibrations PerformanceCalibration[]
+  trainingBudgets         TrainingBudget[]
+  trainingRequests        TrainingRequest[]
+  skillGapAssessments     SkillGapAssessment[]
+
+  @@index([parentId])
+}
+
+model JobGrade {
+  id        String     @id @default(uuid()) @db.Uuid
+  code      String     @unique
+  name      String
+  level     Int
+  minSalary Decimal?   @map("min_salary") @db.Decimal(15, 2)
+  maxSalary Decimal?   @map("max_salary") @db.Decimal(15, 2)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  positions Position[]
+
+  @@index([level])
+}
+
+model Position {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  title                String
+  description          String?
+  departmentId         String                    @db.Uuid
+  department           Department                @relation(fields: [departmentId], references: [id])
+  gradeId              String?                   @map("grade_id") @db.Uuid
+  grade                JobGrade?                 @relation(fields: [gradeId], references: [id], onDelete: SetNull)
+  headcountLimit       Int?                      @map("headcount_limit")
+  employments          UserEmployment[]
+  jobDescriptions      JobDescription[]
+  employmentHistory    UserEmploymentHistory[]
+  jobs                 Job[]
+  jobRequestForms      JobRequestForm[]          @relation("JobRequestPosition")
+  successionPlans      SuccessionPlan[]
+  promotionSourceFor   PromotionProposal[]       @relation("PromotionProposalFromPosition")
+  promotionTargetFor   PromotionProposal[]       @relation("PromotionProposalToPosition")
+  careerPlansCurrent   CareerDevelopmentPlan[]   @relation("CareerPlanCurrentPosition")
+  careerPlansTarget    CareerDevelopmentPlan[]   @relation("CareerPlanTargetPosition")
+  transferRequestsFrom InternalTransferRequest[] @relation("InternalTransferCurrentPosition")
+  transferRequestsTo   InternalTransferRequest[] @relation("InternalTransferTargetPosition")
+  isActive             Boolean                   @default(true)
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+
+  @@unique([departmentId, title])
+  @@index([departmentId])
+  @@index([gradeId])
+  @@index([isActive])
+}
+
+model CountryReference {
+  id                  String        @id @default(uuid()) @db.Uuid
+  code                String?       @unique @db.VarChar(3)
+  name                String        @unique
+  isActive            Boolean       @default(true)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  nationalityProfiles UserProfile[] @relation("ProfileNationality")
+  residenceProfiles   UserProfile[] @relation("ProfileResidenceCountry")
+  holidays            Holiday[]
+
+  @@index([isActive])
+}
+
+model Holiday {
+  id                String            @id @default(uuid()) @db.Uuid
+  name              String
+  date              DateTime          @db.Date
+  countryId         String?           @map("country_id") @db.Uuid
+  country           CountryReference? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  isRecurringAnnual Boolean           @default(false) @map("is_recurring_annual")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@unique([name, date, countryId])
+  @@index([date])
+  @@index([countryId])
+}

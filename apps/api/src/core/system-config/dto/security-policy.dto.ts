@@ -1,7 +1,8 @@
 import { IsBoolean, IsInt, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import type { SecurityPolicyDto as SecurityPolicyDtoType } from '@repo/types';
 
-export class SecurityPolicyDto {
+export class SecurityPolicyDto implements SecurityPolicyDtoType {
   @ApiProperty({
     description: 'Require multi-factor authentication for user login.',
     example: true,

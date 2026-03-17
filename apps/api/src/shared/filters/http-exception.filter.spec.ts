@@ -56,12 +56,12 @@ describe('HttpExceptionFilter', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
     const payload = response.json.mock.calls[0]?.[0] as Record<string, unknown>;
     expect(payload.success).toBe(false);
-    expect(payload.message).toBe('Validation failed');
+    expect(payload.message).toBe('Validation failed: email must be an email');
     expect(payload.data).toBeNull();
 
     const error = payload.error as Record<string, unknown>;
     expect(error.code).toBe('VALIDATION_ERROR');
-    expect(error.details).toBe('One or more fields are invalid');
+    expect(error.details).toBe('email must be an email');
     expect(error.fieldErrors).toEqual([
       { field: 'email', message: 'email must be an email' },
     ]);

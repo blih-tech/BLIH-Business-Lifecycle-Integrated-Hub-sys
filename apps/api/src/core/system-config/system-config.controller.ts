@@ -2,6 +2,7 @@ import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Audit } from '../../shared/decorators/audit.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
@@ -34,7 +35,7 @@ export class SystemConfigController {
   @ApiOperation({
     summary: 'List system configuration',
     description:
-      'Returns settings, module flags, and security policy for the configured realm. Requires role `system_config:view`.',
+      'Returns the current system settings, module configuration, and security policy records.',
   })
   @ApiOkResponse({
     description: 'System configuration aggregate.',
@@ -76,6 +77,7 @@ export class SystemConfigController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('System configuration retrieved successfully')
   async list() {
     return this.listSystemConfigUseCase.execute();
   }
@@ -126,6 +128,7 @@ export class SystemConfigController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('System setting updated successfully')
   async updateSetting(@Body() dto: SystemConfigDto) {
     return this.updateSystemConfigUseCase.execute(dto);
   }
@@ -178,6 +181,7 @@ export class SystemConfigController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Module configuration updated successfully')
   async updateModule(@Body() dto: ModuleConfigDto) {
     return this.updateModuleConfigUseCase.execute(dto);
   }
@@ -191,8 +195,7 @@ export class SystemConfigController {
   })
   @ApiOperation({
     summary: 'Update security policy',
-    description:
-      'Upserts realm-level security policy controls. Requires role `system_config:update`.',
+    description: 'Creates or updates the realm-level security policy controls.',
   })
   @ApiBody({
     type: SecurityPolicyDto,
@@ -233,6 +236,7 @@ export class SystemConfigController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'Required roles are missing',
   })
+  @ResponseMessage('Security policy updated successfully')
   async updateSecurityPolicy(@Body() dto: SecurityPolicyDto) {
     return this.updateSecurityPolicyUseCase.execute(dto);
   }

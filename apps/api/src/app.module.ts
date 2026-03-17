@@ -21,6 +21,8 @@ import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { PreAuditInterceptor } from './shared/interceptors/pre-audit.interceptor';
 import { ResponseEnvelopeInterceptor } from './shared/interceptors/response-envelope.interceptor';
 import { CorrelationIdMiddleware } from './shared/middlewares/correlation-id.middleware';
+import { CsrfProtectionMiddleware } from './shared/middlewares/csrf-protection.middleware';
+import { BrainModule } from './domains/brain/brain.module';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { CorrelationIdMiddleware } from './shared/middlewares/correlation-id.mid
     ScheduleModule.forRoot(),
     PlatformModule,
     CoreModule,
+    BrainModule,
     DomainsModule,
   ],
   providers: [
@@ -65,9 +68,11 @@ import { CorrelationIdMiddleware } from './shared/middlewares/correlation-id.mid
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(CorrelationIdMiddleware).forRoutes({
-      path: '*path',
-      method: RequestMethod.ALL,
-    });
+    consumer
+      .apply(CorrelationIdMiddleware, CsrfProtectionMiddleware)
+      .forRoutes({
+        path: '*path',
+        method: RequestMethod.ALL,
+      });
   }
 }

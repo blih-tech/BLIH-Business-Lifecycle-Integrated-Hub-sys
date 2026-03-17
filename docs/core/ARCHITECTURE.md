@@ -28,12 +28,12 @@
 
 ### Architecture Style
 
-**Modular Event-Driven Microservices** with:
+**Modular API-Based Microservices** with:
 
 - **Frontend**: Next.js 16 App Router with Server Components
 - **Backend**: NestJS modular monolith with microservices capabilities
-- **Data Layer**: Polyglot persistence (MongoDB + PostgreSQL + Qdrant)
-- **Integration**: Event-driven architecture with RabbitMQ
+- **Data Layer**: PostgreSQL + Qdrant (Vector Database)
+- **Integration**: Direct API communication between modules
 - **AI**: Local LLM with RAG pattern
 
 ### Key Characteristics
@@ -41,7 +41,7 @@
 | Characteristic       | Implementation                                             |
 | -------------------- | ---------------------------------------------------------- |
 | **Modularity**       | Self-contained business modules with clear boundaries      |
-| **Event-Driven**     | Async communication via RabbitMQ pub/sub                   |
+| **API-Based**        | Direct module communication via REST APIs                  |
 | **Single Tenant**    | Company context enforced throughout (`company_id: "BLIH"`) |
 | **Compliance-First** | Audit logging, RBAC, data lineage built-in                 |
 | **Air-Gap Ready**    | All services run on-premises, no external dependencies     |
@@ -67,11 +67,11 @@
 │       ┌─────────────────┼─────────────────┐                          │
 │       ▼                 ▼                 ▼                          │
 │  ┌────────┐      ┌──────────┐      ┌────────────┐                     │
-│  │MongoDB │      │ PostgreSQL│      │   Qdrant   │                     │
-│  │        │      │          │      │  (Vectors) │                     │
+│  │PostgreSQL│    │ PostgreSQL│      │   Qdrant   │                     │
+│  │ (Primary)│    │ (Keycloak)│      │  (Vectors) │                     │
 │  └────────┘      └──────────┘      └────────────┘                     │
 │                                                                          │
-│  Supporting: Keycloak, RabbitMQ, MinIO, Ollama, Redis, n8n             │
+│  Supporting: Keycloak, MinIO, Ollama, Redis, n8n             │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -87,7 +87,7 @@ Each module is self-contained with:
 - Own database schemas/collections
 - Own API endpoints
 - Own frontend components
-- Own event definitions
+- Own business logic
 - Own permission matrix
 
 ```
@@ -101,27 +101,26 @@ Module Boundary:
 │       │           │                 │
 │  ┌────┴───────────┴────┐           │
 │  │   HR Database       │           │
-│  │   (MongoDB)         │           │
+│  │   (PostgreSQL)     │           │
 │  └─────────────────────┘           │
 │                                    │
-│  Events: hr.employee.hired         │
-
-│  Events: hr.employee.updated       │
+│  APIs: /hr/employees, /hr/contracts│
+│  APIs: /hr/leave, /hr/attendance   │
 │                                    │
 └─────────────────────────────────────┘
 ```
 
-### 2. Event-Driven Integration
+### 2. API-Based Integration
 
-Modules communicate via events, not direct API calls:
+Modules communicate via direct API calls:
 
 ```
-┌─────────┐    Event: crm.deal.won     ┌──────────┐
-│   CRM   │ ────────────────────────▶ │ Projects │
-│ Module  │                           │  Module  │
-└─────────┘                           └──────────┘
+┌─────────┐  API: POST /finance/invoices  ┌──────────┐
+│   CRM   │ ────────────────────────────▶ │ Projects │
+│ Module  │                               │  Module  │
+└─────────┘                               └──────────┘
      │
-     │ Event: crm.deal.won
+     │ API: POST /finance/invoices
      ▼
 ┌──────────┐
 │  Finance │ (Auto-generate invoice)
@@ -129,7 +128,7 @@ Modules communicate via events, not direct API calls:
 └──────────┘
 ```
 
-**Domain modules** (HR, CRM, Finance, Projects, Brain, **Chatbot**) MUST NOT call other modules’ APIs. All cross-module communication is via the `blih.events` exchange. The **Chatbot** module (conversation, RAG, responses) is a domain module: it consumes and publishes only via `blih.events` (e.g. `chatbot.query.received`, `chatbot.response.sent`, or events from Brain for knowledge); it does not call HR, CRM, Finance, or Brain APIs directly.
+**Domain modules** (HR, CRM, Finance, Projects, Brain, **Chatbot**) communicate via direct API calls when needed. The **Chatbot** module (conversation, RAG, responses) can call other module APIs directly for data retrieval and processing.
 
 ### 3. Compliance-First Design
 
@@ -248,7 +247,6 @@ app/
 │  │  Modules:                                                    │   │
 │  │  ├── AuthModule      → JWT validation, Keycloak integration   │   │
 │  │  ├── AuditModule     → Audit logging service                  │   │
-│  │  ├── EventModule     → Event bus abstraction                 │   │
 │  │  ├── PermissionModule → RBAC enforcement                    │   │
 │  │  ├── UserModule      → User management                      │   │
 │  │  └── GatewayModule   → Route aggregation                   │   │
@@ -270,14 +268,14 @@ app/
 │  │                   Module Architecture                        │   │
 │  │                                                              │   │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │   │
-│  │  │  Command    │  │   Query     │  │      Event          │  │   │
+│  │  │  Command    │  │   Query     │  │   Integration      │  │   │
 │  │  │  Handler    │  │   Handler   │  │     Handler         │  │   │
 │  │  │             │  │             │  │                     │  │   │
-│  │  │ Write Ops   │  │ Read Ops    │  │ External Events     │  │   │
-│  │  │ Validation  │  │ Optimization│  │ Integration         │  │   │
-│  │  │ Business    │  │ Caching     │  │ Side Effects        │  │   │
+│  │  │ Write Ops   │  │ Read Ops    │  │ External APIs       │  │   │
+│  │  │ Validation  │  │ Optimization│  │ Cross-Module       │  │   │
+│  │  │ Business    │  │ Caching     │  │ Communication       │  │   │
 │  │  │ Rules       │  │ Projection  │  │ Notifications       │  │   │
-│  │  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │   │
+│  │  └──────┬──────┘  └────┬──────┘  └──────────┬──────────┘  │   │
 │  │         │                │                    │            │   │
 │  │         └────────────────┴────────────────────┘            │   │
 │  │                          │                                 │   │
@@ -335,10 +333,10 @@ class EmployeeDomainService {
 │  │                   Polyglot Persistence                       │   │
 │  │                                                              │   │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │   │
-│  │  │   MongoDB    │  │  PostgreSQL  │  │     Qdrant       │  │   │
+│  │  │  PostgreSQL  │  │  PostgreSQL  │  │     Qdrant       │  │   │
 │  │  │              │  │              │  │   (Vector DB)    │  │   │
-│  │  │ • HR Docs    │  │ • Finance    │  │ • Embeddings     │  │   │
-│  │  │ • CRM Docs   │  │ • Accounting │  │ • RAG Search     │  │   │
+│  │  │ • HR Data   │  │ • Finance    │  │ • Embeddings     │  │   │
+│  │  │ • CRM Data  │  │ • Accounting │  │ • RAG Search     │  │   │
 │  │  │ • Projects   │  │ • Invoices   │  │ • Similarity     │  │   │
 │  │  │ • Brain KB   │  │ • Payroll    │  │   Search         │  │   │
 │  │  │              │  │              │  │                  │  │   │
@@ -395,7 +393,7 @@ class EmployeeDomainService {
 │  │  │  Audit      │  │  Immutable  │  │   Export/          │  │   │
 │  │  │  Service    │  │  Storage    │  │   Archive          │  │   │
 │  │  │             │  │             │  │                    │  │   │
-│  │  │ Capture all │  │ MongoDB     │  │ • PDF Reports     │  │   │
+│  │  │ Capture all │  │ PostgreSQL │  │ • PDF Reports     │  │   │
 │  │  │ actions     │  │ • No updates│  │ • CSV Export      │  │   │
 │  │  │             │  │ • Append    │  │ • Compliance      │  │   │
 │  │  │             │  │   only      │  │   Evidence        │  │   │
@@ -410,20 +408,22 @@ class EmployeeDomainService {
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                      │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │  3. EVENT BUS                                                │   │
+│  │  3. API INTEGRATION                                       │   │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │   │
-│  │  │  RabbitMQ   │  │   Event     │  │   Dead Letter       │  │   │
-│  │  │             │  │   Store     │  │   Queue             │  │   │
-│  │  │ • Pub/Sub   │  │ • MongoDB   │  │ • Failed events     │  │   │
-│  │  │ • Routing   │  │ • Event log │  │ • Retry logic       │  │   │
-│  │  │ • Priority  │  │ • Replay    │  │ • Alerting          │  │   │
+│  │  │   HTTP      │  │   REST     │  │   API Gateway      │  │   │
+│  │  │  Client     │  │   APIs     │  │   (Internal)       │  │   │
+│  │  │             │  │             │  │                     │  │   │
+│  │  │ • Module    │  │ • JSON     │  │ • Route Aggregation │  │   │
+│  │  │   Calls     │  │ • HTTP     │  │ • Load Balancing    │  │   │
+│  │  │ • Request   │  │ • Status   │  │ • Service Discovery │  │   │
+│  │  │ • Response  │  │ • Error    │  │ • Rate Limiting     │  │   │
 │  │  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │   │
 │  │         │                │                    │            │   │
 │  │         └────────────────┴────────────────────┘            │   │
 │  │                          │                                 │   │
 │  │              ┌───────────┴───────────┐                   │   │
-│  │              │   Event Definitions     │                   │   │
-│  │              │   (Shared Package)      │                   │   │
+│  │              │   API Contract Layer   │                   │   │
+│  │              │   (Shared Types)       │                   │   │
 │  │              └───────────────────────┘                   │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                      │
@@ -454,7 +454,7 @@ class EmployeeDomainService {
 │  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐  │   │
 │  │  │  Controller │───▶│   Service   │───▶│  Repository     │  │   │
 │  │  │             │    │             │    │                 │  │   │
-│  │  │ POST /hire  │    │ • Validate  │    │ • MongoDB       │  │   │
+│  │  │ POST /hire  │    │ • Validate  │    │ • PostgreSQL     │  │   │
 │  │  │             │    │ • Business  │    │ • CRUD          │  │   │
 │  │  │             │    │   Logic       │    │ • Queries       │  │   │
 │  │  └──────┬──────┘    └──────┬──────┘    └─────────────────┘  │   │
@@ -463,8 +463,8 @@ class EmployeeDomainService {
 │  │         │    │                           │                  │   │
 │  │         ▼    ▼                           ▼                  │   │
 │  │    ┌─────────┐                    ┌──────────────┐        │   │
-│  │    │ Events  │───────────────────▶│ Event Bus    │        │   │
-│  │    │ Publish │  hr.employee.hired  │ (RabbitMQ)   │        │   │
+│  │    │  APIs   │───────────────────▶│   API Calls  │        │   │
+│  │    │ Calls   │  hr.employee.hired  │  (Direct)    │        │   │
 │  │    └─────────┘                    └──────┬───────┘        │   │
 │  │                                          │                  │   │
 │  │  ┌─────────────┐    ┌─────────────────────┴─────────────┐  │   │
@@ -495,7 +495,7 @@ class EmployeeDomainService {
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │  MONGODB (Document Store) - Primary Database                  │   │
+│  │  POSTGRESQL (Relational) - Primary Database                  │   │
 │  │  Database: blih                                             │   │
 │  │                                                              │   │
 │  │  Collections:                                                 │   │
@@ -623,7 +623,7 @@ class EmployeeDomainService {
                                    │    ┌─────────┐               │
                                    └───▶│ Keyword │◀──────────────┘
                                         │ Search  │   Context
-                                        │(MongoDB)│   + Response
+                                        │(PostgreSQL)│   + Response
                                         └────┬────┘
                                              │
                                              ▼
@@ -713,7 +713,7 @@ All domain events are published to the topic exchange **`blih.events`** (routing
 
 ```typescript
 // Gateway pattern - aggregating from multiple modules
-@Controller("dashboard")
+@Controller('dashboard')
 class DashboardGateway {
   constructor(
     private hrService: HrGatewayService,
@@ -721,7 +721,7 @@ class DashboardGateway {
     private financeService: FinanceGatewayService,
   ) {}
 
-  @Get("stats")
+  @Get('stats')
   async getDashboardStats() {
     // Parallel fetching
     const [hr, crm, finance] = await Promise.all([
@@ -747,7 +747,7 @@ class HrService {
     this.eventBus.publish(
       new EmployeeHiredEvent({
         employeeId: employee.id,
-        companyId: "BLIH",
+        companyId: 'BLIH',
       }),
     );
 
@@ -758,7 +758,7 @@ class HrService {
 // Subscribing to event
 @Injectable()
 class FinanceSubscriber {
-  @OnEvent("hr.employee.hired")
+  @OnEvent('hr.employee.hired')
   async handleEmployeeHired(event: EmployeeHiredEvent) {
     await this.payrollService.setupPayroll(event.employeeId);
   }
@@ -942,9 +942,9 @@ For single sign-on, one login page, and department-based authorization scoping, 
 │  │                                          │                  │   │
 │  │                                          ▼                  │   │
 │  │                                   ┌─────────────┐            │   │
-│  │                                   │  MongoDB   │            │   │
-│  │                                   │ audit_logs │            │   │
-│  │                                   │ (sharded)  │            │   │
+│  │                                   │  PostgreSQL   │            │   │
+│  │                                   │ audit_logs  │            │   │
+│  │                                   │ (partitioned)│            │   │
 │  │                                   └─────────────┘            │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                      │
@@ -1040,9 +1040,9 @@ For single sign-on, one login page, and department-based authorization scoping, 
 │  │                     DATA LAYER                               │   │
 │  │                                                              │   │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │   │
-│  │  │   MongoDB    │  │  PostgreSQL  │  │     Qdrant       │  │   │
+│  │  │  PostgreSQL  │  │  PostgreSQL  │  │     Qdrant       │  │   │
 │  │  │              │  │              │  │                  │  │   │
-│  │  │ (Port 27017) │  │ (Port 5432)  │  │ (Port 6333)      │  │   │
+│  │  │ (Port 5432)  │  │ (Port 5432)  │  │ (Port 6333)      │  │   │
 │  │  │              │  │              │  │                  │  │   │
 │  │  │ • Documents  │  │ • Financial  │  │ • Vectors        │  │   │
 │  │  │ • Audit logs │  │ • ACID       │  │ • Embeddings     │  │   │
@@ -1069,10 +1069,8 @@ For single sign-on, one login page, and department-based authorization scoping, 
 # High-level service dependencies
 services:
   # Data Layer (Foundation)
-  mongodb:
-    # All services depend on this
   postgres:
-    # Finance + Keycloak depend on this
+    # All services depend on this
   qdrant:
     # RAG service depends on this
 
@@ -1090,9 +1088,9 @@ services:
 
   # Application Layer
   backend:
-    depends_on: [mongodb, postgres, keycloak, rabbitmq, redis]
+    depends_on: [postgres, keycloak, rabbitmq, redis]
   rag-service:
-    depends_on: [qdrant, ollama, mongodb, rabbitmq]
+    depends_on: [qdrant, ollama, postgres, rabbitmq]
   frontend:
     depends_on: [backend]
 
@@ -1147,8 +1145,8 @@ services:
 │  ┌─────────────────────────────────────────────────────────────────────┐ │
 │  │                   DATA LAYER                              │ │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │ │
-│  │  │ PostgreSQL  │  │   MongoDB   │  │   Qdrant    │ │ │
-│  │  │ (Core)     │  │ (Modules)   │  │ (Vectors)   │ │ │
+│  │  │ PostgreSQL  │  │ PostgreSQL  │  │   Qdrant    │ │ │
+│  │  │ (All Data)  │  │ (Keycloak)  │  │ (Vectors)   │ │ │
 │  │  └─────────────┘  └─────────────┘  └─────────────┘ │ │
 │  └─────────────────────────────────────────────────────────────────────┘ │
 │                              │                                    │
@@ -1253,7 +1251,7 @@ services:
 │  ┌─────────────────────────────────────────────────────────────────────┐ │
 │  │                 DATABASE CLUSTER                           │ │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │ │
-│  │  │ PostgreSQL  │  │   MongoDB   │  │   Redis     │ │ │
+│  │  │ PostgreSQL  │  │ PostgreSQL  │  │   Redis     │ │ │
 │  │  │ (Primary)   │  │ (Replica)  │  │ (Cluster)   │ │ │
 │  │  └─────────────┘  └─────────────┘  └─────────────┘ │ │
 │  └─────────────────────────────────────────────────────────────────────┘ │
@@ -1381,7 +1379,7 @@ services:
 │  └─────────────────────────────────────────────────────────────────────┘ │
 │                              │                                    │
 │  ┌─────────────────────────────────────────────────────────────────────┐ │
-│  │                 MONGODB CLUSTER                           │ │
+│  │                 POSTGRESQL CLUSTER                           │ │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │ │
 │  │  │   Config    │  │   Shard 1   │  │   Shard 2   │ │ │
 │  │  │   Server    │  │   (HR)      │  │   (CRM)     │ │ │

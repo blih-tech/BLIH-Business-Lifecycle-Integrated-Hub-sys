@@ -1,0 +1,281 @@
+// Brain/AI Schema for BLIH System
+// This file contains all AI-related models and enums
+// Note: Relations to main schema models are handled via foreign keys without explicit relations
+
+// AI-specific enums
+enum ScreeningRecommendation {
+  STRONG_RECOMMEND
+  RECOMMEND
+  CONSIDER
+  REJECT
+}
+
+// AI Document Management Models
+model AiDocument {
+  id           String   @id @default(uuid()) @db.Uuid
+  title        String
+  module       String
+  sourceType   String
+  sourceId     String?
+  fileUrl      String?
+  content      String?
+  uploadedById String?  @db.Uuid
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  chunks AiChunk[]
+
+  @@index([module])
+  @@index([uploadedById])
+}
+
+model AiChunk {
+  id         String     @id @default(uuid()) @db.Uuid
+  documentId String     @db.Uuid
+  document   AiDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  content    String
+  chunkIndex Int
+  tokenCount Int?
+
+  qdrantId     String
+  module       String
+  departmentId String? @db.Uuid
+
+  createdAt DateTime @default(now())
+
+  @@index([documentId])
+  @@index([module])
+  @@index([departmentId])
+}
+
+// AI Chat System Models
+model AiChatSession {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+
+  title  String?
+  module String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages AiChatMessage[]
+
+  @@index([userId])
+  @@index([module])
+}
+
+model AiChatMessage {
+  id        String        @id @default(uuid()) @db.Uuid
+  sessionId String        @db.Uuid
+  session   AiChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  role       String
+  content    String
+  tokensUsed Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+// AI Analysis Models
+model AiCvAnalysis {
+  id                String                  @id @default(uuid()) @db.Uuid
+  applicantId       String                  @db.Uuid
+  jobId             String                  @db.Uuid
+  screeningId       String?                 @db.Uuid
+  score             Float
+  recommendation    ScreeningRecommendation
+  strengths         String[]
+  weaknesses        String[]
+  aiSummary         String
+  detailedAnalysis  Json?                   @db.JsonB
+  skillMatches      Json?                   @db.JsonB
+  experienceMatches Json?                   @db.JsonB
+  educationMatches  Json?                   @db.JsonB
+  confidence        Float
+  modelVersion      String
+  processedAt       DateTime                @default(now())
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  @@index([applicantId])
+  @@index([jobId])
+  @@index([screeningId])
+  @@index([recommendation])
+}
+
+model AiCvScreeningInsight {
+  id              String   @id @default(uuid()) @db.Uuid
+  applicantId     String   @db.Uuid
+  jobId           String   @db.Uuid
+  screeningId     String?  @db.Uuid
+  insightType     String
+  category        String
+  title           String
+  description     String
+  confidence      Float
+  priority        String
+  actionable      Boolean  @default(false)
+  suggestedAction String?
+  metadata        Json?    @db.JsonB
+  createdAt       DateTime @default(now())
+
+  @@index([applicantId])
+  @@index([jobId])
+  @@index([screeningId])
+  @@index([insightType])
+  @@index([category])
+}
+
+model AiSkillExtraction {
+  id            String    @id @default(uuid()) @db.Uuid
+  applicantId   String    @db.Uuid
+  documentType  String
+  skillName     String
+  skillCategory String?
+  confidence    Float
+  context       String?
+  source        String?
+  verified      Boolean   @default(false)
+  verifiedBy    String?   @db.Uuid
+  verifiedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([applicantId])
+  @@index([skillName])
+  @@index([skillCategory])
+  @@index([verified])
+}
+
+model AiExperienceAnalysis {
+  id               String   @id @default(uuid()) @db.Uuid
+  applicantId      String   @db.Uuid
+  company          String
+  position         String
+  duration         Int?
+  relevanceScore   Float?
+  skills           String[]
+  achievements     String[]
+  responsibilities String[]
+  level            String?
+  industry         String?
+  summary          String?
+  confidence       Float
+  createdAt        DateTime @default(now())
+
+  @@index([applicantId])
+  @@index([company])
+  @@index([position])
+  @@index([relevanceScore])
+}
+
+model AiEducationAnalysis {
+  id             String   @id @default(uuid()) @db.Uuid
+  applicantId    String   @db.Uuid
+  institution    String
+  degree         String
+  field          String
+  level          String?
+  relevanceScore Float?
+  gpa            Float?
+  honors         String[]
+  coursework     String[]
+  confidence     Float
+  createdAt      DateTime @default(now())
+
+  @@index([applicantId])
+  @@index([institution])
+  @@index([degree])
+  @@index([relevanceScore])
+}
+
+model AiCvComparison {
+  id                String   @id @default(uuid()) @db.Uuid
+  applicantId       String   @db.Uuid
+  jobId             String   @db.Uuid
+  comparisonType    String
+  score             Float
+  matchPercentage   Float
+  gaps              String[]
+  strengths         String[]
+  recommendations   String[]
+  detailedBreakdown Json?    @db.JsonB
+  createdAt         DateTime @default(now())
+
+  @@index([applicantId])
+  @@index([jobId])
+  @@index([comparisonType])
+  @@index([score])
+}
+
+model AiExtractedSkill {
+  id            String    @id @default(uuid()) @db.Uuid
+  applicantId   String    @db.Uuid
+  skillId       String?   @db.Uuid
+  extractedName String
+  confidence    Float
+  source        String?
+  context       String?
+  verified      Boolean   @default(false)
+  verifiedBy    String?   @db.Uuid
+  verifiedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([applicantId])
+  @@index([skillId])
+  @@index([verified])
+}
+
+model AiPerformanceInsight {
+  id              String   @id @default(uuid()) @db.Uuid
+  employeeId      String   @db.Uuid
+  reviewId        String?  @db.Uuid
+  insights        Json
+  recommendations Json
+  createdAt       DateTime @default(now())
+
+  @@index([employeeId])
+  @@index([reviewId])
+}
+
+model AiTrainingRecommendation {
+  id                 String   @id @default(uuid()) @db.Uuid
+  employeeId         String   @db.Uuid
+  recommendedSkills  Json
+  recommendedCourses Json
+  createdAt          DateTime @default(now())
+
+  @@index([employeeId])
+}
+
+// AI Logging Model
+model AiDecisionLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  type        String
+  referenceId String?
+  result      Json
+  createdAt   DateTime @default(now())
+
+  @@index([type])
+  @@index([referenceId])
+  @@index([createdAt])
+}
+
+// Knowledge Management Model
+model BrainKnowledgeSource {
+  id         String    @id @default(uuid()) @db.Uuid
+  module     String
+  sourceType String
+  sourceId   String?
+  lastSynced DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([module])
+  @@index([sourceType])
+  @@index([lastSynced])
+}
