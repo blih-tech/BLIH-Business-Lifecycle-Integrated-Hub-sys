@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
+import { buildCorsOptions } from './config/cors.util';
 import { setupSwagger } from './shared/docs/openapi';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
 
@@ -11,20 +12,19 @@ process.env.DEBUG = '';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableShutdownHooks();
 
   const configService = app.get(ConfigService);
   const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
   const swaggerEnabled =
     configService.get<string>('SWAGGER_ENABLED', 'true') !== 'false';
   const corsOrigin = configService.get<string>('CORS_ORIGIN', '*');
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
   const port = Number(configService.get<string>('PORT', '5000'));
   const apiHost = configService.get<string>('API_HOST', 'localhost');
 
   app.use(helmet());
-  app.enableCors({
-    origin: corsOrigin === '*' ? true : corsOrigin,
-    credentials: true,
-  });
+  app.enableCors(buildCorsOptions(corsOrigin, nodeEnv));
   app.setGlobalPrefix(apiPrefix, {
     exclude: ['api/docs', 'api/openapi.json', 'api/openapi.yaml'],
   });

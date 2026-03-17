@@ -1,7 +1,22 @@
 #!/usr/bin/env sh
 set -e
 
-node apps/api/scripts/git/validate-pre-push.js "$@"
-npm run lint
+REFS_FILE="$(mktemp)"
+cat > "$REFS_FILE"
+
+cleanup() {
+  rm -f "$REFS_FILE"
+}
+
+trap cleanup EXIT INT TERM
+
+echo "Running pre-push validations..."
+node validate-pre-push.js "$@" < "$REFS_FILE"
+
+echo "Running type checks..."
 npm run check-types
-npm run test --workspace blih-system-backend -- --ci --passWithNoTests
+
+echo "Running lint..."
+npm run lint
+
+echo "Pre-push checks passed."

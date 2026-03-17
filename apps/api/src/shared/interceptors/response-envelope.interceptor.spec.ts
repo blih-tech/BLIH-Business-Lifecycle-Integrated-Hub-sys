@@ -1,12 +1,19 @@
 import { ExecutionContext, InternalServerErrorException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { firstValueFrom, of } from 'rxjs';
+import { ResponseMessage } from '../decorators/response-message.decorator';
 import { ResponseEnvelopeInterceptor } from './response-envelope.interceptor';
 
-function createContext(request: Record<string, unknown>): ExecutionContext {
+function createContext(
+  request: Record<string, unknown>,
+  handler: () => unknown = () => undefined,
+): ExecutionContext {
   return {
     switchToHttp: () => ({
       getRequest: () => request,
     }),
+    getHandler: () => handler,
+    getClass: () => class TestController {},
   } as unknown as ExecutionContext;
 }
 
@@ -14,7 +21,7 @@ describe('ResponseEnvelopeInterceptor', () => {
   let interceptor: ResponseEnvelopeInterceptor;
 
   beforeEach(() => {
-    interceptor = new ResponseEnvelopeInterceptor();
+    interceptor = new ResponseEnvelopeInterceptor(new Reflector());
   });
 
   it('wraps object responses in unified envelope', async () => {
@@ -57,6 +64,32 @@ describe('ResponseEnvelopeInterceptor', () => {
       meta: {
         requestId: 'req-2',
       },
+    });
+  });
+
+  it('uses route-specific success messages when metadata is present', async () => {
+    class TestController {
+      @ResponseMessage('User created successfully')
+      static createUser() {
+        return undefined;
+      }
+    }
+
+    const context = createContext(
+      {
+        headers: { 'x-correlation-id': 'req-2b' },
+      },
+      TestController.createUser,
+    );
+
+    const result = await firstValueFrom(
+      interceptor.intercept(context, { handle: () => of({ id: 'u1' }) }),
+    );
+
+    expect(result).toMatchObject({
+      success: true,
+      message: 'User created successfully',
+      data: { id: 'u1' },
     });
   });
 

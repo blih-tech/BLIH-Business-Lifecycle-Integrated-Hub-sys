@@ -1,6 +1,7 @@
 # BLIH Detailed Documentation
 
 ## Table of Contents
+
 1. [Executive Summary](#executive-summary)
 2. [System Architecture](#system-architecture)
 3. [Technology Stack](#technology-stack)
@@ -18,6 +19,7 @@
 **BLIH (Business Lifecycle Integrated Hub)** is an integrated business management platform designed for on-premises deployment with compliance-first architecture.
 
 ### Key Characteristics
+
 - **Architecture**: Modular, event-driven, microservices-based
 - **Deployment**: On-premises only, air-gapped compatible
 - **Compliance**: ISO 9001/14001/45001 aligned with audit trails
@@ -25,12 +27,13 @@
 - **Timeline**: 14 weeks (3.5 months) for v1.0
 
 ### Success Criteria
-| Category | Target |
-|----------|--------|
-| Modules | Core + 2-3 business modules |
-| Performance | API < 500ms p95 |
-| Coverage | > 70% test coverage |
-| Uptime | 99.9% target |
+
+| Category    | Target                      |
+| ----------- | --------------------------- |
+| Modules     | Core + 2-3 business modules |
+| Performance | API < 500ms p95             |
+| Coverage    | > 70% test coverage         |
+| Uptime      | 99.9% target                |
 
 ---
 
@@ -55,8 +58,8 @@
     │                 │                 │
     ▼                 ▼                 ▼
 ┌────────┐     ┌──────────┐     ┌────────────┐
-│MongoDB │     │  Qdrant  │     │ PostgreSQL │
-│(Docs)  │     │(Vectors) │     │ (Finance)  │
+│PostgreSQL│    │  Qdrant  │     │ PostgreSQL │
+│(Primary)│    │(Vectors) │     │ (Finance)  │
 └────────┘     └──────────┘     └────────────┘
 
 Supporting: Keycloak (IAM), RabbitMQ (Events), MinIO (Files), n8n (Workflow)
@@ -86,6 +89,7 @@ Supporting: Keycloak (IAM), RabbitMQ (Events), MinIO (Files), n8n (Workflow)
 ### Data Flow Patterns
 
 **Event-Driven Integration:**
+
 ```
 CRM: Deal Won ──▶ Event: crm.deal.won
                       │
@@ -104,42 +108,46 @@ CRM: Deal Won ──▶ Event: crm.deal.won
 
 ### Complete Technology Matrix
 
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Backend** | NestJS | 10.x | API Services |
-| **Frontend** | Next.js | 16.x | Web Application |
-| **Document DB** | MongoDB | 7.x | Flexible data |
-| **Relational DB** | PostgreSQL | 16.x | Financial data |
-| **Vector DB** | Qdrant | latest | AI embeddings |
-| **Event Bus** | RabbitMQ | 3.12+ | Async messaging |
-| **IAM** | Keycloak | 24.x | Authentication |
-| **Object Storage** | MinIO | latest | File storage |
-| **LLM** | Ollama | latest | Local AI |
-| **Workflow** | n8n | latest | Automation |
-| **UI Library** | shadcn/ui | latest | Components |
-| **State Mgmt** | TanStack Query | latest | Data fetching |
-| **Forms** | React Hook Form + Zod | latest | Validation |
-| **Testing** | Jest + Playwright | latest | Testing |
-| **Container** | Docker + Compose | latest | Deployment |
+| Category           | Technology            | Version | Purpose         |
+| ------------------ | --------------------- | ------- | --------------- |
+| **Backend**        | NestJS                | 10.x    | API Services    |
+| **Frontend**       | Next.js               | 16.x    | Web Application |
+| **Document DB**    | MongoDB               | 7.x     | Flexible data   |
+| **Relational DB**  | PostgreSQL            | 16.x    | Financial data  |
+| **Vector DB**      | Qdrant                | latest  | AI embeddings   |
+| **Event Bus**      | RabbitMQ              | 3.12+   | Async messaging |
+| **IAM**            | Keycloak              | 24.x    | Authentication  |
+| **Object Storage** | MinIO                 | latest  | File storage    |
+| **LLM**            | Ollama                | latest  | Local AI        |
+| **Workflow**       | n8n                   | latest  | Automation      |
+| **UI Library**     | shadcn/ui             | latest  | Components      |
+| **State Mgmt**     | TanStack Query        | latest  | Data fetching   |
+| **Forms**          | React Hook Form + Zod | latest  | Validation      |
+| **Testing**        | Jest + Playwright     | latest  | Testing         |
+| **Container**      | Docker + Compose      | latest  | Deployment      |
 
 ### Technology Selection Rationale
 
 **NestJS:**
+
 - Built-in dependency injection
 - Modular architecture matches BLIH design
 - Native TypeScript support
 - Excellent Keycloak integration
 
 **Next.js App Router:**
+
 - Server-side rendering for performance
 - API routes for backend integration
 - Built-in authentication helpers
 
 **MongoDB + PostgreSQL:**
+
 - MongoDB: Flexible schemas for HR, CRM, Projects, Brain
 - PostgreSQL: ACID guarantees for financial transactions
 
 **Qdrant + Ollama:**
+
 - On-premises vector search
 - Air-gapped LLM capability
 - No external API dependencies
@@ -151,6 +159,7 @@ CRM: Deal Won ──▶ Event: crm.deal.won
 ### Core Platform Module
 
 **Responsibilities:**
+
 - RBAC system with permission management
 - Centralized audit logging
 - Event bus coordination
@@ -158,6 +167,7 @@ CRM: Deal Won ──▶ Event: crm.deal.won
 - User/role management
 
 **Database Schema (MongoDB):**
+
 ```typescript
 // Audit Log Schema
 @Schema()
@@ -191,6 +201,7 @@ class Role {
 ```
 
 **RBAC Permission Format:**
+
 ```
 Format: MODULE:RESOURCE:ACTION
 
@@ -205,6 +216,7 @@ Examples:
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/auth/me              - Current user info
 POST   /api/auth/refresh         - Token refresh
@@ -219,6 +231,7 @@ GET    /api/audit-logs/export    - Export for compliance
 ### HR Module
 
 **Responsibilities:**
+
 - Employee management
 - Contract tracking
 - Onboarding workflows
@@ -226,12 +239,13 @@ GET    /api/audit-logs/export    - Export for compliance
 - Event publishing for integrations
 
 **Database Schema:**
+
 ```typescript
 // Employee Schema
 @Schema({ timestamps: true })
 class Employee {
-  employeeId: string;      // "EMP-001"
-  companyId: string;       // Always "BLIH"
+  employeeId: string; // "EMP-001"
+  companyId: string; // Always "BLIH"
   firstName: string;
   lastName: string;
   email: string;
@@ -239,7 +253,7 @@ class Employee {
   status: 'active' | 'inactive' | 'terminated';
   hireDate: Date;
   contractType: 'full-time' | 'part-time' | 'contractor';
-  deleted: boolean;         // Soft delete
+  deleted: boolean; // Soft delete
 }
 
 // Contract Schema
@@ -251,11 +265,12 @@ class Contract {
   endDate?: Date;
   salary?: number;
   currency?: string;
-  documents: string[];       // MinIO file keys
+  documents: string[]; // MinIO file keys
 }
 ```
 
 **Published Events:**
+
 ```typescript
 EmployeeHiredEvent { employeeId, companyId, timestamp }
 EmployeeUpdatedEvent { employeeId, changes, timestamp }
@@ -263,6 +278,7 @@ EmployeeTerminatedEvent { employeeId, reason, timestamp }
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/hr/employees              - List employees
 POST   /api/hr/employees              - Create employee
@@ -277,6 +293,7 @@ GET    /api/hr/employees/:id/contracts - List contracts
 ### CRM Module
 
 **Responsibilities:**
+
 - Lead management
 - Contact/organization tracking
 - Deal pipeline management
@@ -284,6 +301,7 @@ GET    /api/hr/employees/:id/contracts - List contracts
 - Event publishing for deal lifecycle
 
 **Database Schema:**
+
 ```typescript
 // Lead Schema
 @Schema()
@@ -295,7 +313,7 @@ class Lead {
   company?: string;
   source: string;
   status: 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
-  assignedTo?: string;      // User ID
+  assignedTo?: string; // User ID
 }
 
 // Deal Schema
@@ -304,7 +322,13 @@ class Deal {
   name: string;
   value: number;
   currency: string;
-  stage: 'prospecting' | 'qualification' | 'proposal' | 'negotiation' | 'closed-won' | 'closed-lost';
+  stage:
+    | 'prospecting'
+    | 'qualification'
+    | 'proposal'
+    | 'negotiation'
+    | 'closed-won'
+    | 'closed-lost';
   probability: number;
   expectedCloseDate: Date;
   actualCloseDate?: Date;
@@ -324,6 +348,7 @@ class Organization {
 ```
 
 **Published Events:**
+
 ```typescript
 DealCreatedEvent { dealId, value, stage }
 DealStageChangedEvent { dealId, fromStage, toStage }
@@ -332,6 +357,7 @@ DealLostEvent { dealId, reason }
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/crm/leads              - List leads
 POST   /api/crm/leads              - Create lead
@@ -347,6 +373,7 @@ GET    /api/crm/organizations      - List organizations
 ### Projects Module
 
 **Responsibilities:**
+
 - Project lifecycle management
 - Task tracking
 - Time logging
@@ -354,20 +381,21 @@ GET    /api/crm/organizations      - List organizations
 - Event subscription to CRM
 
 **Database Schema:**
+
 ```typescript
 // Project Schema
 @Schema()
 class Project {
-  projectId: string;     // "PRJ-001"
+  projectId: string; // "PRJ-001"
   name: string;
   description: string;
   status: 'planning' | 'active' | 'on-hold' | 'completed' | 'cancelled';
-  sourceDealId?: string;  // From CRM
+  sourceDealId?: string; // From CRM
   managerId: string;
   startDate: Date;
   endDate?: Date;
   budget?: number;
-  progress: number;       // 0-100
+  progress: number; // 0-100
 }
 
 // Task Schema
@@ -397,6 +425,7 @@ class TimeLog {
 ```
 
 **Event Subscriptions:**
+
 ```typescript
 // Subscribes to CRM events
 @OnEvent('crm.deal.won')
@@ -407,6 +436,7 @@ async handleDealWon(event: DealWonEvent) {
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/projects               - List projects
 POST   /api/projects              - Create project
@@ -422,6 +452,7 @@ PUT    /api/tasks/:id/time        - Log time
 ### Finance Module
 
 **Responsibilities:**
+
 - Double-entry bookkeeping
 - Invoice management
 - Payroll processing
@@ -429,6 +460,7 @@ PUT    /api/tasks/:id/time        - Log time
 - Financial reporting
 
 **Database Schema (PostgreSQL):**
+
 ```sql
 -- Chart of Accounts
 CREATE TABLE accounts (
@@ -480,6 +512,7 @@ CREATE TABLE payroll_records (
 ```
 
 **Published Events:**
+
 ```typescript
 InvoiceGeneratedEvent { invoiceId, customerId, amount }
 PaymentReceivedEvent { invoiceId, amount, paymentDate }
@@ -487,6 +520,7 @@ PayrollProcessedEvent { period, totalAmount, employeeCount }
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/finance/accounts       - Chart of accounts
 POST   /api/finance/transactions    - Create journal entry
@@ -504,6 +538,7 @@ GET    /api/finance/reports/balance-sheet - Balance sheet
 ### Brain Module (AI + Knowledge)
 
 **Responsibilities:**
+
 - Knowledge base management
 - Policy document storage
 - Decision logging
@@ -512,6 +547,7 @@ GET    /api/finance/reports/balance-sheet - Balance sheet
 - Vector store management
 
 **Database Schema:**
+
 ```typescript
 // Policy Schema
 @Schema()
@@ -524,7 +560,7 @@ class Policy {
   reviewDate?: Date;
   owner: string;
   status: 'draft' | 'active' | 'archived';
-  attachments: string[];   // MinIO keys
+  attachments: string[]; // MinIO keys
 }
 
 // Decision Schema
@@ -561,7 +597,7 @@ class BrainDocument {
   source: string;
   chunkIndex: number;
   totalChunks: number;
-  vectorId?: string;      // Qdrant ID
+  vectorId?: string; // Qdrant ID
   metadata: {
     department?: string;
     classification?: 'public' | 'internal' | 'confidential';
@@ -572,6 +608,7 @@ class BrainDocument {
 ```
 
 **Vector Store (Qdrant):**
+
 ```
 Collection: brain_documents
 - Vector size: 384 (all-MiniLM-L6-v2)
@@ -580,6 +617,7 @@ Collection: brain_documents
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/brain/policies         - List policies
 POST   /api/brain/policies         - Create policy
@@ -595,22 +633,24 @@ POST   /api/brain/search           - Semantic search
 ### Compliance Extensions (Risk/CAPA/Review)
 
 **Responsibilities:**
+
 - Risk register management
 - CAPA (Corrective/Preventive Action) lifecycle
 - Management review tracking
 - Compliance evidence generation
 
 **Database Schema:**
+
 ```typescript
 // Risk Schema
 @Schema()
 class Risk {
-  riskId: string;        // "RISK-001"
+  riskId: string; // "RISK-001"
   description: string;
   category: 'strategic' | 'operational' | 'financial' | 'compliance' | 'safety';
   probability: 'low' | 'medium' | 'high';
   impact: 'low' | 'medium' | 'high' | 'critical';
-  riskScore: number;      // Calculated
+  riskScore: number; // Calculated
   owner: string;
   mitigationPlan: string;
   status: 'identified' | 'assessed' | 'mitigating' | 'accepted' | 'closed';
@@ -620,9 +660,9 @@ class Risk {
 // CAPA Schema
 @Schema()
 class CAPA {
-  capaId: string;        // "CAPA-001"
+  capaId: string; // "CAPA-001"
   type: 'corrective' | 'preventive';
-  source: string;        // audit, incident, customer complaint, etc.
+  source: string; // audit, incident, customer complaint, etc.
   description: string;
   rootCause?: string;
   correctiveAction?: string;
@@ -653,6 +693,7 @@ class ManagementReview {
 ```
 
 **Key Endpoints:**
+
 ```
 GET    /api/compliance/risks       - Risk register
 POST   /api/compliance/risks       - Add risk
@@ -669,6 +710,7 @@ GET    /api/compliance/evidence   - Export evidence
 ### RAG Service (AI Module)
 
 **Responsibilities:**
+
 - Document ingestion and chunking
 - Embedding generation
 - Hybrid search (vector + keyword)
@@ -677,6 +719,7 @@ GET    /api/compliance/evidence   - Export evidence
 - Permission-aware content filtering
 
 **Architecture:**
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   RAG Service                        │
@@ -695,6 +738,7 @@ GET    /api/compliance/evidence   - Export evidence
 ```
 
 **API Endpoints:**
+
 ```
 POST /api/rag/ingest          - Ingest document
 POST /api/rag/query           - Query with context
@@ -705,6 +749,7 @@ GET  /api/rag/stats           - RAG metrics
 ```
 
 **Query Flow:**
+
 ```typescript
 async processQuery(userId: string, query: string) {
   // 1. Permission check
@@ -717,7 +762,7 @@ async processQuery(userId: string, query: string) {
   const combined = this.rerankResults(vectorResults, keywordResults);
 
   // 3. Filter by permissions
-  const allowed = combined.filter(doc => 
+  const allowed = combined.filter(doc =>
     this.canAccess(userId, doc.metadata.classification)
   );
 
@@ -737,15 +782,15 @@ async processQuery(userId: string, query: string) {
 
 ### 14-Week Development Plan
 
-| Phase | Weeks | Focus | Deliverables |
-|-------|-------|-------|--------------|
-| **Phase 0** | 1-2 | Foundation | Docker, Keycloak, Audit, Events |
-| **Phase 1** | 3-4 | Core Platform | RBAC, Notifications, User Mgmt |
-| **Phase 2** | 5-6 | Brain + HR | Knowledge base, Employee CRUD |
-| **Phase 3** | 7-8 | CRM + Projects | Pipeline, Auto-project creation |
-| **Phase 4** | 9-10 | Finance | Invoicing, Payroll, Accounting |
-| **Phase 5** | 11-12 | AI + Compliance | Chatbot, Risk/CAPA |
-| **Phase 6** | 13-14 | Hardening | Security, Testing, Pilot |
+| Phase       | Weeks | Focus           | Deliverables                    |
+| ----------- | ----- | --------------- | ------------------------------- |
+| **Phase 0** | 1-2   | Foundation      | Docker, Keycloak, Audit, Events |
+| **Phase 1** | 3-4   | Core Platform   | RBAC, Notifications, User Mgmt  |
+| **Phase 2** | 5-6   | Brain + HR      | Knowledge base, Employee CRUD   |
+| **Phase 3** | 7-8   | CRM + Projects  | Pipeline, Auto-project creation |
+| **Phase 4** | 9-10  | Finance         | Invoicing, Payroll, Accounting  |
+| **Phase 5** | 11-12 | AI + Compliance | Chatbot, Risk/CAPA              |
+| **Phase 6** | 13-14 | Hardening       | Security, Testing, Pilot        |
 
 ### Team Allocation
 
@@ -776,6 +821,7 @@ Phase 5-6 (AI + Polish):
 ### Prerequisites
 
 **Hardware:**
+
 ```yaml
 Minimum:
   CPU: 8 vCPUs (AVX-512 support)
@@ -791,6 +837,7 @@ Recommended:
 ```
 
 **Software:**
+
 - Docker 24.x+
 - Docker Compose 2.x+
 - Git
@@ -799,18 +846,21 @@ Recommended:
 ### Environment Setup
 
 **1. Clone Repository:**
+
 ```bash
 git clone https://github.com/company/blih.git
 cd blih
 ```
 
 **2. Create Environment File:**
+
 ```bash
 cp .env.example .env
 # Edit with your secure values
 ```
 
 **.env.example:**
+
 ```bash
 # Core
 NODE_ENV=production
@@ -841,6 +891,7 @@ SSL_DOMAINS=api.company.com,app.company.com
 ```
 
 **3. Initialize Infrastructure:**
+
 ```bash
 # Start databases and core services
 docker-compose up -d mongodb postgres keycloak rabbitmq minio qdrant
@@ -861,6 +912,7 @@ docker-compose exec keycloak /opt/keycloak/bin/kcadm.sh \
 ### Production Deployment
 
 **Docker Compose Production:**
+
 ```yaml
 version: '3.8'
 
@@ -868,15 +920,15 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/ssl
     restart: unless-stopped
 
   frontend:
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile.prod
     environment:
@@ -890,7 +942,7 @@ services:
           memory: 2G
 
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.prod
     environment:
@@ -966,6 +1018,7 @@ volumes:
 ### SSL/TLS Configuration
 
 **Let's Encrypt Setup:**
+
 ```bash
 # Install certbot
 certbot certonly --webroot \
@@ -982,6 +1035,7 @@ echo "0 12 * * * certbot renew --quiet" | crontab -
 ### Health Checks
 
 **Service Health Endpoints:**
+
 ```
 GET /api/health          - Backend health
 GET /api/rag/health      - RAG service health
@@ -989,6 +1043,7 @@ GET /healthz            - General health
 ```
 
 **Deployment Verification:**
+
 ```bash
 #!/bin/bash
 set -e
@@ -1040,22 +1095,22 @@ echo "All services healthy!"
 
 ### Security Checklist
 
-| Category | Control | Status |
-|----------|---------|--------|
-| **Network** | TLS 1.3 enforced | Required |
-| | HSTS headers | Required |
-| | Rate limiting (100 req/min) | Required |
-| **Auth** | JWT with 15min expiry | Required |
-| | Refresh token rotation | Required |
-| | Brute force protection | Required |
-| **Authorization** | RBAC on all endpoints | Required |
-| | Permission middleware | Required |
-| | Company context enforcement | Required |
-| **Data** | AES-256 encryption at rest | Required |
-| | Field-level encryption (SSN, etc) | Required |
-| **Audit** | All actions logged | Required |
-| | Immutable logs (no updates) | Required |
-| | 7-year retention | Required |
+| Category          | Control                           | Status   |
+| ----------------- | --------------------------------- | -------- |
+| **Network**       | TLS 1.3 enforced                  | Required |
+|                   | HSTS headers                      | Required |
+|                   | Rate limiting (100 req/min)       | Required |
+| **Auth**          | JWT with 15min expiry             | Required |
+|                   | Refresh token rotation            | Required |
+|                   | Brute force protection            | Required |
+| **Authorization** | RBAC on all endpoints             | Required |
+|                   | Permission middleware             | Required |
+|                   | Company context enforcement       | Required |
+| **Data**          | AES-256 encryption at rest        | Required |
+|                   | Field-level encryption (SSN, etc) | Required |
+| **Audit**         | All actions logged                | Required |
+|                   | Immutable logs (no updates)       | Required |
+|                   | 7-year retention                  | Required |
 
 ### Compliance Mapping
 
@@ -1112,6 +1167,7 @@ echo "All services healthy!"
 ### Backup Strategy
 
 **Automated Backup Script:**
+
 ```bash
 #!/bin/bash
 BACKUP_DIR="/backups"
@@ -1139,6 +1195,7 @@ find $BACKUP_DIR -name "*.tar.gz" -mtime +$RETENTION_DAYS -delete
 ```
 
 **Cron Schedule:**
+
 ```bash
 # Daily backup at 2 AM
 0 2 * * * /opt/blih/scripts/backup.sh
@@ -1150,6 +1207,7 @@ find $BACKUP_DIR -name "*.tar.gz" -mtime +$RETENTION_DAYS -delete
 ### Monitoring Setup
 
 **Prometheus Metrics:**
+
 ```yaml
 scrape_configs:
   - job_name: 'backend'
@@ -1181,6 +1239,7 @@ scrape_configs:
 ### Troubleshooting Guide
 
 **High Memory Usage:**
+
 ```bash
 # Check container stats
 docker stats
@@ -1193,6 +1252,7 @@ docker exec ollama ollama rm unused-model
 ```
 
 **Slow Queries:**
+
 ```bash
 # Check Qdrant telemetry
 curl http://localhost:6333/telemetry
@@ -1203,6 +1263,7 @@ curl -X PATCH http://localhost:6333/collections/brain_documents \
 ```
 
 **Database Issues:**
+
 ```bash
 # MongoDB health check
 docker exec mongodb mongo --eval "db.adminCommand('ismaster')"
@@ -1217,26 +1278,27 @@ docker exec postgres psql -U admin -c "SELECT * FROM pg_stat_activity;"
 
 ### Environment Variable Reference
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `NODE_ENV` | Environment mode | Yes | `production` |
-| `COMPANY_ID` | Company identifier | Yes | `BLIH` |
-| `MONGO_ROOT_USERNAME` | MongoDB admin user | Yes | `admin` |
-| `MONGO_ROOT_PASSWORD` | MongoDB admin password | Yes | - |
-| `POSTGRES_PASSWORD` | PostgreSQL password | Yes | - |
-| `JWT_SECRET` | JWT signing secret | Yes | - |
-| `KEYCLOAK_ADMIN` | Keycloak admin user | Yes | `admin` |
-| `KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin pass | Yes | - |
-| `MINIO_ROOT_USER` | MinIO admin user | Yes | `admin` |
-| `MINIO_ROOT_PASSWORD` | MinIO admin password | Yes | - |
-| `OLLAMA_URL` | Ollama service URL | No | `http://ollama:11434` |
-| `QDRANT_URL` | Qdrant service URL | No | `http://qdrant:6333` |
-| `RABBITMQ_URL` | RabbitMQ URL | No | `amqp://rabbitmq:5672` |
-| `CPU_AWARE` | Optimize for CPU-only | No | `true` |
+| Variable                  | Description            | Required | Default                |
+| ------------------------- | ---------------------- | -------- | ---------------------- |
+| `NODE_ENV`                | Environment mode       | Yes      | `production`           |
+| `COMPANY_ID`              | Company identifier     | Yes      | `BLIH`                 |
+| `MONGO_ROOT_USERNAME`     | MongoDB admin user     | Yes      | `admin`                |
+| `MONGO_ROOT_PASSWORD`     | MongoDB admin password | Yes      | -                      |
+| `POSTGRES_PASSWORD`       | PostgreSQL password    | Yes      | -                      |
+| `JWT_SECRET`              | JWT signing secret     | Yes      | -                      |
+| `KEYCLOAK_ADMIN`          | Keycloak admin user    | Yes      | `admin`                |
+| `KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin pass    | Yes      | -                      |
+| `MINIO_ROOT_USER`         | MinIO admin user       | Yes      | `admin`                |
+| `MINIO_ROOT_PASSWORD`     | MinIO admin password   | Yes      | -                      |
+| `OLLAMA_URL`              | Ollama service URL     | No       | `http://ollama:11434`  |
+| `QDRANT_URL`              | Qdrant service URL     | No       | `http://qdrant:6333`   |
+| `RABBITMQ_URL`            | RabbitMQ URL           | No       | `amqp://rabbitmq:5672` |
+| `CPU_AWARE`               | Optimize for CPU-only  | No       | `true`                 |
 
 ### API Endpoint Summary
 
 **Core Platform:**
+
 ```
 GET    /api/health
 GET    /api/auth/me
@@ -1247,6 +1309,7 @@ GET    /api/audit-logs
 ```
 
 **HR Module:**
+
 ```
 GET    /api/hr/employees
 POST   /api/hr/employees
@@ -1256,6 +1319,7 @@ DELETE /api/hr/employees/:id
 ```
 
 **CRM Module:**
+
 ```
 GET    /api/crm/leads
 POST   /api/crm/leads
@@ -1265,6 +1329,7 @@ GET    /api/crm/pipeline
 ```
 
 **Projects Module:**
+
 ```
 GET    /api/projects
 POST   /api/projects
@@ -1274,6 +1339,7 @@ PUT    /api/tasks/:id/time
 ```
 
 **Finance Module:**
+
 ```
 GET    /api/finance/accounts
 POST   /api/finance/transactions
@@ -1283,6 +1349,7 @@ GET    /api/finance/reports/pnl
 ```
 
 **Brain Module:**
+
 ```
 GET    /api/brain/policies
 POST   /api/brain/policies
@@ -1291,6 +1358,7 @@ POST   /api/brain/documents
 ```
 
 **RAG Service:**
+
 ```
 POST   /api/rag/ingest
 POST   /api/rag/query
@@ -1298,6 +1366,7 @@ GET    /api/rag/documents
 ```
 
 **Compliance Module:**
+
 ```
 GET    /api/compliance/risks
 POST   /api/compliance/risks
@@ -1336,21 +1405,21 @@ docker volume prune -f                  # Clean volumes
 
 ### Glossary
 
-| Term | Definition |
-|------|------------|
-| **BLIH** | Business Lifecycle Integrated Hub |
-| **RBAC** | Role-Based Access Control |
-| **RAG** | Retrieval-Augmented Generation (AI) |
-| **CAPA** | Corrective And Preventive Action |
-| **SOP** | Standard Operating Procedure |
-| **Qdrant** | Vector database for embeddings |
-| **Ollama** | Local LLM runner |
-| **n8n** | Workflow automation tool |
-| **MinIO** | S3-compatible object storage |
-| **Keycloak** | Identity and access management |
+| Term         | Definition                          |
+| ------------ | ----------------------------------- |
+| **BLIH**     | Business Lifecycle Integrated Hub   |
+| **RBAC**     | Role-Based Access Control           |
+| **RAG**      | Retrieval-Augmented Generation (AI) |
+| **CAPA**     | Corrective And Preventive Action    |
+| **SOP**      | Standard Operating Procedure        |
+| **Qdrant**   | Vector database for embeddings      |
+| **Ollama**   | Local LLM runner                    |
+| **n8n**      | Workflow automation tool            |
+| **MinIO**    | S3-compatible object storage        |
+| **Keycloak** | Identity and access management      |
 
 ---
 
-*Documentation Version: 1.0*  
-*Last Updated: February 2026*  
-*For support contact: dev-team@company.com*
+_Documentation Version: 1.0_  
+_Last Updated: February 2026_  
+_For support contact: dev-team@company.com_

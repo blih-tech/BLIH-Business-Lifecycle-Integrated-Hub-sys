@@ -1,7 +1,8 @@
 import { IsArray, IsIn, IsObject, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { NotificationDto as NotificationDtoType } from '@repo/types';
 
-export class NotificationDto {
+export class NotificationDto implements NotificationDtoType {
   @ApiProperty({
     description: 'Notification domain type.',
     example: 'security',

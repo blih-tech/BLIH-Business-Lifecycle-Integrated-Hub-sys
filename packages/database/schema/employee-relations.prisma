@@ -1,0 +1,158 @@
+// Employee relations models
+// This file contains incidents, disciplinary actions, grievances, recognition, surveys, and mediations
+
+model IncidentReport {
+  id                 String               @id @default(uuid()) @db.Uuid
+  reportId           String               @unique @map("report_id") @db.VarChar(32)
+  employeeId         String               @map("employee_id") @db.Uuid
+  employee           Employee             @relation("IncidentReportReporter", fields: [employeeId], references: [id], onDelete: Restrict)
+  incidentType       IncidentType         @map("incident_type")
+  severity           IncidentSeverity
+  description        String               @db.Text
+  location           String?              @db.VarChar(256)
+  occurredAt         DateTime             @map("occurred_at")
+  peopleInvolved     Json?                @map("people_involved") @db.JsonB
+  immediateActions   Json?                @map("immediate_actions") @db.JsonB
+  investigatorId     String?              @map("investigator_id") @db.Uuid
+  investigator       User?                @relation("IncidentReportInvestigator", fields: [investigatorId], references: [id], onDelete: SetNull)
+  slaHours           Int?                 @map("sla_hours")
+  investigationDueAt DateTime?            @map("investigation_due_at")
+  investigationNotes String?              @map("investigation_notes") @db.Text
+  rootCause          String?              @map("root_cause") @db.Text
+  preventiveActions  Json?                @map("preventive_actions") @db.JsonB
+  status             IncidentReportStatus @default(OPEN)
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+
+  @@index([employeeId])
+  @@index([status])
+  @@index([severity])
+  @@index([investigatorId])
+}
+
+model DisciplinaryAction {
+  id               String                   @id @default(uuid()) @db.Uuid
+  employeeId       String                   @map("employee_id") @db.Uuid
+  employee         Employee                 @relation("DisciplinaryActionSubject", fields: [employeeId], references: [id], onDelete: Restrict)
+  incidentType     DisciplinaryIncidentType @map("incident_type")
+  actionType       DisciplinaryActionType   @map("action_type")
+  incidentReportId String?                  @map("incident_report_id") @db.Uuid
+  description      String                   @db.Text
+  effectiveFrom    DateTime                 @map("effective_from") @db.Date
+  expiresAt        DateTime?                @map("expires_at") @db.Date
+  durationDays     Int?                     @map("duration_days")
+  approvedById     String?                  @map("approved_by_id") @db.Uuid
+  approvedBy       User?                    @relation("DisciplinaryActionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  status           DisciplinaryStatus       @default(PENDING)
+  createdAt        DateTime                 @default(now()) @map("created_at")
+  updatedAt        DateTime                 @updatedAt @map("updated_at")
+
+  @@index([employeeId])
+  @@index([incidentType])
+  @@index([status])
+  @@index([effectiveFrom])
+}
+
+model Grievance {
+  id              String          @id @default(uuid()) @db.Uuid
+  employeeId      String          @map("employee_id") @db.Uuid
+  employee        Employee        @relation("GrievanceReporter", fields: [employeeId], references: [id], onDelete: Restrict)
+  subject         String          @db.VarChar(512)
+  description     String          @db.Text
+  category        String?         @db.VarChar(128)
+  submittedAt     DateTime        @map("submitted_at")
+  assignedToId    String?         @map("assigned_to_id") @db.Uuid
+  assignedTo      User?           @relation("GrievanceAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  status          GrievanceStatus @default(OPEN)
+  resolutionNotes String?         @map("resolution_notes") @db.Text
+  closedAt        DateTime?       @map("closed_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  @@index([employeeId])
+  @@index([assignedToId])
+  @@index([status])
+}
+
+model Recognition {
+  id                String              @id @default(uuid()) @db.Uuid
+  nominatorId       String              @map("nominator_id") @db.Uuid
+  nominator         User                @relation("RecognitionNominator", fields: [nominatorId], references: [id], onDelete: Restrict)
+  nomineeEmployeeId String              @map("nominee_employee_id") @db.Uuid
+  nomineeEmployee   Employee            @relation("RecognitionNominee", fields: [nomineeEmployeeId], references: [id], onDelete: Restrict)
+  category          RecognitionCategory
+  description       String              @db.Text
+  impact            String?             @db.Text
+  suggestedAward    String?             @map("suggested_award") @db.VarChar(64)
+  publicRecognition Boolean             @default(true) @map("public_recognition")
+  approvals         Json?               @db.JsonB
+  status            RecognitionStatus   @default(PENDING)
+  approvedById      String?             @map("approved_by_id") @db.Uuid
+  approvedBy        User?               @relation("RecognitionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+
+  @@index([nomineeEmployeeId])
+  @@index([nominatorId])
+  @@index([status])
+}
+
+model Survey {
+  id          String           @id @default(uuid()) @db.Uuid
+  title       String           @db.VarChar(512)
+  description String?          @db.Text
+  type        SurveyType       @default(SATISFACTION)
+  questions   Json             @db.JsonB
+  anonymous   Boolean          @default(false)
+  status      SurveyStatus     @default(DRAFT)
+  opensAt     DateTime?        @map("opens_at") @db.Timestamp
+  closesAt    DateTime?        @map("closes_at") @db.Timestamp
+  createdById String           @map("created_by_id") @db.Uuid
+  createdBy   User             @relation("SurveyCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  responses   SurveyResponse[]
+
+  @@index([status])
+  @@index([createdById])
+}
+
+model SurveyResponse {
+  id          String    @id @default(uuid()) @db.Uuid
+  surveyId    String    @map("survey_id") @db.Uuid
+  survey      Survey    @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  employeeId  String?   @map("employee_id") @db.Uuid
+  employee    Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  responses   Json      @db.JsonB
+  submittedAt DateTime  @map("submitted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([surveyId])
+  @@index([employeeId])
+}
+
+model ConflictMediation {
+  id                   String          @id @default(uuid()) @db.Uuid
+  requesterEmployeeId  String          @map("requester_employee_id") @db.Uuid
+  requesterEmployee    Employee        @relation("MediationRequester", fields: [requesterEmployeeId], references: [id], onDelete: Restrict)
+  otherPartyEmployeeId String          @map("other_party_employee_id") @db.Uuid
+  otherPartyEmployee   Employee        @relation("MediationOtherParty", fields: [otherPartyEmployeeId], references: [id], onDelete: Restrict)
+  nature               String          @db.Text
+  duration             String?         @db.VarChar(128)
+  attemptedResolutions String?         @map("attempted_resolutions") @db.Text
+  workImpact           String?         @map("work_impact") @db.Text
+  desiredOutcome       String?         @map("desired_outcome") @db.Text
+  mediatorId           String?         @map("mediator_id") @db.Uuid
+  mediator             User?           @relation("MediationMediator", fields: [mediatorId], references: [id], onDelete: SetNull)
+  sessionDates         Json?           @map("session_dates") @db.JsonB
+  agreementReached     Boolean?        @map("agreement_reached")
+  agreementNotes       String?         @map("agreement_notes") @db.Text
+  status               MediationStatus @default(PENDING)
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+
+  @@index([requesterEmployeeId])
+  @@index([otherPartyEmployeeId])
+  @@index([mediatorId])
+  @@index([status])
+}

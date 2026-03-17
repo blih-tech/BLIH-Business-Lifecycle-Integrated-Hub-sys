@@ -6,9 +6,9 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import type { Prisma } from '@prisma/client';
 import { Reflector } from '@nestjs/core';
 import { Observable, catchError, tap, throwError } from 'rxjs';
+import type { Prisma } from '../../platform/prisma/prisma-client';
 import { AUDIT_KEY, AuditMetadata } from '../decorators/audit.decorator';
 import { AUDIT_BEFORE_STATE, AUDIT_RESOURCE_ID } from './pre-audit.interceptor';
 import { PrismaService } from '../../platform/prisma/prisma.service';

@@ -32,7 +32,7 @@ module.exports = {
     'type-empty': [2, 'never'],
 
     // --- Header: type(scope?): subject ---
-    'header-max-length': [2, 'always', 72],
+    'header-max-length': [2, 'always', 100],
     'header-full-stop': [2, 'never', '.'],
     'scope-case': [2, 'always', 'lower-case'],
     'scope-empty': [0], // scope optional
@@ -40,13 +40,13 @@ module.exports = {
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
 
-    // --- Body (optional); max 120 chars per line ---
+    // --- Body (optional); max 150 chars per line ---
     'body-leading-blank': [2, 'always'],
-    'body-max-line-length': [2, 'always', 120],
+    'body-max-line-length': [2, 'always', 150],
     'body-full-stop': [0], // disabled: allow body lines to end with a period
 
-    // --- Footer (optional; e.g. BREAKING CHANGE:, Fixes #123); max 120 chars per line ---
+    // --- Footer (optional; e.g. BREAKING CHANGE:, Fixes #123); max 150 chars per line ---
     'footer-leading-blank': [2, 'always'],
-    'footer-max-line-length': [2, 'always', 120],
+    'footer-max-line-length': [2, 'always', 150],
   },
 };

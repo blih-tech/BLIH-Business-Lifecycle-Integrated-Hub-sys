@@ -19,7 +19,7 @@ describe('DeleteRoleUseCase', () => {
       },
     };
     const userPermissionSnapshot = {
-      recomputeAllUsers: jest.fn(),
+      invalidateAll: jest.fn(),
     };
 
     const useCase = new DeleteRoleUseCase(
@@ -53,7 +53,7 @@ describe('DeleteRoleUseCase', () => {
       },
     };
     const userPermissionSnapshot = {
-      recomputeAllUsers: jest.fn(),
+      invalidateAll: jest.fn(),
     };
 
     const useCase = new DeleteRoleUseCase(

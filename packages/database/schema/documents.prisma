@@ -1,0 +1,73 @@
+// Document Management Models
+// This file contains EmployeeDocument and Contract models
+
+model EmployeeDocument {
+  id            String       @id @default(uuid()) @db.Uuid
+  employeeId    String       @map("employee_id") @db.Uuid
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type          DocumentType
+  typeOther     String?      @map("type_other")
+  fileUrl       String       @map("file_url")
+  fileName      String?      @map("file_name")
+  fileSizeBytes Int?         @map("file_size_bytes")
+  mimeType      String?      @map("mime_type")
+  issueDate     DateTime?    @map("issue_date") @db.Date
+  expiryDate    DateTime?    @map("expiry_date") @db.Date
+  isMandatory   Boolean      @default(false) @map("is_mandatory")
+  verified      Boolean      @default(false)
+  verifiedById  String?      @map("verified_by_id") @db.Uuid
+  verifiedBy    User?        @relation("EmployeeDocumentVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedAt    DateTime?    @map("verified_at")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([employeeId])
+  @@index([employeeId, type])
+  @@index([expiryDate])
+  @@index([verifiedById])
+}
+
+model Contract {
+  id              String         @id @default(uuid()) @db.Uuid
+  employeeId      String         @map("employee_id") @db.Uuid
+  employee        Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contractType    ContractType   @map("contract_type")
+  sequenceNumber  Int            @map("sequence_number")
+  startDate       DateTime       @map("start_date") @db.Date
+  endDate         DateTime?      @map("end_date") @db.Date
+  trialApplies    Boolean        @default(false) @map("trial_applies")
+  trialEndDate    DateTime?      @map("trial_end_date") @db.Date
+  trialConfirmed  Boolean        @default(false) @map("trial_confirmed")
+  documentUrl     String?        @map("document_url")
+  status          ContractStatus @default(DRAFT)
+  syncedToFinance Boolean        @default(false) @map("synced_to_finance")
+  syncedAt        DateTime?      @map("synced_at")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([employeeId, sequenceNumber])
+  @@index([employeeId])
+  @@index([status])
+  @@index([endDate])
+}
+
+model JobDescription {
+  id            String    @id @default(uuid()) @db.Uuid
+  positionId    String?   @map("position_id") @db.Uuid
+  position      Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  title         String
+  level         String?
+  code          String?   @unique
+  summary       String?   @db.Text
+  duties        Json?
+  skills        Json?
+  kpis          Json?
+  documentUrl   String?   @map("document_url")
+  version       Int       @default(1)
+  effectiveFrom DateTime? @map("effective_from") @db.Date
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([positionId])
+  @@index([title])
+}

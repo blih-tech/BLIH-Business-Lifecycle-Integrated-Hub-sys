@@ -147,7 +147,7 @@ git push
 npm run prisma:migrate:dev
 
 # Commit migration files
-git add src/prisma/migrations/
+git add ../../packages/database/migrations/
 git commit -m "feat: migration for [feature]"
 git push
 
@@ -162,7 +162,7 @@ git push
 npm run prisma:generate
 
 # View database with Prisma Studio
-npx prisma studio --schema src/prisma/schema.prisma
+npx prisma studio --schema ../../packages/database/schema
 
 # Connect to database with psql
 psql -h <VPS_HOST> -p 5432 -U blih_dev_user -d blih-system-dev

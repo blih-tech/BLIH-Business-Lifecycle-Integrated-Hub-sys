@@ -1,5 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
@@ -53,6 +54,7 @@ export class EvaluateAccessController {
     unauthorized: 'Unauthorized: missing or invalid bearer access token',
     forbidden: 'User not found',
   })
+  @ResponseMessage('Access evaluation completed successfully')
   evaluateAccess(@Body() dto: AccessEvaluationDto) {
     return this.evaluateAccessUseCase.execute(
       dto.userId,

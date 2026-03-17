@@ -1,0 +1,12 @@
+// Multi-file Prisma schema entrypoint
+// This file defines the generator and datasource for the schema folder.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}

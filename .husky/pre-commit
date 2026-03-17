@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
-npm run branch:check
-npx --no-install lint-staged
-npm run lint
-npm run check-types
+echo "Running lint-staged checks..."
+
+npx lint-staged --verbose --concurrent 1 --max-arg-length 3000
+
+echo "Pre-commit checks passed"

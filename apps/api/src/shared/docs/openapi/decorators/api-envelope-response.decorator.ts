@@ -37,12 +37,16 @@ function envelopeSchema(
 export function ApiEnvelopeOkResponse<TModel extends Type<unknown>>(
   model: TModel,
   description = 'Request processed successfully.',
+  example?: Record<string, unknown>,
 ) {
   return applyDecorators(
     ApiExtraModels(ApiSuccessEnvelopeMetaDto, model),
     ApiOkResponse({
       description,
-      schema: envelopeSchema({ $ref: getSchemaPath(model) }),
+      schema: {
+        ...envelopeSchema({ $ref: getSchemaPath(model) }),
+        ...(example ? { example } : {}),
+      },
     }),
   );
 }
@@ -50,12 +54,16 @@ export function ApiEnvelopeOkResponse<TModel extends Type<unknown>>(
 export function ApiEnvelopeCreatedResponse<TModel extends Type<unknown>>(
   model: TModel,
   description = 'Resource created successfully.',
+  example?: Record<string, unknown>,
 ) {
   return applyDecorators(
     ApiExtraModels(ApiSuccessEnvelopeMetaDto, model),
     ApiCreatedResponse({
       description,
-      schema: envelopeSchema({ $ref: getSchemaPath(model) }),
+      schema: {
+        ...envelopeSchema({ $ref: getSchemaPath(model) }),
+        ...(example ? { example } : {}),
+      },
     }),
   );
 }
@@ -63,15 +71,19 @@ export function ApiEnvelopeCreatedResponse<TModel extends Type<unknown>>(
 export function ApiEnvelopeArrayResponse<TModel extends Type<unknown>>(
   model: TModel,
   description = 'Request processed successfully.',
+  example?: Record<string, unknown>,
 ) {
   return applyDecorators(
     ApiExtraModels(ApiSuccessEnvelopeMetaDto, model),
     ApiOkResponse({
       description,
-      schema: envelopeSchema({
-        type: 'array',
-        items: { $ref: getSchemaPath(model) },
-      }),
+      schema: {
+        ...envelopeSchema({
+          type: 'array',
+          items: { $ref: getSchemaPath(model) },
+        }),
+        ...(example ? { example } : {}),
+      },
     }),
   );
 }
@@ -79,18 +91,22 @@ export function ApiEnvelopeArrayResponse<TModel extends Type<unknown>>(
 export function ApiEnvelopePaginatedResponse<TModel extends Type<unknown>>(
   model: TModel,
   description = 'Paginated response.',
+  example?: Record<string, unknown>,
 ) {
   return applyDecorators(
     ApiExtraModels(ApiSuccessEnvelopeMetaDto, PaginationMetaDto, model),
     ApiOkResponse({
       description,
-      schema: envelopeSchema(
-        {
-          type: 'array',
-          items: { $ref: getSchemaPath(model) },
-        },
-        true,
-      ),
+      schema: {
+        ...envelopeSchema(
+          {
+            type: 'array',
+            items: { $ref: getSchemaPath(model) },
+          },
+          true,
+        ),
+        ...(example ? { example } : {}),
+      },
     }),
   );
 }

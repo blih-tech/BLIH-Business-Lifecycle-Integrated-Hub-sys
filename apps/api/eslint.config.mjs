@@ -6,7 +6,12 @@ import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: ['eslint.config.mjs', 'scripts/**/*.js'],
+    ignores: [
+      'eslint.config.mjs',
+      'validate-permission-constants.mjs',
+      'src/platform/prisma/generated/**',
+      'src/shared/demo-hr-types/**',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -19,6 +24,8 @@ export default [
       },
       sourceType: 'commonjs',
       parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
         sourceType: 'commonjs',
       },
     },

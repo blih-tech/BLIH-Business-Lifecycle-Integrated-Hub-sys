@@ -9,6 +9,28 @@ export interface RequestContext {
   userAgent: string;
 }
 
+const readHeaderValue = (
+  value: string | string[] | undefined,
+): string | undefined => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+};
+
+const resolveForwardedIp = (request: Request): string | undefined => {
+  const forwardedFor = readHeaderValue(request.headers['x-forwarded-for']);
+  if (forwardedFor) {
+    const firstHop = forwardedFor.split(',')[0]?.trim();
+    if (firstHop) {
+      return firstHop;
+    }
+  }
+
+  return readHeaderValue(request.headers['x-real-ip']);
+};
+
 export const getOrCreateRequestId = (request: Request): string => {
   const raw =
     request.headers[REQUEST_ID_HEADER] ?? request.headers['x-request-id'];
@@ -18,6 +40,6 @@ export const getOrCreateRequestId = (request: Request): string => {
 
 export const buildRequestContext = (request: Request): RequestContext => ({
   requestId: getOrCreateRequestId(request),
-  ipAddress: request.ip ?? 'unknown',
+  ipAddress: resolveForwardedIp(request) ?? request.ip ?? 'unknown',
   userAgent: request.headers['user-agent'] ?? 'unknown',
 });

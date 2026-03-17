@@ -1,5 +1,9 @@
 import type { OpenAPIObject } from '@nestjs/swagger';
-import { enforceUnifiedSchemas } from './swagger.setup';
+import {
+  addKeycloakLoginOperation,
+  enforceUnifiedSchemas,
+  resolveApiServerUrl,
+} from './swagger.setup';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
@@ -305,6 +309,50 @@ describe('enforceUnifiedSchemas', () => {
     expect(usersList?.data).toEqual([{ id: 'user-1' }]);
   });
 
+  it('uses route-specific response messages when the operation declares one', () => {
+    const doc = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/users': {
+          post: {
+            'x-response-message': 'User created successfully',
+            responses: {
+              '201': {
+                description: 'created',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: { id: { type: 'string' } },
+                      example: { id: 'user-1' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    } as OpenAPIObject;
+
+    enforceUnifiedSchemas(doc);
+
+    const json = getJsonMedia(doc, '/api/v1/users', 'post', '201') as
+      | { example?: { message?: string }; schema?: Record<string, unknown> }
+      | undefined;
+    const schema = json?.schema as
+      | { properties?: { message?: { example?: string } } }
+      | undefined;
+
+    expect(json?.example?.message).toBe('User created successfully');
+    expect(schema?.properties?.message?.example).toBe(
+      'User created successfully',
+    );
+  });
+
   it('adds status-specific error examples when only ApiErrorResponseDto ref is present', () => {
     const doc: OpenAPIObject = {
       openapi: '3.0.0',
@@ -389,5 +437,255 @@ describe('enforceUnifiedSchemas', () => {
     expect(json401.example?.error?.code).toBe('UNAUTHORIZED');
     expect(json403.example?.message).toBe('Forbidden');
     expect(json403.example?.error?.code).toBe('FORBIDDEN');
+  });
+
+  it('creates fallback success and validation responses when an operation has no explicit responses', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/hr/leave/requests': {
+          post: {
+            summary: 'Create leave request',
+            responses: {},
+            requestBody: {
+              required: true,
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      employeeId: { type: 'string' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    enforceUnifiedSchemas(doc);
+
+    const success = getJsonMedia(
+      doc,
+      '/api/v1/hr/leave/requests',
+      'post',
+      '201',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+    const badRequest = getJsonMedia(
+      doc,
+      '/api/v1/hr/leave/requests',
+      'post',
+      '400',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+
+    expect(success).toBeDefined();
+    expect(hasEnvelopeProperties(success?.schema)).toBe(true);
+    expect(isEnvelopeExample(success?.example)).toBe(true);
+    expect(
+      (success?.example as { data?: { resource?: string } })?.data?.resource,
+    ).toBe('request');
+
+    expect(badRequest).toBeDefined();
+    expect(hasEnvelopeProperties(badRequest?.schema)).toBe(true);
+    expect(isEnvelopeExample(badRequest?.example)).toBe(true);
+    expect(
+      (badRequest?.example as { error?: { code?: string } })?.error?.code,
+    ).toBe('VALIDATION_ERROR');
+  });
+
+  it('creates fallback not-found responses for path-based resource lookups', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/hr/employees/{id}': {
+          get: {
+            summary: 'Get full employee record',
+            responses: {},
+            parameters: [
+              {
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: { type: 'string' },
+              },
+            ],
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    enforceUnifiedSchemas(doc);
+
+    const success = getJsonMedia(
+      doc,
+      '/api/v1/hr/employees/{id}',
+      'get',
+      '200',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+    const notFound = getJsonMedia(
+      doc,
+      '/api/v1/hr/employees/{id}',
+      'get',
+      '404',
+    ) as { example?: unknown; schema?: unknown } | undefined;
+
+    expect(success).toBeDefined();
+    expect(hasEnvelopeProperties(success?.schema)).toBe(true);
+    expect(isEnvelopeExample(success?.example)).toBe(true);
+
+    expect(notFound).toBeDefined();
+    expect(hasEnvelopeProperties(notFound?.schema)).toBe(true);
+    expect(isEnvelopeExample(notFound?.example)).toBe(true);
+    expect(
+      (notFound?.example as { error?: { code?: string } })?.error?.code,
+    ).toBe('NOT_FOUND');
+  });
+
+  it('preserves redirect-only operations without injecting synthetic 200 JSON responses', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/auth/login': {
+          get: {
+            responses: {
+              '302': {
+                description: 'Redirect to Keycloak authorize endpoint',
+                headers: {
+                  Location: {
+                    schema: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    enforceUnifiedSchemas(doc);
+
+    const operation = doc.paths['/api/v1/auth/login'].get as {
+      responses?: Record<string, unknown>;
+    };
+
+    expect(operation.responses?.['302']).toBeDefined();
+    expect(operation.responses?.['200']).toBeUndefined();
+  });
+
+  it('adds a manual keycloak login operation without requiring a controller route', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {},
+      components: {},
+      tags: [],
+    };
+
+    addKeycloakLoginOperation(
+      doc,
+      'http://localhost:8080/',
+      'blih',
+      'blih-system-api',
+    );
+
+    const pathItem = doc.paths['/realms/{realm}/protocol/openid-connect/token'];
+    expect(pathItem).toBeDefined();
+    expect(pathItem.post).toBeDefined();
+
+    const operation = pathItem.post as {
+      servers?: Array<{ url?: string }>;
+      parameters?: Array<{ name?: string; schema?: { default?: string } }>;
+      requestBody?: {
+        content?: {
+          'application/x-www-form-urlencoded'?: {
+            examples?: {
+              passwordGrant?: { value?: { client_id?: string } };
+            };
+          };
+        };
+      };
+      responses?: {
+        '200'?: {
+          content?: {
+            'application/json'?: {
+              schema?: {
+                properties?: {
+                  access_token?: { type?: string };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+
+    expect(operation.servers?.[0]?.url).toBe('http://localhost:8080');
+    expect(operation.parameters?.[0]?.name).toBe('realm');
+    expect(operation.parameters?.[0]?.schema?.default).toBe('blih');
+    expect(
+      operation.requestBody?.content?.['application/x-www-form-urlencoded']
+        ?.examples?.passwordGrant?.value?.client_id,
+    ).toBe('blih-system-api');
+    expect(
+      operation.responses?.['200']?.content?.['application/json']?.schema
+        ?.properties?.access_token?.type,
+    ).toBe('string');
+  });
+});
+
+describe('resolveApiServerUrl', () => {
+  it('uses the application origin when document paths already include the api prefix', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/api/v1/auth/login': {
+          get: {
+            responses: {
+              '302': {
+                description: 'redirect',
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    expect(resolveApiServerUrl(doc, 'api/v1')).toBe('/');
+  });
+
+  it('uses the configured api prefix when document paths are not prefixed', () => {
+    const doc: OpenAPIObject = {
+      openapi: '3.0.0',
+      info: { title: 'test', version: '1.0.0' },
+      paths: {
+        '/auth/login': {
+          get: {
+            responses: {
+              '302': {
+                description: 'redirect',
+              },
+            },
+          },
+        },
+      },
+      components: {},
+      tags: [],
+    };
+
+    expect(resolveApiServerUrl(doc, 'api/v1')).toBe('/api/v1');
   });
 });

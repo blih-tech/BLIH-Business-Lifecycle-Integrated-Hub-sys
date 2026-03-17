@@ -1,0 +1,122 @@
+import type {
+  ActiveResignation,
+  DepartmentAttritionItem,
+  ExitReasonItem,
+  ExitOverviewStat,
+  ResignationNotification,
+  ResignationTrendPoint,
+} from "@/features/hr/exit/overview/types";
+
+export const exitOverviewStats: ExitOverviewStat[] = [
+  { id: "active-resignations", label: "Active Resignations", value: "8", badge: "+2 this month", icon: "active", badgeTone: "danger" },
+  { id: "pending-interviews", label: "Pending Interviews", value: "5", badge: "3 scheduled", icon: "interview", badgeTone: "primary" },
+  { id: "clearance-pending", label: "Clearance Pending", value: "12", badge: "4 urgent", icon: "clearance", badgeTone: "danger" },
+  { id: "completed-this-month", label: "Completed This Month", value: "6", badge: "2 pending", icon: "completed", badgeTone: "neutral" },
+];
+
+export const activeResignationNotifications: ResignationNotification[] = [
+  {
+    id: "mark-kim",
+    initials: "MK",
+    name: "Mark Kim",
+    department: "Development",
+    priority: "high",
+    summary: "Project deliverables due next week",
+    date: "2024-02-25",
+    remaining: "30 days remaining",
+  },
+  {
+    id: "linda-tom",
+    initials: "LT",
+    name: "Linda Tom",
+    department: "Design",
+    priority: "low",
+    summary: "Additional feedback requested for final design",
+    date: "2024-02-28",
+    remaining: "32 days remaining",
+  },
+  {
+    id: "sarah-johnson-a",
+    initials: "SJ",
+    name: "Sarah Johnson",
+    department: "Marketing",
+    priority: "urgent",
+    summary: "Resignation letter received - 30 days notice period started",
+    date: "2024-02-18",
+    remaining: "25 days remaining",
+  },
+  {
+    id: "sarah-johnson-b",
+    initials: "SJ",
+    name: "Sarah Johnson",
+    department: "Marketing",
+    priority: "urgent",
+    summary: "Resignation letter received - 30 days notice period started",
+    date: "2024-02-18",
+    remaining: "25 days remaining",
+  },
+];
+
+export const activeResignations: ActiveResignation[] = [
+  {
+    id: "ar-1",
+    initials: "SJ",
+    name: "Sarah Johnson",
+    department: "Marketing",
+    role: "Marketing Manager",
+    resignationDate: "2024-02-18",
+    lastWorkingDay: "2024-03-20",
+    daysRemaining: "25 days",
+    status: "interview pending",
+  },
+  {
+    id: "ar-2",
+    initials: "MC",
+    name: "Michael Chen",
+    department: "Engineering",
+    role: "Senior Engineer",
+    resignationDate: "2024-02-10",
+    lastWorkingDay: "2024-03-12",
+    daysRemaining: "15 days",
+    status: "clearance progress",
+  },
+  {
+    id: "ar-3",
+    initials: "ER",
+    name: "Emily Rodriguez",
+    department: "Design",
+    role: "UI/UX Designer",
+    resignationDate: "2024-02-05",
+    lastWorkingDay: "2024-03-07",
+    daysRemaining: "10 days",
+    status: "clearance progress",
+  },
+];
+
+export const resignationTrendData: ResignationTrendPoint[] = [
+  { month: "Aug", exits: 4, hires: 6 },
+  { month: "Sep", exits: 5, hires: 4 },
+  { month: "Oct", exits: 3, hires: 5 },
+  { month: "Nov", exits: 6, hires: 7 },
+  { month: "Dec", exits: 4, hires: 3 },
+  { month: "Jan", exits: 7, hires: 8 },
+  { month: "Feb", exits: 6, hires: 4 },
+];
+
+export const departmentAttritionData: DepartmentAttritionItem[] = [
+  { id: "engineering", name: "Engineering", employees: 45, attritionRate: "6.7%", exitsThisYear: 3, remaining: 42 },
+  { id: "marketing", name: "Marketing", employees: 28, attritionRate: "7.1%", exitsThisYear: 2, remaining: 26 },
+  { id: "sales", name: "Sales", employees: 32, attritionRate: "12.5%", exitsThisYear: 4, remaining: 28 },
+  { id: "design", name: "Design", employees: 18, attritionRate: "5.6%", exitsThisYear: 1, remaining: 17 },
+  { id: "analytics", name: "Analytics", employees: 15, attritionRate: "13.3%", exitsThisYear: 2, remaining: 13 },
+  { id: "hr", name: "HR", employees: 12, attritionRate: "0%", exitsThisYear: 0, remaining: 12 },
+];
+
+export const topExitReasons: ExitReasonItem[] = [
+  { id: "better-opportunity", label: "Better Opportunity", value: 18 },
+  { id: "career-growth", label: "Career Growth", value: 14 },
+  { id: "compensation", label: "Compensation", value: 12 },
+  { id: "work-life-balance", label: "Work-Life Balance", value: 8 },
+  { id: "relocation", label: "Relocation", value: 6 },
+  { id: "personal-reasons", label: "Personal Reasons", value: 4 },
+];
