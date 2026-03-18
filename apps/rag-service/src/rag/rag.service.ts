@@ -5,7 +5,6 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
-
 interface CvAnalysisResult {
   score?: number;
   strengths?: string[];
@@ -138,39 +137,32 @@ export class RagService {
       chunkOverlap: 200,
     });
 
-  const docsWithMetadata: Document[] = docs.map((d): Document => ({
-      pageContent: d.pageContent,
-      metadata: {
-        ...(d.metadata as Record<string, unknown>),
-        ...(metadata ?? {}),
-        source: fileName,
-      },
-    }));
+    const docsWithMetadata: Document[] = docs.map(
+      (d): Document => ({
+        pageContent: d.pageContent,
+        metadata: {
+          ...(d.metadata as Record<string, unknown>),
+          ...(metadata ?? {}),
+          source: fileName,
+        },
+      }),
+    );
 
     const splitDocs = await splitter.splitDocuments(docsWithMetadata);
-    
+
     for (const doc of splitDocs) {
-  await this.ingestToBrain(doc.pageContent, fileName, {
-    module:
-      typeof metadata?.module === 'string'
-        ? metadata.module
-        : 'general',
+      await this.ingestToBrain(doc.pageContent, fileName, {
+        module:
+          typeof metadata?.module === 'string' ? metadata.module : 'general',
 
-    userId:
-      typeof metadata?.userId === 'string'
-        ? metadata.userId
-        : undefined,
+        userId:
+          typeof metadata?.userId === 'string' ? metadata.userId : undefined,
 
-    type:
-      typeof metadata?.type === 'string'
-        ? metadata.type
-        : 'document',
+        type: typeof metadata?.type === 'string' ? metadata.type : 'document',
 
-    tags: Array.isArray(metadata?.tags)
-      ? metadata.tags
-      : [],
-  });
-  }
+        tags: Array.isArray(metadata?.tags) ? metadata.tags : [],
+      });
+    }
 
     return {
       message: `Successfully processed ${splitDocs.length} chunks or ${fileName}.`,
