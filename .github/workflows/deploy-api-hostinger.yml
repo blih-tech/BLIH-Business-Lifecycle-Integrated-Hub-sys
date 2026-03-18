@@ -118,7 +118,7 @@ jobs:
       - name: Build and push Keycloak image
         uses: docker/build-push-action@v6
         with:
-          context: apps/api
+          context: .
           file: deploy/hostinger/keycloak/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.keycloak_image }}
