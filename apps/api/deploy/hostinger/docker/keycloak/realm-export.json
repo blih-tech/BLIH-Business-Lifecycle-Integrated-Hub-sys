@@ -23,11 +23,13 @@
       "serviceAccountsEnabled": false,
       "redirectUris": [
         "https://project-k22it.vercel.app/api/v1/auth/callback",
-        "http://localhost:5000/api/v1/auth/callback"
+        "http://localhost:5000/api/v1/auth/callback",
+        "https://blihapi.blihmarketing.com/api/v1/auth/callback"
       ],
       "webOrigins": [
         "https://project-k22it.vercel.app",
-        "http://localhost:3000"
+        "http://localhost:3000",
+        "https://blihapi.blihmarketing.com"
       ],
       "defaultClientScopes": [
         "openid",
@@ -37,7 +39,7 @@
         "audience-blih-api"
       ],
       "attributes": {
-        "post.logout.redirect.uris": "https://project-k22it.vercel.app/*,http://localhost:3000/*"
+        "post.logout.redirect.uris": "https://project-k22it.vercel.app/*,http://localhost:3000/*,https://blihapi.blihmarketing.com/*"
       }
     },
     {
