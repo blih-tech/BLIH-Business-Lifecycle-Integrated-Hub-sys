@@ -231,12 +231,12 @@ ${question}
 
     return {
       answer: this.extractAnswer(response),
-     sources: relevantDocs.map((d) => {
-      const metadata = d.metadata as { source?: unknown };
-      return typeof metadata.source === 'string'
-        ? metadata.source
-        : 'unknown';
-    }),
+      sources: relevantDocs.map((d) => {
+        const metadata = d.metadata as { source?: unknown };
+        return typeof metadata.source === 'string'
+          ? metadata.source
+          : 'unknown';
+      }),
     };
   }
 
