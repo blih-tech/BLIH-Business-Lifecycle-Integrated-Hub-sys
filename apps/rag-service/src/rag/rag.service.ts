@@ -61,30 +61,63 @@ export class RagService {
     }
   }
 
-  async ingest(text: string, source: string, metadata?: Record<string, any>) {
-    const cleanMetadata = metadata
-      ? Object.fromEntries(
-          Object.entries(metadata).map(([k, v]) => [
-            k,
-            typeof v === 'string' ? v.replace(/"/g, '') : v,
-          ]),
-        )
-      : {};
+async ingest(
+  text: string,
+  source: string,
+  metadata?: Record<string, unknown>,
+) {
+  const safeMetadata = {
+    module:
+      typeof metadata?.module === 'string'
+        ? metadata.module
+        : 'general',
 
-    console.log(`Ingesting text from: ${source} with matadate:`, cleanMetadata);
-    const doc = new Document({
-      pageContent: text,
+    userId:
+      typeof metadata?.userId === 'string'
+        ? metadata.userId
+        : undefined,
+
+    type:
+      typeof metadata?.type === 'string'
+        ? metadata.type
+        : 'document',
+
+    tags: Array.isArray(metadata?.tags)
+      ? metadata.tags
+      : [],
+  };
+
+  return this.ingestToBrain(text, source, safeMetadata);
+}
+
+ async ingestToBrain(
+    content: string,
+    source: string,
+    metadata: {
+      module: string;
+      userId?: string;
+      type: string;
+      tags?: string[];
+    },
+  ){
+    const cleanMetadata = Object.fromEntries(
+      Object.entries(metadata).map(([k, v]) => [
+        k,
+        typeof v === 'string' ? v.replace(/"/g, '') : v,
+      ]),
+    );
+    const doc = new Document ({
+      pageContent: content,
       metadata: {
-        ...metadata,
+        ...cleanMetadata,
         source,
-        date_ingested: new Date().toISOString(),
+        date_ingested: new Date().toISOString(), 
       },
     });
-
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
-    });
+    })
 
     const splitDocs = await splitter.splitDocuments([doc]);
 
@@ -93,7 +126,7 @@ export class RagService {
       collectionName: this.collectionName,
     });
 
-    return { message: `Successfully ingested ${splitDocs.length} chunks.` };
+  return { message: `Successfully ingested ${splitDocs.length} chunks.` };
   }
 
   async processPDF(
@@ -124,10 +157,14 @@ export class RagService {
 
     const splitDocs = await splitter.splitDocuments(docsWithMetadata);
 
-    await QdrantVectorStore.fromDocuments(splitDocs, this.embeddings, {
-      url: this.qdrantUrl,
-      collectionName: this.collectionName,
-    });
+    for (const doc of docsWithMetadata) {
+      await this.ingestToBrain(doc.pageContent, fileName, {
+    module: metadata?.module || 'general',
+    userId: metadata?.userId,
+    type: metadata?.type || 'document',
+    tags: metadata?.tags || [],
+  });
+    }
 
     return {
       message: `Successfully processed ${splitDocs.length} chunks or ${fileName}.`,
@@ -209,17 +246,24 @@ export class RagService {
     ### ROLE
 You are BLIH Brain, a highly intelligent corporate AI. Your goal is to provide accurate answers based on the provided Knowledge Base and Chat History.
 
+### CAPABILITIES
+- You understand HR, Finance, CRM, and internal company data
+- You connect knowledge across departments
+- You provide precise, factual, and professional answers
+
 ### GUIDELINES
 1. **Prioritize Context**: Use the "CONTEXT FROM KNOWLEDGE BASE" section below to answer. 
 2. **Handle Ambiguity**: If the user uses pronouns (he, she, it, that), resolve them using the "CHAT HISTORY".
 3. **Strict Fact-Checking**: If the information is truly missing from the context, only then use your fallback: "I'm sorry, I don't have that specific information in my knowledge base."
 4. **Formatting**: Use clean, professional language.
+5. If multiple documents exist, synthesize them into one answer.
+6. Resolve references using chat history.
 
 ### CHAT HISTORY
 ${chatHistoryString || 'No previous conversation.'}
 
 ### CONTEXT FROM KNOWLEDGE BASE
-${context}
+${context || 'No relevant documents found.'}
 
 ### USER QUESTION
 ${question}
@@ -231,12 +275,12 @@ ${question}
 
     return {
       answer: this.extractAnswer(response),
-     sources: relevantDocs.map((d) => {
-      const metadata = d.metadata as { source?: unknown };
-      return typeof metadata.source === 'string'
-        ? metadata.source
-        : 'unknown';
-    }),
+      sources: relevantDocs.map((d) => {
+        const metadata = d.metadata as { source?: unknown };
+        return typeof metadata.source === 'string'
+          ? metadata.source
+          : 'unknown';
+      }),
     };
   }
 

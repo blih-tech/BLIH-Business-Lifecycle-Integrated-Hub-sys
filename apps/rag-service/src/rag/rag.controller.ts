@@ -23,7 +23,18 @@ export class RagController {
     },
   ) {
     console.log(`Received document from source: ${data.source}`);
-    return await this.ragService.ingest(data.text, data.source, data.metadata);
+    const safeMetadata = {
+      module: data.metadata?.module ?? 'general',
+      userId: data.metadata?.userId,
+      type: data.metadata?.type ?? 'general',
+      tags: data.metadata?.tags ?? [],
+    };
+
+    return await this.ragService.ingestToBrain(
+      data.text,
+      data.source,
+      safeMetadata,
+    );
   }
 
   @Post('ai/vision')

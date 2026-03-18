@@ -29,6 +29,29 @@ export class BrainService {
     private readonly prisma: PrismaService,
   ) {}
 
+  private detectDocumentType(fileName: string, content: string): string {
+    const lower = (fileName + ' ' + content).toLowerCase();
+
+    if (lower.includes('cv') || lower.includes('resume')) return 'candidate_cv';
+    if (lower.includes('policy') || lower.includes('handbook')) return 'policy';
+    if (lower.includes('report')) return 'report';
+    if (lower.includes('invoice') || lower.includes('finance'))
+      return 'finance';
+
+    return 'general';
+  }
+
+  private extractTags(content: string): string[] {
+    const tags: string[] = [];
+    const lower = content.toLowerCase();
+
+    if (lower.includes('leave')) tags.push('leave');
+    if (lower.includes('salary')) tags.push('salary');
+    if (lower.includes('performance')) tags.push('performance');
+
+    return tags;
+  }
+
   async processAndIngest(
     fileBuffer: Buffer,
     fileName: string,
@@ -37,6 +60,7 @@ export class BrainService {
   ) {
     try {
       const extractedText = await parseCv(fileBuffer);
+      const detectedType = this.detectDocumentType(fileName, extractedText);
 
       const response = await firstValueFrom(
         this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
@@ -45,6 +69,9 @@ export class BrainService {
           metadata: {
             module: module,
             userId: userId,
+            type: detectedType,
+            tags: this.extractTags(extractedText),
+            date_ingested: new Date().toISOString(),
           },
         }),
       );
@@ -109,6 +136,18 @@ export class BrainService {
   RAG CHAT
   */
 
+  private detectQueryType(question: string): string {
+    const q = question.toLowerCase();
+
+    if (q.includes('policy') || q.includes('rule')) return 'policy';
+    if (q.includes('cv') || q.includes('candidate')) return 'candidate_cv';
+    if (q.includes('employee')) return 'employee';
+    if (q.includes('report')) return 'report';
+    if (q.includes('salary') || q.includes('finance')) return 'finance';
+
+    return 'general';
+  }
+
   async handleChat(
     userId: string,
     question: string,
@@ -157,6 +196,12 @@ export class BrainService {
       );
     }
 
+    const detectedType = this.detectQueryType(processedQuestion);
+
+    const isGlobalQuery =
+      processedQuestion.toLowerCase().includes('company') ||
+      processedQuestion.toLowerCase().includes('overall');
+
     const payload = {
       userId,
       question: `${contextExtension}${processedQuestion}`.trim(),
@@ -164,10 +209,15 @@ export class BrainService {
         role: m.role,
         content: m.content,
       })),
-      filter: {
-        must: [{ key: 'module', match: { value: module } }],
-        should: [{ key: 'userId', match: { value: userId } }],
-      },
+      filter: isGlobalQuery
+        ? { must: [] }
+        : {
+            must: [{ key: 'module', match: { value: module } }],
+            should: [
+              { key: 'userId', match: { value: userId } },
+              { key: 'type', match: { value: detectedType } },
+            ],
+          },
     };
 
     const response = await firstValueFrom(
@@ -175,6 +225,23 @@ export class BrainService {
     );
 
     const aiAnswer = response.data.answer;
+
+    try {
+      await firstValueFrom(
+        this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
+          text: aiAnswer,
+          source: 'ai-generated',
+          metadata: {
+            module,
+            userId,
+            type: 'insight',
+            tags: ['ai-generated'],
+          },
+        }),
+      );
+    } catch {
+      this.logger.warn('Failed to store AI memory');
+    }
 
     await this.prisma.aiChatMessage.createMany({
       data: [
