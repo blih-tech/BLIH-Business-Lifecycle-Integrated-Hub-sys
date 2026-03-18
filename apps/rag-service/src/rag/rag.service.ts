@@ -5,6 +5,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
+
 interface CvAnalysisResult {
   score?: number;
   strengths?: string[];
@@ -61,36 +62,27 @@ export class RagService {
     }
   }
 
-async ingest(
-  text: string,
-  source: string,
-  metadata?: Record<string, unknown>,
-) {
-  const safeMetadata = {
-    module:
-      typeof metadata?.module === 'string'
-        ? metadata.module
-        : 'general',
+  async ingest(
+    text: string,
+    source: string,
+    metadata?: Record<string, unknown>,
+  ) {
+    const safeMetadata = {
+      module:
+        typeof metadata?.module === 'string' ? metadata.module : 'general',
 
-    userId:
-      typeof metadata?.userId === 'string'
-        ? metadata.userId
-        : undefined,
+      userId:
+        typeof metadata?.userId === 'string' ? metadata.userId : undefined,
 
-    type:
-      typeof metadata?.type === 'string'
-        ? metadata.type
-        : 'document',
+      type: typeof metadata?.type === 'string' ? metadata.type : 'document',
 
-    tags: Array.isArray(metadata?.tags)
-      ? metadata.tags
-      : [],
-  };
+      tags: Array.isArray(metadata?.tags) ? metadata.tags : [],
+    };
 
-  return this.ingestToBrain(text, source, safeMetadata);
-}
+    return this.ingestToBrain(text, source, safeMetadata);
+  }
 
- async ingestToBrain(
+  async ingestToBrain(
     content: string,
     source: string,
     metadata: {
@@ -99,25 +91,25 @@ async ingest(
       type: string;
       tags?: string[];
     },
-  ){
+  ) {
     const cleanMetadata = Object.fromEntries(
       Object.entries(metadata).map(([k, v]) => [
         k,
         typeof v === 'string' ? v.replace(/"/g, '') : v,
       ]),
     );
-    const doc = new Document ({
+    const doc = new Document({
       pageContent: content,
       metadata: {
         ...cleanMetadata,
         source,
-        date_ingested: new Date().toISOString(), 
+        date_ingested: new Date().toISOString(),
       },
     });
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
-    })
+    });
 
     const splitDocs = await splitter.splitDocuments([doc]);
 
@@ -126,7 +118,7 @@ async ingest(
       collectionName: this.collectionName,
     });
 
-  return { message: `Successfully ingested ${splitDocs.length} chunks.` };
+    return { message: `Successfully ingested ${splitDocs.length} chunks.` };
   }
 
   async processPDF(
@@ -146,25 +138,39 @@ async ingest(
       chunkOverlap: 200,
     });
 
-    const docsWithMetadata = docs.map((d) => ({
-      ...d,
+  const docsWithMetadata: Document[] = docs.map((d): Document => ({
+      pageContent: d.pageContent,
       metadata: {
-        ...d.metadata,
-        ...metadata,
+        ...(d.metadata as Record<string, unknown>),
+        ...(metadata ?? {}),
         source: fileName,
       },
     }));
 
     const splitDocs = await splitter.splitDocuments(docsWithMetadata);
+    
+    for (const doc of splitDocs) {
+  await this.ingestToBrain(doc.pageContent, fileName, {
+    module:
+      typeof metadata?.module === 'string'
+        ? metadata.module
+        : 'general',
 
-    for (const doc of docsWithMetadata) {
-      await this.ingestToBrain(doc.pageContent, fileName, {
-    module: metadata?.module || 'general',
-    userId: metadata?.userId,
-    type: metadata?.type || 'document',
-    tags: metadata?.tags || [],
+    userId:
+      typeof metadata?.userId === 'string'
+        ? metadata.userId
+        : undefined,
+
+    type:
+      typeof metadata?.type === 'string'
+        ? metadata.type
+        : 'document',
+
+    tags: Array.isArray(metadata?.tags)
+      ? metadata.tags
+      : [],
   });
-    }
+  }
 
     return {
       message: `Successfully processed ${splitDocs.length} chunks or ${fileName}.`,
