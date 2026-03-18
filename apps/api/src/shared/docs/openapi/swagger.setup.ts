@@ -7,9 +7,7 @@ import {
   SWAGGER_BEARER_AUTH_NAME,
   SWAGGER_COOKIE_AUTH_NAME,
   SWAGGER_DEFAULT_DOCS_PATH,
-  SWAGGER_JSON_SPEC_PATH,
   SWAGGER_TAGS,
-  SWAGGER_YAML_SPEC_PATH,
 } from './openapi.constants';
 import { SWAGGER_EXPORT_BUTTON_CSS } from './swagger-export-button';
 
@@ -1003,6 +1001,8 @@ export function setupSwagger(app: INestApplication): void {
   const docsPath = normalizePath(
     configService.get<string>('SWAGGER_PATH', SWAGGER_DEFAULT_DOCS_PATH),
   );
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+  const port = configService.get<string>('PORT', '5000');
 
   const downloadBasePath = `/${apiPrefix}/${docsPath}/download`;
   const exportLinks = `**[Export OpenAPI spec (JSON)](${downloadBasePath}/openapi.json)** | **[YAML](${downloadBasePath}/openapi.yaml)**`;
@@ -1019,6 +1019,7 @@ export function setupSwagger(app: INestApplication): void {
 \n\n${exportLinks}`,
     )
     .setVersion('1.0.0')
+    .addServer(`http://89.116.22.36:${port}`, 'Application origin')
     .addBearerAuth(
       {
         type: 'http',
@@ -1051,7 +1052,7 @@ export function setupSwagger(app: INestApplication): void {
 
   document.servers = [
     {
-      url: resolveApiServerUrl(document, apiPrefix),
+      url: `http://89.116.22.36:${port}`,
       description: 'Application origin',
     },
   ];
@@ -1067,6 +1068,34 @@ export function setupSwagger(app: INestApplication): void {
     ),
   );
 
+  // Configure Swagger options to avoid HTTPS/HTTP mixed content issues
+  const swaggerOptions: any = {
+    persistAuthorization: true,
+    filter: true,
+    displayRequestDuration: true,
+    docExpansion: 'none',
+    tagsSorter: 'alpha',
+    operationsSorter: 'alpha',
+  };
+
+  // Disable HTTPS-only features in HTTP environments
+  if (
+    nodeEnv !== 'production' ||
+    !configService.get<string>('API_HOST', '').includes('https')
+  ) {
+    swaggerOptions['supportedSubmitMethods'] = [
+      'get',
+      'post',
+      'put',
+      'delete',
+      'patch',
+    ];
+    swaggerOptions['onComplete'] = function () {
+      // Override any HTTPS redirects
+      console.log('Swagger UI loaded in HTTP mode');
+    };
+  }
+
   SwaggerModule.setup(docsPath, app, document, {
     useGlobalPrefix: true,
     customSiteTitle: 'BLIH Core Platform API Docs',
@@ -1079,7 +1108,5 @@ export function setupSwagger(app: INestApplication): void {
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
     },
-    jsonDocumentUrl: `${docsPath}/${SWAGGER_JSON_SPEC_PATH}`,
-    yamlDocumentUrl: `${docsPath}/${SWAGGER_YAML_SPEC_PATH}`,
   });
 }

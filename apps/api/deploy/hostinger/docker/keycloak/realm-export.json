@@ -1,8 +1,8 @@
 {
-  "id": "blih",
-  "realm": "blih",
+  "id": "blih-dev",
+  "realm": "blih-dev",
   "enabled": true,
-  "displayName": "BLIH System",
+  "displayName": "BLIH System dev",
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
@@ -46,28 +46,6 @@
       "serviceAccountsEnabled": true,
       "defaultClientScopes": ["basic", "roles"],
       "authorizationServicesEnabled": false
-    },
-    {
-      "clientId": "blih-system-frontend",
-      "name": "BLIH System Frontend",
-      "enabled": true,
-      "protocol": "openid-connect",
-      "publicClient": true,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
-      "redirectUris": [
-        "https://project-k22it.vercel.app/*",
-        "https://project-k22it.vercel.app/api/auth/callback/keycloak",
-        "http://localhost:3000/*",
-        "http://localhost:3000/api/auth/callback/keycloak"
-      ],
-      "webOrigins": [
-        "https://project-k22it.vercel.app",
-        "http://localhost:3000"
-      ],
-      "defaultClientScopes": ["openid", "profile", "email", "roles"]
     }
   ],
   "roles": {
@@ -136,46 +114,16 @@
           "realm": ["brain_admin", "brain_viewer"]
         }
       },
-      {
-        "name": "hr_manager",
-        "description": "HR Manager"
-      },
-      {
-        "name": "hr_assistant",
-        "description": "HR Assistant"
-      },
-      {
-        "name": "finance_manager",
-        "description": "Finance Manager"
-      },
-      {
-        "name": "finance_accountant",
-        "description": "Finance Accountant"
-      },
-      {
-        "name": "pm_lead",
-        "description": "PM Lead"
-      },
-      {
-        "name": "pm_member",
-        "description": "PM Member"
-      },
-      {
-        "name": "crm_lead",
-        "description": "CRM Lead"
-      },
-      {
-        "name": "crm_agent",
-        "description": "CRM Agent"
-      },
-      {
-        "name": "brain_admin",
-        "description": "Brain Admin"
-      },
-      {
-        "name": "brain_viewer",
-        "description": "Brain Viewer"
-      }
+      { "name": "hr_manager", "description": "HR Manager" },
+      { "name": "hr_assistant", "description": "HR Assistant" },
+      { "name": "finance_manager", "description": "Finance Manager" },
+      { "name": "finance_accountant", "description": "Finance Accountant" },
+      { "name": "pm_lead", "description": "PM Lead" },
+      { "name": "pm_member", "description": "PM Member" },
+      { "name": "crm_lead", "description": "CRM Lead" },
+      { "name": "crm_agent", "description": "CRM Agent" },
+      { "name": "brain_admin", "description": "Brain Admin" },
+      { "name": "brain_viewer", "description": "Brain Viewer" }
     ]
   },
   "users": [
