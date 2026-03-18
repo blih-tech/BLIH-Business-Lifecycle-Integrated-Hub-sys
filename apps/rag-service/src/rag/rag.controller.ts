@@ -14,17 +14,47 @@ export class RagController {
   constructor(private readonly ragService: RagService) {}
 
   @Post('ingest-text')
-  async ingestText(
-    @Body()
-    data: {
-      text: string;
-      source: string;
-      metadata?: Record<string, any>;
-    },
-  ) {
-    console.log(`Received document from source: ${data.source}`);
-    return await this.ragService.ingest(data.text, data.source, data.metadata);
-  }
+async ingestText(
+  @Body()
+  data: {
+    text: string;
+    source: string;
+    metadata?: Record<string, unknown>;
+  },
+) {
+  console.log(`Received document from source: ${data.source}`);
+
+  const rawMetadata = data.metadata ?? {};
+
+  const safeMetadata = {
+    module:
+      typeof rawMetadata.module === 'string'
+        ? rawMetadata.module
+        : 'general',
+
+    userId:
+      typeof rawMetadata.userId === 'string'
+        ? rawMetadata.userId
+        : undefined,
+
+    type:
+      typeof rawMetadata.type === 'string'
+        ? rawMetadata.type
+        : 'general',
+
+    tags: Array.isArray(rawMetadata.tags)
+      ? rawMetadata.tags.filter(
+          (tag): tag is string => typeof tag === 'string',
+        )
+      : [],
+  };
+
+  return await this.ragService.ingestToBrain(
+    data.text,
+    data.source,
+    safeMetadata,
+  );
+}
 
   @Post('ai/vision')
   @UseInterceptors(FileInterceptor('file'))

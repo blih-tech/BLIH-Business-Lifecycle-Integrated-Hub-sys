@@ -61,26 +61,50 @@ export class RagService {
     }
   }
 
-  async ingest(text: string, source: string, metadata?: Record<string, any>) {
-    const cleanMetadata = metadata
-      ? Object.fromEntries(
-          Object.entries(metadata).map(([k, v]) => [
-            k,
-            typeof v === 'string' ? v.replace(/"/g, '') : v,
-          ]),
-        )
-      : {};
+  async ingest(
+    text: string,
+    source: string,
+    metadata?: Record<string, unknown>,
+  ) {
+    const safeMetadata = {
+      module:
+        typeof metadata?.module === 'string' ? metadata.module : 'general',
 
-    console.log(`Ingesting text from: ${source} with matadate:`, cleanMetadata);
+      userId:
+        typeof metadata?.userId === 'string' ? metadata.userId : undefined,
+
+      type: typeof metadata?.type === 'string' ? metadata.type : 'document',
+
+      tags: Array.isArray(metadata?.tags) ? metadata.tags : [],
+    };
+
+    return this.ingestToBrain(text, source, safeMetadata);
+  }
+
+  async ingestToBrain(
+    content: string,
+    source: string,
+    metadata: {
+      module: string;
+      userId?: string;
+      type: string;
+      tags?: string[];
+    },
+  ) {
+    const cleanMetadata = Object.fromEntries(
+      Object.entries(metadata).map(([k, v]) => [
+        k,
+        typeof v === 'string' ? v.replace(/"/g, '') : v,
+      ]),
+    );
     const doc = new Document({
-      pageContent: text,
+      pageContent: content,
       metadata: {
-        ...metadata,
+        ...cleanMetadata,
         source,
         date_ingested: new Date().toISOString(),
       },
     });
-
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
@@ -113,21 +137,32 @@ export class RagService {
       chunkOverlap: 200,
     });
 
-    const docsWithMetadata = docs.map((d) => ({
-      ...d,
-      metadata: {
-        ...d.metadata,
-        ...metadata,
-        source: fileName,
-      },
-    }));
+    const docsWithMetadata: Document[] = docs.map(
+      (d): Document => ({
+        pageContent: d.pageContent,
+        metadata: {
+          ...(d.metadata as Record<string, unknown>),
+          ...(metadata ?? {}),
+          source: fileName,
+        },
+      }),
+    );
 
     const splitDocs = await splitter.splitDocuments(docsWithMetadata);
 
-    await QdrantVectorStore.fromDocuments(splitDocs, this.embeddings, {
-      url: this.qdrantUrl,
-      collectionName: this.collectionName,
-    });
+    for (const doc of splitDocs) {
+      await this.ingestToBrain(doc.pageContent, fileName, {
+        module:
+          typeof metadata?.module === 'string' ? metadata.module : 'general',
+
+        userId:
+          typeof metadata?.userId === 'string' ? metadata.userId : undefined,
+
+        type: typeof metadata?.type === 'string' ? metadata.type : 'document',
+
+        tags: Array.isArray(metadata?.tags) ? metadata.tags : [],
+      });
+    }
 
     return {
       message: `Successfully processed ${splitDocs.length} chunks or ${fileName}.`,
@@ -209,17 +244,24 @@ export class RagService {
     ### ROLE
 You are BLIH Brain, a highly intelligent corporate AI. Your goal is to provide accurate answers based on the provided Knowledge Base and Chat History.
 
+### CAPABILITIES
+- You understand HR, Finance, CRM, and internal company data
+- You connect knowledge across departments
+- You provide precise, factual, and professional answers
+
 ### GUIDELINES
 1. **Prioritize Context**: Use the "CONTEXT FROM KNOWLEDGE BASE" section below to answer. 
 2. **Handle Ambiguity**: If the user uses pronouns (he, she, it, that), resolve them using the "CHAT HISTORY".
 3. **Strict Fact-Checking**: If the information is truly missing from the context, only then use your fallback: "I'm sorry, I don't have that specific information in my knowledge base."
 4. **Formatting**: Use clean, professional language.
+5. If multiple documents exist, synthesize them into one answer.
+6. Resolve references using chat history.
 
 ### CHAT HISTORY
 ${chatHistoryString || 'No previous conversation.'}
 
 ### CONTEXT FROM KNOWLEDGE BASE
-${context}
+${context || 'No relevant documents found.'}
 
 ### USER QUESTION
 ${question}
