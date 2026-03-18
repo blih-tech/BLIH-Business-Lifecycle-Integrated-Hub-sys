@@ -78,6 +78,8 @@ export interface CreateApplicantDto {
   experiences?: ApplicantExperienceDto[];
 }
 
+export type ApplyToJobDto = Omit<CreateApplicantDto, 'jobId'>;
+
 export type UpdateApplicantDto = Partial<CreateApplicantDto>;
 
 export interface UpdateApplicantStatusDto {
