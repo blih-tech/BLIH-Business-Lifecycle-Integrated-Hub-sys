@@ -119,7 +119,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: deploy/hostinger/keycloak/Dockerfile
+          file: apps/api/deploy/hostinger/keycloak/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.keycloak_image }}
 
