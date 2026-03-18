@@ -40,6 +40,8 @@ COPY --from=builder /workspace/apps/api/package*.json ./apps/api/
 COPY --from=builder /workspace/apps/api/dist ./apps/api/dist
 COPY --from=builder /workspace/packages/database/package*.json ./packages/database/
 COPY --from=builder /workspace/packages/database/dist ./packages/database/dist
+COPY --from=builder /workspace/packages/types/package*.json ./packages/types/
+COPY --from=builder /workspace/packages/types/dist ./packages/types/dist
 
 WORKDIR /workspace/apps/api
 EXPOSE 5000
