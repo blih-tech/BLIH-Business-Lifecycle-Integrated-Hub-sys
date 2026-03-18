@@ -6,8 +6,9 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { RagService } from './rag.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import type { Multer } from 'multer';
+import { RagService } from './rag.service';
 
 @Controller('rag')
 export class RagController {
