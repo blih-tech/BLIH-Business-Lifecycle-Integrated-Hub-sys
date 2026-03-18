@@ -7,6 +7,7 @@ import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant
 import { ApproveJobUseCase, SubmitJobUseCase } from './jobs.usecases';
 import {
   BulkUpdateApplicantStatusUseCase,
+  CreateApplicantUseCase,
   ListApplicantsUseCase,
   UpdateApplicantStatusUseCase,
 } from './applicants.usecases';
@@ -559,6 +560,231 @@ describe('Recruitment UseCases', () => {
     await expect(usecase.execute('job-1')).rejects.toBeInstanceOf(
       BadRequestException,
     );
+  });
+
+  it('creates an applicant for a published job and refreshes metrics', async () => {
+    const applicant = buildApplicantRow('APPLIED', {
+      id: 'app-1',
+      jobId: 'job-1',
+      applicationFormId: 'form-1',
+      email: 'abel.tesfaye@example.com',
+    });
+    const tx = {
+      applicant: {
+        create: jest.fn().mockResolvedValue(applicant),
+        update: jest.fn().mockResolvedValue(undefined),
+        count: jest
+          .fn()
+          .mockResolvedValueOnce(1)
+          .mockResolvedValueOnce(0)
+          .mockResolvedValueOnce(0),
+      },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
+      },
+      interviewParticipant: {
+        count: jest.fn().mockResolvedValue(0),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+    };
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'PUBLISHED',
+          },
+          applicationForm: {
+            id: 'form-1',
+            applicantFields: [],
+            sections: [],
+            customFields: [],
+          },
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest
+        .fn()
+        .mockImplementation(async (callback) => callback(tx)),
+    };
+    const notifications = {
+      notifyUsers: jest.fn().mockResolvedValue(undefined),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    const result = await usecase.execute({
+      jobId: 'job-1',
+      firstName: 'Abel',
+      lastName: 'Tesfaye',
+      email: 'abel.tesfaye@example.com',
+      phone: '+251912345678',
+      resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      skills: ['TypeScript', 'Node.js'],
+    });
+
+    expect(tx.applicant.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          jobId: 'job-1',
+          applicationFormId: 'form-1',
+          email: 'abel.tesfaye@example.com',
+          emailNormalized: 'abel.tesfaye@example.com',
+        }),
+      }),
+    );
+    expect(tx.job.update).toHaveBeenCalledWith({
+      where: { id: 'job-1' },
+      data: {
+        applicationsCount: 1,
+        shortlistedCount: 0,
+        offersCount: 0,
+        hiresCount: 0,
+        interviewsCount: 0,
+      },
+    });
+    expect(notifications.notifyUsers).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userIds: ['creator-1'],
+        payload: {
+          jobId: 'job-1',
+          applicantId: 'app-1',
+        },
+      }),
+    );
+    expect(result.id).toBe('app-1');
+  });
+
+  it('rejects applications for jobs that are not published', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'DRAFT',
+          },
+          applicationForm: null,
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest.fn(),
+    };
+    const notifications = {
+      notifyUsers: jest.fn(),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    await expect(
+      usecase.execute({
+        jobId: 'job-1',
+        firstName: 'Abel',
+        lastName: 'Tesfaye',
+        email: 'abel.tesfaye@example.com',
+        resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('rejects applications that miss required application form fields', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'PUBLISHED',
+          },
+          applicationForm: {
+            id: 'form-1',
+            applicantFields: [
+              {
+                key: 'PHONE',
+                enabled: true,
+                required: true,
+              },
+            ],
+            sections: [],
+            customFields: [],
+          },
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest.fn(),
+    };
+    const notifications = {
+      notifyUsers: jest.fn(),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    await expect(
+      usecase.execute({
+        jobId: 'job-1',
+        firstName: 'Abel',
+        lastName: 'Tesfaye',
+        email: 'abel.tesfaye@example.com',
+        resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('maps duplicate applicant inserts to a conflict error', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'PUBLISHED',
+          },
+          applicationForm: null,
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest.fn().mockRejectedValue({ code: 'P2002' }),
+    };
+    const notifications = {
+      notifyUsers: jest.fn(),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    await expect(
+      usecase.execute({
+        jobId: 'job-1',
+        firstName: 'Abel',
+        lastName: 'Tesfaye',
+        email: 'abel.tesfaye@example.com',
+        resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      }),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('adds free-text applicant search filters without breaking existing filters', async () => {

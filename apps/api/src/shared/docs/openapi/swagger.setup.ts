@@ -2,6 +2,7 @@ import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { OpenAPIObject } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { RESPONSE_MESSAGE_EXTENSION } from '../../decorators/response-message.decorator';
 import {
   SWAGGER_BEARER_AUTH_NAME,
@@ -883,7 +884,7 @@ export function addKeycloakLoginOperation(
                 grant_type: 'authorization_code',
                 client_id: defaultClientId,
                 code: '3f95f8f9-1f31-40c1-9ed7-8eb7f0f3866f',
-                redirect_uri: 'http://localhost:5000/api/v1/auth/callback',
+                redirect_uri: '{request-origin}/api/v1/auth/callback',
                 code_verifier: 'mX1j2N9Q8kP0pV2Yb9JQjTg7oQWJ5u0rZkQ1m3s9v7A',
               },
             },
@@ -1004,6 +1005,12 @@ export function setupSwagger(app: INestApplication): void {
   const nodeEnv = configService.get<string>('NODE_ENV', 'development');
   const port = configService.get<string>('PORT', '5000');
 
+  // Use dynamic origin detection at runtime
+  const serverUrl =
+    nodeEnv === 'production'
+      ? '{request-origin}' // Placeholder that will be replaced by client
+      : `http://localhost:${port}`; // Development fallback
+
   const downloadBasePath = `/${apiPrefix}/${docsPath}/download`;
   const exportLinks = `**[Export OpenAPI spec (JSON)](${downloadBasePath}/openapi.json)** | **[YAML](${downloadBasePath}/openapi.yaml)**`;
 
@@ -1019,7 +1026,7 @@ export function setupSwagger(app: INestApplication): void {
 \n\n${exportLinks}`,
     )
     .setVersion('1.0.0')
-    .addServer(`http://89.116.22.36:${port}`, 'Application origin')
+    .addServer(serverUrl, 'Application origin')
     .addBearerAuth(
       {
         type: 'http',
@@ -1052,7 +1059,7 @@ export function setupSwagger(app: INestApplication): void {
 
   document.servers = [
     {
-      url: `http://89.116.22.36:${port}`,
+      url: serverUrl,
       description: 'Application origin',
     },
   ];

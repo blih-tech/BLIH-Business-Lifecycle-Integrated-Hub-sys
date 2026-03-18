@@ -13,6 +13,7 @@
 import type { Request } from 'express';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type {
+  ApplicantResponseDto as ApplicantResponseContract,
   JobResponseDto as JobResponseContract,
   JobResponsibilitiesResponseDto as JobResponsibilitiesResponseContract,
   JobSkillsResponseDto as JobSkillsResponseContract,
@@ -20,6 +21,7 @@ import type {
 } from '@repo/types';
 import { JobApprovalPermissions, JobPermissions } from '@repo/types/rbac';
 import { Audit } from '../../../shared/decorators/audit.decorator';
+import { Public } from '../../../shared/decorators/public.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,
@@ -30,6 +32,7 @@ import {
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import type { AuthPrincipal } from '../../../shared/interfaces/auth-principal.interface';
+import { ApplicantResponseDto, ApplyToJobDto } from './dto/applicant.dto';
 import {
   ApproveJobDto,
   CloseJobDto,
@@ -45,12 +48,14 @@ import {
   UpsertJobToolsDto,
 } from './dto/job.dto';
 import {
+  applicantResponseEnvelope,
   jobListResponseEnvelope,
   jobResponsibilitiesResponseEnvelope,
   jobResponseEnvelope,
   jobSkillsResponseEnvelope,
   jobToolsResponseEnvelope,
 } from './recruitment.swagger-examples';
+import { CreateApplicantUseCase } from './use-cases/applicants.usecases';
 import {
   ApproveJobUseCase,
   CloseJobUseCase,
@@ -71,6 +76,7 @@ import {
 export class JobsController {
   constructor(
     private readonly createJob: CreateJobUseCase,
+    private readonly createApplicant: CreateApplicantUseCase,
     private readonly listJobs: ListJobsUseCase,
     private readonly getJobById: GetJobUseCase,
     private readonly updateJobById: UpdateJobUseCase,
@@ -273,6 +279,58 @@ export class JobsController {
   })
   get(@Param('id') id: string): Promise<JobResponseContract> {
     return this.getJobById.execute(id);
+  }
+
+  @Public()
+  @Post(':id/apply')
+  @Audit('recruitment.job.apply', 'hr.applicant')
+  @ApiOperation({
+    summary: 'Apply to job',
+    description:
+      'Submits a public application to a published job. The target job is selected from the path parameter.',
+  })
+  @ApiParam({ name: 'id', description: 'Job id' })
+  @ApiBody({
+    type: ApplyToJobDto,
+    description:
+      'Request body: applicant details for the selected job. The request body must not include `jobId`; it is derived from the path.',
+    examples: {
+      applyToJob: {
+        summary: 'Apply to job payload',
+        value: {
+          firstName: 'Abel',
+          lastName: 'Tesfaye',
+          email: 'abel.tesfaye@example.com',
+          phone: '+251912345678',
+          resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+          linkedinUrl: 'https://linkedin.com/in/abeltesfaye',
+          skills: ['React', 'TypeScript', 'GraphQL'],
+          currentCompany: 'TechCorp',
+          currentPosition: 'Senior Engineer',
+          yearsExperience: 6,
+        },
+      },
+    },
+  })
+  @ApiEnvelopeOkResponse(
+    ApplicantResponseDto,
+    'Applied to job',
+    applicantResponseEnvelope,
+  )
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/jobs/:id/apply',
+    badRequest: 'Application payload is invalid',
+    notFound: 'Job not found',
+    conflict: 'Applicant already exists for this job and email',
+  })
+  apply(
+    @Param('id') id: string,
+    @Body() body: ApplyToJobDto,
+  ): Promise<ApplicantResponseContract> {
+    return this.createApplicant.execute({
+      ...body,
+      jobId: id,
+    });
   }
 
   @Patch(':id')

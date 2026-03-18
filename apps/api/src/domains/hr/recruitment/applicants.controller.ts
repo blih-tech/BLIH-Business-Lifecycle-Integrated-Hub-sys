@@ -30,7 +30,6 @@ import {
   BulkApplicantStatusResponseDto,
   BulkUpdateApplicantStatusDto,
   ApplicantResponseDto,
-  CreateApplicantDto,
   UpdateApplicantDto,
   UpdateApplicantStatusDto,
 } from './dto/applicant.dto';
@@ -41,7 +40,6 @@ import {
 } from './recruitment.swagger-examples';
 import {
   BulkUpdateApplicantStatusUseCase,
-  CreateApplicantUseCase,
   GetApplicantUseCase,
   ListApplicantsUseCase,
   UpdateApplicantStatusUseCase,
@@ -53,65 +51,12 @@ import {
 @UseGuards(KeycloakAuthGuard, RbacGuard)
 export class ApplicantsController {
   constructor(
-    private readonly createApplicant: CreateApplicantUseCase,
     private readonly listApplicants: ListApplicantsUseCase,
     private readonly bulkUpdateApplicants: BulkUpdateApplicantStatusUseCase,
     private readonly getApplicantById: GetApplicantUseCase,
     private readonly updateApplicantById: UpdateApplicantUseCase,
     private readonly updateApplicantStatusById: UpdateApplicantStatusUseCase,
   ) {}
-
-  @Post()
-  @Roles(ApplicantPermissions.CREATE)
-  @Audit('recruitment.applicant.create', 'hr.applicant')
-  @ApiProtected({
-    path: '/api/v1/hr/recruitment/applicants',
-    roles: [ApplicantPermissions.CREATE],
-  })
-  @ApiOperation({ summary: 'Create applicant' })
-  @ApiBody({
-    type: CreateApplicantDto,
-    description:
-      'Request body: applicant details for a specific job. Duplicate `(jobId, email)` is rejected.',
-    examples: {
-      createApplicant: {
-        summary: 'Create applicant payload',
-        value: {
-          jobId: '0d9ff3b3-0a4a-42c5-a5b6-d4f809ec4374',
-          firstName: 'Abel',
-          lastName: 'Tesfaye',
-          email: 'abel.tesfaye@example.com',
-          phone: '+251912345678',
-          resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
-          linkedinUrl: 'https://linkedin.com/in/abeltesfaye',
-          skills: ['React', 'TypeScript', 'GraphQL'],
-          currentCompany: 'TechCorp',
-          currentPosition: 'Senior Engineer',
-          yearsExperience: 6,
-        },
-      },
-    },
-  })
-  @ApiEnvelopeOkResponse(
-    ApplicantResponseDto,
-    'Created applicant',
-    applicantResponseEnvelope,
-  )
-  @ApiDefaultErrors({
-    path: '/api/v1/hr/recruitment/applicants',
-    badRequest: 'Applicant payload is invalid',
-    notFound: 'Job not found',
-    conflict: 'Applicant already exists for this job and email',
-  })
-  create(
-    @Body() body: CreateApplicantDto,
-    @Req() req: Request & { user?: AuthPrincipal },
-  ): Promise<ApplicantResponseContract> {
-    const user = req.user as AuthPrincipal | undefined;
-    if (!user)
-      throw new ForbiddenException('Authenticated user context is required');
-    return this.createApplicant.execute(body, user.userId ?? user.sub);
-  }
 
   @Get()
   @Roles(ApplicantPermissions.VIEW)
@@ -261,7 +206,7 @@ export class ApplicantsController {
         summary: 'Move applicant to interview stage',
         value: {
           status: 'INTERVIEW',
-          note: 'Passed screening and shortlisted by hiring manager.',
+          notes: 'Passed screening and shortlisted by hiring manager.',
         },
       },
     },

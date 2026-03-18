@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
@@ -30,6 +35,7 @@ import type {
   ApplicantResponseDto as ApplicantResponseDtoType,
   ApplicantStatus,
   ApplicantStatusHistoryDto as ApplicantStatusHistoryDtoType,
+  ApplyToJobDto as ApplyToJobDtoType,
   BulkApplicantStatusResponseDto as BulkApplicantStatusResponseDtoType,
   BulkReviewApplicantStatus,
   BulkUpdateApplicantStatusDto as BulkUpdateApplicantStatusDtoType,
@@ -243,6 +249,10 @@ export class CreateApplicantDto implements CreateApplicantDtoType {
   @Type(() => ApplicantExperienceInputDto)
   experiences?: ApplicantExperienceInputDto[];
 }
+
+export class ApplyToJobDto
+  extends OmitType(CreateApplicantDto, ['jobId'] as const)
+  implements ApplyToJobDtoType {}
 
 export class UpdateApplicantDto
   extends PartialType(CreateApplicantDto)
