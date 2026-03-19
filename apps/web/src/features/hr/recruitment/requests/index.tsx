@@ -1,29 +1,31 @@
 'use client';
 
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
 import {
   emptyRequestsMessage,
   requestStats,
-} from "@/features/hr/recruitment/requests/mock-data";
+} from '@/features/hr/recruitment/requests/mock-data';
 import {
   EmptyRequestsState,
   RequestsSection,
   RequestsStatsCard,
   RequestsErrorState,
-} from "@/features/hr/recruitment/requests/components";
-import { useJobs } from "@/features/hr/recruitment/requests/hooks";
-import { mapJobResponseToRequest } from "@/features/hr/recruitment/requests/job-request-mappers";
+} from '@/features/hr/recruitment/requests/components';
+import { useJobs } from '@/features/hr/recruitment/requests/hooks';
+import { mapJobResponseToRequest } from '@/features/hr/recruitment/requests/job-request-mappers';
 
-export * from "@/features/hr/recruitment/requests/components";
-export * from "@/features/hr/recruitment/requests/types";
-export * from "@/features/hr/recruitment/requests/hooks";
+export * from '@/features/hr/recruitment/requests/components';
+export * from '@/features/hr/recruitment/requests/types';
+export * from '@/features/hr/recruitment/requests/hooks';
 
 type RecruitmentRequestsContentProps = {
   currentUserName: string;
 };
 
-export function RecruitmentRequestsContent({ currentUserName }: RecruitmentRequestsContentProps) {
+export function RecruitmentRequestsContent({
+  currentUserName,
+}: RecruitmentRequestsContentProps) {
   const { data: jobs, isLoading, isError, refetch } = useJobs();
 
   const normalizedRequests = useMemo(() => {
@@ -32,7 +34,8 @@ export function RecruitmentRequestsContent({ currentUserName }: RecruitmentReque
       const workflow = job.requestForm?.status?.workflow;
       const requestedBy = job.requestForm?.requestedBy ?? '';
       const isByMe =
-        requestedBy.trim().toLowerCase() === currentUserName.trim().toLowerCase();
+        requestedBy.trim().toLowerCase() ===
+        currentUserName.trim().toLowerCase();
 
       if (workflow === 'REJECTED') {
         return mapJobResponseToRequest(job, 'closed');
@@ -46,9 +49,15 @@ export function RecruitmentRequestsContent({ currentUserName }: RecruitmentReque
     });
   }, [currentUserName, jobs]);
 
-  const pendingRequests = normalizedRequests.filter((request) => request.status === "active");
-  const pendingByMeRequests = normalizedRequests.filter((request) => request.status === "by_me");
-  const declinedRequests = normalizedRequests.filter((request) => request.status === "closed");
+  const pendingRequests = normalizedRequests.filter(
+    (request) => request.status === 'active',
+  );
+  const pendingByMeRequests = normalizedRequests.filter(
+    (request) => request.status === 'by_me',
+  );
+  const declinedRequests = normalizedRequests.filter(
+    (request) => request.status === 'closed',
+  );
   const hasRequests = normalizedRequests.length > 0;
 
   return (
