@@ -31,6 +31,31 @@ describe('env.config', () => {
   const originalEnforceMfa = process.env.ENFORCE_MFA_FOR_PRIVILEGED;
   const originalCorsOrigin = process.env.CORS_ORIGIN;
 
+  const runtimeAuthClientEnv = {
+    KEYCLOAK_AUTH_CLIENT_ID: 'runtime-auth-client-id',
+    KEYCLOAK_AUTH_CLIENT_SECRET: 'runtime-auth-client-secret',
+    KEYCLOAK_AUTHORIZATION_URL:
+      'http://localhost:8080/realms/blih/protocol/openid-connect/auth',
+    KEYCLOAK_TOKEN_URL:
+      'http://localhost:8080/realms/blih/protocol/openid-connect/token',
+    KEYCLOAK_LOGOUT_URL:
+      'http://localhost:8080/realms/blih/protocol/openid-connect/logout',
+    KEYCLOAK_USERINFO_URL:
+      'http://localhost:8080/realms/blih/protocol/openid-connect/userinfo',
+    KEYCLOAK_JWKS_URL:
+      'http://localhost:8080/realms/blih/protocol/openid-connect/certs',
+    KEYCLOAK_AUTH_REDIRECT_URI: 'http://localhost:5000/api/v1/auth/callback',
+    AUTH_COOKIE_HTTP_ONLY: 'true',
+    AUTH_COOKIE_DOMAIN: 'localhost',
+    AUTH_COOKIE_PATH: '/',
+  } as const;
+
+  const applyRuntimeAuthClientEnv = () => {
+    Object.entries(runtimeAuthClientEnv).forEach(([key, value]) => {
+      process.env[key] = value;
+    });
+  };
+
   afterEach(() => {
     if (originalNodeEnv === undefined) {
       delete process.env.NODE_ENV;
@@ -216,23 +241,7 @@ describe('env.config', () => {
   });
 
   it('reads dedicated auth client settings for authorization-code flow', () => {
-    process.env.KEYCLOAK_AUTH_CLIENT_ID = 'runtime-auth-client-id';
-    process.env.KEYCLOAK_AUTH_CLIENT_SECRET = 'runtime-auth-client-secret';
-    process.env.KEYCLOAK_AUTHORIZATION_URL =
-      'http://localhost:8080/realms/blih/protocol/openid-connect/auth';
-    process.env.KEYCLOAK_TOKEN_URL =
-      'http://localhost:8080/realms/blih/protocol/openid-connect/token';
-    process.env.KEYCLOAK_LOGOUT_URL =
-      'http://localhost:8080/realms/blih/protocol/openid-connect/logout';
-    process.env.KEYCLOAK_USERINFO_URL =
-      'http://localhost:8080/realms/blih/protocol/openid-connect/userinfo';
-    process.env.KEYCLOAK_JWKS_URL =
-      'http://localhost:8080/realms/blih/protocol/openid-connect/certs';
-    process.env.KEYCLOAK_AUTH_REDIRECT_URI =
-      'http://localhost:5000/api/v1/auth/callback';
-    process.env.AUTH_COOKIE_HTTP_ONLY = 'true';
-    process.env.AUTH_COOKIE_DOMAIN = 'localhost';
-    process.env.AUTH_COOKIE_PATH = '/';
+    applyRuntimeAuthClientEnv();
     process.env.AUTH_COOKIE_SAME_SITE = 'strict';
     process.env.AUTH_NONCE_ENABLED = 'true';
     process.env.AUTH_PKCE_ENABLED = 'true';
@@ -282,10 +291,41 @@ describe('env.config', () => {
   it('derives AUTH_COOKIE_SECURE default from production node env', () => {
     process.env.NODE_ENV = 'production';
     process.env.CORS_ORIGIN = 'https://app.example.com';
+    process.env.KEYCLOAK_AUTH_REDIRECT_URI =
+      'https://blihapi.blihmarketing.com/api/v1/auth/callback';
+    process.env.AUTH_FRONTEND_BASE_URL = 'https://app.example.com';
     delete process.env.AUTH_COOKIE_SECURE;
     resetEnvCache();
 
     expect(env.AUTH_COOKIE_SECURE).toBe(true);
+  });
+
+  it('rejects insecure auth cookies in production', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.CORS_ORIGIN = 'https://project-k22it.vercel.app';
+    process.env.KEYCLOAK_AUTH_REDIRECT_URI =
+      'https://blihapi.blihmarketing.com/api/v1/auth/callback';
+    process.env.AUTH_FRONTEND_BASE_URL = 'https://project-k22it.vercel.app';
+    process.env.AUTH_COOKIE_SECURE = 'false';
+    resetEnvCache();
+
+    expect(() => env.AUTH_COOKIE_SECURE).toThrow(
+      'AUTH_COOKIE_SECURE must be true when NODE_ENV=production.',
+    );
+  });
+
+  it('rejects non-https auth redirect URIs in production', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.CORS_ORIGIN = 'https://project-k22it.vercel.app';
+    process.env.KEYCLOAK_AUTH_REDIRECT_URI =
+      'http://blihapi.blihmarketing.com/api/v1/auth/callback';
+    process.env.AUTH_FRONTEND_BASE_URL = 'https://project-k22it.vercel.app';
+    process.env.AUTH_COOKIE_SECURE = 'true';
+    resetEnvCache();
+
+    expect(() => env.KEYCLOAK_AUTH_REDIRECT_URI).toThrow(
+      'KEYCLOAK_AUTH_REDIRECT_URI must use https in production.',
+    );
   });
 
   it('rejects wildcard CORS in production with credentials enabled', () => {

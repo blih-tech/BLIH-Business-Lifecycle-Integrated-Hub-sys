@@ -333,6 +333,44 @@ export function buildFrontendRedirectUrl(
   return new URL(path, frontendBaseUrl).toString();
 }
 
+export function buildDynamicFrontendRedirectUrl(
+  request: Request,
+  path: string,
+  allowedOrigins: string[],
+): string {
+  // Extract origin from request headers
+  const origin =
+    request.headers.get('origin') ||
+    (request.headers.get('referer')
+      ? new URL(request.headers.get('referer') as string).origin
+      : undefined);
+
+  // Fallback to configured base URL if no origin found
+  if (!origin) {
+    return new URL(
+      path,
+      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
+    ).toString();
+  }
+
+  // Validate origin against allowed origins
+  const isAllowed = allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+    return origin === allowed || origin.startsWith(`${allowed}/`);
+  });
+
+  if (!isAllowed) {
+    // Fallback to configured base URL for security
+    return new URL(
+      path,
+      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
+    ).toString();
+  }
+
+  // Use request origin for redirect
+  return new URL(path, origin).toString();
+}
+
 function normalizeRedirectPath(path: string | undefined): string | undefined {
   if (!path) {
     return undefined;
