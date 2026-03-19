@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useFieldArray, useWatch, type Control, type UseFormReturn } from "react-hook-form";
 
 import type {
@@ -34,14 +34,21 @@ type PreviewField = {
   options?: string[];
 };
 
+const lockedApplicantFieldKeys = new Set([
+  "FIRST_NAME",
+  "LAST_NAME",
+  "EMAIL",
+  "PHONE",
+]);
+
 const fieldTypeOptions: Array<{ value: ApplicationFieldType; label: string }> = [
-  { value: "text", label: "Short Text" },
-  { value: "textarea", label: "Long Text" },
-  { value: "number", label: "Number" },
-  { value: "select", label: "Select" },
-  { value: "file", label: "File Upload" },
-  { value: "date", label: "Date" },
-  { value: "checkbox", label: "Checkbox" },
+  { value: "TEXT", label: "Short Text" },
+  { value: "TEXTAREA", label: "Long Text" },
+  { value: "NUMBER", label: "Number" },
+  { value: "SELECT", label: "Select" },
+  { value: "FILE", label: "File Upload" },
+  { value: "DATE", label: "Date" },
+  { value: "CHECKBOX", label: "Checkbox" },
 ];
 
 function FormSectionCard({ title, description, eyebrow, children }: FormSectionCardProps) {
@@ -69,7 +76,7 @@ function defaultCustomField(): CustomApplicationField {
   return {
     id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     label: "",
-    type: "text",
+    type: "TEXT",
     required: false,
     helpText: "",
     options: [],
@@ -77,11 +84,11 @@ function defaultCustomField(): CustomApplicationField {
 }
 
 function PreviewInput({ type }: { type: ApplicationFieldType }) {
-  if (type === "textarea") {
+  if (type === "TEXTAREA") {
     return <div className="mt-2 h-20 rounded-[10px] border border-border bg-muted/60" />;
   }
 
-  if (type === "checkbox") {
+  if (type === "CHECKBOX") {
     return (
       <div className="mt-2 flex items-center gap-2">
         <div className="h-4 w-4 rounded border border-border bg-background" />
@@ -232,7 +239,7 @@ function CustomFieldCard({
         />
       </div>
 
-      {fieldType === "select" ? (
+      {fieldType === "SELECT" ? (
         <div className="mt-4 border-t border-border/70 pt-4">
           <CustomFieldOptionsEditor control={control} fieldIndex={index} />
         </div>
@@ -247,18 +254,45 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
     name: "customFields",
   });
 
-  const [predefinedFields, customFields] = useWatch({
+  const [applicantFields, sections, customFields] = useWatch({
     control: form.control,
-    name: ["predefinedFields", "customFields"],
+    name: ["applicantFields", "sections", "customFields"],
   });
 
-  const enabledPredefinedFields = (predefinedFields ?? []).filter((field) => field.enabled);
+  useEffect(() => {
+    (applicantFields ?? []).forEach((field, index) => {
+      if (!lockedApplicantFieldKeys.has(field.key)) return;
+      if (!field.enabled) {
+        form.setValue(`applicantFields.${index}.enabled`, true, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+      if (!field.required) {
+        form.setValue(`applicantFields.${index}.required`, true, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+    });
+  }, [applicantFields, form]);
+
+  const enabledApplicantFields = (applicantFields ?? []).filter((field) => field.enabled);
+  const enabledSections = (sections ?? []).filter((section) => section.enabled);
   const previewFields: PreviewField[] = [
-    ...enabledPredefinedFields.map((field) => ({
+    ...enabledApplicantFields.map((field) => ({
       previewId: field.key,
-      label: field.label,
-      type: field.type,
+      label: field.key.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()),
+      type: "TEXT" as ApplicationFieldType,
       required: field.required,
+    })),
+    ...enabledSections.map((section) => ({
+      previewId: section.key,
+      label: section.key,
+      type: "TEXTAREA" as ApplicationFieldType,
+      required: section.required,
     })),
     ...((customFields ?? []).map((field) => ({
       previewId: field.id,
@@ -276,11 +310,11 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
         <div className="space-y-4">
           <FormSectionCard
             eyebrow="Standard"
-            title="Predefined Fields"
+            title="Applicant Fields"
             description="Turn standard applicant fields on or off."
           >
             <div className="space-y-3">
-              {predefinedFields?.map((field, index) => (
+              {applicantFields?.map((field, index) => (
                 <div
                   key={field.key}
                   className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.92))] p-3.5"
@@ -288,9 +322,9 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                   <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-semibold text-foreground">{field.label}</p>
+                        <p className="text-sm font-semibold text-foreground">{field.key.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</p>
                         <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
-                          {typeLabel(field.type)}
+                          {typeLabel("TEXT")}
                         </span>
                       </div>
                     </div>
@@ -298,7 +332,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                     <div className="flex flex-wrap gap-2">
                       <FormField
                         control={form.control}
-                        name={`predefinedFields.${index}.enabled`}
+                        name={`applicantFields.${index}.enabled`}
                         render={({ field: enabledField }) => (
                           <FormItem>
                             <FormControl>
@@ -307,6 +341,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                                 variant={enabledField.value ? "default" : "outline"}
                                 size="sm"
                                 className="cursor-pointer"
+                                disabled={lockedApplicantFieldKeys.has(field.key)}
                                 onClick={() => enabledField.onChange(!enabledField.value)}
                               >
                                 {enabledField.value ? "Included" : "Add Field"}
@@ -318,7 +353,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
 
                       <FormField
                         control={form.control}
-                        name={`predefinedFields.${index}.required`}
+                        name={`applicantFields.${index}.required`}
                         render={({ field: requiredField }) => (
                           <FormItem>
                             <FormControl>
@@ -327,7 +362,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                                 variant={requiredField.value ? "default" : "outline"}
                                 size="sm"
                                 className="cursor-pointer"
-                                disabled={!predefinedFields[index]?.enabled}
+                                disabled={!applicantFields[index]?.enabled || lockedApplicantFieldKeys.has(field.key)}
                                 onClick={() => requiredField.onChange(!requiredField.value)}
                               >
                                 {requiredField.value ? "Required" : "Optional"}
@@ -343,7 +378,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
             </div>
             <FormField
               control={form.control}
-              name="predefinedFields"
+              name="applicantFields"
               render={() => <FormMessage />}
             />
           </FormSectionCard>
@@ -422,7 +457,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                       <p className="mt-1 text-xs text-muted-foreground">{field.helpText}</p>
                     ) : null}
                     <PreviewInput type={field.type} />
-                    {field.type === "select" && field.options && field.options.length > 0 ? (
+                    {field.type === "SELECT" && field.options && field.options.length > 0 ? (
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {field.options
                           .map((option: string) => option.trim())

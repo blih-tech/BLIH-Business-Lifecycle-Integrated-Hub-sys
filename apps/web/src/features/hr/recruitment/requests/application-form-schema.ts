@@ -1,69 +1,58 @@
 import { z } from "zod";
 
-export const applicationFieldTypeValues = [
-  "text",
-  "textarea",
-  "number",
-  "select",
-  "file",
-  "date",
-  "checkbox",
+export const applicationFieldTypeValues = ["TEXT", "TEXTAREA", "NUMBER", "SELECT", "FILE", "DATE", "CHECKBOX"] as const;
+export type ApplicationFieldType = (typeof applicationFieldTypeValues)[number];
+
+export const applicantOptionalFieldKeyValues = [
+  "FIRST_NAME",
+  "LAST_NAME",
+  "EMAIL",
+  "PHONE",
+  "RESUME_URL",
+  "LINKEDIN_URL",
+  "PORTFOLIO_URL",
+  "GITHUB_URL",
+  "CURRENT_COMPANY",
+  "YEARS_OF_EXPERIENCE",
+  "EXPECTED_SALARY",
+  "COVER_LETTER",
 ] as const;
+export type ApplicantOptionalFieldKey = (typeof applicantOptionalFieldKeyValues)[number];
 
-export const applicationFieldTypeSchema = z.enum(applicationFieldTypeValues, {
-  error: () => "Field type is required",
-});
+export const applicationFormSectionKeyValues = ["EDUCATION", "EXPERIENCE"] as const;
+export type ApplicationFormSectionKey = (typeof applicationFormSectionKeyValues)[number];
 
-export const predefinedApplicationFieldSchema = z.object({
-  key: z.string(),
-  label: z.string(),
-  type: applicationFieldTypeSchema,
+export const applicantFieldSchema = z.object({
+  key: z.enum(applicantOptionalFieldKeyValues),
   enabled: z.boolean(),
   required: z.boolean(),
+  order: z.number().optional(),
+});
+
+export const applicationFormSectionSchema = z.object({
+  key: z.enum(applicationFormSectionKeyValues),
+  enabled: z.boolean(),
+  required: z.boolean(),
+  order: z.number().optional(),
 });
 
 export const customApplicationFieldSchema = z.object({
   id: z.string(),
   label: z.string().trim().min(1, "Field label is required"),
-  type: applicationFieldTypeSchema,
+  type: z.enum(applicationFieldTypeValues, {
+    error: () => "Field type is required",
+  }),
   required: z.boolean(),
   helpText: z.string().trim().optional(),
   options: z.array(z.string().trim()),
 });
 
-export const applicationFormSchema = z
-  .object({
-    predefinedFields: z.array(predefinedApplicationFieldSchema),
-    customFields: z.array(customApplicationFieldSchema),
-  })
-  .superRefine((values, ctx) => {
-    const enabledPredefinedCount = values.predefinedFields.filter((field) => field.enabled).length;
-    const customFieldCount = values.customFields.length;
+export const applicationFormSchema = z.object({
+  applicantFields: z.array(applicantFieldSchema),
+  sections: z.array(applicationFormSectionSchema),
+  customFields: z.array(customApplicationFieldSchema),
+});
 
-    if (enabledPredefinedCount + customFieldCount === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["predefinedFields"],
-        message: "Add at least one field to the application form",
-      });
-    }
-
-    values.customFields.forEach((field, index) => {
-      if (field.type === "select") {
-        const options = field.options.map((option) => option.trim()).filter(Boolean);
-
-        if (options.length === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ["customFields", index, "options"],
-            message: "Add at least one option for select fields",
-          });
-        }
-      }
-    });
-  });
-
-export type ApplicationFieldType = z.infer<typeof applicationFieldTypeSchema>;
-export type PredefinedApplicationField = z.infer<typeof predefinedApplicationFieldSchema>;
-export type CustomApplicationField = z.infer<typeof customApplicationFieldSchema>;
 export type ApplicationFormValues = z.infer<typeof applicationFormSchema>;
+export type CustomApplicationField = z.infer<typeof customApplicationFieldSchema>;
+export const PredefinedApplicationField = applicantFieldSchema;

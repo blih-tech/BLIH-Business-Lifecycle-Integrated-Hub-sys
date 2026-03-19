@@ -14,8 +14,11 @@ export const queryKeys = {
     attendance: () => [...queryKeys.hr.all, 'attendance'] as const,
     payroll: () => [...queryKeys.hr.all, 'payroll'] as const,
     recruitment: () => [...queryKeys.hr.all, 'recruitment'] as const,
-    jobs: () => [...queryKeys.hr.recruitment(), 'jobs'] as const,
-    job: (id: string) => [...queryKeys.hr.jobs(), id] as const,
+    jobs: {
+      all: () => [...queryKeys.hr.recruitment(), 'jobs'] as const,
+      list: (filters?: Record<string, unknown>) => [...queryKeys.hr.recruitment(), 'jobs', 'list', filters] as const,
+      detail: (id: string) => [...queryKeys.hr.recruitment(), 'jobs', id] as const,
+    },
     applicants: (jobId: string) =>
       [...queryKeys.hr.recruitment(), 'applicants', jobId] as const,
   },

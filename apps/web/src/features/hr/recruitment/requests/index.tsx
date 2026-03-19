@@ -11,6 +11,7 @@ import {
 
 export * from "@/features/hr/recruitment/requests/components";
 export * from "@/features/hr/recruitment/requests/types";
+export * from "@/features/hr/recruitment/requests/hooks";
 
 type RecruitmentRequestsContentProps = {
   currentUserName: string;

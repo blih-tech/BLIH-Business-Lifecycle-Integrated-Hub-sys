@@ -43,24 +43,34 @@ type SummaryItemProps = {
   moreLabel?: string;
 };
 
-const workModeOptions = [
-  { value: 'on_site', label: 'On-site' },
-  { value: 'hybrid', label: 'Hybrid' },
-  { value: 'remote', label: 'Remote' },
+const workLocationTypeOptions = [
+  { value: 'ON_SITE', label: 'On-site' },
+  { value: 'HYBRID', label: 'Hybrid' },
+  { value: 'REMOTE', label: 'Remote' },
 ] as const;
 
 const employmentTypeOptions = [
-  { value: 'full_time', label: 'Full-time' },
-  { value: 'part_time', label: 'Part-time' },
-  { value: 'contract', label: 'Contract' },
-  { value: 'intern', label: 'Intern' },
+  { value: 'FULL_TIME', label: 'Full-time' },
+  { value: 'PART_TIME', label: 'Part-time' },
+  { value: 'CONTRACT', label: 'Contract' },
+  { value: 'INTERN', label: 'Intern' },
+  { value: 'TEMPORARY', label: 'Temporary' },
 ] as const;
 
 const experienceLevelOptions = [
-  { value: 'entry', label: 'Entry Level' },
-  { value: 'mid', label: 'Mid Level' },
-  { value: 'senior', label: 'Senior Level' },
-  { value: 'lead', label: 'Lead Level' },
+  { value: 'ENTRY', label: 'Entry Level' },
+  { value: 'JUNIOR', label: 'Junior Level' },
+  { value: 'MID', label: 'Mid Level' },
+  { value: 'SENIOR', label: 'Senior Level' },
+  { value: 'LEAD', label: 'Lead Level' },
+  { value: 'PRINCIPAL', label: 'Principal Level' },
+] as const;
+
+const contractTypeOptions = [
+  { value: 'PERMANENT', label: 'Permanent' },
+  { value: 'CONTRACT', label: 'Contract' },
+  { value: 'INTERNSHIP', label: 'Internship' },
+  { value: 'FREELANCE', label: 'Freelance' },
 ] as const;
 
 const salaryCurrencyOptions = [
@@ -71,15 +81,25 @@ const salaryCurrencyOptions = [
 ] as const;
 
 const salaryModeOptions = [
-  { value: 'not_specified', label: 'Not Specified' },
-  { value: 'fixed', label: 'Fixed Salary' },
-  { value: 'range', label: 'Salary Range' },
-  { value: 'negotiable', label: 'Negotiable' },
-  { value: 'competitive', label: 'Competitive' },
+  { value: 'NOT_SPECIFIED', label: 'Not Specified' },
+  { value: 'FIXED', label: 'Fixed Salary' },
+  { value: 'NEGOTIABLE', label: 'Negotiable' },
+  { value: 'COMPETITIVE', label: 'Competitive' },
 ] as const satisfies ReadonlyArray<{
   value: (typeof salaryModeValues)[number];
   label: string;
 }>;
+
+const hiringManagerOptions = [
+  { value: 'h1a2b3c4d-e5f6-7890-abcd-ef1234567890', label: 'John Smith - Engineering' },
+  { value: 'i2b3c4d5-e6f7-8901-bcde-f23456789012', label: 'Sarah Johnson - Product' },
+  { value: 'j3c4d5e6-f7a8-9012-cdef-345678901234', label: 'Mike Williams - Design' },
+  { value: 'k4d5e6f7-a8b9-0123-defg-456789012345', label: 'Emily Brown - Marketing' },
+  { value: 'l5e6f7a8-b9c0-1234-efgh-567890123456', label: 'David Lee - Operations' },
+  { value: 'm6f7a8b9-c0d1-2345-fghi-678901234567', label: 'Lisa Chen - Finance' },
+  { value: 'n7a8b9c0-d1e2-3456-ghij-789012345678', label: 'Robert Taylor - HR' },
+  { value: 'o8b9c0d1-e2f3-4567-hijk-890123456789', label: 'Amanda White - Sales' },
+] as const;
 
 function optionLabel(
   value: string | undefined,
@@ -87,6 +107,14 @@ function optionLabel(
 ) {
   if (!value) return 'Not set';
   return options.find((option) => option.value === value)?.label ?? value;
+}
+
+function idToLabel(
+  id: string | undefined,
+  options: ReadonlyArray<{ value: string; label: string }>,
+) {
+  if (!id) return 'Not set';
+  return options.find((option) => option.value === id)?.label ?? id;
 }
 
 function listPreview(value: string | undefined) {
@@ -143,43 +171,53 @@ function FormSectionCard({
 
 export function JobDetailsStep({ form }: JobDetailsStepProps) {
   const [
-    jobTitle,
-    location,
-    workMode,
+    title,
+    city,
+    country,
+    workLocationType,
     employmentType,
     experienceLevel,
-    requirements,
+    contractType,
+    responsibilities,
+    requiredSkills,
     preferredSkills,
-    keyResponsibilities,
     salaryMode,
-    salaryRangeMin,
-    salaryRangeMax,
-    salaryCurrency,
+    salaryMin,
+    salaryMax,
+    currency,
     benefits,
+    tools,
+    openings,
+    hiringManagerId,
   ] = useWatch({
     control: form.control,
     name: [
-      'jobTitle',
-      'location',
-      'workMode',
+      'title',
+      'city',
+      'country',
+      'workLocationType',
       'employmentType',
       'experienceLevel',
-      'requirements',
+      'contractType',
+      'responsibilities',
+      'requiredSkills',
       'preferredSkills',
-      'keyResponsibilities',
       'salaryMode',
-      'salaryRangeMin',
-      'salaryRangeMax',
-      'salaryCurrency',
+      'salaryMin',
+      'salaryMax',
+      'currency',
       'benefits',
+      'tools',
+      'openings',
+      'hiringManagerId',
     ],
   });
-  const responsibilitiesPreview = listPreview(keyResponsibilities);
-  const requirementsPreview = listPreview(requirements);
+  const responsibilitiesPreview = listPreview(responsibilities);
+  const requiredSkillsPreview = listPreview(requiredSkills);
   const preferredSkillsPreview = listPreview(preferredSkills);
   const benefitsPreview = listPreview(benefits);
-  const isVariableSalary = salaryMode === 'range';
-  const hasStructuredSalary = salaryMode === 'fixed' || salaryMode === 'range';
+  const toolsPreview = listPreview(tools);
+  const hasStructuredSalary = salaryMode === 'FIXED' || salaryMode === 'NEGOTIABLE' || salaryMode === 'COMPETITIVE';
 
   return (
     <div className="space-y-4 p-4">
@@ -193,14 +231,14 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
             <div className="grid gap-3 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="jobTitle"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="ui-meta text-muted-foreground">
                       Job Title
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="" {...field} />
+                      <Input placeholder="Senior Product Designer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -209,14 +247,14 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
 
               <FormField
                 control={form.control}
-                name="location"
+                name="openings"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="ui-meta text-muted-foreground">
-                      Location
+                      Number of Openings
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="" {...field} />
+                      <Input type="number" min="1" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,11 +263,43 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
 
               <FormField
                 control={form.control}
-                name="workMode"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="ui-meta text-muted-foreground">
-                      Work Mode
+                      City
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nairobi" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="ui-meta text-muted-foreground">
+                      Country
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Kenya" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="workLocationType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="ui-meta text-muted-foreground">
+                      Work Location Type
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
@@ -238,7 +308,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {workModeOptions.map((option) => (
+                        {workLocationTypeOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -279,9 +349,36 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
 
               <FormField
                 control={form.control}
+                name="contractType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="ui-meta text-muted-foreground">
+                      Contract Type
+                    </FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-background">
+                          <SelectValue placeholder="Select contract type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {contractTypeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="experienceLevel"
                 render={({ field }) => (
-                  <FormItem className="md:col-span-2">
+                  <FormItem>
                     <FormLabel className="ui-meta text-muted-foreground">
                       Experience Level
                     </FormLabel>
@@ -303,6 +400,49 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="hiringManagerId"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="ui-meta text-muted-foreground">
+                      Hiring Manager
+                    </FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-background">
+                          <SelectValue placeholder="Select hiring manager" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {hiringManagerOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="applicationDeadline"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="ui-meta text-muted-foreground">
+                      Application Deadline
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </FormSectionCard>
 
@@ -314,17 +454,17 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
-                name="jobSummary"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="ui-meta text-muted-foreground">
-                      Job Summary
+                      Job Description
                     </FormLabel>
                     <FormControl>
-                      <JobSummaryRichTextEditor
-                        value={field.value}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
+                      <Textarea
+                        {...field}
+                        placeholder="Describe the role, responsibilities, and what makes this opportunity exciting..."
+                        className="min-h-[180px] max-h-[180px] rounded-[10px] border-border bg-background text-sm"
                       />
                     </FormControl>
                     <FormDescription className="text-xs">
@@ -337,11 +477,11 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
 
               <FormField
                 control={form.control}
-                name="whyJoinUs"
+                name="summary"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="ui-meta text-muted-foreground">
-                      Why Join Us
+                      Summary (Why Join Us)
                     </FormLabel>
                     <FormControl>
                       <Textarea
@@ -366,7 +506,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
               <div className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.9))] p-3.5">
                 <FormField
                   control={form.control}
-                  name="keyResponsibilities"
+                  name="responsibilities"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="ui-meta text-muted-foreground">
@@ -394,11 +534,11 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                 <div className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.9))] p-3.5">
                   <FormField
                     control={form.control}
-                    name="requirements"
+                    name="requiredSkills"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="ui-meta text-muted-foreground">
-                          Requirements
+                          Required Skills
                         </FormLabel>
                         <FormControl>
                           <Textarea
@@ -408,7 +548,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                           />
                         </FormControl>
                         <FormDescription className="text-xs">
-                          Add one requirement per line.
+                          Add one skill per line.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -432,6 +572,60 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                             className="min-h-[140px] max-h-[140px] rounded-[10px] border-border bg-background text-sm"
                           />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.9))] p-3.5">
+                  <FormField
+                    control={form.control}
+                    name="tools"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="ui-meta text-muted-foreground">
+                          Tools
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder={'Figma\nJira\nGitHub'}
+                            className="min-h-[100px] max-h-[100px] rounded-[10px] border-border bg-background text-sm"
+                          />
+                        </FormControl>
+                        <FormDescription className="text-xs">
+                          Add one tool per line.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.9))] p-3.5">
+                  <FormField
+                    control={form.control}
+                    name="benefits"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="ui-meta text-muted-foreground">
+                          Benefits
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder={
+                              'Health insurance\nLearning budget\nHybrid work support'
+                            }
+                            className="min-h-[100px] max-h-[100px] rounded-[10px] border-border bg-background text-sm"
+                          />
+                        </FormControl>
+                        <FormDescription className="text-xs">
+                          Add one benefit per line.
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -476,91 +670,70 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="salaryRangeMin"
-                render={({ field }) => (
-                  <FormItem className={isVariableSalary ? '' : 'md:col-span-2'}>
-                    <FormLabel className="ui-meta text-muted-foreground">
-                      {salaryMode === 'fixed' ? 'Salary Amount' : 'Salary From'}
-                    </FormLabel>
-                    <FormControl>
-                      <Input inputMode="numeric" disabled={!hasStructuredSalary} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {hasStructuredSalary && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="salaryMin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="ui-meta text-muted-foreground">
+                          {salaryMode === 'FIXED' ? 'Salary Amount' : 'Salary From'}
+                        </FormLabel>
+                        <FormControl>
+                          <Input inputMode="numeric" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              {isVariableSalary ? (
-                <FormField
-                  control={form.control}
-                  name="salaryRangeMax"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="ui-meta text-muted-foreground">
-                        Salary To
-                      </FormLabel>
-                      <FormControl>
-                        <Input inputMode="numeric" disabled={!isVariableSalary} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  {salaryMode === 'COMPETITIVE' && (
+                    <FormField
+                      control={form.control}
+                      name="salaryMax"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="ui-meta text-muted-foreground">
+                            Salary To
+                          </FormLabel>
+                          <FormControl>
+                            <Input inputMode="numeric" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
-                />
-              ) : null}
 
-              <FormField
-                control={form.control}
-                name="salaryCurrency"
-                render={({ field }) => (
-                  <FormItem className={isVariableSalary ? 'md:col-span-2' : ''}>
-                    <FormLabel className="ui-meta text-muted-foreground">
-                      Salary Currency
-                    </FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="w-full bg-background" disabled={!hasStructuredSalary}>
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {salaryCurrencyOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="benefits"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel className="ui-meta text-muted-foreground">
-                      Benefits
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder={
-                          'Health insurance\nLearning budget\nHybrid work support'
-                        }
-                        className="min-h-[120px] max-h-[120px] rounded-[10px] border-border bg-background text-sm"
-                      />
-                    </FormControl>
-                    <FormDescription className="text-xs">
-                      Add one benefit per line.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={form.control}
+                    name="currency"
+                    render={({ field }) => (
+                      <FormItem className={salaryMode === 'COMPETITIVE' ? 'md:col-span-2' : ''}>
+                        <FormLabel className="ui-meta text-muted-foreground">
+                          Salary Currency
+                        </FormLabel>
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="w-full bg-background">
+                              <SelectValue placeholder="Select currency" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {salaryCurrencyOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
             </div>
           </FormSectionCard>
 
@@ -577,14 +750,14 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
             <div className="px-4 py-3.5">
               <div className="rounded-[16px] border border-border bg-background px-3.5 py-3.5">
                 <p className="text-base font-semibold tracking-[-0.03em] text-foreground">
-                  {jobTitle?.trim() || 'Untitled role'}
+                  {title?.trim() || 'Untitled role'}
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
                   <span className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-medium text-foreground">
-                    {location?.trim() || 'Location not set'}
+                    {city?.trim() || 'Location not set'}
                   </span>
                   <span className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-medium text-foreground">
-                    {optionLabel(workMode, workModeOptions)}
+                    {optionLabel(workLocationType, workLocationTypeOptions)}
                   </span>
                   <span className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-medium text-foreground">
                     {optionLabel(employmentType, employmentTypeOptions)}
@@ -593,6 +766,18 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
               </div>
 
               <div className="mt-3.5">
+                <SummaryItem
+                  label="Openings"
+                  value={openings || '1'}
+                />
+                <SummaryItem
+                  label="Hiring manager"
+                  value={idToLabel(hiringManagerId, hiringManagerOptions)}
+                />
+                <SummaryItem
+                  label="Contract type"
+                  value={optionLabel(contractType, contractTypeOptions)}
+                />
                 <SummaryItem
                   label="Experience level"
                   value={optionLabel(experienceLevel, experienceLevelOptions)}
@@ -603,9 +788,9 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                   moreLabel={responsibilitiesPreview.moreLabel}
                 />
                 <SummaryItem
-                  label="Requirements"
-                  value={requirementsPreview.value}
-                  moreLabel={requirementsPreview.moreLabel}
+                  label="Required skills"
+                  value={requiredSkillsPreview.value}
+                  moreLabel={requiredSkillsPreview.moreLabel}
                 />
                 <SummaryItem
                   label="Preferred skills"
@@ -613,18 +798,23 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                   moreLabel={preferredSkillsPreview.moreLabel}
                 />
                 <SummaryItem
+                  label="Tools"
+                  value={toolsPreview.value}
+                  moreLabel={toolsPreview.moreLabel}
+                />
+                <SummaryItem
                   label="Salary"
                   value={
-                    salaryMode === 'fixed' &&
-                    salaryRangeMin?.trim() &&
-                    salaryCurrency?.trim()
-                      ? `${salaryCurrency} ${salaryRangeMin}`
-                      : salaryMode === 'range' &&
-                          salaryRangeMin?.trim() &&
-                          salaryRangeMax?.trim() &&
-                          salaryCurrency?.trim()
-                      ? `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`
-                      : optionLabel(salaryMode, salaryModeOptions)
+                    salaryMode === 'FIXED' &&
+                    salaryMin?.trim() &&
+                    currency?.trim()
+                      ? `${currency} ${salaryMin}`
+                      : salaryMode === 'COMPETITIVE' &&
+                          salaryMin?.trim() &&
+                          salaryMax?.trim() &&
+                          currency?.trim()
+                        ? `${currency} ${salaryMin} - ${salaryMax}`
+                        : optionLabel(salaryMode, salaryModeOptions)
                   }
                 />
                 <SummaryItem
