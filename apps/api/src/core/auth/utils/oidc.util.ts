@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
 import type { CookieOptions } from 'express';
+import type { Request } from 'express';
 import {
   KEYCLOAK_AUTH_PATH,
   KEYCLOAK_LOGOUT_PATH,
@@ -340,9 +341,9 @@ export function buildDynamicFrontendRedirectUrl(
 ): string {
   // Extract origin from request headers
   const origin =
-    request.headers.get('origin') ||
-    (request.headers.get('referer')
-      ? new URL(request.headers.get('referer') as string).origin
+    (request.headers.origin as string) ||
+    (request.headers.referer
+      ? new URL(request.headers.referer as string).origin
       : undefined);
 
   // Fallback to configured base URL if no origin found
