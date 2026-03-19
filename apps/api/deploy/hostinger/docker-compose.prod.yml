@@ -4,7 +4,7 @@ services:
     container_name: blih-postgres
     restart: unless-stopped
     env_file:
-      - ../../.env.production
+      - .env.production
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backups:/backups
@@ -34,7 +34,7 @@ services:
         '--hostname-strict=false',
       ]
     env_file:
-      - ../../.env.production
+      - .env.production
     ports:
       - '127.0.0.1:${KEYCLOAK_PORT:-8080}:8080'
     volumes:
@@ -76,7 +76,7 @@ services:
     container_name: blih-api
     restart: unless-stopped
     env_file:
-      - ../../.env.production
+      - .env.production
     ports:
       - '${API_PORT:-5000}:5000'
     depends_on:
