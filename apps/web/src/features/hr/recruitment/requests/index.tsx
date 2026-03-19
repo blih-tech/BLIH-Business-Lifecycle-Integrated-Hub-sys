@@ -73,7 +73,7 @@ export function RecruitmentRequestsContent({
       ) : (
         <>
           <RequestsSection
-            title="Pending Approval Requests (Others)"
+            title="Pending Approval Requests"
             subtitle="Review and publish job postings"
             items={pendingRequests}
             currentUserName={currentUserName}
@@ -81,7 +81,7 @@ export function RecruitmentRequestsContent({
           />
 
           <RequestsSection
-            title="Pending Approval Requests (By Me)"
+            title="Approved by You"
             subtitle="Waiting for other approvals"
             items={pendingByMeRequests}
             currentUserName={currentUserName}

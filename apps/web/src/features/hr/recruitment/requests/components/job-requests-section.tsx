@@ -25,6 +25,7 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
   const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
   const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
+  const [submittingJustifyAction, setSubmittingJustifyAction] = useState<"review" | "reject" | null>(null);
   const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
   const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
 
@@ -115,6 +116,35 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
     }
   }
 
+  async function handleJustify(action: "review" | "reject", justification: string) {
+    const request = justifyRequest;
+    if (!request?.jobId) {
+      toast.error("Unable to submit this request.");
+      return;
+    }
+    void justification;
+
+    setSubmittingJustifyAction(action);
+    try {
+      // Live API call (disabled for now)
+      // await apiClient.post(`/hr/recruitment/jobs/${request.jobId}/approve`, {
+      //   decision: "REJECTED",
+      //   comments:
+      //     action === "review"
+      //       ? `REVISION_REQUEST: ${justification}`
+      //       : justification,
+      // });
+
+      await delay(1200);
+      toast.success(action === "review" ? "Revision requested" : "Request declined");
+    } catch (error) {
+      console.error("Failed to submit justification:", error);
+      toast.error("Request failed");
+    } finally {
+      setSubmittingJustifyAction(null);
+    }
+  }
+
   return (
     <>
       {isLoading ? (
@@ -165,13 +195,15 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       ) : null}
 
       {!isLoading ? (
-        <JobRequestJustifyDialog
+      <JobRequestJustifyDialog
         request={justifyRequest}
         requestId={justifyRequestId}
         onOpenChange={(isOpen) => {
           if (!isOpen) setJustifyRequestIndex(null);
         }}
-        />
+        onSubmit={handleJustify}
+        submittingAction={submittingJustifyAction}
+      />
       ) : null}
 
       {!isLoading ? (
