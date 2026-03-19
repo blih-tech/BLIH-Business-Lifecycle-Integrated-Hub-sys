@@ -26,6 +26,7 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
   const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
   const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
   const [submittingJustifyAction, setSubmittingJustifyAction] = useState<"review" | "reject" | null>(null);
+  const [editRequest, setEditRequest] = useState<FullJobRequest | null>(null);
   const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
   const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
 
@@ -67,6 +68,11 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
     nextParams.delete("create");
     const query = nextParams.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
+  }
+
+  function handleEditRequestDialogOpenChange(isOpen: boolean) {
+    if (isOpen) return;
+    setEditRequest(null);
   }
 
   async function handleApprove() {
@@ -122,10 +128,10 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       toast.error("Unable to submit this request.");
       return;
     }
-    void justification;
 
     setSubmittingJustifyAction(action);
     try {
+      void justification;
       // Live API call (disabled for now)
       // await apiClient.post(`/hr/recruitment/jobs/${request.jobId}/approve`, {
       //   decision: "REJECTED",
@@ -189,7 +195,11 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
           setSelectedRequestIndex(null);
           setJustifyRequestIndex(selectedRequestIndex);
         }}
-        onEdit={() => setSelectedRequestIndex(null)}
+        onEdit={() => {
+          const request = selectedRequest;
+          setSelectedRequestIndex(null);
+          if (request) setEditRequest(request);
+        }}
         isApproving={approvingRequestId === selectedRequest?.jobId}
       />
       ) : null}
@@ -211,6 +221,15 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
         open={isCreateRequestDialogOpen}
         onOpenChange={handleCreateRequestDialogOpenChange}
         currentUserName={currentUserName}
+        />
+      ) : null}
+
+      {!isLoading ? (
+        <CreateRequestDialog
+          open={editRequest !== null}
+          onOpenChange={handleEditRequestDialogOpenChange}
+          currentUserName={currentUserName}
+          editRequest={editRequest ?? undefined}
         />
       ) : null}
     </>

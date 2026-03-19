@@ -19,6 +19,7 @@ import {
   type CreateRequestFormValues,
 } from '@/features/hr/recruitment/requests/form-schema';
 import type { CreateJobDto } from '@/types/recruitment';
+import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/types';
 import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
 import { RequestFormStep } from '@/features/hr/recruitment/requests/components/request-form-step';
@@ -39,6 +40,7 @@ type CreateRequestDialogProps = {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   currentUserName: string;
+  editRequest?: SubmittedJobRequest & { jobId?: string };
 };
 
 const steps = [
@@ -124,15 +126,17 @@ export function CreateRequestDialog({
   open,
   onOpenChange,
   currentUserName,
+  editRequest,
 }: CreateRequestDialogProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const isEditMode = Boolean(editRequest?.jobId);
   const requestForm = useForm<CreateRequestFormValues>({
     resolver: zodResolver(createRequestFormSchema),
     mode: 'onSubmit',
     defaultValues: {
       ...defaultValues,
-      requestedBy: currentUserName,
+      requestedBy: editRequest?.requestForm.requestedBy ?? currentUserName,
     },
   });
   const jobDetailsForm = useForm<JobDetailsFormValues>({
@@ -156,20 +160,37 @@ export function CreateRequestDialog({
       setCurrentStep(1);
       requestForm.reset({
         ...defaultValues,
-        requestedBy: currentUserName,
+        requestedBy: editRequest?.requestForm.requestedBy ?? currentUserName,
       });
       jobDetailsForm.reset(defaultJobDetailsValues);
       applicationForm.reset(defaultApplicationValues);
     }
-  }, [applicationForm, currentUserName, jobDetailsForm, open, requestForm]);
+  }, [applicationForm, currentUserName, editRequest, jobDetailsForm, open, requestForm]);
 
   useEffect(() => {
-    requestForm.setValue('requestedBy', currentUserName, {
+    requestForm.setValue('requestedBy', editRequest?.requestForm.requestedBy ?? currentUserName, {
       shouldDirty: false,
       shouldTouch: false,
       shouldValidate: false,
     });
-  }, [currentUserName, requestForm]);
+  }, [currentUserName, editRequest, requestForm]);
+
+  useEffect(() => {
+    if (!open || !editRequest) return;
+    requestForm.reset({
+      ...defaultValues,
+      ...editRequest.requestForm,
+      requestedBy: editRequest.requestForm.requestedBy ?? currentUserName,
+    });
+    jobDetailsForm.reset({
+      ...defaultJobDetailsValues,
+      ...editRequest.jobDetailsForm,
+    });
+    applicationForm.reset({
+      ...defaultApplicationValues,
+      ...editRequest.applicationForm,
+    });
+  }, [applicationForm, currentUserName, editRequest, jobDetailsForm, open, requestForm]);
 
   async function handleRequestContinue() {
     const isValid = await requestForm.trigger();
@@ -289,15 +310,21 @@ export function CreateRequestDialog({
 
       console.log('createJobPayload', payload);
 
-      // Demo mode: simulate API call
-      // await apiClient.post<CreateJobDto>('/hr/recruitment/jobs', payload);
-      await delay(2000);
-
-      toast.success('Hiring request created');
+      if (isEditMode && editRequest?.jobId) {
+        // Live API call (disabled for now)
+        // await apiClient.patch<CreateJobDto>(`/hr/recruitment/jobs/${editRequest.jobId}`, payload);
+        await delay(2000);
+        toast.success('Hiring request updated');
+      } else {
+        // Demo mode: simulate API call
+        // await apiClient.post<CreateJobDto>('/hr/recruitment/jobs', payload);
+        await delay(2000);
+        toast.success('Hiring request created');
+      }
       handleClose();
     } catch (error) {
-      console.error('Failed to create job request:', error);
-      toast.error('Failed to create hiring request');
+      console.error('Failed to save job request:', error);
+      toast.error(isEditMode ? 'Failed to update hiring request' : 'Failed to create hiring request');
     } finally {
       setIsLoading(false);
     }
@@ -317,7 +344,7 @@ export function CreateRequestDialog({
                 Step {currentStep} of 3
               </div>
               <DialogTitle className="ui-section-title text-foreground">
-                Create Hiring Request
+                {isEditMode ? 'Edit Hiring Request' : 'Create Hiring Request'}
               </DialogTitle>
               <DialogDescription className="ui-body text-muted-foreground">
                 {stepMeta.description}
@@ -471,10 +498,10 @@ export function CreateRequestDialog({
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
+                      {isEditMode ? 'Updating...' : 'Creating...'}
                     </>
                   ) : (
-                    'Create'
+                    isEditMode ? 'Update' : 'Create'
                   )}
                 </Button>
               </DialogFooter>
