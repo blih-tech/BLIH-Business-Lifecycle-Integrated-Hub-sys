@@ -18,7 +18,8 @@ type JobRequestCardProps = {
 function departmentLabel(department: JobRequestDepartment) {
   if (department === "technical") return "TECHNICAL DEPT.";
   if (department === "creative") return "CREATIVE DEPT.";
-  return "DIGITAL MARKETING DEPT.";
+  if (department === "digital_marketing") return "DIGITAL MARKETING DEPT.";
+  return "DEPARTMENT";
 }
 
 function priorityLabel(priority: JobRequestPriority) {
@@ -44,11 +45,13 @@ function formatOpenings(value?: string) {
 
 function formatEmploymentType(value?: string) {
   if (!value?.trim()) return "Not set";
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
-  if (value === "intern") return "Intern";
-  return value.replace(/_/g, " ");
+  const normalized = value.toLowerCase();
+  if (normalized === "full_time") return "Full-time";
+  if (normalized === "part_time") return "Part-time";
+  if (normalized === "contract") return "Contract";
+  if (normalized === "intern") return "Intern";
+  if (normalized === "temporary") return "Temporary";
+  return normalized.replace(/_/g, " ");
 }
 
 function formatCreatedDate(value?: string) {

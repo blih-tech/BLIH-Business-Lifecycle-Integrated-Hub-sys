@@ -7,14 +7,16 @@ import { CreateRequestDialog } from "@/features/hr/recruitment/requests/componen
 import { JobRequestDetailsDialog } from "@/features/hr/recruitment/requests/components/job-request-details-dialog";
 import { JobRequestCard } from "@/features/hr/recruitment/requests/components/job-request-card";
 import { JobRequestJustifyDialog } from "@/features/hr/recruitment/requests/components/job-request-justify-dialog";
+import { JobRequestCardSkeleton } from "@/features/hr/recruitment/requests/components/job-request-card-skeleton";
 import type { FullJobRequest, JobRequestPriority } from "@/features/hr/recruitment/requests/types";
 
 type JobRequestsSectionProps = {
   items: FullJobRequest[];
   currentUserName: string;
+  isLoading?: boolean;
 };
 
-export function JobRequestsSection({ items, currentUserName }: JobRequestsSectionProps) {
+export function JobRequestsSection({ items, currentUserName, isLoading = false }: JobRequestsSectionProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -65,7 +67,13 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
 
   return (
     <>
-      {filteredItems.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <JobRequestCardSkeleton key={`request-skeleton-${index}`} />
+          ))}
+        </div>
+      ) : filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {filteredRequestEntries.map(({ request }, index) => (
             <JobRequestCard
@@ -86,7 +94,8 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
         </div>
       )}
 
-      <JobRequestDetailsDialog
+      {!isLoading ? (
+        <JobRequestDetailsDialog
         request={selectedRequest}
         currentUserName={currentUserName}
         variant={selectedRequest?.status ?? "active"}
@@ -99,21 +108,26 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
           setJustifyRequestIndex(selectedRequestIndex);
         }}
         onEdit={() => setSelectedRequestIndex(null)}
-      />
+        />
+      ) : null}
 
-      <JobRequestJustifyDialog
+      {!isLoading ? (
+        <JobRequestJustifyDialog
         request={justifyRequest}
         requestId={justifyRequestId}
         onOpenChange={(isOpen) => {
           if (!isOpen) setJustifyRequestIndex(null);
         }}
-      />
+        />
+      ) : null}
 
-      <CreateRequestDialog
+      {!isLoading ? (
+        <CreateRequestDialog
         open={isCreateRequestDialogOpen}
         onOpenChange={handleCreateRequestDialogOpenChange}
         currentUserName={currentUserName}
-      />
+        />
+      ) : null}
     </>
   );
 }

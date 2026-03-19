@@ -17,6 +17,7 @@ type RequestsSectionProps = {
   items: FullJobRequest[];
   currentUserName: string;
   includeFilter?: boolean;
+  isLoading?: boolean;
 };
 
 export function RequestsSection({
@@ -25,6 +26,7 @@ export function RequestsSection({
   items,
   currentUserName,
   includeFilter = false,
+  isLoading = false,
 }: RequestsSectionProps) {
   return (
     <section className="space-y-4">
@@ -115,7 +117,7 @@ export function RequestsSection({
           </div>
         </div>
       ) : null}
-      <JobRequestsSection items={items} currentUserName={currentUserName} />
+      <JobRequestsSection items={items} currentUserName={currentUserName} isLoading={isLoading} />
     </section>
   );
 }

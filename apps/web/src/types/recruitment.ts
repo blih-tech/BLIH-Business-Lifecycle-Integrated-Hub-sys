@@ -401,3 +401,27 @@ export interface JobResponseDto {
   applicationForm: JobApplicationFormResponseDto | null;
   approvals: JobApprovalResponseDto[];
 }
+
+export interface ApiSuccessEnvelopeMeta {
+  timestamp: string;
+  requestId: string;
+  version: string;
+  pagination?: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface ApiSuccessEnvelope<T> {
+  success: true;
+  message: string;
+  data: T;
+  error: null;
+  meta: ApiSuccessEnvelopeMeta;
+}
+
+export type ListJobsResponse = ApiSuccessEnvelope<JobResponseDto[]>;

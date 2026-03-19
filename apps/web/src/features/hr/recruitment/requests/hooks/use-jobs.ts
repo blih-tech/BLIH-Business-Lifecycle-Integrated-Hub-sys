@@ -4,16 +4,29 @@ import { queryKeys } from '@/lib/query-keys';
 import type {
   CreateJobDto,
   JobListQueryDto,
+  ListJobsResponse,
   JobResponseDto,
   UpdateJobDto,
 } from '@/types';
+import { delay } from '@/shared/lib/demo-utils';
+import { mockListJobsResponse } from '@/features/hr/recruitment/requests/mock-api';
 
 const API_PREFIX = '/hr/recruitment/jobs';
 
 export function useJobs(query?: JobListQueryDto) {
   return useQuery({
     queryKey: queryKeys.hr.jobs.list(query as Record<string, string> | undefined),
-    queryFn: () => apiClient.get<JobResponseDto[]>(`${API_PREFIX}`, query as Record<string, string> | undefined),
+    queryFn: async () => {
+      // Live API call (disabled for now)
+      // return apiClient.get<ListJobsResponse>(
+      //   `${API_PREFIX}`,
+      //   query as Record<string, string> | undefined,
+      // );
+
+      await delay(1200);
+      return mockListJobsResponse;
+    },
+    select: (response) => response.data ?? [],
   });
 }
 
