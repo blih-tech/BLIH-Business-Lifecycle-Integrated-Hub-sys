@@ -15,7 +15,7 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "env": ["NODE_ENV"]
+      "env": ["NODE_ENV", "DEMO_MODE", "NEXT_PUBLIC_API_URL"]
     },
     "check-types": {
       "dependsOn": ["^check-types", "^build"]

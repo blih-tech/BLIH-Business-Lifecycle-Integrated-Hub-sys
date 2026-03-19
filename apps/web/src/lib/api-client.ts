@@ -15,14 +15,6 @@ class ApiError extends Error {
   }
 }
 
-async function getAccessToken(): Promise<string | null> {
-  if (typeof window === 'undefined') return null;
-
-  const cookies = document.cookie.split('; ');
-  const kcAccess = cookies.find((c) => c.startsWith('kc_access='));
-  return kcAccess?.split('=')[1] || null;
-}
-
 function buildUrl(endpoint: string, params?: Record<string, string>): string {
   const url = new URL(`${API_BASE_URL}${endpoint}`);
   if (params) {
@@ -40,11 +32,8 @@ async function request<T>(
   const { params, ...fetchOptions } = options;
   const url = buildUrl(endpoint, params);
 
-  const token = await getAccessToken();
-
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` }),
     ...fetchOptions.headers,
   };
 
@@ -53,6 +42,11 @@ async function request<T>(
     headers,
     credentials: 'include',
   });
+
+  if (response.status === 401) {
+    window.location.href = `${API_BASE_URL}/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+    throw new ApiError('Unauthorized', 401, 'Unauthorized');
+  }
 
   if (!response.ok) {
     throw new ApiError(
