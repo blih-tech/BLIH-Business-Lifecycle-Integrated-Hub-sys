@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Authentication & Authorization](#1-authentication--authorization)
 2. [Common Response Formats](#2-common-response-formats)
 3. [Error Handling](#3-error-handling)
@@ -29,13 +30,14 @@
 
 ### 1.1 Authentication Pattern
 
-All HR API endpoints require authentication through the Core Platform's JWT system:
+HR API endpoints require authentication through the Core Platform's JWT system unless an endpoint is explicitly documented as public. Public recruitment job applications are the current exception:
 
 ```http
 Authorization: Bearer <jwt_token>
 ```
 
 **JWT Structure:**
+
 ```json
 {
   "sub": "user-uuid",
@@ -50,20 +52,21 @@ Authorization: Bearer <jwt_token>
 
 ### 1.2 Authorization Matrix
 
-| Endpoint | Required Role | Required Permissions |
-|-----------|---------------|---------------------|
-| GET /employees | EMPLOYEE, MANAGER, HR | HR:employee:view |
-| POST /employees | HR, ADMIN | HR:employee:create |
-| PUT /employees/:id | HR, ADMIN | HR:employee:update |
-| DELETE /employees/:id | ADMIN | HR:employee:delete |
-| POST /attendance/checkin | EMPLOYEE | HR:attendance:create |
-| GET /attendance/reports | HR, MANAGER | HR:attendance:view |
+| Endpoint                 | Required Role         | Required Permissions |
+| ------------------------ | --------------------- | -------------------- |
+| GET /employees           | EMPLOYEE, MANAGER, HR | HR:employee:view     |
+| POST /employees          | HR, ADMIN             | HR:employee:create   |
+| PUT /employees/:id       | HR, ADMIN             | HR:employee:update   |
+| DELETE /employees/:id    | ADMIN                 | HR:employee:delete   |
+| POST /attendance/checkin | EMPLOYEE              | HR:attendance:create |
+| GET /attendance/reports  | HR, MANAGER           | HR:attendance:view   |
 
 ### 1.3 Permission Format
 
 Permissions follow Core Platform format: `MODULE:RESOURCE:ACTION`
 
 Examples:
+
 - `HR:employee:view` - View employee records
 - `HR:leave:approve` - Approve leave requests
 - `HR:performance:review` - Conduct performance reviews
@@ -169,16 +172,16 @@ Examples:
 
 ### 3.2 Common Error Codes
 
-| Code | HTTP Status | Description |
-|-------|-------------|-------------|
-| `UNAUTHORIZED` | 401 | Invalid or expired JWT |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `VALIDATION_ERROR` | 400 | Request validation failed |
-| `DUPLICATE_RESOURCE` | 409 | Resource already exists |
-| `BUSINESS_RULE_VIOLATION` | 422 | Business logic violation |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Server error |
+| Code                      | HTTP Status | Description               |
+| ------------------------- | ----------- | ------------------------- |
+| `UNAUTHORIZED`            | 401         | Invalid or expired JWT    |
+| `FORBIDDEN`               | 403         | Insufficient permissions  |
+| `NOT_FOUND`               | 404         | Resource not found        |
+| `VALIDATION_ERROR`        | 400         | Request validation failed |
+| `DUPLICATE_RESOURCE`      | 409         | Resource already exists   |
+| `BUSINESS_RULE_VIOLATION` | 422         | Business logic violation  |
+| `RATE_LIMIT_EXCEEDED`     | 429         | Too many requests         |
+| `INTERNAL_ERROR`          | 500         | Server error              |
 
 ---
 
@@ -186,13 +189,13 @@ Examples:
 
 ### 4.1 Rate Limits by Endpoint
 
-| Endpoint Category | Limit | Window |
-|------------------|--------|--------|
-| Authentication | 5 requests | 1 minute |
-| Employee CRUD | 100 requests | 1 minute |
-| Attendance Actions | 60 requests | 1 minute |
-| Reports | 20 requests | 1 minute |
-| Bulk Operations | 10 requests | 1 minute |
+| Endpoint Category  | Limit        | Window   |
+| ------------------ | ------------ | -------- |
+| Authentication     | 5 requests   | 1 minute |
+| Employee CRUD      | 100 requests | 1 minute |
+| Attendance Actions | 60 requests  | 1 minute |
+| Reports            | 20 requests  | 1 minute |
+| Bulk Operations    | 10 requests  | 1 minute |
 
 ### 4.2 Rate Limit Headers
 
@@ -223,6 +226,7 @@ GET /api/v1/hr/employees
 | employmentType | string | Filter by employment type |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -267,6 +271,7 @@ POST /api/v1/hr/employees
 ```
 
 **Request Body:**
+
 ```json
 {
   "employeeId": "EMP1002",
@@ -309,6 +314,7 @@ GET /api/v1/hr/employees/:id/profile
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -363,13 +369,14 @@ POST /api/v1/hr/attendance/checkout
 ```
 
 **Request Body:**
+
 ```json
 {
   "eventType": "morning_check_in",
   "method": "wifi",
   "timestamp": "2026-02-15T08:45:00Z",
   "geo": {
-    "lat": 9.1450,
+    "lat": 9.145,
     "lon": 40.4897,
     "accuracy": 10
   },
@@ -384,6 +391,7 @@ POST /api/v1/hr/attendance/checkout
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -421,6 +429,7 @@ GET /api/v1/hr/attendance/config
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -460,6 +469,7 @@ GET /api/v1/hr/leave/balance/:employeeId
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -489,6 +499,7 @@ POST /api/v1/hr/leave/request
 ```
 
 **Request Body:**
+
 ```json
 {
   "leaveType": "ANNUAL",
@@ -498,10 +509,7 @@ POST /api/v1/hr/leave/request
   "reason": "Family vacation",
   "handover": {
     "delegateId": "emp-003",
-    "tasks": [
-      "Project Alpha review",
-      "Client meeting preparation"
-    ]
+    "tasks": ["Project Alpha review", "Client meeting preparation"]
   }
 }
 ```
@@ -514,6 +522,7 @@ POST /api/v1/hr/leave/:requestId/reject
 ```
 
 **Request Body:**
+
 ```json
 {
   "action": "approve",
@@ -546,6 +555,7 @@ POST /api/v1/hr/performance/reviews
 ```
 
 **Request Body:**
+
 ```json
 {
   "employeeId": "emp-001",
@@ -563,9 +573,7 @@ POST /api/v1/hr/performance/reviews
       "Led successful product launch",
       "Mentored 2 junior developers"
     ],
-    "developmentNeeds": [
-      "Advanced project management training"
-    ]
+    "developmentNeeds": ["Advanced project management training"]
   }
 }
 ```
@@ -577,6 +585,7 @@ GET /api/v1/hr/okrs
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -619,6 +628,7 @@ POST /api/v1/hr/recruitment/jobs
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "Senior Full Stack Developer",
@@ -626,10 +636,7 @@ POST /api/v1/hr/recruitment/jobs
   "employmentType": "FULL_TIME",
   "location": "Addis Ababa, Ethiopia",
   "description": "We are looking for...",
-  "requirements": [
-    "5+ years experience",
-    "React/Node.js proficiency"
-  ],
+  "requirements": ["5+ years experience", "React/Node.js proficiency"],
   "salaryRange": {
     "min": 60000,
     "max": 80000,
@@ -642,23 +649,20 @@ POST /api/v1/hr/recruitment/jobs
 ### 9.3 Submit Application
 
 ```http
-POST /api/v1/hr/recruitment/apply/:jobId
+POST /api/v1/hr/recruitment/jobs/:id/apply
 ```
 
 **Request Body:**
+
 ```json
 {
-  "candidate": {
-    "firstName": "John",
-    "lastName": "Applicant",
-    "email": "john.applicant@email.com",
-    "phone": "+251911234567"
-  },
-  "resume": {
-    "file": "base64-encoded-pdf",
-    "filename": "john_resume.pdf"
-  },
-  "coverLetter": "I am interested in..."
+  "firstName": "John",
+  "lastName": "Applicant",
+  "email": "john.applicant@email.com",
+  "phone": "+251911234567",
+  "resumeUrl": "https://cdn.company.com/applications/john_resume.pdf",
+  "linkedinUrl": "https://linkedin.com/in/john-applicant",
+  "coverLetter": "I am interested in this role and would like to be considered."
 }
 ```
 
@@ -679,6 +683,7 @@ PUT /api/v1/hr/onboarding/checklist/:itemId
 ```
 
 **Request Body:**
+
 ```json
 {
   "status": "COMPLETED",
@@ -704,6 +709,7 @@ POST /api/v1/hr/training/request
 ```
 
 **Request Body:**
+
 ```json
 {
   "trainingId": "train-001",
@@ -724,6 +730,7 @@ POST /api/v1/hr/relations/recognition
 ```
 
 **Request Body:**
+
 ```json
 {
   "recipientId": "emp-002",
@@ -750,6 +757,7 @@ POST /api/v1/hr/offboarding/resign
 ```
 
 **Request Body:**
+
 ```json
 {
   "lastWorkingDay": "2026-03-31",
@@ -775,14 +783,11 @@ POST /api/v1/hr/webhooks
 ```
 
 **Request Body:**
+
 ```json
 {
   "url": "https://your-system.com/webhooks/hr",
-  "events": [
-    "employee.created",
-    "leave.approved",
-    "attendance.checkin"
-  ],
+  "events": ["employee.created", "leave.approved", "attendance.checkin"],
   "secret": "your-webhook-secret"
 }
 ```
@@ -790,6 +795,7 @@ POST /api/v1/hr/webhooks
 ### 14.2 Webhook Event Payloads
 
 **Employee Created:**
+
 ```json
 {
   "event": "employee.created",
@@ -813,20 +819,20 @@ import { HRApi } from '@blih/hr-sdk';
 
 const hrApi = new HRApi({
   baseURL: 'https://your-domain.com/api/v1/hr',
-  token: 'your-jwt-token'
+  token: 'your-jwt-token',
 });
 
 // Get employees
 const employees = await hrApi.employees.list({
   department: 'engineering',
-  status: 'ACTIVE'
+  status: 'ACTIVE',
 });
 
 // Check in attendance
 await hrApi.attendance.checkin({
   eventType: 'morning_check_in',
   method: 'wifi',
-  geo: { lat: 9.1450, lon: 40.4897 }
+  geo: { lat: 9.145, lon: 40.4897 },
 });
 ```
 
@@ -854,6 +860,6 @@ request = hr_api.leave.submit_request(
 
 ---
 
-*API Version: 1.0*  
-*Last Updated: February 2026*  
-*For integration support: api-support@blih.com*
+_API Version: 1.0_  
+_Last Updated: February 2026_  
+_For integration support: api-support@blih.com_

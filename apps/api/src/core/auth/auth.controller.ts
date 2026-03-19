@@ -57,6 +57,7 @@ import {
   buildCookieOptions,
   buildEndSessionUrl,
   buildFrontendRedirectUrl,
+  buildDynamicFrontendRedirectUrl,
   buildReadableCookieOptions,
   createCsrfToken,
   createOidcAuthRequestContext,
@@ -249,7 +250,7 @@ export class AuthController {
       env.AUTH_LOGIN_ERROR_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
-    const loginErrorUrl = this.buildFrontendRedirect(loginErrorPath);
+    const loginErrorUrl = this.buildFrontendRedirect(loginErrorPath, request);
 
     if (
       !code ||
@@ -349,7 +350,10 @@ export class AuthController {
         env.AUTH_POST_LOGIN_REDIRECT_URI,
         allowedRedirectPrefixes,
       );
-      response.redirect(302, this.buildFrontendRedirect(successRedirectPath));
+      response.redirect(
+        302,
+        this.buildFrontendRedirect(successRedirectPath, request),
+      );
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
         this.clearTransientCookies(response);
@@ -424,8 +428,10 @@ export class AuthController {
       env.AUTH_POST_LOGOUT_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
-    const postLogoutRedirectUrl =
-      this.buildFrontendRedirect(safePostLogoutPath);
+    const postLogoutRedirectUrl = this.buildFrontendRedirect(
+      safePostLogoutPath,
+      request,
+    );
     const subject = await this.resolveSubjectFromAccessToken(accessToken);
 
     if (refreshToken) {
@@ -923,7 +929,20 @@ export class AuthController {
     );
   }
 
-  private buildFrontendRedirect(path: string): string {
+  private getAllowedOrigins(): string[] {
+    // Parse CORS origins to get allowed frontend domains
+    const corsOrigin = env.CORS_ORIGIN;
+    if (corsOrigin === '*') {
+      return ['*'];
+    }
+    return corsOrigin.split(',').map((origin) => origin.trim());
+  }
+
+  private buildFrontendRedirect(path: string, request?: Request): string {
+    if (request) {
+      const allowedOrigins = this.getAllowedOrigins();
+      return buildDynamicFrontendRedirectUrl(request, path, allowedOrigins);
+    }
     return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
   }
 
