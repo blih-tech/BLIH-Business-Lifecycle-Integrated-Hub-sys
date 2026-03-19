@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { ChevronUp, Clock, Pencil } from 'lucide-react';
+import { ChevronUp, Clock, Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 import type {
@@ -28,6 +28,7 @@ type JobRequestDetailsDialogProps = {
   onApprove: () => void;
   onJustify: () => void;
   onEdit?: () => void;
+  isApproving?: boolean;
 };
 
 type EmployeeCardProps = {
@@ -185,10 +186,11 @@ export function JobRequestDetailsDialog({
   onApprove,
   onJustify,
   onEdit,
+  isApproving = false,
 }: JobRequestDetailsDialogProps) {
   const dialogVariant = variant ?? 'active';
   const ownRequest = request
-    ? request.requestForm.requestedBy.trim().toLowerCase() ===
+    ? (request.requestForm.requestedBy ?? '').trim().toLowerCase() ===
       currentUserName.trim().toLowerCase()
     : false;
 
@@ -315,7 +317,7 @@ export function JobRequestDetailsDialog({
                   <div className="space-y-2">
                     <p className="text-[12px] text-[#666]">Requested By</p>
                     <EmployeeCard
-                      name={request.requestForm.requestedBy}
+                      name={request.requestForm.requestedBy ?? 'Request Owner'}
                       role={formatValue(request.requestForm.position)}
                       department={departmentLabel(
                         request.requestForm.department as JobRequestDepartment,
@@ -347,7 +349,7 @@ export function JobRequestDetailsDialog({
                       Requirements
                     </p>
                     <BulletList
-                      items={request.jobDetailsForm.requiredSkills
+                      items={(request.jobDetailsForm.requiredSkills ?? '')
                         .split('\n')
                         .map((item) => item.trim())
                         .filter(Boolean)}
@@ -358,7 +360,7 @@ export function JobRequestDetailsDialog({
                       Preferred Skills
                     </p>
                     <BulletList
-                      items={request.jobDetailsForm.preferredSkills
+                      items={(request.jobDetailsForm.preferredSkills ?? '')
                         .split('\n')
                         .map((item) => item.trim())
                         .filter(Boolean)}
@@ -371,7 +373,7 @@ export function JobRequestDetailsDialog({
                       Responsibilities
                     </p>
                     <BulletList
-                      items={request.jobDetailsForm.responsibilities
+                      items={(request.jobDetailsForm.responsibilities ?? '')
                         .split('\n')
                         .map((item) => item.trim())
                         .filter(Boolean)}
@@ -462,8 +464,16 @@ export function JobRequestDetailsDialog({
                       type="button"
                       className="h-9 w-full rounded-[6px] bg-[#1e66f7] text-sm text-white hover:bg-[#1b5ce0]"
                       onClick={onApprove}
+                      disabled={isApproving}
                     >
-                      Approve
+                      {isApproving ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Approving...
+                        </>
+                      ) : (
+                        'Approve'
+                      )}
                     </Button>
                     <Button
                       type="button"

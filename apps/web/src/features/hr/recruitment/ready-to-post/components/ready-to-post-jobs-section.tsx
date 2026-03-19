@@ -22,7 +22,7 @@ export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
       <section className="space-y-3">
         {items.map((item, index) => (
           <JobPostCard
-            key={`${item.jobDetailsForm.jobTitle}-${index}`}
+            key={`${item.jobDetailsForm.title}-${index}`}
             item={item}
             onPreviewClick={() => setPreviewIndex(index)}
           />

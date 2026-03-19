@@ -99,7 +99,7 @@ export function JobRequestJustifyDialog({
                 <div className="flex-1 space-y-4">
                   <div className="flex flex-wrap items-center gap-4">
                     <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-                      {request.jobDetailsForm.jobTitle}
+                      {request.jobDetailsForm.title}
                     </DialogTitle>
                     <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] border border-[#1e66f7] px-[9px] py-[3px] text-[12px] font-medium leading-[16px] text-[#1e66f7]">
                       {request.jobDetailsForm.experienceLevel
@@ -115,11 +115,11 @@ export function JobRequestJustifyDialog({
                       )}
                     </span>
                     <span>
-                      {request.jobDetailsForm.employmentType === 'full_time'
+                      {request.jobDetailsForm.employmentType === 'FULL_TIME'
                         ? 'Full-time'
-                        : request.jobDetailsForm.employmentType === 'part_time'
+                        : request.jobDetailsForm.employmentType === 'PART_TIME'
                           ? 'Part-time'
-                          : request.jobDetailsForm.employmentType === 'contract'
+                          : request.jobDetailsForm.employmentType === 'CONTRACT'
                             ? 'Contract'
                             : 'Intern'}
                     </span>

@@ -34,26 +34,26 @@ function priorityClass(priority: ReadyToPostPriority) {
 function priorityFromUrgency(
   urgency: ReadyToPostJob["requestForm"]["urgency"],
 ): ReadyToPostPriority {
-  if (urgency === "high") return "high";
-  if (urgency === "medium") return "medium";
+  if (urgency === "HIGH") return "high";
+  if (urgency === "MEDIUM") return "medium";
   return "low";
 }
 
 function employmentTypeLabel(
   value: ReadyToPostJob["jobDetailsForm"]["employmentType"],
 ) {
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
+  if (value === "FULL_TIME") return "Full-time";
+  if (value === "PART_TIME") return "Part-time";
+  if (value === "CONTRACT") return "Contract";
   return "Intern";
 }
 
 function experienceLevelLabel(
   value: ReadyToPostJob["jobDetailsForm"]["experienceLevel"],
 ) {
-  if (value === "entry") return "Entry";
-  if (value === "mid") return "Mid";
-  if (value === "senior") return "Senior";
+  if (value === "ENTRY") return "Entry";
+  if (value === "MID") return "Mid";
+  if (value === "SENIOR") return "Senior";
   return "Lead";
 }
 
@@ -81,7 +81,7 @@ export function JobPostCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-[16px]">
             <h3 className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-              {item.jobDetailsForm.jobTitle}
+              {item.jobDetailsForm.title}
             </h3>
             <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] border border-[#1e66f7] px-[9px] py-[3px] text-[12px] font-medium leading-[16px] text-[#1e66f7]">
               {experienceLevelLabel(item.jobDetailsForm.experienceLevel)}
@@ -152,11 +152,11 @@ export function JobPostCard({
               <p className="text-[12px] text-[#666]">Requested By</p>
               <div className="flex items-center gap-3">
                 <div className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#1e66f7] text-[16px] font-semibold tracking-[-0.4px] text-white">
-                  {initials(item.requestForm.requestedBy)}
+                  {initials(item.requestForm.requestedBy ?? "User")}
                 </div>
                 <div className="space-y-1">
                   <p className="text-[16px] font-semibold leading-[20px] tracking-[-0.4px] text-black">
-                    {item.requestForm.requestedBy}
+                    {item.requestForm.requestedBy ?? "Request Owner"}
                   </p>
                   <p className="text-[12px] leading-[16px] text-[#666]">
                     {item.requestForm.position.replace(/_/g, " ")}
@@ -179,7 +179,7 @@ export function JobPostCard({
                 Job Overview
               </p>
               <p className="text-[14px] leading-[20px] tracking-[-0.2px] text-[#666]">
-                {item.jobDetailsForm.jobSummary}
+                {item.jobDetailsForm.description}
               </p>
             </div>
             <div className="space-y-2">
@@ -187,7 +187,11 @@ export function JobPostCard({
                 Requirements
               </p>
               <ul className="space-y-1">
-                {item.jobDetailsForm.requirements.map((requirement) => (
+                {(item.jobDetailsForm.requiredSkills ?? "")
+                  .split("\n")
+                  .map((requirement) => requirement.trim())
+                  .filter(Boolean)
+                  .map((requirement) => (
                   <li
                     key={requirement}
                     className="flex items-start gap-2 text-[14px] text-[#666]"
@@ -205,7 +209,11 @@ export function JobPostCard({
                 Qualifications
               </p>
               <ul className="space-y-1">
-                {item.jobDetailsForm.keyResponsibilities.map((requirement) => (
+                {(item.jobDetailsForm.responsibilities ?? "")
+                  .split("\n")
+                  .map((requirement) => requirement.trim())
+                  .filter(Boolean)
+                  .map((requirement) => (
                   <li
                     key={requirement}
                     className="flex items-start gap-2 text-[14px] text-[#666]"
@@ -223,9 +231,9 @@ export function JobPostCard({
               <p className="text-[14px] leading-[20px] tracking-[-0.2px] text-[#666]">
                 {item.requestForm.businessJustification}
               </p>
-              {item.jobDetailsForm.whyJoinUs ? (
+              {item.jobDetailsForm.summary ? (
                 <p className="text-[14px] leading-[20px] tracking-[-0.2px] text-[#666]">
-                  {item.jobDetailsForm.whyJoinUs}
+                  {item.jobDetailsForm.summary}
                 </p>
               ) : null}
             </div>
@@ -255,3 +263,5 @@ export function JobPostCard({
     </article>
   );
 }
+
+

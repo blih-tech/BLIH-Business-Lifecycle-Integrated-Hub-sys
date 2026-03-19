@@ -149,6 +149,7 @@ export function mapJobResponseToRequest(
   const financeApproval = approvals.find((item) => item.department === 'FINANCE');
 
   return {
+    jobId: job.job.id,
     status,
     progress: {
       jm: gmApproval

@@ -1,6 +1,10 @@
-import type { ListJobsResponse, JobResponseDto } from '@/types/recruitment';
+import type {
+  JobApplicationFormResponseDto,
+  JobResponseDto,
+  ListJobsResponse,
+} from '@/types/recruitment';
 
-const baseApplicationForm = {
+const baseApplicationForm: JobApplicationFormResponseDto = {
   id: 'app-form-1',
   jobId: 'job-1',
   applicantFields: [

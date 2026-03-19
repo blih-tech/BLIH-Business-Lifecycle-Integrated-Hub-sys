@@ -4,7 +4,6 @@ import { queryKeys } from '@/lib/query-keys';
 import type {
   CreateJobDto,
   JobListQueryDto,
-  ListJobsResponse,
   JobResponseDto,
   UpdateJobDto,
 } from '@/types';

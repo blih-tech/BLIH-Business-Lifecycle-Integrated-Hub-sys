@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import type { FullJobRequest } from "@/features/hr/recruitment/requests/types";
-import { JobRequestsSection } from "@/features/hr/recruitment/requests/components/job-requests-section";
-import { Input } from "@/shared/components/ui/input";
+import type { FullJobRequest } from '@/features/hr/recruitment/requests/types';
+import { JobRequestsSection } from '@/features/hr/recruitment/requests/components/job-requests-section';
+import { Input } from '@/shared/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { useMemo, useState } from "react";
+} from '@/shared/components/ui/select';
+import { useMemo, useState } from 'react';
 
 type RequestsSectionProps = {
   title: string;
@@ -29,8 +29,10 @@ export function RequestsSection({
   includeFilter = false,
   isLoading = false,
 }: RequestsSectionProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState<
+    string | undefined
+  >();
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
   const [jobTypeFilter, setJobTypeFilter] = useState<string | undefined>();
   const [positionsFilter, setPositionsFilter] = useState<string | undefined>();
@@ -51,7 +53,9 @@ export function RequestsSection({
       if (!normalizedDepartment) return true;
       if (!value) return false;
       const normalizedValue = value.toLowerCase();
-      if (["technical", "creative", "digital_marketing"].includes(normalizedValue)) {
+      if (
+        ['technical', 'creative', 'digital_marketing'].includes(normalizedValue)
+      ) {
         return normalizedValue === normalizedDepartment;
       }
       return true;
@@ -61,7 +65,7 @@ export function RequestsSection({
       const deadline =
         request.jobDetailsForm.applicationDeadline ||
         request.requestForm.neededByDate ||
-        "";
+        '';
       if (!deadline) return false;
       const parsed = new Date(deadline);
       if (Number.isNaN(parsed.getTime())) return false;
@@ -70,8 +74,8 @@ export function RequestsSection({
 
     const matchesStatus = (request: FullJobRequest) => {
       if (!normalizedStatus) return true;
-      if (normalizedStatus === "expired") return isExpired(request);
-      if (normalizedStatus === "active") return !isExpired(request);
+      if (normalizedStatus === 'expired') return isExpired(request);
+      if (normalizedStatus === 'active') return !isExpired(request);
       return true;
     };
 
@@ -79,7 +83,7 @@ export function RequestsSection({
       if (!positionsFilter) return true;
       const numeric = Number(value);
       if (Number.isNaN(numeric)) return false;
-      if (positionsFilter === "3") return numeric >= 3;
+      if (positionsFilter === '3') return numeric >= 3;
       return numeric === Number(positionsFilter);
     };
 
@@ -90,8 +94,12 @@ export function RequestsSection({
     };
 
     const results = items.filter((request) => {
-      const titleValue = request.requestForm.jobTitle ?? request.jobDetailsForm.title ?? "";
-      if (normalizedSearch && !titleValue.toLowerCase().includes(normalizedSearch)) {
+      const titleValue =
+        request.requestForm.jobTitle ?? request.jobDetailsForm.title ?? '';
+      if (
+        normalizedSearch &&
+        !titleValue.toLowerCase().includes(normalizedSearch)
+      ) {
         return false;
       }
 
@@ -99,25 +107,28 @@ export function RequestsSection({
       if (!matchesStatus(request)) return false;
 
       if (normalizedJobType) {
-        const typeValue = request.requestForm.employmentType ?? "";
+        const typeValue = request.requestForm.employmentType ?? '';
         if (typeValue.toLowerCase() !== normalizedJobType) return false;
       }
 
       if (!matchesPositions(request.requestForm.openings)) return false;
-      if (!matchesSeniority(request.jobDetailsForm.experienceLevel)) return false;
+      if (!matchesSeniority(request.jobDetailsForm.experienceLevel))
+        return false;
 
       return true;
     });
 
     if (!sortBy) return results;
 
-    if (sortBy === "name") {
+    if (sortBy === 'name') {
       return [...results].sort((a, b) =>
-        (a.requestForm.jobTitle ?? "").localeCompare(b.requestForm.jobTitle ?? ""),
+        (a.requestForm.jobTitle ?? '').localeCompare(
+          b.requestForm.jobTitle ?? '',
+        ),
       );
     }
 
-    if (sortBy === "date") {
+    if (sortBy === 'date') {
       return [...results].sort((a, b) => {
         const aDate = new Date(a.requestForm.createdDate ?? 0).getTime();
         const bDate = new Date(b.requestForm.createdDate ?? 0).getTime();
@@ -154,16 +165,19 @@ export function RequestsSection({
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
-              <button
+              {/* <button
                 type="button"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#e5e5e5] bg-white text-xs text-[#666]"
                 aria-label="Filters"
               >
                 &#x2630;
-              </button>
+              </button> */}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select
+                value={departmentFilter}
+                onValueChange={setDepartmentFilter}
+              >
                 <SelectTrigger className="h-9 w-[120px] bg-white">
                   <SelectValue placeholder="Marketing" />
                 </SelectTrigger>
@@ -193,7 +207,10 @@ export function RequestsSection({
                   <SelectItem value="intern">Intern</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={positionsFilter} onValueChange={setPositionsFilter}>
+              <Select
+                value={positionsFilter}
+                onValueChange={setPositionsFilter}
+              >
                 <SelectTrigger className="h-9 w-[120px] bg-white">
                   <SelectValue placeholder="No of Positions" />
                 </SelectTrigger>
@@ -203,7 +220,10 @@ export function RequestsSection({
                   <SelectItem value="3">3+</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={seniorityFilter} onValueChange={setSeniorityFilter}>
+              <Select
+                value={seniorityFilter}
+                onValueChange={setSeniorityFilter}
+              >
                 <SelectTrigger className="h-9 w-[110px] bg-white">
                   <SelectValue placeholder="Senior" />
                 </SelectTrigger>
@@ -232,7 +252,11 @@ export function RequestsSection({
           </div>
         </div>
       ) : null}
-      <JobRequestsSection items={filteredItems} currentUserName={currentUserName} isLoading={isLoading} />
+      <JobRequestsSection
+        items={filteredItems}
+        currentUserName={currentUserName}
+        isLoading={isLoading}
+      />
     </section>
   );
 }

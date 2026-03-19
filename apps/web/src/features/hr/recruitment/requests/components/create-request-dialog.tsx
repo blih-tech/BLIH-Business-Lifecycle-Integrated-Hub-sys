@@ -18,9 +18,7 @@ import {
   createRequestFormSchema,
   type CreateRequestFormValues,
 } from '@/features/hr/recruitment/requests/form-schema';
-import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/types';
 import type { CreateJobDto } from '@/types/recruitment';
-import { apiClient } from '@/lib/api-client';
 import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
 import { RequestFormStep } from '@/features/hr/recruitment/requests/components/request-form-step';

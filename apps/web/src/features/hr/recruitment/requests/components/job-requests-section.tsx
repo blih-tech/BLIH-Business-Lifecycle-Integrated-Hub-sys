@@ -9,6 +9,8 @@ import { JobRequestCard } from "@/features/hr/recruitment/requests/components/jo
 import { JobRequestJustifyDialog } from "@/features/hr/recruitment/requests/components/job-request-justify-dialog";
 import { JobRequestCardSkeleton } from "@/features/hr/recruitment/requests/components/job-request-card-skeleton";
 import type { FullJobRequest, JobRequestPriority } from "@/features/hr/recruitment/requests/types";
+import { delay } from "@/shared/lib/demo-utils";
+import { toast } from "sonner";
 
 type JobRequestsSectionProps = {
   items: FullJobRequest[];
@@ -22,6 +24,7 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
   const searchParams = useSearchParams();
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
   const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
+  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
   const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
   const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
 
@@ -65,6 +68,53 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
     router.replace(query ? `${pathname}?${query}` : pathname);
   }
 
+  async function handleApprove() {
+    if (!selectedRequest?.jobId) {
+      toast.error("Unable to approve this request.");
+      return;
+    }
+
+    setApprovingRequestId(selectedRequest.jobId);
+    try {
+      // Live API call (disabled for now)
+      // await apiClient.post(`/hr/recruitment/jobs/${selectedRequest.jobId}/approve`, {
+      //   decision: "APPROVED",
+      // });
+
+      await delay(1200);
+      toast.success("Approval submitted");
+      setSelectedRequestIndex(null);
+    } catch (error) {
+      console.error("Failed to approve job request:", error);
+      toast.error("Approval failed");
+    } finally {
+      setApprovingRequestId(null);
+    }
+  }
+
+  async function handleCardApprove(request: FullJobRequest) {
+    if (!request.jobId) {
+      toast.error("Unable to approve this request.");
+      return;
+    }
+
+    setApprovingRequestId(request.jobId);
+    try {
+      // Live API call (disabled for now)
+      // await apiClient.post(`/hr/recruitment/jobs/${request.jobId}/approve`, {
+      //   decision: "APPROVED",
+      // });
+
+      await delay(1200);
+      toast.success("Approval submitted");
+    } catch (error) {
+      console.error("Failed to approve job request:", error);
+      toast.error("Approval failed");
+    } finally {
+      setApprovingRequestId(null);
+    }
+  }
+
   return (
     <>
       {isLoading ? (
@@ -82,6 +132,8 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
               priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
               onClick={() => setSelectedRequestIndex(index)}
               onJustifyClick={() => setJustifyRequestIndex(index)}
+              onApproveClick={() => handleCardApprove(request)}
+              isApproving={approvingRequestId === request.jobId}
             />
           ))}
         </div>
@@ -95,20 +147,21 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       )}
 
       {!isLoading ? (
-        <JobRequestDetailsDialog
+      <JobRequestDetailsDialog
         request={selectedRequest}
         currentUserName={currentUserName}
         variant={selectedRequest?.status ?? "active"}
         onOpenChange={(isOpen) => {
           if (!isOpen) setSelectedRequestIndex(null);
         }}
-        onApprove={() => setSelectedRequestIndex(null)}
+        onApprove={handleApprove}
         onJustify={() => {
           setSelectedRequestIndex(null);
           setJustifyRequestIndex(selectedRequestIndex);
         }}
         onEdit={() => setSelectedRequestIndex(null)}
-        />
+        isApproving={approvingRequestId === selectedRequest?.jobId}
+      />
       ) : null}
 
       {!isLoading ? (

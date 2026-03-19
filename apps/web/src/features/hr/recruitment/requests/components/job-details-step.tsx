@@ -7,7 +7,6 @@ import {
   salaryModeValues,
   type JobDetailsFormValues,
 } from '@/features/hr/recruitment/requests/job-details-schema';
-import { JobSummaryRichTextEditor } from '@/features/hr/recruitment/requests/components/job-summary-rich-text-editor';
 import {
   FormControl,
   FormDescription,
@@ -173,7 +172,6 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
   const [
     title,
     city,
-    country,
     workLocationType,
     employmentType,
     experienceLevel,
@@ -194,7 +192,6 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
     name: [
       'title',
       'city',
-      'country',
       'workLocationType',
       'employmentType',
       'experienceLevel',

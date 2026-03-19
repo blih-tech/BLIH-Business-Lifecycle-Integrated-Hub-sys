@@ -4,7 +4,7 @@ import type {
   JobRequestPriority,
 } from "@/features/hr/recruitment/requests/types";
 import type { MouseEvent } from "react";
-import { Clock } from "lucide-react";
+import { Clock, Loader2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
 type JobRequestCardProps = {
@@ -12,6 +12,8 @@ type JobRequestCardProps = {
   priority: JobRequestPriority;
   onClick?: () => void;
   onJustifyClick?: () => void;
+  onApproveClick?: () => void;
+  isApproving?: boolean;
 };
 
 
@@ -65,7 +67,14 @@ function formatCreatedDate(value?: string) {
   }).format(parsed);
 }
 
-export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobRequestCardProps) {
+export function JobRequestCard({
+  item,
+  priority,
+  onClick,
+  onJustifyClick,
+  onApproveClick,
+  isApproving = false,
+}: JobRequestCardProps) {
   function handleActionClick(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
   }
@@ -86,7 +95,7 @@ export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobR
       <div className="flex items-start justify-between">
         <div className="min-w-0">
           <p className="truncate text-[16px] font-semibold leading-[24px] tracking-[-0.4px] text-black">
-            {item.jobDetailsForm.jobTitle}
+            {item.jobDetailsForm.title}
           </p>
           <span className="mt-1 inline-flex rounded-[4px] bg-[#e9f0fe] px-[4px] py-[2px] text-[12px] font-semibold uppercase leading-[16px] text-[#1e66f7]">
             {departmentLabel(item.requestForm.department as JobRequestDepartment)}
@@ -142,9 +151,17 @@ export function JobRequestCard({ item, priority, onClick, onJustifyClick }: JobR
                 type="button"
                 size="sm"
                 className="h-[32px] w-[88px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
-                onClick={handleActionClick}
+                disabled={isApproving}
+                onClick={(event) => {
+                  handleActionClick(event);
+                  onApproveClick?.();
+                }}
               >
-                Approve
+                {isApproving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Approve"
+                )}
               </Button>
               <Button
                 type="button"

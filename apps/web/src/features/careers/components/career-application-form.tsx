@@ -27,8 +27,8 @@ type ApplicationValue = string | boolean | File | null;
 
 function getInitialValues(fields: CareerApplicationField[]) {
   return fields.reduce<Record<string, ApplicationValue>>((acc, field) => {
-    acc[field.key] = field.type === 'checkbox' ? false : null;
-    if (field.type !== 'checkbox' && field.type !== 'file') {
+    acc[field.key] = field.type === 'CHECKBOX' ? false : null;
+    if (field.type !== 'CHECKBOX' && field.type !== 'FILE') {
       acc[field.key] = '';
     }
     return acc;
@@ -36,9 +36,9 @@ function getInitialValues(fields: CareerApplicationField[]) {
 }
 
 function getFieldPlaceholder(field: CareerApplicationField) {
-  if (field.type === 'textarea') return `Enter ${field.label.toLowerCase()}`;
-  if (field.type === 'date') return '';
-  if (field.type === 'number') return '0';
+  if (field.type === 'TEXTAREA') return `Enter ${field.label.toLowerCase()}`;
+  if (field.type === 'DATE') return '';
+  if (field.type === 'NUMBER') return '0';
   return field.label;
 }
 
@@ -48,18 +48,18 @@ function isBlank(value: ApplicationValue) {
 
 function validateField(field: CareerApplicationField, value: ApplicationValue) {
   if (field.required) {
-    if (field.type === 'checkbox' && value !== true) {
+    if (field.type === 'CHECKBOX' && value !== true) {
       return `${field.label} is required`;
     }
-    if (field.type === 'file' && value === null) {
+    if (field.type === 'FILE' && value === null) {
       return `${field.label} is required`;
     }
-    if (field.type !== 'checkbox' && field.type !== 'file' && isBlank(value)) {
+    if (field.type !== 'CHECKBOX' && field.type !== 'FILE' && isBlank(value)) {
       return `${field.label} is required`;
     }
   }
 
-  if (field.type === 'number' && typeof value === 'string' && value.trim()) {
+  if (field.type === 'NUMBER' && typeof value === 'string' && value.trim()) {
     if (Number.isNaN(Number(value)))
       return `${field.label} must be a valid number`;
   }
@@ -69,7 +69,7 @@ function validateField(field: CareerApplicationField, value: ApplicationValue) {
       return 'Enter a valid email address';
   }
 
-  if (field.type === 'select' && typeof value === 'string' && value.trim()) {
+  if (field.type === 'SELECT' && typeof value === 'string' && value.trim()) {
     if (!field.options.includes(value))
       return `Select a valid option for ${field.label}`;
   }
@@ -202,7 +202,7 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
 
                 return (
                   <div key={field.id} className="space-y-2">
-                    {field.type === 'checkbox' ? (
+                    {field.type === 'CHECKBOX' ? (
                       <label className="flex items-start gap-3 rounded-xl border border-border/70 bg-background px-3 py-3">
                         <input
                           type="checkbox"
@@ -235,7 +235,7 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
                           ) : null}
                         </Label>
 
-                        {field.type === 'textarea' ? (
+                        {field.type === 'TEXTAREA' ? (
                           <Textarea
                             value={typeof value === 'string' ? value : ''}
                             onChange={(event) =>
@@ -246,7 +246,7 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
                           />
                         ) : null}
 
-                        {field.type === 'select' ? (
+                        {field.type === 'SELECT' ? (
                           <Select
                             value={typeof value === 'string' ? value : ''}
                             onValueChange={(nextValue: string) =>
@@ -271,7 +271,7 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
                           </Select>
                         ) : null}
 
-                        {field.type === 'file' ? (
+                        {field.type === 'FILE' ? (
                           <Input
                             type="file"
                             onChange={(event) =>
@@ -284,14 +284,14 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
                           />
                         ) : null}
 
-                        {field.type === 'text' ||
-                        field.type === 'number' ||
-                        field.type === 'date' ? (
+                        {field.type === 'TEXT' ||
+                        field.type === 'NUMBER' ||
+                        field.type === 'DATE' ? (
                           <Input
                             type={
-                              field.type === 'number'
+                              field.type === 'NUMBER'
                                 ? 'number'
-                                : field.type === 'date'
+                                : field.type === 'DATE'
                                   ? 'date'
                                   : 'text'
                             }
