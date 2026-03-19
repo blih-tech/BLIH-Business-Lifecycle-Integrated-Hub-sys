@@ -185,6 +185,12 @@ jobs:
 
       - name: Prepare SSH
         run: |
+          echo "Checking required secrets..."
+          echo "HOSTINGER_SSH_HOST is set: $(if [ -n "${HOSTINGER_SSH_HOST}" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HOSTINGER_SSH_USER is set: $(if [ -n "${HOSTINGER_SSH_USER}" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HOSTINGER_SSH_KEY is set: $(if [ -n "${HOSTINGER_SSH_KEY}" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HOSTINGER_DEPLOY_PATH is set: $(if [ -n "${HOSTINGER_DEPLOY_PATH}" ]; then echo "YES"; else echo "NO"; fi)"
+
           : "${HOSTINGER_SSH_HOST:?HOSTINGER_SSH_HOST secret is required}"
           : "${HOSTINGER_SSH_USER:?HOSTINGER_SSH_USER secret is required}"
           : "${HOSTINGER_SSH_KEY:?HOSTINGER_SSH_KEY secret is required}"
