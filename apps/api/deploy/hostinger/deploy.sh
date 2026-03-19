@@ -204,6 +204,29 @@ deploy() {
   docker pull "$API_MIGRATOR_IMAGE"
   docker pull "$KEYCLOAK_IMAGE"
   
+  # Start PostgreSQL first for migrations
+  log_step "Starting PostgreSQL service..."
+  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d postgres; then
+    log_info "PostgreSQL service started successfully"
+  else
+    log_error "Failed to start PostgreSQL service"
+    return 1
+  fi
+  
+  # Wait for PostgreSQL to be healthy
+  log_step "Waiting for PostgreSQL to be ready..."
+  for i in {1..30}; do
+    if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then
+      log_info "PostgreSQL is ready"
+      break
+    fi
+    if [[ $i -eq 30 ]]; then
+      log_error "PostgreSQL failed to become ready within 60 seconds"
+      return 1
+    fi
+    sleep 2
+  done
+  
   # Run database migrations
   log_step "Running database migrations..."
   if docker run --rm --env-file "$ENV_FILE" --network blih-network "$API_MIGRATOR_IMAGE"; then
@@ -213,10 +236,10 @@ deploy() {
     return 1
   fi
   
-  # Start services
-  log_step "Starting production services..."
+  # Start remaining services
+  log_step "Starting remaining production services..."
   if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans; then
-    log_info "Services started successfully"
+    log_info "All services started successfully"
   else
     log_error "Failed to start services"
     return 1
