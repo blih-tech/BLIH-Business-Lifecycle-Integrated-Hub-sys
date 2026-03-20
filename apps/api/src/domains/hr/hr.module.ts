@@ -222,9 +222,15 @@ import { InternalTransferService } from './career/internal-transfer.service';
 import { SalaryAdjustmentsController } from './career/salary-adjustments.controller';
 import { SalaryAdjustmentService } from './career/salary-adjustment.service';
 import { OnboardingModule } from './onboarding/onboarding.module';
+import { ProbationModule } from './probation/probation.module';
 
 @Module({
-  imports: [OnboardingModule, NotificationsModule, UsersModule],
+  imports: [
+    OnboardingModule,
+    ProbationModule,
+    NotificationsModule,
+    UsersModule,
+  ],
   controllers: [
     EmployeesController,
     EmployeeRecordsController,

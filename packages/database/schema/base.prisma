@@ -371,12 +371,6 @@ enum OnboardingTaskStatus {
   OVERDUE
 }
 
-enum ProbationPlanStatus {
-  DRAFT
-  ACTIVE
-  COMPLETED
-  CANCELLED
-}
 
 enum ProbationEvaluationRound {
   DAY_30
