@@ -12,23 +12,6 @@ import { mapOnboarding, onboardingInclude } from './create-onboarding.usecase';
 
 const unique = (values: string[]) => Array.from(new Set(values));
 
-async function assertUsersExist(
-  prisma: PrismaService,
-  userIds: string[],
-  field: string,
-): Promise<void> {
-  if (userIds.length === 0) return;
-  const found = await prisma.user.findMany({
-    where: { id: { in: userIds } },
-    select: { id: true },
-  });
-  if (found.length !== userIds.length) {
-    throw new BadRequestException(
-      `${field} contains one or more unknown user ids`,
-    );
-  }
-}
-
 async function assertOnboardingTasksExist(
   prisma: PrismaService,
   taskIds: string[],
@@ -71,13 +54,6 @@ export class UpdateOnboardingUseCase {
       }
 
       await assertOnboardingTasksExist(this.prisma, uniqueTaskIds);
-
-      const overseerIds = unique(
-        dto.checklists
-          .map((item) => item.overseerId)
-          .filter((id): id is string => Boolean(id)),
-      );
-      await assertUsersExist(this.prisma, overseerIds, 'checklists.overseerId');
     }
 
     const onboarding = await this.prisma.$transaction(async (tx) => {
@@ -124,36 +100,16 @@ export class UpdateOnboardingUseCase {
                   },
                 },
                 update: {
-                  ...(item.overseerId !== undefined && {
-                    overseerId: item.overseerId,
-                  }),
-                  ...(item.ceoSignOffRequired !== undefined && {
-                    ceoSignOffRequired: item.ceoSignOffRequired,
-                  }),
                   ...(item.status !== undefined && { status: item.status }),
-                  ...(item.teamLeadVerifiedAt !== undefined && {
-                    teamLeadVerifiedAt: item.teamLeadVerifiedAt
-                      ? new Date(item.teamLeadVerifiedAt)
-                      : null,
-                  }),
-                  ...(item.ceoSignOffAt !== undefined && {
-                    ceoSignOffAt: item.ceoSignOffAt
-                      ? new Date(item.ceoSignOffAt)
-                      : null,
+                  ...(item.dueDate !== undefined && {
+                    dueDate: item.dueDate ? new Date(item.dueDate) : null,
                   }),
                 },
                 create: {
                   onboardingId: id,
                   onboardingTaskId: item.onboardingTaskId,
-                  overseerId: item.overseerId ?? null,
-                  ceoSignOffRequired: item.ceoSignOffRequired ?? false,
                   status: item.status ?? undefined,
-                  teamLeadVerifiedAt: item.teamLeadVerifiedAt
-                    ? new Date(item.teamLeadVerifiedAt)
-                    : undefined,
-                  ceoSignOffAt: item.ceoSignOffAt
-                    ? new Date(item.ceoSignOffAt)
-                    : undefined,
+                  dueDate: item.dueDate ? new Date(item.dueDate) : undefined,
                 },
               }),
             ),

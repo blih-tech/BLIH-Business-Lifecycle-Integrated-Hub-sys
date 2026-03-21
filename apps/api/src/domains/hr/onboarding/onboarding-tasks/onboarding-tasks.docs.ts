@@ -55,8 +55,6 @@ const onboardingTaskExample = {
   title: 'Set up employee email account',
   description:
     'Create a corporate email and configure MFA for the new employee.',
-  completedById: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  completedByName: 'Alice Njeri',
   checklistCount: 3,
   createdAt: '2026-03-11T14:00:00.000Z',
   updatedAt: '2026-03-11T14:00:00.000Z',
@@ -106,7 +104,6 @@ export function ApiCreateOnboardingTask() {
             department: 'IT',
             title: 'Set up employee email account',
             description: 'Create a corporate email and configure MFA.',
-            completedById: null,
           },
         },
       },
@@ -134,7 +131,7 @@ export function ApiListAllOnboardingTasks() {
     ApiOperation({
       summary: 'List all onboarding tasks',
       description:
-        'Returns the full (un-paginated) list.\n\nFilters: `department`, `search` (matches title/description), `completedById`.',
+        'Returns the full (un-paginated) list.\n\nFilters: `department`, `search` (matches title/description).',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding/tasks',
@@ -158,7 +155,7 @@ export function ApiListPaginatedOnboardingTasks() {
     ApiOperation({
       summary: 'List onboarding tasks (paginated)',
       description:
-        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `department`, `search`, `completedById`, `page`, `limit`.',
+        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `department`, `search`, `page`, `limit`.',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding/tasks/paginated',
@@ -209,10 +206,9 @@ export function ApiUpdateOnboardingTask() {
         'All fields are optional — only provided fields are updated.',
       examples: {
         update: {
-          summary: 'Update title and mark completed',
+          summary: 'Update title',
           value: {
             title: 'Set up employee email & Slack',
-            completedById: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
           },
         },
       },

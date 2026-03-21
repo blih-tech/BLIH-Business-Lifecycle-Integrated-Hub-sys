@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -24,28 +23,12 @@ export class UpdateOnboardingTaskUseCase {
       throw new NotFoundException(`Onboarding task with id "${id}" not found`);
     }
 
-    // Validate completedById if it is being set
-    if (dto.completedById) {
-      const user = await this.prisma.user.findUnique({
-        where: { id: dto.completedById },
-        select: { id: true },
-      });
-      if (!user) {
-        throw new BadRequestException(
-          'completedById does not reference an existing user',
-        );
-      }
-    }
-
     const updated = await this.prisma.onboardingTask.update({
       where: { id },
       data: {
         ...(dto.department !== undefined && { department: dto.department }),
         ...(dto.title !== undefined && { title: dto.title }),
         ...(dto.description !== undefined && { description: dto.description }),
-        ...(dto.completedById !== undefined && {
-          completedById: dto.completedById,
-        }),
       },
       include: onboardingTaskInclude,
     });

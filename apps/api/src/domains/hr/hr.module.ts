@@ -20,6 +20,7 @@ import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create
 import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
 import { DocumentExpiryJob } from './jobs/document-expiry.job';
 import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.job';
+import { CheckOverdueChecklistsJob } from './jobs/check-overdue-checklists.job';
 import { JobsController } from './recruitment/jobs.controller';
 import { ApplicantsController } from './recruitment/applicants.controller';
 import { InterviewsController } from './recruitment/interviews.controller';
@@ -287,6 +288,7 @@ import { ProbationModule } from './probation/probation.module';
     UpdateJobDescriptionUseCase,
     DocumentExpiryJob,
     AttendanceReconciliationJob,
+    CheckOverdueChecklistsJob,
     CertificationExpiryJob,
     RecruitmentJobLifecycleJob,
     CreateJobUseCase,
