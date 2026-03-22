@@ -269,7 +269,7 @@ compose_up_with_conflict_recovery() {
   if echo "$output" | grep -q "container name .* is already in use"; then
     log_warn "Container name conflict detected. Attempting recovery..."
 
-    conflict_name=$(echo "$output" | sed -n 's/.*container name "\/\(.*\)".*/\1/p')
+    conflict_name=$(echo "$output" | grep -oE '"/[^"]+"' | head -n 1 | tr -d '"' | sed 's#^/##')
 
     if [[ -z "$conflict_name" ]]; then
       log_error "Could not parse conflicting container name"
