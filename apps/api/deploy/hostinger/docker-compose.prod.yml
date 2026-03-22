@@ -115,4 +115,5 @@ volumes:
 
 networks:
   blih-network:
-    external: true
+    name: blih-network
+    driver: bridge
