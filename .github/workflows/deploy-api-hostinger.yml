@@ -119,7 +119,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/api/deploy/hostinger/keycloak/Dockerfile
+          file: apps/api/keycloak/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.keycloak_image }}
 
@@ -222,9 +222,17 @@ jobs:
           HOSTINGER_SSH_PORT="${HOSTINGER_SSH_PORT:-22}"
           remote="${HOSTINGER_SSH_USER}@${HOSTINGER_SSH_HOST}"
           ssh -p "${HOSTINGER_SSH_PORT}" "${remote}" "mkdir -p '${HOSTINGER_DEPLOY_PATH}'"
-          rsync -az --delete \
+          rsync -az \
             -e "ssh -p ${HOSTINGER_SSH_PORT}" \
-            apps/api/deploy/hostinger/ \
+            apps/api/docker-compose.prod.yml \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/"
+          rsync -az \
+            -e "ssh -p ${HOSTINGER_SSH_PORT}" \
+            apps/api/deploy.sh \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/"
+          rsync -az \
+            -e "ssh -p ${HOSTINGER_SSH_PORT}" \
+            apps/api/healthcheck.sh \
             "${remote}:${HOSTINGER_DEPLOY_PATH}/"
           rsync -az \
             -e "ssh -p ${HOSTINGER_SSH_PORT}" \
