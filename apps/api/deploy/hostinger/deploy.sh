@@ -79,6 +79,12 @@ load_env_file() {
       exit 1
     fi
 
+    # Preserve values already injected into the process environment, such as
+    # image tags and secrets passed by CI for the current deployment.
+    if [[ -v "$key" ]]; then
+      continue
+    fi
+
     if [[ "$value" =~ ^\".*\"$ ]] || [[ "$value" =~ ^\'.*\'$ ]]; then
       value="${value:1:${#value}-2}"
     fi
