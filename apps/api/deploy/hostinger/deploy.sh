@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eEuo pipefail
 
 # Enhanced Production Deployment Script for BLIH System
 # Includes comprehensive validation, rollback, and monitoring
@@ -96,7 +96,7 @@ pre_deployment_checks() {
   fi
   
   # Check available disk space
-  AVAILABLE_SPACE=$(df . | tail -1 | awk '{print $4}')
+  AVAILABLE_SPACE=$(df --output=avail -k . | tail -1)
   REQUIRED_SPACE=2097152 # 2GB in KB
   if [[ "$AVAILABLE_SPACE" -lt "$REQUIRED_SPACE" ]]; then
     log_error "Insufficient disk space. Required: 2GB, Available: $((AVAILABLE_SPACE/1024/1024))GB"
@@ -143,9 +143,11 @@ rollback() {
   source "$PREVIOUS_RELEASE_FILE"
 
   require_env API_IMAGE
+  require_env API_MIGRATOR_IMAGE
   require_env KEYCLOAK_IMAGE
 
   export API_IMAGE
+  export API_MIGRATOR_IMAGE
   export KEYCLOAK_IMAGE
 
   log_info "Pulling previous images..."
@@ -201,10 +203,29 @@ reconcile_compose_network() {
   fi
 }
 
+remove_legacy_container() {
+  local container_name="$1"
+
+  if ! docker container inspect "$container_name" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  log_warn "Removing legacy container '$container_name' so Compose can recreate the service under project-managed names."
+  docker rm -f "$container_name" >/dev/null
+}
+
+reconcile_legacy_blih_containers() {
+  remove_legacy_container "blih-postgres"
+  remove_legacy_container "blih-keycloak"
+  remove_legacy_container "blih-mailhog"
+  remove_legacy_container "blih-api"
+}
+
 # Main deployment function
 deploy() {
   log_info "Starting BLIH Production Deployment"
   log_info "=================================="
+  deploy_ok=false
   
   # Validation
   validate_environment
@@ -226,7 +247,8 @@ deploy() {
   docker pull "$API_MIGRATOR_IMAGE"
   docker pull "$KEYCLOAK_IMAGE"
 
-  # Remove only stale unmanaged networks. Compose will create the network if needed.
+  # Remove legacy fixed-name containers before reconciling the network.
+  reconcile_legacy_blih_containers
   reconcile_compose_network "blih-network"
   
   # Start PostgreSQL first for migrations

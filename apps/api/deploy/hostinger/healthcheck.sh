@@ -14,6 +14,8 @@ POSTGRES_HEALTHCHECK_URL="${POSTGRES_HEALTHCHECK_URL:-http://127.0.0.1:${API_POR
 RETRIES="${HEALTHCHECK_RETRIES:-30}"
 SLEEP_SECONDS="${HEALTHCHECK_SLEEP_SECONDS:-5}"
 TIMEOUT="${HEALTHCHECK_TIMEOUT:-10}"
+COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
+ENV_FILE="${ENV_FILE:-.env.production}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -63,8 +65,8 @@ check_system_resources() {
 check_database_connectivity() {
   log_info "Checking database connectivity..."
   
-  # Use Docker exec to check postgres
-  if docker exec blih-postgres pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-blih_system_prod}" >/dev/null 2>&1; then
+  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres \
+    pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-blih_system_prod}" >/dev/null 2>&1; then
     log_info "Database connectivity: OK"
     return 0
   else
