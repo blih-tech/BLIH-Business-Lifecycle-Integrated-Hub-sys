@@ -198,9 +198,24 @@ jobs:
           HOSTINGER_SSH_PORT="${HOSTINGER_SSH_PORT:-22}"
 
           install -m 700 -d ~/.ssh
-          printf '%s\n' "${HOSTINGER_SSH_KEY}" > ~/.ssh/id_ed25519
+          printf '%s\n' "${HOSTINGER_SSH_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "${HOSTINGER_SSH_PORT}" "${HOSTINGER_SSH_HOST}" >> ~/.ssh/known_hosts
+          touch ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+          if ! ssh-keygen -yf ~/.ssh/id_ed25519 >/dev/null 2>&1; then
+            echo "HOSTINGER_SSH_KEY is not a valid private key. Check that the GitHub secret contains the full unencrypted key."
+            exit 1
+          fi
+
+          if ! ssh-keyscan -T 15 -p "${HOSTINGER_SSH_PORT}" "${HOSTINGER_SSH_HOST}" >> ~/.ssh/known_hosts 2>ssh-keyscan.stderr; then
+            echo "ssh-keyscan failed for ${HOSTINGER_SSH_HOST}:${HOSTINGER_SSH_PORT}. Verify the host, port, firewall rules, and that SSH is listening."
+            if [ -s ssh-keyscan.stderr ]; then
+              echo "ssh-keyscan stderr:"
+              cat ssh-keyscan.stderr
+            fi
+            exit 1
+          fi
 
       - name: Sync deploy manifests to Hostinger
         run: |
