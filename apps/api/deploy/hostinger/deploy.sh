@@ -197,7 +197,10 @@ rollback() {
   docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
   
   log_info "Starting previous containers..."
-  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
+  if ! compose_up_with_conflict_recovery; then
+    log_error "Rollback failed during container startup"
+    return 1
+  fi
   
   log_info "Running health checks..."
   if ./healthcheck.sh; then
@@ -246,22 +249,49 @@ reconcile_compose_network() {
   fi
 }
 
-remove_legacy_container() {
-  local container_name="$1"
+compose_up_with_conflict_recovery() {
+  local output
+  local exit_code
+  local conflict_name
 
-  if ! docker container inspect "$container_name" >/dev/null 2>&1; then
+  set +e
+  output=$(
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans 2>&1
+  )
+  exit_code=$?
+  set -e
+
+  if [[ $exit_code -eq 0 ]]; then
+    echo "$output"
     return 0
   fi
 
-  log_warn "Removing legacy container '$container_name' so Compose can recreate the service under project-managed names."
-  docker rm -f "$container_name" >/dev/null
-}
+  if echo "$output" | grep -q "container name .* is already in use"; then
+    log_warn "Container name conflict detected. Attempting recovery..."
 
-reconcile_legacy_blih_containers() {
-  remove_legacy_container "blih-postgres"
-  remove_legacy_container "blih-keycloak"
-  remove_legacy_container "blih-mailhog"
-  remove_legacy_container "blih-api"
+    conflict_name=$(echo "$output" | sed -n 's/.*container name "\/\(.*\)".*/\1/p')
+
+    if [[ -z "$conflict_name" ]]; then
+      log_error "Could not parse conflicting container name"
+      echo "$output"
+      return 1
+    fi
+
+    if [[ "$conflict_name" == *postgres* ]]; then
+      log_error "Refusing to remove database container automatically: $conflict_name"
+      return 1
+    fi
+
+    log_warn "Removing conflicting container: $conflict_name"
+    docker rm -f "$conflict_name" >/dev/null
+
+    log_warn "Retrying docker compose up..."
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
+    return $?
+  fi
+
+  echo "$output"
+  return $exit_code
 }
 
 # Main deployment function
@@ -290,8 +320,6 @@ deploy() {
   docker pull "$API_MIGRATOR_IMAGE"
   docker pull "$KEYCLOAK_IMAGE"
 
-  # Remove legacy fixed-name containers before reconciling the network.
-  reconcile_legacy_blih_containers
   reconcile_compose_network "blih-network"
   
   # Start PostgreSQL first for migrations
@@ -329,7 +357,7 @@ deploy() {
   
   # Start remaining services
   log_step "Starting remaining production services..."
-  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans; then
+  if compose_up_with_conflict_recovery; then
     log_info "All services started successfully"
   else
     log_error "Failed to start services"
