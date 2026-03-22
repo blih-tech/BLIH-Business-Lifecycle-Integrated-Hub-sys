@@ -53,15 +53,39 @@ require_file() {
 
 load_env_file() {
   local env_path="$1"
+  local line
+  local key
+  local value
 
   require_file "$env_path"
 
-  # Export the deployment env file into the current shell so strict-mode
-  # variable checks match the values Compose receives via --env-file.
-  set -a
-  # shellcheck disable=SC1090
-  source "$env_path"
-  set +a
+  # Parse dotenv-style KEY=VALUE pairs without executing the file as shell.
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -z "$line" ]] && continue
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    if [[ "$line" != *=* ]]; then
+      log_error "Invalid environment line in ${env_path}: ${line}"
+      exit 1
+    fi
+
+    key="${line%%=*}"
+    value="${line#*=}"
+
+    key="${key#"${key%%[![:space:]]*}"}"
+    key="${key%"${key##*[![:space:]]}"}"
+
+    if [[ ! "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+      log_error "Invalid environment variable name in ${env_path}: ${key}"
+      exit 1
+    fi
+
+    if [[ "$value" =~ ^\".*\"$ ]] || [[ "$value" =~ ^\'.*\'$ ]]; then
+      value="${value:1:${#value}-2}"
+    fi
+
+    printf -v "$key" '%s' "$value"
+    export "$key"
+  done <"$env_path"
 }
 
 require_env() {
