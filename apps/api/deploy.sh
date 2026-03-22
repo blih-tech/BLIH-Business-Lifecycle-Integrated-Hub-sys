@@ -120,7 +120,16 @@ validate_environment() {
     fi
     log_info "API port configured: $API_PORT"
   fi
-  
+
+  # Validate Keycloak port configuration
+  if [[ -n "${KEYCLOAK_PORT:-}" ]]; then
+    if [[ "$KEYCLOAK_PORT" -lt 1024 || "$KEYCLOAK_PORT" -gt 65535 ]]; then
+      log_error "Invalid Keycloak port: $KEYCLOAK_PORT (must be 1024-65535)"
+      exit 1
+    fi
+    log_info "Keycloak port configured: $KEYCLOAK_PORT"
+  fi
+
   # Check if ports are available (basic check)
   if command -v netstat >/dev/null 2>&1; then
     if netstat -tuln | grep -q ":${API_PORT:-5000} "; then
@@ -193,6 +202,9 @@ rollback() {
   export API_MIGRATOR_IMAGE
   export KEYCLOAK_IMAGE
 
+  # Stop current (failed) deployment before rolling back
+  stop_existing_services
+
   log_info "Starting previous containers..."
   if ! compose_start_postgres; then
     log_error "Rollback failed during postgres startup"
@@ -229,6 +241,12 @@ cleanup_docker_resources() {
   log_info "Docker cleanup completed"
 }
 
+stop_existing_services() {
+  log_step "Stopping existing services to release ports..."
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --timeout 30 || true
+  log_info "Existing services stopped and ports released"
+}
+
 compose_start_postgres() {
   docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --pull always postgres
 }
@@ -255,7 +273,10 @@ deploy() {
   # Login to registry
   log_step "Logging in to GitHub Container Registry..."
   printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-  
+
+  # Stop existing services to release ports before starting new deployment
+  stop_existing_services
+
   # Export variables for compose
   export API_IMAGE
   export API_MIGRATOR_IMAGE
