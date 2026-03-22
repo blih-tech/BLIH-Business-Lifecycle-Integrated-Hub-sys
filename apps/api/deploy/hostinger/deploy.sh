@@ -193,11 +193,13 @@ rollback() {
   export API_MIGRATOR_IMAGE
   export KEYCLOAK_IMAGE
 
-  log_info "Pulling previous images..."
-  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
-  
   log_info "Starting previous containers..."
-  if ! compose_up_with_conflict_recovery; then
+  if ! compose_start_postgres; then
+    log_error "Rollback failed during postgres startup"
+    return 1
+  fi
+  
+  if ! compose_up_remaining_services; then
     log_error "Rollback failed during container startup"
     return 1
   fi
@@ -218,80 +220,25 @@ cleanup_docker_resources() {
   # Remove unused images
   docker image prune -f >/dev/null 2>&1 || true
   
-  # Remove unused containers
-  docker container prune -f >/dev/null 2>&1 || true
+  # Remove only stopped containers from this compose project.
+  docker container prune -f --filter "label=com.docker.compose.project=$COMPOSE_PROJECT_NAME" >/dev/null 2>&1 || true
   
-  # Remove unused networks (except blih-network)
-  docker network prune -f --filter "name!=blih-network" >/dev/null 2>&1 || true
+  # Remove only unused networks from this compose project.
+  docker network prune -f --filter "label=com.docker.compose.project=$COMPOSE_PROJECT_NAME" >/dev/null 2>&1 || true
   
   log_info "Docker cleanup completed"
 }
 
-reconcile_compose_network() {
-  local network_name="${1:-blih-network}"
-  local compose_label
-
-  if ! docker network inspect "$network_name" >/dev/null 2>&1; then
-    return 0
-  fi
-
-  compose_label="$(docker network inspect "$network_name" --format '{{ index .Labels "com.docker.compose.network" }}' 2>/dev/null || true)"
-
-  if [[ "$compose_label" == "$network_name" ]]; then
-    log_info "Docker network '$network_name' is already managed by Compose"
-    return 0
-  fi
-
-  log_warn "Docker network '$network_name' exists but is not managed by Compose. Removing stale network so Compose can recreate it."
-  if ! docker network rm "$network_name" >/dev/null 2>&1; then
-    log_error "Failed to remove stale Docker network '$network_name'. Stop containers using it and rerun deployment."
-    exit 1
-  fi
+compose_start_postgres() {
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --pull always postgres
 }
 
-compose_up_with_conflict_recovery() {
-  local output
-  local exit_code
-  local conflict_name
+compose_recreate_postgres() {
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --pull always --force-recreate postgres
+}
 
-  set +e
-  output=$(
-    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans 2>&1
-  )
-  exit_code=$?
-  set -e
-
-  if [[ $exit_code -eq 0 ]]; then
-    echo "$output"
-    return 0
-  fi
-
-  if echo "$output" | grep -q "container name .* is already in use"; then
-    log_warn "Container name conflict detected. Attempting recovery..."
-
-    conflict_name=$(echo "$output" | sed -n 's/.*container name "\/\(.*\)".*/\1/p')
-
-    if [[ -z "$conflict_name" ]]; then
-      log_error "Could not parse conflicting container name"
-      echo "$output"
-      return 1
-    fi
-
-    if [[ "$conflict_name" == *postgres* ]]; then
-      log_error "Refusing to remove database container automatically: $conflict_name"
-      return 1
-    fi
-
-    log_warn "Removing conflicting container: $conflict_name"
-    docker rm -f "$conflict_name" >/dev/null
-
-    log_warn "Retrying docker compose up..."
-    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --remove-orphans
-    return $?
-  fi
-
-  echo "$output"
-  return $exit_code
+compose_up_remaining_services() {
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --wait --pull always --remove-orphans --force-recreate api keycloak mailhog
 }
 
 # Main deployment function
@@ -314,17 +261,13 @@ deploy() {
   export API_MIGRATOR_IMAGE
   export KEYCLOAK_IMAGE
   
-  # Pull images
+  # Pull the migrator explicitly because it runs outside Compose.
   log_step "Pulling release images..."
-  docker pull "$API_IMAGE"
   docker pull "$API_MIGRATOR_IMAGE"
-  docker pull "$KEYCLOAK_IMAGE"
 
-  reconcile_compose_network "blih-network"
-  
   # Start PostgreSQL first for migrations
   log_step "Starting PostgreSQL service..."
-  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d postgres; then
+  if compose_recreate_postgres; then
     log_info "PostgreSQL service started successfully"
   else
     log_error "Failed to start PostgreSQL service"
@@ -348,7 +291,7 @@ deploy() {
   
   # Run database migrations
   log_step "Running database migrations..."
-  if docker run --rm --env-file "$ENV_FILE" --network blih-network "$API_MIGRATOR_IMAGE"; then
+  if docker run --rm --env-file "$ENV_FILE" --network "${COMPOSE_PROJECT_NAME}_default" "$API_MIGRATOR_IMAGE"; then
     log_info "Database migrations completed successfully"
   else
     log_error "Database migrations failed"
@@ -357,7 +300,7 @@ deploy() {
   
   # Start remaining services
   log_step "Starting remaining production services..."
-  if compose_up_with_conflict_recovery; then
+  if compose_up_remaining_services; then
     log_info "All services started successfully"
   else
     log_error "Failed to start services"

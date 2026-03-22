@@ -15,8 +15,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - blih-network
 
   keycloak:
     image: ${KEYCLOAK_IMAGE:?KEYCLOAK_IMAGE is required}
@@ -66,14 +64,10 @@ services:
       timeout: 10s
       retries: 8
       start_period: 90s
-    networks:
-      - blih-network
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
     restart: unless-stopped
-    networks:
-      - blih-network
 
   api:
     image: ${API_IMAGE:?API_IMAGE is required}
@@ -102,8 +96,6 @@ services:
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
       retries: ${HEALTH_CHECK_RETRIES:-8}
       start_period: 40s
-    networks:
-      - blih-network
     logging:
       driver: 'json-file'
       options:
@@ -115,8 +107,3 @@ volumes:
     driver: local
   keycloak_data:
     driver: local
-
-networks:
-  blih-network:
-    name: blih-network
-    driver: bridge
