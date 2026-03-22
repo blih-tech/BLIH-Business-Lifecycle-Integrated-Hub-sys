@@ -19,6 +19,7 @@ const createEnvValidationSchema = () =>
 
     KEYCLOAK_ENABLED: Joi.boolean().default(true),
     KEYCLOAK_URL: Joi.string().uri().default('http://localhost:8080'),
+    KEYCLOAK_INTERNAL_URL: Joi.string().uri().allow('').default(''),
     KEYCLOAK_REALM: Joi.string().default('blih'),
     KEYCLOAK_CLIENT_ID: Joi.string().default('blih-system-api'),
     KEYCLOAK_CLIENT_SECRET: Joi.string().allow('').default(''),

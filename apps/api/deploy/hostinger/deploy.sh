@@ -51,6 +51,49 @@ require_file() {
   fi
 }
 
+load_env_file() {
+  local env_path="$1"
+  local line
+  local key
+  local value
+
+  require_file "$env_path"
+
+  # Parse dotenv-style KEY=VALUE pairs without executing the file as shell.
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -z "$line" ]] && continue
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    if [[ "$line" != *=* ]]; then
+      log_error "Invalid environment line in ${env_path}: ${line}"
+      exit 1
+    fi
+
+    key="${line%%=*}"
+    value="${line#*=}"
+
+    key="${key#"${key%%[![:space:]]*}"}"
+    key="${key%"${key##*[![:space:]]}"}"
+
+    if [[ ! "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+      log_error "Invalid environment variable name in ${env_path}: ${key}"
+      exit 1
+    fi
+
+    # Preserve values already injected into the process environment, such as
+    # image tags and secrets passed by CI for the current deployment.
+    if [[ -v "$key" ]]; then
+      continue
+    fi
+
+    if [[ "$value" =~ ^\".*\"$ ]] || [[ "$value" =~ ^\'.*\'$ ]]; then
+      value="${value:1:${#value}-2}"
+    fi
+
+    printf -v "$key" '%s' "$value"
+    export "$key"
+  done <"$env_path"
+}
+
 require_env() {
   local name="$1"
   if [[ -z "${!name:-}" ]]; then
@@ -263,7 +306,8 @@ deploy() {
   # Wait for PostgreSQL to be healthy
   log_step "Waiting for PostgreSQL to be ready..."
   for i in {1..30}; do
-    if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then
+    if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready \
+      -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-postgres}" >/dev/null 2>&1; then
       log_info "PostgreSQL is ready"
       break
     fi
@@ -330,7 +374,7 @@ main() {
   require_cmd docker
   require_cmd curl
   require_file "$COMPOSE_FILE"
-  require_file "$ENV_FILE"
+  load_env_file "$ENV_FILE"
   
   # Set up error handling
   trap handle_failure ERR
