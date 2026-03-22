@@ -179,16 +179,26 @@ cleanup_docker_resources() {
   log_info "Docker cleanup completed"
 }
 
-ensure_docker_network() {
+reconcile_compose_network() {
   local network_name="${1:-blih-network}"
-  if docker network inspect "$network_name" >/dev/null 2>&1; then
-    log_info "Docker network '$network_name' already exists"
+  local compose_label
+
+  if ! docker network inspect "$network_name" >/dev/null 2>&1; then
     return 0
   fi
 
-  log_step "Creating Docker network '$network_name'..."
-  docker network create "$network_name" >/dev/null
-  log_info "Docker network '$network_name' created"
+  compose_label="$(docker network inspect "$network_name" --format '{{ index .Labels "com.docker.compose.network" }}' 2>/dev/null || true)"
+
+  if [[ "$compose_label" == "$network_name" ]]; then
+    log_info "Docker network '$network_name' is already managed by Compose"
+    return 0
+  fi
+
+  log_warn "Docker network '$network_name' exists but is not managed by Compose. Removing stale network so Compose can recreate it."
+  if ! docker network rm "$network_name" >/dev/null 2>&1; then
+    log_error "Failed to remove stale Docker network '$network_name'. Stop containers using it and rerun deployment."
+    exit 1
+  fi
 }
 
 # Main deployment function
@@ -216,8 +226,8 @@ deploy() {
   docker pull "$API_MIGRATOR_IMAGE"
   docker pull "$KEYCLOAK_IMAGE"
 
-  # Ensure shared network exists before any compose or docker run steps.
-  ensure_docker_network "blih-network"
+  # Remove only stale unmanaged networks. Compose will create the network if needed.
+  reconcile_compose_network "blih-network"
   
   # Start PostgreSQL first for migrations
   log_step "Starting PostgreSQL service..."
