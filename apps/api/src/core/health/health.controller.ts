@@ -80,7 +80,9 @@ export class HealthController {
 
   private async keycloakCheck() {
     try {
-      const baseUrl = this.configService.getOrThrow<string>('KEYCLOAK_URL');
+      const baseUrl =
+        this.configService.get<string>('KEYCLOAK_INTERNAL_URL') ||
+        this.configService.getOrThrow<string>('KEYCLOAK_URL');
       const realm = this.configService.get<string>('KEYCLOAK_REALM', 'master');
       await firstValueFrom(this.httpService.get(`${baseUrl}/realms/${realm}`));
       return { status: 'up' as const };
