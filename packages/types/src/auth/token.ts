@@ -1,5 +1,6 @@
 export interface AuthLoginQueryDto {
   redirect?: string;
+  successRedirect?: string;
   prompt?: string;
 }
 

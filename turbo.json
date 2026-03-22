@@ -18,7 +18,7 @@
       "env": ["NODE_ENV"]
     },
     "check-types": {
-      "dependsOn": ["^check-types", "^build"]
+      "dependsOn": ["build", "^check-types", "^build"]
     },
     "test": {
       "dependsOn": ["build"],

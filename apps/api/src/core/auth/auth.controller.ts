@@ -95,6 +95,13 @@ export class AuthController {
     example: '/dashboard',
   })
   @ApiQuery({
+    name: 'successRedirect',
+    required: false,
+    description:
+      'Alias for redirect. Relative frontend URL path used after successful login.',
+    example: '/dashboard/hr',
+  })
+  @ApiQuery({
     name: 'prompt',
     required: false,
     description: 'Optional OIDC prompt forwarded to Keycloak.',
@@ -118,6 +125,8 @@ export class AuthController {
   async login(
     @Query('redirect')
     redirectPath: AuthLoginQueryDtoType['redirect'] | undefined,
+    @Query('successRedirect')
+    successRedirectPath: AuthLoginQueryDtoType['successRedirect'] | undefined,
     @Query('prompt') prompt: AuthLoginQueryDtoType['prompt'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
@@ -141,7 +150,7 @@ export class AuthController {
       nonceEnabled: env.AUTH_NONCE_ENABLED,
     });
     const safeRedirectPath = resolveSafeRedirectPath(
-      redirectPath,
+      successRedirectPath ?? redirectPath,
       env.AUTH_POST_LOGIN_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
