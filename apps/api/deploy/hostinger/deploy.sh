@@ -179,6 +179,18 @@ cleanup_docker_resources() {
   log_info "Docker cleanup completed"
 }
 
+ensure_docker_network() {
+  local network_name="${1:-blih-network}"
+  if docker network inspect "$network_name" >/dev/null 2>&1; then
+    log_info "Docker network '$network_name' already exists"
+    return 0
+  fi
+
+  log_step "Creating Docker network '$network_name'..."
+  docker network create "$network_name" >/dev/null
+  log_info "Docker network '$network_name' created"
+}
+
 # Main deployment function
 deploy() {
   log_info "Starting BLIH Production Deployment"
@@ -203,6 +215,9 @@ deploy() {
   docker pull "$API_IMAGE"
   docker pull "$API_MIGRATOR_IMAGE"
   docker pull "$KEYCLOAK_IMAGE"
+
+  # Ensure shared network exists before any compose or docker run steps.
+  ensure_docker_network "blih-network"
   
   # Start PostgreSQL first for migrations
   log_step "Starting PostgreSQL service..."
