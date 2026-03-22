@@ -1,8 +1,9 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: blih-postgres
     restart: unless-stopped
+    mem_limit: ${POSTGRES_MEMORY_LIMIT:-2g}
+    cpus: ${POSTGRES_CPU_LIMIT:-1.0}
     env_file:
       - .env.production
     volumes:
@@ -14,18 +15,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: ${POSTGRES_MEMORY_LIMIT:-2g}
-          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
     networks:
       - blih-network
 
   keycloak:
     image: ${KEYCLOAK_IMAGE:?KEYCLOAK_IMAGE is required}
-    container_name: blih-keycloak
     restart: unless-stopped
+    mem_limit: ${KEYCLOAK_MEMORY_LIMIT:-1g}
+    cpus: ${KEYCLOAK_CPU_LIMIT:-0.5}
     command:
       [
         'start',
@@ -53,17 +50,11 @@ services:
       timeout: 10s
       retries: 8
       start_period: 90s
-    deploy:
-      resources:
-        limits:
-          memory: ${KEYCLOAK_MEMORY_LIMIT:-1g}
-          cpus: '${KEYCLOAK_CPU_LIMIT:-0.5}'
     networks:
       - blih-network
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
-    container_name: blih-mailhog
     restart: unless-stopped
     ports:
       - '127.0.0.1:1025:1025'
@@ -73,8 +64,9 @@ services:
 
   api:
     image: ${API_IMAGE:?API_IMAGE is required}
-    container_name: blih-api
     restart: unless-stopped
+    mem_limit: ${API_MEMORY_LIMIT:-1g}
+    cpus: ${API_CPU_LIMIT:-0.5}
     env_file:
       - .env.production
     ports:
@@ -94,11 +86,6 @@ services:
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
       retries: ${HEALTH_CHECK_RETRIES:-8}
       start_period: 40s
-    deploy:
-      resources:
-        limits:
-          memory: ${API_MEMORY_LIMIT:-1g}
-          cpus: '${API_CPU_LIMIT:-0.5}'
     networks:
       - blih-network
     logging:
