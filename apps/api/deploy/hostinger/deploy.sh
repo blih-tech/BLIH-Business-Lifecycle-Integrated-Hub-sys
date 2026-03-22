@@ -51,6 +51,19 @@ require_file() {
   fi
 }
 
+load_env_file() {
+  local env_path="$1"
+
+  require_file "$env_path"
+
+  # Export the deployment env file into the current shell so strict-mode
+  # variable checks match the values Compose receives via --env-file.
+  set -a
+  # shellcheck disable=SC1090
+  source "$env_path"
+  set +a
+}
+
 require_env() {
   local name="$1"
   if [[ -z "${!name:-}" ]]; then
@@ -263,7 +276,8 @@ deploy() {
   # Wait for PostgreSQL to be healthy
   log_step "Waiting for PostgreSQL to be ready..."
   for i in {1..30}; do
-    if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then
+    if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready \
+      -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-postgres}" >/dev/null 2>&1; then
       log_info "PostgreSQL is ready"
       break
     fi
@@ -330,7 +344,7 @@ main() {
   require_cmd docker
   require_cmd curl
   require_file "$COMPOSE_FILE"
-  require_file "$ENV_FILE"
+  load_env_file "$ENV_FILE"
   
   # Set up error handling
   trap handle_failure ERR

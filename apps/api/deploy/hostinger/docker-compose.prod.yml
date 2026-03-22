@@ -36,7 +36,7 @@ services:
       - '127.0.0.1:${KEYCLOAK_PORT:-8080}:8080'
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
       postgres:
         condition: service_healthy
