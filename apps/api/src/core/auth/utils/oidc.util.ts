@@ -351,10 +351,18 @@ export function inferFrontendOrigin(
   request: Request,
   allowedOrigins: string[],
 ): string {
-  // Priority 1: Referer header (most reliable for direct navigation)
+  // Priority order:
+  // 1) `Origin` header when present (more reliable than `Referer` in some redirect/iframe scenarios)
+  // 2) `Referer` header
+  // 3) Forwarded headers (proxy/load balancer)
+  // 4) Host header (last resort)
   let origin: string | undefined;
 
-  if (request.headers.referer) {
+  if (request.headers.origin) {
+    origin = request.headers.origin as string;
+  }
+
+  if (!origin && request.headers.referer) {
     try {
       const refererUrl = new URL(request.headers.referer as string);
       origin = refererUrl.origin;
@@ -363,7 +371,7 @@ export function inferFrontendOrigin(
     }
   }
 
-  // Priority 2: Forwarded headers (for proxy/load balancer scenarios)
+  // Priority 3: Forwarded headers (for proxy/load balancer scenarios)
   if (!origin) {
     const forwardedProto = request.headers['x-forwarded-proto'] as string;
     const forwardedHost = request.headers['x-forwarded-host'] as string;
@@ -371,11 +379,6 @@ export function inferFrontendOrigin(
     if (forwardedProto && forwardedHost) {
       origin = `${forwardedProto}://${forwardedHost}`;
     }
-  }
-
-  // Priority 3: Origin header (for CORS requests)
-  if (!origin && request.headers.origin) {
-    origin = request.headers.origin as string;
   }
 
   // Priority 4: Host header (fallback for direct requests)
