@@ -1,9 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Check } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import {
   applicationFormSchema,
@@ -17,6 +18,7 @@ import {
   createRequestFormSchema,
   type CreateRequestFormValues,
 } from '@/features/hr/recruitment/requests/form-schema';
+import type { CreateJobDto } from '@/types/recruitment';
 import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/types';
 import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
@@ -32,11 +34,13 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import { Form } from '@/shared/components/ui/form';
+import { delay } from '@/shared/lib/demo-utils';
 
 type CreateRequestDialogProps = {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   currentUserName: string;
+  editRequest?: SubmittedJobRequest & { jobId?: string };
 };
 
 const steps = [
@@ -62,107 +66,58 @@ const defaultValues: CreateRequestFormValues = {
   department: '',
   requestedBy: 'User',
   position: '',
-  requestType: 'new',
+  requestType: 'NEW',
   replaceFor: '',
   businessJustification: '',
-  openings: '1',
-  createdDate: new Date().toISOString().slice(0, 10),
-  employmentType: 'full_time',
-  workMode: 'on_site',
-  urgency: 'medium',
+  employmentType: 'FULL_TIME',
+  workMode: 'ON_SITE',
+  urgency: 'MEDIUM',
   neededByDate: '',
+  priority: 'MEDIUM',
 };
 
 const defaultJobDetailsValues: JobDetailsFormValues = {
-  jobTitle: '',
-  location: '',
-  workMode: 'on_site',
-  employmentType: 'full_time',
-  jobSummary: '',
-  whyJoinUs: '',
-  keyResponsibilities: '',
-  requirements: '',
+  title: '',
+  city: '',
+  country: '',
+  workLocationType: 'ON_SITE',
+  employmentType: 'FULL_TIME',
+  description: '',
+  summary: '',
+  responsibilities: '',
+  requiredSkills: '',
   preferredSkills: '',
-  experienceLevel: 'mid',
-  salaryMode: 'not_specified',
-  salaryRangeMin: '',
-  salaryRangeMax: '',
-  salaryCurrency: '',
+  experienceLevel: 'MID',
+  contractType: 'PERMANENT',
+  salaryMode: 'NOT_SPECIFIED',
+  salaryMin: '',
+  salaryMax: '',
+  currency: '',
   benefits: '',
+  tools: '',
+  hiringManagerId: '',
+  applicationDeadline: '',
+  openings: '1',
 };
 
 const defaultApplicationValues: ApplicationFormValues = {
-  predefinedFields: [
-    {
-      key: 'full_name',
-      label: 'Full Name',
-      type: 'text',
-      enabled: true,
-      required: true,
-    },
-    {
-      key: 'email',
-      label: 'Email Address',
-      type: 'text',
-      enabled: true,
-      required: true,
-    },
-    {
-      key: 'phone',
-      label: 'Phone Number',
-      type: 'text',
-      enabled: true,
-      required: true,
-    },
-    {
-      key: 'resume',
-      label: 'Resume / CV',
-      type: 'file',
-      enabled: true,
-      required: true,
-    },
-    {
-      key: 'cover_letter',
-      label: 'Cover Letter',
-      type: 'textarea',
-      enabled: false,
-      required: false,
-    },
-    {
-      key: 'portfolio',
-      label: 'Portfolio Link',
-      type: 'text',
-      enabled: false,
-      required: false,
-    },
-    {
-      key: 'linkedin',
-      label: 'LinkedIn Profile',
-      type: 'text',
-      enabled: false,
-      required: false,
-    },
-    {
-      key: 'current_location',
-      label: 'Current Location',
-      type: 'text',
-      enabled: false,
-      required: false,
-    },
-    {
-      key: 'notice_period',
-      label: 'Notice Period',
-      type: 'text',
-      enabled: false,
-      required: false,
-    },
-    {
-      key: 'salary_expectation',
-      label: 'Salary Expectation',
-      type: 'number',
-      enabled: false,
-      required: false,
-    },
+  applicantFields: [
+    { key: 'FIRST_NAME', enabled: true, required: true },
+    { key: 'LAST_NAME', enabled: true, required: true },
+    { key: 'EMAIL', enabled: true, required: true },
+    { key: 'PHONE', enabled: true, required: true },
+    { key: 'RESUME_URL', enabled: false, required: false },
+    { key: 'CURRENT_COMPANY', enabled: false, required: false },
+    { key: 'YEARS_OF_EXPERIENCE', enabled: false, required: false },
+    { key: 'LINKEDIN_URL', enabled: false, required: false },
+    { key: 'PORTFOLIO_URL', enabled: false, required: false },
+    { key: 'GITHUB_URL', enabled: false, required: false },
+    { key: 'EXPECTED_SALARY', enabled: false, required: false },
+    { key: 'COVER_LETTER', enabled: false, required: false },
+  ],
+  sections: [
+    { key: 'EDUCATION', enabled: false, required: false },
+    { key: 'EXPERIENCE', enabled: false, required: false },
   ],
   customFields: [],
 };
@@ -171,14 +126,17 @@ export function CreateRequestDialog({
   open,
   onOpenChange,
   currentUserName,
+  editRequest,
 }: CreateRequestDialogProps) {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const isEditMode = Boolean(editRequest?.jobId);
   const requestForm = useForm<CreateRequestFormValues>({
     resolver: zodResolver(createRequestFormSchema),
     mode: 'onSubmit',
     defaultValues: {
       ...defaultValues,
-      requestedBy: currentUserName,
+      requestedBy: editRequest?.requestForm.requestedBy ?? currentUserName,
     },
   });
   const jobDetailsForm = useForm<JobDetailsFormValues>({
@@ -202,29 +160,46 @@ export function CreateRequestDialog({
       setCurrentStep(1);
       requestForm.reset({
         ...defaultValues,
-        requestedBy: currentUserName,
+        requestedBy: editRequest?.requestForm.requestedBy ?? currentUserName,
       });
       jobDetailsForm.reset(defaultJobDetailsValues);
       applicationForm.reset(defaultApplicationValues);
     }
-  }, [applicationForm, currentUserName, jobDetailsForm, open, requestForm]);
+  }, [applicationForm, currentUserName, editRequest, jobDetailsForm, open, requestForm]);
 
   useEffect(() => {
-    requestForm.setValue('requestedBy', currentUserName, {
+    requestForm.setValue('requestedBy', editRequest?.requestForm.requestedBy ?? currentUserName, {
       shouldDirty: false,
       shouldTouch: false,
       shouldValidate: false,
     });
-  }, [currentUserName, requestForm]);
+  }, [currentUserName, editRequest, requestForm]);
+
+  useEffect(() => {
+    if (!open || !editRequest) return;
+    requestForm.reset({
+      ...defaultValues,
+      ...editRequest.requestForm,
+      requestedBy: editRequest.requestForm.requestedBy ?? currentUserName,
+    });
+    jobDetailsForm.reset({
+      ...defaultJobDetailsValues,
+      ...editRequest.jobDetailsForm,
+    });
+    applicationForm.reset({
+      ...defaultApplicationValues,
+      ...editRequest.applicationForm,
+    });
+  }, [applicationForm, currentUserName, editRequest, jobDetailsForm, open, requestForm]);
 
   async function handleRequestContinue() {
     const isValid = await requestForm.trigger();
     if (!isValid) return;
     const requestValues = requestForm.getValues();
-    jobDetailsForm.setValue('jobTitle', requestValues.jobTitle, {
+    jobDetailsForm.setValue('title', requestValues.jobTitle, {
       shouldDirty: false,
     });
-    jobDetailsForm.setValue('workMode', requestValues.workMode, {
+    jobDetailsForm.setValue('workLocationType', requestValues.workMode, {
       shouldDirty: false,
     });
     jobDetailsForm.setValue('employmentType', requestValues.employmentType, {
@@ -239,30 +214,120 @@ export function CreateRequestDialog({
     setCurrentStep(3);
   }
 
+  const toList = (value: string) =>
+    value
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+  const createRichTextJson = (content: string): Record<string, unknown> => ({
+    type: 'doc',
+    version: 1,
+    content: [
+      {
+        type: 'paragraph',
+        text: content,
+      },
+    ],
+  });
+
   async function handleApplicationComplete() {
     const isValid = await applicationForm.trigger();
     if (!isValid) return;
-    const jobDetailsValues = jobDetailsForm.getValues();
-    const toList = (value: string) =>
-      value
-        .split('\n')
-        .map((item) => item.trim())
-        .filter(Boolean);
 
-    const payload: SubmittedJobRequest = {
-      requestForm: requestForm.getValues(),
-      jobDetailsForm: {
-        ...jobDetailsValues,
-        keyResponsibilities: toList(jobDetailsValues.keyResponsibilities),
-        requirements: toList(jobDetailsValues.requirements),
-        preferredSkills: toList(jobDetailsValues.preferredSkills ?? ''),
-        benefits: toList(jobDetailsValues.benefits ?? ''),
-      },
-      applicationForm: applicationForm.getValues(),
-    };
+    setIsLoading(true);
+    try {
+      const requestFormValues = requestForm.getValues();
+      const jobDetailsValues = jobDetailsForm.getValues();
+      const appFormValues = applicationForm.getValues();
 
-    console.log('newRequestPayload', payload);
-    handleClose();
+      const payload: CreateJobDto = {
+        requestForm: {
+          jobTitle: requestFormValues.jobTitle,
+          department: requestFormValues.department,
+          requestedBy: currentUserName,
+          position: requestFormValues.position,
+          requestType: requestFormValues.requestType,
+          replaceForUserId:
+            requestFormValues.requestType === 'REPLACEMENT'
+              ? requestFormValues.replaceFor
+              : null,
+          businessJustification: requestFormValues.businessJustification,
+          employmentType: requestFormValues.employmentType,
+          workMode: requestFormValues.workMode,
+          urgency: requestFormValues.urgency,
+          neededByDate: requestFormValues.neededByDate,
+          priority: requestFormValues.priority,
+        },
+        job: {
+          title: jobDetailsValues.title,
+          departmentId: requestFormValues.department,
+          positionId: requestFormValues.position,
+          description: createRichTextJson(jobDetailsValues.description),
+          summary: jobDetailsValues.summary
+            ? createRichTextJson(jobDetailsValues.summary)
+            : null,
+          experienceLevel: jobDetailsValues.experienceLevel,
+          contractType: jobDetailsValues.contractType,
+          employmentType: jobDetailsValues.employmentType,
+          workLocationType: jobDetailsValues.workLocationType,
+          city: jobDetailsValues.city || null,
+          country: jobDetailsValues.country || null,
+          openings: parseInt(jobDetailsValues.openings || '1', 10),
+          salaryMin: jobDetailsValues.salaryMin
+            ? parseFloat(jobDetailsValues.salaryMin)
+            : null,
+          salaryMax: jobDetailsValues.salaryMax
+            ? parseFloat(jobDetailsValues.salaryMax)
+            : null,
+          currency: jobDetailsValues.currency || null,
+          salaryMode: jobDetailsValues.salaryMode,
+          benefits: jobDetailsValues.benefits
+            ? toList(jobDetailsValues.benefits)
+            : [],
+          requiredSkills: jobDetailsValues.requiredSkills
+            ? toList(jobDetailsValues.requiredSkills)
+            : [],
+          preferredSkills: jobDetailsValues.preferredSkills
+            ? toList(jobDetailsValues.preferredSkills)
+            : [],
+          responsibilities: jobDetailsValues.responsibilities
+            ? toList(jobDetailsValues.responsibilities)
+            : [],
+          tools: jobDetailsValues.tools ? toList(jobDetailsValues.tools) : [],
+          hiringManagerId: jobDetailsValues.hiringManagerId || null,
+          applicationDeadline: jobDetailsValues.applicationDeadline || null,
+        },
+        applicationForm: {
+          applicantFields: appFormValues.applicantFields,
+          sections: appFormValues.sections,
+          customFields: appFormValues.customFields.map((field) => ({
+            ...field,
+            type: field.type as import('@/types/recruitment').JobApplicationFieldType,
+          })),
+        },
+      };
+
+      console.log('createJobPayload', payload);
+
+      if (isEditMode && editRequest?.jobId) {
+        // Live API call (disabled for now)
+        // await apiClient.patch<CreateJobDto>(`/hr/recruitment/jobs/${editRequest.jobId}`, payload);
+        await delay(2000);
+        toast.success('Hiring request updated');
+      } else {
+        // Demo mode: simulate API call
+        // await apiClient.post<CreateJobDto>('/hr/recruitment/jobs', payload);
+        await delay(2000);
+        toast.success('Hiring request created');
+      }
+      handleClose();
+    } catch (error) {
+      console.error('Failed to save job request:', error);
+      toast.error(isEditMode ? 'Failed to update hiring request' : 'Failed to create hiring request');
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleClose() {
@@ -279,7 +344,7 @@ export function CreateRequestDialog({
                 Step {currentStep} of 3
               </div>
               <DialogTitle className="ui-section-title text-foreground">
-                Create Hiring Request
+                {isEditMode ? 'Edit Hiring Request' : 'Create Hiring Request'}
               </DialogTitle>
               <DialogDescription className="ui-body text-muted-foreground">
                 {stepMeta.description}
@@ -427,9 +492,17 @@ export function CreateRequestDialog({
                 <Button
                   type="button"
                   className="cursor-pointer"
+                  disabled={isLoading}
                   onClick={handleApplicationComplete}
                 >
-                  Create
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isEditMode ? 'Updating...' : 'Creating...'}
+                    </>
+                  ) : (
+                    isEditMode ? 'Update' : 'Create'
+                  )}
                 </Button>
               </DialogFooter>
             </form>

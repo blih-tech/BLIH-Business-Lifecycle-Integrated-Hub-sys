@@ -1,7 +1,6 @@
 import type {
   ApplicationFieldType,
   CustomApplicationField,
-  PredefinedApplicationField,
 } from "@/features/hr/recruitment/requests/application-form-schema";
 import { jobRequests } from "@/features/hr/recruitment/requests/mock-data";
 import type { FullJobRequest, JobRequestDepartment } from "@/features/hr/recruitment/requests/types";
@@ -56,44 +55,36 @@ function departmentLabel(department: JobRequestDepartment) {
   return "Digital Marketing";
 }
 
-function workModeLabel(value: FullJobRequest["jobDetailsForm"]["workMode"]) {
-  if (value === "on_site") return "On-site";
-  if (value === "hybrid") return "Hybrid";
+function workModeLabel(value: FullJobRequest["jobDetailsForm"]["workLocationType"]) {
+  if (value === "ON_SITE") return "On-site";
+  if (value === "HYBRID") return "Hybrid";
   return "Remote";
 }
 
 function employmentTypeLabel(value: FullJobRequest["jobDetailsForm"]["employmentType"]) {
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
+  if (value === "FULL_TIME") return "Full-time";
+  if (value === "PART_TIME") return "Part-time";
+  if (value === "CONTRACT") return "Contract";
   return "Intern";
 }
 
 function experienceLevelLabel(value: FullJobRequest["jobDetailsForm"]["experienceLevel"]) {
-  if (value === "entry") return "Entry Level";
-  if (value === "mid") return "Mid Level";
-  if (value === "senior") return "Senior Level";
+  if (value === "ENTRY") return "Entry Level";
+  if (value === "MID") return "Mid Level";
+  if (value === "SENIOR") return "Senior Level";
   return "Lead Level";
 }
 
 function salaryLabel(request: FullJobRequest) {
-  const { salaryMode, salaryRangeMin, salaryRangeMax, salaryCurrency } = request.jobDetailsForm;
-  if (salaryMode === "negotiable") return "Negotiable";
-  if (salaryMode === "competitive") return "Competitive";
-  if (salaryMode === "range") return `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`;
+  const { salaryMin, salaryMax, currency } = request.jobDetailsForm;
+  const salaryMode = request.jobDetailsForm.salaryMode as string;
+  if (salaryMode === "NEGOTIABLE") return "Negotiable";
+  if (salaryMode === "COMPETITIVE") return "Competitive";
+  if (salaryMode === "FIXED" && salaryMin && currency) return `${currency} ${salaryMin}`;
+  if (salaryMode === "COMPETITIVE" && salaryMin && salaryMax && currency) {
+    return `${currency} ${salaryMin} - ${salaryMax}`;
+  }
   return "Not specified";
-}
-
-function mapPredefinedField(field: PredefinedApplicationField): CareerApplicationField {
-  return {
-    id: field.key,
-    key: field.key,
-    label: field.label,
-    type: field.type,
-    required: field.required,
-    options: [],
-    source: "predefined",
-  };
 }
 
 function mapCustomField(field: CustomApplicationField): CareerApplicationField {
@@ -109,31 +100,68 @@ function mapCustomField(field: CustomApplicationField): CareerApplicationField {
   };
 }
 
+function labelFromKey(key: string) {
+  return key
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
+function applicantFieldType(key: string): ApplicationFieldType {
+  if (key.includes("RESUME") || key.includes("CV")) return "FILE";
+  if (key.includes("COVER_LETTER")) return "TEXTAREA";
+  if (key.includes("EXPECTED_SALARY") || key.includes("YEARS")) return "NUMBER";
+  if (key.includes("DATE")) return "DATE";
+  return "TEXT";
+}
+
 export function getCareerJobs(): CareerJob[] {
   return jobRequests
     .filter((request) => request.status === "posted")
     .map((request, index) => {
       const applicationFields = [
-        ...request.applicationForm.predefinedFields.filter((field) => field.enabled).map(mapPredefinedField),
+        ...request.applicationForm.applicantFields
+          .filter((field) => field.enabled)
+          .map((field) => ({
+            id: field.key,
+            key: field.key,
+            label: labelFromKey(field.key),
+            type: applicantFieldType(field.key),
+            required: field.required,
+            options: [],
+            source: "predefined" as const,
+          })),
         ...request.applicationForm.customFields.map(mapCustomField),
       ];
 
       return {
-        slug: `${slugify(request.jobDetailsForm.jobTitle)}-${index + 1}`,
+        slug: `${slugify(request.jobDetailsForm.title)}-${index + 1}`,
         requestId: requestIdLabel(index),
-        title: request.jobDetailsForm.jobTitle,
+        title: request.jobDetailsForm.title,
         department: request.requestForm.department as JobRequestDepartment,
         departmentLabel: departmentLabel(request.requestForm.department as JobRequestDepartment),
-        location: request.jobDetailsForm.location,
-        workModeLabel: workModeLabel(request.jobDetailsForm.workMode),
+        location: [request.jobDetailsForm.city, request.jobDetailsForm.country].filter(Boolean).join(", "),
+        workModeLabel: workModeLabel(request.jobDetailsForm.workLocationType),
         employmentTypeLabel: employmentTypeLabel(request.jobDetailsForm.employmentType),
         experienceLevelLabel: experienceLevelLabel(request.jobDetailsForm.experienceLevel),
-        summary: request.jobDetailsForm.jobSummary,
-        whyJoinUs: request.jobDetailsForm.whyJoinUs || undefined,
-        keyResponsibilities: request.jobDetailsForm.keyResponsibilities,
-        requirements: request.jobDetailsForm.requirements,
-        preferredSkills: request.jobDetailsForm.preferredSkills,
-        benefits: request.jobDetailsForm.benefits,
+        summary: request.jobDetailsForm.summary || request.jobDetailsForm.description,
+        whyJoinUs: request.jobDetailsForm.summary || undefined,
+        keyResponsibilities: (request.jobDetailsForm.responsibilities ?? "")
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
+        requirements: (request.jobDetailsForm.requiredSkills ?? "")
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
+        preferredSkills: (request.jobDetailsForm.preferredSkills ?? "")
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
+        benefits: (request.jobDetailsForm.benefits ?? "")
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
         salaryLabel: salaryLabel(request),
         applicationFields,
         request,

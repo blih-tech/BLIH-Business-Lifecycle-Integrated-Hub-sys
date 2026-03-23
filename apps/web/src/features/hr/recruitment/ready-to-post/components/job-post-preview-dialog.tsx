@@ -51,15 +51,15 @@ function departmentLabel(department: ReadyToPostDepartment) {
 function employmentTypeLabel(
   value: ReadyToPostJob["jobDetailsForm"]["employmentType"],
 ) {
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
+  if (value === "FULL_TIME") return "Full-time";
+  if (value === "PART_TIME") return "Part-time";
+  if (value === "CONTRACT") return "Contract";
   return "Intern";
 }
 
 function urgencyLabel(value: ReadyToPostJob["requestForm"]["urgency"]) {
-  if (value === "high") return "High";
-  if (value === "medium") return "Medium";
+  if (value === "HIGH") return "High";
+  if (value === "MEDIUM") return "Medium";
   return "Low";
 }
 
@@ -167,7 +167,7 @@ export function JobPostPreviewDialog({
       item
         ? [
             {
-              name: item.requestForm.requestedBy,
+              name: item.requestForm.requestedBy ?? "Request Owner",
               role: formatValue(item.requestForm.position),
               department: departmentLabel(
                 item.requestForm.department as ReadyToPostDepartment,
@@ -233,7 +233,7 @@ export function JobPostPreviewDialog({
                 <div className="min-w-0 flex-1 space-y-4">
                   <div className="flex flex-wrap items-center gap-4">
                     <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-                      {item.jobDetailsForm.jobTitle}
+                      {item.jobDetailsForm.title}
                     </DialogTitle>
                     <Badge
                       variant="outline"
@@ -300,7 +300,7 @@ export function JobPostPreviewDialog({
                   <div className="space-y-2">
                     <p className="text-[12px] text-[#666]">Requested By</p>
                     <EmployeeCard
-                      name={item.requestForm.requestedBy}
+                      name={item.requestForm.requestedBy ?? "Request Owner"}
                       role={formatValue(item.requestForm.position)}
                       department={departmentLabel(
                         item.requestForm.department as ReadyToPostDepartment,
@@ -318,14 +318,19 @@ export function JobPostPreviewDialog({
                       Job Overview
                     </p>
                     <DialogDescription className="text-sm leading-5 text-[#666]">
-                      {item.jobDetailsForm.jobSummary}
+                      {item.jobDetailsForm.description}
                     </DialogDescription>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
                       Requirements
                     </p>
-                    <BulletList items={item.jobDetailsForm.requirements} />
+                    <BulletList
+                      items={(item.jobDetailsForm.requiredSkills ?? "")
+                        .split("\n")
+                        .map((itemText) => itemText.trim())
+                        .filter(Boolean)}
+                    />
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -333,7 +338,12 @@ export function JobPostPreviewDialog({
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
                       Qualifications
                     </p>
-                    <BulletList items={item.jobDetailsForm.keyResponsibilities} />
+                    <BulletList
+                      items={(item.jobDetailsForm.responsibilities ?? "")
+                        .split("\n")
+                        .map((itemText) => itemText.trim())
+                        .filter(Boolean)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
@@ -342,9 +352,9 @@ export function JobPostPreviewDialog({
                     <p className="text-sm leading-5 text-[#666]">
                       {item.requestForm.businessJustification}
                     </p>
-                    {item.jobDetailsForm.whyJoinUs ? (
+                    {item.jobDetailsForm.summary ? (
                       <p className="text-sm leading-5 text-[#666]">
-                        {item.jobDetailsForm.whyJoinUs}
+                        {item.jobDetailsForm.summary}
                       </p>
                     ) : null}
                   </div>
