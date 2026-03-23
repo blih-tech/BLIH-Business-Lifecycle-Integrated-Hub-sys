@@ -387,6 +387,12 @@ deploy() {
 # Rollback on failure
 handle_failure() {
   log_error "Deployment failed, attempting automatic rollback..."
+
+  # Print all container logs BEFORE cleanup so the CI log shows the root cause
+  log_step "=== CONTAINER LOGS (last 150 lines each) ==="
+  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --no-color --tail=150 2>/dev/null || true
+  log_step "=== END CONTAINER LOGS ==="
+
   rollback || true
   cleanup_docker_resources
   docker logout ghcr.io >/dev/null 2>&1 || true
