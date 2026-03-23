@@ -15,6 +15,7 @@ export const AUTH_COOKIE_NAMES = {
   access: 'kc_access',
   refresh: 'kc_refresh',
   id: 'kc_id',
+  frontend_origin: 'kc_frontend_origin',
 } as const;
 
 export type AuthCookieSameSite = 'lax' | 'strict' | 'none';
@@ -339,37 +340,85 @@ export function buildDynamicFrontendRedirectUrl(
   path: string,
   allowedOrigins: string[],
 ): string {
-  // Extract origin from request headers
-  const origin =
-    (request.headers.origin as string) ||
-    (request.headers.referer
-      ? new URL(request.headers.referer as string).origin
-      : undefined);
-
-  // Fallback to configured base URL if no origin found
-  if (!origin) {
-    return new URL(
-      path,
-      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
-    ).toString();
-  }
-
-  // Validate origin against allowed origins
-  const isAllowed = allowedOrigins.some((allowed) => {
-    if (allowed === '*') return true;
-    return origin === allowed || origin.startsWith(`${allowed}/`);
-  });
-
-  if (!isAllowed) {
-    // Fallback to configured base URL for security
-    return new URL(
-      path,
-      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
-    ).toString();
-  }
+  // Enhanced origin inference with priority hierarchy
+  const origin = inferFrontendOrigin(request, allowedOrigins);
 
   // Use request origin for redirect
   return new URL(path, origin).toString();
+}
+
+export function inferFrontendOrigin(
+  request: Request,
+  allowedOrigins: string[],
+): string {
+  // Priority 1: Referer header (most reliable for direct navigation)
+  let origin: string | undefined;
+
+  if (request.headers.referer) {
+    try {
+      const refererUrl = new URL(request.headers.referer as string);
+      origin = refererUrl.origin;
+    } catch {
+      // Invalid referer, continue to next method
+    }
+  }
+
+  // Priority 2: Forwarded headers (for proxy/load balancer scenarios)
+  if (!origin) {
+    const forwardedProto = request.headers['x-forwarded-proto'] as string;
+    const forwardedHost = request.headers['x-forwarded-host'] as string;
+
+    if (forwardedProto && forwardedHost) {
+      origin = `${forwardedProto}://${forwardedHost}`;
+    }
+  }
+
+  // Priority 3: Origin header (for CORS requests)
+  if (!origin && request.headers.origin) {
+    origin = request.headers.origin as string;
+  }
+
+  // Priority 4: Host header (fallback for direct requests)
+  if (!origin && request.headers.host) {
+    const protocol = (request.headers['x-forwarded-proto'] as string) || 'http';
+    origin = `${protocol}://${request.headers.host}`;
+  }
+
+  // Validate origin against allowed origins
+  if (origin && isOriginAllowed(origin, allowedOrigins)) {
+    return origin;
+  }
+
+  // Fallback to configured base URL for security
+  return process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000';
+}
+
+export function isOriginAllowed(
+  origin: string,
+  allowedOrigins: string[],
+): boolean {
+  return allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+
+    // Exact match
+    if (origin === allowed) return true;
+
+    // Subdomain match (e.g., https://app.example.com matches https://example.com)
+    if (allowed.startsWith('https://')) {
+      const allowedDomain = allowed.replace('https://', '');
+      const originDomain = origin.replace('https://', '');
+
+      if (
+        originDomain === allowedDomain ||
+        originDomain.endsWith(`.${allowedDomain}`)
+      ) {
+        return true;
+      }
+    }
+
+    // Prefix match for development scenarios
+    return origin.startsWith(`${allowed}/`);
+  });
 }
 
 function normalizeRedirectPath(path: string | undefined): string | undefined {

@@ -61,6 +61,8 @@ import {
   buildReadableCookieOptions,
   createCsrfToken,
   createOidcAuthRequestContext,
+  inferFrontendOrigin,
+  isOriginAllowed,
   parseAllowedRedirectPathPrefixes,
   readCookie,
   resolveSafeRedirectPath,
@@ -174,6 +176,17 @@ export class AuthController {
       transientCookieMaxAge,
     );
 
+    // Infer and store frontend origin for callback redirect
+    const inferredOrigin = inferFrontendOrigin(
+      request,
+      this.getAllowedOrigins(),
+    );
+    response.cookie(
+      AUTH_COOKIE_NAMES.frontend_origin,
+      inferredOrigin,
+      cookieOptions,
+    );
+
     response.cookie(AUTH_COOKIE_NAMES.state, authRequest.state, cookieOptions);
     if (authRequest.codeVerifier) {
       response.cookie(
@@ -250,6 +263,10 @@ export class AuthController {
     const storedState = readCookie(request, AUTH_COOKIE_NAMES.state);
     const codeVerifier = readCookie(request, AUTH_COOKIE_NAMES.verifier);
     const storedNonce = readCookie(request, AUTH_COOKIE_NAMES.nonce);
+    const storedFrontendOrigin = readCookie(
+      request,
+      AUTH_COOKIE_NAMES.frontend_origin,
+    );
     const requestedRedirectPath = readCookie(
       request,
       AUTH_COOKIE_NAMES.redirect,
@@ -359,10 +376,15 @@ export class AuthController {
         env.AUTH_POST_LOGIN_REDIRECT_URI,
         allowedRedirectPrefixes,
       );
-      response.redirect(
-        302,
-        this.buildFrontendRedirect(successRedirectPath, request),
+
+      // Use stored frontend origin for redirect, fallback to dynamic inference
+      const redirectUrl = this.buildOriginPreservingRedirect(
+        successRedirectPath,
+        request,
+        storedFrontendOrigin,
       );
+
+      response.redirect(302, redirectUrl);
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
         this.clearTransientCookies(response);
@@ -903,6 +925,7 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.verifier, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.redirect, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.nonce, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.frontend_origin, clearOptions);
   }
 
   private clearAuthCookies(response: Response): void {
@@ -953,6 +976,24 @@ export class AuthController {
       return buildDynamicFrontendRedirectUrl(request, path, allowedOrigins);
     }
     return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
+  }
+
+  private buildOriginPreservingRedirect(
+    path: string,
+    request: Request,
+    storedFrontendOrigin?: string,
+  ): string {
+    // Use stored origin if available, otherwise fallback to dynamic inference
+    if (storedFrontendOrigin) {
+      // Validate stored origin against allowed origins
+      const allowedOrigins = this.getAllowedOrigins();
+      if (isOriginAllowed(storedFrontendOrigin, allowedOrigins)) {
+        return new URL(path, storedFrontendOrigin).toString();
+      }
+    }
+
+    // Fallback to dynamic inference
+    return this.buildFrontendRedirect(path, request);
   }
 
   private logAuthEvent(
