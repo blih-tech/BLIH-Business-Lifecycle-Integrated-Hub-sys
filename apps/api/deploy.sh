@@ -256,18 +256,20 @@ stop_existing_services() {
   # Explicitly remove the compose network so all port bindings are released by the kernel
   docker network rm "${COMPOSE_PROJECT_NAME}_default" >/dev/null 2>&1 || true
 
-  # Wait until the Keycloak host port is actually free before proceeding.
+  # Wait until all bound host ports are actually free before proceeding.
   # Docker's network teardown can take a few seconds after container removal.
-  local kc_port="${KEYCLOAK_PORT:-8180}"
-  local waited=0
-  while ss -tlnp 2>/dev/null | grep -q ":${kc_port} "; do
-    if [[ $waited -ge 30 ]]; then
-      log_error "Port ${kc_port} is still allocated after 30 s. Check for other services using it."
-      exit 1
-    fi
-    log_warn "Port ${kc_port} still bound, waiting... (${waited}s)"
-    sleep 3
-    waited=$((waited + 3))
+  local port waited
+  for port in "${KEYCLOAK_PORT:-8180}" "${API_PORT:-5000}"; do
+    waited=0
+    while ss -tlnp 2>/dev/null | grep -q ":${port} "; do
+      if [[ $waited -ge 30 ]]; then
+        log_error "Port ${port} is still allocated after 30 s. Check for other services using it."
+        exit 1
+      fi
+      log_warn "Port ${port} still bound, waiting... (${waited}s)"
+      sleep 3
+      waited=$((waited + 3))
+    done
   done
 
   log_info "Existing services stopped and ports released"
