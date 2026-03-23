@@ -297,6 +297,12 @@ deploy() {
   export API_MIGRATOR_IMAGE
   export KEYCLOAK_IMAGE
   
+  # Remove all unused images to reclaim disk space before pulling new release.
+  # All containers were stopped above, so no BLIH images are in use.
+  log_step "Pruning unused images to free disk space..."
+  docker image prune -af >/dev/null 2>&1 || true
+  log_info "Unused images pruned"
+
   # Pull the migrator explicitly because it runs outside Compose.
   log_step "Pulling release images..."
   docker pull "$API_MIGRATOR_IMAGE"
