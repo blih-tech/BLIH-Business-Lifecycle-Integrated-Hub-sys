@@ -115,7 +115,7 @@ describe('AppController (e2e)', () => {
     process.env.AUTH_STATE_TTL_SECONDS = '600';
     process.env.AUTH_REFRESH_TOKEN_TTL_SECONDS = '2592000';
     process.env.AUTH_COOKIE_HTTP_ONLY = 'true';
-    process.env.AUTH_COOKIE_SECURE = 'false';
+    process.env.AUTH_COOKIE_SECURE = 'true';
     process.env.AUTH_COOKIE_DOMAIN = '';
     process.env.AUTH_COOKIE_PATH = '/';
     process.env.AUTH_COOKIE_SAME_SITE = 'lax';
@@ -241,7 +241,16 @@ describe('AppController (e2e)', () => {
     expect(authorizationUrl.searchParams.get('prompt')).toBe('login');
 
     const cookies = response.headers['set-cookie'];
-    expect(getCookie(cookies, 'kc_state')).toBeDefined();
+    const kcState = getCookie(cookies, 'kc_state');
+    const kcFrontendOrigin = getCookie(cookies, 'kc_frontend_origin');
+
+    expect(kcState).toBeDefined();
+    expect(kcFrontendOrigin).toBeDefined();
+    // Request is plain HTTP in these tests; transient cookies must not be marked `Secure`
+    // or they won't be sent back during the callback.
+    expect(kcState).not.toContain('Secure');
+    expect(kcFrontendOrigin).not.toContain('Secure');
+
     expect(getCookie(cookies, 'kc_verifier')).toBeDefined();
     expect(getCookie(cookies, 'kc_redirect')).toBeDefined();
     expect(getCookie(cookies, 'kc_nonce')).toBeDefined();

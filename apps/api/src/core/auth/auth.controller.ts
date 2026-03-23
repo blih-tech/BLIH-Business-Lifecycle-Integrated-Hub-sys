@@ -55,15 +55,16 @@ import {
   buildAuthorizeUrl,
   buildClearCookieOptions,
   buildCookieOptions,
+  buildDynamicFrontendRedirectUrl,
   buildEndSessionUrl,
   buildFrontendRedirectUrl,
-  buildPreferredFrontendRedirectUrl,
   buildReadableCookieOptions,
   createCsrfToken,
   createOidcAuthRequestContext,
+  inferFrontendOrigin,
+  isOriginAllowed,
   parseAllowedRedirectPathPrefixes,
   readCookie,
-  resolveAllowedFrontendOrigin,
   resolveSafeRedirectPath,
 } from './utils/oidc.util';
 
@@ -108,6 +109,13 @@ export class AuthController {
     description: 'Optional OIDC prompt forwarded to Keycloak.',
     example: 'login',
   })
+  @ApiQuery({
+    name: 'frontendOrigin',
+    required: false,
+    description:
+      'Optional absolute frontend origin (e.g. `http://localhost:3000`) used to build the post-login redirect. Must be an allowed origin.',
+    example: 'http://localhost:3000',
+  })
   @ApiResponse({
     status: 302,
     description: 'Redirects browser to Keycloak authorization endpoint.',
@@ -129,6 +137,7 @@ export class AuthController {
     @Query('successRedirect')
     successRedirectPath: AuthLoginQueryDtoType['successRedirect'] | undefined,
     @Query('prompt') prompt: AuthLoginQueryDtoType['prompt'] | undefined,
+    @Query('frontendOrigin') frontendOrigin: string | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
@@ -172,10 +181,23 @@ export class AuthController {
 
     const transientCookieMaxAge = env.AUTH_STATE_TTL_SECONDS * 1000;
     const cookieOptions = buildCookieOptions(
-      this.getCookieSettings(),
+      this.getCookieSettings(request),
       transientCookieMaxAge,
     );
-    const frontendOrigin = this.resolveFrontendOrigin(request, allowedOrigins);
+
+    // Infer and store frontend origin for callback redirect
+    const safeClientOrigin =
+      frontendOrigin && isOriginAllowed(frontendOrigin, allowedOrigins)
+        ? frontendOrigin
+        : undefined;
+
+    const inferredOrigin =
+      safeClientOrigin ?? inferFrontendOrigin(request, allowedOrigins);
+    response.cookie(
+      AUTH_COOKIE_NAMES.frontend_origin,
+      inferredOrigin,
+      cookieOptions,
+    );
 
     response.cookie(AUTH_COOKIE_NAMES.state, authRequest.state, cookieOptions);
     if (authRequest.codeVerifier) {
@@ -268,7 +290,7 @@ export class AuthController {
     const storedNonce = readCookie(request, AUTH_COOKIE_NAMES.nonce);
     const storedFrontendOrigin = readCookie(
       request,
-      AUTH_COOKIE_NAMES.frontendOrigin,
+      AUTH_COOKIE_NAMES.frontend_origin,
     );
     const requestedRedirectPath = readCookie(
       request,
@@ -279,11 +301,7 @@ export class AuthController {
       env.AUTH_LOGIN_ERROR_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
-    const loginErrorUrl = this.buildFrontendRedirect(
-      loginErrorPath,
-      request,
-      storedFrontendOrigin,
-    );
+    const loginErrorUrl = this.buildFrontendRedirect(loginErrorPath, request);
 
     if (
       !code ||
@@ -293,7 +311,7 @@ export class AuthController {
       (env.AUTH_PKCE_ENABLED && !codeVerifier) ||
       (env.AUTH_NONCE_ENABLED && !storedNonce)
     ) {
-      this.clearTransientCookies(response);
+      this.clearTransientCookies(request, response);
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_FAILURE, {
         reason: 'invalid_state_or_missing_cookie',
       });
@@ -334,7 +352,7 @@ export class AuthController {
         AUTH_COOKIE_NAMES.access,
         tokenResponse.access_token,
         buildCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (tokenResponse.expires_in ?? 300) * 1000,
         ),
       );
@@ -343,7 +361,7 @@ export class AuthController {
         AUTH_COOKIE_NAMES.refresh,
         tokenResponse.refresh_token,
         buildCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (tokenResponse.refresh_expires_in ??
             env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
         ),
@@ -352,7 +370,7 @@ export class AuthController {
         AUTH_COOKIE_NAMES.id,
         tokenResponse.id_token,
         buildCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (tokenResponse.refresh_expires_in ??
             tokenResponse.expires_in ??
             env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
@@ -362,29 +380,13 @@ export class AuthController {
         AUTH_COOKIE_NAMES.csrf,
         csrfToken,
         buildReadableCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (tokenResponse.refresh_expires_in ??
             env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
         ),
       );
-      const preferredOrigin = this.resolveFrontendOrigin(
-        request,
-        this.getAllowedOrigins(),
-        storedFrontendOrigin,
-      );
-      if (preferredOrigin) {
-        response.cookie(
-          AUTH_COOKIE_NAMES.frontendOrigin,
-          preferredOrigin,
-          buildCookieOptions(
-            this.getCookieSettings(),
-            (tokenResponse.refresh_expires_in ??
-              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
-          ),
-        );
-      }
 
-      this.clearTransientCookies(response);
+      this.clearTransientCookies(request, response);
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_TOKEN_EXCHANGE_SUCCESS, {
         hasRefreshToken: Boolean(tokenResponse.refresh_token),
         hasIdToken: Boolean(tokenResponse.id_token),
@@ -400,28 +402,18 @@ export class AuthController {
         allowedRedirectPrefixes,
       );
 
-      // Enhanced logging for debugging redirect issues
-      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS, {
-        subject: validatedIdToken.sub,
-        requestedRedirectPath,
-        successRedirectPath,
-        storedFrontendOrigin,
-        frontendBaseUrl: env.AUTH_FRONTEND_BASE_URL,
-        allowedOrigins: this.getAllowedOrigins(),
-      });
-
-      const finalRedirectUrl = this.buildFrontendRedirect(
+      // Use stored frontend origin for redirect, fallback to dynamic inference
+      const redirectUrl = this.buildOriginPreservingRedirect(
         successRedirectPath,
         request,
         storedFrontendOrigin,
       );
-      this.logger.log(`Final redirect URL: ${finalRedirectUrl}`);
 
-      response.redirect(302, finalRedirectUrl);
+      response.redirect(302, redirectUrl);
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
-        this.clearTransientCookies(response);
-        this.clearAuthCookies(response);
+        this.clearTransientCookies(request, response);
+        this.clearAuthCookies(request, response);
         this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_FAILURE, {
           reason: error.reason,
         });
@@ -432,7 +424,7 @@ export class AuthController {
         return;
       }
 
-      this.clearTransientCookies(response);
+      this.clearTransientCookies(request, response);
 
       const keycloakError = this.extractKeycloakErrorCode(error);
       const errorCode =
@@ -487,10 +479,7 @@ export class AuthController {
     const accessToken = readCookie(request, AUTH_COOKIE_NAMES.access);
     const refreshToken = readCookie(request, AUTH_COOKIE_NAMES.refresh);
     const idToken = readCookie(request, AUTH_COOKIE_NAMES.id);
-    const storedFrontendOrigin = readCookie(
-      request,
-      AUTH_COOKIE_NAMES.frontendOrigin,
-    );
+
     const safePostLogoutPath = resolveSafeRedirectPath(
       redirectPath,
       env.AUTH_POST_LOGOUT_REDIRECT_URI,
@@ -499,7 +488,6 @@ export class AuthController {
     const postLogoutRedirectUrl = this.buildFrontendRedirect(
       safePostLogoutPath,
       request,
-      storedFrontendOrigin,
     );
     const subject = await this.resolveSubjectFromAccessToken(accessToken);
 
@@ -519,8 +507,8 @@ export class AuthController {
       }
     }
 
-    this.clearAuthCookies(response);
-    this.clearTransientCookies(response);
+    this.clearAuthCookies(request, response);
+    this.clearTransientCookies(request, response);
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGOUT, {
       hasIdToken: Boolean(idToken),
       subject,
@@ -763,7 +751,7 @@ export class AuthController {
       );
     } catch (error) {
       if (isBrowserCookieMode) {
-        this.clearAuthCookies(response);
+        this.clearAuthCookies(request, response);
         this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_REFRESH_FAILURE, {
           reason: 'refresh_request_failed',
         });
@@ -773,7 +761,7 @@ export class AuthController {
 
     if (isBrowserCookieMode) {
       if (!refreshed.refresh_token) {
-        this.clearAuthCookies(response);
+        this.clearAuthCookies(request, response);
         this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_REFRESH_FAILURE, {
           reason: 'missing_replacement_refresh_token',
         });
@@ -787,7 +775,7 @@ export class AuthController {
         AUTH_COOKIE_NAMES.access,
         refreshed.access_token,
         buildCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (refreshed.expires_in ?? 300) * 1000,
         ),
       );
@@ -795,7 +783,7 @@ export class AuthController {
         AUTH_COOKIE_NAMES.refresh,
         refreshed.refresh_token,
         buildCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (refreshed.refresh_expires_in ?? env.AUTH_REFRESH_TOKEN_TTL_SECONDS) *
             1000,
         ),
@@ -806,7 +794,7 @@ export class AuthController {
           AUTH_COOKIE_NAMES.id,
           refreshed.id_token,
           buildCookieOptions(
-            this.getCookieSettings(),
+            this.getCookieSettings(request),
             (refreshed.refresh_expires_in ??
               refreshed.expires_in ??
               env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
@@ -815,14 +803,14 @@ export class AuthController {
       } else {
         response.clearCookie(
           AUTH_COOKIE_NAMES.id,
-          buildClearCookieOptions(this.getCookieSettings()),
+          buildClearCookieOptions(this.getCookieSettings(request)),
         );
       }
       response.cookie(
         AUTH_COOKIE_NAMES.csrf,
         csrfToken,
         buildReadableCookieOptions(
-          this.getCookieSettings(),
+          this.getCookieSettings(request),
           (refreshed.refresh_expires_in ?? env.AUTH_REFRESH_TOKEN_TTL_SECONDS) *
             1000,
         ),
@@ -956,18 +944,23 @@ export class AuthController {
     };
   }
 
-  private clearTransientCookies(response: Response): void {
-    const clearOptions = buildClearCookieOptions(this.getCookieSettings());
+  private clearTransientCookies(request: Request, response: Response): void {
+    const clearOptions = buildClearCookieOptions(
+      this.getCookieSettings(request),
+    );
 
     response.clearCookie(AUTH_COOKIE_NAMES.state, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.verifier, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.redirect, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.nonce, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.frontend_origin, clearOptions);
   }
 
-  private clearAuthCookies(response: Response): void {
-    const clearOptions = buildClearCookieOptions(this.getCookieSettings());
-    const clearReadableOptions = this.getReadableCookieClearOptions();
+  private clearAuthCookies(request: Request, response: Response): void {
+    const clearOptions = buildClearCookieOptions(
+      this.getCookieSettings(request),
+    );
+    const clearReadableOptions = this.getReadableCookieClearOptions(request);
 
     response.clearCookie(AUTH_COOKIE_NAMES.access, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.refresh, clearOptions);
@@ -976,19 +969,44 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.csrf, clearReadableOptions);
   }
 
-  private getCookieSettings(): AuthCookieSettings {
+  private requestIsEffectivelySecure(request?: Request): boolean {
+    // If no request context is available, preserve legacy behavior.
+    if (!request) {
+      return true;
+    }
+
+    // Express sets `req.secure` when the connection is TLS.
+    if (request.secure) {
+      return true;
+    }
+
+    // When behind a reverse proxy, use the forwarded scheme.
+    const forwardedProtoHeader = request.headers['x-forwarded-proto'];
+    const forwardedProto = Array.isArray(forwardedProtoHeader)
+      ? forwardedProtoHeader[0]
+      : forwardedProtoHeader;
+
+    if (!forwardedProto) {
+      return false;
+    }
+
+    return forwardedProto.split(',')[0].trim().toLowerCase() === 'https';
+  }
+
+  private getCookieSettings(request?: Request): AuthCookieSettings {
     return {
       httpOnly: env.AUTH_COOKIE_HTTP_ONLY,
-      secure: env.AUTH_COOKIE_SECURE,
+      secure:
+        env.AUTH_COOKIE_SECURE && this.requestIsEffectivelySecure(request),
       sameSite: env.AUTH_COOKIE_SAME_SITE,
       domain: env.AUTH_COOKIE_DOMAIN || undefined,
       path: env.AUTH_COOKIE_PATH,
     };
   }
 
-  private getReadableCookieClearOptions() {
+  private getReadableCookieClearOptions(request?: Request) {
     return {
-      ...buildClearCookieOptions(this.getCookieSettings()),
+      ...buildClearCookieOptions(this.getCookieSettings(request)),
       httpOnly: false,
     };
   }
@@ -1008,61 +1026,30 @@ export class AuthController {
     return corsOrigin.split(',').map((origin) => origin.trim());
   }
 
-  private buildFrontendRedirect(
-    path: string,
-    request?: Request,
-    storedFrontendOrigin?: string,
-  ): string {
-    if (!request) {
-      return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
+  private buildFrontendRedirect(path: string, request?: Request): string {
+    if (request) {
+      const allowedOrigins = this.getAllowedOrigins();
+      return buildDynamicFrontendRedirectUrl(request, path, allowedOrigins);
     }
-
-    return buildPreferredFrontendRedirectUrl(
-      path,
-      this.resolveFrontendOrigin(
-        request,
-        this.getAllowedOrigins(),
-        storedFrontendOrigin,
-      ),
-      env.AUTH_FRONTEND_BASE_URL,
-      this.getAllowedOrigins(),
-    );
+    return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
   }
 
-  private resolveFrontendOrigin(
+  private buildOriginPreservingRedirect(
+    path: string,
     request: Request,
-    allowedOrigins: string[],
-    preferredOrigin?: string,
-  ): string | undefined {
-    return (
-      resolveAllowedFrontendOrigin(preferredOrigin, allowedOrigins) ??
-      resolveAllowedFrontendOrigin(
-        request.headers.origin as string,
-        allowedOrigins,
-      ) ??
-      resolveAllowedFrontendOrigin(
-        request.headers.referer as string,
-        allowedOrigins,
-      ) ??
-      resolveAllowedFrontendOrigin(
-        request.headers['x-forwarded-proto'] &&
-          request.headers['x-forwarded-host']
-          ? `${request.headers['x-forwarded-proto']}://${request.headers['x-forwarded-host']}`
-          : undefined,
-        allowedOrigins,
-      ) ??
-      resolveAllowedFrontendOrigin(
-        typeof request.headers.host === 'string'
-          ? `${
-              request.headers.host.includes('localhost') ||
-              request.headers.host.includes('127.0.0.1')
-                ? 'http'
-                : 'https'
-            }://${request.headers.host}`
-          : undefined,
-        allowedOrigins,
-      )
-    );
+    storedFrontendOrigin?: string,
+  ): string {
+    // Use stored origin if available, otherwise fallback to dynamic inference
+    if (storedFrontendOrigin) {
+      // Validate stored origin against allowed origins
+      const allowedOrigins = this.getAllowedOrigins();
+      if (isOriginAllowed(storedFrontendOrigin, allowedOrigins)) {
+        return new URL(path, storedFrontendOrigin).toString();
+      }
+    }
+
+    // Fallback to dynamic inference
+    return this.buildFrontendRedirect(path, request);
   }
 
   private logAuthEvent(

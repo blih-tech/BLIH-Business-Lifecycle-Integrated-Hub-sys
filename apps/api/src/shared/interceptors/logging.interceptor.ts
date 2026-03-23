@@ -6,7 +6,7 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -21,13 +21,20 @@ export class LoggingInterceptor implements NestInterceptor {
       .getRequest<
         Request & { method?: string; url?: string; body?: unknown }
       >();
+    const response = context.switchToHttp().getResponse<Response>();
     const start = Date.now();
+
+    // Browser-sent origin info (no manual frontend setup needed)
+    const origin = request.get('origin') ?? request.get('referer') ?? 'unknown';
+    const ip = request.ip ?? request.get('x-forwarded-for') ?? 'unknown';
+    const userAgent = request.get('user-agent') ?? 'unknown';
 
     // Only log verbose details if explicitly enabled
     const verboseLogging = this.configService.get<boolean>(
       'VERBOSE_REQUEST_LOGGING',
       false,
     );
+
     if (verboseLogging) {
       const requestLog: Record<string, unknown> = {
         requestType: 'INCOMING',
@@ -37,6 +44,9 @@ export class LoggingInterceptor implements NestInterceptor {
         query: request.query,
         headers: request.headers,
         body: request.body,
+        origin,
+        ip,
+        userAgent,
       };
       console.log(
         '[LoggingInterceptor] INCOMING REQUEST',
@@ -45,11 +55,19 @@ export class LoggingInterceptor implements NestInterceptor {
     }
 
     return next.handle().pipe(
-      tap(() => {
-        const duration = Date.now() - start;
-        this.logger.log(
-          `${request.method ?? 'UNKNOWN'} ${request.url ?? 'UNKNOWN'} - ${duration}ms`,
-        );
+      tap({
+        next: () => {
+          const duration = Date.now() - start;
+          this.logger.log(
+            `${request.method ?? 'UNKNOWN'} ${request.url ?? 'UNKNOWN'} ${response.statusCode} - ${duration}ms | from=${origin} | ip=${ip}`,
+          );
+        },
+        error: (error: Error) => {
+          const duration = Date.now() - start;
+          this.logger.error(
+            `${request.method ?? 'UNKNOWN'} ${request.url ?? 'UNKNOWN'} FAILED - ${duration}ms | from=${origin} | ip=${ip} | error=${error.message}`,
+          );
+        },
       }),
     );
   }

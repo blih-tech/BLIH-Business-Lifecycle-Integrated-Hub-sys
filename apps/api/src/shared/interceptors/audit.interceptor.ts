@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -33,6 +34,8 @@ interface ResponseWithStatusCode {
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(AuditInterceptor.name);
+
   constructor(
     private readonly reflector: Reflector,
     private readonly prisma: PrismaService,
@@ -108,26 +111,42 @@ export class AuditInterceptor implements NestInterceptor {
         : undefined;
     const after = this.normalizeAfterState(outcome.responseData, request.body);
 
-    await this.prisma.auditLog.create({
-      data: {
-        action: metadata.action,
-        module: metadata.resource.split('.')[0] ?? 'core',
-        resource: metadata.resource,
-        resourceId: request[AUDIT_RESOURCE_ID] ?? undefined,
-        actorUserId: request.user?.sub,
-        actorEmail: request.user?.email,
-        requestId: context.requestId,
-        correlationId: context.requestId,
-        sessionId: undefined,
-        ipAddress: context.ipAddress,
-        userAgent: context.userAgent,
-        result: outcome.result,
-        statusCode: outcome.statusCode,
-        metadata: metadataPayload as Prisma.InputJsonValue,
-        before,
-        after,
-      },
-    });
+    try {
+      await this.prisma.auditLog.create({
+        data: {
+          action: metadata.action,
+          module: metadata.resource.split('.')[0] ?? 'core',
+          resource: metadata.resource,
+          resourceId: request[AUDIT_RESOURCE_ID] ?? undefined,
+          actorUserId: request.user?.sub,
+          actorEmail: request.user?.email,
+          requestId: context.requestId,
+          correlationId: context.requestId,
+          sessionId: undefined,
+          ipAddress: context.ipAddress,
+          userAgent: context.userAgent,
+          result: outcome.result,
+          statusCode: outcome.statusCode,
+          metadata: metadataPayload as Prisma.InputJsonValue,
+          before,
+          after,
+        },
+      });
+    } catch (error: unknown) {
+      // Audit persistence must never break authentication flows.
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Unknown audit persistence error';
+
+      const code = (error as { code?: string })?.code;
+      const isDbDown =
+        code === 'P1001' || message.toLowerCase().includes('database');
+
+      this.logger.warn(
+        `Audit persistence skipped (${isDbDown ? 'db_unreachable' : 'unknown'}): ${message}`,
+      );
+    }
   }
 
   private normalizeAfterState(
