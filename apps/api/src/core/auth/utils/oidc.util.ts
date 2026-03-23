@@ -11,6 +11,7 @@ export const AUTH_COOKIE_NAMES = {
   verifier: 'kc_verifier',
   redirect: 'kc_redirect',
   nonce: 'kc_nonce',
+  frontendOrigin: 'kc_frontend_origin',
   csrf: 'kc_csrf',
   access: 'kc_access',
   refresh: 'kc_refresh',
@@ -334,38 +335,45 @@ export function buildFrontendRedirectUrl(
   return new URL(path, frontendBaseUrl).toString();
 }
 
+export function resolveAllowedFrontendOrigin(
+  origin: string | undefined,
+  allowedOrigins: string[],
+): string | undefined {
+  if (!origin || !isValidOrigin(origin)) {
+    return undefined;
+  }
+
+  const normalizedOrigin = new URL(origin).origin;
+  return validateOriginAgainstAllowed(normalizedOrigin, allowedOrigins)
+    ? normalizedOrigin
+    : undefined;
+}
+
+export function buildPreferredFrontendRedirectUrl(
+  path: string,
+  preferredOrigin: string | undefined,
+  fallbackFrontendBaseUrl: string,
+  allowedOrigins: string[],
+): string {
+  const resolvedOrigin = resolveAllowedFrontendOrigin(
+    preferredOrigin,
+    allowedOrigins,
+  );
+
+  return new URL(path, resolvedOrigin ?? fallbackFrontendBaseUrl).toString();
+}
+
 export function buildDynamicFrontendRedirectUrl(
   request: Request,
   path: string,
   allowedOrigins: string[],
 ): string {
-  // Extract origin using header priority hierarchy
-  const detectedOrigin = extractOriginFromRequest(request);
-
-  // If no origin detected, use fallback
-  if (!detectedOrigin) {
-    return new URL(
-      path,
-      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
-    ).toString();
-  }
-
-  // Validate origin against allowed origins
-  const isAllowed = validateOriginAgainstAllowed(
-    detectedOrigin,
+  return buildPreferredFrontendRedirectUrl(
+    path,
+    extractOriginFromRequest(request),
+    process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
     allowedOrigins,
   );
-
-  if (!isAllowed) {
-    // Fallback to configured base URL for security
-    return new URL(
-      path,
-      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
-    ).toString();
-  }
-
-  // Use detected origin for redirect (preserving exact origin)
-  return new URL(path, detectedOrigin).toString();
 }
 
 export function extractOriginFromRequest(request: Request): string | undefined {

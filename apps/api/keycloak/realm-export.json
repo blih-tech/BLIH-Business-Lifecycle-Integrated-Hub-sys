@@ -29,8 +29,7 @@
       "webOrigins": [
         "https://project-k22it.vercel.app",
         "http://localhost:3000",
-        "https://blihapi.blihmarketing.com",
-        "+"
+        "https://blihapi.blihmarketing.com"
       ],
       "defaultClientScopes": [
         "openid",
