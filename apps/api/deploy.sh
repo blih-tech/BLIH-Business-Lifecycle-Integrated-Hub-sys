@@ -243,7 +243,22 @@ cleanup_docker_resources() {
 
 stop_existing_services() {
   log_step "Stopping existing services to release ports..."
-  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --timeout 30 || true
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --remove-orphans --timeout 30 || true
+
+  # Force-remove any lingering containers from this project that compose down may have missed
+  local lingering
+  lingering=$(docker ps -a --filter "label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}" -q 2>/dev/null || true)
+  if [[ -n "$lingering" ]]; then
+    log_warn "Force-removing lingering containers..."
+    echo "$lingering" | xargs docker rm -f >/dev/null 2>&1 || true
+  fi
+
+  # Explicitly remove the compose network so all port bindings are released by the kernel
+  docker network rm "${COMPOSE_PROJECT_NAME}_default" >/dev/null 2>&1 || true
+
+  # Give the OS a moment to reclaim the ports before we try to bind them again
+  sleep 3
+
   log_info "Existing services stopped and ports released"
 }
 
