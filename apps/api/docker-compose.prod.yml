@@ -41,11 +41,10 @@ services:
       KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED:-true}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
-      KC_FRONTEND_URL: ${KEYCLOAK_FRONTEND_URL}
-      KC_HOSTNAME_URL: ${KEYCLOAK_HOSTNAME_URL}
-      KC_HOSTNAME_ADMIN_URL: ${KEYCLOAK_HOSTNAME_ADMIN_URL}
-      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME}
-      KC_HTTPS_ENABLED: ${KEYCLOAK_HTTPS_ENABLED}
+      # Optional hostname overrides — add KC_HOSTNAME_URL, KC_HOSTNAME_ADMIN_URL,
+      # KC_FRONTEND_URL directly to .env.production when deploying behind a
+      # reverse proxy with a real domain. Omitting them here prevents Keycloak
+      # from receiving empty-string values that cause startup validation errors.
     ports:
       - '127.0.0.1:${KEYCLOAK_PORT:-8180}:8080'
     volumes:
