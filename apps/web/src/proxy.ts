@@ -11,9 +11,8 @@ export function proxy(request: NextRequest) {
 
   const hasAccessToken = request.cookies.has('kc_access');
   if (!hasAccessToken) {
-    const currentPath = request.nextUrl.pathname;
     const loginUrl = new URL(`${API_BASE_URL}/auth/login`, request.url);
-    loginUrl.searchParams.set('redirect', currentPath);
+    loginUrl.searchParams.set('redirect', '/dashboard');
     return NextResponse.redirect(loginUrl);
   }
   return NextResponse.next();
