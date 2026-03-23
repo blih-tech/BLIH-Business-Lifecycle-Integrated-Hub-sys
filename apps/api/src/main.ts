@@ -21,7 +21,6 @@ async function bootstrap() {
   const corsOrigin = configService.get<string>('CORS_ORIGIN', '*');
   const nodeEnv = configService.get<string>('NODE_ENV', 'development');
   const port = Number(configService.get<string>('PORT', '5000'));
-  const apiHost = configService.get<string>('API_HOST', 'localhost');
   const helmetEnabled =
     configService.get<string>('HELMET_ENABLED', 'true') !== 'false';
 
@@ -44,6 +43,6 @@ async function bootstrap() {
     setupSwagger(app);
   }
 
-  await app.listen(port, apiHost);
+  await app.listen(port);
 }
 void bootstrap();
