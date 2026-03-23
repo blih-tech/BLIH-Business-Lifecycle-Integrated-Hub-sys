@@ -359,10 +359,23 @@ export class AuthController {
         env.AUTH_POST_LOGIN_REDIRECT_URI,
         allowedRedirectPrefixes,
       );
-      response.redirect(
-        302,
-        this.buildFrontendRedirect(successRedirectPath, request),
+
+      // Enhanced logging for debugging redirect issues
+      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS, {
+        subject: validatedIdToken.sub,
+        requestedRedirectPath,
+        successRedirectPath,
+        frontendBaseUrl: env.AUTH_FRONTEND_BASE_URL,
+        allowedOrigins: this.getAllowedOrigins(),
+      });
+
+      const finalRedirectUrl = this.buildFrontendRedirect(
+        successRedirectPath,
+        request,
       );
+      this.logger.log(`Final redirect URL: ${finalRedirectUrl}`);
+
+      response.redirect(302, finalRedirectUrl);
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
         this.clearTransientCookies(response);

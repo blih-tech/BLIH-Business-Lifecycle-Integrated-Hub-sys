@@ -45,7 +45,7 @@ const createEnvValidationSchema = () =>
     AUTH_ALLOWED_REDIRECT_PATH_PREFIXES: Joi.string().default(
       '/,/auth,/dashboard,/no-access',
     ),
-    AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/dashboard'),
+    AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/no-access'),
     AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/dashboard'),
     AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/dashboard'),
     AUTH_STATE_TTL_SECONDS: Joi.number().integer().min(60).default(600),
