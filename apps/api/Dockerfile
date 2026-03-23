@@ -45,7 +45,7 @@ COPY --from=builder /workspace/packages/types/dist ./packages/types/dist
 
 WORKDIR /workspace/apps/api
 EXPOSE 5000
-CMD ["node", "dist/main"]
+CMD ["node", "dist/apps/api/src/main"]
 
 FROM builder AS migrator
 WORKDIR /workspace

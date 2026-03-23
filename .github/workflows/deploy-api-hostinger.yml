@@ -238,6 +238,10 @@ jobs:
             -e "ssh -p ${HOSTINGER_SSH_PORT}" \
             apps/api/.env.production \
             "${remote}:${HOSTINGER_DEPLOY_PATH}/.env.production"
+          rsync -az \
+            -e "ssh -p ${HOSTINGER_SSH_PORT}" \
+            apps/api/keycloak/import/ \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/keycloak/import/"
 
       - name: Run remote deploy script
         run: |

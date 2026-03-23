@@ -50,7 +50,7 @@ services:
       - '127.0.0.1:${KEYCLOAK_PORT:-8080}:8080'
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+      - ./keycloak/import:/opt/keycloak/data/import:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -58,12 +58,12 @@ services:
       test:
         [
           'CMD-SHELL',
-          'timeout 10 bash -c "cat < /dev/null > /dev/tcp/127.0.0.1/8080" || exit 1',
+          'wget -qO /dev/null http://127.0.0.1:8080/health/ready || exit 1',
         ]
       interval: 15s
       timeout: 10s
-      retries: 8
-      start_period: 90s
+      retries: 10
+      start_period: 120s
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -86,12 +86,18 @@ services:
         condition: service_healthy
       mailhog:
         condition: service_started
+      keycloak:
+        condition: service_healthy
     healthcheck:
-      test: ['CMD-SHELL', 'ss -tlnp | grep :5000 || exit 1']
+      test:
+        [
+          'CMD-SHELL',
+          'wget -q -O /dev/null "http://127.0.0.1:$${PORT:-5000}/$${API_PREFIX:-api/v1}/health" || exit 1',
+        ]
       interval: ${HEALTH_CHECK_INTERVAL:-15s}
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
       retries: ${HEALTH_CHECK_RETRIES:-8}
-      start_period: 40s
+      start_period: 120s
     logging:
       driver: 'json-file'
       options:
