@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Area,
@@ -8,17 +8,17 @@ import {
   LineChart,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts';
 
 import type {
   DailyAreaPoint,
   MonthlyFrequencyPoint,
-} from "@/features/hr/recruitment/overview/types";
+} from '@/features/hr/recruitment/overview/types';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/shared/components/ui/chart";
+} from '@/shared/components/ui/chart';
 
 type JobApplicationFrequencyPanelProps = {
   monthlyData: MonthlyFrequencyPoint[];
@@ -26,12 +26,12 @@ type JobApplicationFrequencyPanelProps = {
 };
 
 const monthlyConfig = {
-  count: { label: "Applications", color: "#2e68e6" },
+  count: { label: 'Applications', color: '#2e68e6' },
 };
 
 const areaConfig = {
-  upper: { label: "Upper", color: "#2e68e6" },
-  lower: { label: "Lower", color: "#2e68e6" },
+  upper: { label: 'Upper', color: '#2e68e6' },
+  lower: { label: 'Lower', color: '#2e68e6' },
 };
 
 export function JobApplicationFrequencyPanel({
@@ -40,12 +40,23 @@ export function JobApplicationFrequencyPanel({
 }: JobApplicationFrequencyPanelProps) {
   return (
     <section className="rounded-[12px] border border-border bg-white p-6">
-      <p className="text-sm tracking-[-0.3125px] text-black">Job Application Frequency</p>
+      <p className="text-sm tracking-[-0.3125px] text-black">
+        Job Application Frequency
+      </p>
 
       <ChartContainer config={monthlyConfig} className="mt-5 h-[250px] w-full">
-        <LineChart accessibilityLayer data={monthlyData} margin={{ left: 8, right: 12, top: 10, bottom: 8 }}>
+        <LineChart
+          accessibilityLayer
+          data={monthlyData}
+          margin={{ left: 8, right: 12, top: 10, bottom: 8 }}
+        >
           <CartesianGrid stroke="#d4d4d8" strokeDasharray="3 3" vertical />
-          <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+          />
           <YAxis
             tickLine={false}
             axisLine={false}
@@ -59,13 +70,17 @@ export function JobApplicationFrequencyPanel({
             dataKey="count"
             stroke="var(--color-count)"
             strokeWidth={2}
-            dot={{ r: 3.5, fill: "#2e68e6" }}
+            dot={{ r: 3.5, fill: '#2e68e6' }}
           />
         </LineChart>
       </ChartContainer>
 
       <ChartContainer config={areaConfig} className="mt-6 h-[300px] w-full">
-        <AreaChart accessibilityLayer data={dailyData} margin={{ left: 8, right: 12, top: 10, bottom: 8 }}>
+        <AreaChart
+          accessibilityLayer
+          data={dailyData}
+          margin={{ left: 8, right: 12, top: 10, bottom: 8 }}
+        >
           <defs>
             <linearGradient id="upperFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#2e68e6" stopOpacity={0.35} />
@@ -77,7 +92,12 @@ export function JobApplicationFrequencyPanel({
             </linearGradient>
           </defs>
           <CartesianGrid stroke="#d4d4d8" strokeDasharray="3 3" vertical />
-          <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
+          <XAxis
+            dataKey="day"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+          />
           <YAxis
             tickLine={false}
             axisLine={false}

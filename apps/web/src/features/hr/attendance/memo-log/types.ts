@@ -2,10 +2,10 @@ export type AttendanceMemoStat = {
   id: string;
   label: string;
   value: string;
-  icon: "clock-3" | "circle-check-big";
+  icon: 'clock-3' | 'circle-check-big';
 };
 
-export type MemoType = "Technical Issue" | "Emergency";
+export type MemoType = 'Technical Issue' | 'Emergency';
 
 export type MemoCardItem = {
   id: string;
@@ -20,7 +20,7 @@ export type MemoCardItem = {
   submittedDate: string;
   title: string;
   description: string;
-  secondaryAction: "Report Issue" | "View Profile";
+  secondaryAction: 'Report Issue' | 'View Profile';
 };
 
 export type PreviousMemoRow = {
@@ -43,6 +43,6 @@ export type PreviousMemoRow = {
     name: string;
     initials: string;
     role: string;
-    deptLabel: "TECHNICAL DEPT." | "CREATIVE DEPT.";
+    deptLabel: 'TECHNICAL DEPT.' | 'CREATIVE DEPT.';
   }[];
 };

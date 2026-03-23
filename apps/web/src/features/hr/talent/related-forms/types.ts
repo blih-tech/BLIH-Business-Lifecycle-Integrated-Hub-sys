@@ -9,7 +9,7 @@ export type RelatedFormsStat = {
   id: string;
   label: string;
   value: string;
-  icon: "file" | "check" | "questions" | "responses";
+  icon: 'file' | 'check' | 'questions' | 'responses';
 };
 
 export type RelatedFormItem = {

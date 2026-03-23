@@ -1,7 +1,7 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { Button } from "@/shared/components/ui/button";
-import { cn } from "@/shared/lib/utils";
+import { Button } from '@/shared/components/ui/button';
+import { cn } from '@/shared/lib/utils';
 
 type TimesheetPaginationProps = {
   currentPage: number;
@@ -9,7 +9,11 @@ type TimesheetPaginationProps = {
   onPageChange: (page: number) => void;
 };
 
-export function TimesheetPagination({ currentPage, totalPages, onPageChange }: TimesheetPaginationProps) {
+export function TimesheetPagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: TimesheetPaginationProps) {
   return (
     <div className="mt-5 flex items-center justify-center gap-4">
       <Button
@@ -36,13 +40,13 @@ export function TimesheetPagination({ currentPage, totalPages, onPageChange }: T
               variant="ghost"
               size="icon-sm"
               className={cn(
-                "h-4 w-4 rounded-full p-0 text-[12px] leading-4",
+                'h-4 w-4 rounded-full p-0 text-[12px] leading-4',
                 active
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "text-foreground hover:bg-muted",
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  : 'text-foreground hover:bg-muted',
               )}
               onClick={() => onPageChange(page)}
-              aria-current={active ? "page" : undefined}
+              aria-current={active ? 'page' : undefined}
               aria-label={`Go to page ${page}`}
             >
               {page}

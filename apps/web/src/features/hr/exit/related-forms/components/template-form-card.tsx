@@ -1,8 +1,8 @@
-import { Download, FileText, Pencil, Trash2 } from "lucide-react";
+import { Download, FileText, Pencil, Trash2 } from 'lucide-react';
 
-import type { ExitTemplateFormItem } from "@/features/hr/exit/related-forms/types";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { ExitTemplateFormItem } from '@/features/hr/exit/related-forms/types';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type TemplateFormCardProps = {
   item: ExitTemplateFormItem;
@@ -19,7 +19,9 @@ export function TemplateFormCard({ item }: TemplateFormCardProps) {
             </div>
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-[18px] font-semibold leading-7 tracking-[-0.4395px] text-black">{item.title}</p>
+                <p className="text-[18px] font-semibold leading-7 tracking-[-0.4395px] text-black">
+                  {item.title}
+                </p>
                 <span className="inline-flex h-[22px] items-center rounded-[6px] bg-primary px-[9px] text-xs font-medium leading-4 text-white">
                   {item.category}
                 </span>
@@ -27,7 +29,9 @@ export function TemplateFormCard({ item }: TemplateFormCardProps) {
                   {item.version}
                 </span>
               </div>
-              <p className="text-sm leading-5 tracking-[-0.1504px] text-[#666]">{item.description}</p>
+              <p className="text-sm leading-5 tracking-[-0.1504px] text-[#666]">
+                {item.description}
+              </p>
               <p className="text-xs leading-4 text-[#666]">
                 Updated: {item.updatedAt}
                 <span className="mx-4">•</span>
@@ -35,7 +39,7 @@ export function TemplateFormCard({ item }: TemplateFormCardProps) {
               </p>
             </div>
           </div>
-          {item.actions.includes("edit") ? (
+          {item.actions.includes('edit') ? (
             <Button
               size="sm"
               variant="outline"
@@ -48,9 +52,13 @@ export function TemplateFormCard({ item }: TemplateFormCardProps) {
         </div>
 
         <div className="rounded-[8px] bg-[#f3f3f3] p-4">
-          <p className="mb-2 text-sm font-semibold leading-5 tracking-[-0.1504px] text-black">{item.previewTitle}</p>
+          <p className="mb-2 text-sm font-semibold leading-5 tracking-[-0.1504px] text-black">
+            {item.previewTitle}
+          </p>
           <div className="rounded-[4px] border border-[#e5e5e5] bg-white px-[17px] py-[17px]">
-            <p className="whitespace-pre-line text-sm leading-5 tracking-[-0.1504px] text-[rgba(0,0,0,0.7)]">{item.previewText}</p>
+            <p className="whitespace-pre-line text-sm leading-5 tracking-[-0.1504px] text-[rgba(0,0,0,0.7)]">
+              {item.previewText}
+            </p>
           </div>
         </div>
 
@@ -64,8 +72,12 @@ export function TemplateFormCard({ item }: TemplateFormCardProps) {
   );
 }
 
-function ActionButton({ action }: { action: ExitTemplateFormItem["actions"][number] }) {
-  if (action === "download") {
+function ActionButton({
+  action,
+}: {
+  action: ExitTemplateFormItem['actions'][number];
+}) {
+  if (action === 'download') {
     return (
       <Button
         size="sm"
@@ -78,7 +90,7 @@ function ActionButton({ action }: { action: ExitTemplateFormItem["actions"][numb
     );
   }
 
-  if (action === "edit") {
+  if (action === 'edit') {
     return (
       <Button
         size="sm"

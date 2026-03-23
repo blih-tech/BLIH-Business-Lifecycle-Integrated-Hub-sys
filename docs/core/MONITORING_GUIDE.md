@@ -53,11 +53,11 @@
 
 ### 1.2 Observability Pillars
 
-| Pillar | Tool | Purpose |
-|--------|------|---------|
+| Pillar      | Tool                 | Purpose                      |
+| ----------- | -------------------- | ---------------------------- |
 | **Metrics** | Prometheus + Grafana | Time-series data, dashboards |
-| **Logs** | Loki / ELK Stack | Debug, audit, troubleshoot |
-| **Traces** | Jaeger / Tempo | Request flow, bottlenecks |
+| **Logs**    | Loki / ELK Stack     | Debug, audit, troubleshoot   |
+| **Traces**  | Jaeger / Tempo       | Request flow, bottlenecks    |
 
 ---
 
@@ -120,16 +120,16 @@ import { Counter, Histogram, Gauge, Registry } from 'prom-client';
 @Injectable()
 export class MetricsService {
   private registry: Registry;
-  
+
   // HTTP Metrics
   public httpRequestsTotal: Counter;
   public httpRequestDuration: Histogram;
-  
+
   // Business Metrics
   public employeesCreated: Counter;
   public dealsCreated: Counter;
   public invoicesGenerated: Counter;
-  
+
   //System Metrics
   public activeUsers: Gauge;
   public queueSize: Gauge;
@@ -212,7 +212,7 @@ export class MetricsMiddleware implements NestMiddleware {
 
     res.on('finish', () => {
       const duration = (Date.now() - start) / 1000;
-      
+
       this.metrics.httpRequestsTotal.inc({
         method: req.method,
         route: req.route?.path || req.path,
@@ -225,7 +225,7 @@ export class MetricsMiddleware implements NestMiddleware {
           route: req.route?.path || req.path,
           status_code: res.statusCode,
         },
-        duration
+        duration,
       );
     });
 
@@ -237,6 +237,7 @@ export class MetricsMiddleware implements NestMiddleware {
 ### 2.3 Key Metrics to Track
 
 #### Application Metrics
+
 ```typescript
 // Track in services
 async createEmployee(dto: CreateEmployeeDto) {
@@ -249,13 +250,14 @@ async findAll(query: QueryDto) {
   const start = Date.now();
   const result = await this.repository.find(query);
   const duration = (Date.now() - start) / 1000;
-  
+
   this.metrics.dbQueryDuration.observe({ operation: 'find_all' }, duration);
   return result;
 }
 ```
 
 #### Custom Business Metrics
+
 - `blih_deals_created_total{status="won|lost|open"}`
 - `blih_invoices_generated_total{type="sales|purchase"}`
 - `blih_payroll_processed_total{status="success|failed"}`
@@ -269,7 +271,12 @@ async findAll(query: QueryDto) {
 
 ```typescript
 // logger.service.ts
-import { Logger as WinstonLogger, createLogger, format, transports } from 'winston';
+import {
+  Logger as WinstonLogger,
+  createLogger,
+  format,
+  transports,
+} from 'winston';
 
 export class LoggerService {
   private logger: WinstonLogger;
@@ -280,7 +287,7 @@ export class LoggerService {
       format: format.combine(
         format.timestamp(),
         format.errors({ stack: true }),
-        format.json()
+        format.json(),
       ),
       defaultMeta: {
         service: 'blih-api',
@@ -291,10 +298,7 @@ export class LoggerService {
       transports: [
         // Console
         new transports.Console({
-          format: format.combine(
-            format.colorize(),
-            format.simple()
-          ),
+          format: format.combine(format.colorize(), format.simple()),
         }),
         // File - All logs
         new transports.File({
@@ -343,7 +347,7 @@ export class EmployeeService {
 
     try {
       const employee = await this.repository.save(dto);
-      
+
       this.logger.log('Employee created successfully', {
         action: 'employee_created',
         employeeId: employee.id,
@@ -366,13 +370,13 @@ export class EmployeeService {
 
 ### 3.2 Log Levels
 
-| Level | When to Use | Example |
-|-------|-------------|---------|
-| **ERROR** | Application errors, exceptions | Database connection failed |
-| **WARN** | Warning conditions | Deprecated API usage |
-| **INFO** | Important events | User logged in, Order created |
-| **DEBUG** | Detailed debug info | Variable values, flow control |
-| **TRACE** | Very detailed | Function entry/exit |
+| Level     | When to Use                    | Example                       |
+| --------- | ------------------------------ | ----------------------------- |
+| **ERROR** | Application errors, exceptions | Database connection failed    |
+| **WARN**  | Warning conditions             | Deprecated API usage          |
+| **INFO**  | Important events               | User logged in, Order created |
+| **DEBUG** | Detailed debug info            | Variable values, flow control |
+| **TRACE** | Very detailed                  | Function entry/exit           |
 
 ### 3.3 Loki Configuration
 
@@ -384,7 +388,7 @@ services:
     image: grafana/loki:latest
     container_name: blih-loki
     ports:
-      - "3100:3100"
+      - '3100:3100'
     volumes:
       - loki_data:/loki
       - ./loki/loki-config.yml:/etc/loki/local-config.yaml
@@ -495,7 +499,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: blih-cadvisor
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -513,7 +517,7 @@ services:
     image: prom/node-exporter:latest
     container_name: blih-node-exporter
     ports:
-      - "9100:9100"
+      - '9100:9100'
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -546,8 +550,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value }} requests/sec"
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value }} requests/sec'
 
       # High Response Time
       - alert: HighResponseTime
@@ -556,8 +560,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High response time"
-          description: "p95 latency is {{ $value }}s"
+          summary: 'High response time'
+          description: 'p95 latency is {{ $value }}s'
 
       # Service Down
       - alert: ServiceDown
@@ -566,8 +570,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Service {{ $labels.job }} is down"
-          description: "Service has been down for 2 minutes"
+          summary: 'Service {{ $labels.job }} is down'
+          description: 'Service has been down for 2 minutes'
 
   - name: blih_database_alerts
     rules:
@@ -578,8 +582,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High number of database connections"
-          description: "{{ $value }} active connections"
+          summary: 'High number of database connections'
+          description: '{{ $value }} active connections'
 
       # Slow Queries
       - alert: SlowQueries
@@ -588,7 +592,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "Slow database queries detected"
+          summary: 'Slow database queries detected'
 
   - name: blih_infrastructure_alerts
     rules:
@@ -599,8 +603,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High CPU usage"
-          description: "CPU usage is {{ $value }}%"
+          summary: 'High CPU usage'
+          description: 'CPU usage is {{ $value }}%'
 
       # High Memory Usage
       - alert: HighMemoryUsage
@@ -609,8 +613,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "Low memory available"
-          description: "Only {{ $value }}% memory available"
+          summary: 'Low memory available'
+          description: 'Only {{ $value }}% memory available'
 
       # Disk Space Low
       - alert: DiskSpaceLow
@@ -619,8 +623,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Low disk space"
-          description: "Only {{ $value }}% disk space available"
+          summary: 'Low disk space'
+          description: 'Only {{ $value }}% disk space available'
 ```
 
 ### 6.2 Alertmanager Configuration
@@ -638,13 +642,13 @@ route:
   group_interval: 10s
   repeat_interval: 12h
   receiver: 'slack-notifications'
-  
+
   routes:
     - match:
         severity: critical
       receiver: 'slack-critical'
       continue: true
-    
+
     - match:
         severity: warning
       receiver: 'slack-warnings'
@@ -677,6 +681,7 @@ receivers:
 ### 7.1 Main Dashboard Widgets
 
 **System Overview:**
+
 - Total API requests (24h)
 - Average response time
 - Error rate
@@ -684,12 +689,14 @@ receivers:
 - System uptime
 
 **Business Metrics:**
+
 - New employees (today/week/month)
 - Active deals
 - Invoices generated
 - Revenue (current month)
 
 **Resource Usage:**
+
 - CPU usage (%)
 - Memory usage (%)
 - Disk usage (%)
@@ -719,14 +726,14 @@ services:
     environment:
       COLLECTOR_ZIPKIN_HOST_PORT: :9411
     ports:
-      - "5775:5775/udp"
-      - "6831:6831/udp"
-      - "6832:6832/udp"
-      - "5778:5778"
-      - "16686:16686"  # Jaeger UI
-      - "14268:14268"
-      - "14250:14250"
-      - "9411:9411"
+      - '5775:5775/udp'
+      - '6831:6831/udp'
+      - '6832:6832/udp'
+      - '5778:5778'
+      - '16686:16686' # Jaeger UI
+      - '14268:14268'
+      - '14250:14250'
+      - '9411:9411'
     networks:
       - blih-network
 ```
@@ -781,8 +788,9 @@ export class HealthController {
 
   private async diskCheck(): Promise<HealthIndicatorResult> {
     const diskUsage = await checkDiskSpace('/');
-    const percentUsed = ((diskUsage.size - diskUsage.free) / diskUsage.size) * 100;
-    
+    const percentUsed =
+      ((diskUsage.size - diskUsage.free) / diskUsage.size) * 100;
+
     return {
       disk: {
         status: percentUsed < 90 ? 'up' : 'down',
@@ -794,7 +802,7 @@ export class HealthController {
   private async memoryCheck(): Promise<HealthIndicatorResult> {
     const usage = process.memoryUsage();
     const percentUsed = (usage.heapUsed / usage.heapTotal) * 100;
-    
+
     return {
       memory: {
         status: percentUsed < 90 ? 'up' : 'down',
@@ -811,12 +819,12 @@ export class HealthController {
 
 ### 10.1 Service Level Indicators (SLIs)
 
-| SL I | Measurement | Target |
-|------|-------------|--------|
-| **Availability** | Uptime % | 99.9% |
-| **Latency** | p95 response time | <500ms |
-| **Error Rate** | Failed requests % | <0.1% |
-| **Throughput** | Requests/second | >100 |
+| SL I             | Measurement       | Target |
+| ---------------- | ----------------- | ------ |
+| **Availability** | Uptime %          | 99.9%  |
+| **Latency**      | p95 response time | <500ms |
+| **Error Rate**   | Failed requests % | <0.1%  |
+| **Throughput**   | Requests/second   | >100   |
 
 ### 10.2 Service Level Objectives (SLOs)
 
@@ -825,17 +833,17 @@ slos:
   - name: api_availability
     target: 99.9%
     window: 30d
-    description: "API should be available 99.9% of the time"
+    description: 'API should be available 99.9% of the time'
 
   - name: api_latency_p95
     target: 500ms
     window: 7d
-    description: "95% of requests should complete in under 500ms"
+    description: '95% of requests should complete in under 500ms'
 
   - name: error_rate
     target: 0.1%
     window: 24h
-    description: "Error rate should be below 0.1%"
+    description: 'Error rate should be below 0.1%'
 ```
 
 ### 10.3 Error Budget

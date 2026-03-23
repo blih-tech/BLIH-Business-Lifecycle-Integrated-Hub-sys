@@ -7,7 +7,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   Min,
   Max,
 } from 'class-validator';
@@ -57,15 +56,6 @@ export class CreateOnboardingTaskDto {
   @IsOptional()
   @IsString()
   description?: string | null;
-
-  @ApiPropertyOptional({
-    nullable: true,
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-    description: 'UUID of the user who completed this task.',
-  })
-  @IsOptional()
-  @IsUUID()
-  completedById?: string | null;
 }
 
 export class UpdateOnboardingTaskDto extends PartialType(
@@ -91,14 +81,6 @@ export class OnboardingTaskListQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
-
-  @ApiPropertyOptional({
-    description: 'Filter by the UUID of the user who completed the task.',
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  })
-  @IsOptional()
-  @IsUUID()
-  completedById?: string;
 
   @ApiPropertyOptional({
     default: 1,
@@ -142,15 +124,6 @@ export class OnboardingTaskResponseDto {
     example: 'Create a corporate email and configure MFA.',
   })
   description!: string | null;
-
-  @ApiPropertyOptional({
-    nullable: true,
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  })
-  completedById!: string | null;
-
-  @ApiPropertyOptional({ nullable: true, example: 'Alice Njeri' })
-  completedByName!: string | null;
 
   @ApiProperty({
     example: 3,

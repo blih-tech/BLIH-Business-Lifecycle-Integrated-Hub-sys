@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Module Overview](#module-overview)
 2. [User Personas](#user-personas)
 3. [Feature Catalog](#feature-catalog)
@@ -22,9 +23,11 @@
 ## Module Overview
 
 ### Purpose
+
 The BLIH CRM Module provides comprehensive customer relationship management, from lead capture through deal closure and account management. It enables sales teams to track opportunities, manage customer interactions, and forecast revenue with confidence.
 
 ### Value Proposition
+
 - **Increase Win Rates:** Structured sales process with stage-specific guidance and probability tracking
 - **Improve Forecast Accuracy:** Real-time pipeline visibility with weighted value calculations
 - **Enhance Customer Relationships:** Complete interaction history and automated follow-up reminders
@@ -32,73 +35,86 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - **Drive Revenue Growth:** Analytics on conversion rates, deal velocity, and rep performance
 
 ### Target Users
-| Role | Primary Use Case | Key Features Used |
-|------|-----------------|-------------------|
-| Sales Rep | Daily selling activities | Leads, deals, pipeline, activities |
-| Sales Manager | Team coaching, forecasting | Pipeline view, reports, activity tracking |
-| Account Manager | Post-sale relationship management | Organization profiles, interaction history |
-| Marketing | Lead qualification, campaign tracking | Lead sources, conversion analytics |
-| Executive | Revenue oversight | Dashboards, forecasts, win/loss analysis |
+
+| Role            | Primary Use Case                      | Key Features Used                          |
+| --------------- | ------------------------------------- | ------------------------------------------ |
+| Sales Rep       | Daily selling activities              | Leads, deals, pipeline, activities         |
+| Sales Manager   | Team coaching, forecasting            | Pipeline view, reports, activity tracking  |
+| Account Manager | Post-sale relationship management     | Organization profiles, interaction history |
+| Marketing       | Lead qualification, campaign tracking | Lead sources, conversion analytics         |
+| Executive       | Revenue oversight                     | Dashboards, forecasts, win/loss analysis   |
 
 ---
 
 ## User Personas
 
 ### Persona 1: David - Sales Representative
+
 **Profile:** 3 years in B2B sales, quota: $500K annually, manages 40-50 opportunities  
 **Goals:**
+
 - Meet and exceed monthly/quarterly quotas
 - Build strong relationships with prospects
 - Understand where each deal stands
 - Never drop the ball on follow-ups
 
 **Pain Points:**
+
 - Forgetting to follow up with leads
 - No visibility into deal health until it's too late
 - Time wasted on data entry
 - Can't easily see what activities drive wins
 
 **How BLIH Helps:**
+
 - Automated follow-up reminders and task creation
 - Deal health score based on activity patterns
 - Email/Calendar integration reduces manual entry
 - Win/loss pattern analysis in Brain module
 
 ### Persona 2: Jennifer - Sales Manager
+
 **Profile:** 10 years sales experience, manages team of 8 reps, reports to VP Sales  
 **Goals:**
+
 - Accurately forecast quarterly revenue
 - Coach underperforming reps
 - Ensure consistent sales process adoption
 - Identify pipeline risks early
 
 **Pain Points:**
+
 - Sales forecasts are always inaccurate
 - Don't know which deals are truly at risk
 - Reps use different processes and terminology
 - Can't easily compare rep performance
 
 **How BLIH Helps:**
+
 - Weighted pipeline forecasting with probability adjustments
 - At-risk deal alerts based on inactivity patterns
 - Stage-by-stage conversion analytics
 - Rep performance scorecards with activity correlation
 
 ### Persona 3: Carlos - Account Manager
+
 **Profile:** 5 years managing enterprise accounts, handles top 10 customers  
 **Goals:**
+
 - Maximize customer lifetime value
 - Identify upsell/cross-sell opportunities
 - Prevent churn through proactive engagement
 - Manage complex multi-stakeholder relationships
 
 **Pain Points:**
+
 - Don't have visibility into all customer contacts
 - Miss expansion opportunities
 - Renewal dates sneak up without preparation
 - Hard to track multiple ongoing conversations
 
 **How BLIH Helps:**
+
 - Organization contact mapping with influence tracking
 - Contract renewal alerts and playbooks
 - Cross-module view of customer projects and invoices
@@ -111,10 +127,12 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ### 1. Lead Management
 
 #### 1.1 Lead Capture & Qualification
+
 **Feature:** Multi-channel lead collection with automated scoring  
 **User Value:** Focus on high-quality leads that convert
 
 **Capture Channels:**
+
 - Web forms (embedded on marketing site)
 - Manual entry by sales reps
 - Email parsing (forward to CRM)
@@ -123,6 +141,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Chatbot qualified leads
 
 **Lead Scoring:**
+
 - Demographic scoring (company size, industry, title)
 - Behavioral scoring (website visits, content downloads, email opens)
 - Source quality weighting (referral vs. cold inquiry)
@@ -130,22 +149,26 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Auto-assignment rules by territory/vertical
 
 **Qualification Framework:**
+
 - BANT (Budget, Authority, Need, Timeline) capture
 - Custom qualification questions per industry
 - Required fields before conversion to deal
 - Disqualification reasons tracking
 
 **UX Highlights:**
+
 - Lead inbox with priority scoring
 - Quick qualify/disqualify actions
 - Auto-suggested similar past leads (via Brain)
 - One-click email/call from lead card
 
 #### 1.2 Lead Nurturing
+
 **Feature:** Automated engagement sequences for non-sales-ready leads  
 **User Value:** Stay top-of-mind without manual effort
 
 **Capabilities:**
+
 - Email drip campaigns with personalization
 - Task reminders for manual touch points
 - Lead warming score progression tracking
@@ -153,6 +176,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Content recommendation based on interests
 
 **UX Highlights:**
+
 - Visual sequence builder
 - Engagement timeline showing all touchpoints
 - Response tracking with open/click notifications
@@ -160,6 +184,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ### 2. Deal Management
 
 #### 2.1 Deal Pipeline
+
 **Feature:** Visual sales pipeline with customizable stages  
 **User Value:** Clear visibility into deal progression and bottlenecks
 
@@ -174,6 +199,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 | Closed Lost | 0% | Deal lost to competitor/no decision | - |
 
 **Stage Actions:**
+
 - Stage-specific required fields
 - Stage exit checklists
 - Automated task creation per stage
@@ -181,16 +207,19 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Stage history with timestamps
 
 **UX Highlights:**
+
 - Drag-and-drop kanban board
 - Stage progression analytics
 - Deal cards showing value, days in stage, health score
 - Bulk stage updates for efficient pipeline management
 
 #### 2.2 Deal Detail Management
+
 **Feature:** Comprehensive deal record with all relevant information  
 **User Value:** Complete context for every customer conversation
 
 **Deal Components:**
+
 - **Overview:** Value, probability, expected close, source deal
 - **Contacts:** Decision makers, influencers, users with roles
 - **Organization:** Parent company info, related deals
@@ -201,21 +230,25 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - **Team:** Internal collaborators and roles
 
 **Deal Health Score:**
+
 - Based on: recency of activity, stage progression, engagement level
 - Color-coded: 🟢 Healthy (>80), 🟡 At Risk (50-80), 🔴 Stalled (<50)
 - Trending indicators: Improving, Stable, Declining
 
 **UX Highlights:**
+
 - Timeline view of all deal events
 - Quick action buttons (Log Call, Send Email, Schedule Meeting)
 - Deal comparison side-by-side view
 - AI-generated deal summary for quick catch-up
 
 #### 2.3 Opportunity Management
+
 **Feature:** Handle complex multi-product, multi-year opportunities  
 **User Value:** Accurate forecasting for complex deals
 
 **Capabilities:**
+
 - Multi-year contract value tracking
 - Phase-based delivery (MVP, Rollout, Expansion)
 - Product bundling with discount management
@@ -225,10 +258,12 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ### 3. Contact & Organization Management
 
 #### 3.1 Contact Management
+
 **Feature:** Centralized contact database with relationship intelligence  
 **User Value:** Know everyone involved in the buying process
 
 **Contact Profile:**
+
 - Basic info: Name, title, contact details
 - Role in buying process: Decision Maker, Influencer, User, Champion
 - Engagement history: All interactions logged
@@ -237,21 +272,25 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Organization hierarchy: Reports to, manages
 
 **Contact Insights:**
+
 - Response rate analysis
 - Best time to contact (based on past interactions)
 - Relationship strength score
 - Cross-deal involvement
 
 **UX Highlights:**
+
 - Contact timeline with all touchpoints
 - Org chart visualization
 - Merge duplicate detection
 - Contact enrichment suggestions
 
 #### 3.2 Organization Management
-**Feature:** Account-based view of customer relationships  **User Value:** Understand the full customer context
+
+**Feature:** Account-based view of customer relationships **User Value:** Understand the full customer context
 
 **Organization Profile:**
+
 - Company details: Industry, size, location, website
 - Financial health indicators (optional integration)
 - Relationship map: All contacts with influence arrows
@@ -261,12 +300,14 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Account health score based on engagement
 
 **Account Planning:**
+
 - Strategic account objectives
 - Stakeholder mapping with political influence
 - Expansion opportunity identification
 - Renewal risk assessment
 
 **UX Highlights:**
+
 - Account 360° view combining CRM, Projects, Finance data
 - Relationship web visualization
 - Account scorecard with trend indicators
@@ -274,10 +315,12 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ### 4. Activity Management
 
 #### 4.1 Activity Logging
+
 **Feature:** Track all customer interactions automatically  
 **User Value:** Complete history without manual data entry
 
 **Activity Types:**
+
 - Calls (inbound/outbound, duration, outcome)
 - Emails (sent/received, opens, clicks)
 - Meetings (scheduled, completed, no-show)
@@ -286,38 +329,45 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Documents shared
 
 **Auto-Logging:**
+
 - Email integration captures all sent/received emails
 - Calendar sync creates meeting activities
 - Phone system integration (if available)
 - Document access tracking
 
 **Activity Outcomes:**
+
 - Standardized outcome codes: Connected, Left VM, No Answer, etc.
 - Next action auto-suggestion based on outcome
 - Follow-up task auto-creation
 
 **UX Highlights:**
+
 - Activity composer with templates
 - Voice-to-text note taking
 - Activity streak counter for gamification
 - Weekly activity summary email
 
 #### 4.2 Task & Reminder System
+
 **Feature:** Never miss a follow-up with intelligent reminders  
 **User Value:** Reliable task management integrated with sales workflow
 
 **Task Types:**
+
 - Follow-up tasks (auto-created from activities)
 - Stage-specific tasks (proposal due, contract review)
 - Recurring tasks (weekly check-ins, monthly reviews)
 - Ad-hoc tasks (personal reminders)
 
 **Smart Reminders:**
+
 - Intelligent timing (don't remind when customer is on vacation)
 - Escalation chains (notify manager if overdue)
 - Context-aware suggestions ("It's been 3 days since your last contact")
 
 **UX Highlights:**
+
 - Daily task list with priority ranking
 - One-click complete with outcome logging
 - Snooze functionality with custom intervals
@@ -326,10 +376,12 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ### 5. Sales Analytics & Reporting
 
 #### 5.1 Pipeline Analytics
+
 **Feature:** Deep insights into pipeline health and trends  
 **User Value:** Data-driven sales management
 
 **Key Metrics:**
+
 - Pipeline value (total and by stage)
 - Weighted pipeline (probability-adjusted)
 - Stage conversion rates
@@ -339,44 +391,52 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Pipeline coverage ratio (vs. quota)
 
 **Visualizations:**
+
 - Funnel chart showing stage progression
 - Trend lines for pipeline value over time
 - Heatmap of deals by stage and age
 - Velocity chart showing days to close
 
 **UX Highlights:**
+
 - Date range and filter flexibility
 - Compare periods (QoQ, YoY)
 - Drill-down from summary to deal details
 - Scheduled report delivery
 
 #### 5.2 Sales Forecasting
+
 **Feature:** Accurate revenue forecasting with multiple scenarios  
 **User Value:** Predictable revenue planning
 
 **Forecast Methods:**
+
 - **Commit:** Deals expected to close (high confidence)
 - **Best Case:** All deals with realistic probability
 - **Pipeline:** Total pipeline value
 - **Custom:** User-adjusted probabilities
 
 **Forecast Adjustments:**
+
 - Override deal probabilities based on knowledge
 - Exclude specific deals from forecast
 - Historical accuracy tracking
 - Scenario modeling (what-if analysis)
 
 **UX Highlights:**
+
 - Forecast vs. actual tracking
 - Manager review and approval workflow
 - Historical forecast accuracy dashboard
 - AI-powered forecast recommendations
 
 #### 5.3 Sales Performance
+
 **Feature:** Rep and team performance analytics  
 **User Value:** Identify coaching opportunities and best practices
 
 **Rep Scorecard:**
+
 - Revenue attainment vs. quota
 - Activity metrics (calls, emails, meetings)
 - Conversion rates by stage
@@ -385,11 +445,13 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Pipeline generation rate
 
 **Team Comparisons:**
+
 - Leaderboards with multiple dimensions
 - Benchmarking against top performers
 - Trend analysis (improving/declining)
 
 **UX Highlights:**
+
 - Gamification with badges and achievements
 - Coaching recommendations ("Consider reviewing prospecting techniques")
 - Peer comparison sparklines
@@ -397,10 +459,12 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ### 6. Product & Pricing
 
 #### 6.1 Product Catalog
+
 **Feature:** Manage products/services offered  
 **User Value:** Consistent pricing and proposal generation
 
 **Product Information:**
+
 - SKU, name, description, category
 - List price and cost (for margin calculation)
 - Pricing tiers (volume discounts)
@@ -409,10 +473,12 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - Term options (monthly, annual, multi-year)
 
 #### 6.2 Quote Generation
+
 **Feature:** Create professional proposals quickly  
 **User Value:** Faster time-to-proposal, fewer errors
 
 **Capabilities:**
+
 - Product selector with search
 - Configurator for complex products
 - Automatic discount calculations
@@ -422,6 +488,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 - E-signature integration
 
 **UX Highlights:**
+
 - Quote preview in real-time
 - One-click PDF generation
 - Email quote directly from CRM
@@ -500,7 +567,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
    └─ AI Suggestion: "Send break-up email or schedule call"
 
 4. Jennifer takes action
-   ├─ Comments on deal: "@David - This deal is stalling. 
+   ├─ Comments on deal: "@David - This deal is stalling.
    │                    Can you schedule a call this week?"
    ├─ Task automatically assigned to David
    └─ Alert set: Notify if no activity in 3 days
@@ -564,6 +631,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ## UI Components & Patterns
 
 ### Pipeline Board View
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Sales Pipeline                     [+ Add Deal]  [⚙️ Customize]  │
@@ -588,6 +656,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ```
 
 ### Deal Card Detail
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  MegaSoft Inc.                           [Edit] [•••]   │
@@ -613,6 +682,7 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 ```
 
 ### Lead Inbox
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Lead Inbox (5 New)        [Filter] [Sort by Score ▼]          │
@@ -641,23 +711,27 @@ The BLIH CRM Module provides comprehensive customer relationship management, fro
 Each stage has specific requirements that must be met before progression:
 
 **Stage: Prospecting → Qualification**
+
 - Required: Contact identified, Initial outreach completed
 - Optional: Need expressed, Budget discussed
 - Evidence: Logged call/email, Contact record created
 
 **Stage: Qualification → Proposal**
+
 - Required: BANT confirmed (all 4 elements)
 - Required: Decision process understood
 - Required: Technical requirements gathered
 - Evidence: Discovery call notes, Qualification checklist complete
 
 **Stage: Proposal → Negotiation**
+
 - Required: Formal proposal delivered
 - Required: Pricing discussed with decision maker
 - Optional: Technical evaluation passed
 - Evidence: Proposal sent activity, Email confirmation
 
 **Stage: Negotiation → Closed Won**
+
 - Required: Contract terms agreed
 - Required: Legal review complete (if applicable)
 - Required: Signed contract or PO received
@@ -665,12 +739,12 @@ Each stage has specific requirements that must be met before progression:
 
 ### Probability Guidelines
 
-| Stage | Default | Adjust When |
-|-------|---------|-------------|
-| Prospecting | 10% | Early engagement, warm intro: +5-10% |
-| Qualification | 25% | Strong champion, clear timeline: +10-15% |
-| Proposal | 50% | Pilot in progress, verbal yes: +15-20% |
-| Negotiation | 75% | Contract redlines minimal: +10% |
+| Stage         | Default | Adjust When                              |
+| ------------- | ------- | ---------------------------------------- |
+| Prospecting   | 10%     | Early engagement, warm intro: +5-10%     |
+| Qualification | 25%     | Strong champion, clear timeline: +10-15% |
+| Proposal      | 50%     | Pilot in progress, verbal yes: +15-20%   |
+| Negotiation   | 75%     | Contract redlines minimal: +10%          |
 
 ---
 
@@ -678,82 +752,86 @@ Each stage has specific requirements that must be met before progression:
 
 ### Permission Matrix
 
-| Feature | Sales Rep | Sales Manager | Account Manager | Admin |
-|---------|-----------|---------------|-----------------|-------|
-| View Own Deals | ✅ | ✅ | ✅ | ✅ |
-| View Team Deals | ❌ | ✅ | ✅ | ✅ |
-| View All Deals | ❌ | ❌ | ❌ | ✅ |
-| Edit Own Deals | ✅ | ✅ | ✅ | ✅ |
-| Edit Others' Deals | ❌ | ✅ (team) | ❌ | ✅ |
-| Delete Deals | ❌ | ❌ | ❌ | ✅ |
-| Manage Pipeline Stages | ❌ | View | View | ✅ |
-| View All Contacts | Own deals | Team deals | Accounts | ✅ |
-| Export Data | Own | Team | Accounts | ✅ |
-| Manage Products | View | View | View | ✅ |
-| Configure CRM Settings | ❌ | ❌ | ❌ | ✅ |
+| Feature                | Sales Rep | Sales Manager | Account Manager | Admin |
+| ---------------------- | --------- | ------------- | --------------- | ----- |
+| View Own Deals         | ✅        | ✅            | ✅              | ✅    |
+| View Team Deals        | ❌        | ✅            | ✅              | ✅    |
+| View All Deals         | ❌        | ❌            | ❌              | ✅    |
+| Edit Own Deals         | ✅        | ✅            | ✅              | ✅    |
+| Edit Others' Deals     | ❌        | ✅ (team)     | ❌              | ✅    |
+| Delete Deals           | ❌        | ❌            | ❌              | ✅    |
+| Manage Pipeline Stages | ❌        | View          | View            | ✅    |
+| View All Contacts      | Own deals | Team deals    | Accounts        | ✅    |
+| Export Data            | Own       | Team          | Accounts        | ✅    |
+| Manage Products        | View      | View          | View            | ✅    |
+| Configure CRM Settings | ❌        | ❌            | ❌              | ✅    |
 
 ### Granular Permissions
 
 CRM permissions follow pattern: `CRM:{resource}:{action}`
 
-| Permission | Description |
-|------------|-------------|
-| `CRM:lead:view` | View leads in assigned territories |
-| `CRM:lead:create` | Create new leads |
-| `CRM:lead:edit` | Edit lead information |
-| `CRM:lead:convert` | Convert leads to deals |
-| `CRM:deal:view` | View deals |
-| `CRM:deal:create` | Create deals |
-| `CRM:deal:edit` | Edit deal details |
-| `CRM:deal:stage` | Change deal stages |
-| `CRM:deal:close` | Mark deals won/lost |
-| `CRM:contact:view` | View contacts |
-| `CRM:contact:create` | Add contacts |
-| `CRM:organization:view` | View organization accounts |
-| `CRM:activity:log` | Log activities |
-| `CRM:report:view` | Access reports |
-| `CRM:forecast:manage` | Adjust forecasts |
+| Permission              | Description                        |
+| ----------------------- | ---------------------------------- |
+| `CRM:lead:view`         | View leads in assigned territories |
+| `CRM:lead:create`       | Create new leads                   |
+| `CRM:lead:edit`         | Edit lead information              |
+| `CRM:lead:convert`      | Convert leads to deals             |
+| `CRM:deal:view`         | View deals                         |
+| `CRM:deal:create`       | Create deals                       |
+| `CRM:deal:edit`         | Edit deal details                  |
+| `CRM:deal:stage`        | Change deal stages                 |
+| `CRM:deal:close`        | Mark deals won/lost                |
+| `CRM:contact:view`      | View contacts                      |
+| `CRM:contact:create`    | Add contacts                       |
+| `CRM:organization:view` | View organization accounts         |
+| `CRM:activity:log`      | Log activities                     |
+| `CRM:report:view`       | Access reports                     |
+| `CRM:forecast:manage`   | Adjust forecasts                   |
 
 ---
 
 ## Integration Points
 
 ### Outbound Events (CRM Publishes)
-| Event | Trigger | Subscribers | Data |
-|-------|---------|-------------|------|
-| `crm.lead.created` | New lead added | Brain, Marketing | Lead details, source |
-| `crm.lead.qualified` | Lead meets criteria | HR (capacity check) | Qualified lead info |
-| `crm.deal.created` | Lead converted | Projects (capacity) | Deal value, timeline |
-| `crm.deal.stage.changed` | Stage progression | Manager (alerts) | Old/new stage, probability |
-| `crm.deal.won` | Deal closed won | Finance (invoice), Projects, Brain | Full deal data, customer |
-| `crm.deal.lost` | Deal closed lost | Brain (analysis) | Loss reason, competitor |
-| `crm.activity.logged` | Activity recorded | Notifications | Activity type, deal |
+
+| Event                    | Trigger             | Subscribers                        | Data                       |
+| ------------------------ | ------------------- | ---------------------------------- | -------------------------- |
+| `crm.lead.created`       | New lead added      | Brain, Marketing                   | Lead details, source       |
+| `crm.lead.qualified`     | Lead meets criteria | HR (capacity check)                | Qualified lead info        |
+| `crm.deal.created`       | Lead converted      | Projects (capacity)                | Deal value, timeline       |
+| `crm.deal.stage.changed` | Stage progression   | Manager (alerts)                   | Old/new stage, probability |
+| `crm.deal.won`           | Deal closed won     | Finance (invoice), Projects, Brain | Full deal data, customer   |
+| `crm.deal.lost`          | Deal closed lost    | Brain (analysis)                   | Loss reason, competitor    |
+| `crm.activity.logged`    | Activity recorded   | Notifications                      | Activity type, deal        |
 
 ### Inbound Events (CRM Consumes)
-| Event | Source | Action |
-|-------|--------|--------|
-| `finance.invoice.paid` | Finance | Update customer health score |
-| `finance.invoice.overdue` | Finance | Alert account manager |
-| `project.milestone.completed` | Projects | Update deal delivery status |
-| `project.issue.blocker` | Projects | Flag account risk |
-| `hr.employee.terminated` | HR | Reassign account if rep leaves |
+
+| Event                         | Source   | Action                         |
+| ----------------------------- | -------- | ------------------------------ |
+| `finance.invoice.paid`        | Finance  | Update customer health score   |
+| `finance.invoice.overdue`     | Finance  | Alert account manager          |
+| `project.milestone.completed` | Projects | Update deal delivery status    |
+| `project.issue.blocker`       | Projects | Flag account risk              |
+| `hr.employee.terminated`      | HR       | Reassign account if rep leaves |
 
 ### External Integrations
-| System | Type | Purpose |
-|--------|------|---------|
-| Email (Gmail/Outlook) | API | Bi-directional sync, activity logging |
-| Calendar | API | Meeting scheduling, availability |
-| LinkedIn | API | Contact enrichment, social selling |
-| Marketing Automation | Webhook | Lead scoring, campaign attribution |
-| Phone System | CTI | Call logging, click-to-dial |
-| E-signature (DocuSign) | API | Contract sending and tracking |
-| Data Enrichment | API | Company/contact data auto-fill |
+
+| System                 | Type    | Purpose                               |
+| ---------------------- | ------- | ------------------------------------- |
+| Email (Gmail/Outlook)  | API     | Bi-directional sync, activity logging |
+| Calendar               | API     | Meeting scheduling, availability      |
+| LinkedIn               | API     | Contact enrichment, social selling    |
+| Marketing Automation   | Webhook | Lead scoring, campaign attribution    |
+| Phone System           | CTI     | Call logging, click-to-dial           |
+| E-signature (DocuSign) | API     | Contract sending and tracking         |
+| Data Enrichment        | API     | Company/contact data auto-fill        |
 
 ---
 
 ## Mobile Experience
 
 ### Mobile-Specific Features
+
 - Quick contact lookup with click-to-call
 - Voice-to-text activity logging
 - Geolocation-based visit check-in
@@ -763,6 +841,6 @@ CRM permissions follow pattern: `CRM:{resource}:{action}`
 
 ---
 
-*Documentation Version: 1.0*  
-*Module Version: 1.0*  
-*Last Updated: February 2026*
+_Documentation Version: 1.0_  
+_Module Version: 1.0_  
+_Last Updated: February 2026_

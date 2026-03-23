@@ -114,10 +114,10 @@ The runtime principal includes:
 
 ## 8. Summary
 
-| Topic | Approach |
-|-------|----------|
-| Single sign-on | One Keycloak realm (`blih`), one login, one session |
-| Department handling | Authorization and data visibility only |
-| AuthZ model | RBAC + data scope |
-| Gateway strategy | Gateway verifies token and forwards trusted principal context |
-| Policy source | Core DB canonical, Keycloak as projection |
+| Topic               | Approach                                                      |
+| ------------------- | ------------------------------------------------------------- |
+| Single sign-on      | One Keycloak realm (`blih`), one login, one session           |
+| Department handling | Authorization and data visibility only                        |
+| AuthZ model         | RBAC + data scope                                             |
+| Gateway strategy    | Gateway verifies token and forwards trusted principal context |
+| Policy source       | Core DB canonical, Keycloak as projection                     |

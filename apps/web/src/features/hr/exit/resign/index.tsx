@@ -1,8 +1,14 @@
-import { exitResignRequests, exitResignStats } from "@/features/hr/exit/resign/mock-data";
-import { ResignStatsGrid, ResignationLettersSection } from "@/features/hr/exit/resign/components";
+import {
+  exitResignRequests,
+  exitResignStats,
+} from '@/features/hr/exit/resign/mock-data';
+import {
+  ResignStatsGrid,
+  ResignationLettersSection,
+} from '@/features/hr/exit/resign/components';
 
-export * from "@/features/hr/exit/resign/components";
-export * from "@/features/hr/exit/resign/types";
+export * from '@/features/hr/exit/resign/components';
+export * from '@/features/hr/exit/resign/types';
 
 export function ExitResignContent() {
   return (

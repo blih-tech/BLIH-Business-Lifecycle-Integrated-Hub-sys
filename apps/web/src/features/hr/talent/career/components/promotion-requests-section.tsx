@@ -1,12 +1,14 @@
-import type { PromotionRequest } from "@/features/hr/talent/career/types";
+import type { PromotionRequest } from '@/features/hr/talent/career/types';
 
-import { PromotionRequestCard } from "./promotion-request-card";
+import { PromotionRequestCard } from './promotion-request-card';
 
 type PromotionRequestsSectionProps = {
   items: PromotionRequest[];
 };
 
-export function PromotionRequestsSection({ items }: PromotionRequestsSectionProps) {
+export function PromotionRequestsSection({
+  items,
+}: PromotionRequestsSectionProps) {
   return (
     <section className="space-y-3">
       <p className="text-base font-medium tracking-[-0.176px] text-black">

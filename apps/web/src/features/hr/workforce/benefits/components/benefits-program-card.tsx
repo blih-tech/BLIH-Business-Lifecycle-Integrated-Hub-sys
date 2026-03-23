@@ -1,5 +1,5 @@
-import type { BenefitsProgram } from "@/features/hr/workforce/benefits/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { BenefitsProgram } from '@/features/hr/workforce/benefits/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type BenefitsProgramCardProps = {
   item: BenefitsProgram;
@@ -9,7 +9,9 @@ export function BenefitsProgramCard({ item }: BenefitsProgramCardProps) {
   return (
     <Card className="gap-0 rounded-[12px] border-border py-0 shadow-none">
       <CardContent className="space-y-2 p-4">
-        <p className="text-sm font-semibold tracking-[-0.2px] text-black">{item.title}</p>
+        <p className="text-sm font-semibold tracking-[-0.2px] text-black">
+          {item.title}
+        </p>
         <div className="space-y-1 text-xs text-[#666]">
           <div className="flex items-center justify-between">
             <span>Budget:</span>

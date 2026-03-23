@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { attendanceMemoStats, memoCards, previousMemoRows } from '@/features/hr/attendance/memo-log/mock-data';
+import {
+  attendanceMemoStats,
+  memoCards,
+  previousMemoRows,
+} from '@/features/hr/attendance/memo-log/mock-data';
 import {
   MemoRequestCard,
   PreviousMemoTable,
@@ -60,8 +64,12 @@ export function AttendanceMemoLogContent() {
 
       <section className="space-y-6">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">Memo Logs</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Punctuality logs pending approval.</p>
+          <h1 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">
+            Memo Logs
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Punctuality logs pending approval.
+          </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {memoCards.map((request) => (
@@ -72,8 +80,12 @@ export function AttendanceMemoLogContent() {
 
       <section className="space-y-6">
         <div>
-          <h2 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">Previous Memo logs</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Archived memo log records.</p>
+          <h2 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">
+            Previous Memo logs
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Archived memo log records.
+          </p>
         </div>
 
         <div className="rounded-[12px] border border-border bg-card p-4">
@@ -89,7 +101,9 @@ export function AttendanceMemoLogContent() {
               searchTerm={searchTerm}
               onSearchTermChange={setSearchTerm}
             />
-            {selectedRequest ? <SelectedMemoCard request={selectedRequest} /> : null}
+            {selectedRequest ? (
+              <SelectedMemoCard request={selectedRequest} />
+            ) : null}
           </div>
         </div>
       </section>

@@ -1,13 +1,15 @@
-import { CircleDollarSign, Clock3, Users } from "lucide-react";
+import { CircleDollarSign, Clock3, Users } from 'lucide-react';
 
-import type { WorkforceOverviewStat } from "@/features/hr/workforce/overview/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { WorkforceOverviewStat } from '@/features/hr/workforce/overview/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type WorkforceOverviewStatCardProps = {
   item: WorkforceOverviewStat;
 };
 
-export function WorkforceOverviewStatCard({ item }: WorkforceOverviewStatCardProps) {
+export function WorkforceOverviewStatCard({
+  item,
+}: WorkforceOverviewStatCardProps) {
   return (
     <Card className="gap-0 rounded-[10px] border-border py-0 shadow-none">
       <CardContent className="space-y-4 p-4">
@@ -21,19 +23,21 @@ export function WorkforceOverviewStatCard({ item }: WorkforceOverviewStatCardPro
         </div>
         <div>
           <p className="text-xs text-[#666]">{item.label}</p>
-          <p className="mt-1 text-[33px] font-semibold leading-8 tracking-[-0.3125px] text-black">{item.value}</p>
+          <p className="mt-1 text-[33px] font-semibold leading-8 tracking-[-0.3125px] text-black">
+            {item.value}
+          </p>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-function renderIcon(icon: WorkforceOverviewStat["icon"]) {
-  if (icon === "dollar") {
+function renderIcon(icon: WorkforceOverviewStat['icon']) {
+  if (icon === 'dollar') {
     return <CircleDollarSign className="h-5 w-5" />;
   }
 
-  if (icon === "users") {
+  if (icon === 'users') {
     return <Users className="h-5 w-5" />;
   }
 

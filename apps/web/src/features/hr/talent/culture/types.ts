@@ -3,7 +3,7 @@ export type CulturePolicy = {
   title: string;
   description: string;
   updatedAt: string;
-  icon: "shield" | "badge" | "users" | "zap";
+  icon: 'shield' | 'badge' | 'users' | 'zap';
 };
 
 export type CultureInitiative = {

@@ -1,6 +1,6 @@
-import type { PreviousPromotionRequest } from "@/features/hr/talent/career/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { cn } from "@/shared/lib/utils";
+import type { PreviousPromotionRequest } from '@/features/hr/talent/career/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { cn } from '@/shared/lib/utils';
 
 type PreviousPromotionCardProps = {
   item: PreviousPromotionRequest;
@@ -22,8 +22,8 @@ export function PreviousPromotionCard({ item }: PreviousPromotionCardProps) {
           </div>
           <span
             className={cn(
-              "rounded-[4px] px-1.5 py-0.5 text-[9px] font-medium text-white",
-              item.status === "approved" ? "bg-primary" : "bg-[#e7000b]",
+              'rounded-[4px] px-1.5 py-0.5 text-[9px] font-medium text-white',
+              item.status === 'approved' ? 'bg-primary' : 'bg-[#e7000b]',
             )}
           >
             {item.status}
@@ -33,7 +33,9 @@ export function PreviousPromotionCard({ item }: PreviousPromotionCardProps) {
         <div className="space-y-1 text-xs">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[#666]">From:</p>
-            <p className="font-medium text-[rgba(0,0,0,0.8)]">{item.fromRole}</p>
+            <p className="font-medium text-[rgba(0,0,0,0.8)]">
+              {item.fromRole}
+            </p>
           </div>
           <div className="flex items-center justify-between gap-3">
             <p className="text-[#666]">To:</p>

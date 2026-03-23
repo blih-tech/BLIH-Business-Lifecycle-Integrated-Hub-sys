@@ -1,10 +1,10 @@
-import { StatsGrid } from "@/features/hr/attendance/overview/components";
-import { attendanceCheckinStats } from "@/features/hr/attendance/check-in/mock-data";
+import { StatsGrid } from '@/features/hr/attendance/overview/components';
+import { attendanceCheckinStats } from '@/features/hr/attendance/check-in/mock-data';
 
-import { DailyCheckinsSection } from "./components";
+import { DailyCheckinsSection } from './components';
 
-export * from "@/features/hr/attendance/check-in/components";
-export * from "@/features/hr/attendance/check-in/types";
+export * from '@/features/hr/attendance/check-in/components';
+export * from '@/features/hr/attendance/check-in/types';
 
 export function AttendanceCheckInContent() {
   return (

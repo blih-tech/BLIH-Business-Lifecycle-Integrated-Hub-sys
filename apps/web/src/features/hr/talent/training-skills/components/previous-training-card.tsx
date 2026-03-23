@@ -1,7 +1,7 @@
-import { Award } from "lucide-react";
+import { Award } from 'lucide-react';
 
-import type { PreviousTraining } from "@/features/hr/talent/training-skills/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { PreviousTraining } from '@/features/hr/talent/training-skills/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type PreviousTrainingCardProps = {
   item: PreviousTraining;
@@ -28,7 +28,9 @@ export function PreviousTrainingCard({ item }: PreviousTrainingCardProps) {
 
         <div className="rounded-[4px] bg-[#f3f3f3] p-2">
           <p className="text-[10px] text-[#666]">{item.certificationLabel}</p>
-          <p className="text-xs font-medium text-black">{item.certificationValue}</p>
+          <p className="text-xs font-medium text-black">
+            {item.certificationValue}
+          </p>
         </div>
 
         <div className="space-y-1 text-xs">

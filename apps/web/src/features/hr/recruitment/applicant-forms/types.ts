@@ -5,4 +5,3 @@ export type CreatedApplicantForm = {
   createdAt: string;
   usedInJobs: number;
 };
-

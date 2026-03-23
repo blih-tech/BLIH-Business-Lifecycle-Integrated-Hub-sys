@@ -1,6 +1,6 @@
-import type { TrainingSkillsStat } from "@/features/hr/talent/training-skills/types";
+import type { TrainingSkillsStat } from '@/features/hr/talent/training-skills/types';
 
-import { StatsCard } from "./stats-card";
+import { StatsCard } from './stats-card';
 
 type StatsGridProps = {
   items: TrainingSkillsStat[];

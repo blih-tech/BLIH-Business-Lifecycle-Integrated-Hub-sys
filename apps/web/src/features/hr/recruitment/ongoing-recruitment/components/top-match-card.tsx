@@ -1,6 +1,6 @@
-import { Medal } from "lucide-react";
+import { Medal } from 'lucide-react';
 
-import type { OngoingTopMatch } from "@/features/hr/recruitment/ongoing-recruitment/types";
+import type { OngoingTopMatch } from '@/features/hr/recruitment/ongoing-recruitment/types';
 
 type TopMatchCardProps = {
   topMatch: OngoingTopMatch;
@@ -23,20 +23,30 @@ export function TopMatchCard({ topMatch }: TopMatchCardProps) {
 
       <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5">
         <div>
-          <p className="text-base font-semibold tracking-[-0.3125px] text-black">{topMatch.fullName}</p>
+          <p className="text-base font-semibold tracking-[-0.3125px] text-black">
+            {topMatch.fullName}
+          </p>
           <p className="text-[11px] leading-4 text-[#666]">{topMatch.phone}</p>
         </div>
         <div>
           <p className="text-[11px] leading-4 text-[#666]">Experience</p>
-          <p className="text-sm font-semibold tracking-[-0.1504px] text-black">{topMatch.experience}</p>
+          <p className="text-sm font-semibold tracking-[-0.1504px] text-black">
+            {topMatch.experience}
+          </p>
         </div>
         <div>
-          <p className="text-[11px] leading-4 text-[#666]">Salary Expectation</p>
-          <p className="text-sm font-semibold tracking-[-0.1504px] text-black">{topMatch.salaryExpectation}</p>
+          <p className="text-[11px] leading-4 text-[#666]">
+            Salary Expectation
+          </p>
+          <p className="text-sm font-semibold tracking-[-0.1504px] text-black">
+            {topMatch.salaryExpectation}
+          </p>
         </div>
         <div>
           <p className="text-[11px] leading-4 text-[#666]">Can Start</p>
-          <p className="text-sm font-semibold tracking-[-0.1504px] text-black">{topMatch.canStart}</p>
+          <p className="text-sm font-semibold tracking-[-0.1504px] text-black">
+            {topMatch.canStart}
+          </p>
         </div>
       </div>
     </article>

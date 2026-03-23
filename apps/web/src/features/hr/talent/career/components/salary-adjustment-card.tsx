@@ -1,6 +1,6 @@
-import type { SalaryAdjustmentRequest } from "@/features/hr/talent/career/types";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { SalaryAdjustmentRequest } from '@/features/hr/talent/career/types';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type SalaryAdjustmentCardProps = {
   item: SalaryAdjustmentRequest;
@@ -39,7 +39,11 @@ export function SalaryAdjustmentCard({ item }: SalaryAdjustmentCardProps) {
           <Button size="sm" className="h-8 rounded-[6px] text-xs">
             Approve
           </Button>
-          <Button size="sm" variant="outline" className="h-8 rounded-[6px] border-border bg-white text-xs text-black">
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 rounded-[6px] border-border bg-white text-xs text-black"
+          >
             Reject
           </Button>
         </div>

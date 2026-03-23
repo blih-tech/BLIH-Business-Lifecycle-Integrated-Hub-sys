@@ -1,6 +1,13 @@
-import { ROLES, type Role } from "@/shared/constants/roles";
+import { ROLES, type Role } from '@/shared/constants/roles';
 
-export const DASHBOARD_KEYS = ["superadmin", "hr", "finance", "pm", "crm", "brain"] as const;
+export const DASHBOARD_KEYS = [
+  'superadmin',
+  'hr',
+  'finance',
+  'pm',
+  'crm',
+  'brain',
+] as const;
 export type DashboardKey = (typeof DASHBOARD_KEYS)[number];
 
 const DASHBOARD_ROLE_MATCHERS: Record<DashboardKey, Role[]> = {
@@ -13,12 +20,12 @@ const DASHBOARD_ROLE_MATCHERS: Record<DashboardKey, Role[]> = {
 };
 
 const DASHBOARD_PRIORITY: DashboardKey[] = [
-  "superadmin",
-  "hr",
-  "finance",
-  "pm",
-  "crm",
-  "brain",
+  'superadmin',
+  'hr',
+  'finance',
+  'pm',
+  'crm',
+  'brain',
 ];
 
 export function getDashboardKey(roles: Role[]): DashboardKey | null {
@@ -37,7 +44,10 @@ export function getDashboardPath(roles: Role[]): string | null {
   return key ? `/dashboard/${key}` : null;
 }
 
-export function isAuthorizedForDashboard(key: DashboardKey, roles: Role[]): boolean {
+export function isAuthorizedForDashboard(
+  key: DashboardKey,
+  roles: Role[],
+): boolean {
   const roleSet = new Set<Role>(roles);
   return DASHBOARD_ROLE_MATCHERS[key].some((role) => roleSet.has(role));
 }

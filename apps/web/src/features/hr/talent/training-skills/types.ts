@@ -2,7 +2,7 @@ export type TrainingSkillsStat = {
   id: string;
   label: string;
   value: string;
-  icon: "clock" | "check" | "trend" | "badge";
+  icon: 'clock' | 'check' | 'trend' | 'badge';
 };
 
 export type TrainingRequest = {
@@ -36,7 +36,7 @@ export type SkillGapAssessment = {
   initials: string;
   name: string;
   department: string;
-  status: "ongoing" | "completed";
+  status: 'ongoing' | 'completed';
   skillArea: string;
   progress?: number;
   dueDate?: string;
@@ -44,7 +44,7 @@ export type SkillGapAssessment = {
   recommendedActions?: string[];
 };
 
-export type RecommendationPriority = "high" | "medium" | "low";
+export type RecommendationPriority = 'high' | 'medium' | 'low';
 
 export type TrainingRecommendation = {
   id: string;

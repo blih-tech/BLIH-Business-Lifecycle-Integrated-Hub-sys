@@ -1,7 +1,7 @@
-import type { ProgressSummaryStat } from "@/features/hr/onboarding/progress/types";
+import type { ProgressSummaryStat } from '@/features/hr/onboarding/progress/types';
 
 export type ContractSummaryStat = ProgressSummaryStat & {
-  icon: "file" | "mail" | "clock";
+  icon: 'file' | 'mail' | 'clock';
 };
 
 export type EmploymentContract = {

@@ -2,17 +2,17 @@ import {
   activeCultureInitiatives,
   cultureImpactMetrics,
   culturePolicies,
-} from "@/features/hr/talent/culture/mock-data";
+} from '@/features/hr/talent/culture/mock-data';
 import {
   ActiveInitiativesHeader,
   CultureHeader,
   CultureImpactMetrics,
   CultureInitiativesGrid,
   PoliciesGrid,
-} from "@/features/hr/talent/culture/components";
+} from '@/features/hr/talent/culture/components';
 
-export * from "@/features/hr/talent/culture/components";
-export * from "@/features/hr/talent/culture/types";
+export * from '@/features/hr/talent/culture/components';
+export * from '@/features/hr/talent/culture/types';
 
 export function TalentCultureContent() {
   return (

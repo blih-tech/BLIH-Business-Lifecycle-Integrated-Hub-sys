@@ -1,6 +1,6 @@
-import { Expand, Search, ZoomIn, ZoomOut } from "lucide-react";
+import { Expand, Search, ZoomIn, ZoomOut } from 'lucide-react';
 
-import { Button } from "@/shared/components/ui/button";
+import { Button } from '@/shared/components/ui/button';
 
 type OrganogramToolbarProps = {
   zoomPercent: number;
@@ -20,7 +20,13 @@ export function OrganogramToolbar({
   return (
     <div className="flex items-center gap-2">
       <div className="flex h-8 items-center rounded-[6px] border border-[#e5e5e5] bg-white px-1">
-        <Button type="button" variant="ghost" size="icon-xs" className="text-[#666]" onClick={onZoomOut}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          className="text-[#666]"
+          onClick={onZoomOut}
+        >
           <ZoomOut className="h-3.5 w-3.5" />
         </Button>
         <Button
@@ -33,7 +39,13 @@ export function OrganogramToolbar({
           <Search className="mr-1 h-3.5 w-3.5" />
           {zoomPercent}%
         </Button>
-        <Button type="button" variant="ghost" size="icon-xs" className="text-[#666]" onClick={onZoomIn}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          className="text-[#666]"
+          onClick={onZoomIn}
+        >
           <ZoomIn className="h-3.5 w-3.5" />
         </Button>
       </div>

@@ -3,7 +3,7 @@ export type TalentApprovalRequest = {
   initials: string;
   name: string;
   department: string;
-  priority: "low" | "medium" | "high";
+  priority: 'low' | 'medium' | 'high';
   requestType: string;
   title: string;
   dueDate: string;
@@ -13,7 +13,7 @@ export type TalentOverviewStat = {
   id: string;
   label: string;
   value: string;
-  icon: "career" | "training" | "culture" | "pending";
+  icon: 'career' | 'training' | 'culture' | 'pending';
 };
 
 export type HotDisciplineIssue = {

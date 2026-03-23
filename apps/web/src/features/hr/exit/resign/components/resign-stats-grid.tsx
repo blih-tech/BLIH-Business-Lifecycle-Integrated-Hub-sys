@@ -1,6 +1,6 @@
-import type { ExitResignStatItem } from "@/features/hr/exit/resign/types";
+import type { ExitResignStatItem } from '@/features/hr/exit/resign/types';
 
-import { ResignStatsCard } from "./resign-stats-card";
+import { ResignStatsCard } from './resign-stats-card';
 
 type ResignStatsGridProps = {
   items: ExitResignStatItem[];

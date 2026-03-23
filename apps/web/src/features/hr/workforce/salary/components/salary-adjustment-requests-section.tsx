@@ -1,15 +1,17 @@
-import { DollarSign } from "lucide-react";
+import { DollarSign } from 'lucide-react';
 
-import type { SalaryAdjustmentRequest } from "@/features/hr/workforce/salary/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { SalaryAdjustmentRequest } from '@/features/hr/workforce/salary/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
-import { SalaryAdjustmentRequestCard } from "./salary-adjustment-request-card";
+import { SalaryAdjustmentRequestCard } from './salary-adjustment-request-card';
 
 type SalaryAdjustmentRequestsSectionProps = {
   items: SalaryAdjustmentRequest[];
 };
 
-export function SalaryAdjustmentRequestsSection({ items }: SalaryAdjustmentRequestsSectionProps) {
+export function SalaryAdjustmentRequestsSection({
+  items,
+}: SalaryAdjustmentRequestsSectionProps) {
   return (
     <Card className="gap-0 rounded-[12px] border-2 border-primary py-0 shadow-none">
       <CardContent className="space-y-4 p-4">

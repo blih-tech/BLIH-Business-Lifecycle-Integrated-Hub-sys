@@ -3,7 +3,7 @@ export type PerformanceStatItem = {
   label: string;
   value: string;
   delta: string;
-  icon: "trending-up" | "star" | "target" | "clock-3";
+  icon: 'trending-up' | 'star' | 'target' | 'clock-3';
 };
 
 export type TopEmployee = {
@@ -41,5 +41,5 @@ export type InsightCard = {
   title: string;
   value: string;
   detail: string;
-  icon: "zap" | "users" | "target";
+  icon: 'zap' | 'users' | 'target';
 };

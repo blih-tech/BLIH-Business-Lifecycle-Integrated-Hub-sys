@@ -1,8 +1,8 @@
-import { ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 
-import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
-import { Badge } from "@/shared/components/ui/badge";
+import type { ActiveJobItem } from '@/features/hr/recruitment/active-posting/types';
+import { Badge } from '@/shared/components/ui/badge';
 
 type JobDetailTabProps = {
   job: ActiveJobItem;
@@ -18,19 +18,19 @@ type EmployeeCardProps = {
 function getInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   const initials = parts.slice(0, 2).map((part) => part[0]!.toUpperCase());
-  return initials.join("") || "--";
+  return initials.join('') || '--';
 }
 
-function priorityLabel(value: ActiveJobItem["priority"]) {
-  if (value === "high") return "High";
-  if (value === "medium") return "Medium";
-  return "Low";
+function priorityLabel(value: ActiveJobItem['priority']) {
+  if (value === 'high') return 'High';
+  if (value === 'medium') return 'Medium';
+  return 'Low';
 }
 
-function priorityClass(value: ActiveJobItem["priority"]) {
-  if (value === "high") return "border-[#1e66f7] text-[#1e66f7]";
-  if (value === "medium") return "border-black text-black";
-  return "border-[#e5e5e5] text-[#666]";
+function priorityClass(value: ActiveJobItem['priority']) {
+  if (value === 'high') return 'border-[#1e66f7] text-[#1e66f7]';
+  if (value === 'medium') return 'border-black text-black';
+  return 'border-[#e5e5e5] text-[#666]';
 }
 
 function EmployeeCard({
@@ -159,7 +159,10 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
               Importance of this Hire
             </h3>
             {job.importanceOfHire.map((item, index) => (
-              <p key={`${item}-${index}`} className="text-sm leading-5 text-[#666]">
+              <p
+                key={`${item}-${index}`}
+                className="text-sm leading-5 text-[#666]"
+              >
                 {item}
               </p>
             ))}
@@ -178,7 +181,7 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
               Hiring Committee
             </p>
             <ChevronUp
-              className={`h-4 w-4 text-[#1e66f7] ${committeeOpen ? "" : "rotate-180"}`}
+              className={`h-4 w-4 text-[#1e66f7] ${committeeOpen ? '' : 'rotate-180'}`}
             />
           </button>
           {committeeOpen ? (
@@ -206,7 +209,7 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
                 Revisions From
               </p>
               <ChevronUp
-                className={`h-4 w-4 text-[#1e66f7] ${revisionsOpen ? "" : "rotate-180"}`}
+                className={`h-4 w-4 text-[#1e66f7] ${revisionsOpen ? '' : 'rotate-180'}`}
               />
             </button>
             {revisionsOpen ? (
@@ -243,7 +246,7 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
                 Approved By
               </p>
               <ChevronUp
-                className={`h-4 w-4 text-[#1e66f7] ${approvedOpen ? "" : "rotate-180"}`}
+                className={`h-4 w-4 text-[#1e66f7] ${approvedOpen ? '' : 'rotate-180'}`}
               />
             </button>
             {approvedOpen ? (
@@ -272,7 +275,6 @@ export function JobDetailTab({ job }: JobDetailTabProps) {
           </div>
         </div>
       </div>
-
     </section>
   );
 }

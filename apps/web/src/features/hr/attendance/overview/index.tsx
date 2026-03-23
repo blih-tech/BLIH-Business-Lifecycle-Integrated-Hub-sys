@@ -2,15 +2,15 @@ import {
   ActivityChart,
   PerformanceCard,
   StatsGrid,
-} from "@/features/hr/attendance/overview/components";
+} from '@/features/hr/attendance/overview/components';
 import {
   activityPresenceData,
   attendanceStats,
   performanceCards,
-} from "@/features/hr/attendance/overview/mock-data";
+} from '@/features/hr/attendance/overview/mock-data';
 
-export * from "@/features/hr/attendance/overview/components";
-export * from "@/features/hr/attendance/overview/types";
+export * from '@/features/hr/attendance/overview/components';
+export * from '@/features/hr/attendance/overview/types';
 
 export function AttendanceOverviewContent() {
   return (
@@ -18,7 +18,9 @@ export function AttendanceOverviewContent() {
       <StatsGrid items={attendanceStats} />
 
       <section className="rounded-[12px] border border-border bg-white p-4">
-        <p className="text-sm tracking-[-0.3125px] text-black">Work Hours Performance</p>
+        <p className="text-sm tracking-[-0.3125px] text-black">
+          Work Hours Performance
+        </p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {performanceCards.map((stat) => (
             <PerformanceCard key={stat.id} stat={stat} />

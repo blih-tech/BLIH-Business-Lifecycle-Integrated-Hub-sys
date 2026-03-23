@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Authentication & Authorization](#1-authentication--authorization)
 2. [Common Response Formats](#2-common-response-formats)
 3. [Error Handling](#3-error-handling)
@@ -28,12 +29,12 @@
 
 ### 1.1 Authentication Methods
 
-| Method | Use Case | Security Level |
-|--------|-----------|----------------|
-| **JWT Bearer Token** | API calls, mobile apps | High |
-| **OAuth 2.0** | Third-party integrations | High |
-| **API Key** | Service-to-service | Medium |
-| **Session Cookie** | Web application | High |
+| Method               | Use Case                 | Security Level |
+| -------------------- | ------------------------ | -------------- |
+| **JWT Bearer Token** | API calls, mobile apps   | High           |
+| **OAuth 2.0**        | Third-party integrations | High           |
+| **API Key**          | Service-to-service       | Medium         |
+| **Session Cookie**   | Web application          | High           |
 
 ### 1.2 JWT Token Structure
 
@@ -42,11 +43,7 @@
   "sub": "user-uuid",
   "email": "user@company.com",
   "roles": ["HR_MANAGER", "EMPLOYEE"],
-  "permissions": [
-    "core:user:view",
-    "core:user:update",
-    "hr:employee:view"
-  ],
+  "permissions": ["core:user:view", "core:user:update", "hr:employee:view"],
   "orgId": "org-uuid",
   "sessionId": "session-uuid",
   "iat": 1640991600,
@@ -165,16 +162,16 @@ redirect_uri=https://your-app.com/callback
 
 ### 3.1 Error Codes
 
-| Code | HTTP Status | Description |
-|-------|-------------|-------------|
-| `UNAUTHORIZED` | 401 | Invalid or expired authentication |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `VALIDATION_ERROR` | 400 | Request validation failed |
-| `CONFLICT` | 409 | Resource conflict (duplicate) |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Server error |
-| `SERVICE_UNAVAILABLE` | 503 | Service temporarily unavailable |
+| Code                  | HTTP Status | Description                       |
+| --------------------- | ----------- | --------------------------------- |
+| `UNAUTHORIZED`        | 401         | Invalid or expired authentication |
+| `FORBIDDEN`           | 403         | Insufficient permissions          |
+| `NOT_FOUND`           | 404         | Resource not found                |
+| `VALIDATION_ERROR`    | 400         | Request validation failed         |
+| `CONFLICT`            | 409         | Resource conflict (duplicate)     |
+| `RATE_LIMIT_EXCEEDED` | 429         | Too many requests                 |
+| `INTERNAL_ERROR`      | 500         | Server error                      |
+| `SERVICE_UNAVAILABLE` | 503         | Service temporarily unavailable   |
 
 ### 3.2 Retry Strategy
 
@@ -184,7 +181,7 @@ const retryConfig = {
   retryDelay: (attempt) => Math.pow(2, attempt) * 1000, // Exponential backoff
   retryCondition: (error) => {
     return error.status >= 500 || error.status === 429;
-  }
+  },
 };
 ```
 
@@ -194,13 +191,13 @@ const retryConfig = {
 
 ### 4.1 Rate Limits by Endpoint
 
-| Endpoint Category | Limit | Window | Burst |
-|------------------|--------|--------|-------|
-| Authentication | 5 requests | 1 minute | 10 |
-| User Management | 100 requests | 1 minute | 150 |
-| Audit Logs | 200 requests | 1 minute | 300 |
-| Notifications | 50 requests | 1 minute | 75 |
-| Configuration | 20 requests | 1 minute | 30 |
+| Endpoint Category | Limit        | Window   | Burst |
+| ----------------- | ------------ | -------- | ----- |
+| Authentication    | 5 requests   | 1 minute | 10    |
+| User Management   | 100 requests | 1 minute | 150   |
+| Audit Logs        | 200 requests | 1 minute | 300   |
+| Notifications     | 50 requests  | 1 minute | 75    |
+| Configuration     | 20 requests  | 1 minute | 30    |
 
 ### 4.2 Rate Limit Headers
 
@@ -218,11 +215,13 @@ X-RateLimit-Retry-After: 60
 ### 5.1 Authentication
 
 #### Login
+
 ```http
 POST /api/v1/core/auth/login
 ```
 
 **Request Body:**
+
 ```json
 {
   "email": "user@company.com",
@@ -238,6 +237,7 @@ POST /api/v1/core/auth/login
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -266,11 +266,13 @@ POST /api/v1/core/auth/login
 ```
 
 #### Logout
+
 ```http
 POST /api/v1/core/auth/logout
 ```
 
 **Request Body:**
+
 ```json
 {
   "refreshToken": "jwt-refresh-token",
@@ -279,11 +281,13 @@ POST /api/v1/core/auth/logout
 ```
 
 #### Refresh Token
+
 ```http
 POST /api/v1/core/auth/refresh
 ```
 
 **Request Body:**
+
 ```json
 {
   "refreshToken": "jwt-refresh-token"
@@ -293,11 +297,13 @@ POST /api/v1/core/auth/refresh
 ### 5.2 Multi-Factor Authentication
 
 #### Enable MFA
+
 ```http
 POST /api/v1/core/auth/mfa/enable
 ```
 
 **Request Body:**
+
 ```json
 {
   "method": "TOTP", // TOTP, SMS, EMAIL
@@ -306,27 +312,26 @@ POST /api/v1/core/auth/mfa/enable
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "qrCode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
     "secret": "JBSWY3DPEHPK3PXP", // For manual entry
-    "backupCodes": [
-      "12345678",
-      "87654321",
-      "11112222"
-    ]
+    "backupCodes": ["12345678", "87654321", "11112222"]
   }
 }
 ```
 
 #### Verify MFA Setup
+
 ```http
 POST /api/v1/core/auth/mfa/verify
 ```
 
 **Request Body:**
+
 ```json
 {
   "code": "123456",
@@ -355,6 +360,7 @@ GET /api/v1/core/users
 | department | string | Filter by department |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -392,6 +398,7 @@ POST /api/v1/core/users
 ```
 
 **Request Body:**
+
 ```json
 {
   "email": "new.user@company.com",
@@ -414,6 +421,7 @@ PUT /api/v1/core/users/:id
 ```
 
 **Request Body:**
+
 ```json
 {
   "firstName": "Updated",
@@ -431,6 +439,7 @@ DELETE /api/v1/core/users/:id
 ```
 
 **Request Body:**
+
 ```json
 {
   "reason": "Employee termination",
@@ -446,6 +455,7 @@ GET /api/v1/core/users/:id/profile
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -504,6 +514,7 @@ GET /api/v1/core/roles
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -535,6 +546,7 @@ POST /api/v1/core/roles
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "PROJECT_MANAGER",
@@ -557,6 +569,7 @@ GET /api/v1/core/permissions
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -582,6 +595,7 @@ POST /api/v1/core/users/:userId/roles
 ```
 
 **Request Body:**
+
 ```json
 {
   "roleId": "role-uuid",
@@ -602,6 +616,7 @@ GET /api/v1/core/organization
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -640,6 +655,7 @@ GET /api/v1/core/departments
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -687,6 +703,7 @@ GET /api/v1/core/audit/logs
 | result | string | Filter by result (SUCCESS, FAILURE) |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -729,6 +746,7 @@ POST /api/v1/core/audit/export
 ```
 
 **Request Body:**
+
 ```json
 {
   "startDate": "2026-02-01",
@@ -760,6 +778,7 @@ GET /api/v1/core/notifications
 | page | integer | Page number |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -800,6 +819,7 @@ POST /api/v1/core/notifications/send
 ```
 
 **Request Body:**
+
 ```json
 {
   "recipients": [
@@ -836,6 +856,7 @@ GET /api/v1/core/settings
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -876,6 +897,7 @@ PUT /api/v1/core/settings
 ```
 
 **Request Body:**
+
 ```json
 {
   "authentication": {
@@ -906,6 +928,7 @@ POST /api/v1/core/webhooks
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "User Activity Webhook",
@@ -929,6 +952,7 @@ POST /api/v1/core/webhooks
 ### 12.3 Webhook Event Payloads
 
 **User Created Event:**
+
 ```json
 {
   "event": "user.created",
@@ -959,6 +983,7 @@ GET /api/v1/core/health
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -997,6 +1022,7 @@ GET /api/v1/core/metrics
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1036,33 +1062,33 @@ import { CoreAPI } from '@blih/core-sdk';
 
 const coreApi = new CoreAPI({
   baseURL: 'https://your-domain.com/api/v1/core',
-  token: 'your-jwt-token'
+  token: 'your-jwt-token',
 });
 
 // User management
 const users = await coreApi.users.list({
   role: 'EMPLOYEE',
-  status: 'ACTIVE'
+  status: 'ACTIVE',
 });
 
 const newUser = await coreApi.users.create({
   email: 'new.user@company.com',
   firstName: 'New',
   lastName: 'User',
-  roles: ['EMPLOYEE']
+  roles: ['EMPLOYEE'],
 });
 
 // Authentication
 const login = await coreApi.auth.login({
   email: 'user@company.com',
-  password: 'password'
+  password: 'password',
 });
 
 // Audit logs
 const auditLogs = await coreApi.audit.logs({
   startDate: '2026-02-01',
   endDate: '2026-02-29',
-  action: 'hr.employee.*'
+  action: 'hr.employee.*',
 });
 ```
 
@@ -1132,6 +1158,6 @@ curl -X POST https://your-webhook-url.com/webhooks \
 
 ---
 
-*Core API Version: 1.0*  
-*Last Updated: February 2026*  
-*For API support: api-support@blih.com*
+_Core API Version: 1.0_  
+_Last Updated: February 2026_  
+_For API support: api-support@blih.com_

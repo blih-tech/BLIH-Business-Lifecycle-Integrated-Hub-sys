@@ -3,16 +3,16 @@ import {
   previousPromotionRequests,
   promotionRequests,
   salaryAdjustmentRequests,
-} from "@/features/hr/talent/career/mock-data";
+} from '@/features/hr/talent/career/mock-data';
 import {
   PreviousPromotionSection,
   PromotionRequestsSection,
   SalaryAdjustmentsSection,
   StatsGrid,
-} from "@/features/hr/talent/career/components";
+} from '@/features/hr/talent/career/components';
 
-export * from "@/features/hr/talent/career/components";
-export * from "@/features/hr/talent/career/types";
+export * from '@/features/hr/talent/career/components';
+export * from '@/features/hr/talent/career/types';
 
 export function TalentCareerContent() {
   return (

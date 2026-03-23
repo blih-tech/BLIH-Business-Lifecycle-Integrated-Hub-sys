@@ -21,13 +21,13 @@
 
 ### 1.1 Supported Integrations
 
-| Integration | Provider | Protocol | Sync Type | Status |
-|-------------|----------|----------|-----------|--------|
-| **Email** | Gmail, Outlook 365 | OAuth 2.0 | Bi-directional | ✅ Active |
-| **Calendar** | Google Calendar, Outlook | OAuth 2.0 | Bi-directional | ✅ Active |
-| **CRM Import** | Salesforce, HubSpot | REST API | One-time/Scheduled | ✅ Active |
-| **Marketing** | Mailchimp, SendGrid | Webhook + API | One-way (CRM→Tool) | ✅ Active |
-| **Social Media** | LinkedIn, Twitter | OAuth 2.0 | Read-only | 🚧 Beta |
+| Integration      | Provider                 | Protocol      | Sync Type          | Status    |
+| ---------------- | ------------------------ | ------------- | ------------------ | --------- |
+| **Email**        | Gmail, Outlook 365       | OAuth 2.0     | Bi-directional     | ✅ Active |
+| **Calendar**     | Google Calendar, Outlook | OAuth 2.0     | Bi-directional     | ✅ Active |
+| **CRM Import**   | Salesforce, HubSpot      | REST API      | One-time/Scheduled | ✅ Active |
+| **Marketing**    | Mailchimp, SendGrid      | Webhook + API | One-way (CRM→Tool) | ✅ Active |
+| **Social Media** | LinkedIn, Twitter        | OAuth 2.0     | Read-only          | 🚧 Beta   |
 
 ### 1.2 Integration Architecture
 
@@ -58,6 +58,7 @@
    - Add authorized redirect URI: `https://your-blih-instance.com/api/v1/integrations/gmail/callback`
 
 2. **Configure BLIH**
+
 ```bash
 # Environment variables
 GMAIL_CLIENT_ID=your_client_id
@@ -66,6 +67,7 @@ GMAIL_REDIRECT_URI=https://your-blih-instance.com/api/v1/integrations/gmail/call
 ```
 
 3. **User Authorization Flow**
+
 ```typescript
 // Step 1: Initiate OAuth flow
 GET /api/v1/integrations/gmail/authorize
@@ -92,11 +94,13 @@ POST /api/v1/integrations/gmail/callback
 **Features:**
 
 ✅ **Automatic Email Sync**
+
 - Sync emails with CRM contacts
 - Create communication records automatically
 - Attach emails to customer/deal records
 
 ✅ **Send Emails from BLIH**
+
 ```typescript
 POST /api/v1/crm/customers/:id/send-email
 {
@@ -107,6 +111,7 @@ POST /api/v1/crm/customers/:id/send-email
 ```
 
 ✅ **Email Templates**
+
 - Pre-built templates with variables
 - Track open rates and clicks
 - Schedule emails for later
@@ -117,19 +122,16 @@ POST /api/v1/crm/customers/:id/send-email
 
 ```typescript
 // Microsoft Graph API configuration
-OUTLOOK_CLIENT_ID=your_client_id
-OUTLOOK_CLIENT_SECRET=your_client_secret
-OUTLOOK_TENANT_ID=your_tenant_id
+OUTLOOK_CLIENT_ID = your_client_id;
+OUTLOOK_CLIENT_SECRET = your_client_secret;
+OUTLOOK_TENANT_ID = your_tenant_id;
 
 // OAuth 2.0 Scopes
-const scopes = [
-  'Mail.Read',
-  'Mail.Send',
-  'Mail.ReadWrite'
-];
+const scopes = ['Mail.Read', 'Mail.Send', 'Mail.ReadWrite'];
 ```
 
 **API Endpoint:**
+
 ```http
 GET /api/v1/integrations/outlook/authorize
 ```
@@ -142,14 +144,14 @@ GET /api/v1/integrations/outlook/authorize
 {
   "sync_settings": {
     "enabled": true,
-    "sync_frequency": "realtime",  // or "hourly", "daily"
+    "sync_frequency": "realtime", // or "hourly", "daily"
     "sync_direction": "bidirectional",
     "auto_create_contacts": true,
     "sync_folders": ["INBOX", "Sent"],
     "exclude_folders": ["Spam", "Trash"],
     "date_range": {
       "from": "2026-01-01",
-      "to": null  // null = ongoing
+      "to": null // null = ongoing
     }
   }
 }
@@ -162,18 +164,21 @@ GET /api/v1/integrations/outlook/authorize
 ### 3.1 Google Calendar
 
 **Setup:**
+
 ```bash
 GOOGLE_CALENDAR_CLIENT_ID=your_client_id
 GOOGLE_CALENDAR_CLIENT_SECRET=your_client_secret
 ```
 
 **OAuth Scopes:**
+
 - `calendar.events.readonly` - Read events
 - `calendar.events` - Create/modify events
 
 **Features:**
 
 ✅ **Two-Way Sync**
+
 ```typescript
 // CRM Activity → Google Calendar Event
 POST /api/v1/crm/activities
@@ -191,16 +196,18 @@ POST /api/v1/crm/activities
 ```
 
 ✅ **Calendar Event → CRM Activity**
+
 - Events with `[CRM]` tag auto-sync to BLIH
 - Example: `[CRM] Meeting with John Doe`
 
 **Sync Rules:**
+
 ```json
 {
   "calendar_sync": {
     "tag_filter": "[CRM]",
     "auto_link_contacts": true,
-    "privacy": "confidential",  // Hide details in calendar
+    "privacy": "confidential", // Hide details in calendar
     "reminder_offset_minutes": 15
   }
 }
@@ -209,11 +216,13 @@ POST /api/v1/crm/activities
 ### 3.2 Outlook Calendar
 
 **Microsoft Graph API:**
+
 ```http
 GET /api/v1/integrations/outlook-calendar/authorize
 ```
 
 **Scopes:**
+
 - `Calendars.Read`
 - `Calendars.ReadWrite`
 
@@ -232,6 +241,7 @@ POST /api/v1/integrations/salesforce/import
 ```
 
 **Request:**
+
 ```json
 {
   "salesforce_instance": "https://yourcompany.salesforce.com",
@@ -246,6 +256,7 @@ POST /api/v1/integrations/salesforce/import
 ```
 
 **Response:**
+
 ```json
 {
   "job_id": "import_job_123",
@@ -272,20 +283,23 @@ POST /api/v1/integrations/hubspot/import
 ```
 
 **Request:**
+
 ```json
 {
   "api_key": "your_hubspot_api_key",
   "objects": ["companies", "contacts", "deals"],
-  "sync_mode": "incremental"  // or "full"
+  "sync_mode": "incremental" // or "full"
 }
 ```
 
 **Webhook Setup (Real-time sync):**
+
 ```http
 POST /api/v1/integrations/hubspot/webhook
 ```
 
 HubSpot webhooks notify BLIH of:
+
 - New company created
 - Contact updated
 - Deal stage changed
@@ -300,11 +314,13 @@ Content-Type: multipart/form-data
 ```
 
 **Form Data:**
+
 - `file`: CSV/Excel file
 - `mapping`: JSON field mapping
 - `duplicate_handling`: `skip` | `update` | `create_new`
 
 **Example Mapping:**
+
 ```json
 {
   "mapping": {
@@ -324,17 +340,20 @@ Content-Type: multipart/form-data
 ### 5.1 Mailchimp Integration
 
 **Setup:**
+
 ```bash
 MAILCHIMP_API_KEY=your_api_key
 MAILCHIMP_SERVER_PREFIX=us1  # From your Mailchimp account
 ```
 
 **Sync Customers to Mailchimp Audience:**
+
 ```http
 POST /api/v1/integrations/mailchimp/sync
 ```
 
 **Request:**
+
 ```json
 {
   "audience_id": "mailchimp_list_123",
@@ -342,11 +361,12 @@ POST /api/v1/integrations/mailchimp/sync
     "status": "CUSTOMER",
     "tags": ["enterprise"]
   },
-  "sync_mode": "add_only"  // or "bidirectional"
+  "sync_mode": "add_only" // or "bidirectional"
 }
 ```
 
 **Webhook (Campaign Activity → CRM):**
+
 - Track email opens
 - Track link clicks
 - Update customer engagement score
@@ -354,6 +374,7 @@ POST /api/v1/integrations/mailchimp/sync
 ### 5.2 SendGrid Integration
 
 **Email Campaigns:**
+
 ```typescript
 POST /api/v1/integrations/sendgrid/campaign
 {
@@ -375,16 +396,19 @@ POST /api/v1/integrations/sendgrid/campaign
 ### 6.1 LinkedIn Integration (Beta)
 
 **Features:**
+
 - Import LinkedIn connections as leads
 - Track LinkedIn InMail conversations
 - Post updates from BLIH
 
 **Setup:**
+
 ```http
 GET /api/v1/integrations/linkedin/authorize
 ```
 
 **Scopes:**
+
 - `r_basicprofile`
 - `r_emailaddress`
 - `w_member_social`
@@ -408,11 +432,13 @@ POST /api/v1/integrations/twitter/monitor
 ### OAuth Token Management
 
 **Token Storage:**
+
 - All OAuth tokens encrypted in HashiCorp Vault
 - Automatic token refresh before expiry
 - Token rotation every 90 days
 
 **Audit Logging:**
+
 ```typescript
 // All integration actions logged
 {
@@ -426,12 +452,12 @@ POST /api/v1/integrations/twitter/monitor
 
 ### Rate Limiting
 
-| Provider | Rate Limit | BLIH Throttling |
-|----------|------------|-----------------|
-| Gmail API | 250 req/sec | 50 req/sec |
-| Google Calendar | 500 req/100sec | 100 req/100sec |
-| Outlook | 10,000 req/10min | 2,000 req/10min |
-| Salesforce | 100,000 req/24hr | 20,000 req/24hr |
+| Provider        | Rate Limit       | BLIH Throttling |
+| --------------- | ---------------- | --------------- |
+| Gmail API       | 250 req/sec      | 50 req/sec      |
+| Google Calendar | 500 req/100sec   | 100 req/100sec  |
+| Outlook         | 10,000 req/10min | 2,000 req/10min |
+| Salesforce      | 100,000 req/24hr | 20,000 req/24hr |
 
 ---
 
@@ -440,6 +466,7 @@ POST /api/v1/integrations/twitter/monitor
 ### Common Issues
 
 **Gmail Sync Not Working:**
+
 ```bash
 # Check token validity
 GET /api/v1/integrations/gmail/status
@@ -452,6 +479,7 @@ GET /api/v1/integrations/gmail/authorize
 ```
 
 **Calendar Events Not Syncing:**
+
 - Verify `[CRM]` tag is present
 - Check sync settings: `GET /api/v1/integrations/calendar/settings`
 - Review sync logs: `GET /api/v1/integrations/calendar/logs`
@@ -459,6 +487,7 @@ GET /api/v1/integrations/gmail/authorize
 ---
 
 **Related Documentation:**
+
 - [CRM_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/CRM_API.md) - CRM API reference
 - [CRM_SECURITY.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/security/CRM_SECURITY.md) - Security controls
 - [MODULE_CRM.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/modules/MODULE_CRM.md) - CRM features

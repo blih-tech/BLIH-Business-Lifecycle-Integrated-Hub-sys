@@ -27,13 +27,15 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
     () => ({
       '/dashboard/hr/recruitment/requests': {
         label: 'Create New Request',
-        onClick: () => router.push('/dashboard/hr/recruitment/requests?create=new-request'),
+        onClick: () =>
+          router.push('/dashboard/hr/recruitment/requests?create=new-request'),
       },
     }),
     [router],
   );
 
-  const createAction = createActionByPath[pathname as keyof typeof createActionByPath];
+  const createAction =
+    createActionByPath[pathname as keyof typeof createActionByPath];
 
   React.useEffect(() => {
     setSubnavOpen(!isHrRoot);

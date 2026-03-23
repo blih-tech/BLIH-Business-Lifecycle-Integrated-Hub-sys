@@ -19,10 +19,6 @@ function buildWhere(
     where.department = query.department;
   }
 
-  if (query.completedById) {
-    where.completedById = query.completedById;
-  }
-
   if (query.search?.trim()) {
     where.OR = [
       { title: { contains: query.search.trim(), mode: 'insensitive' } },

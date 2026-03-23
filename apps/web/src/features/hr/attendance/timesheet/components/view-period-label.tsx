@@ -1,13 +1,13 @@
-import { CalendarDays } from "lucide-react";
+import { CalendarDays } from 'lucide-react';
 
-import type { TimesheetViewMode } from "@/features/hr/attendance/timesheet/types";
+import type { TimesheetViewMode } from '@/features/hr/attendance/timesheet/types';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from '@/shared/components/ui/select';
 
 type ViewPeriodLabelProps = {
   viewMode: TimesheetViewMode;
@@ -22,7 +22,7 @@ export function ViewPeriodLabel({
   onDailyDateChange,
   dailyDateOptions,
 }: ViewPeriodLabelProps) {
-  if (viewMode === "daily") {
+  if (viewMode === 'daily') {
     return (
       <div className="flex items-center gap-2 rounded-[6px] border border-border px-3 py-2 text-xs text-black">
         <span className="text-muted-foreground">Daily View:</span>
@@ -46,7 +46,7 @@ export function ViewPeriodLabel({
     );
   }
 
-  if (viewMode === "weekly") {
+  if (viewMode === 'weekly') {
     return (
       <div className="flex items-center gap-2 rounded-[6px] border border-border px-3 py-2 text-xs text-black">
         <span className="text-muted-foreground">Weekly View:</span>

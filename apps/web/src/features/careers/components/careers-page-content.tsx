@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { MapPin, SearchCheck, Sparkles } from "lucide-react";
-import { useMemo, useState } from "react";
+import { MapPin, SearchCheck, Sparkles } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-import type { CareerJob } from "@/features/careers/data";
-import { CareerJobDetailDialog } from "@/features/careers/components/career-job-detail-dialog";
+import type { CareerJob } from '@/features/careers/data';
+import { CareerJobDetailDialog } from '@/features/careers/components/career-job-detail-dialog';
 
 type CareersPageContentProps = {
   jobs: CareerJob[];
@@ -30,7 +30,8 @@ export function CareersPageContent({ jobs }: CareersPageContentProps) {
               Join the teams building how BLIH works.
             </h1>
             <p className="max-w-[620px] text-sm leading-6 text-white/80 md:text-base">
-              Browse open roles, review the full job details, and apply through the form configured for each post.
+              Browse open roles, review the full job details, and apply through
+              the form configured for each post.
             </p>
           </div>
         </section>
@@ -41,7 +42,9 @@ export function CareersPageContent({ jobs }: CareersPageContentProps) {
               <SearchCheck className="h-4 w-4 text-primary" />
               Open Roles
             </div>
-            <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">{jobs.length}</p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+              {jobs.length}
+            </p>
           </div>
           <div className="rounded-2xl border border-border/70 bg-card px-4 py-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -73,7 +76,7 @@ export function CareersPageContent({ jobs }: CareersPageContentProps) {
                 tabIndex={0}
                 onClick={() => setSelectedSlug(job.slug)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
                     setSelectedSlug(job.slug);
                   }
@@ -89,9 +92,12 @@ export function CareersPageContent({ jobs }: CareersPageContentProps) {
                         {job.experienceLevelLabel}
                       </span>
                     </div>
-                    <h2 className="mt-3 text-xl font-semibold tracking-tight text-foreground">{job.title}</h2>
+                    <h2 className="mt-3 text-xl font-semibold tracking-tight text-foreground">
+                      {job.title}
+                    </h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {job.location} · {job.employmentTypeLabel} · {job.workModeLabel}
+                      {job.location} · {job.employmentTypeLabel} ·{' '}
+                      {job.workModeLabel}
                     </p>
                   </div>
                   <span className="inline-flex rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
@@ -99,7 +105,9 @@ export function CareersPageContent({ jobs }: CareersPageContentProps) {
                   </span>
                 </div>
 
-                <p className="mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground">{job.summary}</p>
+                <p className="mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                  {job.summary}
+                </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {job.requirements.slice(0, 3).map((item) => (
@@ -116,7 +124,9 @@ export function CareersPageContent({ jobs }: CareersPageContentProps) {
           </section>
         ) : (
           <section className="rounded-2xl border border-dashed border-border bg-card px-4 py-12 text-center">
-            <p className="text-lg font-semibold text-foreground">No open roles right now</p>
+            <p className="text-lg font-semibold text-foreground">
+              No open roles right now
+            </p>
             <p className="mt-2 text-sm text-muted-foreground">
               Check back later for new opportunities.
             </p>

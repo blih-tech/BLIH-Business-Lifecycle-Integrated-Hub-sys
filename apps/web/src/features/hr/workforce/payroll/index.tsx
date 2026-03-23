@@ -2,16 +2,16 @@ import {
   employeePayrollItems,
   monthlyPaymentSummaries,
   payrollScheduleItems,
-} from "@/features/hr/workforce/payroll/mock-data";
+} from '@/features/hr/workforce/payroll/mock-data';
 import {
   EmployeePayrollDetailsSection,
   MonthlyPaymentSummarySection,
   PayrollFiltersBar,
   UpcomingPayrollScheduleSection,
-} from "@/features/hr/workforce/payroll/components";
+} from '@/features/hr/workforce/payroll/components';
 
-export * from "@/features/hr/workforce/payroll/components";
-export * from "@/features/hr/workforce/payroll/types";
+export * from '@/features/hr/workforce/payroll/components';
+export * from '@/features/hr/workforce/payroll/types';
 
 export function WorkforcePayrollContent() {
   return (

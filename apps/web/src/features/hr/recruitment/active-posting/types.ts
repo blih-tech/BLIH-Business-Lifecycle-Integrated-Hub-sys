@@ -1,4 +1,4 @@
-export type ActiveJobPriority = "high" | "medium" | "low";
+export type ActiveJobPriority = 'high' | 'medium' | 'low';
 
 export type JobDetailSection = {
   id: string;
@@ -18,7 +18,7 @@ export type JobApplicant = {
     id: string;
     label: string;
     value: string;
-    type: "text" | "textarea" | "link" | "file" | "number" | "date";
+    type: 'text' | 'textarea' | 'link' | 'file' | 'number' | 'date';
   }>;
   aiAnalysis: {
     score: number;

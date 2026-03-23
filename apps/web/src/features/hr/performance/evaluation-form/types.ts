@@ -1,12 +1,12 @@
-export type EvaluationSortBy = "name-asc" | "name-desc";
+export type EvaluationSortBy = 'name-asc' | 'name-desc';
 
-export type EvaluationFormStatus = "active" | "draft";
+export type EvaluationFormStatus = 'active' | 'draft';
 
 export type EvaluationSummaryStat = {
   id: string;
   label: string;
   value: string;
-  icon: "file" | "circle-check";
+  icon: 'file' | 'circle-check';
 };
 
 export type EvaluationFormItem = {

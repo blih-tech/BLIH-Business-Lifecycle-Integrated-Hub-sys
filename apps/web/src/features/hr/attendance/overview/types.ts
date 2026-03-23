@@ -2,7 +2,7 @@ export type AttendanceStatItem = {
   id: string;
   label: string;
   value: string;
-  icon: "clock-3" | "circle-check-big" | "trending-up";
+  icon: 'clock-3' | 'circle-check-big' | 'trending-up';
 };
 
 export type PerformanceCardItem = {
@@ -11,7 +11,7 @@ export type PerformanceCardItem = {
   value: string;
   target: string;
   performance: string;
-  icon: "clock-3" | "calendar-days" | "trending-up";
+  icon: 'clock-3' | 'calendar-days' | 'trending-up';
 };
 
 export type ActivityPoint = {

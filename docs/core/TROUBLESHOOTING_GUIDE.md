@@ -51,10 +51,12 @@
 ### 2.1 Application Won't Start
 
 **Symptoms:**
+
 - Container exits immediately
 - "Application failed to start" error
 
 **Diagnosis:**
+
 ```bash
 # Check logs
 docker-compose logs api
@@ -69,6 +71,7 @@ docker inspect blih-api
 **Common Causes & Solutions:**
 
 #### Missing Environment Variables
+
 ```bash
 # Check if .env file exists
 ls -la .env
@@ -82,6 +85,7 @@ nano .env
 ```
 
 #### Port Already in Use
+
 ```bash
 # Find process using port 3000
 lsof -ti:3000
@@ -94,6 +98,7 @@ echo "API_PORT=3001" >> .env
 ```
 
 #### Database Connection Failed
+
 ```bash
 # Check if database is running
 docker ps | grep postgres
@@ -108,10 +113,12 @@ docker-compose restart postgres
 ### 2.2 API Returns HTTP 500
 
 **Symptoms:**
+
 - Internal Server Error
 - Stack traces in logs
 
 **Diagnosis:**
+
 ```bash
 # Check error logs
 docker-compose logs api | grep ERROR
@@ -126,6 +133,7 @@ git log --oneline -10
 **Solutions:**
 
 #### Uncaught Exception
+
 ```typescript
 // Add global exception filter
 @Catch()
@@ -133,9 +141,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    
+
     logger.error('Uncaught exception', exception);
-    
+
     response.status(500).json({
       statusCode: 500,
       message: 'Internal server error',
@@ -146,6 +154,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 ```
 
 #### Database Query Error
+
 ```bash
 # Check database health
 docker-compose exec postgres pg_isready
@@ -160,6 +169,7 @@ docker-compose restart api
 ### 2.3 Slow Response Times
 
 **Diagnosis:**
+
 ```bash
 # Check response times
 curl -w "@curl-format.txt" -o /dev/null -s http://localhost:3000/api/health
@@ -175,6 +185,7 @@ docker stats
 ```
 
 **Solutions:**
+
 - Add database indexes
 - Implement caching (Redis)
 - Optimize N+1 queries
@@ -187,11 +198,13 @@ docker stats
 ### 3.1 PostgreSQL Connection Refused
 
 **Error:**
+
 ```
 Error: connect ECONNREFUSED 127.0.0.1:5432
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check if PostgreSQL is running
 docker ps | grep postgres
@@ -221,11 +234,13 @@ docker-compose up -d postgres
 ### 3.2 Too Many Database Connections
 
 **Error:**
+
 ```
 ERROR:  sorry, too many clients already
 ```
 
 **Diagnosis:**
+
 ```sql
 -- Check active connections
 SELECT count(*) FROM pg_stat_activity;
@@ -263,10 +278,12 @@ max_connections = 200
 ### 3.3 MongoDB Replica Set Issues
 
 **Symptoms:**
+
 - "Not master" errors
 - Connection timeouts
 
 **Diagnosis:**
+
 ```bash
 # Check replica set status
 docker exec -it blih-mongodb mongosh --eval "rs.status()"
@@ -276,6 +293,7 @@ docker exec -it blih-mongodb mongosh --eval "rs.isMaster()"
 ```
 
 **Solutions:**
+
 ```bash
 # Initialize replica set
 docker exec -it blih-mongodb mongosh --eval "rs.initiate()"
@@ -296,6 +314,7 @@ rs.reconfig({
 ### 4.1 High CPU Usage
 
 **Diagnosis:**
+
 ```bash
 # Check CPU usage by container
 docker stats --no-stream
@@ -310,6 +329,7 @@ docker exec -it blih-api node --prof app.js
 **Solutions:**
 
 #### Infinite Loop
+
 ```typescript
 // Add timeout to long operations
 async function processRecords(records) {
@@ -326,6 +346,7 @@ async function processRecords(records) {
 ```
 
 #### N+1 Queries
+
 ```typescript
 // ❌ Bad: N+1 queries
 const employees = await employeeRepo.find();
@@ -335,13 +356,14 @@ for (const emp of employees) {
 
 // ✅ Good: Single query with join
 const employees = await employeeRepo.find({
-  relations: ['department']
+  relations: ['department'],
 });
 ```
 
 ### 4.2 High Memory Usage
 
 **Diagnosis:**
+
 ```bash
 # Check memory usage
 docker stats --no-stream | grep blih
@@ -366,9 +388,8 @@ async function getEmployees(page: number, limit: number) {
 
 // Stream large datasets
 async function exportLargeDataset() {
-  const stream = await repository.createQueryBuilder()
-    .stream();
-  
+  const stream = await repository.createQueryBuilder().stream();
+
   stream.on('data', (row) => {
     // Process row
   });
@@ -383,11 +404,13 @@ setInterval(() => {
 ### 4.3 Disk Space Full
 
 **Error:**
+
 ```
 ENOSPC: no space left on device
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check disk usage
 df -h
@@ -400,6 +423,7 @@ docker system df
 ```
 
 **Solutions:**
+
 ```bash
 # Clean Docker resources
 docker system prune -a --volumes
@@ -420,10 +444,12 @@ logrotate -f /etc/logrotate.conf
 ### 5.1 Cannot Connect to API
 
 **Symptoms:**
+
 - "Connection refused" errors
 - Timeout errors
 
 **Diagnosis:**
+
 ```bash
 # Check if API is listening
 netstat -tlnp | grep 3000
@@ -439,6 +465,7 @@ sudo ufw status
 ```
 
 **Solutions:**
+
 ```bash
 # Open firewall port
 sudo ufw allow 3000/tcp
@@ -454,18 +481,17 @@ docker network inspect blih-network
 ### 5.2 CORS Errors
 
 **Error in Browser:**
+
 ```
 Access to XMLHttpRequest has been blocked by CORS policy
 ```
 
 **Solutions:**
+
 ```typescript
 // app.module.ts - Enable CORS
 app.enableCors({
-  origin: [
-    'http://localhost:3001',
-    'https://blih.yourcompany.com',
-  ],
+  origin: ['http://localhost:3001', 'https://blih.yourcompany.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -482,6 +508,7 @@ add_header Access-Control-Allow-Headers "Authorization, Content-Type" always;
 ### 5.3 Slow Network Requests
 
 **Diagnosis:**
+
 ```bash
 # Test network speed
 curl -w "@curl-format.txt" -o /dev/null -s http://localhost:3000/api/employees
@@ -494,6 +521,7 @@ ping api.blih.yourcompany.com
 ```
 
 **Solutions:**
+
 - Use CDN for static assets
 - Enable gzip compression
 - Implement HTTP/2
@@ -506,6 +534,7 @@ ping api.blih.yourcompany.com
 ### 6.1 Container Keeps Restarting
 
 **Diagnosis:**
+
 ```bash
 # Check restart count
 docker ps -a | grep blih
@@ -518,6 +547,7 @@ docker inspect blih-api --format='{{.State.ExitCode}}'
 ```
 
 **Common Exit Codes:**
+
 - `0`: Normal exit
 - `1`: Application error
 - `137`: Out of memory (OOM killed)
@@ -525,6 +555,7 @@ docker inspect blih-api --format='{{.State.ExitCode}}'
 - `143`: Container stopped (SIGTERM)
 
 **Solutions:**
+
 ```bash
 # Increase memory limit
 docker run -m 2g blih-api
@@ -541,11 +572,13 @@ services:
 ### 6.2 Cannot Remove Container
 
 **Error:**
+
 ```
 Error response from daemon: removal of container is already in progress
 ```
 
 **Solutions:**
+
 ```bash
 # Force remove
 docker rm -f blih-api
@@ -560,6 +593,7 @@ sudo systemctl restart docker
 ### 6.3 Image Build Fails
 
 **Diagnosis:**
+
 ```bash
 # Build with verbose output
 docker build --no-cache --progress=plain -t blih-api .
@@ -591,6 +625,7 @@ RUN npm run build
 ### 7.1 "Unauthorized" (HTTP 401)
 
 **Diagnosis:**
+
 ```bash
 # Check JWT token
 jwt_decode YOUR_TOKEN
@@ -620,6 +655,7 @@ if (decoded.exp < Date.now() / 1000) {
 ### 7.2 "Forbidden" (HTTP 403)
 
 **Diagnosis:**
+
 ```typescript
 // Log permission check
 @Injectable()
@@ -627,21 +663,22 @@ export class PermissionGuard {
   canActivate(context: ExecutionContext): boolean {
     const required = this.getRequiredPermissions(context);
     const user = context.switchToHttp().getRequest().user;
-    
+
     console.log('Required:', required);
     console.log('User permissions:', user.permissions);
-    
+
     return this.hasPermission(user, required);
   }
 }
 ```
 
 **Solutions:**
+
 ```typescript
 // Check RBAC configuration
 const userRoles = await this.getUserRoles(userId);
-const hasPermission = userRoles.some(role =>
-  role.permissions.includes('HR:employee:read:all')
+const hasPermission = userRoles.some((role) =>
+  role.permissions.includes('HR:employee:read:all'),
 );
 ```
 
@@ -654,6 +691,7 @@ const hasPermission = userRoles.some(role =>
 **Common Failures:**
 
 #### Test Failures
+
 ```bash
 # Run tests locally
 npm run test:ci
@@ -666,6 +704,7 @@ npm run test -- --u  # Update snapshots
 ```
 
 #### Build Failures
+
 ```bash
 # Check TypeScript errors
 npm run type-check
@@ -682,10 +721,12 @@ npm run build
 ### 8.2 Deployment Rollback
 
 **Symptoms:**
+
 - New version has critical bugs
 - Need to revert to previous version
 
 **Solutions:**
+
 ```bash
 # Quick rollback with Docker
 docker tag blih-api:latest blih-api:rollback
@@ -708,11 +749,13 @@ docker-compose up -d --force-recreate
 ### 9.1 Database Migration Fails
 
 **Error:**
+
 ```
 Migration "CreateEmployeeTable" has already been run
 ```
 
 **Solutions:**
+
 ```bash
 # Revert last migration
 npm run migration:revert
@@ -728,11 +771,13 @@ npm run migration:run
 ### 9.2 Data Inconsistency
 
 **Symptoms:**
+
 - Data doesn't match between DBs
 - Ghost records
 - Orphaned references
 
 **Diagnosis:**
+
 ```sql
 -- Find orphaned records
 SELECT e.* FROM employees e
@@ -740,13 +785,14 @@ LEFT JOIN departments d ON e.department_id = d.id
 WHERE d.id IS NULL;
 
 -- Find duplicates
-SELECT email, COUNT(*) 
+SELECT email, COUNT(*)
 FROM employees
 GROUP BY email
 HAVING COUNT(*) > 1;
 ```
 
 **Solutions:**
+
 ```sql
 -- Clean orphaned records
 DELETE FROM employees
@@ -767,33 +813,33 @@ WHERE id NOT IN (
 
 ### 10.1 Error Reference Table
 
-| Error Message | Meaning | Solution |
-|---------------|---------|----------|
-| `ECONNREFUSED` | Service not running | Start the service |
-| `EADDRINUSE` | Port already in use | Change port or kill process |
-| `ENOTFOUND` | DNS resolution failed | Check hostname/DNS |
-| `ETIMEDOUT` | Connection timeout | Check firewall/network |
-| `ENOSPC` | No disk space | Free up space |
-| `ENOMEM` | Out of memory | Increase memory limit |
-| `EPERM` | Permission denied | Check file/directory permissions |
-| `MODULE_NOT_FOUND` | Missing dependency | Run `npm install` |
+| Error Message      | Meaning               | Solution                         |
+| ------------------ | --------------------- | -------------------------------- |
+| `ECONNREFUSED`     | Service not running   | Start the service                |
+| `EADDRINUSE`       | Port already in use   | Change port or kill process      |
+| `ENOTFOUND`        | DNS resolution failed | Check hostname/DNS               |
+| `ETIMEDOUT`        | Connection timeout    | Check firewall/network           |
+| `ENOSPC`           | No disk space         | Free up space                    |
+| `ENOMEM`           | Out of memory         | Increase memory limit            |
+| `EPERM`            | Permission denied     | Check file/directory permissions |
+| `MODULE_NOT_FOUND` | Missing dependency    | Run `npm install`                |
 
 ### 10.2 PostgreSQL Errors
 
-| Code | Error | Solution |
-|------|-------|----------|
-| `23505` | Unique constraint violation | Check for duplicates |
-| `23503` | Foreign key violation | Verify referenced record exists |
-| `42P01` | Table doesn't exist | Run migrations |
-| `42703` | Column doesn't exist | Update schema/migration |
-| `53300` | Too many connections | Increase max_connections |
+| Code    | Error                       | Solution                        |
+| ------- | --------------------------- | ------------------------------- |
+| `23505` | Unique constraint violation | Check for duplicates            |
+| `23503` | Foreign key violation       | Verify referenced record exists |
+| `42P01` | Table doesn't exist         | Run migrations                  |
+| `42703` | Column doesn't exist        | Update schema/migration         |
+| `53300` | Too many connections        | Increase max_connections        |
 
 ### 10.3 MongoDB Errors
 
-| Code | Error | Solution |
-|------|-------|----------|
-| `11000` | Duplicate key error | Unique index violation |
-| `10107` | Not master | Replica set issue |
+| Code    | Error                 | Solution                       |
+| ------- | --------------------- | ------------------------------ |
+| `11000` | Duplicate key error   | Unique index violation         |
+| `10107` | Not master            | Replica set issue              |
 | `16500` | Exceeded memory limit | Add index or reduce query size |
 
 ---

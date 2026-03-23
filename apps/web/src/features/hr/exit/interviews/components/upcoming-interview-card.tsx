@@ -1,6 +1,6 @@
-import type { UpcomingInterview } from "@/features/hr/exit/interviews/types";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { UpcomingInterview } from '@/features/hr/exit/interviews/types';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type UpcomingInterviewCardProps = {
   item: UpcomingInterview;
@@ -16,7 +16,9 @@ export function UpcomingInterviewCard({ item }: UpcomingInterviewCardProps) {
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-base font-semibold tracking-[-0.3125px] text-black">{item.name}</p>
+              <p className="text-base font-semibold tracking-[-0.3125px] text-black">
+                {item.name}
+              </p>
               <span className="inline-flex h-[18px] items-center rounded-[4px] border border-[#e5e5e5] px-1.5 text-[10px] text-black">
                 {item.department}
               </span>
@@ -37,7 +39,11 @@ export function UpcomingInterviewCard({ item }: UpcomingInterviewCardProps) {
           <Button size="sm" className="h-8 rounded-[6px] text-xs">
             Send Reminder
           </Button>
-          <Button size="sm" variant="outline" className="h-8 rounded-[6px] border-border bg-white text-xs text-black">
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 rounded-[6px] border-border bg-white text-xs text-black"
+          >
             Reschedule
           </Button>
         </div>

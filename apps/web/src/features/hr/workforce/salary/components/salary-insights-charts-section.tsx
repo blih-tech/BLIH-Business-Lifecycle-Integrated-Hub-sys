@@ -2,10 +2,10 @@ import type {
   DepartmentSalaryPoint,
   DepartmentSalarySummary,
   SalaryPerformancePoint,
-} from "@/features/hr/workforce/salary/types";
+} from '@/features/hr/workforce/salary/types';
 
-import { SalaryByDepartmentCard } from "./salary-by-department-card";
-import { SalaryPerformanceCorrelationCard } from "./salary-performance-correlation-card";
+import { SalaryByDepartmentCard } from './salary-by-department-card';
+import { SalaryPerformanceCorrelationCard } from './salary-performance-correlation-card';
 
 type SalaryInsightsChartsSectionProps = {
   performanceData: SalaryPerformancePoint[];
@@ -21,7 +21,10 @@ export function SalaryInsightsChartsSection({
   return (
     <section className="grid gap-6 lg:grid-cols-2">
       <SalaryPerformanceCorrelationCard data={performanceData} />
-      <SalaryByDepartmentCard data={departmentData} summaries={departmentSummaries} />
+      <SalaryByDepartmentCard
+        data={departmentData}
+        summaries={departmentSummaries}
+      />
     </section>
   );
 }

@@ -2,7 +2,7 @@ export type ExitClearanceChecklistStat = {
   id: string;
   label: string;
   value: string;
-  icon: "employees" | "completed" | "in-progress" | "pending";
+  icon: 'employees' | 'completed' | 'in-progress' | 'pending';
 };
 
 export type ChecklistTemplateTask = {
@@ -10,14 +10,14 @@ export type ChecklistTemplateTask = {
   order: number;
   title: string;
   description: string;
-  icon: "file" | "message" | "package" | "wallet" | "certificate" | "award";
+  icon: 'file' | 'message' | 'package' | 'wallet' | 'certificate' | 'award';
 };
 
 export type EmployeeClearanceTask = {
   id: string;
   title: string;
   meta: string;
-  status: "completed" | "in-progress" | "pending";
+  status: 'completed' | 'in-progress' | 'pending';
   actionLabel?: string;
 };
 
@@ -27,7 +27,7 @@ export type EmployeeClearanceProgressItem = {
   name: string;
   role: string;
   department: string;
-  status: "completed" | "in-progress";
+  status: 'completed' | 'in-progress';
   lastWorkingDay: string;
   progressPercent: number;
   progressTasks: string;
@@ -37,5 +37,5 @@ export type EmployeeClearanceProgressItem = {
 export type ClearanceQuickAction = {
   id: string;
   label: string;
-  icon: "refresh" | "download" | "bell" | "chart";
+  icon: 'refresh' | 'download' | 'bell' | 'chart';
 };

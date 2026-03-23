@@ -1,12 +1,12 @@
-import { CircleCheckBig, Clock3 } from "lucide-react";
+import { CircleCheckBig, Clock3 } from 'lucide-react';
 
-import type { AttendanceOvertimeStat } from "@/features/hr/attendance/overtime/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { AttendanceOvertimeStat } from '@/features/hr/attendance/overtime/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type StatsCardProps = AttendanceOvertimeStat;
 
-function IconByType({ icon }: { icon: AttendanceOvertimeStat["icon"] }) {
-  if (icon === "clock-3") return <Clock3 className="h-4 w-4 text-primary" />;
+function IconByType({ icon }: { icon: AttendanceOvertimeStat['icon'] }) {
+  if (icon === 'clock-3') return <Clock3 className="h-4 w-4 text-primary" />;
   return <CircleCheckBig className="h-4 w-4 text-primary" />;
 }
 
@@ -18,7 +18,9 @@ export function StatsCard({ label, value, icon }: StatsCardProps) {
           <p className="ui-label text-[#666]">{label}</p>
           <IconByType icon={icon} />
         </div>
-        <p className="mt-1 text-[36px] font-semibold leading-9 tracking-[0.0703px] text-black">{value}</p>
+        <p className="mt-1 text-[36px] font-semibold leading-9 tracking-[0.0703px] text-black">
+          {value}
+        </p>
       </CardContent>
     </Card>
   );

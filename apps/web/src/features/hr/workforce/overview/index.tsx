@@ -5,17 +5,17 @@ import {
   workforceOverviewStats,
   workforcePendingApprovals,
   workforceQuickActions,
-} from "@/features/hr/workforce/overview/mock-data";
+} from '@/features/hr/workforce/overview/mock-data';
 import {
   PendingApprovalsSection,
   RecentNotificationsSection,
   WorkforceChartsSection,
   WorkforceOverviewStatsGrid,
   WorkforceQuickActionsSection,
-} from "@/features/hr/workforce/overview/components";
+} from '@/features/hr/workforce/overview/components';
 
-export * from "@/features/hr/workforce/overview/components";
-export * from "@/features/hr/workforce/overview/types";
+export * from '@/features/hr/workforce/overview/components';
+export * from '@/features/hr/workforce/overview/types';
 
 export function WorkforceOverviewContent() {
   return (
@@ -23,7 +23,10 @@ export function WorkforceOverviewContent() {
       <WorkforceOverviewStatsGrid items={workforceOverviewStats} />
       <RecentNotificationsSection items={workforceNotifications} />
       <PendingApprovalsSection items={workforcePendingApprovals} />
-      <WorkforceChartsSection monthlyPayrollData={monthlyPayrollTrend} budgetUtilizationData={departmentBudgetUtilization} />
+      <WorkforceChartsSection
+        monthlyPayrollData={monthlyPayrollTrend}
+        budgetUtilizationData={departmentBudgetUtilization}
+      />
       <WorkforceQuickActionsSection items={workforceQuickActions} />
     </main>
   );

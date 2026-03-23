@@ -1,15 +1,17 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from 'lucide-react';
 
-import type { DisciplineActionCase } from "@/features/hr/talent/discipline/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { DisciplineActionCase } from '@/features/hr/talent/discipline/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
-import { DisciplineActionCaseCard } from "./discipline-action-case-card";
+import { DisciplineActionCaseCard } from './discipline-action-case-card';
 
 type DisciplineActionRequiredProps = {
   items: DisciplineActionCase[];
 };
 
-export function DisciplineActionRequired({ items }: DisciplineActionRequiredProps) {
+export function DisciplineActionRequired({
+  items,
+}: DisciplineActionRequiredProps) {
   return (
     <Card className="gap-0 rounded-[10px] border-[#e7000b] py-0 shadow-none">
       <CardContent className="space-y-3 p-3">
@@ -19,7 +21,8 @@ export function DisciplineActionRequired({ items }: DisciplineActionRequiredProp
             Discipline Action Required
           </p>
           <p className="text-xs text-[#666]">
-            2 employees have active discipline tags requiring immediate review and action.
+            2 employees have active discipline tags requiring immediate review
+            and action.
           </p>
         </div>
 

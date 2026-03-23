@@ -1,11 +1,14 @@
-import { CalendarDays, CheckSquare } from "lucide-react";
+import { CalendarDays, CheckSquare } from 'lucide-react';
 
-import { checklistSummaryStats, checklistTemplates } from "@/features/hr/onboarding/checklists/mock-data";
-import { ChecklistCard } from "@/features/hr/onboarding/checklists/components";
-import { ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+import {
+  checklistSummaryStats,
+  checklistTemplates,
+} from '@/features/hr/onboarding/checklists/mock-data';
+import { ChecklistCard } from '@/features/hr/onboarding/checklists/components';
+import { ProgressStatCard } from '@/features/hr/onboarding/progress/components';
 
 const ICONS = {
-  "check-square": <CheckSquare className="h-4 w-4" />,
+  'check-square': <CheckSquare className="h-4 w-4" />,
   calendar: <CalendarDays className="h-4 w-4" />,
 } as const;
 
@@ -19,8 +22,12 @@ export function OnboardingChecklistsContent() {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Onboarding Checklists</h2>
-        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">Create and manage reusable onboarding checklists</p>
+        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">
+          Onboarding Checklists
+        </h2>
+        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">
+          Create and manage reusable onboarding checklists
+        </p>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {checklistTemplates.map((checklist) => (

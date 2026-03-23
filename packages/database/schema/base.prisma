@@ -342,42 +342,6 @@ enum CvScreeningDecisionType {
   HOLD
 }
 
-// Onboarding Enums
-enum OnboardingStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum OnboardingChecklistStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
-  OVERDUE
-}
-
-enum OnboardingTaskDepartment {
-  HR
-  IT
-  ADMIN
-  TEAM
-}
-
-enum OnboardingTaskStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  OVERDUE
-}
-
-enum ProbationPlanStatus {
-  DRAFT
-  ACTIVE
-  COMPLETED
-  CANCELLED
-}
-
 enum ProbationEvaluationRound {
   DAY_30
   DAY_55

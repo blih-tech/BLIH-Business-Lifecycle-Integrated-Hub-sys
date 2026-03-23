@@ -29,6 +29,7 @@ import {
   ApiListPaginatedOnboarding,
   ApiOnboardingTag,
   ApiUpdateOnboarding,
+  ApiCancelOnboarding,
 } from './onboarding.docs';
 import { CreateOnboardingUseCase } from './create-onboarding.usecase';
 import {
@@ -38,6 +39,7 @@ import {
 } from './query-onboarding.usecase';
 import { UpdateOnboardingUseCase } from './update-onboarding.usecase';
 import { DeleteOnboardingUseCase } from './delete-onboarding.usecase';
+import { CancelOnboardingUseCase } from './cancel-onboarding.usecase';
 
 @ApiOnboardingTag()
 @Controller('hr/onboarding')
@@ -50,6 +52,7 @@ export class OnboardingController {
     private readonly getOnboardingById: GetOnboardingByIdUseCase,
     private readonly updateOnboarding: UpdateOnboardingUseCase,
     private readonly deleteOnboarding: DeleteOnboardingUseCase,
+    private readonly cancelOnboarding: CancelOnboardingUseCase,
   ) {}
 
   @Post()
@@ -87,6 +90,13 @@ export class OnboardingController {
   @ApiUpdateOnboarding()
   update(@Param('id') id: string, @Body() body: UpdateOnboardingDto) {
     return this.updateOnboarding.execute(id, body);
+  }
+
+  @Post(':id/cancel')
+  @Roles(OnboardingPermissions.UPDATE)
+  @ApiCancelOnboarding()
+  cancel(@Param('id') id: string) {
+    return this.cancelOnboarding.execute(id);
   }
 
   @Delete(':id')

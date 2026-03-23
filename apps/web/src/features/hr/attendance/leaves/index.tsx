@@ -64,7 +64,9 @@ export function AttendanceRequestsContent() {
 
       <section className="space-y-6">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">Leave Requests</h1>
+          <h1 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">
+            Leave Requests
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Calculated billable hours worked, leaves, and overtimes.
           </p>
@@ -78,7 +80,9 @@ export function AttendanceRequestsContent() {
 
       <section className="space-y-6">
         <div>
-          <h2 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">Previous Leaves</h2>
+          <h2 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">
+            Previous Leaves
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Calculated billable hours worked, leaves, and overtimes.
           </p>
@@ -97,7 +101,9 @@ export function AttendanceRequestsContent() {
               searchTerm={searchTerm}
               onSearchTermChange={setSearchTerm}
             />
-            {selectedRequest ? <SelectedLeaveRequestCard request={selectedRequest} /> : null}
+            {selectedRequest ? (
+              <SelectedLeaveRequestCard request={selectedRequest} />
+            ) : null}
           </div>
         </div>
       </section>

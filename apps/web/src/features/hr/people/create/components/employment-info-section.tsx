@@ -1,18 +1,33 @@
-import { useFormContext } from "react-hook-form";
-import { Upload } from "lucide-react";
+import { useFormContext } from 'react-hook-form';
+import { Upload } from 'lucide-react';
 
-import type { EmployeeProfileFormValues } from "@/features/hr/people/create/form-schema";
-import { FormSectionCard } from "@/features/hr/people/create/components/form-section-card";
-import { Button } from "@/shared/components/ui/button";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
+import { Button } from '@/shared/components/ui/button';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
 
 export function EmploymentInfoSection() {
   const form = useFormContext<EmployeeProfileFormValues>();
 
   return (
-    <FormSectionCard title="Employment Details" description="Role and employment setup information.">
+    <FormSectionCard
+      title="Employment Details"
+      description="Role and employment setup information."
+    >
       <div className="grid gap-4">
         <FormItem>
           <FormLabel>Offer Letter *</FormLabel>
@@ -28,13 +43,17 @@ export function EmploymentInfoSection() {
                         type="file"
                         className="absolute inset-0 z-10 cursor-pointer opacity-0"
                         onChange={(event) => {
-                          const fileName = event.target.files?.[0]?.name ?? "";
+                          const fileName = event.target.files?.[0]?.name ?? '';
                           field.onChange(fileName);
                         }}
                       />
-                      <Button type="button" variant="outline" className="h-[50px] w-full justify-start rounded-[6px] border-[#e5e5e5] text-[#666]">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-[50px] w-full justify-start rounded-[6px] border-[#e5e5e5] text-[#666]"
+                      >
                         <Upload className="h-4 w-4" />
-                        {field.value || "Upload"}
+                        {field.value || 'Upload'}
                       </Button>
                     </div>
                   </FormControl>
@@ -81,9 +100,15 @@ export function EmploymentInfoSection() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Technical Dept.">Technical Dept.</SelectItem>
-                  <SelectItem value="Digital Marketing Dept.">Digital Marketing Dept.</SelectItem>
-                  <SelectItem value="People Operations">People Operations</SelectItem>
+                  <SelectItem value="Technical Dept.">
+                    Technical Dept.
+                  </SelectItem>
+                  <SelectItem value="Digital Marketing Dept.">
+                    Digital Marketing Dept.
+                  </SelectItem>
+                  <SelectItem value="People Operations">
+                    People Operations
+                  </SelectItem>
                   <SelectItem value="Finance">Finance</SelectItem>
                 </SelectContent>
               </Select>

@@ -3,13 +3,13 @@ import {
   JobApplicationFrequencyCard,
   SummaryStatCard,
   WorkHoursStatCard,
-} from "@/features/hr/onboarding/overview/components";
+} from '@/features/hr/onboarding/overview/components';
 import {
   checklistStats,
   jobApplicationFrequency,
   onboardingSummaryStats,
   workHoursStats,
-} from "@/features/hr/onboarding/overview/mock-data";
+} from '@/features/hr/onboarding/overview/mock-data';
 
 export function OnboardingOverviewContent() {
   return (

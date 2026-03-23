@@ -1,5 +1,5 @@
-import type { DisciplineStat } from "@/features/hr/talent/discipline/types";
-import { cn } from "@/shared/lib/utils";
+import type { DisciplineStat } from '@/features/hr/talent/discipline/types';
+import { cn } from '@/shared/lib/utils';
 
 type DisciplineStatCardProps = {
   item: DisciplineStat;
@@ -10,8 +10,8 @@ export function DisciplineStatCard({ item }: DisciplineStatCardProps) {
     <div className="rounded-[8px] bg-[#f3f3f3] px-4 py-3 text-center">
       <p
         className={cn(
-          "text-[30px] font-bold leading-8 tracking-[0.3955px]",
-          item.tone === "danger" ? "text-[#e7000b]" : "text-primary",
+          'text-[30px] font-bold leading-8 tracking-[0.3955px]',
+          item.tone === 'danger' ? 'text-[#e7000b]' : 'text-primary',
         )}
       >
         {item.value}

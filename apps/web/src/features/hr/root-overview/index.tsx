@@ -2,15 +2,15 @@ import {
   rootOverviewPendingActions,
   rootOverviewRecentActivities,
   rootOverviewStats,
-} from "@/features/hr/root-overview/mock-data";
+} from '@/features/hr/root-overview/mock-data';
 import {
   PendingActions,
   RecentActivities,
   StatsGrid,
-} from "@/features/hr/root-overview/components";
+} from '@/features/hr/root-overview/components';
 
-export * from "@/features/hr/root-overview/components";
-export * from "@/features/hr/root-overview/types";
+export * from '@/features/hr/root-overview/components';
+export * from '@/features/hr/root-overview/types';
 
 export function HrRootOverviewContent() {
   return (

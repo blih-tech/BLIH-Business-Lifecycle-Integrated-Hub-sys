@@ -1,41 +1,53 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const experienceLevelValues = ["ENTRY", "JUNIOR", "MID", "SENIOR", "LEAD", "PRINCIPAL"] as const;
-export type ExperienceLevel = (typeof experienceLevelValues)[number];
+export const salaryModeValues = [
+  'not_specified',
+  'fixed',
+  'range',
+  'negotiable',
+  'competitive',
+] as const;
 
-export const contractTypeValues = ["PERMANENT", "CONTRACT", "INTERNSHIP", "FREELANCE"] as const;
-export type ContractType = (typeof contractTypeValues)[number];
-
-export const salaryModeValues = ["NOT_SPECIFIED", "FIXED", "NEGOTIABLE", "COMPETITIVE"] as const;
-export type SalaryMode = (typeof salaryModeValues)[number];
+function toVisibleText(value: string) {
+  return value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 export const jobDetailsFormSchema = z
   .object({
-    title: z.string().trim().min(1, "Job title is required"),
-    city: z.string().trim().min(1, "City is required"),
-    country: z.string().trim().optional(),
-    workLocationType: z.enum(["ON_SITE", "HYBRID", "REMOTE"], {
-      error: () => "Work mode is required",
+    jobTitle: z.string().trim().min(1, 'Job title is required'),
+    location: z.string().trim().min(1, 'Location is required'),
+    workMode: z.enum(['on_site', 'hybrid', 'remote'], {
+      error: () => 'Work mode is required',
     }),
-    employmentType: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "TEMPORARY"], {
-      error: () => "Employment type is required",
+    employmentType: z.enum(['full_time', 'part_time', 'contract', 'intern'], {
+      error: () => 'Employment type is required',
     }),
     description: z
       .string()
       .trim()
-      .min(40, "Job description must be at least 40 characters"),
-    summary: z.string().trim().optional(),
-    responsibilities: z.string().trim().min(1, "Key responsibilities are required"),
-    requiredSkills: z.string().trim().optional(),
+      .refine(
+        (value) => toVisibleText(value).length >= 40,
+        'Job summary must be at least 40 characters',
+      ),
+    whyJoinUs: z.string().trim().optional(),
+    keyResponsibilities: z
+      .string()
+      .trim()
+      .min(1, 'Key responsibilities are required'),
+    requirements: z.string().trim().min(1, 'Requirements are required'),
     preferredSkills: z.string().trim().optional(),
-    experienceLevel: z.enum(experienceLevelValues, {
-      error: () => "Experience level is required",
+    experienceLevel: z.enum(['entry', 'mid', 'senior', 'lead'], {
+      error: () => 'Experience level is required',
     }),
     contractType: z.enum(contractTypeValues, {
-      error: () => "Contract type is required",
+      error: () => 'Contract type is required',
     }),
     salaryMode: z.enum(salaryModeValues, {
-      error: () => "Salary type is required",
+      error: () => 'Salary type is required',
     }),
     salaryMin: z.string().trim().optional(),
     salaryMax: z.string().trim().optional(),
@@ -47,50 +59,52 @@ export const jobDetailsFormSchema = z
     openings: z.string().trim().optional(),
   })
   .superRefine((values, ctx) => {
-    if (values.salaryMode === "FIXED") {
-      if (!values.salaryMin?.trim()) {
+    if (values.salaryMode === 'fixed' || values.salaryMode === 'range') {
+      if (!values.salaryRangeMin?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          path: ["salaryMin"],
-          message: "Salary amount is required for fixed salary",
+          path: ['salaryRangeMin'],
+          message:
+            values.salaryMode === 'fixed'
+              ? 'Salary amount is required for fixed salary'
+              : 'Minimum salary is required for salary range',
+        });
+      }
+      if (values.salaryMode === 'range' && !values.salaryRangeMax?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['salaryRangeMax'],
+          message: 'Maximum salary is required for salary range',
         });
       }
       if (!values.currency?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          path: ["currency"],
-          message: "Salary currency is required for fixed salary",
+          path: ['salaryCurrency'],
+          message:
+            values.salaryMode === 'fixed'
+              ? 'Salary currency is required for fixed salary'
+              : 'Salary currency is required for salary range',
         });
       }
     }
 
-    if (values.salaryMode === "NEGOTIABLE" || values.salaryMode === "COMPETITIVE") {
-      if (!values.salaryMin?.trim() && !values.salaryMax?.trim()) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["salaryMin"],
-          message: "At least one salary value is required",
-        });
-      }
-      if (!values.currency?.trim()) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["currency"],
-          message: "Salary currency is required",
-        });
-      }
-    }
+    const min = Number(values.salaryRangeMin);
+    const max = Number(values.salaryRangeMax);
 
-    if (values.salaryMin?.trim() && values.salaryMax?.trim()) {
-      const min = Number(values.salaryMin);
-      const max = Number(values.salaryMax);
-      if (!Number.isNaN(min) && !Number.isNaN(max) && max < min) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["salaryMax"],
-          message: "Maximum salary must be greater than or equal to minimum salary",
-        });
-      }
+    if (
+      values.salaryRangeMin?.trim() &&
+      values.salaryRangeMax?.trim() &&
+      !Number.isNaN(min) &&
+      !Number.isNaN(max) &&
+      max < min
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['salaryRangeMax'],
+        message:
+          'Maximum salary must be greater than or equal to minimum salary',
+      });
     }
   });
 

@@ -1,4 +1,5 @@
 'use client';
+'use client';
 
 import type { FullJobRequest } from '@/features/hr/recruitment/requests/types';
 import { JobRequestsSection } from '@/features/hr/recruitment/requests/components/job-requests-section';

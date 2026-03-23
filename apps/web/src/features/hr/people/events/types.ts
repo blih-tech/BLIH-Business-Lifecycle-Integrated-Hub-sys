@@ -1,14 +1,14 @@
 export type PeopleEventCategory =
-  | "birthdays"
-  | "work-anniversaries"
-  | "promotion-days"
-  | "holidays";
+  | 'birthdays'
+  | 'work-anniversaries'
+  | 'promotion-days'
+  | 'holidays';
 
 export type PeopleEventType =
-  | "birthday"
-  | "holiday"
-  | "promotion"
-  | "anniversary";
+  | 'birthday'
+  | 'holiday'
+  | 'promotion'
+  | 'anniversary';
 
 export type PeopleEvent = {
   id: string;
@@ -22,4 +22,3 @@ export type PeopleEvent = {
   backgroundImage?: string;
   accentImage?: string;
 };
-

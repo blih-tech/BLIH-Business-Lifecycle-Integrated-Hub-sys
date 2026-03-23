@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Module Overview](#module-overview)
 2. [Technical Architecture](#technical-architecture)
 3. [Implementation Details](#implementation-details)
@@ -26,9 +27,11 @@
 ## Module Overview
 
 ### Purpose
+
 The Core Platform provides foundational services that power all BLIH modules: identity and access management, audit logging, notifications, and system configuration. It ensures consistent governance, security, and compliance across the entire system.
 
 ### Value Proposition
+
 - **Unified Identity:** Single sign-on across all modules with consistent user experience
 - **Complete Auditability:** Every action logged with immutable records for compliance
 - **Proactive Communication:** Multi-channel notifications keep users informed
@@ -36,27 +39,30 @@ The Core Platform provides foundational services that power all BLIH modules: id
 - **Simplified Administration:** One place to manage users, roles, and system settings
 
 ### Target Users
-| Role | Primary Use Case | Key Features Used |
-|------|-----------------|-------------------|
-| All Users | Login, profile, notifications | Auth, profile, notification center |
-| Department Manager | Team access management | User management, role assignment |
-| IT Admin | System configuration | Settings, integrations, monitoring |
-| Security Officer | Audit and compliance | Audit logs, access reports, RBAC |
-| Compliance Officer | Evidence generation | Audit export, compliance dashboards |
-| End Users | Daily system interaction | Dashboard, notifications, search |
+
+| Role               | Primary Use Case              | Key Features Used                   |
+| ------------------ | ----------------------------- | ----------------------------------- |
+| All Users          | Login, profile, notifications | Auth, profile, notification center  |
+| Department Manager | Team access management        | User management, role assignment    |
+| IT Admin           | System configuration          | Settings, integrations, monitoring  |
+| Security Officer   | Audit and compliance          | Audit logs, access reports, RBAC    |
+| Compliance Officer | Evidence generation           | Audit export, compliance dashboards |
+| End Users          | Daily system interaction      | Dashboard, notifications, search    |
 
 ### Technical Specifications
-| Component | Technology | Version | Purpose |
-|------------|-------------|----------|---------|
-| **Authentication** | Keycloak | 22.x | SSO, MFA, user federation |
-| **Session Store** | Redis | 7.x | Session management, caching |
-| **Database** | PostgreSQL | 15.x | Core platform data |
-| **Message Queue** | RabbitMQ | 3.12.x | Event-driven communication |
-| **Cache** | Redis | 7.x | Application caching |
-| **Search** | Elasticsearch | 8.x | Audit log search |
-| **Monitoring** | Prometheus + Grafana | Latest | Metrics and alerting |
+
+| Component          | Technology           | Version | Purpose                     |
+| ------------------ | -------------------- | ------- | --------------------------- |
+| **Authentication** | Keycloak             | 22.x    | SSO, MFA, user federation   |
+| **Session Store**  | Redis                | 7.x     | Session management, caching |
+| **Database**       | PostgreSQL           | 15.x    | Core platform data          |
+| **Message Queue**  | RabbitMQ             | 3.12.x  | Event-driven communication  |
+| **Cache**          | Redis                | 7.x     | Application caching         |
+| **Search**         | Elasticsearch        | 8.x     | Audit log search            |
+| **Monitoring**     | Prometheus + Grafana | Latest  | Metrics and alerting        |
 
 ### Service Architecture
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                 Core Platform Services               │
@@ -80,6 +86,7 @@ The Core Platform provides foundational services that power all BLIH modules: id
 ### Core Services Design
 
 **Microservices Pattern:**
+
 - **Auth Service:** Handles authentication, MFA, session management
 - **RBAC Service:** Role-based access control and permissions
 - **Audit Service:** Comprehensive logging and compliance tracking
@@ -87,6 +94,7 @@ The Core Platform provides foundational services that power all BLIH modules: id
 - **Configuration Service:** System settings and feature flags
 
 **Data Flow Architecture:**
+
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │   Frontend  │───▶│   Gateway   │───▶│   Services  │
@@ -103,41 +111,45 @@ The Core Platform provides foundational services that power all BLIH modules: id
 ### Event-Driven Architecture
 
 **Event Bus Pattern:**
+
 - **Publisher:** Core services emit events for all state changes
 - **Subscriber:** Business modules subscribe to relevant events
 - **Event Store:** Immutable log of all events for audit trail
 
 **Event Types:**
+
 ```javascript
 // Authentication Events
-auth.login.success
-auth.login.failure
-auth.logout
-auth.password.changed
-auth.mfa.enabled
+auth.login.success;
+auth.login.failure;
+auth.logout;
+auth.password.changed;
+auth.mfa.enabled;
 
 // User Management Events
-user.created
-user.updated
-user.disabled
-user.role.assigned
-user.role.revoked
+user.created;
+user.updated;
+user.disabled;
+user.role.assigned;
+user.role.revoked;
 
 // System Events
-system.config.changed
-system.maintenance.started
-system.maintenance.completed
+system.config.changed;
+system.maintenance.started;
+system.maintenance.completed;
 ```
 
 ### Scalability Design
 
 **Horizontal Scaling:**
+
 - **Stateless Services:** All core services designed for horizontal scaling
 - **Load Balancing:** NGINX with health checks and session affinity
 - **Database Sharding:** User data sharded by organization
 - **Cache Clustering:** Redis cluster for session and data caching
 
 **Performance Targets:**
+
 - **API Response Time:** < 200ms (95th percentile)
 - **Authentication:** < 500ms including MFA validation
 - **Audit Log Search:** < 1 second for 30-day queries
@@ -150,6 +162,7 @@ system.maintenance.completed
 ### Authentication Implementation
 
 **JWT Token Structure:**
+
 ```json
 {
   "header": {
@@ -161,10 +174,7 @@ system.maintenance.completed
     "sub": "user-uuid",
     "email": "user@company.com",
     "roles": ["EMPLOYEE", "HR_MANAGER"],
-    "permissions": [
-      "core:user:view",
-      "hr:employee:create"
-    ],
+    "permissions": ["core:user:view", "hr:employee:create"],
     "orgId": "org-uuid",
     "sessionId": "session-uuid",
     "iat": 1640991600,
@@ -176,6 +186,7 @@ system.maintenance.completed
 ```
 
 **MFA Implementation:**
+
 ```javascript
 // TOTP Implementation (Time-based One-Time Password)
 const speakeasy = require('speakeasy');
@@ -184,7 +195,7 @@ const speakeasy = require('speakeasy');
 const secret = speakeasy.generateSecret({
   name: `BLIH (${user.email})`,
   issuer: 'BLIH',
-  length: 32
+  length: 32,
 });
 
 // Verify TOTP token
@@ -192,13 +203,14 @@ const verified = speakeasy.totp.verify({
   secret: user.mfaSecret,
   encoding: 'base32',
   token: providedToken,
-  window: 2 // Allow 2 time steps (30 seconds each)
+  window: 2, // Allow 2 time steps (30 seconds each)
 });
 ```
 
 ### RBAC Implementation
 
 **Permission Model:**
+
 ```javascript
 // Permission Format: module:resource:action
 const permissions = {
@@ -206,7 +218,7 @@ const permissions = {
   'core:user:create': 'Create new users',
   'core:user:update': 'Update user information',
   'hr:employee:view': 'View employee records',
-  'hr:leave:approve': 'Approve leave requests'
+  'hr:leave:approve': 'Approve leave requests',
 };
 
 // Role Definition
@@ -216,13 +228,13 @@ const role = {
   permissions: [
     'hr:employee:*', // Wildcard for all employee actions
     'hr:leave:approve',
-    'hr:performance:review'
-  ]
+    'hr:performance:review',
+  ],
 };
 
 // Permission Check
 const hasPermission = (userPermissions, requiredPermission) => {
-  return userPermissions.some(permission => {
+  return userPermissions.some((permission) => {
     if (permission.includes('*')) {
       const [module, resource] = permission.split(':');
       const [reqModule, reqResource] = requiredPermission.split(':');
@@ -236,6 +248,7 @@ const hasPermission = (userPermissions, requiredPermission) => {
 ### Audit Logging Implementation
 
 **Audit Event Structure:**
+
 ```javascript
 const auditEvent = {
   id: generateUUID(),
@@ -250,19 +263,20 @@ const auditEvent = {
   userAgent: request.headers['user-agent'],
   changes: {
     before: oldData,
-    after: newData
+    after: newData,
   },
   sessionId: session.id,
   requestId: request.id,
   compliance: {
     gdpr: true,
     sox: true,
-    iso27001: true
-  }
+    iso27001: true,
+  },
 };
 ```
 
 **Audit Storage Strategy:**
+
 ```sql
 -- PostgreSQL Audit Table Structure
 CREATE TABLE audit_logs (
@@ -293,30 +307,33 @@ CREATE INDEX idx_audit_resource ON audit_logs(resource, resource_id);
 ### Notification System Implementation
 
 **Multi-Channel Delivery:**
+
 ```javascript
 class NotificationService {
   async send(notification) {
     const channels = this.getChannels(notification.type, notification.priority);
-    const promises = channels.map(channel => this.sendViaChannel(channel, notification));
-    
+    const promises = channels.map((channel) =>
+      this.sendViaChannel(channel, notification),
+    );
+
     // Parallel delivery with timeout
     const results = await Promise.allSettled(promises);
-    
+
     // Log delivery results
     this.logDeliveryResults(notification, results);
-    
+
     // Retry failed deliveries
     this.scheduleRetries(notification, results);
   }
-  
+
   getChannels(type, priority) {
     const channelMap = {
-      'CRITICAL': ['EMAIL', 'SMS', 'PUSH', 'WEBHOOK'],
-      'HIGH': ['EMAIL', 'PUSH'],
-      'NORMAL': ['EMAIL'],
-      'LOW': ['EMAIL']
+      CRITICAL: ['EMAIL', 'SMS', 'PUSH', 'WEBHOOK'],
+      HIGH: ['EMAIL', 'PUSH'],
+      NORMAL: ['EMAIL'],
+      LOW: ['EMAIL'],
     };
-    
+
     return channelMap[priority] || ['EMAIL'];
   }
 }
@@ -327,60 +344,72 @@ class NotificationService {
 ## User Personas
 
 ### Persona 1: Sam - IT Administrator
+
 **Profile:** 5 years system admin experience, manages BLIH deployment for 200 users  
 **Goals:**
+
 - Ensure system security and availability
 - Manage user access efficiently
 - Configure integrations with other systems
 - Monitor system health and performance
 
 **Pain Points:**
+
 - User provisioning takes too much time
 - Difficult to track who has access to what
 - No visibility into system usage patterns
 - Security incidents are hard to investigate
 
 **How BLIH Helps:**
+
 - Bulk user import and role assignment
 - Complete access audit trail
 - System analytics and health dashboards
 - Immutable logs for incident investigation
 
 ### Persona 2: Rachel - Compliance Officer
+
 **Profile:** Responsible for ISO 27001/9001 compliance, internal and external audits  
 **Goals:**
+
 - Generate audit evidence efficiently
 - Demonstrate access controls are working
 - Track changes and approvals
 - Respond to auditor requests quickly
 
 **Pain Points:**
+
 - Gathering audit evidence is time-consuming
 - Can't prove who did what and when
 - Access reviews are manual and error-prone
 - Audit preparation takes weeks
 
 **How BLIH Helps:**
+
 - One-click audit report generation
 - Complete activity history for every record
 - Automated access certification campaigns
 - Always-ready compliance documentation
 
 ### Persona 3: Alex - Department Manager
+
 **Profile:** Engineering manager with 12 direct reports, uses multiple BLIH modules  
 **Goals:**
+
 - Ensure team has appropriate system access
 - Stay informed of team activities
 - Receive relevant notifications only
 - Manage team workflows efficiently
 
 **Pain Points:**
+
 - New team members wait days for access
 - Too many irrelevant notifications
 - Don't know what team members are doing in the system
 - Offboarding is often forgotten
 
 **How BLIH Helps:**
+
 - Self-service access requests with approval
 - Smart notification preferences
 - Team activity dashboard
@@ -393,10 +422,12 @@ class NotificationService {
 ### 1. Identity & Access Management (IAM)
 
 #### 1.1 Authentication
+
 **Feature:** Secure user login with multiple authentication options  
 **User Value:** Convenient yet secure access to the system
 
 **Authentication Methods:**
+
 - **Username/Password:** Standard login with password policies
 - **Single Sign-On (SSO):** Integration with corporate identity provider
 - **Multi-Factor Authentication (MFA):** TOTP, SMS, email verification
@@ -404,6 +435,7 @@ class NotificationService {
 - **Social Login:** Google, Microsoft (configurable)
 
 **Password Policies:**
+
 - Minimum length and complexity
 - Password expiration (configurable)
 - History prevention (no reuse)
@@ -411,6 +443,7 @@ class NotificationService {
 - Password strength indicator
 
 **Session Management:**
+
 - Configurable session timeout
 - Concurrent session limits
 - Remember me option
@@ -418,6 +451,7 @@ class NotificationService {
 - Session activity monitoring
 
 **UX Highlights:**
+
 - Clean, branded login page
 - Password visibility toggle
 - "Forgot password" self-service
@@ -425,21 +459,21 @@ class NotificationService {
 - Redirect to original destination after login
 
 #### 1.2 User Management
-**Feature:** Complete user lifecycle management  **User Value:** Right people have right access at right time
+
+**Feature:** Complete user lifecycle management **User Value:** Right people have right access at right time
 
 **User Lifecycle:**
+
 - **Provisioning:**
   - Manual creation
   - Bulk import (CSV/Excel)
   - Auto-provisioning from HR system
   - Self-registration (configurable)
-  
 - **Maintenance:**
   - Profile updates
   - Password resets
   - MFA setup/management
   - Session management
-  
 - **Deprovisioning:**
   - Disable/suspend account
   - Access revocation
@@ -447,6 +481,7 @@ class NotificationService {
   - Archive account
 
 **User Profile:**
+
 - Basic info: Name, email, phone, photo
 - Organizational: Department, manager, employee ID
 - Contact preferences: Email, SMS, in-app
@@ -455,15 +490,18 @@ class NotificationService {
 - Access: Roles, permissions, module access
 
 **UX Highlights:**
+
 - User directory with search and filters
 - Bulk operations (activate, deactivate, reset)
 - Import wizard with validation
 - User activity timeline
 
 #### 1.3 Role-Based Access Control (RBAC)
-**Feature:** Granular permission management through roles  **User Value:** Least-privilege access that's easy to manage
+
+**Feature:** Granular permission management through roles **User Value:** Least-privilege access that's easy to manage
 
 **Role Hierarchy:**
+
 - **System Roles:** Built-in roles (Admin, User, Guest)
 - **Custom Roles:** Organization-defined roles
 - **Module Roles:** Per-module access levels
@@ -478,6 +516,7 @@ class NotificationService {
 | Guest | Limited access | View-only, specific areas |
 
 **Custom Role Creation:**
+
 - Name and description
 - Base role (copy permissions from)
 - Module access (which modules visible)
@@ -489,6 +528,7 @@ class NotificationService {
 Format: `MODULE:RESOURCE:ACTION`
 
 Examples:
+
 - `HR:employee:view` - View employee records
 - `CRM:deal:edit` - Edit sales deals
 - `PROJECTS:project:create` - Create projects
@@ -496,15 +536,18 @@ Examples:
 - `BRAIN:document:approve` - Approve knowledge documents
 
 **UX Highlights:**
+
 - Role comparison view
 - Permission preview for new roles
 - User-role assignment matrix
 - Role usage analytics
 
 #### 1.4 Organization Management
-**Feature:** Define and manage organizational structure  **User Value:** Accurate reporting lines and data segmentation
+
+**Feature:** Define and manage organizational structure **User Value:** Accurate reporting lines and data segmentation
 
 **Organizational Elements:**
+
 - **Company:** Single company context (BLIH)
 - **Departments:** Business units/divisions
 - **Teams:** Functional groups
@@ -512,6 +555,7 @@ Examples:
 - **Cost Centers:** Budget responsibility centers
 
 **Hierarchy:**
+
 ```
 Company (BLIH)
 ├── Department: Engineering
@@ -526,6 +570,7 @@ Company (BLIH)
 ```
 
 **UX Highlights:**
+
 - Org chart visualization
 - Drag-and-drop reorganization
 - Department-level permissions
@@ -534,9 +579,11 @@ Company (BLIH)
 ### 2. Audit & Compliance
 
 #### 2.1 Audit Logging
-**Feature:** Comprehensive, immutable activity recording  **User Value:** Complete accountability and compliance evidence
+
+**Feature:** Comprehensive, immutable activity recording **User Value:** Complete accountability and compliance evidence
 
 **Logged Events:**
+
 - **Authentication:** Logins, logouts, failed attempts, password changes
 - **Data Access:** View, create, update, delete operations
 - **Data Changes:** Before/after values for modifications
@@ -545,6 +592,7 @@ Company (BLIH)
 - **System:** Scheduled jobs, errors, performance events
 
 **Audit Record Structure:**
+
 ```json
 {
   "timestamp": "2026-02-15T10:30:00Z",
@@ -567,26 +615,31 @@ Company (BLIH)
 ```
 
 **Log Retention:**
+
 - Standard: 7 years (configurable)
 - Hot storage: 90 days (searchable)
 - Cold storage: Archive with retrieval capability
 
 **UX Highlights:**
+
 - Audit log viewer with filters
 - Export to CSV/PDF for auditors
 - Real-time activity stream
 - Tamper-evident verification
 
 #### 2.2 Access Reviews
-**Feature:** Periodic certification of user access rights  **User Value:** Compliance with regular access recertification requirements
+
+**Feature:** Periodic certification of user access rights **User Value:** Compliance with regular access recertification requirements
 
 **Review Campaigns:**
+
 - **User Access Reviews:** Managers certify direct reports' access
 - **Role Reviews:** Validate role definitions and assignments
 - **Privilege Reviews:** High-risk permission validation
 - **Orphaned Access:** Detect and remediate stale permissions
 
 **Review Workflow:**
+
 1. **Initiation:**
    - Define scope (users/roles to review)
    - Set deadline
@@ -607,15 +660,18 @@ Company (BLIH)
    - Completion report
 
 **UX Highlights:**
+
 - Review dashboard with progress
 - Bulk certification actions
 - Overdue reminder escalations
 - Historical review archive
 
 #### 2.3 Compliance Reporting
-**Feature:** Pre-built compliance reports and dashboards  **User Value:** Rapid audit response and continuous compliance monitoring
+
+**Feature:** Pre-built compliance reports and dashboards **User Value:** Rapid audit response and continuous compliance monitoring
 
 **Standard Reports:**
+
 - **User Access Report:** Who has access to what
 - **Privileged Access Report:** Users with elevated permissions
 - **Activity Summary:** High-level system usage
@@ -624,18 +680,21 @@ Company (BLIH)
 - **Permission Changes:** RBAC modification history
 
 **Compliance Dashboards:**
+
 - ISO 27001 control evidence
 - SOX IT control status
 - GDPR data processing records
 - PCI DSS access controls
 
 **Export Formats:**
+
 - PDF (executive summaries)
 - Excel (detailed data)
 - CSV (system import)
 - JSON (API integration)
 
 **UX Highlights:**
+
 - Scheduled report generation
 - Email distribution lists
 - Report template library
@@ -644,9 +703,11 @@ Company (BLIH)
 ### 3. Notifications & Communication
 
 #### 3.1 Notification System
-**Feature:** Multi-channel alert and messaging system  **User Value:** Stay informed without information overload
+
+**Feature:** Multi-channel alert and messaging system **User Value:** Stay informed without information overload
 
 **Notification Channels:**
+
 - **In-App:** Bell icon with badge count, notification center
 - **Email:** Configurable frequency (immediate, digest, weekly)
 - **SMS:** Critical alerts only (configurable)
@@ -663,6 +724,7 @@ Company (BLIH)
 | **Urgent** | System outage, data breach | All channels |
 
 **Notification Preferences:**
+
 - Per-category channel selection
 - Frequency settings (immediate, hourly digest, daily digest)
 - Quiet hours for non-urgent notifications
@@ -670,15 +732,18 @@ Company (BLIH)
 - Do-not-disturb mode
 
 **UX Highlights:**
+
 - Notification center with filtering
 - Mark all as read
 - Archive/delete notifications
 - Custom notification rules
 
 #### 3.2 Activity Feed
-**Feature:** Real-time stream of relevant system events  **User Value:** Situational awareness of work context
+
+**Feature:** Real-time stream of relevant system events **User Value:** Situational awareness of work context
 
 **Feed Content:**
+
 - Actions by people you work with
 - Updates to records you follow
 - Status changes on your projects/deals
@@ -686,12 +751,14 @@ Company (BLIH)
 - System announcements
 
 **Personalization:**
+
 - Follow/unfollow records
 - Priority contacts
 - Ignore patterns (reduce noise)
 - Digest vs. real-time preference
 
 **UX Highlights:**
+
 - Infinite scroll with lazy loading
 - Inline actions (approve, comment, view)
 - Filter by type, module, date
@@ -700,15 +767,18 @@ Company (BLIH)
 ### 4. System Configuration
 
 #### 4.1 Module Management
-**Feature:** Enable/disable and configure system modules  **User Value:** Tailored system to organizational needs
+
+**Feature:** Enable/disable and configure system modules **User Value:** Tailored system to organizational needs
 
 **Module Lifecycle:**
+
 - **Available:** Licensed but not deployed
 - **Enabled:** Active and accessible
 - **Configured:** Customized for organization
 - **Disabled:** Inaccessible (data preserved)
 
 **Configuration Options:**
+
 - Module activation/deactivation
 - Feature toggles (enable sub-features)
 - Default settings
@@ -716,15 +786,18 @@ Company (BLIH)
 - Custom field definitions
 
 **UX Highlights:**
+
 - Module marketplace view
 - Configuration wizards
 - Settings import/export
 - Change history
 
 #### 4.2 System Settings
-**Feature:** Global configuration for the BLIH instance  **User Value:** Consistent system behavior aligned with policies
+
+**Feature:** Global configuration for the BLIH instance **User Value:** Consistent system behavior aligned with policies
 
 **Setting Categories:**
+
 - **General:** Company name, logo, timezone, date format
 - **Security:** Password policy, MFA requirements, session timeout
 - **Notifications:** Default channels, retention, templates
@@ -733,32 +806,38 @@ Company (BLIH)
 - **Compliance:** Audit retention, data residency
 
 **Environment-Specific:**
+
 - Development settings
 - Staging configuration
 - Production parameters
 
 **UX Highlights:**
+
 - Settings search
 - Category organization
 - Validation on save
 - Rollback capability
 
 #### 4.3 Customization
-**Feature:** Branding and UI personalization  **User Value:** System feels like part of the organization
+
+**Feature:** Branding and UI personalization **User Value:** System feels like part of the organization
 
 **Branding Options:**
+
 - Company logo (header, login page, emails)
 - Color scheme (primary, secondary colors)
 - Favicon
 - Custom CSS (advanced)
 
 **UI Customization:**
+
 - Default dashboard layouts
 - Custom fields (per module)
 - Form layouts
 - Report templates
 
 **UX Highlights:**
+
 - Live preview of changes
 - Logo size guidelines
 - Color contrast validation
@@ -767,9 +846,11 @@ Company (BLIH)
 ### 5. Dashboard & Navigation
 
 #### 5.1 User Dashboard
-**Feature:** Personalized landing page with relevant information  **User Value:** Quick access to what matters most
+
+**Feature:** Personalized landing page with relevant information **User Value:** Quick access to what matters most
 
 **Dashboard Widgets:**
+
 - **My Tasks:** Pending items requiring action
 - **Recent Activity:** Recently accessed records
 - **Notifications:** Unread alerts
@@ -779,21 +860,25 @@ Company (BLIH)
 - **Upcoming:** Calendar events, deadlines
 
 **Customization:**
+
 - Add/remove widgets
 - Rearrange layout
 - Configure widget settings
 - Save multiple layouts
 
 **UX Highlights:**
+
 - Drag-and-drop widget arrangement
 - Responsive grid layout
 - Widget expand/collapse
 - Mobile-optimized view
 
 #### 5.2 Global Navigation
-**Feature:** Consistent navigation across all modules  **User Value:** Easy movement between different parts of the system
+
+**Feature:** Consistent navigation across all modules **User Value:** Easy movement between different parts of the system
 
 **Navigation Elements:**
+
 - **Top Bar:** Logo, module switcher, global search, notifications, profile
 - **Side Menu:** Contextual based on current module
 - **Breadcrumbs:** Path back to parent pages
@@ -801,6 +886,7 @@ Company (BLIH)
 - **Favorites:** User-defined shortcuts
 
 **Search:**
+
 - Global search across all modules
 - Type-ahead suggestions
 - Filter by module
@@ -808,15 +894,18 @@ Company (BLIH)
 - Saved searches
 
 **UX Highlights:**
+
 - Keyboard shortcuts (Cmd+K for search)
 - Collapsible sidebar
 - Recently visited modules
 - Mobile hamburger menu
 
 #### 5.3 Module Switcher
-**Feature:** Easy navigation between BLIH modules  **User Value:** Seamless workflow across different business functions
+
+**Feature:** Easy navigation between BLIH modules **User Value:** Seamless workflow across different business functions
 
 **Switcher Interface:**
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ☰                                                   │
@@ -966,7 +1055,7 @@ Company (BLIH)
    ├─ Login from unusual location (foreign country)
    ├─ Outside normal hours (3 AM local time)
    └─ Failed MFA attempt
-   
+
    Action: Account temporarily locked
    Notifications: User (email), Security Officer (SMS)
 
@@ -1022,6 +1111,7 @@ Company (BLIH)
 ## UI Components & Patterns
 
 ### Login Page
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                     │
@@ -1050,6 +1140,7 @@ Company (BLIH)
 ```
 
 ### User Dashboard
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  [Logo]  [Dashboard ▼]  [🔍]  [🔔 5]  [👤 Alex ▼]                │
@@ -1082,6 +1173,7 @@ Company (BLIH)
 ```
 
 ### Audit Log Viewer
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Audit Log                                [Export] [⚙️ Columns ▼]   │
@@ -1106,6 +1198,7 @@ Company (BLIH)
 ```
 
 ### Notification Center
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Notifications                                          [Mark All ✓]│
@@ -1144,6 +1237,7 @@ Company (BLIH)
 ### Security Architecture
 
 **Defense in Depth:**
+
 1. **Perimeter:** WAF, DDoS protection, rate limiting
 2. **Network:** TLS 1.3, network segmentation
 3. **Application:** Input validation, parameterized queries, CSRF protection
@@ -1155,6 +1249,7 @@ Company (BLIH)
 ### Session Security
 
 **Session Management:**
+
 - Secure, httpOnly, SameSite cookies
 - Session timeout (configurable, default: 8 hours)
 - Concurrent session limits per user
@@ -1162,6 +1257,7 @@ Company (BLIH)
 - Force logout capability (admin)
 
 **Token Handling:**
+
 - JWT with short expiration (15 minutes)
 - Refresh token rotation
 - Token binding to device fingerprint
@@ -1170,12 +1266,14 @@ Company (BLIH)
 ### Data Protection
 
 **Encryption:**
+
 - At Rest: Database encryption (AES-256)
 - In Transit: TLS 1.3 minimum
 - Field-level: Sensitive data (PII) encrypted
 - Keys: Managed in secure vault
 
 **Data Handling:**
+
 - Input sanitization
 - Output encoding
 - File upload validation
@@ -1187,37 +1285,40 @@ Company (BLIH)
 ## Integration Points
 
 ### Outbound Events (Core Platform Publishes)
-| Event | Trigger | Subscribers |
-|-------|---------|-------------|
-| `auth.login.success` | User logs in | Audit log, Security monitoring |
-| `auth.login.failure` | Failed login | Security alerts, Account lockout |
-| `auth.logout` | User logs out | Session cleanup |
-| `auth.password.changed` | Password update | Security notification |
-| `user.created` | New user | All modules (user provisioning) |
-| `user.updated` | Profile change | HR, related modules |
-| `user.disabled` | Account disabled | All modules (access revocation) |
-| `role.assigned` | Role granted | Module access updates |
-| `role.revoked` | Role removed | Access cleanup |
-| `audit.critical` | Critical action | Security officer, SIEM |
+
+| Event                   | Trigger          | Subscribers                      |
+| ----------------------- | ---------------- | -------------------------------- |
+| `auth.login.success`    | User logs in     | Audit log, Security monitoring   |
+| `auth.login.failure`    | Failed login     | Security alerts, Account lockout |
+| `auth.logout`           | User logs out    | Session cleanup                  |
+| `auth.password.changed` | Password update  | Security notification            |
+| `user.created`          | New user         | All modules (user provisioning)  |
+| `user.updated`          | Profile change   | HR, related modules              |
+| `user.disabled`         | Account disabled | All modules (access revocation)  |
+| `role.assigned`         | Role granted     | Module access updates            |
+| `role.revoked`          | Role removed     | Access cleanup                   |
+| `audit.critical`        | Critical action  | Security officer, SIEM           |
 
 ### Inbound Events (Core Platform Consumes)
-| Event | Source | Action |
-|-------|--------|--------|
-| `hr.employee.hired` | HR | Auto-create user account |
-| `hr.employee.terminated` | HR | Disable account, revoke access |
-| `hr.employee.transferred` | HR | Update department/roles |
-| `finance.period.closed` | Finance | Compliance timestamp |
-| `audit.finding.critical` | Audit | Security alert escalation |
+
+| Event                     | Source  | Action                         |
+| ------------------------- | ------- | ------------------------------ |
+| `hr.employee.hired`       | HR      | Auto-create user account       |
+| `hr.employee.terminated`  | HR      | Disable account, revoke access |
+| `hr.employee.transferred` | HR      | Update department/roles        |
+| `finance.period.closed`   | Finance | Compliance timestamp           |
+| `audit.finding.critical`  | Audit   | Security alert escalation      |
 
 ### External Integrations
-| System | Type | Purpose |
-|--------|------|---------|
-| Identity Provider (Keycloak) | SSO/SAML | Authentication, user federation |
-| SIEM (Splunk/QRadar) | Syslog/CEF | Security event aggregation |
-| MDM (Intune/JAMF) | API | Device compliance checking |
-| HRIS (Workday/ADP) | API | User provisioning sync |
-| Directory (Active Directory) | LDAP | User/group sync |
-| Monitoring (Prometheus/Grafana) | API | System health metrics |
+
+| System                          | Type       | Purpose                         |
+| ------------------------------- | ---------- | ------------------------------- |
+| Identity Provider (Keycloak)    | SSO/SAML   | Authentication, user federation |
+| SIEM (Splunk/QRadar)            | Syslog/CEF | Security event aggregation      |
+| MDM (Intune/JAMF)               | API        | Device compliance checking      |
+| HRIS (Workday/ADP)              | API        | User provisioning sync          |
+| Directory (Active Directory)    | LDAP       | User/group sync                 |
+| Monitoring (Prometheus/Grafana) | API        | System health metrics           |
 
 ---
 
@@ -1226,6 +1327,7 @@ Company (BLIH)
 ### Admin Dashboard
 
 **System Health:**
+
 - Service status (all green/yellow/red)
 - Resource utilization (CPU, memory, disk)
 - Active sessions count
@@ -1233,6 +1335,7 @@ Company (BLIH)
 - Queue depths (event bus, notifications)
 
 **User Statistics:**
+
 - Active users (today/this week/this month)
 - Login success/failure rates
 - New user registrations
@@ -1240,6 +1343,7 @@ Company (BLIH)
 - Session duration averages
 
 **Audit Summary:**
+
 - Total events today
 - Failed login attempts
 - Permission changes
@@ -1249,6 +1353,7 @@ Company (BLIH)
 ### Maintenance Operations
 
 **User Management:**
+
 - Bulk user import/export
 - Password reset campaigns
 - MFA enrollment drives
@@ -1256,6 +1361,7 @@ Company (BLIH)
 - Orphaned account cleanup
 
 **System Maintenance:**
+
 - Log archival and retention
 - Database optimization
 - Cache clearing
@@ -1264,9 +1370,9 @@ Company (BLIH)
 
 ---
 
-*Documentation Version: 1.0*  
-*Module Version: 1.0*  
-*Last Updated: February 2026*
+_Documentation Version: 1.0_  
+_Module Version: 1.0_  
+_Last Updated: February 2026_
 
 ---
 
@@ -1275,6 +1381,7 @@ Company (BLIH)
 ### Core Platform Tables
 
 **Users Table:**
+
 ```sql
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1295,6 +1402,7 @@ CREATE TABLE users (
 ```
 
 **Roles Table:**
+
 ```sql
 CREATE TABLE roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1307,6 +1415,7 @@ CREATE TABLE roles (
 ```
 
 **Permissions Table:**
+
 ```sql
 CREATE TABLE permissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1321,6 +1430,7 @@ CREATE TABLE permissions (
 ```
 
 **Role Permissions Junction:**
+
 ```sql
 CREATE TABLE role_permissions (
   role_id UUID REFERENCES roles(id) ON DELETE CASCADE,
@@ -1330,6 +1440,7 @@ CREATE TABLE role_permissions (
 ```
 
 **User Roles Junction:**
+
 ```sql
 CREATE TABLE user_roles (
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -1342,6 +1453,7 @@ CREATE TABLE user_roles (
 ```
 
 **Organizations Table:**
+
 ```sql
 CREATE TABLE organizations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1357,6 +1469,7 @@ CREATE TABLE organizations (
 ```
 
 **Departments Table:**
+
 ```sql
 CREATE TABLE departments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1396,6 +1509,7 @@ CREATE INDEX idx_audit_logs_compliance ON audit_logs USING GIN(compliance);
 ### Docker Compose Setup
 
 **docker-compose.yml:**
+
 ```yaml
 version: '3.8'
 
@@ -1404,7 +1518,7 @@ services:
   api-gateway:
     image: blih/core-api:1.0
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://user:pass@postgres:5432/blih_core
@@ -1460,7 +1574,7 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     ports:
-      - "15672:15672"  # Management UI
+      - '15672:15672' # Management UI
     networks:
       - blih-network
 
@@ -1478,7 +1592,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - '8080:8080'
     networks:
       - blih-network
 
@@ -1488,7 +1602,7 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - 'ES_JAVA_OPTS=-Xms1g -Xmx1g'
     volumes:
       - es_data:/usr/share/elasticsearch/data
     networks:
@@ -1508,6 +1622,7 @@ networks:
 ### Environment Configuration
 
 **.env.example:**
+
 ```bash
 # Database Configuration
 DB_PASSWORD=your_secure_db_password
@@ -1549,6 +1664,7 @@ GRAFANA_ADMIN_PASSWORD=your_grafana_password
 ### Kubernetes Deployment
 
 **k8s/core-deployment.yaml:**
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -1566,42 +1682,42 @@ spec:
         app: blih-core-api
     spec:
       containers:
-      - name: core-api
-        image: blih/core-api:1.0
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: blih-secrets
-              key: database-url
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: blih-secrets
-              key: jwt-secret
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: core-api
+          image: blih/core-api:1.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: 'production'
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blih-secrets
+                  key: database-url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: blih-secrets
+                  key: jwt-secret
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: v1
 kind: Service
@@ -1612,15 +1728,16 @@ spec:
   selector:
     app: blih-core-api
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3000
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
   type: LoadBalancer
 ```
 
 ### Monitoring Setup
 
 **prometheus.yml:**
+
 ```yaml
 global:
   scrape_interval: 15s
@@ -1648,6 +1765,7 @@ scrape_configs:
 ### Backup Strategy
 
 **Daily Backup Script:**
+
 ```bash
 #!/bin/bash
 # backup-core.sh
@@ -1678,6 +1796,7 @@ echo "Backup completed: $DATE"
 ### Health Checks
 
 **Health Endpoint Implementation:**
+
 ```javascript
 // health.controller.js
 const healthCheck = async (req, res) => {
@@ -1686,22 +1805,30 @@ const healthCheck = async (req, res) => {
     timestamp: new Date().toISOString(),
     version: process.env.APP_VERSION,
     uptime: process.uptime(),
-    services: {}
+    services: {},
   };
 
   try {
     // Database Health
     await db.query('SELECT 1');
-    health.services.database = { status: 'HEALTHY', responseTime: Date.now() - start };
+    health.services.database = {
+      status: 'HEALTHY',
+      responseTime: Date.now() - start,
+    };
 
     // Redis Health
     await redis.ping();
-    health.services.redis = { status: 'HEALTHY', responseTime: Date.now() - start };
+    health.services.redis = {
+      status: 'HEALTHY',
+      responseTime: Date.now() - start,
+    };
 
     // RabbitMQ Health
     await rabbitmq.checkConnection();
-    health.services.rabbitmq = { status: 'HEALTHY', responseTime: Date.now() - start };
-
+    health.services.rabbitmq = {
+      status: 'HEALTHY',
+      responseTime: Date.now() - start,
+    };
   } catch (error) {
     health.status = 'UNHEALTHY';
     health.error = error.message;
@@ -1714,6 +1841,6 @@ const healthCheck = async (req, res) => {
 
 ---
 
-*Documentation Version: 1.0*  
-*Module Version: 1.0*  
-*Last Updated: February 2026*
+_Documentation Version: 1.0_  
+_Module Version: 1.0_  
+_Last Updated: February 2026_

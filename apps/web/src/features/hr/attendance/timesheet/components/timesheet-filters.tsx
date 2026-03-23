@@ -1,25 +1,28 @@
-"use client";
+'use client';
 
-import { ListFilter, Search } from "lucide-react";
+import { ListFilter, Search } from 'lucide-react';
 
-import type { TimesheetStatus, TimesheetViewMode } from "@/features/hr/attendance/timesheet/types";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import type {
+  TimesheetStatus,
+  TimesheetViewMode,
+} from '@/features/hr/attendance/timesheet/types';
+import { Button } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from '@/shared/components/ui/select';
 
 type TimesheetFiltersProps = {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   department: string;
   onDepartmentChange: (value: string) => void;
-  status: "all" | TimesheetStatus;
-  onStatusChange: (value: "all" | TimesheetStatus) => void;
+  status: 'all' | TimesheetStatus;
+  onStatusChange: (value: 'all' | TimesheetStatus) => void;
   viewMode: TimesheetViewMode;
   onViewModeChange: (value: TimesheetViewMode) => void;
   departments: readonly string[];
@@ -59,20 +62,31 @@ export function TimesheetFilters({
         </Button>
 
         <Select value={department} onValueChange={onDepartmentChange}>
-          <SelectTrigger size="sm" className="h-9 min-w-[160px] rounded-[6px] border-input bg-white text-sm">
+          <SelectTrigger
+            size="sm"
+            className="h-9 min-w-[160px] rounded-[6px] border-input bg-white text-sm"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {departments.map((item) => (
               <SelectItem key={item} value={item}>
-                {item === "all" ? "All Departments" : item}
+                {item === 'all' ? 'All Departments' : item}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <Select value={status} onValueChange={(value: string) => onStatusChange(value as "all" | TimesheetStatus)}>
-          <SelectTrigger size="sm" className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm">
+        <Select
+          value={status}
+          onValueChange={(value: string) =>
+            onStatusChange(value as 'all' | TimesheetStatus)
+          }
+        >
+          <SelectTrigger
+            size="sm"
+            className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -83,8 +97,16 @@ export function TimesheetFilters({
           </SelectContent>
         </Select>
 
-        <Select value={viewMode} onValueChange={(value: string) => onViewModeChange(value as TimesheetViewMode)}>
-          <SelectTrigger size="sm" className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm">
+        <Select
+          value={viewMode}
+          onValueChange={(value: string) =>
+            onViewModeChange(value as TimesheetViewMode)
+          }
+        >
+          <SelectTrigger
+            size="sm"
+            className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

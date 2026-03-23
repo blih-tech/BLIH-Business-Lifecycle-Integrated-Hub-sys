@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Module Overview](#module-overview)
 2. [User Personas](#user-personas)
 3. [Feature Catalog](#feature-catalog)
@@ -22,9 +23,11 @@
 ## Module Overview
 
 ### Purpose
+
 The BLIH Finance Module provides comprehensive financial management including accounting, invoicing, payroll, expense management, and financial reporting. It ensures financial compliance, accurate record-keeping, and timely financial insights for decision-making.
 
 ### Value Proposition
+
 - **Ensure Compliance:** Built-in support for tax regulations, audit trails, and financial controls
 - **Accelerate Cash Flow:** Automated invoicing, payment tracking, and reminders
 - **Reduce Admin Time:** Payroll automation, expense approval workflows, and bank reconciliation
@@ -32,75 +35,88 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - **Maintain Accuracy:** Double-entry accounting with audit trails and approval workflows
 
 ### Target Users
-| Role | Primary Use Case | Key Features Used |
-|------|-----------------|-------------------|
-| CFO/Finance Director | Strategic financial oversight | Reports, budgets, forecasts, compliance |
-| Accountant | Daily bookkeeping | Transactions, reconciliation, journal entries |
-| Accounts Receivable | Customer invoicing & collections | Invoices, payments, aging reports |
-| Accounts Payable | Vendor payments & expenses | Bills, expense approvals, payments |
-| Payroll Specialist | Employee compensation | Payroll processing, tax filings |
-| Department Manager | Budget management | Expense approvals, budget vs actual |
-| Employee | Expense submission | Expense claims, reimbursement tracking |
+
+| Role                 | Primary Use Case                 | Key Features Used                             |
+| -------------------- | -------------------------------- | --------------------------------------------- |
+| CFO/Finance Director | Strategic financial oversight    | Reports, budgets, forecasts, compliance       |
+| Accountant           | Daily bookkeeping                | Transactions, reconciliation, journal entries |
+| Accounts Receivable  | Customer invoicing & collections | Invoices, payments, aging reports             |
+| Accounts Payable     | Vendor payments & expenses       | Bills, expense approvals, payments            |
+| Payroll Specialist   | Employee compensation            | Payroll processing, tax filings               |
+| Department Manager   | Budget management                | Expense approvals, budget vs actual           |
+| Employee             | Expense submission               | Expense claims, reimbursement tracking        |
 
 ---
 
 ## User Personas
 
 ### Persona 1: Margaret - CFO
+
 **Profile:** 15 years finance experience, MBA, reports to CEO, manages 4-person team  
 **Goals:**
+
 - Provide accurate financial insights to leadership
 - Ensure regulatory compliance and audit readiness
 - Optimize cash flow and working capital
 - Support strategic planning with financial data
 
 **Pain Points:**
+
 - Financial reports take days to compile
 - Cash flow surprises from delayed customer payments
 - Manual processes create errors and delays
 - Difficult to track profitability by project/customer
 
 **How BLIH Helps:**
+
 - Real-time dashboards replace manual report compilation
 - Automated payment reminders and aging alerts
 - Integrated workflows reduce manual data entry
 - Project-based profitability analysis via CRM/Projects integration
 
 ### Persona 2: Robert - Staff Accountant
+
 **Profile:** CPA, 3 years experience, handles day-to-day bookkeeping  
 **Goals:**
+
 - Maintain accurate books with minimal errors
 - Close month-end quickly and efficiently
 - Reconcile accounts accurately
 - Support audit requests promptly
 
 **Pain Points:**
+
 - Time-consuming manual journal entries
 - Tracking down missing receipts and approvals
 - Reconciling bank statements takes days
 - Audit preparation is stressful and time-consuming
 
 **How BLIH Helps:**
+
 - Recurring journal entries automated
 - Digital receipt capture with mobile app
 - Bank feed integration with auto-matching
 - Always-ready audit trails and documentation
 
 ### Persona 3: Emily - HR/Payroll Specialist
+
 **Profile:** Handles payroll for 200 employees, bi-weekly cycles  
 **Goals:**
+
 - Process payroll accurately and on time
 - Ensure tax compliance and filing
 - Handle employee payroll inquiries
 - Manage benefits deductions
 
 **Pain Points:**
+
 - Manual time entry collection from various sources
 - Tax calculation errors are costly
 - Employee questions about pay take hours to research
 - Benefits changes are complex to track
 
 **How BLIH Helps:**
+
 - Integrated time tracking from Projects module
 - Automated tax calculations with updates
 - Employee self-service for pay stubs and history
@@ -113,10 +129,12 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 1. Chart of Accounts
 
 #### 1.1 Account Management
+
 **Feature:** Hierarchical chart of accounts with flexible configuration  
 **User Value:** Organized financial structure that scales with business
 
 **Account Types:**
+
 - **Assets:** Current (Cash, AR, Inventory), Fixed (Equipment, Property)
 - **Liabilities:** Current (AP, Short-term debt), Long-term (Loans)
 - **Equity:** Capital, Retained Earnings, Dividends
@@ -124,6 +142,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - **Expenses:** COGS, Operating, Administrative
 
 **Account Properties:**
+
 - Account code (numeric or alphanumeric)
 - Name and description
 - Parent/child relationships
@@ -132,6 +151,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Active/inactive status
 
 **UX Highlights:**
+
 - Tree view with expand/collapse
 - Drag-and-drop reordering
 - Import from Excel/CSV
@@ -140,10 +160,12 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 2. General Ledger & Transactions
 
 #### 2.1 Journal Entries
+
 **Feature:** Double-entry bookkeeping with flexible entry types  
 **User Value:** Accurate financial records with full audit trail
 
 **Entry Types:**
+
 - **Simple:** One debit, one credit
 - **Compound:** Multiple debits/credits
 - **Recurring:** Automated repeating entries
@@ -152,6 +174,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - **System:** Auto-generated from sub-ledgers
 
 **Entry Workflow:**
+
 1. Create draft entry
 2. Attach supporting documents
 3. Submit for review (configurable approval)
@@ -159,6 +182,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 5. Generate audit trail entry
 
 **UX Highlights:**
+
 - Smart account autocomplete
 - Balance validation in real-time
 - Template library for common entries
@@ -166,21 +190,25 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Bulk import with validation
 
 #### 2.2 Bank Reconciliation
+
 **Feature:** Match bank transactions to ledger entries  
 **User Value:** Accurate cash position and fraud detection
 
 **Bank Feed Integration:**
+
 - Automatic import from supported banks
 - CSV/Excel upload for unsupported banks
 - Real-time balance checking
 
 **Matching Rules:**
+
 - Auto-match exact amounts
 - Suggested matches for similar amounts
 - Bulk matching for recurring transactions
 - Manual match override
 
 **Reconciliation Process:**
+
 1. Import bank statement
 2. System suggests matches
 3. Review and confirm matches
@@ -189,6 +217,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 6. Generate reconciliation report
 
 **UX Highlights:**
+
 - Side-by-side bank vs. ledger view
 - One-click matching
 - Unreconciled item alerts
@@ -197,16 +226,19 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 3. Accounts Receivable
 
 #### 3.1 Customer Invoicing
+
 **Feature:** Professional invoice creation and delivery  
 **User Value:** Faster payment collection with branded documentation
 
 **Invoice Creation:**
+
 - **From CRM Deal:** Auto-generate from won opportunity
 - **From Project Time:** Billable hours auto-converted to invoice
 - **From Contract:** Recurring invoices for retainer agreements
 - **Manual:** Custom invoice line items
 
 **Invoice Components:**
+
 - Header: Company branding, invoice number, dates
 - Customer: Bill-to address, contact, purchase order
 - Line items: Description, quantity, rate, amount
@@ -215,12 +247,14 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Notes and terms & conditions
 
 **Invoice Delivery:**
+
 - Email directly from system
 - Customer portal access
 - PDF download
 - Print to mail
 
 **UX Highlights:**
+
 - Branded templates (customizable)
 - Drag-and-drop line item reordering
 - Tax auto-calculation by jurisdiction
@@ -228,9 +262,11 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Duplicate invoice detection
 
 #### 3.2 Payment Processing
-**Feature:** Record and apply customer payments  **User Value:** Accurate cash application and reduced DSO
+
+**Feature:** Record and apply customer payments **User Value:** Accurate cash application and reduced DSO
 
 **Payment Recording:**
+
 - Single invoice payment
 - Partial payments
 - Multiple invoice application
@@ -238,6 +274,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Prepayment recording
 
 **Payment Methods:**
+
 - Bank transfer/Wire
 - Check (with image upload)
 - Credit card (via integrated gateway)
@@ -245,21 +282,25 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Other
 
 **Auto-Application:**
+
 - Suggest oldest invoices first
 - Apply to specific invoices by reference
 - Handle currency conversion
 - Calculate early payment discounts
 
 **UX Highlights:**
+
 - Unapplied payment dashboard
 - Batch payment entry
 - Deposit slip generation
 - Payment reminder scheduling
 
 #### 3.3 Collections Management
-**Feature:** Automated dunning and collections workflow  **User Value:** Improved cash flow with reduced manual follow-up
+
+**Feature:** Automated dunning and collections workflow **User Value:** Improved cash flow with reduced manual follow-up
 
 **Aging Buckets:**
+
 - Current
 - 1-30 days past due
 - 31-60 days past due
@@ -267,6 +308,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - 90+ days past due
 
 **Collection Actions:**
+
 - Automated email reminders (configurable schedule)
 - Escalating message templates
 - Task creation for manual follow-up
@@ -274,6 +316,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Payment plan tracking
 
 **UX Highlights:**
+
 - Aging report with drill-down
 - Customer payment history
 - Collection effectiveness dashboard
@@ -282,9 +325,11 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 4. Accounts Payable
 
 #### 4.1 Vendor Management
-**Feature:** Supplier database with payment preferences  **User Value:** Organized vendor relationships with payment efficiency
+
+**Feature:** Supplier database with payment preferences **User Value:** Organized vendor relationships with payment efficiency
 
 **Vendor Profile:**
+
 - Contact information
 - Payment terms and methods
 - Tax ID and forms (W-9, etc.)
@@ -293,20 +338,24 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Purchase history
 
 **UX Highlights:**
+
 - Vendor performance metrics
 - Duplicate vendor detection
 - Bulk payment method setup
 
 #### 4.2 Bill Management
-**Feature:** Track and pay vendor invoices  **User Value:** Timely payments with accurate cash flow planning
+
+**Feature:** Track and pay vendor invoices **User Value:** Timely payments with accurate cash flow planning
 
 **Bill Entry:**
+
 - Manual entry
 - Email forwarding (OCR capture)
 - Import from vendor portals
 - Recurring bills (utilities, rent)
 
 **Approval Workflow:**
+
 1. Bill entered (draft)
 2. Route to approver based on amount/rules
 3. Approve/reject with comments
@@ -314,21 +363,25 @@ The BLIH Finance Module provides comprehensive financial management including ac
 5. Execute payment
 
 **Payment Scheduling:**
+
 - Pay on due date
 - Pay early for discount
 - Batch payments for efficiency
 - Cash flow optimized scheduling
 
 **UX Highlights:**
+
 - Bill aging dashboard
 - Approval inbox for managers
 - Payment calendar view
 - Check/payment batch processing
 
 #### 4.3 Expense Management
-**Feature:** Employee expense submission and reimbursement  **User Value:** Efficient expense processing with policy compliance
+
+**Feature:** Employee expense submission and reimbursement **User Value:** Efficient expense processing with policy compliance
 
 **Expense Submission:**
+
 - Mobile receipt capture (photo)
 - Mileage tracking with GPS
 - Per diem auto-calculation
@@ -336,6 +389,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Bulk expense reports
 
 **Expense Properties:**
+
 - Date, amount, currency
 - Category (GL account mapping)
 - Project/customer allocation
@@ -343,17 +397,20 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Notes
 
 **Approval Workflow:**
+
 - Auto-approval under threshold
 - Manager approval for standard expenses
 - Multi-level for large amounts
 - Policy violation alerts
 
 **Reimbursement:**
+
 - Direct deposit setup
 - Reimbursement schedule (payroll or separate)
 - Expense report status tracking
 
 **UX Highlights:**
+
 - Receipt photo with auto-extraction
 - Policy guardrails (max amounts, categories)
 - Expense report templates
@@ -362,9 +419,11 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 5. Payroll
 
 #### 5.1 Payroll Processing
-**Feature:** Calculate and process employee compensation  **User Value:** Accurate, compliant payroll with minimal effort
+
+**Feature:** Calculate and process employee compensation **User Value:** Accurate, compliant payroll with minimal effort
 
 **Payroll Cycle:**
+
 - **Setup:**
   - Select pay period
   - Import time data (from Projects/HR)
@@ -386,6 +445,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
   - Close payroll
 
 **Tax Compliance:**
+
 - Multi-jurisdiction support
 - Automatic tax table updates
 - W-2/1099 generation
@@ -393,15 +453,18 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Year-end processing
 
 **UX Highlights:**
+
 - Payroll preview before processing
 - Exception report for review
 - One-click processing for standard payroll
 - Payroll calendar with deadlines
 
 #### 5.2 Payroll Reporting
-**Feature:** Comprehensive payroll analytics and compliance reports  **User Value:** Compliance and cost analysis
+
+**Feature:** Comprehensive payroll analytics and compliance reports **User Value:** Compliance and cost analysis
 
 **Reports:**
+
 - Payroll register
 - Tax liability summary
 - Deductions summary
@@ -410,12 +473,14 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - 401(k) contributions
 
 **Analytics:**
+
 - Payroll cost trends
 - Department labor costs
 - Overtime analysis
 - Headcount reporting
 
 **UX Highlights:**
+
 - Pre-built report templates
 - Custom report builder
 - Scheduled report delivery
@@ -424,9 +489,11 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 6. Financial Reporting
 
 #### 6.1 Standard Reports
-**Feature:** Essential financial statements and reports  **User Value:** Accurate financial visibility for stakeholders
+
+**Feature:** Essential financial statements and reports **User Value:** Accurate financial visibility for stakeholders
 
 **Core Reports:**
+
 - **Balance Sheet:** Assets, liabilities, equity at point in time
 - **Income Statement (P&L):** Revenue, expenses, profit by period
 - **Cash Flow Statement:** Operating, investing, financing activities
@@ -434,6 +501,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - **General Ledger:** Detailed transaction listing
 
 **Operational Reports:**
+
 - AR Aging
 - AP Aging
 - Sales by customer/product
@@ -441,6 +509,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Budget vs. Actual
 
 **UX Highlights:**
+
 - Comparative periods (current vs. prior)
 - Drill-down from summary to detail
 - Custom date ranges
@@ -448,9 +517,11 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Scheduled email delivery
 
 #### 6.2 Management Dashboards
-**Feature:** Visual financial KPIs and trends  **User Value:** Quick financial health assessment
+
+**Feature:** Visual financial KPIs and trends **User Value:** Quick financial health assessment
 
 **Dashboard Widgets:**
+
 - Cash position
 - Outstanding AR/AP
 - Monthly revenue trend
@@ -459,21 +530,25 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Budget variance
 
 **Customization:**
+
 - User-specific dashboard layout
 - Widget selection and sizing
 - Date range selectors
 - Alert thresholds
 
 **UX Highlights:**
+
 - Real-time data refresh
 - Interactive charts with drill-down
 - Mobile-responsive layout
 - One-click export
 
 #### 6.3 Budgeting & Forecasting
-**Feature:** Plan and track against financial targets  **User Value:** Proactive financial management
+
+**Feature:** Plan and track against financial targets **User Value:** Proactive financial management
 
 **Budget Creation:**
+
 - Import prior year actuals
 - Top-down target allocation
 - Bottom-up department input
@@ -481,12 +556,14 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Multiple scenarios
 
 **Tracking:**
+
 - Monthly budget vs. actual
 - Variance analysis
 - Forecast updates
 - Year-end projection
 
 **UX Highlights:**
+
 - Spreadsheet-like input
 - Variance color coding
 - Roll-up from department to company
@@ -495,9 +572,11 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ### 7. Multi-Currency & Taxation
 
 #### 7.1 Multi-Currency Support
-**Feature:** Handle transactions in multiple currencies  **User Value:** International business operations
+
+**Feature:** Handle transactions in multiple currencies **User Value:** International business operations
 
 **Features:**
+
 - Base currency setting
 - Transaction currency recording
 - Exchange rate management (manual or API)
@@ -506,26 +585,31 @@ The BLIH Finance Module provides comprehensive financial management including ac
 - Reporting in any currency
 
 **UX Highlights:**
+
 - Automatic rate lookups
 - Historical rate lookup
 - Currency conversion calculator
 
 #### 7.2 Tax Management
-**Feature:** Comprehensive tax calculation and reporting  **User Value:** Compliance with tax regulations
+
+**Feature:** Comprehensive tax calculation and reporting **User Value:** Compliance with tax regulations
 
 **Tax Types:**
+
 - Sales/VAT/GST
 - Withholding taxes
 - Payroll taxes
 - Corporate income tax
 
 **Features:**
+
 - Tax code library by jurisdiction
 - Tax rate management
 - Tax return preparation
 - Filing deadline tracking
 
 **UX Highlights:**
+
 - Tax summary dashboard
 - Filing calendar
 - Tax liability estimation
@@ -696,6 +780,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ## UI Components & Patterns
 
 ### Financial Dashboard
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Financial Overview                           [Feb 2026 ▼] [⚙️]  │
@@ -724,6 +809,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ```
 
 ### Invoice List
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Invoices                                    [+ Create] [Filter ▼]│
@@ -743,6 +829,7 @@ The BLIH Finance Module provides comprehensive financial management including ac
 ```
 
 ### Journal Entry Form
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Journal Entry                                       [Save Draft] │
@@ -773,22 +860,26 @@ The BLIH Finance Module provides comprehensive financial management including ac
 BLIH includes built-in support for Ethiopian tax requirements:
 
 **Withholding Tax:**
+
 - VAT withholding (2% on local goods, 0% on export)
 - Income tax withholding on payments to contractors
 - Monthly withholding declarations
 
 **VAT/GST:**
+
 - Standard rate: 15%
 - Zero-rated supplies tracking
 - Exempt supplies tracking
 - Monthly VAT returns
 
 **Payroll Taxes:**
+
 - Income tax brackets (progressive)
 - Pension contributions (employee/employer)
 - Social security calculations
 
 **Reporting:**
+
 - Monthly withholding tax declarations
 - Quarterly/annual income tax returns
 - Annual financial statements
@@ -797,6 +888,7 @@ BLIH includes built-in support for Ethiopian tax requirements:
 ### Audit Trail
 
 Every financial transaction includes:
+
 - Creation timestamp and user
 - Modification history (immutable after posting)
 - Approval workflow record
@@ -804,6 +896,7 @@ Every financial transaction includes:
 - Related transaction references
 
 **Audit Features:**
+
 - Transaction log export
 - User activity report
 - Period locking (prevent changes)
@@ -815,81 +908,84 @@ Every financial transaction includes:
 
 ### Permission Matrix
 
-| Feature | Staff Accountant | AR/AP Clerk | Payroll Specialist | Finance Manager | CFO |
-|---------|------------------|-------------|-------------------|-----------------|-----|
-| View Reports | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Create Transactions | ✅ | ✅ | ❌ | ✅ | ✅ |
-| Post Journal Entries | With approval | ❌ | ❌ | ✅ | ✅ |
-| Process Payroll | ❌ | ❌ | ✅ | ✅ | ✅ |
-| Approve Expenses | ❌ | ✅ | ❌ | ✅ | ✅ |
-| Manage Vendors | ❌ | ✅ | ❌ | ✅ | ✅ |
-| Configure Settings | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Close Period | ❌ | ❌ | ❌ | With approval | ✅ |
+| Feature              | Staff Accountant | AR/AP Clerk | Payroll Specialist | Finance Manager | CFO |
+| -------------------- | ---------------- | ----------- | ------------------ | --------------- | --- |
+| View Reports         | ✅               | ✅          | ✅                 | ✅              | ✅  |
+| Create Transactions  | ✅               | ✅          | ❌                 | ✅              | ✅  |
+| Post Journal Entries | With approval    | ❌          | ❌                 | ✅              | ✅  |
+| Process Payroll      | ❌               | ❌          | ✅                 | ✅              | ✅  |
+| Approve Expenses     | ❌               | ✅          | ❌                 | ✅              | ✅  |
+| Manage Vendors       | ❌               | ✅          | ❌                 | ✅              | ✅  |
+| Configure Settings   | ❌               | ❌          | ❌                 | ✅              | ✅  |
+| Close Period         | ❌               | ❌          | ❌                 | With approval   | ✅  |
 
 ### Granular Permissions
 
 Finance permissions follow pattern: `FINANCE:{resource}:{action}`
 
-| Permission | Description |
-|------------|-------------|
-| `FINANCE:account:view` | View chart of accounts |
-| `FINANCE:account:manage` | Create/edit accounts |
-| `FINANCE:transaction:view` | View transactions |
-| `FINANCE:transaction:create` | Create journal entries |
-| `FINANCE:transaction:post` | Post to GL |
-| `FINANCE:invoice:view` | View invoices |
-| `FINANCE:invoice:create` | Create invoices |
-| `FINANCE:invoice:send` | Send to customers |
-| `FINANCE:payment:record` | Record payments |
-| `FINANCE:expense:view` | View expenses |
-| `FINANCE:expense:approve` | Approve expense reports |
-| `FINANCE:payroll:view` | View payroll data |
-| `FINANCE:payroll:process` | Run payroll |
-| `FINANCE:report:view` | Access reports |
-| `FINANCE:report:export` | Export financial data |
-| `FINANCE:budget:view` | View budgets |
-| `FINANCE:budget:manage` | Edit budgets |
-| `FINANCE:period:close` | Close accounting periods |
+| Permission                   | Description              |
+| ---------------------------- | ------------------------ |
+| `FINANCE:account:view`       | View chart of accounts   |
+| `FINANCE:account:manage`     | Create/edit accounts     |
+| `FINANCE:transaction:view`   | View transactions        |
+| `FINANCE:transaction:create` | Create journal entries   |
+| `FINANCE:transaction:post`   | Post to GL               |
+| `FINANCE:invoice:view`       | View invoices            |
+| `FINANCE:invoice:create`     | Create invoices          |
+| `FINANCE:invoice:send`       | Send to customers        |
+| `FINANCE:payment:record`     | Record payments          |
+| `FINANCE:expense:view`       | View expenses            |
+| `FINANCE:expense:approve`    | Approve expense reports  |
+| `FINANCE:payroll:view`       | View payroll data        |
+| `FINANCE:payroll:process`    | Run payroll              |
+| `FINANCE:report:view`        | Access reports           |
+| `FINANCE:report:export`      | Export financial data    |
+| `FINANCE:budget:view`        | View budgets             |
+| `FINANCE:budget:manage`      | Edit budgets             |
+| `FINANCE:period:close`       | Close accounting periods |
 
 ---
 
 ## Integration Points
 
 ### Outbound Events (Finance Publishes)
-| Event | Trigger | Subscribers |
-|-------|---------|-------------|
-| `finance.invoice.sent` | Invoice emailed | CRM (account status) |
-| `finance.invoice.paid` | Payment recorded | CRM, Projects |
-| `finance.invoice.overdue` | Past due | CRM (account manager alert) |
-| `finance.payment.received` | Cash received | Executive (cash position) |
-| `finance.payroll.processed` | Payroll complete | HR (payslip notification) |
-| `finance.period.closed` | Month-end | Brain (compliance log) |
-| `finance.expense.approved` | Expense OK | Employee (reimbursement queued) |
-| `finance.budget.variance` | Threshold crossed | Manager (alert) |
+
+| Event                       | Trigger           | Subscribers                     |
+| --------------------------- | ----------------- | ------------------------------- |
+| `finance.invoice.sent`      | Invoice emailed   | CRM (account status)            |
+| `finance.invoice.paid`      | Payment recorded  | CRM, Projects                   |
+| `finance.invoice.overdue`   | Past due          | CRM (account manager alert)     |
+| `finance.payment.received`  | Cash received     | Executive (cash position)       |
+| `finance.payroll.processed` | Payroll complete  | HR (payslip notification)       |
+| `finance.period.closed`     | Month-end         | Brain (compliance log)          |
+| `finance.expense.approved`  | Expense OK        | Employee (reimbursement queued) |
+| `finance.budget.variance`   | Threshold crossed | Manager (alert)                 |
 
 ### Inbound Events (Finance Consumes)
-| Event | Source | Action |
-|-------|--------|--------|
-| `crm.deal.won` | CRM | Create customer account, setup billing |
-| `projects.time.approved` | Projects | Billable hours for invoicing |
-| `projects.expense.logged` | Projects | Project cost allocation |
-| `hr.employee.hired` | HR | Add to payroll system |
-| `hr.employee.terminated` | HR | Final payroll, severance calc |
-| `hr.leave.approved` | HR | Adjust payroll accruals |
-| `hr.timesheet.submitted` | HR/Projects | Payroll input validation |
+
+| Event                     | Source      | Action                                 |
+| ------------------------- | ----------- | -------------------------------------- |
+| `crm.deal.won`            | CRM         | Create customer account, setup billing |
+| `projects.time.approved`  | Projects    | Billable hours for invoicing           |
+| `projects.expense.logged` | Projects    | Project cost allocation                |
+| `hr.employee.hired`       | HR          | Add to payroll system                  |
+| `hr.employee.terminated`  | HR          | Final payroll, severance calc          |
+| `hr.leave.approved`       | HR          | Adjust payroll accruals                |
+| `hr.timesheet.submitted`  | HR/Projects | Payroll input validation               |
 
 ### External Integrations
-| System | Type | Purpose |
-|--------|------|---------|
-| Banks | API/OFX | Statement import, wire initiation |
-| Payment Gateways | API | Credit card processing |
-| Tax Software | API | Tax return filing |
-| Payroll Services | API | Direct deposit, tax filing |
-| ERP Systems | API | Enterprise integration |
-| Accounting Software | Import/Export | QuickBooks, Xero migration |
+
+| System              | Type          | Purpose                           |
+| ------------------- | ------------- | --------------------------------- |
+| Banks               | API/OFX       | Statement import, wire initiation |
+| Payment Gateways    | API           | Credit card processing            |
+| Tax Software        | API           | Tax return filing                 |
+| Payroll Services    | API           | Direct deposit, tax filing        |
+| ERP Systems         | API           | Enterprise integration            |
+| Accounting Software | Import/Export | QuickBooks, Xero migration        |
 
 ---
 
-*Documentation Version: 1.0*  
-*Module Version: 1.0*  
-*Last Updated: February 2026*
+_Documentation Version: 1.0_  
+_Module Version: 1.0_  
+_Last Updated: February 2026_

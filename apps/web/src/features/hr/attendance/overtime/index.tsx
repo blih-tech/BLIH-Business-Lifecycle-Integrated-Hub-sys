@@ -64,8 +64,12 @@ export function AttendanceOvertimeContent() {
 
       <section className="space-y-6">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">Work-From-Home Requests</h1>
-          <p className="mt-1 text-sm text-muted-foreground">WFH requests pending approval.</p>
+          <h1 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">
+            Work-From-Home Requests
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            WFH requests pending approval.
+          </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {overtimeRequestCards.map((request) => (
@@ -76,8 +80,12 @@ export function AttendanceOvertimeContent() {
 
       <section className="space-y-6">
         <div>
-          <h2 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">Previous Overtime Requests</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Archived overtime requests.</p>
+          <h2 className="text-[18px] font-semibold tracking-[-0.3125px] text-foreground">
+            Previous Overtime Requests
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Archived overtime requests.
+          </p>
         </div>
 
         <div className="rounded-[12px] border border-border bg-card p-4">
@@ -93,7 +101,9 @@ export function AttendanceOvertimeContent() {
               searchTerm={searchTerm}
               onSearchTermChange={setSearchTerm}
             />
-            {selectedRequest ? <SelectedOvertimeRequestCard request={selectedRequest} /> : null}
+            {selectedRequest ? (
+              <SelectedOvertimeRequestCard request={selectedRequest} />
+            ) : null}
           </div>
         </div>
       </section>

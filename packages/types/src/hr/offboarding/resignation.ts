@@ -43,7 +43,13 @@ export interface UpdateResignationDto {
 export interface ValidateResignationResultDto {
   valid: boolean;
   warnings: Array<{ code: string; message: string; [k: string]: unknown }>;
-  errors: Array<{ code: string; message: string; requires_waiver?: boolean; waiver_approvers?: string[]; [k: string]: unknown }>;
+  errors: Array<{
+    code: string;
+    message: string;
+    requires_waiver?: boolean;
+    waiver_approvers?: string[];
+    [k: string]: unknown;
+  }>;
   requiredNoticeDays?: number;
   actualNoticeDays?: number;
 }

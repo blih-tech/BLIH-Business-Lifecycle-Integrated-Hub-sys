@@ -1,8 +1,13 @@
-import { FormControl, FormField, FormItem, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import type { EmployeeProfileFormValues } from "@/features/hr/people/create/form-schema";
-import { useFormContext } from "react-hook-form";
-import { FormSectionCard } from "@/features/hr/people/create/components/form-section-card";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
+import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { useFormContext } from 'react-hook-form';
+import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
 
 export function BasicInfoSection() {
   const form = useFormContext<EmployeeProfileFormValues>();

@@ -1,8 +1,8 @@
-import { Download, FileText, Pencil, Trash2 } from "lucide-react";
+import { Download, FileText, Pencil, Trash2 } from 'lucide-react';
 
-import type { ExitInterviewFormItem } from "@/features/hr/exit/related-forms/types";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { ExitInterviewFormItem } from '@/features/hr/exit/related-forms/types';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type InterviewFormCardProps = {
   item: ExitInterviewFormItem;
@@ -22,7 +22,9 @@ export function InterviewFormCard({ item }: InterviewFormCardProps) {
             </div>
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-[18px] font-semibold leading-7 tracking-[-0.4395px] text-black">{item.title}</p>
+                <p className="text-[18px] font-semibold leading-7 tracking-[-0.4395px] text-black">
+                  {item.title}
+                </p>
                 <span className="inline-flex h-[22px] items-center rounded-[6px] bg-primary px-[9px] text-xs font-medium leading-4 text-white">
                   {item.category}
                 </span>
@@ -30,7 +32,9 @@ export function InterviewFormCard({ item }: InterviewFormCardProps) {
                   {item.version}
                 </span>
               </div>
-              <p className="text-sm leading-5 tracking-[-0.1504px] text-[#666]">{item.description}</p>
+              <p className="text-sm leading-5 tracking-[-0.1504px] text-[#666]">
+                {item.description}
+              </p>
               <p className="text-xs leading-4 text-[#666]">
                 Updated: {item.updatedAt}
                 <span className="mx-4">•</span>
@@ -49,7 +53,9 @@ export function InterviewFormCard({ item }: InterviewFormCardProps) {
         </div>
 
         <div className="rounded-[8px] bg-[#f3f3f3] px-[57px] py-[9px]">
-          <p className="mb-4 text-sm font-semibold leading-5 tracking-[-0.1504px] text-black">Form Fields:</p>
+          <p className="mb-4 text-sm font-semibold leading-5 tracking-[-0.1504px] text-black">
+            Form Fields:
+          </p>
           <div className="space-y-2">
             <ChipRow items={firstRow} />
             <ChipRow items={secondRow} />

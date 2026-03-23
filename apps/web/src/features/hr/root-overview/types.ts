@@ -1,4 +1,4 @@
-export type DeltaTone = "positive" | "negative" | "neutral";
+export type DeltaTone = 'positive' | 'negative' | 'neutral';
 
 export type RootOverviewStatItem = {
   id: string;
@@ -8,7 +8,11 @@ export type RootOverviewStatItem = {
   deltaTone?: DeltaTone;
 };
 
-export type ActivityStatusTone = "active" | "completed" | "pending" | "scheduled";
+export type ActivityStatusTone =
+  | 'active'
+  | 'completed'
+  | 'pending'
+  | 'scheduled';
 
 export type RootOverviewActivityItem = {
   id: string;

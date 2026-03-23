@@ -2,7 +2,7 @@ export type PeopleSummaryStat = {
   id: string;
   label: string;
   value: string;
-  icon: "users" | "check-circle" | "clock-3";
+  icon: 'users' | 'check-circle' | 'clock-3';
 };
 
 export type PeopleWorkHoursStat = {
@@ -11,14 +11,14 @@ export type PeopleWorkHoursStat = {
   value: string;
   target: string;
   performance: string;
-  icon: "clock-3" | "calendar-days" | "trending-up";
+  icon: 'clock-3' | 'calendar-days' | 'trending-up';
 };
 
 export type PeopleChecklistStat = {
   id: string;
   label: string;
   value: string;
-  icon: "square-check-big" | "calendar-days";
+  icon: 'square-check-big' | 'calendar-days';
 };
 
 export type PeopleJobFrequencyPoint = {

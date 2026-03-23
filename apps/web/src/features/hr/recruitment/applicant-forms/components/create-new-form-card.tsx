@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus } from 'lucide-react';
 
 export function CreateNewFormCard() {
   return (
@@ -6,8 +6,12 @@ export function CreateNewFormCard() {
       <span className="inline-flex h-[40px] w-[40px] items-center justify-center rounded-[6px] bg-primary text-white">
         <Plus className="h-5 w-5" />
       </span>
-      <p className="mt-3 text-base font-medium tracking-[-0.3125px] text-black">Create New Form</p>
-      <p className="mt-2 text-xs text-[#666]">Build a custom application form from scratch</p>
+      <p className="mt-3 text-base font-medium tracking-[-0.3125px] text-black">
+        Create New Form
+      </p>
+      <p className="mt-2 text-xs text-[#666]">
+        Build a custom application form from scratch
+      </p>
     </article>
   );
 }

@@ -28,7 +28,9 @@
 ## 1. Executive Overview
 
 ### Purpose
+
 This document defines the complete business logic layer of the BLIH system. It serves as the authoritative reference for:
+
 - Business rule implementation
 - Data flow orchestration
 - System behavior and constraints
@@ -50,13 +52,16 @@ This document defines the complete business logic layer of the BLIH system. It s
 - Event `metadata.realm` is deprecated: producers omit it, consumers use the configured realm. See [EVENT_CONTRACTS.md](./EVENT_CONTRACTS.md).
 
 ### Core Philosophy
+
 **Decentralized Logic / Centralized Governance**
+
 - Business logic resides within domain modules
 - Cross-cutting concerns (auth, audit, notifications) managed centrally
 - Integration via event-driven patterns
 - Compliance and security enforced globally
 
 ### System Context
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    BLIH CORE LOGIC LAYER                     │
@@ -92,20 +97,21 @@ This document defines the complete business logic layer of the BLIH system. It s
 
 Each module operates as a self-contained bounded context:
 
-| Module | Bounded Context | Primary Entities |
-|--------|----------------|------------------|
-| **HR** | Employee Lifecycle | Employee, Recruitment, Onboarding, Attendance, Performance |
-| **CRM** | Sales Pipeline | Lead, Deal, Contact, Organization, Activity |
-| **Projects** | Delivery Management | Project, Task, Resource, Timesheet, Milestone |
-| **Finance** | Financial Operations | Invoice, Payment, Payroll, Expense, Account |
-| **Brain** | Knowledge & AI | Document, Decision, Policy, Lesson Learned, Chat |
-| **Chatbot** | Conversation & RAG | Session, Message, Query, Response |
+| Module       | Bounded Context      | Primary Entities                                           |
+| ------------ | -------------------- | ---------------------------------------------------------- |
+| **HR**       | Employee Lifecycle   | Employee, Recruitment, Onboarding, Attendance, Performance |
+| **CRM**      | Sales Pipeline       | Lead, Deal, Contact, Organization, Activity                |
+| **Projects** | Delivery Management  | Project, Task, Resource, Timesheet, Milestone              |
+| **Finance**  | Financial Operations | Invoice, Payment, Payroll, Expense, Account                |
+| **Brain**    | Knowledge & AI       | Document, Decision, Policy, Lesson Learned, Chat           |
+| **Chatbot**  | Conversation & RAG   | Session, Message, Query, Response                          |
 
 **Chatbot** is a domain module like HR, CRM, Finance, Brain, and Projects: it MUST NOT call other modules’ APIs; it consumes and publishes only via `blih.events` (e.g. `chatbot.query.received`, `chatbot.response.sent`, or Brain events for knowledge). See [EVENT_CONTRACTS.md](./EVENT_CONTRACTS.md) for event types.
 
 ### 2.2 Event-Driven Communication
 
 **Rules:**
+
 1. Modules MUST NOT directly call other modules' APIs
 2. All cross-module communication happens via events
 3. Events are published to RabbitMQ exchange: `blih.events`
@@ -113,6 +119,7 @@ Each module operates as a self-contained bounded context:
 5. Events are immutable and versioned
 
 **Event Naming Convention:**
+
 ```
 {module}.{entity}.{action}
 
@@ -126,6 +133,7 @@ Examples:
 ### 2.3 Compliance-First Design
 
 **Every operation follows this flow:**
+
 ```
 ┌──────────────┐
 │ User Request │
@@ -169,6 +177,7 @@ Examples:
 **Enforcement Levels:**
 
 1. **Database Level:**
+
 ```sql
 -- All tables include company_id with default
 CREATE TABLE employees (
@@ -182,14 +191,16 @@ CREATE INDEX idx_company ON employees(company_id);
 ```
 
 2. **ORM Level:**
+
 ```typescript
 // Global query filter
 EntityManager.setGlobalFilter('company', {
-  company_id: 'BLIH'
+  company_id: 'BLIH',
 });
 ```
 
 3. **API Level:**
+
 ```typescript
 // Middleware injects company context
 @Injectable()
@@ -208,6 +219,7 @@ export class CompanyContextMiddleware {
 ### 3.1 Temporal Logic
 
 #### 3.1.1 UTC Storage Standard
+
 **Rule:** All timestamps MUST be stored in UTC in the database.
 
 ```typescript
@@ -224,6 +236,7 @@ const localTime = convertToTimezone(timestamp, userTimezone);
 **Context:** Ethiopia uses a 13-month calendar (12 months of 30 days + 1 month of 5/6 days).
 
 **Implementation:**
+
 ```typescript
 class EthiopianCalendarService {
   /**
@@ -254,22 +267,25 @@ class EthiopianCalendarService {
 ```
 
 **Usage in HR Module:**
+
 - Attendance tracking uses Ethiopian dates for display
 - Leave calculations respect Ethiopian month boundaries
 - Payroll cycles can be configured for Ethiopian months
 
 **Usage in Finance Module:**
+
 - Ethiopian tax year calculations
 - VAT reporting periods aligned with Ethiopian calendar
 
 ### 3.2 Monetary Logic
 
 #### 3.2.1 Integer-Based Storage
+
 **Rule:** Store all monetary values as integers (smallest currency unit).
 
 ```typescript
 // ❌ WRONG - Floating point errors
-const salary = 1500.50; // Can become 1500.4999999
+const salary = 1500.5; // Can become 1500.4999999
 
 // ✅ CORRECT - Integer cents/centimes
 const salaryInCents = 150050; // $1,500.50 = 150050 cents
@@ -277,7 +293,7 @@ const salaryInCents = 150050; // $1,500.50 = 150050 cents
 class Money {
   constructor(
     private readonly amount: number, // Integer
-    private readonly currency: string
+    private readonly currency: string,
   ) {}
 
   add(other: Money): Money {
@@ -306,6 +322,7 @@ class Money {
 **Base Currency:** ETB (Ethiopian Birr)
 
 **Exchange Rate Strategy:**
+
 ```typescript
 interface ExchangeRate {
   from_currency: string;
@@ -322,34 +339,31 @@ class CurrencyService {
    */
   async convertToBase(
     amount: Money,
-    effectiveDate: Date
+    effectiveDate: Date,
   ): Promise<MoneyConversion> {
     if (amount.currency === 'ETB') {
       return {
         original: amount,
         base: amount,
         rate: 1,
-        effectiveDate
+        effectiveDate,
       };
     }
 
-    const rate = await this.getRate(
-      amount.currency,
-      'ETB',
-      effectiveDate
-    );
+    const rate = await this.getRate(amount.currency, 'ETB', effectiveDate);
 
     return {
       original: amount,
       base: amount.multiply(rate),
       rate,
-      effectiveDate
+      effectiveDate,
     };
   }
 }
 ```
 
 **Transaction Storage:**
+
 ```typescript
 interface FinancialTransaction {
   id: string;
@@ -365,6 +379,7 @@ interface FinancialTransaction {
 ### 3.3 Precision Rules
 
 #### Tax Calculations
+
 ```typescript
 /**
  * Tax calculation order to maximize precision:
@@ -379,13 +394,13 @@ function calculateIncomeTax(grossSalary: Money): TaxBreakdown {
 
   // Progressive tax brackets
   const brackets = [
-    { limit: 60000, rate: 0.00 },
-    { limit: 165000, rate: 0.10 },
+    { limit: 60000, rate: 0.0 },
+    { limit: 165000, rate: 0.1 },
     { limit: 360000, rate: 0.15 },
-    { limit: 660000, rate: 0.20 },
+    { limit: 660000, rate: 0.2 },
     { limit: 960000, rate: 0.25 },
-    { limit: 1260000, rate: 0.30 },
-    { limit: Infinity, rate: 0.35 }
+    { limit: 1260000, rate: 0.3 },
+    { limit: Infinity, rate: 0.35 },
   ];
 
   let tax = 0;
@@ -393,14 +408,14 @@ function calculateIncomeTax(grossSalary: Money): TaxBreakdown {
 
   for (let i = 0; i < brackets.length; i++) {
     const bracket = brackets[i];
-    const previousLimit = i > 0 ? brackets[i-1].limit : 0;
+    const previousLimit = i > 0 ? brackets[i - 1].limit : 0;
     const bracketSize = bracket.limit - previousLimit;
-    
+
     if (remaining <= 0) break;
-    
+
     const taxableInBracket = Math.min(remaining, bracketSize);
     const taxInBracket = Math.round(taxableInBracket * bracket.rate);
-    
+
     tax += taxInBracket;
     remaining -= bracketSize;
   }
@@ -409,7 +424,7 @@ function calculateIncomeTax(grossSalary: Money): TaxBreakdown {
     grossSalary: grossSalary.amount,
     taxableIncome: taxableIncome.amount,
     totalTax: tax,
-    netSalary: grossSalary.amount - tax
+    netSalary: grossSalary.amount - tax,
   };
 }
 ```
@@ -439,14 +454,14 @@ abstract class EntityLifecycle<T, S extends string> {
   async transition(
     entity: T,
     toState: S,
-    context: TransitionContext
+    context: TransitionContext,
   ): Promise<T> {
     const sm = this.getStateMachine();
-    
+
     // 1. Validate transition is allowed
     if (!this.isTransitionAllowed(entity, toState)) {
       throw new InvalidTransitionError(
-        `Cannot transition from ${entity.status} to ${toState}`
+        `Cannot transition from ${entity.status} to ${toState}`,
       );
     }
 
@@ -482,7 +497,7 @@ enum LeadStatus {
   QUALIFIED = 'QUALIFIED',
   UNQUALIFIED = 'UNQUALIFIED',
   CONVERTED = 'CONVERTED',
-  LOST = 'LOST'
+  LOST = 'LOST',
 }
 
 const LEAD_STATE_MACHINE: StateMachine<LeadStatus> = {
@@ -493,42 +508,56 @@ const LEAD_STATE_MACHINE: StateMachine<LeadStatus> = {
     [LeadStatus.QUALIFIED, [LeadStatus.CONVERTED, LeadStatus.LOST]],
     [LeadStatus.UNQUALIFIED, [LeadStatus.CONTACTED]], // Can re-engage
     [LeadStatus.CONVERTED, []], // Terminal state
-    [LeadStatus.LOST, [LeadStatus.CONTACTED]] // Can revive
+    [LeadStatus.LOST, [LeadStatus.CONTACTED]], // Can revive
   ]),
   validators: new Map([
-    [LeadStatus.QUALIFIED, async (lead) => {
-      if (!lead.estimatedValue || lead.estimatedValue < 1000) {
-        throw new ValidationError('Qualified leads must have value >= $1000');
-      }
-      if (!lead.contactAttempts || lead.contactAttempts < 2) {
-        throw new ValidationError('Must contact at least 2 times before qualifying');
-      }
-    }],
-    [LeadStatus.CONVERTED, async (lead) => {
-      if (lead.status !== LeadStatus.QUALIFIED) {
-        throw new ValidationError('Only qualified leads can be converted');
-      }
-    }]
-  ])
+    [
+      LeadStatus.QUALIFIED,
+      async (lead) => {
+        if (!lead.estimatedValue || lead.estimatedValue < 1000) {
+          throw new ValidationError('Qualified leads must have value >= $1000');
+        }
+        if (!lead.contactAttempts || lead.contactAttempts < 2) {
+          throw new ValidationError(
+            'Must contact at least 2 times before qualifying',
+          );
+        }
+      },
+    ],
+    [
+      LeadStatus.CONVERTED,
+      async (lead) => {
+        if (lead.status !== LeadStatus.QUALIFIED) {
+          throw new ValidationError('Only qualified leads can be converted');
+        }
+      },
+    ],
+  ]),
 };
 ```
 
 **Conversion Logic:**
+
 ```typescript
 class LeadService {
   async convertToDeal(
     leadId: string,
     conversionData: LeadConversionDto,
-    context: UserContext
+    context: UserContext,
   ): Promise<ConversionResult> {
     const lead = await this.repository.findById(leadId);
-    
+
     await this.lifecycle.transition(lead, LeadStatus.CONVERTED, context);
 
     // Create related entities
     const organization = await this.createOrganization(lead, conversionData);
     const contact = await this.createContact(lead, organization);
-    const deal = await this.createDeal(lead, organization, contact, conversionData);
+    const deal = await this.createDeal(
+      lead,
+      organization,
+      contact,
+      conversionData,
+    );
 
     // Publish event
     await this.eventBus.publish({
@@ -537,8 +566,8 @@ class LeadService {
         leadId: lead.id,
         dealId: deal.id,
         organizationId: organization.id,
-        contactId: contact.id
-      }
+        contactId: contact.id,
+      },
     });
 
     return { lead, deal, organization, contact };
@@ -557,57 +586,51 @@ enum EmployeeStatus {
   ON_LEAVE = 'ON_LEAVE',
   SUSPENDED = 'SUSPENDED',
   NOTICE_PERIOD = 'NOTICE_PERIOD',
-  EXITED = 'EXITED'
+  EXITED = 'EXITED',
 }
 
 const EMPLOYEE_STATE_MACHINE: StateMachine<EmployeeStatus> = {
   allowedTransitions: new Map([
-    [EmployeeStatus.OFFER_PENDING, [
-      EmployeeStatus.OFFER_ACCEPTED,
-      EmployeeStatus.EXITED
-    ]],
-    [EmployeeStatus.OFFER_ACCEPTED, [
-      EmployeeStatus.ONBOARDING
-    ]],
-    [EmployeeStatus.ONBOARDING, [
+    [
+      EmployeeStatus.OFFER_PENDING,
+      [EmployeeStatus.OFFER_ACCEPTED, EmployeeStatus.EXITED],
+    ],
+    [EmployeeStatus.OFFER_ACCEPTED, [EmployeeStatus.ONBOARDING]],
+    [EmployeeStatus.ONBOARDING, [EmployeeStatus.ACTIVE, EmployeeStatus.EXITED]],
+    [
       EmployeeStatus.ACTIVE,
-      EmployeeStatus.EXITED
-    ]],
-    [EmployeeStatus.ACTIVE, [
-      EmployeeStatus.ON_LEAVE,
-      EmployeeStatus.SUSPENDED,
-      EmployeeStatus.NOTICE_PERIOD
-    ]],
-    [EmployeeStatus.ON_LEAVE, [
-      EmployeeStatus.ACTIVE
-    ]],
-    [EmployeeStatus.SUSPENDED, [
-      EmployeeStatus.ACTIVE,
-      EmployeeStatus.EXITED
-    ]],
-    [EmployeeStatus.NOTICE_PERIOD, [
-      EmployeeStatus.EXITED,
-      EmployeeStatus.ACTIVE // Resignation withdrawn
-    ]],
-    [EmployeeStatus.EXITED, []] // Terminal
-  ])
+      [
+        EmployeeStatus.ON_LEAVE,
+        EmployeeStatus.SUSPENDED,
+        EmployeeStatus.NOTICE_PERIOD,
+      ],
+    ],
+    [EmployeeStatus.ON_LEAVE, [EmployeeStatus.ACTIVE]],
+    [EmployeeStatus.SUSPENDED, [EmployeeStatus.ACTIVE, EmployeeStatus.EXITED]],
+    [
+      EmployeeStatus.NOTICE_PERIOD,
+      [
+        EmployeeStatus.EXITED,
+        EmployeeStatus.ACTIVE, // Resignation withdrawn
+      ],
+    ],
+    [EmployeeStatus.EXITED, []], // Terminal
+  ]),
 };
 ```
 
 **Activation Logic (Onboarding → Active):**
+
 ```typescript
 class EmployeeLifecycleService {
-  async activate(
-    employeeId: string,
-    context: UserContext
-  ): Promise<Employee> {
+  async activate(employeeId: string, context: UserContext): Promise<Employee> {
     const employee = await this.repository.findById(employeeId);
 
     // Validate onboarding completion
     const checklist = await this.onboardingService.getChecklist(employeeId);
     if (!checklist.isComplete) {
       throw new BusinessRuleError(
-        'Cannot activate employee until onboarding is complete'
+        'Cannot activate employee until onboarding is complete',
       );
     }
 
@@ -621,8 +644,8 @@ class EmployeeLifecycleService {
         employeeId: employee.id,
         startDate: employee.startDate,
         department: employee.department,
-        position: employee.position
-      }
+        position: employee.position,
+      },
     });
 
     return employee;
@@ -631,6 +654,7 @@ class EmployeeLifecycleService {
 ```
 
 **Event Subscribers (Other modules listen):**
+
 ```typescript
 // Finance Module - Subscribes to activation
 @EventHandler('hr.employee.activated')
@@ -665,63 +689,64 @@ enum ProjectStatus {
   ON_HOLD = 'ON_HOLD',
   COMPLETED = 'COMPLETED',
   CANCELED = 'CANCELED',
-  ARCHIVED = 'ARCHIVED'
+  ARCHIVED = 'ARCHIVED',
 }
 
 const PROJECT_STATE_MACHINE: StateMachine<ProjectStatus> = {
   allowedTransitions: new Map([
-    [ProjectStatus.DRAFT, [
+    [ProjectStatus.DRAFT, [ProjectStatus.PLANNED, ProjectStatus.CANCELED]],
+    [
       ProjectStatus.PLANNED,
-      ProjectStatus.CANCELED
-    ]],
-    [ProjectStatus.PLANNED, [
+      [ProjectStatus.IN_PROGRESS, ProjectStatus.CANCELED],
+    ],
+    [
       ProjectStatus.IN_PROGRESS,
-      ProjectStatus.CANCELED
-    ]],
-    [ProjectStatus.IN_PROGRESS, [
+      [ProjectStatus.ON_HOLD, ProjectStatus.COMPLETED, ProjectStatus.CANCELED],
+    ],
+    [
       ProjectStatus.ON_HOLD,
-      ProjectStatus.COMPLETED,
-      ProjectStatus.CANCELED
-    ]],
-    [ProjectStatus.ON_HOLD, [
-      ProjectStatus.IN_PROGRESS,
-      ProjectStatus.CANCELED
-    ]],
-    [ProjectStatus.COMPLETED, [
-      ProjectStatus.ARCHIVED
-    ]],
-    [ProjectStatus.CANCELED, [
-      ProjectStatus.ARCHIVED
-    ]],
-    [ProjectStatus.ARCHIVED, []] // Terminal
+      [ProjectStatus.IN_PROGRESS, ProjectStatus.CANCELED],
+    ],
+    [ProjectStatus.COMPLETED, [ProjectStatus.ARCHIVED]],
+    [ProjectStatus.CANCELED, [ProjectStatus.ARCHIVED]],
+    [ProjectStatus.ARCHIVED, []], // Terminal
   ]),
   validators: new Map([
-    [ProjectStatus.IN_PROGRESS, async (project) => {
-      // Must have at least one team member
-      if (!project.teamMembers || project.teamMembers.length === 0) {
-        throw new ValidationError('Cannot start project without team members');
-      }
-      // Must have defined milestones
-      const milestones = await getMilestones(project.id);
-      if (milestones.length === 0) {
-        throw new ValidationError('Cannot start project without milestones');
-      }
-    }],
-    [ProjectStatus.COMPLETED, async (project) => {
-      // All milestones must be completed
-      const milestones = await getMilestones(project.id);
-      const incomplete = milestones.filter(m => m.status !== 'COMPLETED');
-      if (incomplete.length > 0) {
-        throw new ValidationError(
-          `Cannot complete project with ${incomplete.length} incomplete milestones`
-        );
-      }
-    }]
-  ])
+    [
+      ProjectStatus.IN_PROGRESS,
+      async (project) => {
+        // Must have at least one team member
+        if (!project.teamMembers || project.teamMembers.length === 0) {
+          throw new ValidationError(
+            'Cannot start project without team members',
+          );
+        }
+        // Must have defined milestones
+        const milestones = await getMilestones(project.id);
+        if (milestones.length === 0) {
+          throw new ValidationError('Cannot start project without milestones');
+        }
+      },
+    ],
+    [
+      ProjectStatus.COMPLETED,
+      async (project) => {
+        // All milestones must be completed
+        const milestones = await getMilestones(project.id);
+        const incomplete = milestones.filter((m) => m.status !== 'COMPLETED');
+        if (incomplete.length > 0) {
+          throw new ValidationError(
+            `Cannot complete project with ${incomplete.length} incomplete milestones`,
+          );
+        }
+      },
+    ],
+  ]),
 };
 ```
 
 **Completion Logic:**
+
 ```typescript
 class ProjectLifecycleService {
   async complete(
@@ -777,7 +802,7 @@ async extractLessonsLearned(event: ProjectCompletedEvent) {
 async finalizeProjectFinancials(event: ProjectCompletedEvent) {
   // Close project budget
   await this.budgetService.closeProjectBudget(event.data.projectId);
-  
+
   // Generate final invoice if milestone-based
   const deal = await this.dealService.findById(event.data.crmDealId);
   if (deal.billingType === 'MILESTONE') {
@@ -800,39 +825,44 @@ enum InvoiceStatus {
   PAYMENT_RECEIVED = 'PAYMENT_RECEIVED',
   OVERDUE = 'OVERDUE',
   CANCELED = 'CANCELED',
-  VOID = 'VOID'
+  VOID = 'VOID',
 }
 
 const INVOICE_STATE_MACHINE: StateMachine<InvoiceStatus> = {
   allowedTransitions: new Map([
-    [InvoiceStatus.DRAFT, [
+    [
+      InvoiceStatus.DRAFT,
+      [InvoiceStatus.PENDING_APPROVAL, InvoiceStatus.CANCELED],
+    ],
+    [
       InvoiceStatus.PENDING_APPROVAL,
-      InvoiceStatus.CANCELED
-    ]],
-    [InvoiceStatus.PENDING_APPROVAL, [
-      InvoiceStatus.APPROVED,
-      InvoiceStatus.DRAFT // Send back for revision
-    ]],
-    [InvoiceStatus.APPROVED, [
-      InvoiceStatus.SENT
-    ]],
-    [InvoiceStatus.SENT, [
-      InvoiceStatus.PAYMENT_RECEIVED,
+      [
+        InvoiceStatus.APPROVED,
+        InvoiceStatus.DRAFT, // Send back for revision
+      ],
+    ],
+    [InvoiceStatus.APPROVED, [InvoiceStatus.SENT]],
+    [
+      InvoiceStatus.SENT,
+      [
+        InvoiceStatus.PAYMENT_RECEIVED,
+        InvoiceStatus.OVERDUE,
+        InvoiceStatus.VOID,
+      ],
+    ],
+    [
       InvoiceStatus.OVERDUE,
-      InvoiceStatus.VOID
-    ]],
-    [InvoiceStatus.OVERDUE, [
-      InvoiceStatus.PAYMENT_RECEIVED,
-      InvoiceStatus.VOID
-    ]],
+      [InvoiceStatus.PAYMENT_RECEIVED, InvoiceStatus.VOID],
+    ],
     [InvoiceStatus.PAYMENT_RECEIVED, []], // Terminal
     [InvoiceStatus.CANCELED, []], // Terminal
-    [InvoiceStatus.VOID, []] // Terminal
-  ])
+    [InvoiceStatus.VOID, []], // Terminal
+  ]),
 };
 ```
 
 **Payment Logic:**
+
 ```typescript
 class InvoiceService {
   async recordPayment(
@@ -906,11 +936,11 @@ async updateDealRevenue(event: InvoicePaidEvent) {
 
   const deal = await this.dealRepository.findById(event.data.dealId);
   deal.receivedRevenue += event.data.amount;
-  
+
   if (deal.receivedRevenue >= deal.value) {
     deal.revenueStatus = 'FULLY_PAID';
   }
-  
+
   await this.dealRepository.save(deal);
 }
 ```
@@ -922,15 +952,16 @@ async updateDealRevenue(event: InvoicePaidEvent) {
 ### 5.1 Saga Pattern Implementation
 
 **Saga Coordinator:**
+
 ```typescript
 abstract class Saga<T extends SagaState> {
   abstract steps: SagaStep[];
-  
+
   async execute(input: T): Promise<SagaResult> {
     const context: SagaContext = {
       state: input,
       completedSteps: [],
-      compensations: []
+      compensations: [],
     };
 
     try {
@@ -938,14 +969,14 @@ abstract class Saga<T extends SagaState> {
         await this.executeStep(step, context);
         context.completedSteps.push(step.name);
       }
-      
+
       return { success: true, state: context.state };
     } catch (error) {
       // Compensate in reverse order
       for (const step of context.completedSteps.reverse()) {
         await this.compensate(step, context);
       }
-      
+
       return { success: false, error, state: context.state };
     }
   }
@@ -966,13 +997,13 @@ class SaleToDeliverySaga extends Saga<SaleToDeliveryState> {
           sourceDealId: ctx.state.deal.id,
           clientOrganizationId: ctx.state.deal.organizationId,
           estimatedValue: ctx.state.deal.value,
-          startDate: ctx.state.deal.expectedStartDate
+          startDate: ctx.state.deal.expectedStartDate,
         });
         ctx.state.projectId = project.id;
       },
       compensate: async (ctx) => {
         await this.projectService.delete(ctx.state.projectId);
-      }
+      },
     },
 
     // Step 2: Generate Milestones
@@ -981,13 +1012,13 @@ class SaleToDeliverySaga extends Saga<SaleToDeliveryState> {
       execute: async (ctx) => {
         const milestones = await this.milestoneGenerator.fromDealLineItems(
           ctx.state.deal.lineItems,
-          ctx.state.projectId
+          ctx.state.projectId,
         );
-        ctx.state.milestoneIds = milestones.map(m => m.id);
+        ctx.state.milestoneIds = milestones.map((m) => m.id);
       },
       compensate: async (ctx) => {
         await this.milestoneService.deleteBatch(ctx.state.milestoneIds);
-      }
+      },
     },
 
     // Step 3: Create Project Workspace in Brain
@@ -997,13 +1028,13 @@ class SaleToDeliverySaga extends Saga<SaleToDeliveryState> {
         const workspace = await this.brainService.createProjectWorkspace({
           projectId: ctx.state.projectId,
           name: ctx.state.deal.name,
-          templates: this.getTemplatesForProjectType(ctx.state.projectType)
+          templates: this.getTemplatesForProjectType(ctx.state.projectType),
         });
         ctx.state.workspaceId = workspace.id;
       },
       compensate: async (ctx) => {
         await this.brainService.deleteWorkspace(ctx.state.workspaceId);
-      }
+      },
     },
 
     // Step 4: Generate Invoices (if prepayment required)
@@ -1014,7 +1045,7 @@ class SaleToDeliverySaga extends Saga<SaleToDeliveryState> {
           const invoice = await this.invoiceService.generateDepositInvoice({
             dealId: ctx.state.deal.id,
             projectId: ctx.state.projectId,
-            percentage: ctx.state.deal.prepaymentPercentage
+            percentage: ctx.state.deal.prepaymentPercentage,
           });
           ctx.state.invoiceIds = [invoice.id];
         }
@@ -1023,7 +1054,7 @@ class SaleToDeliverySaga extends Saga<SaleToDeliveryState> {
         if (ctx.state.invoiceIds) {
           await this.invoiceService.voidBatch(ctx.state.invoiceIds);
         }
-      }
+      },
     },
 
     // Step 5: Assign Team (if auto-assignment enabled)
@@ -1034,26 +1065,27 @@ class SaleToDeliverySaga extends Saga<SaleToDeliveryState> {
           const team = await this.teamAssignmentService.autoAssign({
             projectId: ctx.state.projectId,
             skills: ctx.state.requiredSkills,
-            availability: ctx.state.projectDuration
+            availability: ctx.state.projectDuration,
           });
-          ctx.state.teamMembers = team.map(t => t.employeeId);
+          ctx.state.teamMembers = team.map((t) => t.employeeId);
         }
       },
       compensate: async (ctx) => {
         await this.projectService.clearTeam(ctx.state.projectId);
-      }
-    }
+      },
+    },
   ];
 }
 ```
 
 **Usage:**
+
 ```typescript
 // CRM Module - Deal Won Handler
 @EventHandler('crm.deal.won')
 async handleDealWon(event: DealWonEvent) {
   const saga = new SaleToDeliverySaga(/* services */);
-  
+
   const result = await saga.execute({
     deal: event.data.deal,
     projectType: event.data.projectType,
@@ -1087,12 +1119,14 @@ class HireToPayrollSaga extends Saga<HireToPayrollState> {
     {
       name: 'CREATE_EMPLOYEE',
       execute: async (ctx) => {
-        const employee = await this.employeeService.create(ctx.state.employeeData);
+        const employee = await this.employeeService.create(
+          ctx.state.employeeData,
+        );
         ctx.state.employeeId = employee.id;
       },
       compensate: async (ctx) => {
         await this.employeeService.delete(ctx.state.employeeId);
-      }
+      },
     },
 
     // Step 2: Create User Account
@@ -1103,13 +1137,13 @@ class HireToPayrollSaga extends Saga<HireToPayrollState> {
           email: ctx.state.employeeData.email,
           firstName: ctx.state.employeeData.firstName,
           lastName: ctx.state.employeeData.lastName,
-          roles: ['EMPLOYEE']
+          roles: ['EMPLOYEE'],
         });
         ctx.state.userId = user.id;
       },
       compensate: async (ctx) => {
         await this.authService.deleteUser(ctx.state.userId);
-      }
+      },
     },
 
     // Step 3: Generate Onboarding Checklist
@@ -1119,13 +1153,13 @@ class HireToPayrollSaga extends Saga<HireToPayrollState> {
         const checklist = await this.onboardingService.generateChecklist({
           employeeId: ctx.state.employeeId,
           department: ctx.state.employeeData.department,
-          position: ctx.state.employeeData.position
+          position: ctx.state.employeeData.position,
         });
         ctx.state.checklistId = checklist.id;
       },
       compensate: async (ctx) => {
         await this.onboardingService.deleteChecklist(ctx.state.checklistId);
-      }
+      },
     },
 
     // Step 4: Setup Payroll
@@ -1137,13 +1171,13 @@ class HireToPayrollSaga extends Saga<HireToPayrollState> {
           basicSalary: ctx.state.employeeData.salary,
           effectiveDate: ctx.state.employeeData.startDate,
           paymentMethod: ctx.state.employeeData.paymentMethod,
-          bankAccount: ctx.state.employeeData.bankAccount
+          bankAccount: ctx.state.employeeData.bankAccount,
         });
         ctx.state.payrollId = payroll.id;
       },
       compensate: async (ctx) => {
         await this.payrollService.deletePayroll(ctx.state.payrollId);
-      }
+      },
     },
 
     // Step 5: IT Provisioning Request
@@ -1154,14 +1188,14 @@ class HireToPayrollSaga extends Saga<HireToPayrollState> {
           employeeId: ctx.state.employeeId,
           startDate: ctx.state.employeeData.startDate,
           equipment: ctx.state.equipmentNeeds,
-          access: ctx.state.systemAccess
+          access: ctx.state.systemAccess,
         });
         ctx.state.itTicketId = ticket.id;
       },
       compensate: async (ctx) => {
         await this.itService.cancelTicket(ctx.state.itTicketId);
-      }
-    }
+      },
+    },
   ];
 }
 ```
@@ -1174,21 +1208,22 @@ class HireToPayrollSaga extends Saga<HireToPayrollState> {
 
 **Database Usage Matrix:**
 
-| Data Type | Primary DB | Secondary DB | Vector DB | Reason |
-|-----------|-----------|--------------|-----------|---------|
-| User/Auth | PostgreSQL | - | - | ACID transactions, FK constraints |
-| Employee Records | PostgreSQL | MongoDB | - | Transactional integrity + Document flexibility |
-| HR Forms | MongoDB | - | Qdrant | Complex nested data + AI search |
-| CRM Entities | PostgreSQL | MongoDB | - | Relational queries + Fast reads |
-| Projects | PostgreSQL | MongoDB | - | Budget tracking + Complex queries |
-| Finance Transactions | PostgreSQL | - | - | Strong consistency required |
-| Audit Logs | PostgreSQL | Elasticsearch | - | Compliance + Fast search |
-| Knowledge Base | MongoDB | - | Qdrant | Document storage + Semantic search |
-| Lessons Learned | MongoDB | - | Qdrant | RAG-powered retrieval |
+| Data Type            | Primary DB | Secondary DB  | Vector DB | Reason                                         |
+| -------------------- | ---------- | ------------- | --------- | ---------------------------------------------- |
+| User/Auth            | PostgreSQL | -             | -         | ACID transactions, FK constraints              |
+| Employee Records     | PostgreSQL | MongoDB       | -         | Transactional integrity + Document flexibility |
+| HR Forms             | MongoDB    | -             | Qdrant    | Complex nested data + AI search                |
+| CRM Entities         | PostgreSQL | MongoDB       | -         | Relational queries + Fast reads                |
+| Projects             | PostgreSQL | MongoDB       | -         | Budget tracking + Complex queries              |
+| Finance Transactions | PostgreSQL | -             | -         | Strong consistency required                    |
+| Audit Logs           | PostgreSQL | Elasticsearch | -         | Compliance + Fast search                       |
+| Knowledge Base       | MongoDB    | -             | Qdrant    | Document storage + Semantic search             |
+| Lessons Learned      | MongoDB    | -             | Qdrant    | RAG-powered retrieval                          |
 
 ### 6.2 PostgreSQL → MongoDB Projection
 
 **Implementation:**
+
 ```typescript
 class ProjectionService {
   // Subscribes to change data capture events
@@ -1228,17 +1263,13 @@ class ProjectionService {
       // Denormalized for dashboard performance
       recentActivities: await this.getRecentActivities(data.id, 5),
       performanceRating: await this.getLatestPerformanceRating(data.id),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     await this.mongoClient
       .db('blih')
       .collection('employees_view')
-      .updateOne(
-        { _id: data.id },
-        { $set: enriched },
-        { upsert: true }
-      );
+      .updateOne({ _id: data.id }, { $set: enriched }, { upsert: true });
   }
 }
 ```
@@ -1246,12 +1277,13 @@ class ProjectionService {
 ### 6.3 MongoDB → Qdrant Vector Embedding
 
 **Implementation:**
+
 ```typescript
 class EmbeddingService {
   @EventHandler('brain.document.finalized')
   async generateEmbedding(event: DocumentFinalizedEvent) {
     const document = await this.documentRepository.findById(
-      event.data.documentId
+      event.data.documentId,
     );
 
     // Extract text content
@@ -1263,19 +1295,21 @@ class EmbeddingService {
     // Store in Qdrant
     await this.vectorStore.upsert({
       collection: 'knowledge_base',
-      points: [{
-        id: document.id,
-        vector: embedding,
-        payload: {
-          documentId: document.id,
-          title: document.title,
-          category: document.category,
-          tags: document.tags,
-          createdAt: document.createdAt,
-          author: document.author,
-          accessControl: document.visibility
-        }
-      }]
+      points: [
+        {
+          id: document.id,
+          vector: embedding,
+          payload: {
+            documentId: document.id,
+            title: document.title,
+            category: document.category,
+            tags: document.tags,
+            createdAt: document.createdAt,
+            author: document.author,
+            accessControl: document.visibility,
+          },
+        },
+      ],
     });
   }
 
@@ -1285,7 +1319,7 @@ class EmbeddingService {
       `Title: ${document.title}`,
       `Category: ${document.category}`,
       `Content: ${document.content}`,
-      `Tags: ${document.tags.join(', ')}`
+      `Tags: ${document.tags.join(', ')}`,
     ];
 
     if (document.metadata) {
@@ -1305,32 +1339,26 @@ class CacheService {
   @EventHandler('*.*.updated')
   async invalidateCache(event: EntityUpdatedEvent) {
     const { entityType, entityId } = this.parseEventType(event.type);
-    
+
     // Invalidate entity cache
     await this.redis.del(`${entityType}:${entityId}`);
-    
+
     // Invalidate list caches that might include this entity
     await this.redis.del(`${entityType}:list:*`);
-    
+
     // Invalidate computed caches
     const relatedCaches = this.getRelatedCaches(entityType, entityId);
-    await Promise.all(
-      relatedCaches.map(key => this.redis.del(key))
-    );
+    await Promise.all(relatedCaches.map((key) => this.redis.del(key)));
   }
 
   private getRelatedCaches(entityType: string, entityId: string): string[] {
     const cacheMap = {
-      'employee': [
+      employee: [
         `org_chart:*`,
         `department:${entityType.departmentId}:employees`,
-        `team:${entityType.teamId}:members`
+        `team:${entityType.teamId}:members`,
       ],
-      'project': [
-        `dashboard:projects`,
-        `portfolio:*`,
-        `resource_utilization:*`
-      ],
+      project: [`dashboard:projects`, `portfolio:*`, `resource_utilization:*`],
       // ... other mappings
     };
 
@@ -1342,6 +1370,7 @@ class CacheService {
 ---
 
 This document continues with extensive sections on:
+
 - **Business Rules by Module** (detailed validation logic for HR, CRM, Projects, Finance, Brain)
 - **Event Schema & Contracts:** Envelope format and versioning rules, and a catalog of public event types and versions, are defined in [EVENT_CONTRACTS.md](./EVENT_CONTRACTS.md).
 - **Validation & Business Rules** (comprehensive validation patterns)
@@ -1353,6 +1382,6 @@ This document continues with extensive sections on:
 
 ---
 
-*Last Updated: February 2026*  
-*Document Version: 1.0*  
-*Status: Living Documentation - Updated with each major release*
+_Last Updated: February 2026_  
+_Document Version: 1.0_  
+_Status: Living Documentation - Updated with each major release_

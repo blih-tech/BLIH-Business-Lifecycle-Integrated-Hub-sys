@@ -45,41 +45,43 @@ erDiagram
 ### 2.1 Journal Entry Validation
 
 **Logic:**
+
 1. Sum of all `DEBIT` lines must equal sum of all `CREDIT` lines.
 2. All accounts must belong to the same Company ID.
 3. Transaction date must be within an open fiscal period.
 
 ```typescript
 function validateJournalEntry(entry: JournalEntry): ValidationResult {
-    const totalDebit = entry.lines
-        .filter(l => l.type === 'DEBIT')
-        .reduce((sum, l) => sum + l.amount, 0);
-        
-    const totalCredit = entry.lines
-        .filter(l => l.type === 'CREDIT')
-        .reduce((sum, l) => sum + l.amount, 0);
+  const totalDebit = entry.lines
+    .filter((l) => l.type === 'DEBIT')
+    .reduce((sum, l) => sum + l.amount, 0);
 
-    if (Math.abs(totalDebit - totalCredit) > 0.005) { // Floating point tolerance
-        return { valid: false, error: 'Debits must equal Credits' };
-    }
+  const totalCredit = entry.lines
+    .filter((l) => l.type === 'CREDIT')
+    .reduce((sum, l) => sum + l.amount, 0);
 
-    if (isPeriodClosed(entry.date)) {
-        return { valid: false, error: 'Fiscal period is closed' };
-    }
+  if (Math.abs(totalDebit - totalCredit) > 0.005) {
+    // Floating point tolerance
+    return { valid: false, error: 'Debits must equal Credits' };
+  }
 
-    return { valid: true };
+  if (isPeriodClosed(entry.date)) {
+    return { valid: false, error: 'Fiscal period is closed' };
+  }
+
+  return { valid: true };
 }
 ```
 
 ### 2.2 Account Types & Normal Balance
 
-| Account Type | Normal Balance | Increase | Decrease |
-|--------------|----------------|----------|----------|
-| **Asset** | Debit | Debit | Credit |
-| **Liability** | Credit | Credit | Debit |
-| **Equity** | Credit | Credit | Debit |
-| **Revenue** | Credit | Credit | Debit |
-| **Expense** | Debit | Debit | Credit |
+| Account Type  | Normal Balance | Increase | Decrease |
+| ------------- | -------------- | -------- | -------- |
+| **Asset**     | Debit          | Debit    | Credit   |
+| **Liability** | Credit         | Credit   | Debit    |
+| **Equity**    | Credit         | Credit   | Debit    |
+| **Revenue**   | Credit         | Credit   | Debit    |
+| **Expense**   | Debit          | Debit    | Credit   |
 
 ---
 
@@ -105,6 +107,7 @@ stateDiagram-v2
 When a payment is received, it must be applied to specific invoices or held as a credit on the customer account.
 
 **Logic:**
+
 1. Check if payment amount <= Invoice balance due.
 2. Create Journal Entry:
    - **Debit:** Cash / Bank Account
@@ -113,23 +116,23 @@ When a payment is received, it must be applied to specific invoices or held as a
 
 ```typescript
 async function applyPayment(paymentId: string, invoiceIds: string[]) {
-    const payment = await getPayment(paymentId);
-    let remainingAmount = payment.amount;
+  const payment = await getPayment(paymentId);
+  let remainingAmount = payment.amount;
 
-    for (const invId of invoiceIds) {
-        const invoice = await getInvoice(invId);
-        const amountToPay = Math.min(remainingAmount, invoice.balanceDue);
-        
-        await updateInvoiceBalance(invId, amountToPay);
-        remainingAmount -= amountToPay;
+  for (const invId of invoiceIds) {
+    const invoice = await getInvoice(invId);
+    const amountToPay = Math.min(remainingAmount, invoice.balanceDue);
 
-        if (remainingAmount <= 0) break;
-    }
+    await updateInvoiceBalance(invId, amountToPay);
+    remainingAmount -= amountToPay;
 
-    // Unapplied amount sits in Unearned Revenue or Customer Credit
-    if (remainingAmount > 0) {
-        await createCustomerCredit(payment.customerId, remainingAmount);
-    }
+    if (remainingAmount <= 0) break;
+  }
+
+  // Unapplied amount sits in Unearned Revenue or Customer Credit
+  if (remainingAmount > 0) {
+    await createCustomerCredit(payment.customerId, remainingAmount);
+  }
 }
 ```
 
@@ -151,7 +154,7 @@ CREATE TABLE accounts (
     is_system_account BOOLEAN DEFAULT FALSE, -- Cannot be deleted if true
     parent_account_id VARCHAR(36),
     balance DECIMAL(19, 4) DEFAULT 0.0000, -- Cached balance
-    
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -171,13 +174,13 @@ CREATE TABLE journal_entries (
     description TEXT,
     reference VARCHAR(255), -- External ref (Invoice #, Check #)
     status ENUM('DRAFT', 'POSTED', 'VOIDED') DEFAULT 'DRAFT',
-    
+
     created_by VARCHAR(36),
     posted_by VARCHAR(36),
     posted_at TIMESTAMP,
-    
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     INDEX idx_date (date),
     INDEX idx_company_status (company_id, status)
 );
@@ -189,7 +192,7 @@ CREATE TABLE journal_lines (
     description VARCHAR(255),
     debit DECIMAL(19, 4) DEFAULT 0,
     credit DECIMAL(19, 4) DEFAULT 0,
-    
+
     FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id) ON DELETE CASCADE,
     FOREIGN KEY (account_id) REFERENCES accounts(id)
 );
@@ -203,24 +206,24 @@ CREATE TABLE invoices (
     company_id VARCHAR(36) NOT NULL,
     customer_id VARCHAR(36) NOT NULL,
     invoice_number VARCHAR(50) NOT NULL,
-    
+
     issue_date DATE NOT NULL,
     due_date DATE NOT NULL,
-    
+
     subtotal DECIMAL(19, 4),
     tax_total DECIMAL(19, 4),
     discount_total DECIMAL(19, 4),
     grand_total DECIMAL(19, 4),
     balance_due DECIMAL(19, 4),
-    
+
     currency VARCHAR(3) DEFAULT 'USD',
     status ENUM('DRAFT', 'SENT', 'PARTIALLY_PAID', 'PAID', 'VOID', 'OVERDUE') DEFAULT 'DRAFT',
-    
+
     notes TEXT,
     terms TEXT,
 
     pdf_url VARCHAR(500),
-    
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -235,7 +238,7 @@ CREATE TABLE invoice_items (
     unit_price DECIMAL(19, 4),
     amount DECIMAL(19, 4), -- quantity * unit_price
     tax_rate DECIMAL(5, 4), -- e.g., 0.15 for 15%
-    
+
     FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
 );
 ```
@@ -247,6 +250,7 @@ CREATE TABLE invoice_items (
 ### 5.1 Reconciliation
 
 **Process:**
+
 1. Fetch transactions from Bank Feed (Plaid/Yodlee).
 2. Match against recorded Ledger GL transactions.
    - Match Logic: Same Amount +/- 0.01 AND Date within +/- 3 days.
@@ -255,6 +259,7 @@ CREATE TABLE invoice_items (
 ### 5.2 Revenue Recognition (Subscription)
 
 For SaaS/Subscription models:
+
 - When invoice is generated for Annual Plan:
   - **Debit:** Accounts Receivable
   - **Credit:** Deferred Revenue (Liability)
@@ -268,5 +273,6 @@ For SaaS/Subscription models:
 ---
 
 **Related Documentation:**
+
 - [FINANCE_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/FINANCE_API.md) - API Endpoints
 - [FINANCE_SECURITY.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/security/FINANCE_SECURITY.md) - SOX Compliance

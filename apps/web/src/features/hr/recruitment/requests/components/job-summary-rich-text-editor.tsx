@@ -39,7 +39,8 @@ function ToolbarButton({
       className={cn(
         'h-8 w-8 rounded-lg border border-transparent text-muted-foreground transition-colors',
         isActive && 'border-border bg-muted text-foreground',
-        !disabled && 'hover:border-border hover:bg-muted/80 hover:text-foreground',
+        !disabled &&
+          'hover:border-border hover:bg-muted/80 hover:text-foreground',
       )}
       onClick={onClick}
       disabled={disabled}

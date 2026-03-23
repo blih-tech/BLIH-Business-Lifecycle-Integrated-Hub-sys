@@ -2,7 +2,7 @@ export type CareerStatItem = {
   id: string;
   label: string;
   value: string;
-  trendIcon: "up" | "down" | "up-right";
+  trendIcon: 'up' | 'down' | 'up-right';
 };
 
 export type PromotionRequest = {
@@ -35,7 +35,7 @@ export type PreviousPromotionRequest = {
   initials: string;
   name: string;
   department: string;
-  status: "approved" | "rejected";
+  status: 'approved' | 'rejected';
   fromRole: string;
   toRole: string;
   approvedAt?: string;

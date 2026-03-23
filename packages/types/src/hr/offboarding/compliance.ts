@@ -1,4 +1,8 @@
-export type TerminationType = 'RESIGNATION' | 'END_OF_CONTRACT' | 'TERMINATION' | 'LAYOFF';
+export type TerminationType =
+  | 'RESIGNATION'
+  | 'END_OF_CONTRACT'
+  | 'TERMINATION'
+  | 'LAYOFF';
 
 export interface ComplianceChecklistResponseDto {
   id: string;

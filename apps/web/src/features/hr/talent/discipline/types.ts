@@ -1,4 +1,4 @@
-export type DisciplinePriority = "high" | "medium";
+export type DisciplinePriority = 'high' | 'medium';
 
 export type DisciplineActionCase = {
   id: string;
@@ -18,12 +18,12 @@ export type DisciplineCase = {
   name: string;
   issueType: string;
   score: string;
-  scoreTone: "primary" | "danger" | "neutral";
+  scoreTone: 'primary' | 'danger' | 'neutral';
 };
 
 export type DisciplineStat = {
   id: string;
   label: string;
   value: string;
-  tone: "primary" | "danger";
+  tone: 'primary' | 'danger';
 };

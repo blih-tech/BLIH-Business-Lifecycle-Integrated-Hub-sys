@@ -19,4 +19,3 @@ export type ArchiveEmployee = {
   documents: string[];
   technicalDepartmentLabel: string;
 };
-

@@ -1,4 +1,9 @@
-export type AssetReturnStatus = 'PENDING' | 'IT_SIGNED' | 'ADMIN_SIGNED' | 'FINANCE_SIGNED' | 'COMPLETED';
+export type AssetReturnStatus =
+  | 'PENDING'
+  | 'IT_SIGNED'
+  | 'ADMIN_SIGNED'
+  | 'FINANCE_SIGNED'
+  | 'COMPLETED';
 
 export interface AssetReturnItemDto {
   assetId: string;

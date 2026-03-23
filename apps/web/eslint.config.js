@@ -1,9 +1,9 @@
-import { nextJsConfig } from "@repo/eslint-config/next-js";
-import tseslint from "typescript-eslint";
+import { nextJsConfig } from '@repo/eslint-config/next-js';
+import tseslint from 'typescript-eslint';
 
 /** @type {import("eslint").Linter.Config[]} */
 export default tseslint.config(...nextJsConfig, {
-  files: ["**/*.{ts,tsx}"],
+  files: ['**/*.{ts,tsx}'],
   languageOptions: {
     parserOptions: {
       projectService: true,

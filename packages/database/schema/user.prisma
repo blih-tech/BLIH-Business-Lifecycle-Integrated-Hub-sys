@@ -31,8 +31,8 @@ model User {
   createdOffers                    Offer[]                       @relation("OfferCreator")
   jobApprovalSteps                 JobApprovalStep[]             @relation("JobApprovalStepApprover")
   jobApprovalHistoryChanges        JobApprovalHistory[]          @relation("JobApprovalHistoryUser")
-  checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")
-  completedOnboardingTasks         OnboardingTask[]              @relation("OnboardingTaskCompletedBy")
+  // checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")
+  // completedOnboardingTasks         OnboardingTask[]              @relation("OnboardingTaskCompletedBy")
   policyAcknowledgementsVerified   PolicyAcknowledgement[]       @relation("PolicyAcknowledgementVerifiedBy")
   delegatedLeaveHandovers          LeaveRequest[]                @relation("LeaveRequestHandoverDelegate")
   leaveRequestsApproved            LeaveRequest[]                @relation("LeaveRequestApprover")
@@ -95,9 +95,7 @@ model Employee {
   onboardings                 Onboarding[]
   assetProvisionings          AssetProvisioning[]
   policyAcknowledgements      PolicyAcknowledgement[]
-  probationKpiPlans           ProbationKpiPlan[]
-  probationEvaluations        ProbationEvaluation[]
-  probationConfirmations      ProbationConfirmation[]
+  probationPlan               ProbationPlan[]
   leaveRequests               LeaveRequest[]
   leaveBalances               LeaveBalance[]
   attendanceLogs              AttendanceLog[]

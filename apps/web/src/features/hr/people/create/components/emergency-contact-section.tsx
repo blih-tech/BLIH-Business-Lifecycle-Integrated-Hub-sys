@@ -1,9 +1,14 @@
-import { useFormContext } from "react-hook-form";
+import { useFormContext } from 'react-hook-form';
 
-import type { EmployeeProfileFormValues } from "@/features/hr/people/create/form-schema";
-import { FormSectionCard } from "@/features/hr/people/create/components/form-section-card";
-import { FormControl, FormField, FormItem, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
+import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
 
 export function EmergencyContactSection() {
   const form = useFormContext<EmployeeProfileFormValues>();

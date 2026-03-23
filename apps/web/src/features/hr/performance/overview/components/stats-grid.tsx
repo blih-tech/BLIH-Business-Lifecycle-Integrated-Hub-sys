@@ -1,6 +1,6 @@
-import type { PerformanceStatItem } from "@/features/hr/performance/overview/types";
+import type { PerformanceStatItem } from '@/features/hr/performance/overview/types';
 
-import { StatsCard } from "./stats-card";
+import { StatsCard } from './stats-card';
 
 type StatsGridProps = {
   items: PerformanceStatItem[];

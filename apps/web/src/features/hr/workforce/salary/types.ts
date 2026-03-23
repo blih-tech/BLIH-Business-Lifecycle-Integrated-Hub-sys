@@ -2,7 +2,7 @@ export type SalaryStat = {
   id: string;
   label: string;
   value: string;
-  icon: "dollar" | "trend" | "requests";
+  icon: 'dollar' | 'trend' | 'requests';
 };
 
 export type SalaryAdjustmentRequest = {

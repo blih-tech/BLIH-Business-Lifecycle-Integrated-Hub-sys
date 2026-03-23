@@ -1,6 +1,18 @@
-export type OffboardingTaskDepartment = 'HR' | 'IT' | 'ADMIN' | 'FINANCE' | 'MANAGER';
-export type OffboardingTaskStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
-export type OffboardingChecklistStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+export type OffboardingTaskDepartment =
+  | 'HR'
+  | 'IT'
+  | 'ADMIN'
+  | 'FINANCE'
+  | 'MANAGER';
+export type OffboardingTaskStatus =
+  | 'PENDING'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'OVERDUE';
+export type OffboardingChecklistStatus =
+  | 'PENDING'
+  | 'IN_PROGRESS'
+  | 'COMPLETED';
 
 export interface OffboardingTaskResponseDto {
   id: string;

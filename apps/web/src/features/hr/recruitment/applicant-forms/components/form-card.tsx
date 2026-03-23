@@ -1,6 +1,6 @@
-import { Copy, Eye, FileText, Pencil, Trash2 } from "lucide-react";
+import { Copy, Eye, FileText, Pencil, Trash2 } from 'lucide-react';
 
-import type { CreatedApplicantForm } from "@/features/hr/recruitment/applicant-forms/types";
+import type { CreatedApplicantForm } from '@/features/hr/recruitment/applicant-forms/types';
 
 type FormCardProps = {
   form: CreatedApplicantForm;
@@ -27,14 +27,22 @@ export function FormCard({ form }: FormCardProps) {
             <FileText className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <p className="text-base font-semibold tracking-[-0.3125px] text-black">{form.title}</p>
+            <p className="text-base font-semibold tracking-[-0.3125px] text-black">
+              {form.title}
+            </p>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm tracking-[-0.1504px] text-[#666]">
               <span>{form.department}</span>
               <span>
-                Created: <span className="font-semibold text-black">{form.createdAt}</span>
+                Created:{' '}
+                <span className="font-semibold text-black">
+                  {form.createdAt}
+                </span>
               </span>
               <span>
-                Used in: <span className="font-semibold text-black">{form.usedInJobs} Jobs</span>
+                Used in:{' '}
+                <span className="font-semibold text-black">
+                  {form.usedInJobs} Jobs
+                </span>
               </span>
             </div>
           </div>
@@ -58,4 +66,3 @@ export function FormCard({ form }: FormCardProps) {
     </article>
   );
 }
-

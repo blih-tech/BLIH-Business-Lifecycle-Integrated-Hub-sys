@@ -2,13 +2,13 @@ export type KpiSummaryStat = {
   id: string;
   label: string;
   value: string;
-  icon: "target" | "trending-up";
+  icon: 'target' | 'trending-up';
 };
 
 export type KpiItem = {
   id: string;
   department: string;
-  status: "Exceeding Target" | "Below Target";
+  status: 'Exceeding Target' | 'Below Target';
   title: string;
   description: string;
   owner: string;

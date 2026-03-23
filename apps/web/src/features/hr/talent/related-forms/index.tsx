@@ -1,13 +1,17 @@
-import { allRelatedForms, relatedFormsStats, relatedFormTypes } from "@/features/hr/talent/related-forms/mock-data";
+import {
+  allRelatedForms,
+  relatedFormsStats,
+  relatedFormTypes,
+} from '@/features/hr/talent/related-forms/mock-data';
 import {
   AllFormsSection,
   FormManagementHeader,
   FormTypesSection,
   RelatedFormsStatsGrid,
-} from "@/features/hr/talent/related-forms/components";
+} from '@/features/hr/talent/related-forms/components';
 
-export * from "@/features/hr/talent/related-forms/components";
-export * from "@/features/hr/talent/related-forms/types";
+export * from '@/features/hr/talent/related-forms/components';
+export * from '@/features/hr/talent/related-forms/types';
 
 export function TalentRelatedFormsContent() {
   return (

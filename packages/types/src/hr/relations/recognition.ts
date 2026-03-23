@@ -1,4 +1,9 @@
-export type RecognitionCategory = 'EXCELLENCE' | 'TEAMWORK' | 'INNOVATION' | 'SERVICE' | 'OTHER';
+export type RecognitionCategory =
+  | 'EXCELLENCE'
+  | 'TEAMWORK'
+  | 'INNOVATION'
+  | 'SERVICE'
+  | 'OTHER';
 export type RecognitionStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export interface RecognitionResponseDto {

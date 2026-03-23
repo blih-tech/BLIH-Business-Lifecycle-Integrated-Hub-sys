@@ -1,4 +1,4 @@
-export type ReviewStatus = "completed" | "in-progress";
+export type ReviewStatus = 'completed' | 'in-progress';
 
 export type ReviewRow = {
   id: string;

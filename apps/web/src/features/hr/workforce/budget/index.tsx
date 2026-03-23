@@ -3,17 +3,17 @@ import {
   budgetAllocations,
   budgetStats,
   departmentBudgetPoints,
-} from "@/features/hr/workforce/budget/mock-data";
+} from '@/features/hr/workforce/budget/mock-data';
 import {
   AnnualBudgetsSection,
   BudgetAllocationsSection,
   BudgetManagementCard,
   BudgetStatsGrid,
   DepartmentBudgetSpendingCard,
-} from "@/features/hr/workforce/budget/components";
+} from '@/features/hr/workforce/budget/components';
 
-export * from "@/features/hr/workforce/budget/components";
-export * from "@/features/hr/workforce/budget/types";
+export * from '@/features/hr/workforce/budget/components';
+export * from '@/features/hr/workforce/budget/types';
 
 export function WorkforceBudgetContent() {
   return (

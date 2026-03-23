@@ -1,7 +1,7 @@
-import type { ActiveResignation } from "@/features/hr/exit/overview/types";
-import { Badge } from "@/shared/components/ui/badge";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { cn } from "@/shared/lib/utils";
+import type { ActiveResignation } from '@/features/hr/exit/overview/types';
+import { Badge } from '@/shared/components/ui/badge';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { cn } from '@/shared/lib/utils';
 
 type ActiveResignationCardProps = {
   item: ActiveResignation;
@@ -18,8 +18,13 @@ export function ActiveResignationCard({ item }: ActiveResignationCardProps) {
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-1.5">
-                <p className="text-base font-semibold tracking-[-0.176px] text-black">{item.name}</p>
-                <Badge variant="outline" className="h-5 rounded-[6px] px-2 text-[10px] font-medium text-black">
+                <p className="text-base font-semibold tracking-[-0.176px] text-black">
+                  {item.name}
+                </p>
+                <Badge
+                  variant="outline"
+                  className="h-5 rounded-[6px] px-2 text-[10px] font-medium text-black"
+                >
                   {item.department}
                 </Badge>
               </div>
@@ -28,10 +33,11 @@ export function ActiveResignationCard({ item }: ActiveResignationCardProps) {
           </div>
           <Badge
             className={cn(
-              "h-5 rounded-[6px] px-2 text-[10px] font-medium capitalize",
-              item.status === "interview pending" || item.status === "clearance progress"
-                ? "bg-primary text-white"
-                : "bg-[#4a5565] text-white",
+              'h-5 rounded-[6px] px-2 text-[10px] font-medium capitalize',
+              item.status === 'interview pending' ||
+                item.status === 'clearance progress'
+                ? 'bg-primary text-white'
+                : 'bg-[#4a5565] text-white',
             )}
           >
             {item.status}
@@ -48,11 +54,18 @@ export function ActiveResignationCard({ item }: ActiveResignationCardProps) {
 }
 
 function InfoBlock({ label, value }: { label: string; value: string }) {
-  const isDays = label === "Days Remaining";
+  const isDays = label === 'Days Remaining';
   return (
     <div>
       <p className="text-xs text-[#666]">{label}</p>
-      <p className={cn("text-sm font-semibold", isDays ? "text-primary" : "text-black")}>{value}</p>
+      <p
+        className={cn(
+          'text-sm font-semibold',
+          isDays ? 'text-primary' : 'text-black',
+        )}
+      >
+        {value}
+      </p>
     </div>
   );
 }

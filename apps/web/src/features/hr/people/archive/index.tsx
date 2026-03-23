@@ -29,7 +29,10 @@ export function PeopleArchiveContent() {
     });
   }, [searchTerm]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredEmployees.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredEmployees.length / PAGE_SIZE),
+  );
 
   useEffect(() => {
     setCurrentPage(1);
@@ -73,10 +76,11 @@ export function PeopleArchiveContent() {
             searchTerm={searchTerm}
             onSearchTermChange={setSearchTerm}
           />
-          {selectedEmployee ? <SelectedArchiveCard employee={selectedEmployee} /> : null}
+          {selectedEmployee ? (
+            <SelectedArchiveCard employee={selectedEmployee} />
+          ) : null}
         </div>
       </section>
     </main>
   );
 }
-

@@ -1,7 +1,7 @@
-import { CalendarDays, MessageSquareText, TrendingUp } from "lucide-react";
+import { CalendarDays, MessageSquareText, TrendingUp } from 'lucide-react';
 
-import type { ExitInterviewStat } from "@/features/hr/exit/interviews/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { ExitInterviewStat } from '@/features/hr/exit/interviews/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type InterviewStatsCardProps = {
   item: ExitInterviewStat;
@@ -14,7 +14,9 @@ export function InterviewStatsCard({ item }: InterviewStatsCardProps) {
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs text-[#666]">{item.label}</p>
-            <p className="mt-1 text-[34px] font-semibold leading-8 text-black">{item.value}</p>
+            <p className="mt-1 text-[34px] font-semibold leading-8 text-black">
+              {item.value}
+            </p>
           </div>
           <div className="text-primary">{renderIcon(item.icon)}</div>
         </div>
@@ -23,11 +25,11 @@ export function InterviewStatsCard({ item }: InterviewStatsCardProps) {
   );
 }
 
-function renderIcon(icon: ExitInterviewStat["icon"]) {
-  if (icon === "rating") {
+function renderIcon(icon: ExitInterviewStat['icon']) {
+  if (icon === 'rating') {
     return <TrendingUp className="h-4 w-4" />;
   }
-  if (icon === "completed") {
+  if (icon === 'completed') {
     return <MessageSquareText className="h-4 w-4" />;
   }
   return <CalendarDays className="h-4 w-4" />;

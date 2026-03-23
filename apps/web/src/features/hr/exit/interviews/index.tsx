@@ -2,15 +2,15 @@ import {
   completedExitInterviews,
   exitInterviewStats,
   upcomingExitInterviews,
-} from "@/features/hr/exit/interviews/mock-data";
+} from '@/features/hr/exit/interviews/mock-data';
 import {
   CompletedExitInterviewsSection,
   InterviewStatsGrid,
   UpcomingExitInterviewsSection,
-} from "@/features/hr/exit/interviews/components";
+} from '@/features/hr/exit/interviews/components';
 
-export * from "@/features/hr/exit/interviews/components";
-export * from "@/features/hr/exit/interviews/types";
+export * from '@/features/hr/exit/interviews/components';
+export * from '@/features/hr/exit/interviews/types';
 
 export function ExitInterviewsContent() {
   return (

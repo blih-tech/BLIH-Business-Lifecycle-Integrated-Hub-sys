@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import * as RechartsPrimitive from "recharts";
+import * as React from 'react';
+import * as RechartsPrimitive from 'recharts';
 
-import { cn } from "@/shared/lib/utils";
+import { cn } from '@/shared/lib/utils';
 
 export type ChartConfig = {
   [k in string]: {
@@ -21,7 +21,7 @@ const ChartContext = React.createContext<ChartContextProps | null>(null);
 function useChart() {
   const context = React.useContext(ChartContext);
   if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />");
+    throw new Error('useChart must be used within a <ChartContainer />');
   }
   return context;
 }
@@ -32,30 +32,36 @@ function ChartContainer({
   children,
   config,
   ...props
-}: React.ComponentProps<"div"> & {
+}: React.ComponentProps<'div'> & {
   config: ChartConfig;
-  children: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>["children"];
+  children: React.ComponentProps<
+    typeof RechartsPrimitive.ResponsiveContainer
+  >['children'];
 }) {
   const uniqueId = React.useId();
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+  const chartId = `chart-${id || uniqueId.replace(/:/g, '')}`;
 
   return (
     <ChartContext.Provider value={{ config }}>
       <div
         data-slot="chart"
         data-chart={chartId}
-        className={cn("flex aspect-video justify-center text-xs", className)}
+        className={cn('flex aspect-video justify-center text-xs', className)}
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer>{children}</RechartsPrimitive.ResponsiveContainer>
+        <RechartsPrimitive.ResponsiveContainer>
+          {children}
+        </RechartsPrimitive.ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   );
 }
 
 function ChartStyle({ id, config }: { id: string; config: ChartConfig }) {
-  const colorConfig = Object.entries(config).filter(([, configItem]) => configItem.color);
+  const colorConfig = Object.entries(config).filter(
+    ([, configItem]) => configItem.color,
+  );
   if (!colorConfig.length) return null;
 
   return (
@@ -63,7 +69,7 @@ function ChartStyle({ id, config }: { id: string; config: ChartConfig }) {
       dangerouslySetInnerHTML={{
         __html: `
 [data-chart=${id}] {
-${colorConfig.map(([key, item]) => `  --color-${key}: ${item.color};`).join("\n")}
+${colorConfig.map(([key, item]) => `  --color-${key}: ${item.color};`).join('\n')}
 }
 `,
       }}
@@ -81,11 +87,11 @@ type ChartTooltipItem = {
   value?: React.ReactNode;
 };
 
-type ChartTooltipContentProps = React.ComponentProps<"div"> & {
+type ChartTooltipContentProps = React.ComponentProps<'div'> & {
   active?: boolean;
   formatter?: (
-    value: ChartTooltipItem["value"],
-    name: ChartTooltipItem["name"],
+    value: ChartTooltipItem['value'],
+    name: ChartTooltipItem['name'],
     item: ChartTooltipItem,
     index: number,
     payload: ChartTooltipItem[],
@@ -106,22 +112,40 @@ function ChartTooltipContent({
   if (!active || !payload?.length) return null;
 
   return (
-    <div className={cn("rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs shadow-sm", className)}>
-      {!hideLabel ? <p className="mb-1 text-muted-foreground">{payload[0]?.payload?.month ?? payload[0]?.name}</p> : null}
+    <div
+      className={cn(
+        'rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs shadow-sm',
+        className,
+      )}
+    >
+      {!hideLabel ? (
+        <p className="mb-1 text-muted-foreground">
+          {payload[0]?.payload?.month ?? payload[0]?.name}
+        </p>
+      ) : null}
       <div className="space-y-1">
         {payload.map((item, index) => {
           const key = String(item.dataKey ?? index);
           const configItem = config[key];
           const label = configItem?.label ?? item.name;
-          const value = formatter ? formatter(item.value, item.name, item, index, payload) : item.value;
+          const value = formatter
+            ? formatter(item.value, item.name, item, index, payload)
+            : item.value;
 
           return (
             <div key={key} className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color || `var(--color-${key})` }} />
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{
+                    backgroundColor: item.color || `var(--color-${key})`,
+                  }}
+                />
                 <span className="text-muted-foreground">{label}</span>
               </div>
-              <span className="font-medium text-foreground">{value as React.ReactNode}</span>
+              <span className="font-medium text-foreground">
+                {value as React.ReactNode}
+              </span>
             </div>
           );
         })}

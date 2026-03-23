@@ -2,10 +2,10 @@ export type AttendanceOvertimeStat = {
   id: string;
   label: string;
   value: string;
-  icon: "clock-3" | "circle-check-big";
+  icon: 'clock-3' | 'circle-check-big';
 };
 
-export type OvertimeRequestStatus = "accepted" | "rejected";
+export type OvertimeRequestStatus = 'accepted' | 'rejected';
 
 export type OvertimeRequestCardItem = {
   id: string;
@@ -27,7 +27,7 @@ export type PreviousOvertimeRow = {
   initials: string;
   role: string;
   department: string;
-  status: "Accepted" | "Rejected";
+  status: 'Accepted' | 'Rejected';
   email: string;
   phone: string;
   from: string;
@@ -40,6 +40,6 @@ export type PreviousOvertimeRow = {
     name: string;
     initials: string;
     role: string;
-    deptLabel: "TECHNICAL DEPT." | "CREATIVE DEPT.";
+    deptLabel: 'TECHNICAL DEPT.' | 'CREATIVE DEPT.';
   }[];
 };

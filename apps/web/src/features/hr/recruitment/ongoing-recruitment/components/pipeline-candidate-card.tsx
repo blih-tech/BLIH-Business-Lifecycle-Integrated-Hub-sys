@@ -1,19 +1,19 @@
-import type React from "react";
+import type React from 'react';
 
-import { Bot, MoreHorizontal } from "lucide-react";
+import { Bot, MoreHorizontal } from 'lucide-react';
 
-import type { OngoingPipelineCandidate } from "@/features/hr/recruitment/ongoing-recruitment/types";
-import { Button } from "@/shared/components/ui/button";
+import type { OngoingPipelineCandidate } from '@/features/hr/recruitment/ongoing-recruitment/types';
+import { Button } from '@/shared/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
+} from '@/shared/components/ui/dropdown-menu';
 
 type PipelineCandidateCardProps = {
   candidate: OngoingPipelineCandidate;
-  variant?: "default" | "shortlist" | "rejected";
+  variant?: 'default' | 'shortlist' | 'rejected';
   onMoveToInterview?: (candidateId: string) => void;
   onMoveToShortlist?: (candidateId: string) => void;
   onReject?: (candidateId: string) => void;
@@ -22,7 +22,7 @@ type PipelineCandidateCardProps = {
 
 export function PipelineCandidateCard({
   candidate,
-  variant = "default",
+  variant = 'default',
   onMoveToInterview,
   onMoveToShortlist,
   onReject,
@@ -31,13 +31,15 @@ export function PipelineCandidateCard({
   return (
     <article
       className={`rounded-[14px] border border-[#e5e5e5] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-colors hover:bg-[#fcfcfc] ${
-        onClick ? "cursor-pointer" : ""
+        onClick ? 'cursor-pointer' : ''
       }`}
       onClick={() => onClick?.(candidate.id)}
     >
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-sm font-medium leading-5 tracking-[-0.1504px] text-black">{candidate.fullName}</p>
+          <p className="text-sm font-medium leading-5 tracking-[-0.1504px] text-black">
+            {candidate.fullName}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -46,7 +48,7 @@ export function PipelineCandidateCard({
             {candidate.rating}%
           </span>
 
-          {variant !== "default" ? (
+          {variant !== 'default' ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -54,13 +56,15 @@ export function PipelineCandidateCard({
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 rounded-[6px]"
-                  onClick={(event: React.MouseEvent<HTMLElement>) => event.stopPropagation()}
+                  onClick={(event: React.MouseEvent<HTMLElement>) =>
+                    event.stopPropagation()
+                  }
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {variant === "shortlist" ? (
+                {variant === 'shortlist' ? (
                   <>
                     <DropdownMenuItem
                       onClick={(event: React.MouseEvent<HTMLElement>) => {
@@ -82,7 +86,7 @@ export function PipelineCandidateCard({
                   </>
                 ) : null}
 
-                {variant === "rejected" ? (
+                {variant === 'rejected' ? (
                   <>
                     <DropdownMenuItem
                       onClick={(event: React.MouseEvent<HTMLElement>) => {
@@ -114,4 +118,3 @@ export function PipelineCandidateCard({
     </article>
   );
 }
-

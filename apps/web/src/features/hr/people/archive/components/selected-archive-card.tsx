@@ -21,14 +21,18 @@ export function SelectedArchiveCard({ employee }: SelectedArchiveCardProps) {
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="text-base font-medium text-foreground">{employee.name}</p>
+                <p className="text-base font-medium text-foreground">
+                  {employee.name}
+                </p>
                 <p className="text-sm text-muted-foreground">{employee.role}</p>
               </div>
               <span className="rounded-[4px] bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
                 {employee.technicalDepartmentLabel}
               </span>
             </div>
-            <p className="mt-0.5 text-sm text-muted-foreground">{employee.email}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {employee.email}
+            </p>
             <p className="text-sm text-muted-foreground">{employee.phone}</p>
           </div>
         </div>
@@ -60,19 +64,27 @@ export function SelectedArchiveCard({ employee }: SelectedArchiveCardProps) {
 
           <div className="space-y-3">
             <div>
-              <p className="mb-1 text-xs text-muted-foreground">Reason for Leaving</p>
-              <p className="text-sm font-medium text-foreground">{employee.leavingReason}</p>
+              <p className="mb-1 text-xs text-muted-foreground">
+                Reason for Leaving
+              </p>
+              <p className="text-sm font-medium text-foreground">
+                {employee.leavingReason}
+              </p>
             </div>
 
             <div className="flex items-end gap-4">
               <div>
-                <p className="mb-1 text-xs text-muted-foreground">Exit & Clearance</p>
+                <p className="mb-1 text-xs text-muted-foreground">
+                  Exit & Clearance
+                </p>
                 <Badge className="h-[22px] rounded-[4px] bg-primary px-3 text-xs text-white">
                   {employee.clearanceStatus}
                 </Badge>
               </div>
               <div className="flex flex-1 items-center justify-between rounded-[8px] border border-primary bg-primary/10 px-4 py-2">
-                <p className="text-sm font-semibold text-foreground">Avg. Score</p>
+                <p className="text-sm font-semibold text-foreground">
+                  Avg. Score
+                </p>
                 <p className="relative text-2xl font-bold leading-7 text-primary">
                   <Sparkles className="absolute -left-5 top-[-4px] h-4 w-4 text-[#ffe345]" />
                   {employee.avgScore}%
@@ -109,7 +121,9 @@ export function SelectedArchiveCard({ employee }: SelectedArchiveCardProps) {
       </div>
 
       <div className="flex gap-4">
-        <Button className="h-8 flex-1 rounded-[4px] text-xs font-medium">View Record</Button>
+        <Button className="h-8 flex-1 rounded-[4px] text-xs font-medium">
+          View Record
+        </Button>
         <Button
           variant="outline"
           className="h-8 flex-1 rounded-[4px] border-border bg-muted text-xs font-medium text-foreground"

@@ -42,24 +42,24 @@
 
 ### 1.2 Core Principles
 
-| Principle | Description |
-|-----------|-------------|
+| Principle         | Description                             |
+| ----------------- | --------------------------------------- |
 | **Fast Feedback** | Tests should run quickly in development |
-| **Deterministic** | Same input = same output, every time |
-| **Isolated** | Tests don't depend on each other |
-| **Maintainable** | Easy to understand and update |
-| **Comprehensive** | Cover edge cases, not just happy paths |
-| **Automated** | Run in CI/CD pipeline automatically |
+| **Deterministic** | Same input = same output, every time    |
+| **Isolated**      | Tests don't depend on each other        |
+| **Maintainable**  | Easy to understand and update           |
+| **Comprehensive** | Cover edge cases, not just happy paths  |
+| **Automated**     | Run in CI/CD pipeline automatically     |
 
 ### 1.3 Coverage Goals
 
-| Type | Coverage Target | Why |
-|------|----------------|-----|
-| **Critical Business Logic** | 90%+ | Financial calculations, compliance rules |
-| **Services** | 80%+ | Core business operations |
-| **Controllers** | 70%+ | API endpoints |
-| **Utilities** | 85%+ | Shared helper functions |
-| **Overall** | 75%+ | Healthy codebase indicator |
+| Type                        | Coverage Target | Why                                      |
+| --------------------------- | --------------- | ---------------------------------------- |
+| **Critical Business Logic** | 90%+            | Financial calculations, compliance rules |
+| **Services**                | 80%+            | Core business operations                 |
+| **Controllers**             | 70%+            | API endpoints                            |
+| **Utilities**               | 85%+            | Shared helper functions                  |
+| **Overall**                 | 75%+            | Healthy codebase indicator               |
 
 ---
 
@@ -68,6 +68,7 @@
 ### 2.1 What to Test
 
 #### ✅ **Always Test:**
+
 - Business logic and rules
 - Data validation
 - Error handling
@@ -76,12 +77,14 @@
 - Critical user paths
 
 #### ⚠️ **Consider Testing:**
+
 - Complex UI interactions
 - Third-party integrations
 - Performance bottlenecks
 - Accessibility features
 
 #### ❌ **Don't Test:**
+
 - Third-party library internals
 - Trivial getters/setters
 - Framework code
@@ -129,7 +132,12 @@ describe('MoneyService', () => {
       const exchangeRate = 55.5;
 
       // Act
-      const result = service.convert(amount, fromCurrency, toCurrency, exchangeRate);
+      const result = service.convert(
+        amount,
+        fromCurrency,
+        toCurrency,
+        exchangeRate,
+      );
 
       // Assert
       expect(result).toBe(5550);
@@ -178,13 +186,17 @@ describe('EmployeeService', () => {
     service = new EmployeeService(
       mockRepository,
       mockEventBus,
-      mockAuditService
+      mockAuditService,
     );
   });
 
   it('should create employee and publish event', async () => {
     // Arrange
-    const dto = { firstName: 'John', lastName: 'Doe', email: 'john@example.com' };
+    const dto = {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+    };
     const savedEmployee = { id: '123', ...dto };
     mockRepository.save.mockResolvedValue(savedEmployee);
 
@@ -193,11 +205,11 @@ describe('EmployeeService', () => {
 
     // Assert
     expect(mockRepository.save).toHaveBeenCalledWith(
-      expect.objectContaining(dto)
+      expect.objectContaining(dto),
     );
     expect(mockEventBus.publish).toHaveBeenCalledWith(
       'hr.employee.created',
-      expect.objectContaining({ employeeId: '123' })
+      expect.objectContaining({ employeeId: '123' }),
     );
     expect(result).toEqual(savedEmployee);
   });
@@ -287,7 +299,9 @@ describe('EmployeeRepository (Integration)', () => {
 
     // Act
     await repository.save(employee);
-    const found = await repository.findOne({ where: { email: 'john@example.com' } });
+    const found = await repository.findOne({
+      where: { email: 'john@example.com' },
+    });
 
     // Assert
     expect(found).toBeDefined();
@@ -340,7 +354,7 @@ describe('Event Bus (Integration)', () => {
     await eventBus.publish('hr.employee.created', eventData);
 
     // Wait for async processing
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(received).toHaveLength(1);
     expect(received[0]).toMatchObject(eventData);
@@ -386,7 +400,9 @@ test.describe('Employee Management', () => {
     await page.click('button:has-text("Create")');
 
     // Verify success
-    await expect(page.locator('text=Employee created successfully')).toBeVisible();
+    await expect(
+      page.locator('text=Employee created successfully'),
+    ).toBeVisible();
     await expect(page.locator('text=John Doe')).toBeVisible();
   });
 
@@ -484,7 +500,7 @@ describe('HR API (e2e)', () => {
           phone: '+251912345678',
         })
         .expect(201)
-        .expect(res => {
+        .expect((res) => {
           expect(res.body).toHaveProperty('id');
           expect(res.body.firstName).toBe('John');
         });
@@ -500,7 +516,7 @@ describe('HR API (e2e)', () => {
           email: 'invalid-email',
         })
         .expect(400)
-        .expect(res => {
+        .expect((res) => {
           expect(res.body.message).toContain('email');
         });
     });
@@ -528,15 +544,15 @@ import { check, sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '1m', target: 50 },   // Ramp up to 50 users
-    { duration: '3m', target: 50 },   // Stay at 50 users
-    { duration: '1m', target: 100 },  // Ramp up to 100 users
-    { duration: '3m', target: 100 },  // Stay at 100 users
-    { duration: '1m', target: 0 },    // Ramp down
+    { duration: '1m', target: 50 }, // Ramp up to 50 users
+    { duration: '3m', target: 50 }, // Stay at 50 users
+    { duration: '1m', target: 100 }, // Ramp up to 100 users
+    { duration: '3m', target: 100 }, // Stay at 100 users
+    { duration: '1m', target: 0 }, // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],  // 95% of requests < 500ms
-    http_req_failed: ['rate<0.01'],    // Error rate < 1%
+    http_req_duration: ['p(95)<500'], // 95% of requests < 500ms
+    http_req_failed: ['rate<0.01'], // Error rate < 1%
   },
 };
 
@@ -553,6 +569,7 @@ export default function () {
 ```
 
 **Run load test:**
+
 ```bash
 k6 run load-test.js
 ```
@@ -571,9 +588,9 @@ describe('Performance Tests', () => {
   });
 
   it('should handle concurrent requests', async () => {
-    const requests = Array(50).fill(null).map(() =>
-      service.findAll({ limit: 100 })
-    );
+    const requests = Array(50)
+      .fill(null)
+      .map(() => service.findAll({ limit: 100 }));
 
     const start = Date.now();
     await Promise.all(requests);
@@ -608,12 +625,12 @@ describe('Authentication Security', () => {
   });
 
   it('should enforce rate limiting', async () => {
-    const requests = Array(20).fill(null).map(() =>
-      request(app).post('/auth/login').send(validCredentials)
-    );
+    const requests = Array(20)
+      .fill(null)
+      .map(() => request(app).post('/auth/login').send(validCredentials));
 
     const responses = await Promise.all(requests);
-    const tooManyRequests = responses.filter(r => r.status === 429);
+    const tooManyRequests = responses.filter((r) => r.status === 429);
 
     expect(tooManyRequests.length).toBeGreaterThan(0);
   });
@@ -693,7 +710,9 @@ export class EmployeeFactory {
   }
 
   static createMany(count: number, overrides?: Partial<Employee>): Employee[] {
-    return Array(count).fill(null).map(() => this.create(overrides));
+    return Array(count)
+      .fill(null)
+      .map(() => this.create(overrides));
   }
 }
 
@@ -751,7 +770,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
 
@@ -773,7 +792,7 @@ jobs:
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
-      
+
       redis:
         image: redis:7-alpine
         options: >-
@@ -783,7 +802,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      
+
       - name: Run integration tests
         run: npm run test:integration
 
@@ -792,7 +811,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      
+
       - name: Install Playwright
         run: npx playwright install --with-deps
 
@@ -854,6 +873,7 @@ open coverage/lcov-report/index.html
 ## 12. Testing Checklist
 
 ### Before Commit
+
 - [ ] All tests pass locally
 - [ ] New features have tests
 - [ ] Bug fixes have regression tests
@@ -861,6 +881,7 @@ open coverage/lcov-report/index.html
 - [ ] No console.log statements
 
 ### Before PR
+
 - [ ] CI tests passing
 - [ ] Integration tests pass
 - [ ] E2E tests pass (critical paths)
@@ -868,6 +889,7 @@ open coverage/lcov-report/index.html
 - [ ] Performance benchmarks met
 
 ### Before Release
+
 - [ ] Full regression test suite
 - [ ] Load tests completed
 - [ ] Security scan performed

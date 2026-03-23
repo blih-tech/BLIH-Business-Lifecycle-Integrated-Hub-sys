@@ -1,12 +1,14 @@
-import type { TrainingRequest } from "@/features/hr/talent/training-skills/types";
+import type { TrainingRequest } from '@/features/hr/talent/training-skills/types';
 
-import { TrainingRequestCard } from "./training-request-card";
+import { TrainingRequestCard } from './training-request-card';
 
 type TrainingRequestsSectionProps = {
   items: TrainingRequest[];
 };
 
-export function TrainingRequestsSection({ items }: TrainingRequestsSectionProps) {
+export function TrainingRequestsSection({
+  items,
+}: TrainingRequestsSectionProps) {
   return (
     <section className="space-y-3">
       <p className="text-base font-medium tracking-[-0.176px] text-black">

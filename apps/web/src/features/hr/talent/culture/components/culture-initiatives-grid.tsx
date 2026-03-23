@@ -1,6 +1,6 @@
-import type { CultureInitiative } from "@/features/hr/talent/culture/types";
+import type { CultureInitiative } from '@/features/hr/talent/culture/types';
 
-import { CultureInitiativeCard } from "./culture-initiative-card";
+import { CultureInitiativeCard } from './culture-initiative-card';
 
 type CultureInitiativesGridProps = {
   items: CultureInitiative[];

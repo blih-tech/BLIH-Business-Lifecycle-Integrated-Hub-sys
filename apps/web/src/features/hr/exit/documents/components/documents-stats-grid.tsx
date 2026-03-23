@@ -1,6 +1,6 @@
-import type { ExitDocumentsStat } from "@/features/hr/exit/documents/types";
+import type { ExitDocumentsStat } from '@/features/hr/exit/documents/types';
 
-import { DocumentsStatsCard } from "./documents-stats-card";
+import { DocumentsStatsCard } from './documents-stats-card';
 
 type DocumentsStatsGridProps = {
   items: ExitDocumentsStat[];

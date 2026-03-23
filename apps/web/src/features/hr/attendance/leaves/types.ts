@@ -2,10 +2,10 @@ export type AttendanceRequestStat = {
   id: string;
   label: string;
   value: string;
-  icon: "clock-3" | "circle-check-big";
+  icon: 'clock-3' | 'circle-check-big';
 };
 
-export type LeaveRequestStatus = "completed" | "sick" | "annual";
+export type LeaveRequestStatus = 'completed' | 'sick' | 'annual';
 
 export type LeaveRequestCardItem = {
   id: string;
@@ -27,7 +27,7 @@ export type PreviousLeaveRow = {
   initials: string;
   role: string;
   department: string;
-  leaveType: "Sick" | "Annual" | "Emergency";
+  leaveType: 'Sick' | 'Annual' | 'Emergency';
   email: string;
   phone: string;
   from: string;
@@ -40,7 +40,7 @@ export type PreviousLeaveRow = {
     name: string;
     initials: string;
     role: string;
-    deptLabel: "TECHNICAL DEPT." | "CREATIVE DEPT.";
+    deptLabel: 'TECHNICAL DEPT.' | 'CREATIVE DEPT.';
   }[];
   documents: string[];
 };
