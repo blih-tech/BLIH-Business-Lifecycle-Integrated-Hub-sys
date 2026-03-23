@@ -106,6 +106,7 @@ describe('AppController (e2e)', () => {
       'http://localhost:5000/api/v1/auth/callback';
     process.env.KEYCLOAK_AUTH_SCOPES = 'openid profile email';
     process.env.AUTH_FRONTEND_BASE_URL = 'http://localhost:3000';
+    process.env.CORS_ORIGIN = 'http://localhost:3000,https://example.com';
     process.env.AUTH_ALLOWED_REDIRECT_PATH_PREFIXES =
       '/,/auth,/dashboard,/no-access';
     process.env.AUTH_LOGIN_ERROR_REDIRECT_URI = '/auth/signin';
@@ -220,6 +221,7 @@ describe('AppController (e2e)', () => {
   it('/api/v1/auth/login (GET) redirects to Keycloak with PKCE and transient cookies', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/v1/auth/login?redirect=/dashboard&prompt=login')
+      .set('Origin', 'http://localhost:3000')
       .expect(302);
 
     const location = response.headers.location as string;
@@ -252,6 +254,7 @@ describe('AppController (e2e)', () => {
     expect(getCookie(cookies, 'kc_verifier')).toBeDefined();
     expect(getCookie(cookies, 'kc_redirect')).toBeDefined();
     expect(getCookie(cookies, 'kc_nonce')).toBeDefined();
+    expect(getCookie(cookies, 'kc_frontend_origin')).toBeDefined();
   });
 
   it('/api/v1/auth/callback (GET) redirects to /login when state validation fails', async () => {
@@ -272,25 +275,25 @@ describe('AppController (e2e)', () => {
       .get('/api/v1/auth/callback?code=bad-code&state=expected-state')
       .set(
         'Cookie',
-        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce',
+        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce; kc_frontend_origin=https%3A%2F%2Fexample.com',
       )
       .expect(302);
 
     expect(response.headers.location).toBe(
-      'http://localhost:3000/auth/signin?error=invalid_code',
+      'https://example.com/auth/signin?error=invalid_code',
     );
   });
 
-  it('/api/v1/auth/callback (GET) sets auth cookies and redirects after successful exchange', async () => {
+  it('/api/v1/auth/callback (GET) preserves stored frontend origin after successful exchange', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/v1/auth/callback?code=good-code&state=expected-state')
       .set(
         'Cookie',
-        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce',
+        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce; kc_frontend_origin=https%3A%2F%2Fexample.com',
       )
       .expect(302);
 
-    expect(response.headers.location).toBe('http://localhost:3000/dashboard');
+    expect(response.headers.location).toBe('https://example.com/dashboard');
     const cookies = response.headers['set-cookie'];
     expect(getCookie(cookies, 'kc_access')).toBeDefined();
     expect(getCookie(cookies, 'kc_refresh')).toBeDefined();
@@ -300,6 +303,7 @@ describe('AppController (e2e)', () => {
     expect(getCookie(cookies, 'kc_verifier')).toBeDefined();
     expect(getCookie(cookies, 'kc_redirect')).toBeDefined();
     expect(getCookie(cookies, 'kc_nonce')).toBeDefined();
+    expect(getCookie(cookies, 'kc_frontend_origin')).toBeDefined();
     expect(validateIdTokenMock).toHaveBeenCalledWith(
       'id-token-from-code',
       'blih',
@@ -313,19 +317,22 @@ describe('AppController (e2e)', () => {
       .get('/api/v1/auth/callback?code=bad-id-code&state=expected-state')
       .set(
         'Cookie',
-        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce',
+        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce; kc_frontend_origin=https%3A%2F%2Fexample.com',
       )
       .expect(302);
 
     expect(response.headers.location).toBe(
-      'http://localhost:3000/auth/signin?error=invalid_id_token',
+      'https://example.com/auth/signin?error=invalid_id_token',
     );
   });
 
   it('/api/v1/auth/logout (GET) clears cookies and redirects via Keycloak logout when id token exists', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/v1/auth/logout')
-      .set('Cookie', 'kc_refresh=refresh-token; kc_id=id-token')
+      .set(
+        'Cookie',
+        'kc_refresh=refresh-token; kc_id=id-token; kc_frontend_origin=https%3A%2F%2Fexample.com',
+      )
       .expect(302);
 
     const location = response.headers.location as string;
@@ -335,13 +342,14 @@ describe('AppController (e2e)', () => {
     );
     expect(logoutUrl.searchParams.get('id_token_hint')).toBe('id-token');
     expect(logoutUrl.searchParams.get('post_logout_redirect_uri')).toBe(
-      'http://localhost:3000/auth/signin',
+      'https://example.com/auth/signin',
     );
 
     const cookies = response.headers['set-cookie'];
     expect(getCookie(cookies, 'kc_access')).toBeDefined();
     expect(getCookie(cookies, 'kc_refresh')).toBeDefined();
     expect(getCookie(cookies, 'kc_id')).toBeDefined();
+    expect(getCookie(cookies, 'kc_frontend_origin')).toBeDefined();
     expect(getCookie(cookies, 'kc_csrf')).toBeDefined();
     expect(revokeTokenMock).toHaveBeenCalledTimes(1);
   });

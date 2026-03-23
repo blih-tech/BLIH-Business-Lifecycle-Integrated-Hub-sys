@@ -55,9 +55,9 @@ import {
   buildAuthorizeUrl,
   buildClearCookieOptions,
   buildCookieOptions,
+  buildDynamicFrontendRedirectUrl,
   buildEndSessionUrl,
   buildFrontendRedirectUrl,
-  buildDynamicFrontendRedirectUrl,
   buildReadableCookieOptions,
   createCsrfToken,
   createOidcAuthRequestContext,
@@ -219,9 +219,22 @@ export class AuthController {
         cookieOptions,
       );
     }
+    if (frontendOrigin) {
+      response.cookie(
+        AUTH_COOKIE_NAMES.frontendOrigin,
+        frontendOrigin,
+        cookieOptions,
+      );
+    } else {
+      response.clearCookie(
+        AUTH_COOKIE_NAMES.frontendOrigin,
+        buildClearCookieOptions(this.getCookieSettings()),
+      );
+    }
 
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGIN_INITIATED, {
       redirectPath: safeRedirectPath,
+      frontendOrigin,
       pkceEnabled: env.AUTH_PKCE_ENABLED,
       nonceEnabled: env.AUTH_NONCE_ENABLED,
     });
@@ -466,6 +479,7 @@ export class AuthController {
     const accessToken = readCookie(request, AUTH_COOKIE_NAMES.access);
     const refreshToken = readCookie(request, AUTH_COOKIE_NAMES.refresh);
     const idToken = readCookie(request, AUTH_COOKIE_NAMES.id);
+
     const safePostLogoutPath = resolveSafeRedirectPath(
       redirectPath,
       env.AUTH_POST_LOGOUT_REDIRECT_URI,
@@ -951,6 +965,7 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.access, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.refresh, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.id, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.frontendOrigin, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.csrf, clearReadableOptions);
   }
 

@@ -10,7 +10,16 @@ import {
   parseAllowedRedirectPathPrefixes,
   parseCookieHeader,
   resolveSafeRedirectPath,
+  buildDynamicFrontendRedirectUrl,
+  extractOriginFromRequest,
+  validateOriginAgainstAllowed,
+  isValidOrigin,
 } from './oidc.util';
+
+// Mock Request interface for testing
+interface MockRequest {
+  headers: Record<string, string | undefined>;
+}
 
 describe('oidc.util', () => {
   it('creates PKCE auth request context with url-safe values', () => {
@@ -159,6 +168,341 @@ describe('oidc.util', () => {
       domain: 'localhost',
       path: '/',
       maxAge: 60000,
+    });
+  });
+
+  describe('buildDynamicFrontendRedirectUrl', () => {
+    const allowedOrigins = [
+      'https://project-k22it.vercel.app',
+      'https://blihapi.blihmarketing.com',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://localhost:3000',
+      'https://localhost:3001',
+      'https://example.com',
+    ];
+
+    it('preserves localhost:3000 origin for redirects', () => {
+      const request = {
+        headers: {
+          origin: 'http://localhost:3000',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/auth/signin',
+        allowedOrigins,
+      );
+      expect(result).toBe('http://localhost:3000/auth/signin');
+    });
+
+    it('preserves example.com origin for redirects', () => {
+      const request = {
+        headers: {
+          origin: 'https://example.com',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/dashboard',
+        allowedOrigins,
+      );
+      expect(result).toBe('https://example.com/dashboard');
+    });
+
+    it('falls back to referer when origin header is missing', () => {
+      const request = {
+        headers: {
+          referer: 'http://localhost:3001/some-page',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/auth/signin',
+        allowedOrigins,
+      );
+      expect(result).toBe('http://localhost:3001/auth/signin');
+    });
+
+    it('uses x-forwarded headers for proxy scenarios', () => {
+      const request = {
+        headers: {
+          'x-forwarded-host': 'example.com',
+          'x-forwarded-proto': 'https',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/dashboard',
+        allowedOrigins,
+      );
+      expect(result).toBe('https://example.com/dashboard');
+    });
+
+    it('uses host header with HTTPS assumption for production domains', () => {
+      const request = {
+        headers: {
+          host: 'production.app.com',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/dashboard',
+        ['https://production.app.com'],
+      );
+      expect(result).toBe('https://production.app.com/dashboard');
+    });
+
+    it('uses host header with HTTP assumption for localhost', () => {
+      const request = {
+        headers: {
+          host: 'localhost:3000',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/auth/signin',
+        allowedOrigins,
+      );
+      expect(result).toBe('http://localhost:3000/auth/signin');
+    });
+
+    it('falls back to default URL when no origin can be detected', () => {
+      const request = {
+        headers: {},
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/auth/signin',
+        allowedOrigins,
+      );
+      expect(result).toBe('http://localhost:3000/auth/signin');
+    });
+
+    it('falls back to default URL when origin is not in allowed list', () => {
+      const request = {
+        headers: {
+          origin: 'https://malicious-site.com',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/auth/signin',
+        allowedOrigins,
+      );
+      expect(result).toBe('http://localhost:3000/auth/signin');
+    });
+
+    it('handles wildcard allowed origins', () => {
+      const request = {
+        headers: {
+          origin: 'https://any-site.com',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/dashboard',
+        ['*'],
+      );
+      expect(result).toBe('https://any-site.com/dashboard');
+    });
+
+    it('handles subdomain wildcards', () => {
+      const request = {
+        headers: {
+          origin: 'https://sub.example.com',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/dashboard',
+        ['*.example.com'],
+      );
+      expect(result).toBe('https://sub.example.com/dashboard');
+    });
+
+    it('rejects invalid origin URLs', () => {
+      const request = {
+        headers: {
+          origin: 'not-a-valid-url',
+        },
+      } as MockRequest;
+
+      const result = buildDynamicFrontendRedirectUrl(
+        request as any,
+        '/auth/signin',
+        allowedOrigins,
+      );
+      expect(result).toBe('http://localhost:3000/auth/signin');
+    });
+  });
+
+  describe('extractOriginFromRequest', () => {
+    it('extracts origin from x-forwarded headers (highest priority)', () => {
+      const request = {
+        headers: {
+          'x-forwarded-host': 'example.com',
+          'x-forwarded-proto': 'https',
+          origin: 'https://should-be-ignored.com',
+          referer: 'https://also-ignored.com',
+          host: 'ignored.com',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBe('https://example.com');
+    });
+
+    it('extracts origin from referer header when x-forwarded headers missing', () => {
+      const request = {
+        headers: {
+          referer: 'https://example.com/some-page',
+          origin: 'https://should-be-ignored.com',
+          host: 'ignored.com',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBe('https://example.com');
+    });
+
+    it('extracts origin from origin header when x-forwarded and referer missing', () => {
+      const request = {
+        headers: {
+          origin: 'https://example.com',
+          host: 'ignored.com',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBe('https://example.com');
+    });
+
+    it('extracts origin from host header as last resort', () => {
+      const request = {
+        headers: {
+          host: 'example.com',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBe('https://example.com');
+    });
+
+    it('extracts origin from host header with localhost (uses HTTP)', () => {
+      const request = {
+        headers: {
+          host: 'localhost:3000',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBe('http://localhost:3000');
+    });
+
+    it('handles invalid referer URL gracefully', () => {
+      const request = {
+        headers: {
+          referer: 'not-a-valid-url',
+          origin: 'https://fallback.com',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBe('https://fallback.com');
+    });
+
+    it('returns undefined when no valid headers are present', () => {
+      const request = {
+        headers: {
+          'x-forwarded-host': '',
+          'x-forwarded-proto': '',
+          referer: 'not-a-valid-url',
+          origin: 'not-a-valid-url',
+          host: '',
+        },
+      } as MockRequest;
+
+      const result = extractOriginFromRequest(request as any);
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('validateOriginAgainstAllowed', () => {
+    it('allows exact matches', () => {
+      const result = validateOriginAgainstAllowed('https://example.com', [
+        'https://example.com',
+      ]);
+      expect(result).toBe(true);
+    });
+
+    it('allows wildcard', () => {
+      const result = validateOriginAgainstAllowed('https://any-site.com', [
+        '*',
+      ]);
+      expect(result).toBe(true);
+    });
+
+    it('allows subdomain wildcards', () => {
+      expect(
+        validateOriginAgainstAllowed('https://sub.example.com', [
+          '*.example.com',
+        ]),
+      ).toBe(true);
+      expect(
+        validateOriginAgainstAllowed('https://another.sub.example.com', [
+          '*.example.com',
+        ]),
+      ).toBe(true);
+      expect(
+        validateOriginAgainstAllowed('https://example.com', ['*.example.com']),
+      ).toBe(true);
+      expect(
+        validateOriginAgainstAllowed('https://other.com', ['*.example.com']),
+      ).toBe(false);
+    });
+
+    it('allows prefix matching', () => {
+      expect(
+        validateOriginAgainstAllowed('https://example.com/path', [
+          'https://example.com',
+        ]),
+      ).toBe(true);
+    });
+
+    it('rejects non-matching origins', () => {
+      const result = validateOriginAgainstAllowed('https://malicious.com', [
+        'https://example.com',
+      ]);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('isValidOrigin', () => {
+    it('validates HTTPS URLs', () => {
+      expect(isValidOrigin('https://example.com')).toBe(true);
+    });
+
+    it('validates HTTP URLs', () => {
+      expect(isValidOrigin('http://localhost:3000')).toBe(true);
+    });
+
+    it('rejects invalid protocols', () => {
+      expect(isValidOrigin('ftp://example.com')).toBe(false);
+    });
+
+    it('rejects malformed URLs', () => {
+      expect(isValidOrigin('not-a-url')).toBe(false);
     });
   });
 });

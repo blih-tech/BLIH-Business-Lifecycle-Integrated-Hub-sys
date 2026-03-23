@@ -243,7 +243,47 @@ cleanup_docker_resources() {
 
 stop_existing_services() {
   log_step "Stopping existing services to release ports..."
-  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --timeout 30 || true
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --remove-orphans --timeout 30 || true
+
+  # Force-remove any lingering containers from this project that compose down may have missed
+  local lingering
+  lingering=$(docker ps -a --filter "label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}" -q 2>/dev/null || true)
+  if [[ -n "$lingering" ]]; then
+    log_warn "Force-removing lingering containers..."
+    echo "$lingering" | xargs docker rm -f >/dev/null 2>&1 || true
+  fi
+
+  # Explicitly remove the compose network so all port bindings are released by the kernel
+  docker network rm "${COMPOSE_PROJECT_NAME}_default" >/dev/null 2>&1 || true
+
+  # Force-remove ANY Docker container (from any project) still holding our ports.
+  # This catches orphaned containers from previous failed deployments that were not
+  # part of the current compose project and therefore not removed by compose down.
+  local port
+  for port in "${KEYCLOAK_PORT:-8180}" "${API_PORT:-5000}"; do
+    while IFS= read -r cid; do
+      [[ -z "$cid" ]] && continue
+      log_warn "Force-removing orphaned container ${cid} holding port ${port}..."
+      docker rm -f "${cid}" >/dev/null 2>&1 || true
+    done < <(docker ps -aq --filter "publish=${port}" 2>/dev/null)
+  done
+
+  # Wait until all bound host ports are actually free before proceeding.
+  # Docker's network teardown can take a few seconds after container removal.
+  local waited
+  for port in "${KEYCLOAK_PORT:-8180}" "${API_PORT:-5000}"; do
+    waited=0
+    while ss -tlnp 2>/dev/null | grep -q ":${port} "; do
+      if [[ $waited -ge 30 ]]; then
+        log_error "Port ${port} is still allocated after 30 s. Check for other services using it."
+        exit 1
+      fi
+      log_warn "Port ${port} still bound, waiting... (${waited}s)"
+      sleep 3
+      waited=$((waited + 3))
+    done
+  done
+
   log_info "Existing services stopped and ports released"
 }
 
@@ -282,6 +322,12 @@ deploy() {
   export API_MIGRATOR_IMAGE
   export KEYCLOAK_IMAGE
   
+  # Remove all unused images to reclaim disk space before pulling new release.
+  # All containers were stopped above, so no BLIH images are in use.
+  log_step "Pruning unused images to free disk space..."
+  docker image prune -af >/dev/null 2>&1 || true
+  log_info "Unused images pruned"
+
   # Pull the migrator explicitly because it runs outside Compose.
   log_step "Pulling release images..."
   docker pull "$API_MIGRATOR_IMAGE"
@@ -355,6 +401,12 @@ deploy() {
 # Rollback on failure
 handle_failure() {
   log_error "Deployment failed, attempting automatic rollback..."
+
+  # Print all container logs BEFORE cleanup so the CI log shows the root cause
+  log_step "=== CONTAINER LOGS (last 150 lines each) ==="
+  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --no-color --tail=150 2>/dev/null || true
+  log_step "=== END CONTAINER LOGS ==="
+
   rollback || true
   cleanup_docker_resources
   docker logout ghcr.io >/dev/null 2>&1 || true

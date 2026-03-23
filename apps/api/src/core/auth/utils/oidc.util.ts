@@ -11,6 +11,7 @@ export const AUTH_COOKIE_NAMES = {
   verifier: 'kc_verifier',
   redirect: 'kc_redirect',
   nonce: 'kc_nonce',
+  frontendOrigin: 'kc_frontend_origin',
   csrf: 'kc_csrf',
   access: 'kc_access',
   refresh: 'kc_refresh',
@@ -333,6 +334,34 @@ export function buildFrontendRedirectUrl(
   path: string,
 ): string {
   return new URL(path, frontendBaseUrl).toString();
+}
+
+export function resolveAllowedFrontendOrigin(
+  origin: string | undefined,
+  allowedOrigins: string[],
+): string | undefined {
+  if (!origin || !isValidOrigin(origin)) {
+    return undefined;
+  }
+
+  const normalizedOrigin = new URL(origin).origin;
+  return validateOriginAgainstAllowed(normalizedOrigin, allowedOrigins)
+    ? normalizedOrigin
+    : undefined;
+}
+
+export function buildPreferredFrontendRedirectUrl(
+  path: string,
+  preferredOrigin: string | undefined,
+  fallbackFrontendBaseUrl: string,
+  allowedOrigins: string[],
+): string {
+  const resolvedOrigin = resolveAllowedFrontendOrigin(
+    preferredOrigin,
+    allowedOrigins,
+  );
+
+  return new URL(path, resolvedOrigin ?? fallbackFrontendBaseUrl).toString();
 }
 
 export function buildDynamicFrontendRedirectUrl(
