@@ -256,9 +256,21 @@ stop_existing_services() {
   # Explicitly remove the compose network so all port bindings are released by the kernel
   docker network rm "${COMPOSE_PROJECT_NAME}_default" >/dev/null 2>&1 || true
 
+  # Force-remove ANY Docker container (from any project) still holding our ports.
+  # This catches orphaned containers from previous failed deployments that were not
+  # part of the current compose project and therefore not removed by compose down.
+  local port
+  for port in "${KEYCLOAK_PORT:-8180}" "${API_PORT:-5000}"; do
+    while IFS= read -r cid; do
+      [[ -z "$cid" ]] && continue
+      log_warn "Force-removing orphaned container ${cid} holding port ${port}..."
+      docker rm -f "${cid}" >/dev/null 2>&1 || true
+    done < <(docker ps -aq --filter "publish=${port}" 2>/dev/null)
+  done
+
   # Wait until all bound host ports are actually free before proceeding.
   # Docker's network teardown can take a few seconds after container removal.
-  local port waited
+  local waited
   for port in "${KEYCLOAK_PORT:-8180}" "${API_PORT:-5000}"; do
     waited=0
     while ss -tlnp 2>/dev/null | grep -q ":${port} "; do
