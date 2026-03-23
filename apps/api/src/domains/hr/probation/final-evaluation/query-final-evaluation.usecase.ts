@@ -17,9 +17,7 @@ export class GetFinalEvaluationByIdUseCase {
     });
 
     if (!evaluation) {
-      throw new NotFoundException(
-        `Final evaluation with id "${id}" not found`,
-      );
+      throw new NotFoundException(`Final evaluation with id "${id}" not found`);
     }
 
     return mapFinalEvaluation(evaluation);

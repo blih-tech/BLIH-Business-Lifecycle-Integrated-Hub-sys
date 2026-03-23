@@ -9,6 +9,7 @@
 ---
 
 ## Table of Contents
+
 1. [Module Overview](#module-overview)
 2. [System Architecture - 8 Sub-Systems](#system-architecture---8-sub-systems)
 3. [Sub-System 1: Recruitment & Hiring](#sub-system-1-recruitment--hiring)
@@ -29,27 +30,28 @@
 The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle management through **50 integrated forms** organized across **8 functional sub-systems**. Each form is designed with standardized components: Objectives, Usage Timing, Roles & Workflow, Automated Features, Connected Systems, Data Utilization, and detailed Form Fields.
 
 ### Key Metrics
-| Metric | Value |
-|--------|-------|
-| Total Forms | 50 |
-| Automation Rate | ~85% |
-| Sub-Systems | 8 |
-| Integration Points | 15+ |
+
+| Metric             | Value |
+| ------------------ | ----- |
+| Total Forms        | 50    |
+| Automation Rate    | ~85%  |
+| Sub-Systems        | 8     |
+| Integration Points | 15+   |
 
 ---
 
 ## System Architecture - 8 Sub-Systems
 
-| # | Sub-System | Forms | Primary Function |
-|---|------------|-------|------------------|
-| 1 | Recruitment & Hiring | 6 | Attract, evaluate, and hire talent |
-| 2 | Onboarding & Probation | 7 | Integrate new hires and evaluate trial periods |
-| 3 | Employee Profiles & Records | 5 | Maintain comprehensive employee data |
-| 4 | Attendance, Leave & Time | 6 | Track presence, absence, and work hours |
-| 5 | Performance, OKRs & Career | 9 | Evaluate and develop talent |
-| 6 | Training & Skill Development | 4 | Build organizational capability |
-| 7 | Employee Relations | 7 | Maintain culture and handle issues |
-| 8 | Exit, Offboarding & Compliance | 6 | Manage departures and ensure compliance |
+| #   | Sub-System                     | Forms | Primary Function                               |
+| --- | ------------------------------ | ----- | ---------------------------------------------- |
+| 1   | Recruitment & Hiring           | 6     | Attract, evaluate, and hire talent             |
+| 2   | Onboarding & Probation         | 7     | Integrate new hires and evaluate trial periods |
+| 3   | Employee Profiles & Records    | 5     | Maintain comprehensive employee data           |
+| 4   | Attendance, Leave & Time       | 6     | Track presence, absence, and work hours        |
+| 5   | Performance, OKRs & Career     | 9     | Evaluate and develop talent                    |
+| 6   | Training & Skill Development   | 4     | Build organizational capability                |
+| 7   | Employee Relations             | 7     | Maintain culture and handle issues             |
+| 8   | Exit, Offboarding & Compliance | 6     | Manage departures and ensure compliance        |
 
 ---
 
@@ -62,12 +64,14 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Usage Timing:** When a team lead identifies a staffing gap.
 
 **Roles:**
+
 - Submitter: Team Lead
 - Approvers: Finance → Executive Director → HR
 
 **Workflow:** `Team Lead → Finance → Executive Director → HR`
 
 **Automated Features:**
+
 - Alert Finance and HR on submission
 - Confirm budget availability at Finance approval
 - Trigger Job Posting Form generation at Executive approval
@@ -77,13 +81,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Role Specifications** | Team, Job Name, Supervisor, Type (New/Replacement), Prior Employee Name (if applicable) |
-| **B. Rationale** | Hiring Motivation, Role Overview, Organizational Impact |
-| **C. Staffing & Financials** | Current vs. Needed Staff, Salary Bracket (ETB), Perks |
-| **D. Schedule** | Target Join Date, Priority (Low/Medium/High) |
-| **E. Authorization** | Finance Lead Verdict + Feedback, HR Assessment + Feedback, CEO Sign-Off |
+| Section                      | Fields                                                                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------- |
+| **A. Role Specifications**   | Team, Job Name, Supervisor, Type (New/Replacement), Prior Employee Name (if applicable) |
+| **B. Rationale**             | Hiring Motivation, Role Overview, Organizational Impact                                 |
+| **C. Staffing & Financials** | Current vs. Needed Staff, Salary Bracket (ETB), Perks                                   |
+| **D. Schedule**              | Target Join Date, Priority (Low/Medium/High)                                            |
+| **E. Authorization**         | Finance Lead Verdict + Feedback, HR Assessment + Feedback, CEO Sign-Off                 |
 
 ---
 
@@ -98,6 +102,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → Team Lead → CEO`
 
 **Automated Features:**
+
 - Auto-import from Request Form + Job Description Repository
 - Deploy to career site and generate application URL at CEO approval
 - Save in Knowledge Base "Position Archives"
@@ -106,14 +111,14 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
+| Section                      | Fields                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------ |
 | **A. Fundamental Role Data** | Job Name, Team, Work Type (Full-time/Part-time/Contract), Work Mode (Office/Hybrid/Remote) |
-| **B. Description Overview** | Role Synopsis, Core Duties, Qualifications |
-| **C. Prerequisites** | Academic, Experience, Languages, Tech Skills |
-| **D. Metrics & Goals** | Primary KPIs for the role |
-| **E. Distribution Options** | Platforms: Site/LinkedIn/Telegram/Internal/Others |
-| **F. Authorization** | Team Lead Sign-Off, CEO Final Sign-Off |
+| **B. Description Overview**  | Role Synopsis, Core Duties, Qualifications                                                 |
+| **C. Prerequisites**         | Academic, Experience, Languages, Tech Skills                                               |
+| **D. Metrics & Goals**       | Primary KPIs for the role                                                                  |
+| **E. Distribution Options**  | Platforms: Site/LinkedIn/Telegram/Internal/Others                                          |
+| **F. Authorization**         | Team Lead Sign-Off, CEO Final Sign-Off                                                     |
 
 ---
 
@@ -128,6 +133,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Candidate → HR Filter → Team Lead Selection → Automated Ranking`
 
 **Automated Features:**
+
 - Alert HR on submission
 - Tag as "Selected" and forward to Team Lead
 - Arrange interview and dispatch invites via SMS/email
@@ -138,12 +144,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Personal Data** | Full Name, Gender, Birth Date, Contact Number, Email, Location, Resume Upload |
-| **B. Career Data** | Academics, Professional History, Qualifications, Work Samples Link |
+| Section                      | Fields                                                                                                    |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **A. Personal Data**         | Full Name, Gender, Birth Date, Contact Number, Email, Location, Resume Upload                             |
+| **B. Career Data**           | Academics, Professional History, Qualifications, Work Samples Link                                        |
 | **C. Role-Tailored Queries** | Experience, Obstacles, BLIH Knowledge, Contributions, Salary Expectations (ETB), Availability, Motivation |
-| **D. Interest Statement** | Self-Introduction, Extra Comments |
+| **D. Interest Statement**    | Self-Introduction, Extra Comments                                                                         |
 
 ---
 
@@ -158,6 +164,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR Assessment → Team Lead Verdict`
 
 **Automated Features:**
+
 - Automated rating on core factors
 - Advance to "Selected" and initiate interview setup
 - Automated notification via email/SMS for denials
@@ -166,12 +173,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Applicant Identifier** | Name, Applied Role, Submission ID, Origin |
-| **B. Assessment Factors** | Qualifications, Background, Technical Abilities, Sector Compatibility, Written Expression (Importance, Rating 1-5, Notes) |
-| **C. Comprehensive Assessment** | Aggregate Rating (auto), Suggestion (Select/Pause/Deny), Observations |
-| **D. Verdict** | Team Lead Choice, Next Phase (Interview/Deny/Reserve Pool) |
+| Section                         | Fields                                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **A. Applicant Identifier**     | Name, Applied Role, Submission ID, Origin                                                                                 |
+| **B. Assessment Factors**       | Qualifications, Background, Technical Abilities, Sector Compatibility, Written Expression (Importance, Rating 1-5, Notes) |
+| **C. Comprehensive Assessment** | Aggregate Rating (auto), Suggestion (Select/Pause/Deny), Observations                                                     |
+| **D. Verdict**                  | Team Lead Choice, Next Phase (Interview/Deny/Reserve Pool)                                                                |
 
 ---
 
@@ -186,6 +193,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Evaluators → HR (compile → order candidates)`
 
 **Automated Features:**
+
 - Instant score aggregation
 - Automated candidate ordering by score
 
@@ -193,12 +201,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Applicant Data** | Name (auto), Role (auto), Session Date (auto), Evaluator (auto) |
+| Section                  | Fields                                                                                                                                    |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **A. Applicant Data**    | Name (auto), Role (auto), Session Date (auto), Evaluator (auto)                                                                           |
 | **B. Rating Categories** | Technical Proficiency, Analytical Skills, Expression, Group Compatibility, Organizational Fit, Poise & Demeanor (Score 1-5, Observations) |
-| **C. General Appraisal** | Total Rating (auto-average), Endorsement (Strong Yes/Yes/Uncertain/No), Remarks |
-| **D. Next Actions** | Recommendation (Follow-Up/Assign/Hire/Deny) |
+| **C. General Appraisal** | Total Rating (auto-average), Endorsement (Strong Yes/Yes/Uncertain/No), Remarks                                                           |
+| **D. Next Actions**      | Recommendation (Follow-Up/Assign/Hire/Deny)                                                                                               |
 
 ---
 
@@ -213,6 +221,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR/Team Lead → Finance Lead → CEO`
 
 **Automated Features:**
+
 - Append resume, feedback, and pay suggestion
 - Check budget and pay bracket
 - Create Offer Document and alert candidate
@@ -222,13 +231,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Applicant & Role Reference** | Name, Role, Team, Submission ID |
-| **B. Offer Specifications** | Suggested Total Pay (ETB), Perks/Incentives, Trial Phase, Target Start, Work Type |
-| **C. Selection Rationale** | Choice Reasoning, Key Assets |
-| **D. Supporting Files** | Resume, Feedback Overview, Assessment Outcomes |
-| **E. Authorization** | Finance Lead Endorsement, CEO Endorsement, Outcome (Offer OK/Denied/Suspended) |
+| Section                           | Fields                                                                            |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| **A. Applicant & Role Reference** | Name, Role, Team, Submission ID                                                   |
+| **B. Offer Specifications**       | Suggested Total Pay (ETB), Perks/Incentives, Trial Phase, Target Start, Work Type |
+| **C. Selection Rationale**        | Choice Reasoning, Key Assets                                                      |
+| **D. Supporting Files**           | Resume, Feedback Overview, Assessment Outcomes                                    |
+| **E. Authorization**              | Finance Lead Endorsement, CEO Endorsement, Outcome (Offer OK/Denied/Suspended)    |
 
 ---
 
@@ -245,6 +254,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → Team Lead → CEO`
 
 **Automated Features:**
+
 - Generate profile + account + tasks
 - Alert IT, Admin, Finance
 - Task progress tracking
@@ -254,14 +264,14 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Details** | Full Name, Role, Team, Join Date, Overseer |
-| **B. HR Duties List** | Agreement Executed, ID Secured, Backup Contact Recorded, Policies Distributed, Orientation Agenda Shared |
-| **C. IT Duties List** | Email Setup, Platform Permissions Granted, Applications Allocated |
-| **D. Admin Duties List** | Station Readied, Entry Pass Issued, Equipment Delivered |
-| **E. Team Duties List** | Group Introduction, Learning/Observation Schedule, Initial Assignments |
-| **F. Authorization** | Team Lead Verification, CEO Sign-Off (if senior) |
+| Section                  | Fields                                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| **A. Staff Details**     | Full Name, Role, Team, Join Date, Overseer                                                               |
+| **B. HR Duties List**    | Agreement Executed, ID Secured, Backup Contact Recorded, Policies Distributed, Orientation Agenda Shared |
+| **C. IT Duties List**    | Email Setup, Platform Permissions Granted, Applications Allocated                                        |
+| **D. Admin Duties List** | Station Readied, Entry Pass Issued, Equipment Delivered                                                  |
+| **E. Team Duties List**  | Group Introduction, Learning/Observation Schedule, Initial Assignments                                   |
+| **F. Authorization**     | Team Lead Verification, CEO Sign-Off (if senior)                                                         |
 
 ---
 
@@ -276,6 +286,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → HR Lead`
 
 **Automated Features:**
+
 - Assign ID + account
 - Document sync to Finance, IT, Projects
 
@@ -283,12 +294,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Core Data** | Full Name, Gender, Birth Date, Contacts, Location |
-| **B. Work Data** | Role, Team, Supervisor, Compensation & Perks, Join Date, Work Type |
-| **C. Files** | Resume, Identification, Agreement, Qualifications |
-| **D. Authorization** | HR Lead Verification |
+| Section              | Fields                                                             |
+| -------------------- | ------------------------------------------------------------------ |
+| **A. Core Data**     | Full Name, Gender, Birth Date, Contacts, Location                  |
+| **B. Work Data**     | Role, Team, Supervisor, Compensation & Perks, Join Date, Work Type |
+| **C. Files**         | Resume, Identification, Agreement, Qualifications                  |
+| **D. Authorization** | HR Lead Verification                                               |
 
 ---
 
@@ -303,6 +314,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → IT Supervisor → Admin → Finance (if over limit)`
 
 **Automated Features:**
+
 - Alert IT + Admin
 - Refresh permissions
 - Tag as "Allocated" in stock
@@ -312,12 +324,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Data** | Name, Team, Role |
-| **B. Equipment Allocated** | Item, ID Number, Status, Remarks (table) |
+| Section                     | Fields                                                                                         |
+| --------------------------- | ---------------------------------------------------------------------------------------------- |
+| **A. Staff Data**           | Name, Team, Role                                                                               |
+| **B. Equipment Allocated**  | Item, ID Number, Status, Remarks (table)                                                       |
 | **C. Platform Permissions** | Email/Storage, HR Platform, Projects Platform, Client Management, Creative Applications, Other |
-| **D. Authorization** | IT Supervisor Sign-Off, Admin Sign-Off, Finance Sign-Off (if required) |
+| **D. Authorization**        | IT Supervisor Sign-Off, Admin Sign-Off, Finance Sign-Off (if required)                         |
 
 ---
 
@@ -332,6 +344,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → HR`
 
 **Automated Features:**
+
 - Log time and archive in file
 - Mandate acceptance for access activation
 - Preserve acceptance records for audits
@@ -340,12 +353,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Data** | Name, Team, Role |
+| Section                | Fields                                                                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **A. Staff Data**      | Name, Team, Role                                                                                                        |
 | **B. Rules Inventory** | Behavior Code, Time Policy, Tech & IT Rules, Time Off Policy, Privacy Rules, No-Harassment Policy, Data Security Policy |
-| **C. Confirmation** | "I acknowledge and comprehend all rules." (tick) |
-| **D. Authorization** | HR Check |
+| **C. Confirmation**    | "I acknowledge and comprehend all rules." (tick)                                                                        |
+| **D. Authorization**   | HR Check                                                                                                                |
 
 ---
 
@@ -360,6 +373,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Supervisor → HR → Staff Confirmation`
 
 **Automated Features:**
+
 - Alert HR
 - Set alerts (Day 30 check, Day 55 review)
 - Archive in staff file
@@ -368,12 +382,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Details** | Staff, Supervisor, Team, Title, Trial Start, Trial End (auto + editable) |
-| **B. Goal Configuration** | Goal, Measure, Goal Value, Importance (%), Notes (min 3, max 5) |
-| **C. Development Path** | Scheduled Sessions, Guide Assigned, Milestones (Day 30/55 dates) |
-| **D. Endorsements** | Staff (electronic), Supervisor (electronic), HR (electronic) |
+| Section                   | Fields                                                                   |
+| ------------------------- | ------------------------------------------------------------------------ |
+| **A. Staff Details**      | Staff, Supervisor, Team, Title, Trial Start, Trial End (auto + editable) |
+| **B. Goal Configuration** | Goal, Measure, Goal Value, Importance (%), Notes (min 3, max 5)          |
+| **C. Development Path**   | Scheduled Sessions, Guide Assigned, Milestones (Day 30/55 dates)         |
+| **D. Endorsements**       | Staff (electronic), Supervisor (electronic), HR (electronic)             |
 
 ---
 
@@ -388,6 +402,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Supervisor → HR → CEO`
 
 **Automated Features:**
+
 - Alert HR
 - Confirm: Set to "Permanent"
 - Extend: New 30-day plan
@@ -397,14 +412,14 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Goal Review** | Name, Goal, Outcome, Rating (1-5), Remark (auto from Plan) |
-| **C. Conduct & Ethics** | Timekeeping, Collaboration, Drive, Expression (Rating 1-5 each) |
-| **D. Supervisor Overview** | Assets, Improvements, Suggestion (Confirm/Extend/End) |
-| **E. HR Assessment** | Remark, Verdict |
-| **F. Endorsements** | Staff, Supervisor, HR, CEO (if needed) |
+| Section                    | Fields                                                          |
+| -------------------------- | --------------------------------------------------------------- |
+| **A. Staff Info**          | Auto-populated                                                  |
+| **B. Goal Review**         | Name, Goal, Outcome, Rating (1-5), Remark (auto from Plan)      |
+| **C. Conduct & Ethics**    | Timekeeping, Collaboration, Drive, Expression (Rating 1-5 each) |
+| **D. Supervisor Overview** | Assets, Improvements, Suggestion (Confirm/Extend/End)           |
+| **E. HR Assessment**       | Remark, Verdict                                                 |
+| **F. Endorsements**        | Staff, Supervisor, HR, CEO (if needed)                          |
 
 ---
 
@@ -419,6 +434,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Team Lead → HR → CEO`
 
 **Automated Features:**
+
 - Check score vs. standard
 - If End: Create end letter + halt pay
 - If Confirm: Create confirm letter + update status
@@ -427,12 +443,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Details** | Name, Role, Team, Start |
+| Section                | Fields                                                |
+| ---------------------- | ----------------------------------------------------- |
+| **A. Staff Details**   | Name, Role, Team, Start                               |
 | **B. Review Overview** | Goal Rating, Time & Attendance, Conduct, Fit, Remarks |
-| **C. Verdict** | Confirm, Extend (days), End |
-| **D. Authorization** | HR Check, CEO Sign-Off |
+| **C. Verdict**         | Confirm, Extend (days), End                           |
+| **D. Authorization**   | HR Check, CEO Sign-Off                                |
 
 ---
 
@@ -449,6 +465,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → CEO (if pay/title involved)`
 
 **Automated Features:**
+
 - Setup account (Keycloak), assign permissions
 - Alert supervisor, start onboarding
 
@@ -456,15 +473,15 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Key Fields |
-|---------|------------|
-| **A. Personal Info** | Full Name, Gender, DOB, Nationality, Phone, Email, Emergency Contact |
-| **B. Employment Info** | Employment Type, Department, Position Title, Reporting Manager, Work Location, Job Grade, Date of Hire, Employment Status, Probation End Date, Contract Expiry |
-| **C. Compensation & Payroll** | Basic Salary (ETB), Allowances, Gross Salary (auto), Payment Method, Bank Details, Payroll Cycle, Tax Category (auto) |
-| **D. Job Description & KPI Links** | Job Description Upload, KPIs, OKR Role Mapping |
-| **E. Documents Upload** | Signed Contract, ID/Passport, Educational Certificates, Clearance/Medical, Portfolio |
-| **F. Access & Permissions** | System Email (auto), Access Level, Tools Access, Asset Assigned, Asset Serial |
-| **G. HR & Lifecycle** | Leave Balance (auto), Overtime Eligibility, Shift Hours, Disciplinary Flags (auto), Performance Score (auto), Renewal Alerts (auto) |
+| Section                            | Key Fields                                                                                                                                                     |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A. Personal Info**               | Full Name, Gender, DOB, Nationality, Phone, Email, Emergency Contact                                                                                           |
+| **B. Employment Info**             | Employment Type, Department, Position Title, Reporting Manager, Work Location, Job Grade, Date of Hire, Employment Status, Probation End Date, Contract Expiry |
+| **C. Compensation & Payroll**      | Basic Salary (ETB), Allowances, Gross Salary (auto), Payment Method, Bank Details, Payroll Cycle, Tax Category (auto)                                          |
+| **D. Job Description & KPI Links** | Job Description Upload, KPIs, OKR Role Mapping                                                                                                                 |
+| **E. Documents Upload**            | Signed Contract, ID/Passport, Educational Certificates, Clearance/Medical, Portfolio                                                                           |
+| **F. Access & Permissions**        | System Email (auto), Access Level, Tools Access, Asset Assigned, Asset Serial                                                                                  |
+| **G. HR & Lifecycle**              | Leave Balance (auto), Overtime Eligibility, Shift Hours, Disciplinary Flags (auto), Performance Score (auto), Renewal Alerts (auto)                            |
 
 ---
 
@@ -479,6 +496,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Team Lead → HR Supervisor → CEO`
 
 **Automated Features:**
+
 - Archive in Knowledge Base "Position Archives"
 - Attach metrics to goal system
 - Sync skills to review forms
@@ -487,13 +505,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Position Data** | Team, Title, Level, Supervisor, Code (auto) |
-| **B. Description Content** | Text or PDF: Summary, Duties, Tools, Hours, Skills |
-| **C. Metric Definition** | Title, Metric, Target, Frequency, Weight (%) |
-| **D. Skills Needed** | Skill, Level (1-5), Notes |
-| **E. System Links** | Team Goals, Personal Goal Suggestions, Review Form (auto) |
+| Section                    | Fields                                                    |
+| -------------------------- | --------------------------------------------------------- |
+| **A. Position Data**       | Team, Title, Level, Supervisor, Code (auto)               |
+| **B. Description Content** | Text or PDF: Summary, Duties, Tools, Hours, Skills        |
+| **C. Metric Definition**   | Title, Metric, Target, Frequency, Weight (%)              |
+| **D. Skills Needed**       | Skill, Level (1-5), Notes                                 |
+| **E. System Links**        | Team Goals, Personal Goal Suggestions, Review Form (auto) |
 
 ---
 
@@ -508,6 +526,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → HR Supervisor`
 
 **Automated Features:**
+
 - End date alerts (30/60/90 days)
 - Sync terms to Finance
 - Archive signed in file
@@ -516,11 +535,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
+| Section              | Fields                                                                   |
+| -------------------- | ------------------------------------------------------------------------ |
 | **A. Contract Info** | Staff Name, ID, Type (Initial/Renewal/Change), Length, Start/End, Trial? |
-| **B. Pay Overview** | Base Pay, Perks, Hours, OT Rules, Leave Rights |
-| **C. Upload** | PDF File, Version (auto), Notes |
+| **B. Pay Overview**  | Base Pay, Perks, Hours, OT Rules, Leave Rights                           |
+| **C. Upload**        | PDF File, Version (auto), Notes                                          |
 
 ---
 
@@ -535,6 +554,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR/Finance → Finance Supervisor → CEO`
 
 **Automated Features:**
+
 - Refresh compensation system
 - Archive history in file
 - Sync to performance data
@@ -544,11 +564,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Name, ID, Role, Team |
+| Section               | Fields                                                                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **A. Staff Info**     | Name, ID, Role, Team                                                                                             |
 | **B. Change Details** | Prior Pay (auto), New Pay, Difference (auto), Reason (Promotion/Increment/Adjustment/Correction), Effective Date |
-| **C. Files** | Approval Document, Advancement Document |
+| **C. Files**          | Approval Document, Advancement Document                                                                          |
 
 ---
 
@@ -563,6 +583,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff/HR → HR Supervisor`
 
 **Automated Features:**
+
 - Replace old while archiving
 - Alert for expiries
 - Sync quals to training library
@@ -571,11 +592,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Details** | Name, ID, Team, Role |
-| **B. File Type** | ID Renew, Qual, Health Report, Academic, Work Samples, Other |
-| **C. Upload** | File, Issue Date, Expiry (alert trigger) |
+| Section              | Fields                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| **A. Staff Details** | Name, ID, Team, Role                                         |
+| **B. File Type**     | ID Renew, Qual, Health Report, Academic, Work Samples, Other |
+| **C. Upload**        | File, Issue Date, Expiry (alert trigger)                     |
 
 ---
 
@@ -592,6 +613,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → HR → Record`
 
 **Automated Features:**
+
 - Alert Supervisor
 - Reduce balance; lock dates
 - Denial alert to staff
@@ -603,12 +625,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
+| Section            | Fields                                                        |
+| ------------------ | ------------------------------------------------------------- |
+| **A. Staff Info**  | Auto-populated                                                |
 | **B. Leave Specs** | Type, Start/End, Days (auto), Rationale, Contact, Cover Staff |
-| **C. Files** | Optional |
-| **D. Auto Calcs** | Balance, Remaining |
+| **C. Files**       | Optional                                                      |
+| **D. Auto Calcs**  | Balance, Remaining                                            |
 
 ---
 
@@ -623,6 +645,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → HR`
 
 **Automated Features:**
+
 - Refresh logs
 - Record for data
 
@@ -630,11 +653,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Anomaly Specs** | Date, Type (Late/Early/Issue/Other), Explanation, Length (auto) |
-| **C. Supervisor Remarks** | Notes |
+| Section                   | Fields                                                          |
+| ------------------------- | --------------------------------------------------------------- |
+| **A. Staff Info**         | Auto-populated                                                  |
+| **B. Anomaly Specs**      | Date, Type (Late/Early/Issue/Other), Explanation, Length (auto) |
+| **C. Supervisor Remarks** | Notes                                                           |
 
 ---
 
@@ -649,6 +672,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → HR (OT check)`
 
 **Automated Features:**
+
 - Alert Supervisor
 - Update OT report, push to Finance
 - Weekly file
@@ -657,12 +681,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Day Log** | Day, Date, Project, Task, Hours, Billable?, OT?, Remark (table) |
-| **C. Totals** | Regular, OT, Billable (auto) |
-| **D. Remarks** | Staff notes, Supervisor notes |
+| Section           | Fields                                                          |
+| ----------------- | --------------------------------------------------------------- |
+| **A. Staff Info** | Auto-populated                                                  |
+| **B. Day Log**    | Day, Date, Project, Task, Hours, Billable?, OT?, Remark (table) |
+| **C. Totals**     | Regular, OT, Billable (auto)                                    |
+| **D. Remarks**    | Staff notes, Supervisor notes                                   |
 
 ---
 
@@ -677,6 +701,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → HR`
 
 **Automated Features:**
+
 - Update time logs
 - Notification to affected systems
 
@@ -684,11 +709,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
+| Section                   | Fields                                       |
+| ------------------------- | -------------------------------------------- |
+| **A. Staff Info**         | Auto-populated                               |
 | **B. Correction Details** | Date, Current Entry, Requested Entry, Reason |
-| **C. Evidence** | Supporting files |
+| **C. Evidence**           | Supporting files                             |
 
 ---
 
@@ -703,6 +728,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → Finance`
 
 **Automated Features:**
+
 - Update OT budget
 - Alert timesheet system
 
@@ -710,10 +736,10 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. OT Details** | Date, Expected Hours, Project, Task, Reason |
+| Section             | Fields                                      |
+| ------------------- | ------------------------------------------- |
+| **A. Staff Info**   | Auto-populated                              |
+| **B. OT Details**   | Date, Expected Hours, Project, Task, Reason |
 | **C. Budget Check** | Remaining OT Budget (auto), Approval Status |
 
 ---
@@ -729,6 +755,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → HR`
 
 **Automated Features:**
+
 - Update work location
 - Calendar sync
 
@@ -736,11 +763,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
+| Section                | Fields                              |
+| ---------------------- | ----------------------------------- |
+| **A. Staff Info**      | Auto-populated                      |
 | **B. Request Details** | Dates, Frequency, Reason, Work Plan |
-| **C. Equipment Check** | Home Setup Confirmation |
+| **C. Equipment Check** | Home Setup Confirmation             |
 
 ---
 
@@ -757,6 +784,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff Self → Supervisor → Team Lead → HR Close`
 
 **Automated Features:**
+
 - Alert HR
 - Refresh goal progress
 - Dashboard push
@@ -765,13 +793,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Metrics & Goals** | Objective, Result, Goal, Met, % Score, Remark (auto from OKR) |
-| **C. Self-Review** | Successes, Improvements, Self Rate (1-5) |
-| **D. Supervisor Review** | Wins, Issues, Rate (1-5), Reward Suggestion |
-| **E. Close** | Team Lead, HR, Avg Score |
+| Section                  | Fields                                                        |
+| ------------------------ | ------------------------------------------------------------- |
+| **A. Staff Info**        | Auto-populated                                                |
+| **B. Metrics & Goals**   | Objective, Result, Goal, Met, % Score, Remark (auto from OKR) |
+| **C. Self-Review**       | Successes, Improvements, Self Rate (1-5)                      |
+| **D. Supervisor Review** | Wins, Issues, Rate (1-5), Reward Suggestion                   |
+| **E. Close**             | Team Lead, HR, Avg Score                                      |
 
 ---
 
@@ -786,6 +814,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → OKR Module`
 
 **Automated Features:**
+
 - Sync to OKR module
 - Cascade to team objectives
 
@@ -793,11 +822,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
+| Section                     | Fields                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| **A. Staff Info**           | Auto-populated                                                                  |
 | **B. Objective Definition** | Objective Statement, Alignment (Team Goal), Key Results (3-5), Metrics, Targets |
-| **C. Timeline** | Start, End, Check-in Dates |
+| **C. Timeline**             | Start, End, Check-in Dates                                                      |
 
 ---
 
@@ -813,11 +842,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. OKR Review** | Objective, Key Results, Suggested Changes, Priority Level |
-| **C. Alignment Check** | Team Objective Link, Dependencies, Resources Needed |
+| Section                | Fields                                                    |
+| ---------------------- | --------------------------------------------------------- |
+| **A. Staff Info**      | Auto-populated                                            |
+| **B. OKR Review**      | Objective, Key Results, Suggested Changes, Priority Level |
+| **C. Alignment Check** | Team Objective Link, Dependencies, Resources Needed       |
 
 ---
 
@@ -832,6 +861,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Aggregated from quarterly → Supervisor → Department Head → CEO`
 
 **Automated Features:**
+
 - Pull from 4 quarterly reviews
 - Average scores, goal completion %
 
@@ -839,13 +869,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Year Overview** | Staff Info, Review Period |
-| **B. Quarterly Summary** | Q1, Q2, Q3, Q4 Scores (auto-aggregated) |
-| **C. OKR Achievement** | Objectives Set, Completed, Completion % |
-| **D. 360 Feedback** | Peer, Subordinate, Cross-functional ratings |
-| **E. Annual Rating** | Overall Score, Promotion Eligible, Bonus Recommendation |
+| Section                  | Fields                                                  |
+| ------------------------ | ------------------------------------------------------- |
+| **A. Year Overview**     | Staff Info, Review Period                               |
+| **B. Quarterly Summary** | Q1, Q2, Q3, Q4 Scores (auto-aggregated)                 |
+| **C. OKR Achievement**   | Objectives Set, Completed, Completion %                 |
+| **D. 360 Feedback**      | Peer, Subordinate, Cross-functional ratings             |
+| **E. Annual Rating**     | Overall Score, Promotion Eligible, Bonus Recommendation |
 
 ---
 
@@ -863,13 +893,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Current Skills** | Skills, Proficiency Level (1-5) |
+| Section                | Fields                                          |
+| ---------------------- | ----------------------------------------------- |
+| **A. Staff Info**      | Auto-populated                                  |
+| **B. Current Skills**  | Skills, Proficiency Level (1-5)                 |
 | **C. Required Skills** | For Current Role, For Career Goal, Gap Analysis |
-| **D. Training Needs** | Technical, Soft Skills, Compliance, Leadership |
-| **E. Priority** | Urgent, Medium, Long-term |
+| **D. Training Needs**  | Technical, Soft Skills, Compliance, Leadership  |
+| **E. Priority**        | Urgent, Medium, Long-term                       |
 
 ---
 
@@ -887,13 +917,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Career Goal** | Target Role, Target Timeline, Motivation |
-| **C. Current State** | Strengths, Development Areas, Readiness Gap |
+| Section                    | Fields                                                 |
+| -------------------------- | ------------------------------------------------------ |
+| **A. Staff Info**          | Auto-populated                                         |
+| **B. Career Goal**         | Target Role, Target Timeline, Motivation               |
+| **C. Current State**       | Strengths, Development Areas, Readiness Gap            |
 | **D. Development Actions** | Training, Mentoring, Stretch Assignments, Job Rotation |
-| **E. Milestones** | 6-month, 1-year, 2-year checkpoints |
+| **E. Milestones**          | 6-month, 1-year, 2-year checkpoints                    |
 
 ---
 
@@ -911,13 +941,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Current Position** | Team, Role, Tenure |
-| **C. Requested Position** | Target Team, Target Role, Reason |
-| **D. Justification** | Skills Match, Career Alignment, Business Need |
-| **E. Timing** | Preferred Start Date, Transition Plan |
+| Section                   | Fields                                        |
+| ------------------------- | --------------------------------------------- |
+| **A. Staff Info**         | Auto-populated                                |
+| **B. Current Position**   | Team, Role, Tenure                            |
+| **C. Requested Position** | Target Team, Target Role, Reason              |
+| **D. Justification**      | Skills Match, Career Alignment, Business Need |
+| **E. Timing**             | Preferred Start Date, Transition Plan         |
 
 ---
 
@@ -932,6 +962,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff/Supervisor → Team Lead → HR → CEO`
 
 **Automated Features:**
+
 - Refresh Profile, alert HR, new agreement
 - Alert applicant on denial
 
@@ -939,13 +970,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Details** | Name, Team, Current Role, Current Level |
-| **B. Request Details** | Requested Role, Requested Level, Requested Pay |
-| **C. Justification** | Tenure, Performance History, Skills Acquired, Business Case |
-| **D. Supporting Docs** | Performance Reviews, Training Certificates, Project List |
-| **E. Approvals** | Team Lead, HR, CEO Verdict |
+| Section                | Fields                                                      |
+| ---------------------- | ----------------------------------------------------------- |
+| **A. Staff Details**   | Name, Team, Current Role, Current Level                     |
+| **B. Request Details** | Requested Role, Requested Level, Requested Pay              |
+| **C. Justification**   | Tenure, Performance History, Skills Acquired, Business Case |
+| **D. Supporting Docs** | Performance Reviews, Training Certificates, Project List    |
+| **E. Approvals**       | Team Lead, HR, CEO Verdict                                  |
 
 ---
 
@@ -963,14 +994,14 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Details** | Auto-populated |
-| **B. Current Compensation** | Current Salary, Last Adjustment Date, Last Adjustment % |
-| **C. Requested Adjustment** | New Salary, Increase %, Increase Amount, Effective Date |
-| **D. Justification Type** | Market Adjustment, Retention, Exceptional Performance, Role Expansion |
-| **E. Supporting Data** | Market Data, Compa-Ratio, Risk of Loss |
-| **F. Budget Impact** | Annual Impact, Budget Source |
+| Section                     | Fields                                                                |
+| --------------------------- | --------------------------------------------------------------------- |
+| **A. Staff Details**        | Auto-populated                                                        |
+| **B. Current Compensation** | Current Salary, Last Adjustment Date, Last Adjustment %               |
+| **C. Requested Adjustment** | New Salary, Increase %, Increase Amount, Effective Date               |
+| **D. Justification Type**   | Market Adjustment, Retention, Exceptional Performance, Role Expansion |
+| **E. Supporting Data**      | Market Data, Compa-Ratio, Risk of Loss                                |
+| **F. Budget Impact**        | Annual Impact, Budget Source                                          |
 
 ---
 
@@ -987,6 +1018,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Team Lead → HR`
 
 **Automated Features:**
+
 - Calendar add + reminders
 - Completion report
 
@@ -994,12 +1026,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
+| Section             | Fields                                                                           |
+| ------------------- | -------------------------------------------------------------------------------- |
 | **A. Request Data** | Staff, Team, Title, Type (Skill/Compliance/Leadership), Provider, Dates/Duration |
-| **B. Aims** | Gap Addressed, Expected Results |
-| **C. Expenses** | Cost, Payer (company/self) |
-| **D. Follow-Up** | Auto link to completion form |
+| **B. Aims**         | Gap Addressed, Expected Results                                                  |
+| **C. Expenses**     | Cost, Payer (company/self)                                                       |
+| **D. Follow-Up**    | Auto link to completion form                                                     |
 
 ---
 
@@ -1017,12 +1049,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Training Info** | Course Name, Provider, Dates, Staff (auto) |
-| **B. Satisfaction** | Content Quality (1-5), Instructor (1-5), Materials (1-5), Venue (1-5) |
-| **C. Application** | Relevance to Role, Skill Improvement, On-the-Job Application |
-| **D. ROI** | Worth Time Investment, Would Recommend, Suggested Improvements |
+| Section              | Fields                                                                |
+| -------------------- | --------------------------------------------------------------------- |
+| **A. Training Info** | Course Name, Provider, Dates, Staff (auto)                            |
+| **B. Satisfaction**  | Content Quality (1-5), Instructor (1-5), Materials (1-5), Venue (1-5) |
+| **C. Application**   | Relevance to Role, Skill Improvement, On-the-Job Application          |
+| **D. ROI**           | Worth Time Investment, Would Recommend, Suggested Improvements        |
 
 ---
 
@@ -1040,12 +1072,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Team Info** | Team, Supervisor, Assessment Date |
-| **B. Required Skills** | Skill, Required Level (1-5), Criticality |
-| **C. Current State** | Staff Name, Current Level (1-5), Gap (table) |
-| **D. Gap Summary** | Critical Gaps, Training Needs, Hire Needs |
+| Section                | Fields                                       |
+| ---------------------- | -------------------------------------------- |
+| **A. Team Info**       | Team, Supervisor, Assessment Date            |
+| **B. Required Skills** | Skill, Required Level (1-5), Criticality     |
+| **C. Current State**   | Staff Name, Current Level (1-5), Gap (table) |
+| **D. Gap Summary**     | Critical Gaps, Training Needs, Hire Needs    |
 
 ---
 
@@ -1060,6 +1092,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff/HR → HR`
 
 **Automated Features:**
+
 - Update skills profile
 - Expiry alerts for certifications
 - Sync to performance data
@@ -1068,12 +1101,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Training Info** | Course Name, Provider, Start/End Date, Staff (auto) |
-| **B. Completion** | Status (Completed/Partial/Dropped), Score/Grade, Certificate Number |
-| **C. Certification** | Certificate File, Expiry Date, CEU Credits |
-| **D. Skills Acquired** | New Skills, Skill Level Improvement |
+| Section                | Fields                                                              |
+| ---------------------- | ------------------------------------------------------------------- |
+| **A. Training Info**   | Course Name, Provider, Start/End Date, Staff (auto)                 |
+| **B. Completion**      | Status (Completed/Partial/Dropped), Score/Grade, Certificate Number |
+| **C. Certification**   | Certificate File, Expiry Date, CEU Credits                          |
+| **D. Skills Acquired** | New Skills, Skill Level Improvement                                 |
 
 ---
 
@@ -1090,6 +1123,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Collection → HR Review → CEO Summary`
 
 **Automated Features:**
+
 - Dashboard add
 - Team trend reports
 
@@ -1097,13 +1131,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Environment** | Satisfaction (1-5), Supervisor Support (1-5), Resources (1-5) |
-| **B. Culture & Communication** | Transparency (1-5), Connection (1-5), Suggestions |
-| **C. Growth** | Opportunities (1-5), Feedback (Y/N), Desired Training |
-| **D. Overall** | Recommend (1-10 NPS), Open Input |
-| **E. Settings** | Anonymous Option |
+| Section                        | Fields                                                        |
+| ------------------------------ | ------------------------------------------------------------- |
+| **A. Environment**             | Satisfaction (1-5), Supervisor Support (1-5), Resources (1-5) |
+| **B. Culture & Communication** | Transparency (1-5), Connection (1-5), Suggestions             |
+| **C. Growth**                  | Opportunities (1-5), Feedback (Y/N), Desired Training         |
+| **D. Overall**                 | Recommend (1-10 NPS), Open Input                              |
+| **E. Settings**                | Anonymous Option                                              |
 
 ---
 
@@ -1118,6 +1152,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Supervisor → HR → CEO`
 
 **Automated Features:**
+
 - Alert HR + log
 - File attach
 - Status close
@@ -1126,11 +1161,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Event Details** | Staff, Date, Description, Reporter, Team |
-| **B. Proof** | Files, Witnesses |
-| **C. Measures** | Action (Warning/Suspension/End), HR/CEO Notes |
+| Section              | Fields                                        |
+| -------------------- | --------------------------------------------- |
+| **A. Event Details** | Staff, Date, Description, Reporter, Team      |
+| **B. Proof**         | Files, Witnesses                              |
+| **C. Measures**      | Action (Warning/Suspension/End), HR/CEO Notes |
 
 ---
 
@@ -1148,12 +1183,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
+| Section                 | Fields                                                                  |
+| ----------------------- | ----------------------------------------------------------------------- |
 | **A. Incident Details** | Date/Time, Location, Type (Safety/Security/Conflict/Other), Description |
-| **B. People Involved** | Reporter, Victim(s), Witness(es), Perpetrator |
-| **C. Immediate Action** | First Aid Given, Authorities Called, Area Secured |
-| **D. Investigation** | Root Cause, Contributing Factors, Preventive Actions |
+| **B. People Involved**  | Reporter, Victim(s), Witness(es), Perpetrator                           |
+| **C. Immediate Action** | First Aid Given, Authorities Called, Area Secured                       |
+| **D. Investigation**    | Root Cause, Contributing Factors, Preventive Actions                    |
 
 ---
 
@@ -1171,12 +1206,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Suggester** | Name, Team, Contact (anonymous option) |
+| Section           | Fields                                                                   |
+| ----------------- | ------------------------------------------------------------------------ |
+| **A. Suggester**  | Name, Team, Contact (anonymous option)                                   |
 | **B. Suggestion** | Category (Process/Product/Culture/Other), Current State, Proposed Change |
-| **C. Impact** | Benefits, Implementation Complexity, Resources Needed |
-| **D. Review** | Reviewer, Status (Under Review/Accepted/Declined), Implementation Plan |
+| **C. Impact**     | Benefits, Implementation Complexity, Resources Needed                    |
+| **D. Review**     | Reviewer, Status (Under Review/Accepted/Declined), Implementation Plan   |
 
 ---
 
@@ -1194,12 +1229,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Nominator** | Name, Team |
-| **B. Nominee** | Name, Team, Role |
+| Section            | Fields                                                                      |
+| ------------------ | --------------------------------------------------------------------------- |
+| **A. Nominator**   | Name, Team                                                                  |
+| **B. Nominee**     | Name, Team, Role                                                            |
 | **C. Recognition** | Category (Excellence/Teamwork/Innovation/Service), Specific Actions, Impact |
-| **D. Award** | Suggested Award (Certificate/Gift/Bonus), Public Recognition (Y/N) |
+| **D. Award**       | Suggested Award (Certificate/Gift/Bonus), Public Recognition (Y/N)          |
 
 ---
 
@@ -1217,11 +1252,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Topic Focus** | Communication/Recognition/Wellness/Inclusion/Leadership |
-| **B. Quick Rating** | 3-5 questions, scale 1-5 |
-| **C. Open Comment** | One thing to keep, one thing to change |
+| Section             | Fields                                                  |
+| ------------------- | ------------------------------------------------------- |
+| **A. Topic Focus**  | Communication/Recognition/Wellness/Inclusion/Leadership |
+| **B. Quick Rating** | 3-5 questions, scale 1-5                                |
+| **C. Open Comment** | One thing to keep, one thing to change                  |
 
 ---
 
@@ -1239,11 +1274,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Parties** | Requester, Other Party, Relationship |
-| **B. Conflict** | Nature of Dispute, Duration, Attempted Resolutions |
-| **C. Impact** | Work Impact, Team Impact, Desired Outcome |
+| Section          | Fields                                              |
+| ---------------- | --------------------------------------------------- |
+| **A. Parties**   | Requester, Other Party, Relationship                |
+| **B. Conflict**  | Nature of Dispute, Duration, Attempted Resolutions  |
+| **C. Impact**    | Work Impact, Team Impact, Desired Outcome           |
 | **D. Mediation** | Mediator Assigned, Session Dates, Agreement Reached |
 
 ---
@@ -1261,6 +1296,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `Staff → Supervisor → HR → CEO`
 
 **Automated Features:**
+
 - Alert Supervisor & HR
 - Start clearance & handover
 - Set exit date
@@ -1270,11 +1306,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
+| Section           | Fields                                                                            |
+| ----------------- | --------------------------------------------------------------------------------- |
+| **A. Staff Info** | Auto-populated                                                                    |
 | **B. Exit Specs** | Effective Date, Reason (Growth/Pay/Culture/Other), Remarks, Suggested Replacement |
-| **C. Clearance** | Checklist placeholder (auto-generated) |
+| **C. Clearance**  | Checklist placeholder (auto-generated)                                            |
 
 ---
 
@@ -1292,12 +1328,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Exit Details** | Staff Name, Role, Tenure, Exit Date, Reason for Leaving |
-| **B. Experience** | Best Aspect, Worst Aspect, Would Recommend (Y/N), Return (Y/N) |
-| **C. Feedback** | Manager Feedback, Team Feedback, Workload Feedback, Pay Satisfaction |
-| **D. Improvement** | One Thing to Change, What Would Have Kept You |
+| Section             | Fields                                                               |
+| ------------------- | -------------------------------------------------------------------- |
+| **A. Exit Details** | Staff Name, Role, Tenure, Exit Date, Reason for Leaving              |
+| **B. Experience**   | Best Aspect, Worst Aspect, Would Recommend (Y/N), Return (Y/N)       |
+| **C. Feedback**     | Manager Feedback, Team Feedback, Workload Feedback, Pay Satisfaction |
+| **D. Improvement**  | One Thing to Change, What Would Have Kept You                        |
 
 ---
 
@@ -1312,6 +1348,7 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 **Workflow:** `HR → Supervisor → IT → Admin → Finance → HR`
 
 **Automated Features:**
+
 - Auto-created from resignation form
 - Real-time checklist tracking
 - Auto-disable access on exit date
@@ -1320,14 +1357,14 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Supervisor Tasks** | Work Handover, Client Transfers, Documentation Complete |
-| **C. IT Tasks** | Email Forwarding, Account Disabled, Equipment Returned, Access Revoked |
-| **D. Admin Tasks** | Badge Returned, Parking Pass, Locker Cleared |
-| **E. Finance Tasks** | Final Pay Calculated, Expenses Settled, Loans Cleared |
-| **F. HR Tasks** | Exit Interview Complete, Certificate Prepared, Reference Policy Explained |
+| Section                 | Fields                                                                    |
+| ----------------------- | ------------------------------------------------------------------------- |
+| **A. Staff Info**       | Auto-populated                                                            |
+| **B. Supervisor Tasks** | Work Handover, Client Transfers, Documentation Complete                   |
+| **C. IT Tasks**         | Email Forwarding, Account Disabled, Equipment Returned, Access Revoked    |
+| **D. Admin Tasks**      | Badge Returned, Parking Pass, Locker Cleared                              |
+| **E. Finance Tasks**    | Final Pay Calculated, Expenses Settled, Loans Cleared                     |
+| **F. HR Tasks**         | Exit Interview Complete, Certificate Prepared, Reference Policy Explained |
 
 ---
 
@@ -1345,11 +1382,11 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
+| Section           | Fields                                                                |
+| ----------------- | --------------------------------------------------------------------- |
 | **A. Asset List** | Item, Asset ID, Condition (Good/Damaged/Missing), Return Date (table) |
-| **B. Financial** | Deposit Return, Deductions for Damage, Net Amount |
-| **C. Clearance** | IT Sign-off, Admin Sign-off, Finance Sign-off |
+| **B. Financial**  | Deposit Return, Deductions for Damage, Net Amount                     |
+| **C. Clearance**  | IT Sign-off, Admin Sign-off, Finance Sign-off                         |
 
 ---
 
@@ -1367,12 +1404,12 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Staff Info** | Auto-populated |
-| **B. Final Pay** | Last Working Day, Leave Balance Payout, Gratuity, Deductions, Net Final Pay |
-| **C. Documents** | Experience Letter (Y/N), Relieving Letter (Y/N), Reference Letter (Y/N), Payslip Copies |
-| **D. Delivery** | Personal Email, Address for Hard Copies |
+| Section           | Fields                                                                                  |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| **A. Staff Info** | Auto-populated                                                                          |
+| **B. Final Pay**  | Last Working Day, Leave Balance Payout, Gratuity, Deductions, Net Final Pay             |
+| **C. Documents**  | Experience Letter (Y/N), Relieving Letter (Y/N), Reference Letter (Y/N), Payslip Copies |
+| **D. Delivery**   | Personal Email, Address for Hard Copies                                                 |
 
 ---
 
@@ -1390,13 +1427,13 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 **Form Components:**
 
-| Section | Fields |
-|---------|--------|
-| **A. Termination Type** | Resignation/End of Contract/Termination/Layoff |
-| **B. Notice Period** | Contractual Notice, Actual Notice Given, Pay in Lieu (Y/N) |
-| **C. Final Dues** | Salary, Leave, Gratuity, Severance, Total |
-| **D. Documentation** | Termination Letter (Y/N), Exit Interview (Y/N), Clearance Certificate (Y/N) |
-| **E. Legal Check** | Union Notification, Labor Office Filing, No Pending Claims |
+| Section                 | Fields                                                                      |
+| ----------------------- | --------------------------------------------------------------------------- |
+| **A. Termination Type** | Resignation/End of Contract/Termination/Layoff                              |
+| **B. Notice Period**    | Contractual Notice, Actual Notice Given, Pay in Lieu (Y/N)                  |
+| **C. Final Dues**       | Salary, Leave, Gratuity, Severance, Total                                   |
+| **D. Documentation**    | Termination Letter (Y/N), Exit Interview (Y/N), Clearance Certificate (Y/N) |
+| **E. Legal Check**      | Union Notification, Labor Office Filing, No Pending Claims                  |
 
 ---
 
@@ -1404,38 +1441,38 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 ### Automation Priority Matrix
 
-| # | Domain | Automation Element | Potential |
-|---|--------|---------------------|-----------|
-| 1 | Leave Handling | Balance auto-reduction | 95% |
-| 2 | Time & Attendance | Delay spotting & log generation | 85% |
-| 3 | OT Monitoring | Data pull from projects | 90% |
-| 4 | Hiring Request | Tiered approvals | 80% |
-| 5 | Application Oversight | Rating, invites, denials | 75% (95% with AI) |
-| 6 | Interview Assessment | Instant ordering | 85% |
-| 7 | Onboarding | Setup, checks, verification | 90% |
-| 8 | Trial Reviews | Alerts & planning | 95% |
-| 9 | Achievement Reviews | Goal fetch & scoring | 80% |
-| 10 | Training | Schedule + alerts | 85% |
-| 11 | Morale Surveys | Gather & overview | 90% |
-| 12 | Advance/Moves | Status & pay sync | 85% |
-| 13 | Exit & Resign | Process start | 95% |
-| 14 | Pay Generation | Slips & notifications | 90% |
-| 15 | Staff Insights | Auto-reports | 80% |
-| 16 | Insight Capture | Exit/performance lessons | 70% |
+| #   | Domain                | Automation Element              | Potential         |
+| --- | --------------------- | ------------------------------- | ----------------- |
+| 1   | Leave Handling        | Balance auto-reduction          | 95%               |
+| 2   | Time & Attendance     | Delay spotting & log generation | 85%               |
+| 3   | OT Monitoring         | Data pull from projects         | 90%               |
+| 4   | Hiring Request        | Tiered approvals                | 80%               |
+| 5   | Application Oversight | Rating, invites, denials        | 75% (95% with AI) |
+| 6   | Interview Assessment  | Instant ordering                | 85%               |
+| 7   | Onboarding            | Setup, checks, verification     | 90%               |
+| 8   | Trial Reviews         | Alerts & planning               | 95%               |
+| 9   | Achievement Reviews   | Goal fetch & scoring            | 80%               |
+| 10  | Training              | Schedule + alerts               | 85%               |
+| 11  | Morale Surveys        | Gather & overview               | 90%               |
+| 12  | Advance/Moves         | Status & pay sync               | 85%               |
+| 13  | Exit & Resign         | Process start                   | 95%               |
+| 14  | Pay Generation        | Slips & notifications           | 90%               |
+| 15  | Staff Insights        | Auto-reports                    | 80%               |
+| 16  | Insight Capture       | Exit/performance lessons        | 70%               |
 
 ### Automation by Sub-System
 
-| Sub-System | Rate | Key Automated Flows |
-|------------|------|----------------------|
-| 1. Recruitment | 75-95% | Auto-routing, interview scheduling, rejection emails |
-| 2. Onboarding | 90-95% | Account creation, task generation, probation alerts |
-| 3. Profiles | 85-90% | ID generation, permission sync, document archival |
-| 4. Attendance | 85-95% | Balance updates, timesheet reminders, OT calculations |
-| 5. Performance | 80-85% | Goal cascade, review reminders, promotion workflows |
-| 6. Training | 85-90% | Calendar invites, completion tracking, skill updates |
-| 7. Relations | 70-80% | Survey distribution, incident routing, recognition |
-| 8. Exit | 90-95% | Checklist generation, access revocation, final pay |
-| **Overall** | **~85%** | **High automation across all 50 forms** |
+| Sub-System     | Rate     | Key Automated Flows                                   |
+| -------------- | -------- | ----------------------------------------------------- |
+| 1. Recruitment | 75-95%   | Auto-routing, interview scheduling, rejection emails  |
+| 2. Onboarding  | 90-95%   | Account creation, task generation, probation alerts   |
+| 3. Profiles    | 85-90%   | ID generation, permission sync, document archival     |
+| 4. Attendance  | 85-95%   | Balance updates, timesheet reminders, OT calculations |
+| 5. Performance | 80-85%   | Goal cascade, review reminders, promotion workflows   |
+| 6. Training    | 85-90%   | Calendar invites, completion tracking, skill updates  |
+| 7. Relations   | 70-80%   | Survey distribution, incident routing, recognition    |
+| 8. Exit        | 90-95%   | Checklist generation, access revocation, final pay    |
+| **Overall**    | **~85%** | **High automation across all 50 forms**               |
 
 ---
 
@@ -1443,28 +1480,28 @@ The BLIH HR Module ("BLIH Team") provides comprehensive employee lifecycle manag
 
 ### Outbound Events
 
-| Event | Trigger | Subscribers |
-|-------|---------|-------------|
-| `hr.employee.hired` | Hiring approved | Finance, IT, Brain |
-| `hr.employee.terminated` | Exit complete | Finance, IT, Projects |
-| `hr.leave.approved` | Leave OK | Projects, Calendar, Finance |
-| `hr.payroll.processed` | Payroll run | Finance, Brain |
-| `hr.training.completed` | Training done | Brain, Performance |
-| `hr.probation.confirmed` | Trial complete | Profile, Access |
+| Event                    | Trigger         | Subscribers                 |
+| ------------------------ | --------------- | --------------------------- |
+| `hr.employee.hired`      | Hiring approved | Finance, IT, Brain          |
+| `hr.employee.terminated` | Exit complete   | Finance, IT, Projects       |
+| `hr.leave.approved`      | Leave OK        | Projects, Calendar, Finance |
+| `hr.payroll.processed`   | Payroll run     | Finance, Brain              |
+| `hr.training.completed`  | Training done   | Brain, Performance          |
+| `hr.probation.confirmed` | Trial complete  | Profile, Access             |
 
 ### External Integrations
 
-| System | Type | Purpose |
-|--------|------|---------|
-| Keycloak | SSO/SCIM | Authentication, profile sync |
-| Payroll Provider | REST API | Salary processing, tax filing |
-| Calendar | CalDAV/Graph | Leave blocking, scheduling |
-| Slack/Teams | Webhook | Notifications, approvals |
-| Job Boards | API | Post openings, applications |
+| System           | Type         | Purpose                       |
+| ---------------- | ------------ | ----------------------------- |
+| Keycloak         | SSO/SCIM     | Authentication, profile sync  |
+| Payroll Provider | REST API     | Salary processing, tax filing |
+| Calendar         | CalDAV/Graph | Leave blocking, scheduling    |
+| Slack/Teams      | Webhook      | Notifications, approvals      |
+| Job Boards       | API          | Post openings, applications   |
 
 ---
 
-*Documentation Version: 2.0*  
-*Module Version: 1.0*  
-*Last Updated: February 2026*  
-*Total Forms Documented: 50*
+_Documentation Version: 2.0_  
+_Module Version: 1.0_  
+_Last Updated: February 2026_  
+_Total Forms Documented: 50_

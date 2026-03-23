@@ -103,11 +103,24 @@ const evaluationExample = {
   createdAt: '2026-03-21T14:00:00.000Z',
 };
 
-const createdResponse = envelope('Checkpoint evaluation created successfully', evaluationExample);
-const retrievedResponse = envelope('Checkpoint evaluation retrieved successfully', evaluationExample);
-const updatedResponse = envelope('Checkpoint evaluation updated successfully', evaluationExample);
-const listResponse = envelope('Checkpoint evaluations retrieved successfully', [evaluationExample]);
-const deletedResponse = envelope('Checkpoint evaluation deleted successfully', { success: true });
+const createdResponse = envelope(
+  'Checkpoint evaluation created successfully',
+  evaluationExample,
+);
+const retrievedResponse = envelope(
+  'Checkpoint evaluation retrieved successfully',
+  evaluationExample,
+);
+const updatedResponse = envelope(
+  'Checkpoint evaluation updated successfully',
+  evaluationExample,
+);
+const listResponse = envelope('Checkpoint evaluations retrieved successfully', [
+  evaluationExample,
+]);
+const deletedResponse = envelope('Checkpoint evaluation deleted successfully', {
+  success: true,
+});
 
 // ─── Controller-level class decorator ─────────────────────────────────────────
 
@@ -135,9 +148,21 @@ export function ApiCreateCheckpointEvaluation() {
             checkpointId: 'checkpoint-uuid-1',
             comment: 'Improving well, but teamwork needs attention',
             scores: [
-              { probationKpiId: 'probation-kpi-uuid-1', score: 85, comment: 'Clean and maintainable code' },
-              { probationKpiId: 'probation-kpi-uuid-2', score: 90, comment: 'Always on time' },
-              { probationKpiId: 'probation-kpi-uuid-3', score: 65, comment: 'Needs better collaboration' },
+              {
+                probationKpiId: 'probation-kpi-uuid-1',
+                score: 85,
+                comment: 'Clean and maintainable code',
+              },
+              {
+                probationKpiId: 'probation-kpi-uuid-2',
+                score: 90,
+                comment: 'Always on time',
+              },
+              {
+                probationKpiId: 'probation-kpi-uuid-3',
+                score: 65,
+                comment: 'Needs better collaboration',
+              },
             ],
           },
         },
@@ -154,7 +179,8 @@ export function ApiCreateCheckpointEvaluation() {
     ),
     ApiDefaultErrors({
       path: '/api/v1/hr/probation/checkpoint-evaluations',
-      badRequest: 'Payload is invalid (missing fields, invalid scores or KPI IDs)',
+      badRequest:
+        'Payload is invalid (missing fields, invalid scores or KPI IDs)',
       unauthorized: 'Unauthorized: missing or invalid bearer access token',
       forbidden: 'Required roles are missing',
     }),
@@ -254,9 +280,17 @@ export function ApiUpdateCheckpointEvaluation() {
           value: {
             comment: 'Significant improvement this month',
             scores: [
-              { probationKpiId: 'probation-kpi-uuid-1', score: 90, comment: 'Excellent code' },
+              {
+                probationKpiId: 'probation-kpi-uuid-1',
+                score: 90,
+                comment: 'Excellent code',
+              },
               { probationKpiId: 'probation-kpi-uuid-2', score: 95 },
-              { probationKpiId: 'probation-kpi-uuid-3', score: 75, comment: 'Better collaboration' },
+              {
+                probationKpiId: 'probation-kpi-uuid-3',
+                score: 75,
+                comment: 'Better collaboration',
+              },
             ],
           },
         },

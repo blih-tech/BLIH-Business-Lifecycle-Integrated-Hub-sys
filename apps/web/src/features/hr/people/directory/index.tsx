@@ -1,16 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
-import { directoryEmployees } from "@/features/hr/people/directory/mock-data";
-import { EmployeeTable, SelectedEmployeeCard } from "@/features/hr/people/directory/components";
+import { directoryEmployees } from '@/features/hr/people/directory/mock-data';
+import {
+  EmployeeTable,
+  SelectedEmployeeCard,
+} from '@/features/hr/people/directory/components';
 
 const PAGE_SIZE = 8;
 
 export function PeopleDirectoryContent() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(directoryEmployees[0]?.id ?? null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    directoryEmployees[0]?.id ?? null,
+  );
 
   const filteredEmployees = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -25,7 +30,10 @@ export function PeopleDirectoryContent() {
     });
   }, [searchTerm]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredEmployees.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredEmployees.length / PAGE_SIZE),
+  );
 
   useEffect(() => {
     setCurrentPage(1);
@@ -50,8 +58,12 @@ export function PeopleDirectoryContent() {
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
       <section>
-        <h1 className="text-[28px] font-semibold tracking-[-0.44px] text-foreground">All Employees & Profiles</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Directory of employees and profiles</p>
+        <h1 className="text-[28px] font-semibold tracking-[-0.44px] text-foreground">
+          All Employees & Profiles
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Directory of employees and profiles
+        </p>
       </section>
 
       <section className="rounded-[12px] border border-border bg-card p-3 md:p-4">
@@ -67,7 +79,9 @@ export function PeopleDirectoryContent() {
             searchTerm={searchTerm}
             onSearchTermChange={setSearchTerm}
           />
-          {selectedEmployee ? <SelectedEmployeeCard employee={selectedEmployee} /> : null}
+          {selectedEmployee ? (
+            <SelectedEmployeeCard employee={selectedEmployee} />
+          ) : null}
         </div>
       </section>
     </main>

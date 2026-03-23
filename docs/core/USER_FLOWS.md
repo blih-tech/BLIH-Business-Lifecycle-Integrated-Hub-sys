@@ -27,13 +27,13 @@
 
 BLIH follows these UX principles:
 
-| Principle | Implementation | User Benefit |
-|-----------|---------------|--------------|
+| Principle                  | Implementation                           | User Benefit           |
+| -------------------------- | ---------------------------------------- | ---------------------- |
 | **Progressive Disclosure** | Show basic info first, details on demand | Reduces cognitive load |
-| **Consistency** | Same patterns across all modules | Faster learning curve |
-| **Immediate Feedback** | Real-time validation, loading states | User confidence |
-| **Forgiveness** | Undo actions, draft auto-save | Error recovery |
-| **Contextual Help** | Tooltips, inline examples | Self-service learning |
+| **Consistency**            | Same patterns across all modules         | Faster learning curve  |
+| **Immediate Feedback**     | Real-time validation, loading states     | User confidence        |
+| **Forgiveness**            | Undo actions, draft auto-save            | Error recovery         |
+| **Contextual Help**        | Tooltips, inline examples                | Self-service learning  |
 
 ### 1.2 Visual Hierarchy
 
@@ -59,12 +59,12 @@ BLIH follows these UX principles:
 
 ### 1.3 Response Time Standards
 
-| Action | Target Time | User Experience |
-|--------|-------------|-----------------|
-| **Instant** (< 100ms) | Button clicks, form inputs | Feels immediate |
-| **Fast** (< 1s) | Page loads, search results | No noticeable delay |
-| **Acceptable** (< 3s) | Complex queries, reports | Progress indicator shown |
-| **Long** (> 3s) | Bulk operations, exports | Background job with email notification |
+| Action                | Target Time                | User Experience                        |
+| --------------------- | -------------------------- | -------------------------------------- |
+| **Instant** (< 100ms) | Button clicks, form inputs | Feels immediate                        |
+| **Fast** (< 1s)       | Page loads, search results | No noticeable delay                    |
+| **Acceptable** (< 3s) | Complex queries, reports   | Progress indicator shown               |
+| **Long** (> 3s)       | Bulk operations, exports   | Background job with email notification |
 
 ---
 
@@ -73,75 +73,90 @@ BLIH follows these UX principles:
 ### 2.1 Primary Personas
 
 #### Persona A: Sarah - HR Manager
+
 **Profile:**
+
 - 8 years HR experience
 - Manages 150 employees
 - Tech-savvy, expects efficiency
 - Uses BLIH 3-4 hours/day
 
 **Goals:**
+
 - Complete hiring processes quickly
 - Monitor team performance metrics
 - Ensure compliance documentation
 - Respond to employee requests
 
 **Pain Points:**
+
 - Too many clicks to complete tasks
 - Repetitive data entry
 - Can't find information quickly
 - Unclear approval status
 
 **BLIH Solutions:**
+
 - Bulk actions for common tasks
 - Smart forms with auto-fill
 - Universal search
 - Real-time status updates
 
 #### Persona B: Mike - Sales Representative
+
 **Profile:**
+
 - 5 years in sales
 - Manages 30+ active deals
 - Mobile-heavy user
 - Needs quick deal updates
 
 **Goals:**
+
 - Update deals on-the-go
 - Access client history instantly
 - Track pipeline progress
 - Meet monthly targets
 
 **Pain Points:**
+
 - Desktop-only interfaces
 - Slow loading times
 - Complex navigation
 - Missing notifications
 
 **BLIH Solutions:**
+
 - Responsive mobile design
 - Kanban deal view
 - Smart notifications
 - Offline mode
 
 #### Persona C: David - Project Manager
+
 **Profile:**
+
 - Technical background
 - Runs 5-10 concurrent projects
 - Detail-oriented
 - Collaborates across departments
 
 **Goals:**
+
 - Resource allocation visibility
 - Real-time project tracking
 - Integrated time and budget
 - Team collaboration
 
 **Pain Points:**
+
 - Disconnected tools
 - Manual status updates
 - Budget visibility gaps
 - Communication overhead
 
 **BLIH Solutions:**
+
 - Unified project dashboard
 - Auto-status from tasks
 - Financial integration
@@ -177,11 +192,13 @@ BLIH follows these UX principles:
 ### 3.2 Breadcrumb Navigation
 
 **Pattern:**
+
 ```
 Home > CRM > Deals > Tech Corp Enterprise > Edit Details
 ```
 
 **Rules:**
+
 - Always show full path
 - Each segment is clickable
 - Current page is not a link
@@ -189,16 +206,16 @@ Home > CRM > Deals > Tech Corp Enterprise > Edit Details
 
 ### 3.3 Keyboard Shortcuts
 
-| Shortcut | Action | Context |
-|----------|--------|---------|
-| `Cmd/Ctrl + K` | Global search | Anywhere |
-| `Cmd/Ctrl + B` | Toggle sidebar | Anywhere |
-| `Esc` | Close modal/drawer | Modal open |
-| `Cmd/Ctrl + S` | Save current form | Form editing |
-| `Cmd/Ctrl + Enter` | Submit form | Form editing |
-| `G then H` | Go to Home | Anywhere |
-| `G then D` | Go to Dashboard | Anywhere |
-| `/` | Focus search | Anywhere |
+| Shortcut           | Action             | Context      |
+| ------------------ | ------------------ | ------------ |
+| `Cmd/Ctrl + K`     | Global search      | Anywhere     |
+| `Cmd/Ctrl + B`     | Toggle sidebar     | Anywhere     |
+| `Esc`              | Close modal/drawer | Modal open   |
+| `Cmd/Ctrl + S`     | Save current form  | Form editing |
+| `Cmd/Ctrl + Enter` | Submit form        | Form editing |
+| `G then H`         | Go to Home         | Anywhere     |
+| `G then D`         | Go to Dashboard    | Anywhere     |
+| `/`                | Focus search       | Anywhere     |
 
 ---
 
@@ -229,6 +246,7 @@ Home > CRM > Deals > Tech Corp Enterprise > Edit Details
 ```
 
 **MFA Flow (if enabled):**
+
 ```
 1. Email + Password entered
    ↓
@@ -718,14 +736,14 @@ Finance: Payment Recorded
 
 ### 7.2 Mobile Optimizations
 
-| Feature | Mobile Behavior |
-|---------|----------------|
-| **Tables** | Horizontal scroll or card view |
-| **Forms** | One column, larger inputs |
-| **Modals** | Full-screen on mobile |
-| **Charts** | Simplified, touch-optimized |
-| **Filters** | Slide-up drawer |
-| **Actions** | Floating action button |
+| Feature     | Mobile Behavior                |
+| ----------- | ------------------------------ |
+| **Tables**  | Horizontal scroll or card view |
+| **Forms**   | One column, larger inputs      |
+| **Modals**  | Full-screen on mobile          |
+| **Charts**  | Simplified, touch-optimized    |
+| **Filters** | Slide-up drawer                |
+| **Actions** | Floating action button         |
 
 ---
 
@@ -759,6 +777,6 @@ All dates internally stored as UTC Gregorian, converted for display.
 
 ---
 
-*Document Version: 1.0*  
-*Last Updated: February 2026*  
-*Maintained by: UX Team*
+_Document Version: 1.0_  
+_Last Updated: February 2026_  
+_Maintained by: UX Team_

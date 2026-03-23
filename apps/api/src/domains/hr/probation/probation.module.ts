@@ -13,7 +13,11 @@ import {
 import { UpdateProbationUseCase } from './update-probation.usecase';
 
 @Module({
-  imports: [ProbationKpiModule, CheckpointEvaluationModule, FinalEvaluationModule],
+  imports: [
+    ProbationKpiModule,
+    CheckpointEvaluationModule,
+    FinalEvaluationModule,
+  ],
   controllers: [ProbationController],
   providers: [
     CreateProbationUseCase,

@@ -1,12 +1,15 @@
-import type { ApplicationFormValues } from "@/features/hr/recruitment/requests/application-form-schema";
-import type { CreateRequestFormValues } from "@/features/hr/recruitment/requests/form-schema";
-import type { JobDetailsFormValues } from "@/features/hr/recruitment/requests/job-details-schema";
+import type { ApplicationFormValues } from '@/features/hr/recruitment/requests/application-form-schema';
+import type { CreateRequestFormValues } from '@/features/hr/recruitment/requests/form-schema';
+import type { JobDetailsFormValues } from '@/features/hr/recruitment/requests/job-details-schema';
 
-export type JobRequestPriority = "high" | "medium" | "low";
+export type JobRequestPriority = 'high' | 'medium' | 'low';
 
-export type JobRequestDepartment = "technical" | "creative" | "digital_marketing";
+export type JobRequestDepartment =
+  | 'technical'
+  | 'creative'
+  | 'digital_marketing';
 
-export type JobRequestType = "Full-time" | "Part-time" | "Remote" | "Hybrid";
+export type JobRequestType = 'Full-time' | 'Part-time' | 'Remote' | 'Hybrid';
 
 export type JobRequestItem = {
   id: string;
@@ -26,7 +29,7 @@ export type JobRequestItem = {
   secondaryActionLabel: string;
 };
 
-export type RequestsStatIcon = "pending" | "approved" | "open_positions";
+export type RequestsStatIcon = 'pending' | 'approved' | 'open_positions';
 
 export type RequestsStatItem = {
   id: string;
@@ -37,7 +40,7 @@ export type RequestsStatItem = {
 
 export type SubmittedJobDetails = Omit<
   JobDetailsFormValues,
-  "keyResponsibilities" | "requirements" | "preferredSkills" | "benefits"
+  'keyResponsibilities' | 'requirements' | 'preferredSkills' | 'benefits'
 > & {
   keyResponsibilities: string[];
   requirements: string[];
@@ -51,7 +54,11 @@ export type SubmittedJobRequest = {
   applicationForm: ApplicationFormValues;
 };
 
-export type ApprovalProgressState = "pending" | "approved" | "requested_review" | "rejected";
+export type ApprovalProgressState =
+  | 'pending'
+  | 'approved'
+  | 'requested_review'
+  | 'rejected';
 
 export type ApprovalStep = {
   status: ApprovalProgressState;
@@ -59,7 +66,7 @@ export type ApprovalStep = {
 };
 
 export type FullJobRequest = SubmittedJobRequest & {
-  status: "active" | "by_me" | "closed" | "posted";
+  status: 'active' | 'by_me' | 'closed' | 'posted';
   progress: {
     jm: ApprovalStep;
     hr: ApprovalStep;

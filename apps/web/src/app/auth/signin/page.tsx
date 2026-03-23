@@ -1,11 +1,11 @@
-import { Button } from "@/shared/components/ui/button";
-import { AuthCard } from "@/features/auth";
-import { ChevronRight, ShieldCheck, Mail, Lock } from "lucide-react";
+import { Button } from '@/shared/components/ui/button';
+import { AuthCard } from '@/features/auth';
+import { ChevronRight, ShieldCheck, Mail, Lock } from 'lucide-react';
 
 export default function SignInPage() {
   return (
-    <AuthCard 
-      title="Welcome Back" 
+    <AuthCard
+      title="Welcome Back"
       description="Access your secure organization portal"
       sideContent={
         <div className="flex flex-col gap-6">
@@ -13,9 +13,12 @@ export default function SignInPage() {
             <Lock className="h-6 w-6 text-primary" />
           </div>
           <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold tracking-tight">Enterprise Gateway</h2>
+            <h2 className="text-xl font-bold tracking-tight">
+              Enterprise Gateway
+            </h2>
             <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-              Seamlessly connect to your business ecosystem with our secure identity management system.
+              Seamlessly connect to your business ecosystem with our secure
+              identity management system.
             </p>
           </div>
           <div className="flex items-center gap-2.5 text-xs font-bold text-primary uppercase tracking-widest">
@@ -34,9 +37,9 @@ export default function SignInPage() {
       }
     >
       <div className="flex flex-col gap-6">
-        <Button 
-          className="w-full h-12 text-base font-bold shadow-xl shadow-primary/15 hover:shadow-primary/25 active:scale-[0.98] transition-all rounded-2xl group/btn" 
-          asChild 
+        <Button
+          className="w-full h-12 text-base font-bold shadow-xl shadow-primary/15 hover:shadow-primary/25 active:scale-[0.98] transition-all rounded-2xl group/btn"
+          asChild
           size="lg"
         >
           <a href="/api/auth/login?prompt=login">
@@ -47,7 +50,7 @@ export default function SignInPage() {
             </span>
           </a>
         </Button>
-        
+
         <p className="text-[10px] text-center text-muted-foreground/50 uppercase tracking-[0.2em] font-bold">
           Bank-grade encryption active
         </p>

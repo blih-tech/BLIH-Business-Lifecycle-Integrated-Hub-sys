@@ -1,15 +1,18 @@
-import type { ActivityStatusTone, RootOverviewActivityItem } from "@/features/hr/root-overview/types";
-import { cn } from "@/shared/lib/utils";
+import type {
+  ActivityStatusTone,
+  RootOverviewActivityItem,
+} from '@/features/hr/root-overview/types';
+import { cn } from '@/shared/lib/utils';
 
 type RecentActivitiesProps = {
   items: RootOverviewActivityItem[];
 };
 
 function statusToneClass(tone: ActivityStatusTone) {
-  if (tone === "active") return "bg-[#1e66f7] text-white";
-  if (tone === "completed") return "bg-[#f5f5f5] text-black";
-  if (tone === "pending") return "bg-white text-black border border-[#e5e5e5]";
-  return "bg-[#f5f5f5] text-black";
+  if (tone === 'active') return 'bg-[#1e66f7] text-white';
+  if (tone === 'completed') return 'bg-[#f5f5f5] text-black';
+  if (tone === 'pending') return 'bg-white text-black border border-[#e5e5e5]';
+  return 'bg-[#f5f5f5] text-black';
 }
 
 export function RecentActivities({ items }: RecentActivitiesProps) {
@@ -21,15 +24,17 @@ export function RecentActivities({ items }: RecentActivitiesProps) {
           <div
             key={item.id}
             className={cn(
-              "py-2.5",
-              index < items.length - 1 ? "border-b border-border" : "",
+              'py-2.5',
+              index < items.length - 1 ? 'border-b border-border' : '',
             )}
           >
             <div className="flex items-start justify-between gap-3">
-              <p className="ui-body font-medium text-foreground">{item.category}</p>
+              <p className="ui-body font-medium text-foreground">
+                {item.category}
+              </p>
               <span
                 className={cn(
-                  "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+                  'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
                   statusToneClass(item.statusTone),
                 )}
               >

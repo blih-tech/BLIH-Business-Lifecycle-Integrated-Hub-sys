@@ -74,15 +74,15 @@ This repository contains comprehensive implementation guides for building BLIH V
 **Original Plan:** 12 weeks (3 months)  
 **Realistic Plan:** 14 weeks (3.5 months)
 
-| Phase | Duration | Focus |
-|-------|----------|-------|
-| Phase 0: Foundation | 2 weeks | Docker, Keycloak, Audit |
-| Phase 1: Core Platform | 2 weeks | RBAC, Events, Notifications |
-| Phase 2: Brain + HR | 2 weeks | Knowledge base + First module |
-| Phase 3: CRM + Projects | 2 weeks | Sales pipeline |
-| Phase 4: Finance | 2 weeks | Financial operations |
-| Phase 5: AI + Compliance | 2 weeks | Chatbot + Risk/CAPA |
-| Phase 6: Hardening | 2 weeks | Security, Performance, Testing |
+| Phase                    | Duration | Focus                          |
+| ------------------------ | -------- | ------------------------------ |
+| Phase 0: Foundation      | 2 weeks  | Docker, Keycloak, Audit        |
+| Phase 1: Core Platform   | 2 weeks  | RBAC, Events, Notifications    |
+| Phase 2: Brain + HR      | 2 weeks  | Knowledge base + First module  |
+| Phase 3: CRM + Projects  | 2 weeks  | Sales pipeline                 |
+| Phase 4: Finance         | 2 weeks  | Financial operations           |
+| Phase 5: AI + Compliance | 2 weeks  | Chatbot + Risk/CAPA            |
+| Phase 6: Hardening       | 2 weeks  | Security, Performance, Testing |
 
 **Total: 14 weeks**
 
@@ -90,25 +90,25 @@ This repository contains comprehensive implementation guides for building BLIH V
 
 ## 🛠️ Technology Stack Summary
 
-| Category | Technology | Version |
-|----------|-----------|---------|
-| Backend | NestJS | 10.x |
-| Frontend | Next.js | 16.x |
-| Database (Document) | MongoDB | 7.x |
-| Database (Relational) | PostgreSQL | 16.x |
-| Event Bus | RabbitMQ | 3.12+ |
-| IAM | Keycloak | 24.x |
-| Object Storage | MinIO | latest |
-| Vector Search | Qdrant | latest |
-| AI/LLM | Ollama | latest |
-| Workflow | n8n | latest |
-| UI Library | shadcn/ui | latest |
-| State Management | TanStack Query | latest |
-| Forms | React Hook Form + Zod | latest |
-| Testing (Unit) | Jest | latest |
-| Testing (E2E) | Playwright | latest |
-| Package Manager | pnpm | latest |
-| Containerization | Docker | latest |
+| Category              | Technology            | Version |
+| --------------------- | --------------------- | ------- |
+| Backend               | NestJS                | 10.x    |
+| Frontend              | Next.js               | 16.x    |
+| Database (Document)   | MongoDB               | 7.x     |
+| Database (Relational) | PostgreSQL            | 16.x    |
+| Event Bus             | RabbitMQ              | 3.12+   |
+| IAM                   | Keycloak              | 24.x    |
+| Object Storage        | MinIO                 | latest  |
+| Vector Search         | Qdrant                | latest  |
+| AI/LLM                | Ollama                | latest  |
+| Workflow              | n8n                   | latest  |
+| UI Library            | shadcn/ui             | latest  |
+| State Management      | TanStack Query        | latest  |
+| Forms                 | React Hook Form + Zod | latest  |
+| Testing (Unit)        | Jest                  | latest  |
+| Testing (E2E)         | Playwright            | latest  |
+| Package Manager       | pnpm                  | latest  |
+| Containerization      | Docker                | latest  |
 
 **All technologies are on-premises compatible and air-gapped ready.**
 
@@ -146,6 +146,7 @@ This repository contains comprehensive implementation guides for building BLIH V
 ## 📖 Implementation Order
 
 ### Week 1-2: Foundation
+
 ```
 Day 1-3:   Docker Compose + Databases
 Day 4-7:   Keycloak Integration
@@ -154,6 +155,7 @@ Day 11-14: Event Bus
 ```
 
 ### Week 3-4: Core Platform
+
 ```
 - RBAC System
 - Company Context
@@ -162,24 +164,28 @@ Day 11-14: Event Bus
 ```
 
 ### Week 5-6: First Module
+
 ```
 Week 5: Brain Module (foundation)
 Week 6: HR Module (first business module)
 ```
 
 ### Week 7-8: Integration
+
 ```
 Week 7: CRM Module
 Week 8: Projects Module (subscribes to CRM events)
 ```
 
 ### Week 9-10: Finance
+
 ```
 - Finance Module
 - Full integration testing
 ```
 
 ### Week 11-12: AI + Compliance
+
 ```
 - AI Chatbot
 - Risk Register
@@ -188,6 +194,7 @@ Week 8: Projects Module (subscribes to CRM events)
 ```
 
 ### Week 13-14: Hardening
+
 ```
 - Security hardening
 - Performance optimization
@@ -214,6 +221,7 @@ Week 8: Projects Module (subscribes to CRM events)
 ## 📊 Team Composition
 
 **Minimum Viable Team:**
+
 - 1 Tech Lead / Architect
 - 3-4 Backend Developers (NestJS)
 - 2 Frontend Developers (Next.js)
@@ -224,6 +232,7 @@ Week 8: Projects Module (subscribes to CRM events)
 **Total: 9-10 people**
 
 **Ideal Team:**
+
 - 2 Senior Backend (Core + Modules)
 - 3 Mid-level Backend (Modules)
 - 2 Frontend (UI + Dashboards)
@@ -292,18 +301,21 @@ module-name/
 ## 🎯 Success Metrics
 
 **Technical:**
+
 - All services healthy (Docker ps)
 - Zero critical security vulnerabilities
 - API response time < 500ms (p95)
 - Test coverage > 70%
 
 **Functional:**
+
 - End-to-end workflow working (deal → project → invoice)
 - Audit trail complete (no gaps)
 - RBAC enforced (access denied when expected)
 - Compliance evidence exportable
 
 **Team:**
+
 - Daily stand-ups happening
 - Weekly demos showing progress
 - No major blockers > 2 days
@@ -314,15 +326,18 @@ module-name/
 ## 📞 Getting Help
 
 ### For Technical Questions
+
 - Review **IMPLEMENTATION_GUIDE.md** → Relevant section
 - Check **MODULE_TEMPLATE.md** → Code examples
 - Review **TECHNOLOGY_DECISIONS.md** → Technology rationale
 
 ### For Timeline Questions
+
 - Review **QUICK_START_CHECKLIST.md** → Week-by-week plan
 - Check **IMPLEMENTATION_GUIDE.md** → Part 10 (Timeline)
 
 ### For Architecture Questions
+
 - Review **IMPLEMENTATION_GUIDE.md** → Parts 1-6
 - Check **TECHNOLOGY_DECISIONS.md** → Decision framework
 
@@ -331,22 +346,27 @@ module-name/
 ## 🎓 Learning Resources
 
 ### NestJS
+
 - [Official Docs](https://docs.nestjs.com/)
 - [NestJS Best Practices](https://github.com/nestjs/awesome-nestjs)
 
 ### Next.js
+
 - [Official Docs](https://nextjs.org/docs)
 - [Next.js App Router Guide](https://nextjs.org/docs/app)
 
 ### Keycloak
+
 - [Official Docs](https://www.keycloak.org/documentation)
 - [Keycloak Integration Guide](https://www.keycloak.org/docs/latest/securing_apps/)
 
 ### MongoDB
+
 - [MongoDB University](https://university.mongodb.com/)
 - [Mongoose Docs](https://mongoosejs.com/docs/)
 
 ### PostgreSQL
+
 - [PostgreSQL Docs](https://www.postgresql.org/docs/)
 - [TypeORM Docs](https://typeorm.io/)
 
@@ -396,6 +416,3 @@ This is internal documentation for BLIH development. For questions or issues, co
 **Remember: This is a marathon, not a sprint. Focus on working software over perfect code. Iterate based on real usage.**
 
 Good luck building BLIH! 🚀
-
-
-

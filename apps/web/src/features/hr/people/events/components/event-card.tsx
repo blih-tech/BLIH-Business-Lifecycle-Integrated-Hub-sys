@@ -74,7 +74,9 @@ export function EventCard({ event }: EventCardProps) {
         </p>
         <p className="text-[16px] font-medium tracking-[-0.3125px] text-foreground">
           {event.dayLabel}
-          <span className="align-top text-[10px] leading-6">{event.daySuffix}</span>
+          <span className="align-top text-[10px] leading-6">
+            {event.daySuffix}
+          </span>
         </p>
       </div>
     </article>

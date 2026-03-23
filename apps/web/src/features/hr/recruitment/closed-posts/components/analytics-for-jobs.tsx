@@ -1,9 +1,15 @@
-"use client";
+'use client';
 
-import { BarChart3, Sparkles } from "lucide-react";
+import { BarChart3, Sparkles } from 'lucide-react';
 
-import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import type { ActiveJobItem } from '@/features/hr/recruitment/active-posting/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
 
 type AnalyticsForJobsProps = {
   jobs: ActiveJobItem[];
@@ -11,7 +17,11 @@ type AnalyticsForJobsProps = {
   onSelectJob: (jobId: string) => void;
 };
 
-export function AnalyticsForJobs({ jobs, selectedJobId, onSelectJob }: AnalyticsForJobsProps) {
+export function AnalyticsForJobs({
+  jobs,
+  selectedJobId,
+  onSelectJob,
+}: AnalyticsForJobsProps) {
   return (
     <article className="rounded-[8px] border border-primary bg-[rgba(30,102,247,0.05)] p-4">
       <div className="flex items-center justify-between">
@@ -25,7 +35,10 @@ export function AnalyticsForJobs({ jobs, selectedJobId, onSelectJob }: Analytics
       </div>
 
       <div className="mt-6">
-        <label htmlFor="analytics-job-select" className="text-sm tracking-[-0.2px] text-[#666]">
+        <label
+          htmlFor="analytics-job-select"
+          className="text-sm tracking-[-0.2px] text-[#666]"
+        >
           Choose job
         </label>
         <div className="mt-2">

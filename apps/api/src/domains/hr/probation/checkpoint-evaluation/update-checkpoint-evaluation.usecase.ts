@@ -37,7 +37,11 @@ export class UpdateCheckpointEvaluationUseCase {
   ): Promise<CheckpointEvaluationResponseDto> {
     const existing = await this.prisma.checkpointEvaluation.findUnique({
       where: { id },
-      select: { id: true, checkpointId: true, checkpoint: { select: { probationId: true } } },
+      select: {
+        id: true,
+        checkpointId: true,
+        checkpoint: { select: { probationId: true } },
+      },
     });
     if (!existing) {
       throw new NotFoundException(
@@ -113,9 +117,7 @@ export class UpdateCheckpointEvaluationUseCase {
         where: { checkpointEvaluationId: id },
         select: { score: true },
       });
-      const newTotalScore = computeAverage(
-        remainingScores.map((s) => s.score),
-      );
+      const newTotalScore = computeAverage(remainingScores.map((s) => s.score));
 
       await tx.checkpointEvaluation.update({
         where: { id },

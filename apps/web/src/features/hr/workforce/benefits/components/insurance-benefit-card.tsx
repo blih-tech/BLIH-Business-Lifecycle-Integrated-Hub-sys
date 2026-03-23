@@ -1,5 +1,5 @@
-import type { InsuranceBenefitItem } from "@/features/hr/workforce/benefits/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { InsuranceBenefitItem } from '@/features/hr/workforce/benefits/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type InsuranceBenefitCardProps = {
   item: InsuranceBenefitItem;
@@ -11,10 +11,14 @@ export function InsuranceBenefitCard({ item }: InsuranceBenefitCardProps) {
       <CardContent className="space-y-3 p-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold tracking-[-0.2px] text-black">{item.title}</p>
+            <p className="text-sm font-semibold tracking-[-0.2px] text-black">
+              {item.title}
+            </p>
             <p className="text-xs text-[#666]">{item.subtitle}</p>
           </div>
-          <p className="text-base font-semibold text-primary">{item.monthlyCost}</p>
+          <p className="text-base font-semibold text-primary">
+            {item.monthlyCost}
+          </p>
         </div>
         <div className="grid gap-2 md:grid-cols-3">
           <MiniMetric label="Employer" value={item.employerShare} />

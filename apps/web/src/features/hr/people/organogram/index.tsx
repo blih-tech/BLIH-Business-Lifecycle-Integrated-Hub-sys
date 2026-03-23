@@ -1,16 +1,24 @@
-"use client";
+'use client';
 
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
-import { organogramMeta } from "@/features/hr/people/organogram/mock-data";
-import { OrganogramCanvas, OrganogramHeader } from "@/features/hr/people/organogram/components";
+import { organogramMeta } from '@/features/hr/people/organogram/mock-data';
+import {
+  OrganogramCanvas,
+  OrganogramHeader,
+} from '@/features/hr/people/organogram/components';
 
 export function PeopleOrganogramContent() {
-  const [zoomPercent, setZoomPercent] = useState(organogramMeta.initialZoomPercent);
+  const [zoomPercent, setZoomPercent] = useState(
+    organogramMeta.initialZoomPercent,
+  );
   const canvasWrapperRef = useRef<HTMLDivElement | null>(null);
 
   function clampZoom(value: number) {
-    return Math.max(organogramMeta.minZoomPercent, Math.min(organogramMeta.maxZoomPercent, value));
+    return Math.max(
+      organogramMeta.minZoomPercent,
+      Math.min(organogramMeta.maxZoomPercent, value),
+    );
   }
 
   function handleZoomIn() {

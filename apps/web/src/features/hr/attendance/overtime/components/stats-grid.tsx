@@ -1,5 +1,5 @@
-import { StatsCard } from "@/features/hr/attendance/overtime/components/stats-card";
-import type { AttendanceOvertimeStat } from "@/features/hr/attendance/overtime/types";
+import { StatsCard } from '@/features/hr/attendance/overtime/components/stats-card';
+import type { AttendanceOvertimeStat } from '@/features/hr/attendance/overtime/types';
 
 type StatsGridProps = {
   items: AttendanceOvertimeStat[];

@@ -1,9 +1,9 @@
-import { Copy, Eye, Pencil, Trash2 } from "lucide-react";
+import { Copy, Eye, Pencil, Trash2 } from 'lucide-react';
 
-import type { RelatedFormItem } from "@/features/hr/talent/related-forms/types";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { RelatedFormItem } from '@/features/hr/talent/related-forms/types';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type FormRowCardProps = {
   item: RelatedFormItem;
@@ -17,9 +17,16 @@ export function FormRowCard({ item }: FormRowCardProps) {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-1.5">
               <p className="text-xl leading-6">{item.icon}</p>
-              <p className="text-sm font-semibold tracking-[-0.176px] text-black">{item.title}</p>
-              <Badge className="h-5 rounded-[6px] bg-primary px-2 text-[10px] font-medium">{item.status}</Badge>
-              <Badge variant="outline" className="h-5 rounded-[6px] px-2 text-[10px] font-medium text-black">
+              <p className="text-sm font-semibold tracking-[-0.176px] text-black">
+                {item.title}
+              </p>
+              <Badge className="h-5 rounded-[6px] bg-primary px-2 text-[10px] font-medium">
+                {item.status}
+              </Badge>
+              <Badge
+                variant="outline"
+                className="h-5 rounded-[6px] px-2 text-[10px] font-medium text-black"
+              >
                 {item.category}
               </Badge>
             </div>
@@ -38,16 +45,32 @@ export function FormRowCard({ item }: FormRowCardProps) {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-1.5">
-            <Button variant="outline" size="icon-sm" className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black"
+            >
               <Eye className="h-3.5 w-3.5" />
             </Button>
-            <Button variant="outline" size="icon-sm" className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black"
+            >
               <Pencil className="h-3.5 w-3.5" />
             </Button>
-            <Button variant="outline" size="icon-sm" className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black"
+            >
               <Copy className="h-3.5 w-3.5" />
             </Button>
-            <Button variant="outline" size="icon-sm" className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="h-8 w-[38px] rounded-[6px] border-border bg-white text-black"
+            >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>

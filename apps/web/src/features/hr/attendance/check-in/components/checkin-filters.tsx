@@ -1,25 +1,28 @@
-"use client";
+'use client';
 
-import { ListFilter, Search } from "lucide-react";
+import { ListFilter, Search } from 'lucide-react';
 
-import type { CheckinStatus, CheckinViewMode } from "@/features/hr/attendance/check-in/types";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import type {
+  CheckinStatus,
+  CheckinViewMode,
+} from '@/features/hr/attendance/check-in/types';
+import { Button } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from '@/shared/components/ui/select';
 
 type CheckinFiltersProps = {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   department: string;
   onDepartmentChange: (value: string) => void;
-  status: "all" | CheckinStatus;
-  onStatusChange: (value: "all" | CheckinStatus) => void;
+  status: 'all' | CheckinStatus;
+  onStatusChange: (value: 'all' | CheckinStatus) => void;
   viewMode: CheckinViewMode;
   onViewModeChange: (value: CheckinViewMode) => void;
   departments: readonly string[];
@@ -59,20 +62,31 @@ export function CheckinFilters({
         </Button>
 
         <Select value={department} onValueChange={onDepartmentChange}>
-          <SelectTrigger size="sm" className="h-9 min-w-[160px] rounded-[6px] border-input bg-white text-sm">
+          <SelectTrigger
+            size="sm"
+            className="h-9 min-w-[160px] rounded-[6px] border-input bg-white text-sm"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {departments.map((item) => (
               <SelectItem key={item} value={item}>
-                {item === "all" ? "All Departments" : item}
+                {item === 'all' ? 'All Departments' : item}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <Select value={status} onValueChange={(value: string) => onStatusChange(value as "all" | CheckinStatus)}>
-          <SelectTrigger size="sm" className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm">
+        <Select
+          value={status}
+          onValueChange={(value: string) =>
+            onStatusChange(value as 'all' | CheckinStatus)
+          }
+        >
+          <SelectTrigger
+            size="sm"
+            className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -83,8 +97,16 @@ export function CheckinFilters({
           </SelectContent>
         </Select>
 
-        <Select value={viewMode} onValueChange={(value: string) => onViewModeChange(value as CheckinViewMode)}>
-          <SelectTrigger size="sm" className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm">
+        <Select
+          value={viewMode}
+          onValueChange={(value: string) =>
+            onViewModeChange(value as CheckinViewMode)
+          }
+        >
+          <SelectTrigger
+            size="sm"
+            className="h-9 min-w-[140px] rounded-[6px] border-input bg-white text-sm"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

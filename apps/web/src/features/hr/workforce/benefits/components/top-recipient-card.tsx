@@ -1,5 +1,5 @@
-import type { TopRecipient } from "@/features/hr/workforce/benefits/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { TopRecipient } from '@/features/hr/workforce/benefits/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type TopRecipientCardProps = {
   item: TopRecipient;
@@ -14,7 +14,9 @@ export function TopRecipientCard({ item }: TopRecipientCardProps) {
             {item.initials}
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-[-0.2px] text-black">{item.name}</p>
+            <p className="text-sm font-semibold tracking-[-0.2px] text-black">
+              {item.name}
+            </p>
             <p className="text-[11px] text-[#666]">{item.note}</p>
           </div>
         </div>

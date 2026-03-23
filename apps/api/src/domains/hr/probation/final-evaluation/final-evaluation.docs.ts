@@ -60,7 +60,10 @@ export class UpdateFinalEvaluationDto {
   @IsEnum(PROBATION_OUTCOMES)
   outcome?: ProbationOutcomeValue;
 
-  @ApiPropertyOptional({ nullable: true, example: 'Updated comment after review.' })
+  @ApiPropertyOptional({
+    nullable: true,
+    example: 'Updated comment after review.',
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -97,9 +100,30 @@ const envelope = <TData>(message: string, data: TData) => ({
 });
 
 const scoreExamples = [
-  { id: 'score-uuid-1', probationKpiId: 'p-kpi-uuid-1', kpiName: 'Code Quality', score: 90, comment: 'Consistently high-quality code', createdAt: '2026-03-21T14:00:00.000Z' },
-  { id: 'score-uuid-2', probationKpiId: 'p-kpi-uuid-2', kpiName: 'Attendance', score: 95, comment: 'Excellent attendance record', createdAt: '2026-03-21T14:00:00.000Z' },
-  { id: 'score-uuid-3', probationKpiId: 'p-kpi-uuid-3', kpiName: 'Teamwork', score: 75, comment: 'Improved significantly over time', createdAt: '2026-03-21T14:00:00.000Z' },
+  {
+    id: 'score-uuid-1',
+    probationKpiId: 'p-kpi-uuid-1',
+    kpiName: 'Code Quality',
+    score: 90,
+    comment: 'Consistently high-quality code',
+    createdAt: '2026-03-21T14:00:00.000Z',
+  },
+  {
+    id: 'score-uuid-2',
+    probationKpiId: 'p-kpi-uuid-2',
+    kpiName: 'Attendance',
+    score: 95,
+    comment: 'Excellent attendance record',
+    createdAt: '2026-03-21T14:00:00.000Z',
+  },
+  {
+    id: 'score-uuid-3',
+    probationKpiId: 'p-kpi-uuid-3',
+    kpiName: 'Teamwork',
+    score: 75,
+    comment: 'Improved significantly over time',
+    createdAt: '2026-03-21T14:00:00.000Z',
+  },
 ];
 
 const evalExample = {
@@ -112,10 +136,21 @@ const evalExample = {
   createdAt: '2026-03-21T14:00:00.000Z',
 };
 
-const createdResp = envelope('Final evaluation submitted successfully', evalExample);
-const retrievedResp = envelope('Final evaluation retrieved successfully', evalExample);
-const updatedResp = envelope('Final evaluation updated successfully', evalExample);
-const deletedResp = envelope('Final evaluation deleted successfully', { success: true });
+const createdResp = envelope(
+  'Final evaluation submitted successfully',
+  evalExample,
+);
+const retrievedResp = envelope(
+  'Final evaluation retrieved successfully',
+  evalExample,
+);
+const updatedResp = envelope(
+  'Final evaluation updated successfully',
+  evalExample,
+);
+const deletedResp = envelope('Final evaluation deleted successfully', {
+  success: true,
+});
 
 // ─── Controller-level class decorator ─────────────────────────────────────────
 
@@ -151,9 +186,21 @@ export function ApiCreateFinalEvaluation() {
             outcome: 'CONFIRMED',
             comment: 'Strong performance overall. Ready for full-time role.',
             scores: [
-              { probationKpiId: 'p-kpi-uuid-1', score: 90, comment: 'Consistently high-quality code' },
-              { probationKpiId: 'p-kpi-uuid-2', score: 95, comment: 'Excellent attendance record' },
-              { probationKpiId: 'p-kpi-uuid-3', score: 75, comment: 'Improved significantly over time' },
+              {
+                probationKpiId: 'p-kpi-uuid-1',
+                score: 90,
+                comment: 'Consistently high-quality code',
+              },
+              {
+                probationKpiId: 'p-kpi-uuid-2',
+                score: 95,
+                comment: 'Excellent attendance record',
+              },
+              {
+                probationKpiId: 'p-kpi-uuid-3',
+                score: 75,
+                comment: 'Improved significantly over time',
+              },
             ],
           },
         },
@@ -170,7 +217,8 @@ export function ApiCreateFinalEvaluation() {
     ),
     ApiDefaultErrors({
       path: '/api/v1/hr/probation/final-evaluations',
-      badRequest: 'Payload invalid — duplicate KPI IDs or KPI IDs not belonging to plan',
+      badRequest:
+        'Payload invalid — duplicate KPI IDs or KPI IDs not belonging to plan',
       unauthorized: 'Unauthorized: missing or invalid bearer access token',
       forbidden: 'Required roles are missing',
     }),
@@ -246,7 +294,11 @@ export function ApiUpdateFinalEvaluation() {
             scores: [
               { probationKpiId: 'p-kpi-uuid-1', score: 78 },
               { probationKpiId: 'p-kpi-uuid-2', score: 82 },
-              { probationKpiId: 'p-kpi-uuid-3', score: 60, comment: 'Focus area for extension period' },
+              {
+                probationKpiId: 'p-kpi-uuid-3',
+                score: 60,
+                comment: 'Focus area for extension period',
+              },
             ],
           },
         },

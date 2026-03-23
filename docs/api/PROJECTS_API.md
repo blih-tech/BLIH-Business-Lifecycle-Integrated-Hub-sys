@@ -20,6 +20,7 @@
 ## 1. Authentication
 
 **Required Permissions:**
+
 - `PROJECTS:read` - View projects
 - `PROJECTS:write` - Create/edit projects
 - `PROJECTS:manage` - Full project management
@@ -42,6 +43,7 @@ GET /api/v1/projects
 | `manager_id` | string | Filter by project manager |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -60,7 +62,7 @@ GET /api/v1/projects
       },
       "start_date": "2026-01-15",
       "end_date": "2026-04-15",
-      "budget": 50000.00,
+      "budget": 50000.0,
       "currency": "USD",
       "progress": 45,
       "team_members": 5,
@@ -77,6 +79,7 @@ POST /api/v1/projects
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "Website Redesign",
@@ -85,7 +88,7 @@ POST /api/v1/projects
   "manager_id": "user_123",
   "start_date": "2026-01-15",
   "end_date": "2026-04-15",
-  "budget": 50000.00,
+  "budget": 50000.0,
   "currency": "USD",
   "description": "Complete redesign of corporate website",
   "confidentiality_level": "CONFIDENTIAL",
@@ -100,11 +103,12 @@ POST /api/v1/projects/:id/members
 ```
 
 **Request Body:**
+
 ```json
 {
   "user_id": "user_789",
   "role": "DEVELOPER",
-  "billable_rate": 125.00,
+  "billable_rate": 125.0,
   "allocation_percent": 50
 }
 ```
@@ -127,6 +131,7 @@ GET /api/v1/projects/:projectId/tasks
 | `priority` | enum | `LOW`, `MEDIUM`, `HIGH`, `URGENT` |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -158,6 +163,7 @@ POST /api/v1/projects/:projectId/tasks
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "Design homepage mockup",
@@ -166,7 +172,7 @@ POST /api/v1/projects/:projectId/tasks
   "priority": "HIGH",
   "estimated_hours": 16,
   "due_date": "2026-02-15",
-  "dependencies": ["task_123"]  // Optional
+  "dependencies": ["task_123"] // Optional
 }
 ```
 
@@ -177,6 +183,7 @@ PATCH /api/v1/projects/:projectId/tasks/:taskId
 ```
 
 **Request Body:**
+
 ```json
 {
   "status": "DONE",
@@ -204,6 +211,7 @@ GET /api/v1/projects/:projectId/time-entries
 | `billable` | boolean | Filter billable/ non-billable |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -220,7 +228,7 @@ GET /api/v1/projects/:projectId/time-entries
       "end_time": "13:00",
       "hours": 4.0,
       "billable": true,
-      "billable_rate": 125.00,
+      "billable_rate": 125.0,
       "description": "Working on homepage mockup",
       "status": "SUBMITTED",
       "approved_by": null
@@ -229,7 +237,7 @@ GET /api/v1/projects/:projectId/time-entries
   "summary": {
     "total_hours": 120,
     "billable_hours": 100,
-    "total_amount": 12500.00
+    "total_amount": 12500.0
   }
 }
 ```
@@ -241,6 +249,7 @@ POST /api/v1/projects/:projectId/time-entries
 ```
 
 **Request Body:**
+
 ```json
 {
   "task_id": "task_xyz789",
@@ -249,7 +258,8 @@ POST /api/v1/projects/:projectId/time-entries
   "end_time": "13:00",
   "description": "Working on homepage mockup",
   "billable": true,
-  "gps_coordinates": {  // Optional if GPS verification enabled
+  "gps_coordinates": {
+    // Optional if GPS verification enabled
     "latitude": 9.005401,
     "longitude": 38.763611
   }
@@ -263,6 +273,7 @@ POST /api/v1/projects/:projectId/time-entries/approve
 ```
 
 **Request Body:**
+
 ```json
 {
   "entry_ids": ["time_123abc", "time_456def"],
@@ -281,6 +292,7 @@ GET /api/v1/projects/:projectId/documents
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -310,11 +322,13 @@ Content-Type: multipart/form-data
 ```
 
 **Form Data:**
+
 - `file`: Binary file data
 - `confidentiality_level`: `PUBLIC` | `INTERNAL` | `CONFIDENTIAL` | `SECRET`
 - `description`: Optional description
 
 **Response:**
+
 ```json
 {
   "id": "doc_abc123",
@@ -346,6 +360,7 @@ GET /api/v1/projects/:projectId/timeline
 ```
 
 **Response:**
+
 ```json
 {
   "project": {
@@ -383,6 +398,7 @@ GET /api/v1/projects/:projectId/timeline
 ---
 
 **Related Documentation:**
+
 - [PROJECTS_SECURITY.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/security/PROJECTS_SECURITY.md) - Security controls
 - [MODULE_PROJECTS.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/modules/MODULE_PROJECTS.md) - Features
 

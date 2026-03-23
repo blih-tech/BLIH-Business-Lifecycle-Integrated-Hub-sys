@@ -1,18 +1,26 @@
-import { Clock3 } from "lucide-react";
+import { Clock3 } from 'lucide-react';
 
-import type { LeaveRequestCardItem } from "@/features/hr/attendance/leaves/types";
-import { Button } from "@/shared/components/ui/button";
+import type { LeaveRequestCardItem } from '@/features/hr/attendance/leaves/types';
+import { Button } from '@/shared/components/ui/button';
 
 type LeaveRequestCardProps = {
   request: LeaveRequestCardItem;
 };
 
-function StatusBadge({ status }: { status: LeaveRequestCardItem["status"] }) {
-  if (status === "completed") {
-    return <span className="rounded-[4px] bg-primary px-2 py-0.5 text-[10px] font-medium text-white">Completed</span>;
+function StatusBadge({ status }: { status: LeaveRequestCardItem['status'] }) {
+  if (status === 'completed') {
+    return (
+      <span className="rounded-[4px] bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
+        Completed
+      </span>
+    );
   }
-  if (status === "annual") {
-    return <span className="rounded-[4px] bg-primary px-2 py-0.5 text-[10px] font-medium text-white">Annual</span>;
+  if (status === 'annual') {
+    return (
+      <span className="rounded-[4px] bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
+        Annual
+      </span>
+    );
   }
   return (
     <span className="rounded-[4px] border border-primary px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -30,7 +38,9 @@ export function LeaveRequestCard({ request }: LeaveRequestCardProps) {
             {request.employeeInitials}
           </div>
           <div>
-            <p className="text-sm font-medium text-black">{request.employeeName}</p>
+            <p className="text-sm font-medium text-black">
+              {request.employeeName}
+            </p>
             <p className="text-xs text-[#666]">{request.role}</p>
           </div>
         </div>
@@ -41,7 +51,11 @@ export function LeaveRequestCard({ request }: LeaveRequestCardProps) {
         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
           <Info label="From" value={request.from} />
           <Info label="To" value={request.to} />
-          <Info label="Duration" value={request.duration} valueClass="text-primary text-base font-semibold" />
+          <Info
+            label="Duration"
+            value={request.duration}
+            valueClass="text-primary text-base font-semibold"
+          />
           <div>
             <p className="text-[12px] text-[#666]">Submitted</p>
             <p className="mt-0.5 inline-flex items-center gap-1 text-[12px] font-semibold text-black">
@@ -59,7 +73,10 @@ export function LeaveRequestCard({ request }: LeaveRequestCardProps) {
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button className="h-7 rounded-[4px] text-[11px]">Accept</Button>
-        <Button variant="outline" className="h-7 rounded-[4px] border-border bg-[#f3f3f3] text-[11px] text-black">
+        <Button
+          variant="outline"
+          className="h-7 rounded-[4px] border-border bg-[#f3f3f3] text-[11px] text-black"
+        >
           Reject
         </Button>
       </div>
@@ -79,7 +96,9 @@ function Info({
   return (
     <div>
       <p className="text-[12px] text-[#666]">{label}</p>
-      <p className={valueClass ?? "text-[12px] font-semibold text-black"}>{value}</p>
+      <p className={valueClass ?? 'text-[12px] font-semibold text-black'}>
+        {value}
+      </p>
     </div>
   );
 }

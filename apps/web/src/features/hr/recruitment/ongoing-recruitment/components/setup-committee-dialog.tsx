@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
-import type { OngoingCommitteePerson } from "@/features/hr/recruitment/ongoing-recruitment/types";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
+import type { OngoingCommitteePerson } from '@/features/hr/recruitment/ongoing-recruitment/types';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+} from '@/shared/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
 
 type SetupCommitteeDialogProps = {
   jobTitle: string;
@@ -33,18 +39,22 @@ export function SetupCommitteeDialog({
   onOpenChange,
   onSave,
 }: SetupCommitteeDialogProps) {
-  const [nextPersonId, setNextPersonId] = useState<string>("");
-  const [draftMembers, setDraftMembers] = useState<OngoingCommitteePerson[]>(selectedPeople);
+  const [nextPersonId, setNextPersonId] = useState<string>('');
+  const [draftMembers, setDraftMembers] =
+    useState<OngoingCommitteePerson[]>(selectedPeople);
 
   useEffect(() => {
     if (open) {
       setDraftMembers(selectedPeople);
-      setNextPersonId("");
+      setNextPersonId('');
     }
   }, [open, selectedPeople]);
 
   const availablePeople = useMemo(
-    () => people.filter((person) => !draftMembers.some((member) => member.id === person.id)),
+    () =>
+      people.filter(
+        (person) => !draftMembers.some((member) => member.id === person.id),
+      ),
     [draftMembers, people],
   );
 
@@ -55,11 +65,13 @@ export function SetupCommitteeDialog({
     if (!person) return;
 
     setDraftMembers((current) => [...current, person]);
-    setNextPersonId("");
+    setNextPersonId('');
   }
 
   function handleRemoveMember(personId: string) {
-    setDraftMembers((current) => current.filter((member) => member.id !== personId));
+    setDraftMembers((current) =>
+      current.filter((member) => member.id !== personId),
+    );
   }
 
   function handleSave() {
@@ -93,7 +105,12 @@ export function SetupCommitteeDialog({
               </Select>
             </div>
 
-            <Button type="button" variant="outline" onClick={handleAddMember} disabled={!nextPersonId}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleAddMember}
+              disabled={!nextPersonId}
+            >
               Add
             </Button>
           </div>
@@ -121,13 +138,19 @@ export function SetupCommitteeDialog({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[#666]">No committee members selected.</p>
+              <p className="text-sm text-[#666]">
+                No committee members selected.
+              </p>
             )}
           </div>
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
             Cancel
           </Button>
           <Button type="button" onClick={handleSave}>

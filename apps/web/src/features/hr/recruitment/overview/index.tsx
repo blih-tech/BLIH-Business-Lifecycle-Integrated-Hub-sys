@@ -1,12 +1,16 @@
-import { dailyAreaData, monthlyFrequencyData, recruitmentStats } from "@/features/hr/recruitment/overview/mock-data";
+import {
+  dailyAreaData,
+  monthlyFrequencyData,
+  recruitmentStats,
+} from '@/features/hr/recruitment/overview/mock-data';
 import {
   JobApplicationFrequencyPanel,
   RecruitmentOverviewAnalytics,
   StatsGrid,
-} from "@/features/hr/recruitment/overview/components";
+} from '@/features/hr/recruitment/overview/components';
 
-export * from "@/features/hr/recruitment/overview/components";
-export * from "@/features/hr/recruitment/overview/types";
+export * from '@/features/hr/recruitment/overview/components';
+export * from '@/features/hr/recruitment/overview/types';
 
 export function RecruitmentOverviewContent() {
   return (

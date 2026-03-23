@@ -1,4 +1,7 @@
-export type DisciplinaryIncidentType = 'ATTENDANCE_VIOLATION' | 'PERFORMANCE_ISSUE' | 'CODE_OF_CONDUCT';
+export type DisciplinaryIncidentType =
+  | 'ATTENDANCE_VIOLATION'
+  | 'PERFORMANCE_ISSUE'
+  | 'CODE_OF_CONDUCT';
 export type DisciplinaryActionType =
   | 'VERBAL_WARNING'
   | 'WRITTEN_WARNING'

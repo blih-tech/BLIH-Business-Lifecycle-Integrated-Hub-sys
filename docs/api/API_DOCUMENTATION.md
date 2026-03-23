@@ -1,6 +1,7 @@
 # BLIH API Documentation
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Authentication](#authentication)
 3. [Core Platform API](#core-platform-api)
@@ -19,22 +20,27 @@
 ## Overview
 
 ### Base URL
+
 ```
 Development: http://localhost:4000/api
 Production: https://api.blih.company.com/api
 ```
 
 ### API Versioning
+
 Current version: `v1`
 All endpoints are prefixed with `/api/v1`
 
 ### Content Type
+
 All requests and responses use JSON:
+
 ```
 Content-Type: application/json
 ```
 
 ### Rate Limiting
+
 - Standard endpoints: 100 requests/minute
 - RAG queries: 20 requests/minute
 - Batch operations: 10 requests/minute
@@ -44,14 +50,17 @@ Content-Type: application/json
 ## Authentication
 
 ### Authentication Flow
+
 BLIH uses JWT tokens with Keycloak as the identity provider.
 
 ### Login
+
 ```http
 POST /api/v1/auth/login
 ```
 
 **Request:**
+
 ```json
 {
   "username": "john.doe@company.com",
@@ -60,6 +69,7 @@ POST /api/v1/auth/login
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -74,22 +84,20 @@ POST /api/v1/auth/login
       "firstName": "John",
       "lastName": "Doe",
       "roles": ["HR_MANAGER", "EMPLOYEE"],
-      "permissions": [
-        "HR:employee:view",
-        "HR:employee:create",
-        "CRM:deal:view"
-      ]
+      "permissions": ["HR:employee:view", "HR:employee:create", "CRM:deal:view"]
     }
   }
 }
 ```
 
 ### Refresh Token
+
 ```http
 POST /api/v1/auth/refresh
 ```
 
 **Request:**
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJSUzI1NiIs..."
@@ -97,6 +105,7 @@ POST /api/v1/auth/refresh
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -108,12 +117,14 @@ POST /api/v1/auth/refresh
 ```
 
 ### Logout
+
 ```http
 POST /api/v1/auth/logout
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -122,12 +133,14 @@ Authorization: Bearer {access_token}
 ```
 
 ### Current User
+
 ```http
 GET /api/v1/auth/me
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -150,6 +163,7 @@ Authorization: Bearer {access_token}
 ### Audit Logs
 
 #### List Audit Logs
+
 ```http
 GET /api/v1/audit-logs
 Authorization: Bearer {access_token}
@@ -168,6 +182,7 @@ Permission Required: ADMIN:audit:view or audit log owner
 | `limit` | number | Items per page (default: 20, max: 100) |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -199,6 +214,7 @@ Permission Required: ADMIN:audit:view or audit log owner
 ```
 
 #### Export Audit Logs
+
 ```http
 POST /api/v1/audit-logs/export
 Authorization: Bearer {access_token}
@@ -207,6 +223,7 @@ Permission Required: ADMIN:audit:export
 ```
 
 **Request:**
+
 ```json
 {
   "format": "pdf", // or "csv", "xlsx"
@@ -218,6 +235,7 @@ Permission Required: ADMIN:audit:export
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -231,12 +249,14 @@ Permission Required: ADMIN:audit:export
 ### Roles & Permissions
 
 #### List Permissions
+
 ```http
 GET /api/v1/permissions
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -249,6 +269,7 @@ Authorization: Bearer {access_token}
 ```
 
 #### List Roles
+
 ```http
 GET /api/v1/roles
 Authorization: Bearer {access_token}
@@ -256,6 +277,7 @@ Permission Required: ADMIN:roles:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -264,7 +286,11 @@ Permission Required: ADMIN:roles:view
       "id": "role-uuid",
       "name": "HR Manager",
       "description": "Manages HR operations",
-      "permissions": ["HR:employee:view", "HR:employee:create", "HR:employee:edit"],
+      "permissions": [
+        "HR:employee:view",
+        "HR:employee:create",
+        "HR:employee:edit"
+      ],
       "userCount": 5
     }
   ]
@@ -272,6 +298,7 @@ Permission Required: ADMIN:roles:view
 ```
 
 #### Create Role
+
 ```http
 POST /api/v1/roles
 Authorization: Bearer {access_token}
@@ -280,22 +307,32 @@ Permission Required: ADMIN:roles:create
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Finance Officer",
   "description": "Manages financial operations",
-  "permissions": ["FINANCE:invoice:view", "FINANCE:invoice:create", "FINANCE:payroll:process"]
+  "permissions": [
+    "FINANCE:invoice:view",
+    "FINANCE:invoice:create",
+    "FINANCE:payroll:process"
+  ]
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "id": "role-uuid",
     "name": "Finance Officer",
-    "permissions": ["FINANCE:invoice:view", "FINANCE:invoice:create", "FINANCE:payroll:process"],
+    "permissions": [
+      "FINANCE:invoice:view",
+      "FINANCE:invoice:create",
+      "FINANCE:payroll:process"
+    ],
     "createdAt": "2024-01-15T10:30:00Z"
   }
 }
@@ -304,6 +341,7 @@ Permission Required: ADMIN:roles:create
 ### Notifications
 
 #### List Notifications
+
 ```http
 GET /api/v1/notifications
 Authorization: Bearer {access_token}
@@ -317,6 +355,7 @@ Authorization: Bearer {access_token}
 | `limit` | number | Items per page |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -339,12 +378,14 @@ Authorization: Bearer {access_token}
 ```
 
 #### Mark Notification as Read
+
 ```http
 PUT /api/v1/notifications/{id}/read
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -353,6 +394,7 @@ Authorization: Bearer {access_token}
 ```
 
 #### Mark All as Read
+
 ```http
 PUT /api/v1/notifications/read-all
 Authorization: Bearer {access_token}
@@ -365,6 +407,7 @@ Authorization: Bearer {access_token}
 ### Employees
 
 #### List Employees
+
 ```http
 GET /api/v1/hr/employees
 Authorization: Bearer {access_token}
@@ -383,6 +426,7 @@ Permission Required: HR:employee:view
 | `sortOrder` | string | asc or desc (default: desc) |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -411,6 +455,7 @@ Permission Required: HR:employee:view
 ```
 
 #### Get Employee
+
 ```http
 GET /api/v1/hr/employees/{id}
 Authorization: Bearer {access_token}
@@ -418,6 +463,7 @@ Permission Required: HR:employee:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -441,7 +487,12 @@ Permission Required: HR:employee:view
       "country": "USA"
     },
     "documents": [
-      { "id": "doc-uuid", "name": "Contract.pdf", "type": "contract", "uploadedAt": "2023-06-01" }
+      {
+        "id": "doc-uuid",
+        "name": "Contract.pdf",
+        "type": "contract",
+        "uploadedAt": "2023-06-01"
+      }
     ],
     "createdAt": "2023-06-01T00:00:00Z",
     "updatedAt": "2024-01-15T10:30:00Z"
@@ -450,6 +501,7 @@ Permission Required: HR:employee:view
 ```
 
 #### Create Employee
+
 ```http
 POST /api/v1/hr/employees
 Authorization: Bearer {access_token}
@@ -458,6 +510,7 @@ Permission Required: HR:employee:create
 ```
 
 **Request:**
+
 ```json
 {
   "firstName": "Jane",
@@ -479,6 +532,7 @@ Permission Required: HR:employee:create
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -496,6 +550,7 @@ Permission Required: HR:employee:create
 ```
 
 #### Update Employee
+
 ```http
 PUT /api/v1/hr/employees/{id}
 Authorization: Bearer {access_token}
@@ -504,6 +559,7 @@ Permission Required: HR:employee:edit
 ```
 
 **Request:**
+
 ```json
 {
   "department": "Product",
@@ -513,6 +569,7 @@ Permission Required: HR:employee:edit
 ```
 
 #### Terminate Employee
+
 ```http
 POST /api/v1/hr/employees/{id}/terminate
 Authorization: Bearer {access_token}
@@ -521,6 +578,7 @@ Permission Required: HR:employee:delete
 ```
 
 **Request:**
+
 ```json
 {
   "terminationDate": "2024-01-15",
@@ -530,6 +588,7 @@ Permission Required: HR:employee:delete
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -545,6 +604,7 @@ Permission Required: HR:employee:delete
 ### Contracts
 
 #### List Employee Contracts
+
 ```http
 GET /api/v1/hr/employees/{employeeId}/contracts
 Authorization: Bearer {access_token}
@@ -552,6 +612,7 @@ Permission Required: HR:employee:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -564,7 +625,11 @@ Permission Required: HR:employee:view
       "status": "active",
       "salary": { "amount": 8000, "currency": "USD", "period": "monthly" },
       "documents": [
-        { "id": "doc-uuid", "name": "Contract_2023.pdf", "uploadedAt": "2023-06-01" }
+        {
+          "id": "doc-uuid",
+          "name": "Contract_2023.pdf",
+          "uploadedAt": "2023-06-01"
+        }
       ]
     }
   ]
@@ -572,6 +637,7 @@ Permission Required: HR:employee:view
 ```
 
 #### Create Contract
+
 ```http
 POST /api/v1/hr/employees/{employeeId}/contracts
 Authorization: Bearer {access_token}
@@ -580,6 +646,7 @@ Permission Required: HR:employee:edit
 ```
 
 **Request:**
+
 ```json
 {
   "type": "amendment",
@@ -592,6 +659,7 @@ Permission Required: HR:employee:edit
 ### Departments
 
 #### List Departments
+
 ```http
 GET /api/v1/hr/departments
 Authorization: Bearer {access_token}
@@ -599,6 +667,7 @@ Permission Required: HR:employee:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -622,6 +691,7 @@ Permission Required: HR:employee:view
 ```
 
 #### Get Organization Chart
+
 ```http
 GET /api/v1/hr/org-chart
 Authorization: Bearer {access_token}
@@ -629,6 +699,7 @@ Permission Required: HR:employee:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -661,6 +732,7 @@ Permission Required: HR:employee:view
 ### Leads
 
 #### List Leads
+
 ```http
 GET /api/v1/crm/leads
 Authorization: Bearer {access_token}
@@ -676,6 +748,7 @@ Permission Required: CRM:lead:view
 | `search` | string | Search by name, email, company |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -702,6 +775,7 @@ Permission Required: CRM:lead:view
 ```
 
 #### Create Lead
+
 ```http
 POST /api/v1/crm/leads
 Authorization: Bearer {access_token}
@@ -710,6 +784,7 @@ Permission Required: CRM:lead:create
 ```
 
 **Request:**
+
 ```json
 {
   "firstName": "Bob",
@@ -725,6 +800,7 @@ Permission Required: CRM:lead:create
 ```
 
 #### Convert Lead to Deal
+
 ```http
 POST /api/v1/crm/leads/{id}/convert
 Authorization: Bearer {access_token}
@@ -733,6 +809,7 @@ Permission Required: CRM:lead:edit
 ```
 
 **Request:**
+
 ```json
 {
   "dealName": "Tech Corp Enterprise License",
@@ -744,6 +821,7 @@ Permission Required: CRM:lead:edit
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -760,6 +838,7 @@ Permission Required: CRM:lead:edit
 ### Deals
 
 #### List Deals
+
 ```http
 GET /api/v1/crm/deals
 Authorization: Bearer {access_token}
@@ -776,6 +855,7 @@ Permission Required: CRM:deal:view
 | `maxValue` | number | Maximum deal value |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -795,11 +875,19 @@ Permission Required: CRM:deal:view
           "industry": "Technology"
         },
         "contacts": [
-          { "id": "contact-uuid", "name": "Bob Williams", "email": "bob@company.com" }
+          {
+            "id": "contact-uuid",
+            "name": "Bob Williams",
+            "email": "bob@company.com"
+          }
         ],
         "assignedTo": { "id": "user-uuid", "name": "Sales Rep" },
         "activities": [
-          { "type": "call", "date": "2024-01-14", "notes": "Discussed requirements" }
+          {
+            "type": "call",
+            "date": "2024-01-14",
+            "notes": "Discussed requirements"
+          }
         ],
         "createdAt": "2024-01-10T10:00:00Z",
         "updatedAt": "2024-01-14T15:30:00Z"
@@ -810,6 +898,7 @@ Permission Required: CRM:deal:view
 ```
 
 #### Update Deal Stage
+
 ```http
 PUT /api/v1/crm/deals/{id}/stage
 Authorization: Bearer {access_token}
@@ -818,6 +907,7 @@ Permission Required: CRM:deal:edit
 ```
 
 **Request:**
+
 ```json
 {
   "stage": "negotiation",
@@ -827,6 +917,7 @@ Permission Required: CRM:deal:edit
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -841,6 +932,7 @@ Permission Required: CRM:deal:edit
 ```
 
 #### Mark Deal as Won
+
 ```http
 POST /api/v1/crm/deals/{id}/won
 Authorization: Bearer {access_token}
@@ -849,6 +941,7 @@ Permission Required: CRM:deal:edit
 ```
 
 **Request:**
+
 ```json
 {
   "actualCloseDate": "2024-01-15",
@@ -858,6 +951,7 @@ Permission Required: CRM:deal:edit
 ```
 
 #### Mark Deal as Lost
+
 ```http
 POST /api/v1/crm/deals/{id}/lost
 Authorization: Bearer {access_token}
@@ -866,6 +960,7 @@ Permission Required: CRM:deal:edit
 ```
 
 **Request:**
+
 ```json
 {
   "reason": "budget_constraints",
@@ -878,6 +973,7 @@ Permission Required: CRM:deal:edit
 ### Pipeline
 
 #### Get Pipeline View
+
 ```http
 GET /api/v1/crm/pipeline
 Authorization: Bearer {access_token}
@@ -885,6 +981,7 @@ Permission Required: CRM:deal:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -896,9 +993,7 @@ Permission Required: CRM:deal:view
         "order": 1,
         "dealCount": 12,
         "totalValue": 150000,
-        "deals": [
-          { "id": "deal-1", "name": "Deal A", "value": 25000 }
-        ]
+        "deals": [{ "id": "deal-1", "name": "Deal A", "value": 25000 }]
       },
       {
         "id": "proposal",
@@ -921,6 +1016,7 @@ Permission Required: CRM:deal:view
 ### Organizations
 
 #### List Organizations
+
 ```http
 GET /api/v1/crm/organizations
 Authorization: Bearer {access_token}
@@ -928,6 +1024,7 @@ Permission Required: CRM:deal:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -948,7 +1045,12 @@ Permission Required: CRM:deal:view
           { "id": "contact-uuid", "name": "Bob Williams", "title": "CTO" }
         ],
         "deals": [
-          { "id": "deal-uuid", "name": "Enterprise License", "value": 75000, "stage": "proposal" }
+          {
+            "id": "deal-uuid",
+            "name": "Enterprise License",
+            "value": 75000,
+            "stage": "proposal"
+          }
         ],
         "totalDealValue": 150000,
         "createdAt": "2024-01-10T08:00:00Z"
@@ -965,6 +1067,7 @@ Permission Required: CRM:deal:view
 ### Projects
 
 #### List Projects
+
 ```http
 GET /api/v1/projects
 Authorization: Bearer {access_token}
@@ -979,6 +1082,7 @@ Permission Required: PROJECTS:project:view
 | `sourceDealId` | string | Filter by source CRM deal |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -997,9 +1101,7 @@ Permission Required: PROJECTS:project:view
         "budget": 75000,
         "progress": 25,
         "taskStats": { "total": 20, "completed": 5, "inProgress": 10 },
-        "team": [
-          { "id": "emp-uuid", "name": "John Doe", "role": "Developer" }
-        ],
+        "team": [{ "id": "emp-uuid", "name": "John Doe", "role": "Developer" }],
         "createdAt": "2024-01-15T10:00:00Z",
         "updatedAt": "2024-01-15T10:00:00Z"
       }
@@ -1009,6 +1111,7 @@ Permission Required: PROJECTS:project:view
 ```
 
 #### Create Project
+
 ```http
 POST /api/v1/projects
 Authorization: Bearer {access_token}
@@ -1017,6 +1120,7 @@ Permission Required: PROJECTS:project:create
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Tech Corp Implementation",
@@ -1031,6 +1135,7 @@ Permission Required: PROJECTS:project:create
 ```
 
 #### Update Project Status
+
 ```http
 PUT /api/v1/projects/{id}/status
 Authorization: Bearer {access_token}
@@ -1039,6 +1144,7 @@ Permission Required: PROJECTS:project:edit
 ```
 
 **Request:**
+
 ```json
 {
   "status": "completed",
@@ -1051,6 +1157,7 @@ Permission Required: PROJECTS:project:edit
 ### Tasks
 
 #### List Project Tasks
+
 ```http
 GET /api/v1/projects/{projectId}/tasks
 Authorization: Bearer {access_token}
@@ -1058,6 +1165,7 @@ Permission Required: PROJECTS:project:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1080,6 +1188,7 @@ Permission Required: PROJECTS:project:view
 ```
 
 #### Create Task
+
 ```http
 POST /api/v1/projects/{projectId}/tasks
 Authorization: Bearer {access_token}
@@ -1088,6 +1197,7 @@ Permission Required: PROJECTS:project:edit
 ```
 
 **Request:**
+
 ```json
 {
   "title": "Implement authentication",
@@ -1101,6 +1211,7 @@ Permission Required: PROJECTS:project:edit
 ```
 
 #### Update Task Status
+
 ```http
 PUT /api/v1/tasks/{id}/status
 Authorization: Bearer {access_token}
@@ -1109,6 +1220,7 @@ Permission Required: PROJECTS:project:edit
 ```
 
 **Request:**
+
 ```json
 {
   "status": "done",
@@ -1120,6 +1232,7 @@ Permission Required: PROJECTS:project:edit
 ### Time Tracking
 
 #### Log Time
+
 ```http
 POST /api/v1/tasks/{taskId}/time
 Authorization: Bearer {access_token}
@@ -1128,6 +1241,7 @@ Permission Required: PROJECTS:project:edit
 ```
 
 **Request:**
+
 ```json
 {
   "date": "2024-01-15",
@@ -1138,6 +1252,7 @@ Permission Required: PROJECTS:project:edit
 ```
 
 #### Get Time Report
+
 ```http
 GET /api/v1/projects/{projectId}/time-report
 Authorization: Bearer {access_token}
@@ -1145,10 +1260,12 @@ Permission Required: PROJECTS:project:view
 ```
 
 **Query Parameters:**
+
 - `startDate`: Start of reporting period
 - `endDate`: End of reporting period
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1173,6 +1290,7 @@ Permission Required: PROJECTS:project:view
 ### Accounts (Chart of Accounts)
 
 #### List Accounts
+
 ```http
 GET /api/v1/finance/accounts
 Authorization: Bearer {access_token}
@@ -1180,6 +1298,7 @@ Permission Required: FINANCE:account:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1190,7 +1309,7 @@ Permission Required: FINANCE:account:view
       "name": "Cash and Bank",
       "type": "asset",
       "category": "current_asset",
-      "balance": 150000.00,
+      "balance": 150000.0,
       "parentId": null,
       "isActive": true
     },
@@ -1200,7 +1319,7 @@ Permission Required: FINANCE:account:view
       "name": "Sales Revenue",
       "type": "revenue",
       "category": "operating_revenue",
-      "balance": 500000.00,
+      "balance": 500000.0,
       "parentId": null,
       "isActive": true
     }
@@ -1211,6 +1330,7 @@ Permission Required: FINANCE:account:view
 ### Transactions
 
 #### List Transactions
+
 ```http
 GET /api/v1/finance/transactions
 Authorization: Bearer {access_token}
@@ -1226,6 +1346,7 @@ Permission Required: FINANCE:transaction:view
 | `reference` | string | Search by reference |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1237,8 +1358,12 @@ Permission Required: FINANCE:transaction:view
         "description": "Invoice payment - Tech Corp",
         "reference": "INV-001",
         "debitAccount": { "id": "acc-1000", "name": "Cash", "code": "1000" },
-        "creditAccount": { "id": "acc-1200", "name": "Accounts Receivable", "code": "1200" },
-        "amount": 70000.00,
+        "creditAccount": {
+          "id": "acc-1200",
+          "name": "Accounts Receivable",
+          "code": "1200"
+        },
+        "amount": 70000.0,
         "currency": "USD",
         "sourceModule": "FINANCE",
         "sourceId": "inv-uuid",
@@ -1250,6 +1375,7 @@ Permission Required: FINANCE:transaction:view
 ```
 
 #### Create Journal Entry
+
 ```http
 POST /api/v1/finance/transactions
 Authorization: Bearer {access_token}
@@ -1258,14 +1384,15 @@ Permission Required: FINANCE:transaction:create
 ```
 
 **Request:**
+
 ```json
 {
   "date": "2024-01-15",
   "description": "Office supplies purchase",
   "reference": "PO-001",
   "entries": [
-    { "accountId": "acc-5100", "type": "debit", "amount": 500.00 },
-    { "accountId": "acc-1000", "type": "credit", "amount": 500.00 }
+    { "accountId": "acc-5100", "type": "debit", "amount": 500.0 },
+    { "accountId": "acc-1000", "type": "credit", "amount": 500.0 }
   ],
   "attachments": ["doc-uuid"]
 }
@@ -1274,6 +1401,7 @@ Permission Required: FINANCE:transaction:create
 ### Invoices
 
 #### List Invoices
+
 ```http
 GET /api/v1/finance/invoices
 Authorization: Bearer {access_token}
@@ -1289,6 +1417,7 @@ Permission Required: FINANCE:invoice:view
 | `endDate` | date | Issue date to |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1328,6 +1457,7 @@ Permission Required: FINANCE:invoice:view
 ```
 
 #### Create Invoice
+
 ```http
 POST /api/v1/finance/invoices
 Authorization: Bearer {access_token}
@@ -1336,6 +1466,7 @@ Permission Required: FINANCE:invoice:create
 ```
 
 **Request:**
+
 ```json
 {
   "customerId": "org-uuid",
@@ -1345,7 +1476,7 @@ Permission Required: FINANCE:invoice:create
     {
       "description": "Enterprise License",
       "quantity": 1,
-      "unitPrice": 70000.00
+      "unitPrice": 70000.0
     }
   ],
   "taxRate": 0,
@@ -1355,6 +1486,7 @@ Permission Required: FINANCE:invoice:create
 ```
 
 #### Record Payment
+
 ```http
 POST /api/v1/finance/invoices/{id}/payments
 Authorization: Bearer {access_token}
@@ -1363,9 +1495,10 @@ Permission Required: FINANCE:invoice:edit
 ```
 
 **Request:**
+
 ```json
 {
-  "amount": 70000.00,
+  "amount": 70000.0,
   "paymentDate": "2024-01-20",
   "paymentMethod": "bank_transfer",
   "reference": "WIRE-12345",
@@ -1376,6 +1509,7 @@ Permission Required: FINANCE:invoice:edit
 ### Payroll
 
 #### Process Payroll
+
 ```http
 POST /api/v1/finance/payroll
 Authorization: Bearer {access_token}
@@ -1384,6 +1518,7 @@ Permission Required: FINANCE:payroll:process
 ```
 
 **Request:**
+
 ```json
 {
   "periodStart": "2024-01-01",
@@ -1394,6 +1529,7 @@ Permission Required: FINANCE:payroll:process
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1405,17 +1541,17 @@ Permission Required: FINANCE:payroll:process
     "status": "processing",
     "summary": {
       "employeeCount": 2,
-      "grossTotal": 16000.00,
-      "deductionsTotal": 3200.00,
-      "netTotal": 12800.00
+      "grossTotal": 16000.0,
+      "deductionsTotal": 3200.0,
+      "netTotal": 12800.0
     },
     "employees": [
       {
         "employeeId": "emp-uuid",
         "name": "John Doe",
-        "grossSalary": 8000.00,
-        "deductions": 1600.00,
-        "netSalary": 6400.00
+        "grossSalary": 8000.0,
+        "deductions": 1600.0,
+        "netSalary": 6400.0
       }
     ]
   }
@@ -1425,6 +1561,7 @@ Permission Required: FINANCE:payroll:process
 ### Reports
 
 #### Profit & Loss Report
+
 ```http
 GET /api/v1/finance/reports/pnl
 Authorization: Bearer {access_token}
@@ -1432,29 +1569,29 @@ Permission Required: FINANCE:report:view
 ```
 
 **Query Parameters:**
+
 - `startDate`: Report period start
 - `endDate`: Report period end
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "period": { "start": "2024-01-01", "end": "2024-01-31" },
     "revenue": {
-      "total": 500000.00,
-      "breakdown": [
-        { "account": "Sales Revenue", "amount": 500000.00 }
-      ]
+      "total": 500000.0,
+      "breakdown": [{ "account": "Sales Revenue", "amount": 500000.0 }]
     },
     "expenses": {
-      "total": 350000.00,
+      "total": 350000.0,
       "breakdown": [
-        { "account": "Salaries", "amount": 300000.00 },
-        { "account": "Office Expenses", "amount": 50000.00 }
+        { "account": "Salaries", "amount": 300000.0 },
+        { "account": "Office Expenses", "amount": 50000.0 }
       ]
     },
-    "netIncome": 150000.00
+    "netIncome": 150000.0
   }
 }
 ```
@@ -1466,6 +1603,7 @@ Permission Required: FINANCE:report:view
 ### Policies
 
 #### List Policies
+
 ```http
 GET /api/v1/brain/policies
 Authorization: Bearer {access_token}
@@ -1480,6 +1618,7 @@ Permission Required: BRAIN:policy:view
 | `search` | string | Search by title or content |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1495,9 +1634,7 @@ Permission Required: BRAIN:policy:view
         "effectiveDate": "2024-01-01",
         "reviewDate": "2024-12-31",
         "owner": { "id": "user-uuid", "name": "HR Manager" },
-        "attachments": [
-          { "id": "doc-uuid", "name": "Remote_Work_Guide.pdf" }
-        ],
+        "attachments": [{ "id": "doc-uuid", "name": "Remote_Work_Guide.pdf" }],
         "createdAt": "2023-12-01T00:00:00Z",
         "updatedAt": "2024-01-01T00:00:00Z"
       }
@@ -1507,6 +1644,7 @@ Permission Required: BRAIN:policy:view
 ```
 
 #### Create Policy
+
 ```http
 POST /api/v1/brain/policies
 Authorization: Bearer {access_token}
@@ -1515,6 +1653,7 @@ Permission Required: BRAIN:policy:create
 ```
 
 **Request:**
+
 ```json
 {
   "title": "Data Security Policy",
@@ -1527,6 +1666,7 @@ Permission Required: BRAIN:policy:create
 ```
 
 #### Search Knowledge Base
+
 ```http
 GET /api/v1/brain/search
 Authorization: Bearer {access_token}
@@ -1541,6 +1681,7 @@ Permission Required: BRAIN:policy:view
 | `category` | string | Filter by category |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1561,6 +1702,7 @@ Permission Required: BRAIN:policy:view
 ### Decisions
 
 #### Log Decision
+
 ```http
 POST /api/v1/brain/decisions
 Authorization: Bearer {access_token}
@@ -1569,6 +1711,7 @@ Permission Required: BRAIN:decision:create
 ```
 
 **Request:**
+
 ```json
 {
   "title": "Adopt NestJS Framework",
@@ -1576,7 +1719,10 @@ Permission Required: BRAIN:decision:create
   "context": "Evaluated Express, Fastify, and NestJS",
   "decision": "Choose NestJS",
   "rationale": "Best TypeScript support and modular architecture",
-  "consequences": ["Learning curve for team", "Better long-term maintainability"],
+  "consequences": [
+    "Learning curve for team",
+    "Better long-term maintainability"
+  ],
   "decisionMakerId": "user-uuid",
   "stakeholders": ["user-uuid-1", "user-uuid-2"],
   "relatedTo": {
@@ -1589,6 +1735,7 @@ Permission Required: BRAIN:decision:create
 ### Document Management
 
 #### Upload Document for RAG
+
 ```http
 POST /api/v1/brain/documents
 Authorization: Bearer {access_token}
@@ -1597,6 +1744,7 @@ Permission Required: BRAIN:document:upload
 ```
 
 **Request:**
+
 ```
 file: <binary>
 metadata: {
@@ -1607,6 +1755,7 @@ metadata: {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1621,12 +1770,14 @@ metadata: {
 ```
 
 #### Get Document Processing Status
+
 ```http
 GET /api/v1/brain/documents/{id}/status
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1648,6 +1799,7 @@ Authorization: Bearer {access_token}
 ### Risk Register
 
 #### List Risks
+
 ```http
 GET /api/v1/compliance/risks
 Authorization: Bearer {access_token}
@@ -1662,6 +1814,7 @@ Permission Required: COMPLIANCE:risk:view
 | `ownerId` | string | Risk owner user ID |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1687,6 +1840,7 @@ Permission Required: COMPLIANCE:risk:view
 ```
 
 #### Create Risk
+
 ```http
 POST /api/v1/compliance/risks
 Authorization: Bearer {access_token}
@@ -1695,6 +1849,7 @@ Permission Required: COMPLIANCE:risk:create
 ```
 
 **Request:**
+
 ```json
 {
   "description": "Data breach due to phishing",
@@ -1710,6 +1865,7 @@ Permission Required: COMPLIANCE:risk:create
 ### CAPA (Corrective/Preventive Actions)
 
 #### List CAPAs
+
 ```http
 GET /api/v1/compliance/capas
 Authorization: Bearer {access_token}
@@ -1724,6 +1880,7 @@ Permission Required: COMPLIANCE:capa:view
 | `source` | string | audit, incident, complaint, etc. |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1750,6 +1907,7 @@ Permission Required: COMPLIANCE:capa:view
 ```
 
 #### Update CAPA Status
+
 ```http
 PUT /api/v1/compliance/capas/{id}/status
 Authorization: Bearer {access_token}
@@ -1758,6 +1916,7 @@ Permission Required: COMPLIANCE:capa:edit
 ```
 
 **Request:**
+
 ```json
 {
   "status": "implemented",
@@ -1769,6 +1928,7 @@ Permission Required: COMPLIANCE:capa:edit
 ### Management Reviews
 
 #### List Reviews
+
 ```http
 GET /api/v1/compliance/reviews
 Authorization: Bearer {access_token}
@@ -1776,6 +1936,7 @@ Permission Required: COMPLIANCE:review:view
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1796,7 +1957,11 @@ Permission Required: COMPLIANCE:review:view
         },
         "decisions": ["Expand engineering team", "Implement new CRM module"],
         "actionItems": [
-          { "item": "Hire 3 developers", "owner": "HR Manager", "dueDate": "2024-03-01" }
+          {
+            "item": "Hire 3 developers",
+            "owner": "HR Manager",
+            "dueDate": "2024-03-01"
+          }
         ],
         "minutes": "Detailed meeting minutes...",
         "createdAt": "2024-01-15T14:00:00Z"
@@ -1809,6 +1974,7 @@ Permission Required: COMPLIANCE:review:view
 ### Compliance Evidence
 
 #### Export Evidence
+
 ```http
 POST /api/v1/compliance/evidence
 Authorization: Bearer {access_token}
@@ -1817,6 +1983,7 @@ Permission Required: COMPLIANCE:evidence:export
 ```
 
 **Request:**
+
 ```json
 {
   "standard": "ISO9001", // or "ISO14001", "ISO45001", "ALL"
@@ -1828,6 +1995,7 @@ Permission Required: COMPLIANCE:evidence:export
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1846,6 +2014,7 @@ Permission Required: COMPLIANCE:evidence:export
 ### Document Ingestion
 
 #### Ingest Document
+
 ```http
 POST /api/v1/rag/ingest
 Authorization: Bearer {access_token}
@@ -1854,6 +2023,7 @@ Permission Required: BRAIN:document:upload
 ```
 
 **Request:**
+
 ```
 file: <binary>
 options: {
@@ -1866,6 +2036,7 @@ options: {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1883,6 +2054,7 @@ options: {
 ### Query
 
 #### Search Documents
+
 ```http
 POST /api/v1/rag/query
 Authorization: Bearer {access_token}
@@ -1891,6 +2063,7 @@ Permission Required: BRAIN:chatbot:use
 ```
 
 **Request:**
+
 ```json
 {
   "query": "What is the remote work policy?",
@@ -1904,6 +2077,7 @@ Permission Required: BRAIN:chatbot:use
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1930,6 +2104,7 @@ Permission Required: BRAIN:chatbot:use
 ```
 
 #### Chat with AI
+
 ```http
 POST /api/v1/rag/chat
 Authorization: Bearer {access_token}
@@ -1938,6 +2113,7 @@ Permission Required: BRAIN:chatbot:use
 ```
 
 **Request:**
+
 ```json
 {
   "message": "Explain the vacation policy",
@@ -1949,6 +2125,7 @@ Permission Required: BRAIN:chatbot:use
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1973,6 +2150,7 @@ Permission Required: BRAIN:chatbot:use
 ### Document Management
 
 #### List Indexed Documents
+
 ```http
 GET /api/v1/rag/documents
 Authorization: Bearer {access_token}
@@ -1986,6 +2164,7 @@ Permission Required: BRAIN:document:view
 | `department` | string | Filter by department |
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2009,6 +2188,7 @@ Permission Required: BRAIN:document:view
 ```
 
 #### Delete Document
+
 ```http
 DELETE /api/v1/rag/documents/{id}
 Authorization: Bearer {access_token}
@@ -2016,6 +2196,7 @@ Permission Required: BRAIN:document:delete
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2030,6 +2211,7 @@ Permission Required: BRAIN:document:delete
 ### System Status
 
 #### Get RAG Service Status
+
 ```http
 GET /api/v1/rag/status
 Authorization: Bearer {access_token}
@@ -2037,6 +2219,7 @@ Permission Required: BRAIN:chatbot:use
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2065,9 +2248,11 @@ Permission Required: BRAIN:chatbot:use
 ## Error Handling
 
 ### Response Format
+
 All API responses follow a standard format:
 
 **Success Response:**
+
 ```json
 {
   "success": true,
@@ -2080,15 +2265,14 @@ All API responses follow a standard format:
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
   "error": {
     "code": "VALID001",
     "message": "Validation failed",
-    "details": [
-      { "field": "email", "message": "Invalid email format" }
-    ]
+    "details": [{ "field": "email", "message": "Invalid email format" }]
   },
   "meta": {
     "timestamp": "2024-01-15T10:30:00Z",
@@ -2098,41 +2282,43 @@ All API responses follow a standard format:
 ```
 
 ### HTTP Status Codes
-| Status | Meaning | Usage |
-|--------|---------|-------|
-| 200 | OK | Successful GET, PUT, DELETE |
-| 201 | Created | Successful POST |
-| 400 | Bad Request | Validation error |
-| 401 | Unauthorized | Missing/invalid token |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource doesn't exist |
-| 409 | Conflict | Resource already exists |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Server Error | Internal error |
-| 504 | Gateway Timeout | RAG query timeout |
+
+| Status | Meaning           | Usage                       |
+| ------ | ----------------- | --------------------------- |
+| 200    | OK                | Successful GET, PUT, DELETE |
+| 201    | Created           | Successful POST             |
+| 400    | Bad Request       | Validation error            |
+| 401    | Unauthorized      | Missing/invalid token       |
+| 403    | Forbidden         | Insufficient permissions    |
+| 404    | Not Found         | Resource doesn't exist      |
+| 409    | Conflict          | Resource already exists     |
+| 429    | Too Many Requests | Rate limit exceeded         |
+| 500    | Server Error      | Internal error              |
+| 504    | Gateway Timeout   | RAG query timeout           |
 
 ### Error Codes Reference
 
-| Code | Description | HTTP Status |
-|------|-------------|-------------|
-| `AUTH001` | Invalid credentials | 401 |
-| `AUTH002` | Token expired | 401 |
-| `AUTH003` | Insufficient permissions | 403 |
-| `VALID001` | Validation failed | 400 |
-| `NOTFOUND001` | Resource not found | 404 |
-| `CONFLICT001` | Resource already exists | 409 |
-| `RATE001` | Rate limit exceeded | 429 |
-| `SERVER001` | Internal server error | 500 |
-| `RAG001` | LLM timeout | 504 |
-| `RAG002` | No relevant documents | 200 |
-| `DB001` | Database connection error | 500 |
-| `FILE001` | File upload error | 400 |
+| Code          | Description               | HTTP Status |
+| ------------- | ------------------------- | ----------- |
+| `AUTH001`     | Invalid credentials       | 401         |
+| `AUTH002`     | Token expired             | 401         |
+| `AUTH003`     | Insufficient permissions  | 403         |
+| `VALID001`    | Validation failed         | 400         |
+| `NOTFOUND001` | Resource not found        | 404         |
+| `CONFLICT001` | Resource already exists   | 409         |
+| `RATE001`     | Rate limit exceeded       | 429         |
+| `SERVER001`   | Internal server error     | 500         |
+| `RAG001`      | LLM timeout               | 504         |
+| `RAG002`      | No relevant documents     | 200         |
+| `DB001`       | Database connection error | 500         |
+| `FILE001`     | File upload error         | 400         |
 
 ---
 
 ## Pagination & Filtering
 
 ### Pagination
+
 All list endpoints support pagination:
 
 **Query Parameters:**
@@ -2142,6 +2328,7 @@ All list endpoints support pagination:
 | `limit` | number | 20 | 100 | Items per page |
 
 **Response Structure:**
+
 ```json
 {
   "success": true,
@@ -2160,51 +2347,62 @@ All list endpoints support pagination:
 ```
 
 ### Sorting
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `sortBy` | string | Field to sort by |
-| `sortOrder` | string | `asc` or `desc` |
+
+| Parameter   | Type   | Description      |
+| ----------- | ------ | ---------------- |
+| `sortBy`    | string | Field to sort by |
+| `sortOrder` | string | `asc` or `desc`  |
 
 Example: `GET /api/v1/hr/employees?sortBy=lastName&sortOrder=asc`
 
 ### Filtering
+
 Common filter patterns:
 
 **Date Range:**
+
 ```
 GET /api/v1/audit-logs?startDate=2024-01-01&endDate=2024-01-31
 ```
 
 **Status Filter:**
+
 ```
 GET /api/v1/crm/deals?status=proposal&status=negotiation
 ```
 
 **Search:**
+
 ```
 GET /api/v1/hr/employees?search=john
 ```
 
 **Multiple Values:**
+
 ```
 GET /api/v1/crm/deals?stage=proposal,negotiation
 ```
 
 ### Field Selection
+
 Use `fields` parameter to limit returned fields:
+
 ```
 GET /api/v1/hr/employees?fields=id,firstName,lastName,email
 ```
 
 ### Cursor-Based Pagination (for large datasets)
+
 For audit logs and time-series data:
 
 **Request:**
+
 ```
 GET /api/v1/audit-logs?cursor=eyJpZCI6Inh5eiJ9&limit=100
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2220,5 +2418,5 @@ GET /api/v1/audit-logs?cursor=eyJpZCI6Inh5eiJ9&limit=100
 
 ---
 
-*API Version: 1.0*  
-*Last Updated: February 2026*
+_API Version: 1.0_  
+_Last Updated: February 2026_

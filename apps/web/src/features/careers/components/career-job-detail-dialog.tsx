@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 
-import type { CareerJob } from "@/features/careers/data";
-import { Button } from "@/shared/components/ui/button";
+import type { CareerJob } from '@/features/careers/data';
+import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
+} from '@/shared/components/ui/dialog';
 
 type CareerJobDetailDialogProps = {
   job: CareerJob | null;
@@ -41,7 +41,10 @@ function ListSection({ title, items }: ListSectionProps) {
   );
 }
 
-export function CareerJobDetailDialog({ job, onOpenChange }: CareerJobDetailDialogProps) {
+export function CareerJobDetailDialog({
+  job,
+  onOpenChange,
+}: CareerJobDetailDialogProps) {
   return (
     <Dialog open={job !== null} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] w-[97vw] overflow-y-auto p-0 sm:max-w-[980px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2">
@@ -73,26 +76,40 @@ export function CareerJobDetailDialog({ job, onOpenChange }: CareerJobDetailDial
             <div className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_0.8fr]">
               <div className="space-y-4">
                 <section className="rounded-2xl border border-border/70 bg-card px-4 py-4">
-                  <p className="text-sm font-semibold text-foreground">About the role</p>
-                  <p className="mt-2 text-sm leading-6 text-foreground">{job.summary}</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    About the role
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-foreground">
+                    {job.summary}
+                  </p>
                 </section>
 
                 {job.whyJoinUs ? (
                   <section className="rounded-2xl border border-border/70 bg-card px-4 py-4">
-                    <p className="text-sm font-semibold text-foreground">Why join us</p>
-                    <p className="mt-2 text-sm leading-6 text-foreground">{job.whyJoinUs}</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      Why join us
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-foreground">
+                      {job.whyJoinUs}
+                    </p>
                   </section>
                 ) : null}
 
                 <div className="grid gap-4 xl:grid-cols-2">
-                  <ListSection title="Key Responsibilities" items={job.keyResponsibilities} />
+                  <ListSection
+                    title="Key Responsibilities"
+                    items={job.keyResponsibilities}
+                  />
                   <ListSection title="Requirements" items={job.requirements} />
                 </div>
               </div>
 
               <div className="space-y-4">
                 {job.preferredSkills.length > 0 ? (
-                  <ListSection title="Preferred Skills" items={job.preferredSkills} />
+                  <ListSection
+                    title="Preferred Skills"
+                    items={job.preferredSkills}
+                  />
                 ) : null}
                 {job.benefits.length > 0 ? (
                   <ListSection title="Benefits" items={job.benefits} />

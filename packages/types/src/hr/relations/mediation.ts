@@ -1,4 +1,8 @@
-export type MediationStatus = 'PENDING' | 'IN_PROGRESS' | 'AGREEMENT_REACHED' | 'CLOSED';
+export type MediationStatus =
+  | 'PENDING'
+  | 'IN_PROGRESS'
+  | 'AGREEMENT_REACHED'
+  | 'CLOSED';
 
 export interface ConflictMediationResponseDto {
   id: string;

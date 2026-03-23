@@ -54,26 +54,28 @@ graph LR
 ```
 
 **Chunking Logic:**
+
 - **Strategy:** Sliding Window.
 - **Chunk Size:** 512 tokens.
 - **Overlap:** 50 tokens (to preserve context across boundaries).
 
 ```typescript
 function chunkDocument(text: string): string[] {
-    const tokens = tokenizer.encode(text);
-    const chunks = [];
-    
-    for (let i = 0; i < tokens.length; i += (512 - 50)) {
-        const chunkTokens = tokens.slice(i, i + 512);
-        chunks.push(tokenizer.decode(chunkTokens));
-    }
-    return chunks;
+  const tokens = tokenizer.encode(text);
+  const chunks = [];
+
+  for (let i = 0; i < tokens.length; i += 512 - 50) {
+    const chunkTokens = tokens.slice(i, i + 512);
+    chunks.push(tokenizer.decode(chunkTokens));
+  }
+  return chunks;
 }
 ```
 
 ### 2.2 Retrieval Logic
 
 **Hybrid Search Algorithm:**
+
 1. **Semantic Search:** Query Vector DB for Top-K (e.g., 20) results using Cosine Similarity.
 2. **Keyword Search:** Query Elasticsearch/Postgres for Top-K results using BM25.
 3. **Re-Ranking:** Use Cross-Encoder to score relevance of combined results.
@@ -100,6 +102,7 @@ function chunkDocument(text: string): string[] {
 ### 4.1 System Prompts
 
 **RAG Assistant:**
+
 ```text
 You are BLIH Brain, an AI assistant for enterprise business intelligence.
 1. Answer strictly based on the provided CONTEXT.
@@ -115,6 +118,7 @@ USER QUERY:
 ```
 
 **Decision Support:**
+
 ```text
 Analyze the following business scenario and propose 3 strategic options.
 Format output as:
@@ -136,17 +140,17 @@ SCENARIO:
 CREATE TABLE documents (
     id VARCHAR(36) PRIMARY KEY,
     company_id VARCHAR(36) NOT NULL,
-    
+
     title VARCHAR(255) NOT NULL,
     type VARCHAR(50), -- 'PDF', 'DOCX', 'MD'
     url VARCHAR(500), -- S3 path
-    
+
     status ENUM('PROCESSING', 'INDEXED', 'FAILED') DEFAULT 'PROCESSING',
     token_count INT,
-    
+
     uploaded_by VARCHAR(36),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (uploaded_by) REFERENCES users(id)
 );
 
@@ -156,7 +160,7 @@ CREATE TABLE chunks (
     index INT, -- Sequence number
     content TEXT,
     token_count INT,
-    
+
     FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
 );
 ```
@@ -169,10 +173,10 @@ CREATE TABLE chat_sessions (
     company_id VARCHAR(36) NOT NULL,
     user_id VARCHAR(36) NOT NULL,
     title VARCHAR(255),
-    
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -181,12 +185,12 @@ CREATE TABLE messages (
     session_id VARCHAR(36) NOT NULL,
     role ENUM('user', 'assistant', 'system') NOT NULL,
     content TEXT NOT NULL,
-    
+
     tokens_used INT,
     citations JSONB, -- Array of {doc_id, chunk_id}
-    
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
 );
 ```
@@ -210,6 +214,7 @@ CREATE TABLE messages (
 ---
 
 **Related Documentation:**
+
 - [BRAIN_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/BRAIN_API.md) - API Endpoints
 - [BRAIN_INTEGRATION.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/integration/BRAIN_INTEGRATION.md) - External Service Config
 - [BRAIN_SECURITY.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/security/BRAIN_SECURITY.md) - Security Guardrails

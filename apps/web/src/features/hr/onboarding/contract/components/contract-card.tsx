@@ -1,17 +1,20 @@
-"use client";
+'use client';
 
-import { ChevronDown, ChevronUp, Mail } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ChevronUp, Mail } from 'lucide-react';
+import { useState } from 'react';
 
-import type { EmploymentContract } from "@/features/hr/onboarding/contract/types";
-import { Button } from "@/shared/components/ui/button";
+import type { EmploymentContract } from '@/features/hr/onboarding/contract/types';
+import { Button } from '@/shared/components/ui/button';
 
 type ContractCardProps = {
   contract: EmploymentContract;
   defaultExpanded?: boolean;
 };
 
-export function ContractCard({ contract, defaultExpanded = false }: ContractCardProps) {
+export function ContractCard({
+  contract,
+  defaultExpanded = false,
+}: ContractCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
@@ -25,12 +28,16 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
 
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="truncate text-base font-medium leading-4 tracking-[-0.3125px] text-black">{contract.name}</p>
+                <p className="truncate text-base font-medium leading-4 tracking-[-0.3125px] text-black">
+                  {contract.name}
+                </p>
                 <span className="inline-flex rounded-[4px] bg-[rgba(30,102,247,0.1)] px-1 py-0.5 text-xs font-semibold uppercase leading-4 text-[#1e66f7]">
                   {contract.department}
                 </span>
               </div>
-              <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">{contract.role}</p>
+              <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">
+                {contract.role}
+              </p>
             </div>
           </div>
 
@@ -42,15 +49,21 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
             onClick={() => setIsExpanded((previous) => !previous)}
             aria-expanded={isExpanded}
           >
-            {isExpanded ? <ChevronUp className="h-[14px] w-[14px]" /> : <ChevronDown className="h-[14px] w-[14px]" />}
-            {isExpanded ? "Less" : "More"}
+            {isExpanded ? (
+              <ChevronUp className="h-[14px] w-[14px]" />
+            ) : (
+              <ChevronDown className="h-[14px] w-[14px]" />
+            )}
+            {isExpanded ? 'Less' : 'More'}
           </Button>
         </div>
       </div>
 
       <div
         className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          isExpanded
+            ? 'grid-rows-[1fr] opacity-100'
+            : 'grid-rows-[0fr] opacity-0'
         }`}
       >
         <div className="min-h-0 overflow-hidden border-t border-[#e5e5e5] px-5 py-3.5">
@@ -59,17 +72,27 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
               <div className="flex h-11 items-center gap-2 rounded-[8px] bg-[rgba(30,102,247,0.1)] px-3">
                 <Mail className="h-[18px] w-[18px] text-primary" />
                 <p className="text-sm tracking-[-0.1504px] text-black">
-                  Offer letter sent on: <span className="font-semibold">{contract.offerSentOn}</span>
+                  Offer letter sent on:{' '}
+                  <span className="font-semibold">{contract.offerSentOn}</span>
                 </p>
               </div>
 
-              <h3 className="mt-5 text-base font-semibold tracking-[-0.3125px] text-black">Role Summary</h3>
-              <p className="mt-3 max-w-[460px] text-sm leading-5 tracking-[-0.1504px] text-[#666]">{contract.roleSummary}</p>
+              <h3 className="mt-5 text-base font-semibold tracking-[-0.3125px] text-black">
+                Role Summary
+              </h3>
+              <p className="mt-3 max-w-[460px] text-sm leading-5 tracking-[-0.1504px] text-[#666]">
+                {contract.roleSummary}
+              </p>
 
-              <h4 className="mt-4 text-base font-medium tracking-[-0.3125px] text-black">Responsibilities</h4>
+              <h4 className="mt-4 text-base font-medium tracking-[-0.3125px] text-black">
+                Responsibilities
+              </h4>
               <ul className="mt-2 space-y-1">
                 {contract.responsibilities.map((item) => (
-                  <li key={item} className="text-sm leading-5 tracking-[-0.1504px] text-[#666]">
+                  <li
+                    key={item}
+                    className="text-sm leading-5 tracking-[-0.1504px] text-[#666]"
+                  >
                     <span className="mr-2 text-primary">•</span>
                     {item}
                   </li>
@@ -79,25 +102,35 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
 
             <section className="flex h-full flex-col justify-between">
               <div className="rounded-[8px] bg-[#f3f3f3] p-4">
-                <p className="text-base font-medium tracking-[-0.3125px] text-black">Overview</p>
+                <p className="text-base font-medium tracking-[-0.3125px] text-black">
+                  Overview
+                </p>
 
                 <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
                   <div>
                     <p className="text-xs leading-4 text-[#666]">Start Date</p>
-                    <p className="mt-1 text-sm font-semibold tracking-[-0.1504px] text-black">{contract.overview.startDate}</p>
+                    <p className="mt-1 text-sm font-semibold tracking-[-0.1504px] text-black">
+                      {contract.overview.startDate}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-xs leading-4 text-[#666]">Probation Period</p>
+                    <p className="text-xs leading-4 text-[#666]">
+                      Probation Period
+                    </p>
                     <p className="mt-1 text-sm font-semibold tracking-[-0.1504px] text-black">
                       {contract.overview.probationPeriod}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs leading-4 text-[#666]">Work Hours</p>
-                    <p className="mt-1 text-base font-medium tracking-[-0.3125px] text-black">{contract.overview.workHours}</p>
+                    <p className="mt-1 text-base font-medium tracking-[-0.3125px] text-black">
+                      {contract.overview.workHours}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-xs leading-4 text-[#666]">Salary & Payroll</p>
+                    <p className="text-xs leading-4 text-[#666]">
+                      Salary & Payroll
+                    </p>
                     <p className="mt-1 text-sm font-semibold tracking-[-0.1504px] text-black">
                       {contract.overview.salaryPayroll}
                     </p>
@@ -106,7 +139,10 @@ export function ContractCard({ contract, defaultExpanded = false }: ContractCard
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-2.5">
-                <Button type="button" className="h-8 rounded-[6px] text-sm font-medium tracking-[-0.1504px]">
+                <Button
+                  type="button"
+                  className="h-8 rounded-[6px] text-sm font-medium tracking-[-0.1504px]"
+                >
                   View Record
                 </Button>
                 <Button

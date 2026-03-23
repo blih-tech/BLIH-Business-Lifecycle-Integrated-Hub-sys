@@ -1256,10 +1256,7 @@ scripts/
   "name": "blih-system",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -1288,8 +1285,8 @@ scripts/
 
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 ```
 
 ### turbo.json
@@ -1367,6 +1364,7 @@ volumes/
 ## Summary
 
 **Total Directory Structure:**
+
 - **apps/**: 3 main applications (web, api, rag-service)
 - **packages/**: 8 packages (core + 6 modules + shared)
 - **infrastructure/**: Docker, K8s, Terraform configs
@@ -1375,6 +1373,7 @@ volumes/
 - **scripts/**: Automation and utility scripts
 
 **Key Files:**
+
 - `package.json`: Workspace configuration
 - `pnpm-workspace.yaml`: PNPM workspace
 - `turbo.json`: Build pipeline
@@ -1382,6 +1381,7 @@ volumes/
 - `docker-compose.prod.yml`: Production environment
 
 This structure supports:
+
 - **Modular development**: Each module is self-contained
 - **Shared code**: Common types, UI, utilities in packages/shared
 - **Scalable deployment**: Docker + K8s ready

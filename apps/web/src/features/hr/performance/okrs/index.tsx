@@ -1,27 +1,34 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { okrItems, okrSummaryStats } from "@/features/hr/performance/okrs/mock-data";
-import type { OkrItem } from "@/features/hr/performance/okrs/types";
+import {
+  okrItems,
+  okrSummaryStats,
+} from '@/features/hr/performance/okrs/mock-data';
+import type { OkrItem } from '@/features/hr/performance/okrs/types';
 
-import { OkrsFilters, OkrsList, SummaryStatsGrid } from "./components";
+import { OkrsFilters, OkrsList, SummaryStatsGrid } from './components';
 
-export * from "@/features/hr/performance/okrs/components";
-export * from "@/features/hr/performance/okrs/types";
+export * from '@/features/hr/performance/okrs/components';
+export * from '@/features/hr/performance/okrs/types';
 
-function sortItems(items: OkrItem[], sortBy: "name-asc" | "name-desc") {
+function sortItems(items: OkrItem[], sortBy: 'name-asc' | 'name-desc') {
   return [...items].sort((a, b) =>
-    sortBy === "name-desc" ? b.title.localeCompare(a.title) : a.title.localeCompare(b.title),
+    sortBy === 'name-desc'
+      ? b.title.localeCompare(a.title)
+      : a.title.localeCompare(b.title),
   );
 }
 
 export function PerformanceOkrsContent() {
-  const [search, setSearch] = useState("");
-  const [department, setDepartment] = useState("all");
-  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc">("name-asc");
+  const [search, setSearch] = useState('');
+  const [department, setDepartment] = useState('all');
+  const [sortBy, setSortBy] = useState<'name-asc' | 'name-desc'>('name-asc');
   const defaultExpandedId = okrItems.find((item) => item.expanded)?.id;
-  const [expandedIds, setExpandedIds] = useState<string[]>(defaultExpandedId ? [defaultExpandedId] : []);
+  const [expandedIds, setExpandedIds] = useState<string[]>(
+    defaultExpandedId ? [defaultExpandedId] : [],
+  );
 
   const filteredItems = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -31,7 +38,8 @@ export function PerformanceOkrsContent() {
         !query ||
         item.title.toLowerCase().includes(query) ||
         item.owner.toLowerCase().includes(query);
-      const byDepartment = department === "all" || item.department === department;
+      const byDepartment =
+        department === 'all' || item.department === department;
       return bySearch && byDepartment;
     });
 
@@ -55,7 +63,9 @@ export function PerformanceOkrsContent() {
         expandedIds={expandedIds}
         onToggle={(id) => {
           setExpandedIds((previous) =>
-            previous.includes(id) ? previous.filter((itemId) => itemId !== id) : [...previous, id],
+            previous.includes(id)
+              ? previous.filter((itemId) => itemId !== id)
+              : [...previous, id],
           );
         }}
       />

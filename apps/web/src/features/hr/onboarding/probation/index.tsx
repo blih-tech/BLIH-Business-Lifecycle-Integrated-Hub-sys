@@ -1,8 +1,11 @@
-import { Award, CalendarDays, TrendingUp } from "lucide-react";
+import { Award, CalendarDays, TrendingUp } from 'lucide-react';
 
-import { probationSummaryStats, probationEmployees } from "@/features/hr/onboarding/probation/mock-data";
-import { ProbationCard } from "@/features/hr/onboarding/probation/components";
-import { ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+import {
+  probationSummaryStats,
+  probationEmployees,
+} from '@/features/hr/onboarding/probation/mock-data';
+import { ProbationCard } from '@/features/hr/onboarding/probation/components';
+import { ProgressStatCard } from '@/features/hr/onboarding/progress/components';
 
 const ICONS = {
   calendar: <CalendarDays className="h-4 w-4" />,
@@ -20,12 +23,20 @@ export function OnboardingProbationContent() {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Performance and Probation</h2>
-        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">KPI tracking, reviews, and results of employees on probation.</p>
+        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">
+          Performance and Probation
+        </h2>
+        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">
+          KPI tracking, reviews, and results of employees on probation.
+        </p>
 
         <div className="mt-4 space-y-3">
           {probationEmployees.map((employee, index) => (
-            <ProbationCard key={employee.id} employee={employee} defaultExpanded={index === 0} />
+            <ProbationCard
+              key={employee.id}
+              employee={employee}
+              defaultExpanded={index === 0}
+            />
           ))}
         </div>
       </section>

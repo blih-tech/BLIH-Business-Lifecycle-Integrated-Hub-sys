@@ -1,6 +1,6 @@
-import type { ExitOverviewStat } from "@/features/hr/exit/overview/types";
+import type { ExitOverviewStat } from '@/features/hr/exit/overview/types';
 
-import { ExitOverviewStatCard } from "./exit-overview-stat-card";
+import { ExitOverviewStatCard } from './exit-overview-stat-card';
 
 type ExitOverviewStatsGridProps = {
   items: ExitOverviewStat[];

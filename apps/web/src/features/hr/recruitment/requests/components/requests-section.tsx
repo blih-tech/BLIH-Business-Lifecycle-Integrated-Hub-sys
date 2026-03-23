@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import type { FullJobRequest } from "@/features/hr/recruitment/requests/types";
-import { JobRequestsSection } from "@/features/hr/recruitment/requests/components/job-requests-section";
-import { Input } from "@/shared/components/ui/input";
+import type { FullJobRequest } from '@/features/hr/recruitment/requests/types';
+import { JobRequestsSection } from '@/features/hr/recruitment/requests/components/job-requests-section';
+import { Input } from '@/shared/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from '@/shared/components/ui/select';
 
 type RequestsSectionProps = {
   title: string;
@@ -36,7 +36,10 @@ export function RequestsSection({
         <div className="space-y-3">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-1 items-center gap-2">
-              <Input className="h-9 max-w-[220px] bg-white" placeholder="Search jobs..." />
+              <Input
+                className="h-9 max-w-[220px] bg-white"
+                placeholder="Search jobs..."
+              />
               <button
                 type="button"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#e5e5e5] bg-white text-xs text-[#666]"

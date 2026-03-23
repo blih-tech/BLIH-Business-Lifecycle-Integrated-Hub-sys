@@ -181,7 +181,8 @@ const baseEmployees: ArchiveEmployee[] = [
 const generated: ArchiveEmployee[] = Array.from({ length: 24 }, (_, index) => {
   const t = baseEmployees[index % baseEmployees.length]!;
   const numericId = index + 9;
-  const suffix = ['II', 'III', 'IV'][Math.floor(index / baseEmployees.length)] ?? 'V';
+  const suffix =
+    ['II', 'III', 'IV'][Math.floor(index / baseEmployees.length)] ?? 'V';
 
   return {
     ...t,
@@ -193,5 +194,7 @@ const generated: ArchiveEmployee[] = Array.from({ length: 24 }, (_, index) => {
   };
 });
 
-export const archiveEmployees: ArchiveEmployee[] = [...baseEmployees, ...generated];
-
+export const archiveEmployees: ArchiveEmployee[] = [
+  ...baseEmployees,
+  ...generated,
+];

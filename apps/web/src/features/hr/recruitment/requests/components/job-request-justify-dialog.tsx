@@ -76,16 +76,16 @@ export function JobRequestJustifyDialog({
 
   function handleSubmit(action: 'review' | 'reject') {
     return (values: JustifyFormValues) => {
-    if (!request || !requestId) return;
+      if (!request || !requestId) return;
 
-    const payload = {
-      requestId,
+      const payload = {
+        requestId,
         action,
-      justification: values.justification,
-    };
+        justification: values.justification,
+      };
 
-    console.log('jobRequestJustification', payload);
-    closeDialog();
+      console.log('jobRequestJustification', payload);
+      closeDialog();
     };
   }
 
@@ -104,7 +104,9 @@ export function JobRequestJustifyDialog({
                     <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] border border-[#1e66f7] px-[9px] py-[3px] text-[12px] font-medium leading-[16px] text-[#1e66f7]">
                       {request.jobDetailsForm.experienceLevel
                         .split('_')
-                        .map((value) => value[0]?.toUpperCase() + value.slice(1))
+                        .map(
+                          (value) => value[0]?.toUpperCase() + value.slice(1),
+                        )
                         .join(' ')}
                     </span>
                   </div>

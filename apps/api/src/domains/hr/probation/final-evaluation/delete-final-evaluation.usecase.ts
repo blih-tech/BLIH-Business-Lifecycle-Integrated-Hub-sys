@@ -12,9 +12,7 @@ export class DeleteFinalEvaluationUseCase {
     });
 
     if (!existing) {
-      throw new NotFoundException(
-        `Final evaluation with id "${id}" not found`,
-      );
+      throw new NotFoundException(`Final evaluation with id "${id}" not found`);
     }
 
     // EvaluationScores cascade-delete via DB schema (onDelete: Cascade)

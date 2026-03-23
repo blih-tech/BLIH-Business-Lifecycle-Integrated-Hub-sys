@@ -1,5 +1,5 @@
-import { StatsCard } from "@/features/hr/attendance/memo-log/components/stats-card";
-import type { AttendanceMemoStat } from "@/features/hr/attendance/memo-log/types";
+import { StatsCard } from '@/features/hr/attendance/memo-log/components/stats-card';
+import type { AttendanceMemoStat } from '@/features/hr/attendance/memo-log/types';
 
 type StatsGridProps = {
   items: AttendanceMemoStat[];

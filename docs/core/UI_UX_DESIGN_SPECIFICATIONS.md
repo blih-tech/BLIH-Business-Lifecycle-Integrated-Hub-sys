@@ -59,13 +59,13 @@
 
 ### 1.2 Design Values
 
-| Value | Description | Implementation |
-|-------|-------------|----------------|
-| **Progressive Disclosure** | Show only what's needed | Collapsible sections, wizards |
-| **Immediate Feedback** | Confirm user actions | Success toasts, loading states |
-| **Forgiveness** | Allow undo/cancel | Confirmation dialogs, draft saves |
-| **Contextual Help** | Help when needed | Tooltips, inline hints |
-| **Data-Driven** | Surface insights | Dashboards, analytics widgets |
+| Value                      | Description             | Implementation                    |
+| -------------------------- | ----------------------- | --------------------------------- |
+| **Progressive Disclosure** | Show only what's needed | Collapsible sections, wizards     |
+| **Immediate Feedback**     | Confirm user actions    | Success toasts, loading states    |
+| **Forgiveness**            | Allow undo/cancel       | Confirmation dialogs, draft saves |
+| **Contextual Help**        | Help when needed        | Tooltips, inline hints            |
+| **Data-Driven**            | Surface insights        | Dashboards, analytics widgets     |
 
 ---
 
@@ -77,16 +77,16 @@
 
 ```css
 /* Primary - Blue (Trust, Professionalism) */
---color-primary-50:  #eff6ff;   /* Lightest */
+--color-primary-50: #eff6ff; /* Lightest */
 --color-primary-100: #dbeafe;
 --color-primary-200: #bfdbfe;
 --color-primary-300: #93c5fd;
 --color-primary-400: #60a5fa;
---color-primary-500: #3b82f6;   /* Base */
---color-primary-600: #2563eb;   /* Hover */
---color-primary-700: #1d4ed8;   /* Active */
+--color-primary-500: #3b82f6; /* Base */
+--color-primary-600: #2563eb; /* Hover */
+--color-primary-700: #1d4ed8; /* Active */
 --color-primary-800: #1e40af;
---color-primary-900: #1e3a8a;   /* Darkest */
+--color-primary-900: #1e3a8a; /* Darkest */
 
 /* Secondary - Indigo (Sophistication) */
 --color-secondary-500: #6366f1;
@@ -98,27 +98,27 @@
 
 ```css
 /* Success - Green */
---color-success-50:  #f0fdf4;
+--color-success-50: #f0fdf4;
 --color-success-500: #22c55e;
---color-success-600: #16a34a;   /* Preferred */
+--color-success-600: #16a34a; /* Preferred */
 --color-success-700: #15803d;
 
 /* Warning - Amber */
---color-warning-50:  #fffbeb;
+--color-warning-50: #fffbeb;
 --color-warning-500: #f59e0b;
---color-warning-600: #d97706;   /* Preferred */
+--color-warning-600: #d97706; /* Preferred */
 --color-warning-700: #b45309;
 
 /* Error - Red */
---color-error-50:  #fef2f2;
+--color-error-50: #fef2f2;
 --color-error-500: #ef4444;
---color-error-600: #dc2626;     /* Preferred */
+--color-error-600: #dc2626; /* Preferred */
 --color-error-700: #b91c1c;
 
 /* Info - Sky */
---color-info-50:  #f0f9ff;
+--color-info-50: #f0f9ff;
 --color-info-500: #0ea5e9;
---color-info-600: #0284c7;      /* Preferred */
+--color-info-600: #0284c7; /* Preferred */
 --color-info-700: #0369a1;
 ```
 
@@ -126,16 +126,16 @@
 
 ```css
 /* Grayscale */
---color-gray-50:  #f9fafb;   /* Background */
---color-gray-100: #f3f4f6;   /* Hover background */
---color-gray-200: #e5e7eb;   /* Borders */
---color-gray-300: #d1d5db;   /* Disabled */
---color-gray-400: #9ca3af;   /* Placeholders */
---color-gray-500: #6b7280;   /* Secondary text */
---color-gray-600: #4b5563;   /* Body text */
---color-gray-700: #374151;   /* Headings */
---color-gray-800: #1f2937;   /* Dark headings */
---color-gray-900: #111827;   /* Rich black */
+--color-gray-50: #f9fafb; /* Background */
+--color-gray-100: #f3f4f6; /* Hover background */
+--color-gray-200: #e5e7eb; /* Borders */
+--color-gray-300: #d1d5db; /* Disabled */
+--color-gray-400: #9ca3af; /* Placeholders */
+--color-gray-500: #6b7280; /* Secondary text */
+--color-gray-600: #4b5563; /* Body text */
+--color-gray-700: #374151; /* Headings */
+--color-gray-800: #1f2937; /* Dark headings */
+--color-gray-900: #111827; /* Rich black */
 
 /* Special */
 --color-white: #ffffff;
@@ -144,14 +144,14 @@
 
 #### Usage Guidelines
 
-| Color | Use For | Don't Use For |
-|-------|---------|---------------|
-| **Primary** | CTA buttons, links, active states | Large backgrounds |
-| **Secondary** | Secondary actions, accents | Primary buttons |
-| **Success** | Success messages, positive indicators | Error states |
-| **Warning** | Warnings, cautionary alerts | Success messages |
-| **Error** | Errors, destructive actions | Informational |
-| **Gray** | Text, borders, backgrounds | Call-to-actions |
+| Color         | Use For                               | Don't Use For     |
+| ------------- | ------------------------------------- | ----------------- |
+| **Primary**   | CTA buttons, links, active states     | Large backgrounds |
+| **Secondary** | Secondary actions, accents            | Primary buttons   |
+| **Success**   | Success messages, positive indicators | Error states      |
+| **Warning**   | Warnings, cautionary alerts           | Success messages  |
+| **Error**     | Errors, destructive actions           | Informational     |
+| **Gray**      | Text, borders, backgrounds            | Call-to-actions   |
 
 ### 2.2 Typography
 
@@ -172,36 +172,36 @@
 
 ```css
 /* Display */
---text-display-2xl: 4.5rem;   /* 72px - Hero */
---text-display-xl:  3.75rem;  /* 60px - Page titles */
---text-display-lg:  3rem;     /* 48px - Section titles */
+--text-display-2xl: 4.5rem; /* 72px - Hero */
+--text-display-xl: 3.75rem; /* 60px - Page titles */
+--text-display-lg: 3rem; /* 48px - Section titles */
 
 /* Headings */
---text-h1: 2.25rem;  /* 36px */
+--text-h1: 2.25rem; /* 36px */
 --text-h2: 1.875rem; /* 30px */
---text-h3: 1.5rem;   /* 24px */
---text-h4: 1.25rem;  /* 20px */
+--text-h3: 1.5rem; /* 24px */
+--text-h4: 1.25rem; /* 20px */
 --text-h5: 1.125rem; /* 18px */
---text-h6: 1rem;     /* 16px */
+--text-h6: 1rem; /* 16px */
 
 /* Body */
---text-xl:   1.25rem;  /* 20px - Lead paragraph */
---text-lg:   1.125rem; /* 18px - Large body */
---text-base: 1rem;     /* 16px - Default body */
---text-sm:   0.875rem; /* 14px - Small text */
---text-xs:   0.75rem;  /* 12px - Captions */
+--text-xl: 1.25rem; /* 20px - Lead paragraph */
+--text-lg: 1.125rem; /* 18px - Large body */
+--text-base: 1rem; /* 16px - Default body */
+--text-sm: 0.875rem; /* 14px - Small text */
+--text-xs: 0.75rem; /* 12px - Captions */
 
 /* Line Heights */
---leading-tight:  1.25;
+--leading-tight: 1.25;
 --leading-normal: 1.5;
 --leading-relaxed: 1.75;
 
 /* Font Weights */
---font-light:     300;
---font-regular:   400;
---font-medium:    500;
---font-semibold:  600;
---font-bold:      700;
+--font-light: 300;
+--font-regular: 400;
+--font-medium: 500;
+--font-semibold: 600;
+--font-bold: 700;
 ```
 
 #### Typography Usage
@@ -250,47 +250,46 @@
 
 ```css
 /* Based on 0.25rem (4px) increments */
---space-0:   0;
---space-1:   0.25rem;  /* 4px */
---space-2:   0.5rem;   /* 8px */
---space-3:   0.75rem;  /* 12px */
---space-4:   1rem;     /* 16px - Base unit */
---space-5:   1.25rem;  /* 20px */
---space-6:   1.5rem;   /* 24px */
---space-8:   2rem;     /* 32px */
---space-10:  2.5rem;   /* 40px */
---space-12:  3rem;     /* 48px */
---space-16:  4rem;     /* 64px */
---space-20:  5rem;     /* 80px */
---space-24:  6rem;     /* 96px */
---space-32:  8rem;     /* 128px */
+--space-0: 0;
+--space-1: 0.25rem; /* 4px */
+--space-2: 0.5rem; /* 8px */
+--space-3: 0.75rem; /* 12px */
+--space-4: 1rem; /* 16px - Base unit */
+--space-5: 1.25rem; /* 20px */
+--space-6: 1.5rem; /* 24px */
+--space-8: 2rem; /* 32px */
+--space-10: 2.5rem; /* 40px */
+--space-12: 3rem; /* 48px */
+--space-16: 4rem; /* 64px */
+--space-20: 5rem; /* 80px */
+--space-24: 6rem; /* 96px */
+--space-32: 8rem; /* 128px */
 
 /* Common spacing patterns */
---padding-input:  0.5rem 0.75rem;      /* Inputs */
---padding-button: 0.625rem 1.25rem;    /* Buttons */
---padding-card:   1.5rem;              /* Cards */
---padding-page:   2rem;                /* Page containers */
---gap-form:       1rem;                /* Between form fields */
---gap-section:    3rem;                /* Between sections */
+--padding-input: 0.5rem 0.75rem; /* Inputs */
+--padding-button: 0.625rem 1.25rem; /* Buttons */
+--padding-card: 1.5rem; /* Cards */
+--padding-page: 2rem; /* Page containers */
+--gap-form: 1rem; /* Between form fields */
+--gap-section: 3rem; /* Between sections */
 ```
 
 ### 2.4 Shadows & Elevation
 
 ```css
 /* Shadows - Material Design inspired */
---shadow-xs:  0 1px 2px 0 rgba(0, 0, 0, 0.05);
---shadow-sm:  0 1px 3px 0 rgba(0, 0, 0, 0.1), 
-              0 1px 2px -1px rgba(0, 0, 0, 0.1);
---shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -2px rgba(0, 0, 0, 0.1);
---shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-              0 4px 6px -4px rgba(0, 0, 0, 0.1);
---shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-              0 8px 10px -6px rgba(0, 0, 0, 0.1);
+--shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+--shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+--shadow-md:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+--shadow-lg:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+--shadow-xl:
+  0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
 /* Elevation mapping */
---elevation-0: none;           /* Flat */
+--elevation-0: none; /* Flat */
 --elevation-1: var(--shadow-sm); /* Cards */
 --elevation-2: var(--shadow-md); /* Raised cards */
 --elevation-3: var(--shadow-lg); /* Modals */
@@ -302,12 +301,12 @@
 
 ```css
 --radius-none: 0;
---radius-sm:   0.25rem;  /* 4px - Small elements */
---radius-md:   0.375rem; /* 6px - Inputs, buttons */
---radius-lg:   0.5rem;   /* 8px - Cards */
---radius-xl:   0.75rem;  /* 12px - Large cards */
---radius-2xl:  1rem;     /* 16px - Modals */
---radius-full: 9999px;   /* Circular */
+--radius-sm: 0.25rem; /* 4px - Small elements */
+--radius-md: 0.375rem; /* 6px - Inputs, buttons */
+--radius-lg: 0.5rem; /* 8px - Cards */
+--radius-xl: 0.75rem; /* 12px - Large cards */
+--radius-2xl: 1rem; /* 16px - Modals */
+--radius-full: 9999px; /* Circular */
 ```
 
 ---
@@ -365,13 +364,13 @@ Loading:  bg-primary-600, spinning icon
 
 #### Button Variants
 
-| Variant | Use Case | Visual |
-|---------|----------|--------|
-| **Primary** | Main action on page | Solid primary color |
+| Variant       | Use Case            | Visual                   |
+| ------------- | ------------------- | ------------------------ |
+| **Primary**   | Main action on page | Solid primary color      |
 | **Secondary** | Alternative actions | Outlined, primary border |
-| **Tertiary** | Minor actions | Text only, no background |
-| **Danger** | Destructive actions | Solid red color |
-| **Ghost** | Low emphasis | Transparent, hover bg |
+| **Tertiary**  | Minor actions       | Text only, no background |
+| **Danger**    | Destructive actions | Solid red color          |
+| **Ghost**     | Low emphasis        | Transparent, hover bg    |
 
 ### 3.2 Form Inputs
 
@@ -552,10 +551,10 @@ Animation: fade-in + scale (200ms)
 
 ```css
 /* Mobile-first approach */
---breakpoint-sm: 640px;   /* Small devices (tablets) */
---breakpoint-md: 768px;   /* Medium devices (landscape tablets) */
---breakpoint-lg: 1024px;  /* Large devices (laptops) */
---breakpoint-xl: 1280px;  /* Extra large devices (desktops) */
+--breakpoint-sm: 640px; /* Small devices (tablets) */
+--breakpoint-md: 768px; /* Medium devices (landscape tablets) */
+--breakpoint-lg: 1024px; /* Large devices (laptops) */
+--breakpoint-xl: 1280px; /* Extra large devices (desktops) */
 --breakpoint-2xl: 1536px; /* Ultra wide screens */
 ```
 
@@ -575,16 +574,30 @@ Animation: fade-in + scale (200ms)
 }
 
 /* Column templates */
-.grid-cols-1  { grid-template-columns: repeat(1, 1fr); }
-.grid-cols-2  { grid-template-columns: repeat(2, 1fr); }
-.grid-cols-3  { grid-template-columns: repeat(3, 1fr); }
-.grid-cols-4  { grid-template-columns: repeat(4, 1fr); }
-.grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
+.grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.grid-cols-12 {
+  grid-template-columns: repeat(12, 1fr);
+}
 
 /* Responsive */
 @media (min-width: 768px) {
-  .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 ```
 
@@ -630,14 +643,14 @@ Sticky: Yes (position: sticky, top: 0)
   <div className="navbar-brand">
     <Logo />
   </div>
-  
+
   <div className="navbar-menu">
     <NavItem href="/dashboard" icon="home">Dashboard</NavItem>
     <NavItem href="/hr" icon="users">HR</NavItem>
     <NavItem href="/crm" icon="briefcase">CRM</NavItem>
     {/* ... */}
   </div>
-  
+
   <div className="navbar-actions">
     <SearchBar />
     <NotificationBell />
@@ -659,14 +672,14 @@ Border Right: 1px solid gray-200
   <div className="sidebar-header">
     <h2>HR Module</h2>
   </div>
-  
+
   <nav className="sidebar-nav">
     <NavGroup title="Recruitment">
       <NavLink href="/hr/jobs">Job Postings</NavLink>
       <NavLink href="/hr/candidates">Candidates</NavLink>
       <NavLink href="/hr/interviews">Interviews</NavLink>
     </NavGroup>
-    
+
     <NavGroup title="Employee Management">
       <NavLink href="/hr/employees">All Employees</NavLink>
       <NavLink href="/hr/onboarding">Onboarding</NavLink>
@@ -769,12 +782,12 @@ Step Indicator:
 --chart-blue-7: #2563eb;
 
 /* Categorical (for distinct data series) */
---chart-color-1: #3b82f6;  /* Blue */
---chart-color-2: #8b5cf6;  /* Purple */
---chart-color-3: #ec4899;  /* Pink */
---chart-color-4: #f59e0b;  /* Amber */
---chart-color-5: #10b981;  /* Green */
---chart-color-6: #06b6d4;  /* Cyan */
+--chart-color-1: #3b82f6; /* Blue */
+--chart-color-2: #8b5cf6; /* Purple */
+--chart-color-3: #ec4899; /* Pink */
+--chart-color-4: #f59e0b; /* Amber */
+--chart-color-5: #10b981; /* Green */
+--chart-color-6: #06b6d4; /* Cyan */
 ```
 
 ### 7.2 Dashboard Design
@@ -809,13 +822,13 @@ Step Indicator:
 
 ### 8.1 WCAG 2.1 AA Compliance
 
-| Requirement | Implementation |
-|-------------|----------------|
-| **Color Contrast** | 4.5:1 for normal text, 3:1 for large text |
-| **Focus Indicators** | Visible 2px outline on all interactive elements |
-| **Keyboard Navigation** | All actions accessible via keyboard |
-| **Screen Reader Support** | Proper ARIA labels and roles |
-| **Responsive Text** | Zoomable to 200% without loss of functionality |
+| Requirement               | Implementation                                  |
+| ------------------------- | ----------------------------------------------- |
+| **Color Contrast**        | 4.5:1 for normal text, 3:1 for large text       |
+| **Focus Indicators**      | Visible 2px outline on all interactive elements |
+| **Keyboard Navigation**   | All actions accessible via keyboard             |
+| **Screen Reader Support** | Proper ARIA labels and roles                    |
+| **Responsive Text**       | Zoomable to 200% without loss of functionality  |
 
 ### 8.2 Focus States
 
@@ -903,13 +916,13 @@ Step Indicator:
 
 ### 9.2 Component Adaptations
 
-| Component | Mobile | Desktop |
-|-----------|--------|---------|
-| **Navigation** | Hamburger menu | Horizontal menu bar |
-| **Tables** | Card layout (stacked) | Classic table |
-| **Forms** | Single column | Multi-column |
-| **Modals** | Full screen | Centered overlay |
-| **Sidebar** | Drawer (overlay) | Fixed sidebar |
+| Component      | Mobile                | Desktop             |
+| -------------- | --------------------- | ------------------- |
+| **Navigation** | Hamburger menu        | Horizontal menu bar |
+| **Tables**     | Card layout (stacked) | Classic table       |
+| **Forms**      | Single column         | Multi-column        |
+| **Modals**     | Full screen           | Centered overlay    |
+| **Sidebar**    | Drawer (overlay)      | Fixed sidebar       |
 
 ---
 
@@ -929,8 +942,12 @@ Step Indicator:
 ```css
 /* Fade in */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Slide up */
@@ -1055,6 +1072,7 @@ Step Indicator:
 ## Quick Reference
 
 ### Component Checklist
+
 - [ ] Follows design system colors
 - [ ] Uses spacing tokens (8pt grid)
 - [ ] Includes all interactive states (hover, active, disabled)
@@ -1064,6 +1082,7 @@ Step Indicator:
 - [ ] Has focus indicator
 
 ### Design Resources
+
 - **Figma Library**: [Link to Figma]
 - **Storybook**: http://localhost:6006
 - **Design Tokens**: `/styles/tokens.json`

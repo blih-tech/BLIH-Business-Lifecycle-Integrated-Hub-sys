@@ -1,5 +1,5 @@
-import { StatsCard } from "@/features/hr/root-overview/components/stats-card";
-import type { RootOverviewStatItem } from "@/features/hr/root-overview/types";
+import { StatsCard } from '@/features/hr/root-overview/components/stats-card';
+import type { RootOverviewStatItem } from '@/features/hr/root-overview/types';
 
 type StatsGridProps = {
   items: RootOverviewStatItem[];

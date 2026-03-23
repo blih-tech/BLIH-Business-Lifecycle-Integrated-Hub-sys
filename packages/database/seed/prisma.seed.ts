@@ -30,7 +30,10 @@ const parseOptionalInt = (value: string | undefined, name: string) => {
 
 const { adapter, pool } = createPrismaPgAdapter({
   connectionString: getRequiredEnv('DATABASE_URL'),
-  max: parseOptionalInt(process.env['DATABASE_POOL_SIZE'], 'DATABASE_POOL_SIZE'),
+  max: parseOptionalInt(
+    process.env['DATABASE_POOL_SIZE'],
+    'DATABASE_POOL_SIZE',
+  ),
   connectionTimeoutMillis: parseOptionalInt(
     process.env['DATABASE_TIMEOUT_MS'],
     'DATABASE_TIMEOUT_MS',

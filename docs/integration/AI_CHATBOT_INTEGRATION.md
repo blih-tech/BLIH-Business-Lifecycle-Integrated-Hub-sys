@@ -26,19 +26,19 @@ To embed the BLIH Chatbot into frontend applications (React, Vue, or Vanilla JS)
 For legacy apps or external portals.
 
 ```html
-<script 
-  src="https://blih.com/sdk/chat-widget.js" 
-  data-company-id="uuid" 
-  data-color="#4F46E5">
-</script>
+<script
+  src="https://blih.com/sdk/chat-widget.js"
+  data-company-id="uuid"
+  data-color="#4F46E5"
+></script>
 
 <script>
   window.BLIH.init({
     context: {
-      user_id: "u_123",
-      role: "admin",
-      current_page: "/finance/invoices"
-    }
+      user_id: 'u_123',
+      role: 'admin',
+      current_page: '/finance/invoices',
+    },
   });
 </script>
 ```
@@ -52,15 +52,15 @@ import { ChatProvider, ChatWidget } from '@blih/ui/chat';
 
 export default function App() {
   return (
-    <ChatProvider 
-      config={{ 
+    <ChatProvider
+      config={{
         apiUrl: 'https://api.blih.com/v1/brain',
-        wsUrl: 'wss://api.blih.com/ws/chat' 
+        wsUrl: 'wss://api.blih.com/ws/chat'
       }}
     >
       <Layout>
         {/* Your App Content */}
-        <ChatWidget 
+        <ChatWidget
           initialMessage="How can I help with Finance today?"
           floating={true}
         />
@@ -81,20 +81,20 @@ Real-time communication for streaming responses.
 ### 2.1 Message Packets
 
 **Client -> Server (User Message):**
+
 ```json
 {
   "type": "USER_MESSAGE",
   "payload": {
     "session_id": "sess_abc123",
     "content": "Analyze the Q1 report",
-    "attachments": [
-      { "id": "doc_xyz", "type": "pdf" }
-    ]
+    "attachments": [{ "id": "doc_xyz", "type": "pdf" }]
   }
 }
 ```
 
 **Server -> Client (Token Stream):**
+
 ```json
 {
   "type": "STREAM_TOKEN",
@@ -106,6 +106,7 @@ Real-time communication for streaming responses.
 ```
 
 **Server -> Client (Reference):**
+
 ```json
 {
   "type": "CITATION",
@@ -127,6 +128,7 @@ Allow users to chat with BLIH directly from their collaboration tools.
 ### 3.1 Slack App Integration
 
 **Manifest `slack-manifest.yaml`:**
+
 ```yaml
 display_information:
   name: BLIH Bot
@@ -148,6 +150,7 @@ settings:
 ```
 
 **Handling Events:**
+
 1. **Event:** `app_mention` received.
 2. **Action:** BLIH extracts text + thread ID.
 3. **Processing:** Sends to RAG Pipeline.
@@ -156,6 +159,7 @@ settings:
 ### 3.2 Microsoft Teams Bot
 
 **Architecture:**
+
 - Uses **Azure Bot Framework Adapter**.
 - Endpoint: `POST /api/integrations/teams/messages`.
 
@@ -176,6 +180,7 @@ ws.send(audioBlob); // PCM 16-bit, 16kHz
 ```
 
 **Server Implementation:**
+
 1. **Receive:** Stream chunks to OpenAI Whisper API (or local Whisper).
 2. **Transcribe:** Real-time transcription.
 3. **Process:** Send transcript to RAG Chatbot.
@@ -189,12 +194,14 @@ ws.send(audioBlob); // PCM 16-bit, 16kHz
 External systems can subscribe to Chatbot events.
 
 **Events:**
+
 - `chat.session.started`: New conversation initiated.
 - `chat.message.created`: New message (user or bot).
 - `chat.feedback.received`: User rated a response.
 - `chat.handoff.requested`: User asked for human agent.
 
 **Payload Example (`chat.handoff.requested`):**
+
 ```json
 {
   "event": "chat.handoff.requested",

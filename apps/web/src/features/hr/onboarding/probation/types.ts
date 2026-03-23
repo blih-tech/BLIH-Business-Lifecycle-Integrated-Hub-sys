@@ -1,7 +1,7 @@
-import type { ProgressSummaryStat } from "@/features/hr/onboarding/progress/types";
+import type { ProgressSummaryStat } from '@/features/hr/onboarding/progress/types';
 
 export type ProbationSummaryStat = ProgressSummaryStat & {
-  icon: "calendar" | "trend" | "award";
+  icon: 'calendar' | 'trend' | 'award';
 };
 
 export type ProbationKpiMetric = {

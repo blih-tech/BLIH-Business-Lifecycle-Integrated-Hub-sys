@@ -1,5 +1,10 @@
 export type IncidentSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-export type IncidentType = 'SAFETY' | 'SECURITY' | 'CONFLICT' | 'HARASSMENT' | 'OTHER';
+export type IncidentType =
+  | 'SAFETY'
+  | 'SECURITY'
+  | 'CONFLICT'
+  | 'HARASSMENT'
+  | 'OTHER';
 export type IncidentReportStatus = 'OPEN' | 'INVESTIGATING' | 'RESOLVED';
 
 export interface IncidentReportResponseDto {

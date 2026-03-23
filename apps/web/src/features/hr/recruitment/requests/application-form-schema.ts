@@ -1,17 +1,17 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const applicationFieldTypeValues = [
-  "text",
-  "textarea",
-  "number",
-  "select",
-  "file",
-  "date",
-  "checkbox",
+  'text',
+  'textarea',
+  'number',
+  'select',
+  'file',
+  'date',
+  'checkbox',
 ] as const;
 
 export const applicationFieldTypeSchema = z.enum(applicationFieldTypeValues, {
-  error: () => "Field type is required",
+  error: () => 'Field type is required',
 });
 
 export const predefinedApplicationFieldSchema = z.object({
@@ -24,7 +24,7 @@ export const predefinedApplicationFieldSchema = z.object({
 
 export const customApplicationFieldSchema = z.object({
   id: z.string(),
-  label: z.string().trim().min(1, "Field label is required"),
+  label: z.string().trim().min(1, 'Field label is required'),
   type: applicationFieldTypeSchema,
   required: z.boolean(),
   helpText: z.string().trim().optional(),
@@ -37,26 +37,30 @@ export const applicationFormSchema = z
     customFields: z.array(customApplicationFieldSchema),
   })
   .superRefine((values, ctx) => {
-    const enabledPredefinedCount = values.predefinedFields.filter((field) => field.enabled).length;
+    const enabledPredefinedCount = values.predefinedFields.filter(
+      (field) => field.enabled,
+    ).length;
     const customFieldCount = values.customFields.length;
 
     if (enabledPredefinedCount + customFieldCount === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["predefinedFields"],
-        message: "Add at least one field to the application form",
+        path: ['predefinedFields'],
+        message: 'Add at least one field to the application form',
       });
     }
 
     values.customFields.forEach((field, index) => {
-      if (field.type === "select") {
-        const options = field.options.map((option) => option.trim()).filter(Boolean);
+      if (field.type === 'select') {
+        const options = field.options
+          .map((option) => option.trim())
+          .filter(Boolean);
 
         if (options.length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            path: ["customFields", index, "options"],
-            message: "Add at least one option for select fields",
+            path: ['customFields', index, 'options'],
+            message: 'Add at least one option for select fields',
           });
         }
       }
@@ -64,6 +68,10 @@ export const applicationFormSchema = z
   });
 
 export type ApplicationFieldType = z.infer<typeof applicationFieldTypeSchema>;
-export type PredefinedApplicationField = z.infer<typeof predefinedApplicationFieldSchema>;
-export type CustomApplicationField = z.infer<typeof customApplicationFieldSchema>;
+export type PredefinedApplicationField = z.infer<
+  typeof predefinedApplicationFieldSchema
+>;
+export type CustomApplicationField = z.infer<
+  typeof customApplicationFieldSchema
+>;
 export type ApplicationFormValues = z.infer<typeof applicationFormSchema>;

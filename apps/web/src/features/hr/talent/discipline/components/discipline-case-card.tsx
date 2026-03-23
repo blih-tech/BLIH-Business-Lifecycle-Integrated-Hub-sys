@@ -1,6 +1,6 @@
-import type { DisciplineCase } from "@/features/hr/talent/discipline/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { cn } from "@/shared/lib/utils";
+import type { DisciplineCase } from '@/features/hr/talent/discipline/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { cn } from '@/shared/lib/utils';
 
 type DisciplineCaseCardProps = {
   item: DisciplineCase;
@@ -19,12 +19,12 @@ export function DisciplineCaseCard({ item }: DisciplineCaseCardProps) {
         <p className="text-xs text-[#666]">{item.issueType}</p>
         <p
           className={cn(
-            "text-[22px] font-semibold leading-6 tracking-[-0.3125px]",
-            item.scoreTone === "danger"
-              ? "text-[#e7000b]"
-              : item.scoreTone === "neutral"
-                ? "text-[#4a5565]"
-                : "text-primary",
+            'text-[22px] font-semibold leading-6 tracking-[-0.3125px]',
+            item.scoreTone === 'danger'
+              ? 'text-[#e7000b]'
+              : item.scoreTone === 'neutral'
+                ? 'text-[#4a5565]'
+                : 'text-primary',
           )}
         >
           {item.score}

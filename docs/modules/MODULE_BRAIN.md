@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Module Overview](#module-overview)
 2. [User Personas](#user-personas)
 3. [Feature Catalog](#feature-catalog)
@@ -22,9 +23,11 @@
 ## Module Overview
 
 ### Purpose
+
 The BLIH Brain Module serves as the institutional memory and knowledge management system for the organization. It passively observes system events, captures decisions, documents processes, and powers an AI assistant that provides contextual guidance to users based on their role and permissions.
 
 ### Value Proposition
+
 - **Preserve Institutional Knowledge:** Capture why decisions were made, not just what was decided
 - **Accelerate Onboarding:** New employees access accumulated organizational wisdom
 - **Ensure Consistency:** Everyone follows the same documented procedures
@@ -32,74 +35,87 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - **Support Compliance:** Versioned policies, audit trails, and evidence generation
 
 ### Target Users
-| Role | Primary Use Case | Key Features Used |
-|------|-----------------|-------------------|
-| All Employees | Daily guidance and questions | AI Chatbot, SOP search, policy lookup |
-| Knowledge Manager | Content curation and organization | Document management, taxonomy, analytics |
-| Compliance Officer | Policy management, audit evidence | Policy versioning, audit trails, CAPA |
-| New Hire | Learning the organization | Onboarding guides, culture docs, chatbot |
-| Manager | Team guidance and decisions | Decision logging, lessons learned, patterns |
-| Executive | Strategic knowledge capture | Decision rationale, organizational memory |
+
+| Role               | Primary Use Case                  | Key Features Used                           |
+| ------------------ | --------------------------------- | ------------------------------------------- |
+| All Employees      | Daily guidance and questions      | AI Chatbot, SOP search, policy lookup       |
+| Knowledge Manager  | Content curation and organization | Document management, taxonomy, analytics    |
+| Compliance Officer | Policy management, audit evidence | Policy versioning, audit trails, CAPA       |
+| New Hire           | Learning the organization         | Onboarding guides, culture docs, chatbot    |
+| Manager            | Team guidance and decisions       | Decision logging, lessons learned, patterns |
+| Executive          | Strategic knowledge capture       | Decision rationale, organizational memory   |
 
 ---
 
 ## User Personas
 
 ### Persona 1: Alex - Knowledge Manager
+
 **Profile:** 6 years experience, manages knowledge base for 200-person company  
 **Goals:**
+
 - Maintain accurate, up-to-date documentation
 - Ensure employees can find what they need
 - Reduce repetitive question volume
 - Track knowledge gaps and needs
 
 **Pain Points:**
+
 - Documents scattered across multiple systems
 - No visibility into what people are searching for
 - Outdated information causes confusion
 - Can't measure knowledge base ROI
 
 **How BLIH Helps:**
+
 - Centralized repository with version control
 - Search analytics show knowledge gaps
 - Auto-archival of outdated content
 - Usage metrics prove value
 
 ### Persona 2: Jordan - New Employee
+
 **Profile:** First week at company, software engineer role  
 **Goals:**
+
 - Get up to speed quickly
 - Understand how things work here
 - Find answers without bothering colleagues
 - Complete onboarding requirements
 
 **Pain Points:**
+
 - Information overload during onboarding
 - Don't know who to ask for help
 - Afraid of asking "dumb questions"
 - Hard to find specific policy details
 
 **How BLIH Helps:**
+
 - AI Chatbot answers any question 24/7
 - Curated onboarding learning paths
 - Natural language policy queries
 - No judgment on repeated questions
 
 ### Persona 3: Taylor - Operations Manager
+
 **Profile:** 8 years at company, makes frequent operational decisions  
 **Goals:**
+
 - Document why decisions were made
 - Learn from past mistakes
 - Share best practices with team
 - Build organizational memory
 
 **Pain Points:**
+
 - Same mistakes repeated because lessons not captured
 - Decisions made without context of history
 - Best practices stay in people's heads
 - Can't reference previous similar situations
 
 **How BLIH Helps:**
+
 - Decision logging with structured format
 - Pattern recognition across decisions
 - Lessons learned library
@@ -112,10 +128,12 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ### 1. Knowledge Base Management
 
 #### 1.1 Document Repository
+
 **Feature:** Centralized storage for all organizational documents  
 **User Value:** Single source of truth for policies, procedures, and reference materials
 
 **Document Types:**
+
 - **Policies:** Company-wide rules and guidelines
 - **Procedures (SOPs):** Step-by-step process instructions
 - **Reference:** Technical documentation, guides, templates
@@ -125,6 +143,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - **Forms:** Standardized documents and templates
 
 **Document Properties:**
+
 - Title, description, keywords/tags
 - Category and subcategory
 - Owner and review schedule
@@ -134,6 +153,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Related documents linking
 
 **UX Highlights:**
+
 - Folder tree and tag-based navigation
 - Drag-and-drop upload with bulk import
 - Document preview without download
@@ -142,10 +162,12 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Recently viewed documents
 
 #### 1.2 Document Versioning
+
 **Feature:** Complete version history with approval workflows  
 **User Value:** Compliance-ready change tracking and rollback capability
 
 **Version Control:**
+
 - Automatic version numbering (1.0, 1.1, 2.0)
 - Draft vs. published states
 - Approval workflow: Draft → Review → Approved → Published
@@ -154,6 +176,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Rollback to previous version
 
 **Approval Workflow:**
+
 1. Author creates draft
 2. Submits for review
 3. Reviewer approves or requests changes
@@ -162,15 +185,18 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 6. Notification to stakeholders
 
 **UX Highlights:**
+
 - Visual timeline of all versions
 - Side-by-side comparison view
 - Approval status badges
 - Change notifications to subscribers
 
 #### 1.3 Content Organization
-**Feature:** Flexible taxonomy and metadata for discoverability  **User Value:** Find information quickly through multiple pathways
+
+**Feature:** Flexible taxonomy and metadata for discoverability **User Value:** Find information quickly through multiple pathways
 
 **Taxonomy Structure:**
+
 - **Categories:** Business function hierarchy
   - HR → Employee Relations → Performance Management
   - Finance → Accounts Payable → Vendor Management
@@ -180,12 +206,14 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
   - Onboarding Essentials, ISO 9001 Evidence, Q1 2026 Updates
 
 **Metadata Fields:**
+
 - Document type, owner, effective date
 - Review cycle (monthly, quarterly, annual)
 - Audience (all, managers, HR only)
 - Priority (critical, standard, archival)
 
 **UX Highlights:**
+
 - Auto-suggest tags during upload
 - Filter and faceted search
 - Breadcrumb navigation
@@ -194,9 +222,11 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ### 2. RAG-Powered Search
 
 #### 2.1 Semantic Search
-**Feature:** AI-powered document search that understands meaning  **User Value:** Find relevant documents even with different terminology
+
+**Feature:** AI-powered document search that understands meaning **User Value:** Find relevant documents even with different terminology
 
 **Search Capabilities:**
+
 - Natural language queries
 - Semantic matching (not just keyword)
 - Question-answering from documents
@@ -204,11 +234,13 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Relevance scoring
 
 **Example Queries:**
+
 - "How do I expense travel?" → Finds expense policy, forms, guidelines
 - "What's our parental leave policy?" → Finds relevant HR policies
 - "Security requirements for customer data" → Finds ISO and security docs
 
 **Search Results Include:**
+
 - Document title and excerpt
 - Relevance score
 - Page/section reference
@@ -216,15 +248,18 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Quick preview option
 
 **UX Highlights:**
+
 - Search-as-you-type suggestions
 - Filter by document type, date, category
 - Saved searches for frequent queries
 - Search history and suggestions
 
 #### 2.2 Document Ingestion for RAG
-**Feature:** Process documents for AI-powered retrieval  **User Value:** System learns from your organization's documents
+
+**Feature:** Process documents for AI-powered retrieval **User Value:** System learns from your organization's documents
 
 **Supported Formats:**
+
 - PDF, Word, PowerPoint, Excel
 - Images (OCR for scanned documents)
 - Web pages (URLs)
@@ -232,6 +267,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Database exports
 
 **Processing Pipeline:**
+
 1. Upload document
 2. Extract text (OCR if needed)
 3. Chunk into semantic segments
@@ -240,12 +276,14 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 6. Available for AI retrieval
 
 **Processing Status:**
+
 - Queue position
 - Processing stage
 - Chunk count
 - Index completion
 
 **UX Highlights:**
+
 - Drag-and-drop bulk upload
 - Processing progress indicator
 - Failed document retry
@@ -254,9 +292,11 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ### 3. Decision & Knowledge Capture
 
 #### 3.1 Decision Log
-**Feature:** Structured recording of organizational decisions  **User Value:** Understanding why choices were made and their consequences
+
+**Feature:** Structured recording of organizational decisions **User Value:** Understanding why choices were made and their consequences
 
 **Decision Record Fields:**
+
 - **Title:** Decision name
 - **Context:** Situation requiring decision
 - **Options Considered:** Alternatives evaluated
@@ -272,6 +312,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - **Status:** Active, Superseded, Reversed
 
 **Decision Workflow:**
+
 1. Draft decision record
 2. Review by stakeholders
 3. Finalize and publish
@@ -279,15 +320,18 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 5. Periodic review of outcomes
 
 **UX Highlights:**
+
 - Template-based entry
 - Decision tree visualization
 - Impact timeline tracking
 - Search by context or outcome
 
 #### 3.2 Lessons Learned
-**Feature:** Capture insights from projects and experiences  **User Value:** Continuous improvement and mistake prevention
+
+**Feature:** Capture insights from projects and experiences **User Value:** Continuous improvement and mistake prevention
 
 **Lesson Structure:**
+
 - **Context:** Project or situation
 - **What Happened:** Description of events
 - **Root Cause:** Why it occurred
@@ -298,6 +342,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - **Applicable To:** Projects, roles, situations
 
 **Capture Triggers:**
+
 - Project completion
 - Incident resolution
 - Decision review
@@ -305,15 +350,18 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Ad-hoc contributions
 
 **UX Highlights:**
+
 - Quick-capture form (minimal friction)
 - Project auto-linking
 - Pattern detection across lessons
 - Search and browse by category
 
 #### 3.3 Organizational Memory
-**Feature:** Automated capture of system events and patterns  **User Value:** Passive knowledge accumulation without manual effort
+
+**Feature:** Automated capture of system events and patterns **User Value:** Passive knowledge accumulation without manual effort
 
 **Observed Events:**
+
 - Project completions with outcomes
 - Deal wins/losses with reasons
 - Employee lifecycle events
@@ -322,6 +370,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Training completions
 
 **Pattern Recognition:**
+
 - Common project risks by type
 - Successful deal characteristics
 - Training effectiveness trends
@@ -329,6 +378,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Seasonal patterns
 
 **UX Highlights:**
+
 - Memory feed (recent organizational events)
 - Pattern insights dashboard
 - "This day in company history"
@@ -337,9 +387,11 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ### 4. Policy & Compliance Management
 
 #### 4.1 Policy Library
-**Feature:** Comprehensive policy management with acknowledgment tracking  **User Value:** Ensured policy awareness and compliance demonstration
+
+**Feature:** Comprehensive policy management with acknowledgment tracking **User Value:** Ensured policy awareness and compliance demonstration
 
 **Policy Components:**
+
 - Policy document (version controlled)
 - Summary for quick understanding
 - FAQ for common questions
@@ -348,6 +400,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Review schedule
 
 **Acknowledgment Workflow:**
+
 1. Policy published or updated
 2. Target employees notified
 3. Employees review and acknowledge
@@ -356,6 +409,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 6. Compliance reports for auditors
 
 **Policy Types:**
+
 - HR Policies: Leave, conduct, benefits
 - IT Policies: Security, acceptable use, data handling
 - Finance Policies: Expense, travel, purchasing
@@ -363,15 +417,18 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Quality Policies: ISO compliance, quality standards
 
 **UX Highlights:**
+
 - Policy acknowledgment dashboard
 - My Policies view (required reading)
 - Policy comparison (old vs. new version)
 - Quick accept with e-signature
 
 #### 4.2 CAPA (Corrective and Preventive Action)
-**Feature:** Track issues from identification to resolution  **User Value:** Structured problem-solving with audit trail
+
+**Feature:** Track issues from identification to resolution **User Value:** Structured problem-solving with audit trail
 
 **CAPA Lifecycle:**
+
 1. **Identification:** Issue reported or detected
 2. **Logging:** Document in CAPA system
 3. **Evaluation:** Assess impact and assign priority
@@ -382,6 +439,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 8. **Closure:** Document and close CAPA
 
 **CAPA Properties:**
+
 - ID, title, description
 - Type (Corrective/Preventive)
 - Source (audit, complaint, incident, etc.)
@@ -391,21 +449,25 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Related documents and evidence
 
 **UX Highlights:**
+
 - CAPA dashboard with aging indicators
 - Stage-by-stage workflow guidance
 - Action tracking with notifications
 - Effectiveness verification forms
 
 #### 4.3 Management Review
-**Feature:** Structured periodic reviews of organizational performance  **User Value:** Formal evaluation inputs for ISO compliance
+
+**Feature:** Structured periodic reviews of organizational performance **User Value:** Formal evaluation inputs for ISO compliance
 
 **Review Components:**
+
 - **Inputs:** KPIs, audit results, CAPA status, risks, feedback
 - **Analysis:** Trends, opportunities, resource needs
 - **Decisions:** Strategic decisions made
 - **Actions:** Assigned action items with owners
 
 **Automated Input Population:**
+
 - Performance data from dashboards
 - Open CAPA summary
 - Risk register status
@@ -413,6 +475,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Audit findings
 
 **UX Highlights:**
+
 - Review template with pre-filled data
 - Decision and action item tracking
 - Historical review comparison
@@ -421,9 +484,11 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ### 5. AI-Powered Features
 
 #### 5.1 AI Chatbot (BLIH Assistant)
-**Feature:** Conversational AI for organizational knowledge  **User Value:** Instant answers to questions, 24/7 availability
+
+**Feature:** Conversational AI for organizational knowledge **User Value:** Instant answers to questions, 24/7 availability
 
 **Capabilities:**
+
 - Natural language question answering
 - Policy and procedure guidance
 - Context-aware responses based on user role
@@ -432,6 +497,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Source citation for all answers
 
 **Safety Controls:**
+
 - Role-based access (only sees permitted content)
 - No raw database queries
 - Audit logging of all interactions
@@ -439,12 +505,14 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Content approval for sensitive answers
 
 **Interaction Types:**
+
 - **Informational:** "What's our vacation policy?"
 - **Procedural:** "How do I submit an expense report?"
 - **Guidance:** "Help me prepare for a performance review"
 - **Analysis:** "Summarize the key points from the Q1 management review"
 
 **UX Highlights:**
+
 - Global chat icon (accessible from any module)
 - Typing indicators and response streaming
 - Suggested follow-up questions
@@ -452,9 +520,11 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Feedback buttons (👍/👎) for improvement
 
 #### 5.2 Content Recommendations
-**Feature:** Proactive suggestions based on role and activity  **User Value:** Discover relevant knowledge without searching
+
+**Feature:** Proactive suggestions based on role and activity **User Value:** Discover relevant knowledge without searching
 
 **Recommendation Triggers:**
+
 - New employee: Onboarding content
 - Role change: Manager resources
 - First time action: Guidance documents
@@ -462,21 +532,25 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 - Event-based: Post-training follow-up
 
 **Recommendation Channels:**
+
 - Dashboard widgets
 - Email digests
 - In-app notifications
 - Chatbot suggestions
 
 #### 5.3 Auto-Tagging & Classification
-**Feature:** AI-assisted document organization  **User Value:** Reduced manual effort in content curation
+
+**Feature:** AI-assisted document organization **User Value:** Reduced manual effort in content curation
 
 **Auto-Classification:**
+
 - Suggest document category
 - Propose relevant tags
 - Identify related documents
 - Extract key topics
 
 **User Review:**
+
 - Accept or modify AI suggestions
 - Train system with corrections
 - Bulk classification for imports
@@ -498,33 +572,33 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
    └─ Suggested questions displayed
 
 2. Jordan clicks: "What do I need to do first?"
-   
+
    AI Response:
    "Welcome! Here's your onboarding checklist:
-   
+
    1. Complete your profile (5 min) → [Go]
    2. Review Employee Handbook (15 min) → [View]
    3. Submit I-9 documentation → [Upload]
    4. Set up direct deposit → [Go]
    5. Schedule benefits enrollment → [Schedule]
-   
+
    Need help with any of these?"
 
 3. Jordan asks: "Where is the handbook?"
-   
+
    AI Response:
    "I've found the Employee Handbook for you:
    📄 Employee Handbook v3.2 (PDF)
    Effective: Jan 1, 2026 | Owner: HR
-   
+
    [View Document] [Download]
-   
+
    Key sections:
    • Company Overview (Page 3)
    • Benefits & Compensation (Page 12)
    • Time Off Policies (Page 18)
    • Code of Conduct (Page 25)
-   
+
    Would you like me to summarize any section?"
 
 4. Jordan reviews handbook
@@ -534,22 +608,22 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 
 5. Later - Expense question
    Jordan asks: "How do I expense my relocation costs?"
-   
+
    AI Response:
    "Here's the process for relocation expenses:
-   
+
    Policy: Relocation Reimbursement (HR-EXP-003)
    Eligibility: New hires within 90 days
    Limit: Up to $5,000
-   
+
    Steps:
    1. Pre-approval: Submit request to HR
    2. Keep all receipts
    3. Submit via Expense Report within 30 days
    4. Include: receipts, mileage log, temporary housing
-   
+
    [View Full Policy] [Start Expense Report]
-   
+
    Need the pre-approval form?"
 
 6. Jordan submits pre-approval
@@ -572,14 +646,14 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 
 2. Create Decision Record
    Taylor opens Brain → Decisions → New Decision
-   
+
    Form:
    Title: [CRM Platform Selection for 2026]
-   
+
    Context:
    [Current CRM lacks reporting and mobile capabilities.
    Growing team needs better scalability.]
-   
+
    Options Considered:
    • Option A: Salesforce
      - Pros: Enterprise features, integrations
@@ -590,21 +664,21 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
    • Option C: Upgrade existing system
      - Pros: Lower cost
      - Cons: Still limited capabilities
-   
+
    Decision: [Option A - Salesforce]
-   
+
    Rationale:
-   [Best long-term scalability. Cost justified by 
-   productivity gains. Integration with existing 
+   [Best long-term scalability. Cost justified by
+   productivity gains. Integration with existing
    systems critical for success.]
-   
+
    Stakeholders: [Sales Team, IT, Finance, Executive Team]
-   
+
    Expected Consequences:
    • 3-month implementation timeline
    • $50K annual cost
    • Improved sales velocity (20% projected)
-   
+
    Owner: [Taylor Johnson]
    Date: [Feb 15, 2026]
 
@@ -683,6 +757,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ## UI Components & Patterns
 
 ### Knowledge Base Explorer
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Knowledge Base                                         [🔍 Search]│
@@ -709,6 +784,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ```
 
 ### Document Detail View
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Remote Work Policy v3.0                    [History] [Edit] [Share]│
@@ -742,6 +818,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ```
 
 ### AI Chatbot Interface
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  BLIH Assistant                                          [×]       │
@@ -776,6 +853,7 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 ```
 
 ### Decision Log Entry
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  New Decision Record                                  [Save Draft] │
@@ -824,68 +902,75 @@ The BLIH Brain Module serves as the institutional memory and knowledge managemen
 
 ### Chatbot Capabilities Matrix
 
-| Capability | Description | Example |
-|------------|-------------|---------|
-| **Q&A** | Answer questions from knowledge base | "What's the expense limit?" |
-| **Guidance** | Step-by-step process help | "How do I submit a CAPA?" |
-| **Summarization** | Condense long documents | "Summarize the security policy" |
-| **Comparison** | Compare versions or options | "What changed in the new handbook?" |
-| **Search** | Find relevant documents | "Find documents about ISO 9001" |
-| **Analysis** | Interpret patterns | "What are common project risks?" |
-| **Action Help** | Guide system usage | "Help me create a decision record" |
+| Capability        | Description                          | Example                             |
+| ----------------- | ------------------------------------ | ----------------------------------- |
+| **Q&A**           | Answer questions from knowledge base | "What's the expense limit?"         |
+| **Guidance**      | Step-by-step process help            | "How do I submit a CAPA?"           |
+| **Summarization** | Condense long documents              | "Summarize the security policy"     |
+| **Comparison**    | Compare versions or options          | "What changed in the new handbook?" |
+| **Search**        | Find relevant documents              | "Find documents about ISO 9001"     |
+| **Analysis**      | Interpret patterns                   | "What are common project risks?"    |
+| **Action Help**   | Guide system usage                   | "Help me create a decision record"  |
 
 ### Chatbot Response Types
 
 **Direct Answer:**
+
 ```
 Q: What's the dress code?
-A: The dress code is business casual Monday-Thursday, 
+A: The dress code is business casual Monday-Thursday,
    casual Friday. See full policy: [link]
 ```
 
 **Guided Process:**
+
 ```
 Q: How do I request time off?
 A: I'll walk you through it:
    1. Go to HR → My Time
    2. Click "Request Leave"
    3. Select your dates
-   
+
    [Go to My Time] [Show Me Video]
 ```
 
 **Document Reference:**
+
 ```
 Q: What's our parental leave policy?
-A: Parental leave provides 12 weeks paid leave 
+A: Parental leave provides 12 weeks paid leave
    for primary caregivers, 4 weeks for secondary.
-   
+
    📄 Employee Handbook, Section 4.3 (Page 18)
-   
+
    [View Full Policy] [Download PDF]
 ```
 
 **Clarification Needed:**
+
 ```
 Q: How do I expense something?
 A: I can help! What type of expense?
-   
+
    [Travel] [Meals] [Office Supplies] [Other]
 ```
 
 ### Safety & Trust Indicators
 
 **Source Citation:**
+
 - Every answer includes source document reference
 - Direct links to authoritative sources
 - Version numbers for time-sensitive info
 
 **Confidence Indicators:**
+
 - High confidence: Direct policy match
 - Medium confidence: Related information
 - Low confidence: General knowledge + disclaimer
 
 **Escalation Paths:**
+
 - "I don't know" → Suggests human contact
 - Sensitive topics → Directs to HR/Legal
 - System errors → Opens support ticket
@@ -896,43 +981,44 @@ A: I can help! What type of expense?
 
 ### Permission Matrix
 
-| Feature | All Employees | Managers | Knowledge Manager | Admin |
-|---------|---------------|----------|-------------------|-------|
-| View Published Docs | ✅ | ✅ | ✅ | ✅ |
-| Search Knowledge Base | ✅ | ✅ | ✅ | ✅ |
-| Use AI Chatbot | ✅ | ✅ | ✅ | ✅ |
-| Create Decisions | ❌ | ✅ | ✅ | ✅ |
-| Submit Lessons Learned | ✅ | ✅ | ✅ | ✅ |
-| Upload Documents | ❌ | Manager area | ✅ | ✅ |
-| Edit Documents | ❌ | Own docs | ✅ | ✅ |
-| Publish Policies | ❌ | ❌ | ✅ | ✅ |
-| Manage CAPA | ❌ | Manager view | ✅ | ✅ |
-| Admin Settings | ❌ | ❌ | ❌ | ✅ |
+| Feature                | All Employees | Managers     | Knowledge Manager | Admin |
+| ---------------------- | ------------- | ------------ | ----------------- | ----- |
+| View Published Docs    | ✅            | ✅           | ✅                | ✅    |
+| Search Knowledge Base  | ✅            | ✅           | ✅                | ✅    |
+| Use AI Chatbot         | ✅            | ✅           | ✅                | ✅    |
+| Create Decisions       | ❌            | ✅           | ✅                | ✅    |
+| Submit Lessons Learned | ✅            | ✅           | ✅                | ✅    |
+| Upload Documents       | ❌            | Manager area | ✅                | ✅    |
+| Edit Documents         | ❌            | Own docs     | ✅                | ✅    |
+| Publish Policies       | ❌            | ❌           | ✅                | ✅    |
+| Manage CAPA            | ❌            | Manager view | ✅                | ✅    |
+| Admin Settings         | ❌            | ❌           | ❌                | ✅    |
 
 ### Granular Permissions
 
 Brain permissions follow pattern: `BRAIN:{resource}:{action}`
 
-| Permission | Description |
-|------------|-------------|
-| `BRAIN:document:view` | View knowledge base documents |
-| `BRAIN:document:create` | Create new documents |
-| `BRAIN:document:edit` | Edit existing documents |
-| `BRAIN:document:approve` | Approve documents for publication |
-| `BRAIN:document:delete` | Archive/delete documents |
-| `BRAIN:policy:acknowledge` | Acknowledge required policies |
-| `BRAIN:policy:admin` | Manage policy requirements |
-| `BRAIN:decision:create` | Log organizational decisions |
-| `BRAIN:decision:view` | View decision records |
-| `BRAIN:capa:create` | Create CAPA records |
-| `BRAIN:capa:manage` | Full CAPA lifecycle management |
-| `BRAIN:chatbot:use` | Access AI assistant |
-| `BRAIN:review:manage` | Management review administration |
-| `BRAIN:analytics:view` | View knowledge base analytics |
+| Permission                 | Description                       |
+| -------------------------- | --------------------------------- |
+| `BRAIN:document:view`      | View knowledge base documents     |
+| `BRAIN:document:create`    | Create new documents              |
+| `BRAIN:document:edit`      | Edit existing documents           |
+| `BRAIN:document:approve`   | Approve documents for publication |
+| `BRAIN:document:delete`    | Archive/delete documents          |
+| `BRAIN:policy:acknowledge` | Acknowledge required policies     |
+| `BRAIN:policy:admin`       | Manage policy requirements        |
+| `BRAIN:decision:create`    | Log organizational decisions      |
+| `BRAIN:decision:view`      | View decision records             |
+| `BRAIN:capa:create`        | Create CAPA records               |
+| `BRAIN:capa:manage`        | Full CAPA lifecycle management    |
+| `BRAIN:chatbot:use`        | Access AI assistant               |
+| `BRAIN:review:manage`      | Management review administration  |
+| `BRAIN:analytics:view`     | View knowledge base analytics     |
 
 ### Content Visibility Rules
 
 **Role-Based:**
+
 - All Employees: General policies, SOPs
 - Managers: Manager guides, compensation info
 - HR Only: Confidential HR procedures
@@ -940,6 +1026,7 @@ Brain permissions follow pattern: `BRAIN:{resource}:{action}`
 - Executive: Strategic documents
 
 **Document-Level:**
+
 - Public: Everyone can view
 - Internal: Employees only
 - Restricted: Specific roles
@@ -950,38 +1037,41 @@ Brain permissions follow pattern: `BRAIN:{resource}:{action}`
 ## Integration Points
 
 ### Outbound Events (Brain Publishes)
-| Event | Trigger | Subscribers |
-|-------|---------|-------------|
-| `brain.document.published` | New doc version | All (notifications) |
-| `brain.policy.updated` | Policy change | HR (ack tracking) |
-| `brain.decision.logged` | Decision recorded | Executive (digest) |
-| `brain.capa.created` | Issue logged | Manager (task) |
-| `brain.capa.closed` | Issue resolved | Compliance (evidence) |
-| `brain.review.completed` | Mgmt review done | Executive (minutes) |
+
+| Event                      | Trigger           | Subscribers           |
+| -------------------------- | ----------------- | --------------------- |
+| `brain.document.published` | New doc version   | All (notifications)   |
+| `brain.policy.updated`     | Policy change     | HR (ack tracking)     |
+| `brain.decision.logged`    | Decision recorded | Executive (digest)    |
+| `brain.capa.created`       | Issue logged      | Manager (task)        |
+| `brain.capa.closed`        | Issue resolved    | Compliance (evidence) |
+| `brain.review.completed`   | Mgmt review done  | Executive (minutes)   |
 
 ### Inbound Events (Brain Consumes)
-| Event | Source | Action |
-|-------|--------|--------|
-| `crm.deal.won` | CRM | Log pattern: "Another enterprise win" |
-| `crm.deal.lost` | CRM | Log pattern + capture loss reason |
-| `projects.completed` | Projects | Trigger lessons learned capture |
-| `hr.employee.hired` | HR | Add to onboarding tracking |
-| `hr.training.completed` | HR | Update skills knowledge graph |
-| `finance.period.closed` | Finance | Log for compliance history |
-| `auth.policy.violation` | Core | Trigger policy review alert |
-| `audit.finding` | Audit | Auto-create CAPA |
+
+| Event                   | Source   | Action                                |
+| ----------------------- | -------- | ------------------------------------- |
+| `crm.deal.won`          | CRM      | Log pattern: "Another enterprise win" |
+| `crm.deal.lost`         | CRM      | Log pattern + capture loss reason     |
+| `projects.completed`    | Projects | Trigger lessons learned capture       |
+| `hr.employee.hired`     | HR       | Add to onboarding tracking            |
+| `hr.training.completed` | HR       | Update skills knowledge graph         |
+| `finance.period.closed` | Finance  | Log for compliance history            |
+| `auth.policy.violation` | Core     | Trigger policy review alert           |
+| `audit.finding`         | Audit    | Auto-create CAPA                      |
 
 ### External Integrations
-| System | Type | Purpose |
-|--------|------|---------|
-| LLM (Ollama) | API | AI responses, summarization |
-| Vector DB (Qdrant) | API | Semantic search, RAG |
-| Document Storage (MinIO) | API | File storage, versioning |
-| OCR Service | API | Document text extraction |
-| Search Analytics | Internal | Query patterns, gaps |
+
+| System                   | Type     | Purpose                     |
+| ------------------------ | -------- | --------------------------- |
+| LLM (Ollama)             | API      | AI responses, summarization |
+| Vector DB (Qdrant)       | API      | Semantic search, RAG        |
+| Document Storage (MinIO) | API      | File storage, versioning    |
+| OCR Service              | API      | Document text extraction    |
+| Search Analytics         | Internal | Query patterns, gaps        |
 
 ---
 
-*Documentation Version: 1.0*  
-*Module Version: 1.0*  
-*Last Updated: February 2026*
+_Documentation Version: 1.0_  
+_Module Version: 1.0_  
+_Last Updated: February 2026_

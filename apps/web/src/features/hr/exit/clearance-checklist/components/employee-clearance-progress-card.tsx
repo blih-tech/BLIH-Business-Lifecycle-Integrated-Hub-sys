@@ -1,17 +1,19 @@
-import { AlertCircle, CheckCircle2, Circle, Download } from "lucide-react";
+import { AlertCircle, CheckCircle2, Circle, Download } from 'lucide-react';
 
 import type {
   EmployeeClearanceProgressItem,
   EmployeeClearanceTask,
-} from "@/features/hr/exit/clearance-checklist/types";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+} from '@/features/hr/exit/clearance-checklist/types';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type EmployeeClearanceProgressCardProps = {
   item: EmployeeClearanceProgressItem;
 };
 
-export function EmployeeClearanceProgressCard({ item }: EmployeeClearanceProgressCardProps) {
+export function EmployeeClearanceProgressCard({
+  item,
+}: EmployeeClearanceProgressCardProps) {
   return (
     <Card className="gap-0 rounded-[10px] border-border py-0 shadow-none">
       <CardContent className="space-y-3 p-4">
@@ -22,16 +24,22 @@ export function EmployeeClearanceProgressCard({ item }: EmployeeClearanceProgres
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-sm font-semibold tracking-[-0.1504px] text-black">{item.name}</p>
+                <p className="text-sm font-semibold tracking-[-0.1504px] text-black">
+                  {item.name}
+                </p>
                 <span className="inline-flex h-4 items-center rounded-[4px] bg-[#f5f5f5] px-1.5 text-[10px] text-black">
                   {item.department}
                 </span>
-                <span className={getStatusBadgeClassName(item.status)}>{item.status}</span>
+                <span className={getStatusBadgeClassName(item.status)}>
+                  {item.status}
+                </span>
               </div>
               <p className="text-xs text-[#666]">{item.role}</p>
             </div>
           </div>
-          <p className="text-[11px] text-[#666]">Last Working Day: {item.lastWorkingDay}</p>
+          <p className="text-[11px] text-[#666]">
+            Last Working Day: {item.lastWorkingDay}
+          </p>
         </div>
 
         <div className="grid gap-2 lg:grid-cols-[1fr_132px]">
@@ -40,7 +48,10 @@ export function EmployeeClearanceProgressCard({ item }: EmployeeClearanceProgres
               <TaskStatusCard key={task.id} task={task} />
             ))}
           </div>
-          <CompletionBarWidget progressPercent={item.progressPercent} progressTasks={item.progressTasks} />
+          <CompletionBarWidget
+            progressPercent={item.progressPercent}
+            progressTasks={item.progressTasks}
+          />
         </div>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
@@ -51,7 +62,10 @@ export function EmployeeClearanceProgressCard({ item }: EmployeeClearanceProgres
           >
             View Details
           </Button>
-          <Button size="sm" className="h-8 min-w-[132px] rounded-[6px] px-3 text-xs">
+          <Button
+            size="sm"
+            className="h-8 min-w-[132px] rounded-[6px] px-3 text-xs"
+          >
             Generate Clearance Certificate
             <Download className="h-3.5 w-3.5" />
           </Button>
@@ -70,7 +84,11 @@ function TaskStatusCard({ task }: { task: EmployeeClearanceTask }) {
             {renderTaskStatusIcon(task.status)}
             {task.title}
           </p>
-          {task.meta ? <p className="mt-0.5 text-[10px] leading-4 text-[#666]">{task.meta}</p> : null}
+          {task.meta ? (
+            <p className="mt-0.5 text-[10px] leading-4 text-[#666]">
+              {task.meta}
+            </p>
+          ) : null}
         </div>
         {task.actionLabel ? (
           <Button size="xs" className="h-5 rounded-[4px] px-1.5 text-[10px]">
@@ -92,15 +110,25 @@ function CompletionBarWidget({
   const clampedProgress = Math.max(0, Math.min(progressPercent, 100));
   const radius = 34;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (clampedProgress / 100) * circumference;
+  const strokeDashoffset =
+    circumference - (clampedProgress / 100) * circumference;
 
   return (
     <div className="flex h-full flex-col justify-between rounded-[8px] border border-primary bg-[rgba(30,102,247,0.1)] p-2">
-      <p className="text-base font-semibold tracking-[-0.3125px] text-black">Completion Bar</p>
+      <p className="text-base font-semibold tracking-[-0.3125px] text-black">
+        Completion Bar
+      </p>
       <div className="flex justify-center py-1">
         <div className="relative grid h-[89px] w-[89px] place-items-center">
           <svg viewBox="0 0 89 89" className="h-[89px] w-[89px]">
-            <circle cx="44.5" cy="44.5" r={radius} fill="none" stroke="rgba(30,102,247,0.24)" strokeWidth="6" />
+            <circle
+              cx="44.5"
+              cy="44.5"
+              r={radius}
+              fill="none"
+              stroke="rgba(30,102,247,0.24)"
+              strokeWidth="6"
+            />
             <circle
               cx="44.5"
               cy="44.5"
@@ -108,14 +136,16 @@ function CompletionBarWidget({
               fill="none"
               stroke="var(--primary)"
               strokeWidth="6"
-              strokeLinecap={clampedProgress >= 100 ? "butt" : "round"}
+              strokeLinecap={clampedProgress >= 100 ? 'butt' : 'round'}
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               transform="rotate(-90 44.5 44.5)"
             />
           </svg>
           <div className="absolute inset-0 grid place-items-center">
-            <span className="text-[24px] font-bold leading-none tracking-[0.3955px] text-primary">{clampedProgress}%</span>
+            <span className="text-[24px] font-bold leading-none tracking-[0.3955px] text-primary">
+              {clampedProgress}%
+            </span>
           </div>
         </div>
       </div>
@@ -127,32 +157,34 @@ function CompletionBarWidget({
   );
 }
 
-function getStatusBadgeClassName(status: EmployeeClearanceProgressItem["status"]) {
-  if (status === "completed") {
-    return "inline-flex h-4 items-center rounded-[4px] bg-[#16a34a] px-1.5 text-[10px] font-semibold lowercase text-white";
+function getStatusBadgeClassName(
+  status: EmployeeClearanceProgressItem['status'],
+) {
+  if (status === 'completed') {
+    return 'inline-flex h-4 items-center rounded-[4px] bg-[#16a34a] px-1.5 text-[10px] font-semibold lowercase text-white';
   }
 
-  return "inline-flex h-4 items-center rounded-[4px] bg-[#d97706] px-1.5 text-[10px] font-semibold lowercase text-white";
+  return 'inline-flex h-4 items-center rounded-[4px] bg-[#d97706] px-1.5 text-[10px] font-semibold lowercase text-white';
 }
 
-function getTaskCardClassName(status: EmployeeClearanceTask["status"]) {
-  if (status === "completed") {
-    return "rounded-[6px] border border-[#86efac] bg-[#f0fdf4] p-2";
+function getTaskCardClassName(status: EmployeeClearanceTask['status']) {
+  if (status === 'completed') {
+    return 'rounded-[6px] border border-[#86efac] bg-[#f0fdf4] p-2';
   }
 
-  if (status === "in-progress") {
-    return "rounded-[6px] border border-[#fde68a] bg-[#fefce8] p-2";
+  if (status === 'in-progress') {
+    return 'rounded-[6px] border border-[#fde68a] bg-[#fefce8] p-2';
   }
 
-  return "rounded-[6px] border border-[#e5e5e5] bg-background p-2";
+  return 'rounded-[6px] border border-[#e5e5e5] bg-background p-2';
 }
 
-function renderTaskStatusIcon(status: EmployeeClearanceTask["status"]) {
-  if (status === "completed") {
+function renderTaskStatusIcon(status: EmployeeClearanceTask['status']) {
+  if (status === 'completed') {
     return <CheckCircle2 className="h-3.5 w-3.5 text-[#16a34a]" />;
   }
 
-  if (status === "in-progress") {
+  if (status === 'in-progress') {
     return <AlertCircle className="h-3.5 w-3.5 text-[#ca8a04]" />;
   }
 

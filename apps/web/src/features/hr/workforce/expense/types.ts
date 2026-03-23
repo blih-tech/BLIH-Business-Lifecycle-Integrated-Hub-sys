@@ -2,7 +2,7 @@ export type ExpenseStat = {
   id: string;
   label: string;
   value: string;
-  icon: "total" | "pending" | "unexpected" | "month";
+  icon: 'total' | 'pending' | 'unexpected' | 'month';
 };
 
 export type ExpenseBreakdownItem = {
@@ -18,7 +18,7 @@ export type MonthlyExpensePoint = {
   amount: number;
 };
 
-export type ExpenseRequestPriority = "high" | "medium";
+export type ExpenseRequestPriority = 'high' | 'medium';
 
 export type ExpenseRequestItem = {
   id: string;
@@ -57,7 +57,7 @@ export type ExpenseHistoryItem = {
 export type RecentExpenseItem = {
   id: string;
   title: string;
-  status: "completed";
+  status: 'completed';
   amount: string;
   fromBudget: string;
   responsible: string;

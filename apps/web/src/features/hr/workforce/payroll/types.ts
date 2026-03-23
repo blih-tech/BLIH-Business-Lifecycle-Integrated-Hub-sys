@@ -1,4 +1,8 @@
-export type PayrollScheduleType = "scheduled" | "bonus" | "commission" | "overtime";
+export type PayrollScheduleType =
+  | 'scheduled'
+  | 'bonus'
+  | 'commission'
+  | 'overtime';
 
 export type PayrollScheduleItem = {
   id: string;
@@ -11,7 +15,7 @@ export type PayrollScheduleItem = {
 export type PayrollMetric = {
   label: string;
   value: string;
-  tone?: "default" | "danger" | "success";
+  tone?: 'default' | 'danger' | 'success';
   highlight?: boolean;
 };
 

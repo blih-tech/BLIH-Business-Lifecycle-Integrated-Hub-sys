@@ -1,9 +1,10 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-import { OrganogramTip } from "@/features/hr/people/organogram/components/organogram-tip";
-import { OrganogramToolbar } from "@/features/hr/people/organogram/components/organogram-toolbar";
+import { OrganogramTip } from '@/features/hr/people/organogram/components/organogram-tip';
+import { OrganogramToolbar } from '@/features/hr/people/organogram/components/organogram-toolbar';
 
-const chartCanvasImage = "https://www.figma.com/api/mcp/asset/910589c4-8517-446a-8c4e-0dff613e9b29";
+const chartCanvasImage =
+  'https://www.figma.com/api/mcp/asset/910589c4-8517-446a-8c4e-0dff613e9b29';
 
 type OrganogramCanvasProps = {
   zoomPercent: number;
@@ -36,7 +37,12 @@ export function OrganogramCanvas({
         className="absolute left-[8.5px] top-[10px] h-[604px] w-[1005px] origin-top-left overflow-hidden rounded-[12px]"
         style={{ transform: `scale(${zoomPercent / 100})` }}
       >
-        <Image src={chartCanvasImage} alt="Organogram chart" fill className="pointer-events-none object-contain" />
+        <Image
+          src={chartCanvasImage}
+          alt="Organogram chart"
+          fill
+          className="pointer-events-none object-contain"
+        />
       </div>
 
       <div className="absolute left-[17px] top-[551px]">

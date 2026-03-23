@@ -2,7 +2,7 @@ export type ExitDocumentsStat = {
   id: string;
   label: string;
   value: string;
-  icon: "employees" | "cleared" | "progress";
+  icon: 'employees' | 'cleared' | 'progress';
 };
 
 export type ClearanceDocumentItem = {

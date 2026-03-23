@@ -1,11 +1,23 @@
-import { useFormContext } from "react-hook-form";
+import { useFormContext } from 'react-hook-form';
 
-import type { EmployeeProfileFormValues } from "@/features/hr/people/create/form-schema";
-import { FormSectionCard } from "@/features/hr/people/create/components/form-section-card";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
-import { Textarea } from "@/shared/components/ui/textarea";
+import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
+import { Textarea } from '@/shared/components/ui/textarea';
 
 export function ContractCompensationSection() {
   const form = useFormContext<EmployeeProfileFormValues>();
@@ -34,7 +46,9 @@ export function ContractCompensationSection() {
               <FormLabel>Annual Salary *</FormLabel>
               <FormControl>
                 <div className="flex h-12 items-center rounded-[6px] border border-[#e5e5e5] bg-transparent px-3">
-                  <span className="mr-2 text-xs font-semibold tracking-[-0.1504px] text-[#666]">ETB</span>
+                  <span className="mr-2 text-xs font-semibold tracking-[-0.1504px] text-[#666]">
+                    ETB
+                  </span>
                   <Input
                     className="h-full border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
                     placeholder="15,000"

@@ -3,7 +3,7 @@ export type BenefitsStat = {
   label: string;
   value: string;
   trend: string;
-  icon: "total" | "average" | "enrollments";
+  icon: 'total' | 'average' | 'enrollments';
 };
 
 export type ProfitSharingSummary = {

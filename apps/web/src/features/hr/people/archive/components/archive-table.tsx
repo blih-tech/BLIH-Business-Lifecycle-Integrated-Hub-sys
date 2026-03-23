@@ -107,7 +107,9 @@ export function ArchiveTable({
                     <p className="text-sm font-medium leading-4 tracking-[-0.1504px] text-foreground">
                       {employee.name}
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">{employee.role}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {employee.role}
+                    </p>
                   </div>
                 </div>
                 <p className="text-xs font-medium text-foreground">

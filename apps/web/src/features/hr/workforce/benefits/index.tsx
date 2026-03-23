@@ -13,7 +13,7 @@ import {
   retirementMetrics,
   retirementOverview,
   topRecipients,
-} from "@/features/hr/workforce/benefits/mock-data";
+} from '@/features/hr/workforce/benefits/mock-data';
 import {
   AdditionalBenefitsSection,
   AnnualPerformanceBonusesSection,
@@ -23,17 +23,23 @@ import {
   InsuranceBenefitsSection,
   MonthlyAllowancesSection,
   RetirementBenefitsSection,
-} from "@/features/hr/workforce/benefits/components";
+} from '@/features/hr/workforce/benefits/components';
 
-export * from "@/features/hr/workforce/benefits/components";
-export * from "@/features/hr/workforce/benefits/types";
+export * from '@/features/hr/workforce/benefits/components';
+export * from '@/features/hr/workforce/benefits/types';
 
 export function WorkforceBenefitsContent() {
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-4 px-4 py-4 md:px-5 md:py-5">
       <BenefitsStatsGrid items={benefitsStats} />
-      <AnnualProfitSharingSection summaries={profitSharingSummaries} tiers={profitSharingTiers} />
-      <AnnualPerformanceBonusesSection summaries={performanceBonusSummaries} recipients={topRecipients} />
+      <AnnualProfitSharingSection
+        summaries={profitSharingSummaries}
+        tiers={profitSharingTiers}
+      />
+      <AnnualPerformanceBonusesSection
+        summaries={performanceBonusSummaries}
+        recipients={topRecipients}
+      />
       <MonthlyAllowancesSection
         totalLabel={monthlyAllowancesSummary.label}
         totalValue={monthlyAllowancesSummary.value}
@@ -50,7 +56,10 @@ export function WorkforceBenefitsContent() {
         metrics={retirementMetrics}
       />
       <AdditionalBenefitsSection items={additionalBenefits} />
-      <BenefitsValueByDepartmentSection data={departmentBenefitPoints} summaries={departmentBenefitSummaries} />
+      <BenefitsValueByDepartmentSection
+        data={departmentBenefitPoints}
+        summaries={departmentBenefitSummaries}
+      />
     </main>
   );
 }

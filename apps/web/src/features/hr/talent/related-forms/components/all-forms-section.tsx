@@ -1,7 +1,7 @@
-import type { RelatedFormItem } from "@/features/hr/talent/related-forms/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { RelatedFormItem } from '@/features/hr/talent/related-forms/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
-import { FormRowCard } from "./form-row-card";
+import { FormRowCard } from './form-row-card';
 
 type AllFormsSectionProps = {
   items: RelatedFormItem[];

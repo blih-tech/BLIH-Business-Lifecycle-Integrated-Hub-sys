@@ -2,12 +2,12 @@ import type {
   TimesheetRow,
   TimesheetSection,
   TimesheetViewMode,
-} from "@/features/hr/attendance/timesheet/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { cn } from "@/shared/lib/utils";
+} from '@/features/hr/attendance/timesheet/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { cn } from '@/shared/lib/utils';
 
-import { TimesheetTable } from "./timesheet-table";
-import { ViewPeriodLabel } from "./view-period-label";
+import { TimesheetTable } from './timesheet-table';
+import { ViewPeriodLabel } from './view-period-label';
 
 type TimesheetEntriesCardProps = {
   viewMode: TimesheetViewMode;
@@ -39,14 +39,16 @@ export function TimesheetEntriesCard({
           />
         </div>
 
-        {viewMode === "daily" ? (
+        {viewMode === 'daily' ? (
           <TimesheetTable rows={rows} />
-        ) : viewMode === "weekly" ? (
+        ) : viewMode === 'weekly' ? (
           <div className="space-y-6">
             {sections.map((section) => (
               <section key={section.id}>
                 <div className="mb-3 flex items-center gap-3">
-                  <p className="text-sm font-medium text-black">{section.title}</p>
+                  <p className="text-sm font-medium text-black">
+                    {section.title}
+                  </p>
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <TimesheetTable rows={section.rows} compact />
@@ -60,7 +62,10 @@ export function TimesheetEntriesCard({
                 <div className="hidden w-[34px] pt-9 md:block">
                   <div
                     className="inline-flex min-h-[64px] items-center justify-center rounded-[6px] border border-border bg-[#f3f3f3] px-1 text-[10px] font-medium text-muted-foreground"
-                    style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+                    style={{
+                      writingMode: 'vertical-rl',
+                      textOrientation: 'mixed',
+                    }}
                   >
                     {section.railLabel ?? section.subtitle ?? section.title}
                   </div>
@@ -68,11 +73,15 @@ export function TimesheetEntriesCard({
 
                 <section className="min-w-0 flex-1">
                   <div className="mb-3 flex items-center gap-3">
-                    <p className="text-sm font-medium text-black">{section.title}</p>
+                    <p className="text-sm font-medium text-black">
+                      {section.title}
+                    </p>
                     <div className="h-px flex-1 bg-border" />
                   </div>
                   {section.subtitle ? (
-                    <p className="mb-2 text-xs text-muted-foreground">{section.subtitle}</p>
+                    <p className="mb-2 text-xs text-muted-foreground">
+                      {section.subtitle}
+                    </p>
                   ) : null}
                   <TimesheetTable rows={section.rows} compact />
                 </section>
@@ -82,7 +91,9 @@ export function TimesheetEntriesCard({
         )}
 
         {!rows.length && !sections.length ? (
-          <p className={cn("py-10 text-center text-sm text-muted-foreground")}>No timesheet entries found.</p>
+          <p className={cn('py-10 text-center text-sm text-muted-foreground')}>
+            No timesheet entries found.
+          </p>
         ) : null}
       </CardContent>
     </Card>

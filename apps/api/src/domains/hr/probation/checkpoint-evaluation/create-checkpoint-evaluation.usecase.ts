@@ -95,11 +95,12 @@ export class CreateCheckpointEvaluationUseCase {
     }
 
     // 2. Guard against duplicate evaluation for this checkpoint
-    const existingEvaluation =
-      await this.prisma.checkpointEvaluation.findFirst({
+    const existingEvaluation = await this.prisma.checkpointEvaluation.findFirst(
+      {
         where: { checkpointId: dto.checkpointId },
         select: { id: true },
-      });
+      },
+    );
     if (existingEvaluation) {
       throw new ConflictException(
         `A checkpoint evaluation already exists for checkpoint "${dto.checkpointId}". ` +

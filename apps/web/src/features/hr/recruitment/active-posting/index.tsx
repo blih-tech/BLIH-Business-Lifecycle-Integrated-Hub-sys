@@ -1,5 +1,5 @@
-import { activePostingJobs } from "@/features/hr/recruitment/active-posting/mock-data";
-import { ActiveJobCard } from "@/features/hr/recruitment/active-posting/components/active-job-card";
+import { activePostingJobs } from '@/features/hr/recruitment/active-posting/mock-data';
+import { ActiveJobCard } from '@/features/hr/recruitment/active-posting/components/active-job-card';
 
 export function RecruitmentActivePostingContent() {
   return (

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { ChevronLeft, ChevronRight, ListFilter, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, ListFilter, Search } from 'lucide-react';
 
-import type { PreviousLeaveRow } from "@/features/hr/attendance/leaves/types";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import type { PreviousLeaveRow } from '@/features/hr/attendance/leaves/types';
+import { Button } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { cn } from "@/shared/lib/utils";
+} from '@/shared/components/ui/select';
+import { cn } from '@/shared/lib/utils';
 
 type PreviousLeavesTableProps = {
   rows: PreviousLeaveRow[];
@@ -61,7 +61,10 @@ export function PreviousLeavesTable({
           </Button>
 
           <Select defaultValue="Marketing">
-            <SelectTrigger size="sm" className="flex-1 rounded-[6px] border-input bg-background text-sm">
+            <SelectTrigger
+              size="sm"
+              className="flex-1 rounded-[6px] border-input bg-background text-sm"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -72,7 +75,10 @@ export function PreviousLeavesTable({
           </Select>
 
           <Select defaultValue="Leave Type">
-            <SelectTrigger size="sm" className="flex-1 rounded-[6px] border-input bg-background text-sm text-muted-foreground">
+            <SelectTrigger
+              size="sm"
+              className="flex-1 rounded-[6px] border-input bg-background text-sm text-muted-foreground"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -87,7 +93,9 @@ export function PreviousLeavesTable({
           <p>{totalRows} employees found</p>
           <p>
             Sort by:
-            <span className="ml-1 border-b border-foreground pb-0.5 font-medium text-foreground">Name</span>
+            <span className="ml-1 border-b border-foreground pb-0.5 font-medium text-foreground">
+              Name
+            </span>
           </p>
         </div>
 
@@ -100,10 +108,10 @@ export function PreviousLeavesTable({
                 type="button"
                 onClick={() => onSelect(row.id)}
                 className={cn(
-                  "flex w-full items-center justify-between rounded-[6px] px-3 py-2 text-left transition-colors",
+                  'flex w-full items-center justify-between rounded-[6px] px-3 py-2 text-left transition-colors',
                   selected
-                    ? "border border-primary bg-background"
-                    : "border border-transparent bg-muted/60 hover:bg-muted",
+                    ? 'border border-primary bg-background'
+                    : 'border border-transparent bg-muted/60 hover:bg-muted',
                 )}
               >
                 <div className="flex items-center gap-2">
@@ -111,11 +119,17 @@ export function PreviousLeavesTable({
                     {row.initials}
                   </div>
                   <div>
-                    <p className="text-sm font-medium leading-4 tracking-[-0.1504px] text-foreground">{row.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{row.role}</p>
+                    <p className="text-sm font-medium leading-4 tracking-[-0.1504px] text-foreground">
+                      {row.name}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {row.role}
+                    </p>
                   </div>
                 </div>
-                <p className="text-xs font-medium text-foreground">{row.department}</p>
+                <p className="text-xs font-medium text-foreground">
+                  {row.department}
+                </p>
                 <span className="rounded-[4px] border border-primary px-2 py-0.5 text-[10px] font-medium text-primary">
                   {row.leaveType}
                 </span>
@@ -149,10 +163,10 @@ export function PreviousLeavesTable({
                 variant="ghost"
                 size="icon-sm"
                 className={cn(
-                  "h-4 w-4 rounded-full p-0 text-[12px] leading-4",
+                  'h-4 w-4 rounded-full p-0 text-[12px] leading-4',
                   active
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "text-foreground hover:bg-muted",
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'text-foreground hover:bg-muted',
                 )}
                 onClick={() => onPageChange(page)}
               >

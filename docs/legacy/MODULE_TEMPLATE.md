@@ -73,10 +73,12 @@ export const EXAMPLE_PERMISSIONS = {
   APPROVE: 'EXAMPLE:resource:approve', // If needed
 } as const;
 
-export type ExamplePermission = typeof EXAMPLE_PERMISSIONS[keyof typeof EXAMPLE_PERMISSIONS];
+export type ExamplePermission =
+  (typeof EXAMPLE_PERMISSIONS)[keyof typeof EXAMPLE_PERMISSIONS];
 ```
 
 **Also add to shared package:**
+
 ```typescript
 // packages/shared/permissions/all-permissions.ts
 import { EXAMPLE_PERMISSIONS } from '../../module-example/backend/src/permissions/example.permissions';
@@ -135,9 +137,15 @@ ExampleSchema.index({ deleted: 1 });
 ```
 
 **For PostgreSQL (Finance module):**
+
 ```typescript
 // module-finance/backend/src/entities/transaction.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('transactions')
 export class Transaction {
@@ -429,6 +437,7 @@ export class ExampleDeletedEvent {
 ```
 
 **Add to shared events:**
+
 ```typescript
 // packages/shared/events/index.ts
 export * from '../../module-example/backend/src/events/example.events';
@@ -463,6 +472,7 @@ export class ExampleEventHandler {
 ```
 
 **For subscribing to OTHER modules' events:**
+
 ```typescript
 // module-example/backend/src/events/example.event-handler.ts
 import { OnEvent } from '@nestjs/event-emitter';
@@ -540,7 +550,10 @@ export const exampleApi = {
     return res.json();
   },
 
-  update: async (id: string, data: Partial<CreateExampleDto>): Promise<Example> => {
+  update: async (
+    id: string,
+    data: Partial<CreateExampleDto>,
+  ): Promise<Example> => {
     const res = await fetch(`${API_BASE}/example/${id}`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
@@ -588,8 +601,13 @@ export const useCreateExample = () => {
 export const useUpdateExample = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<CreateExampleDto> }) =>
-      exampleApi.update(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<CreateExampleDto>;
+    }) => exampleApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['examples'] });
     },
@@ -911,7 +929,7 @@ describe('ExampleService', () => {
 // In service
 async approve(id: string, userId: string) {
   const example = await this.findOne(id, userId);
-  
+
   if (example.status !== 'pending') {
     throw new BadRequestException('Only pending items can be approved');
   }
@@ -961,6 +979,3 @@ async remove(id: string) {
 ---
 
 **Use this template as a starting point for every new module!**
-
-
-

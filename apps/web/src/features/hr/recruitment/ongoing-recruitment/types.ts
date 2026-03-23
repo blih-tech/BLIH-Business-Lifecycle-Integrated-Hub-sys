@@ -1,5 +1,5 @@
-export type OngoingInterviewStatus = "interviewed" | "scheduled";
-export type OngoingInterviewDecisionStatus = "pending" | "waitlisted";
+export type OngoingInterviewStatus = 'interviewed' | 'scheduled';
+export type OngoingInterviewDecisionStatus = 'pending' | 'waitlisted';
 
 export type OngoingCommitteeReview = {
   memberId: string;
@@ -45,7 +45,7 @@ export type OngoingPipelineCandidate = {
     id: string;
     label: string;
     value: string;
-    type: "text" | "textarea" | "link" | "file" | "number" | "date";
+    type: 'text' | 'textarea' | 'link' | 'file' | 'number' | 'date';
   }>;
   aiAnalysis: {
     score: number;

@@ -1,17 +1,28 @@
-import { Award, FileText, MessageSquareText, Package, ScrollText, Wallet } from "lucide-react";
+import {
+  Award,
+  FileText,
+  MessageSquareText,
+  Package,
+  ScrollText,
+  Wallet,
+} from 'lucide-react';
 
-import type { ChecklistTemplateTask } from "@/features/hr/exit/clearance-checklist/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { ChecklistTemplateTask } from '@/features/hr/exit/clearance-checklist/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type ClearanceTemplateSectionProps = {
   items: ChecklistTemplateTask[];
 };
 
-export function ClearanceTemplateSection({ items }: ClearanceTemplateSectionProps) {
+export function ClearanceTemplateSection({
+  items,
+}: ClearanceTemplateSectionProps) {
   return (
     <Card className="gap-0 rounded-[12px] border-primary py-0 shadow-none">
       <CardContent className="space-y-4 p-4">
-        <p className="text-sm font-medium tracking-[-0.1504px] text-black">Exit Clearance Checklist Template</p>
+        <p className="text-sm font-medium tracking-[-0.1504px] text-black">
+          Exit Clearance Checklist Template
+        </p>
         <div className="grid gap-2 md:grid-cols-2">
           {items.map((item) => (
             <div
@@ -25,7 +36,9 @@ export function ClearanceTemplateSection({ items }: ClearanceTemplateSectionProp
                 <p className="text-sm font-semibold leading-5 tracking-[-0.1504px] text-black">
                   {item.order}. {item.title}
                 </p>
-                <p className="text-xs leading-4 text-[#666]">{item.description}</p>
+                <p className="text-xs leading-4 text-[#666]">
+                  {item.description}
+                </p>
               </div>
             </div>
           ))}
@@ -35,24 +48,24 @@ export function ClearanceTemplateSection({ items }: ClearanceTemplateSectionProp
   );
 }
 
-function renderTemplateIcon(icon: ChecklistTemplateTask["icon"]) {
-  if (icon === "message") {
+function renderTemplateIcon(icon: ChecklistTemplateTask['icon']) {
+  if (icon === 'message') {
     return <MessageSquareText className="h-3.5 w-3.5" />;
   }
 
-  if (icon === "package") {
+  if (icon === 'package') {
     return <Package className="h-3.5 w-3.5" />;
   }
 
-  if (icon === "wallet") {
+  if (icon === 'wallet') {
     return <Wallet className="h-3.5 w-3.5" />;
   }
 
-  if (icon === "certificate") {
+  if (icon === 'certificate') {
     return <ScrollText className="h-3.5 w-3.5" />;
   }
 
-  if (icon === "award") {
+  if (icon === 'award') {
     return <Award className="h-3.5 w-3.5" />;
   }
 

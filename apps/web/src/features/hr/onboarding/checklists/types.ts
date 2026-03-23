@@ -1,7 +1,7 @@
-import type { ProgressSummaryStat } from "@/features/hr/onboarding/progress/types";
+import type { ProgressSummaryStat } from '@/features/hr/onboarding/progress/types';
 
 export type ChecklistSummaryStat = ProgressSummaryStat & {
-  icon: "check-square" | "calendar";
+  icon: 'check-square' | 'calendar';
 };
 
 export type ChecklistTemplate = {

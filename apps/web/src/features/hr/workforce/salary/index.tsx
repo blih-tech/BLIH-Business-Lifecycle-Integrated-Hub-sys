@@ -6,17 +6,17 @@ import {
   salaryAuditLogItems,
   salaryPerformanceData,
   salaryStats,
-} from "@/features/hr/workforce/salary/mock-data";
+} from '@/features/hr/workforce/salary/mock-data';
 import {
   EmployeeSalarySection,
   SalaryAdjustmentRequestsSection,
   SalaryAuditLogSection,
   SalaryInsightsChartsSection,
   SalaryStatsGrid,
-} from "@/features/hr/workforce/salary/components";
+} from '@/features/hr/workforce/salary/components';
 
-export * from "@/features/hr/workforce/salary/components";
-export * from "@/features/hr/workforce/salary/types";
+export * from '@/features/hr/workforce/salary/components';
+export * from '@/features/hr/workforce/salary/types';
 
 export function WorkforceSalaryContent() {
   return (

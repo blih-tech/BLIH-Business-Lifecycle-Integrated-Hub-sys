@@ -5,7 +5,7 @@ import {
   performanceStats,
   topEmployees,
   trendData,
-} from "@/features/hr/performance/overview/mock-data";
+} from '@/features/hr/performance/overview/mock-data';
 import {
   DepartmentPerformanceOverviewCard,
   InsightCardsRow,
@@ -13,10 +13,10 @@ import {
   PerformanceTrendCard,
   StatsGrid,
   TopPerformingEmployeesCard,
-} from "@/features/hr/performance/overview/components";
+} from '@/features/hr/performance/overview/components';
 
-export * from "@/features/hr/performance/overview/components";
-export * from "@/features/hr/performance/overview/types";
+export * from '@/features/hr/performance/overview/components';
+export * from '@/features/hr/performance/overview/types';
 
 export function PerformanceOverviewContent() {
   return (

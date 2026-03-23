@@ -34,7 +34,9 @@ export class CreateKpiUseCase {
     });
 
     if (existing) {
-      throw new ConflictException(`KPI with name '${dto.name}' already exists.`);
+      throw new ConflictException(
+        `KPI with name '${dto.name}' already exists.`,
+      );
     }
 
     const kpi = await this.prisma.kPI.create({

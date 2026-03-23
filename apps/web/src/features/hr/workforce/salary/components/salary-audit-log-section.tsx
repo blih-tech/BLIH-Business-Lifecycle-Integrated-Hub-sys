@@ -1,5 +1,5 @@
-import type { SalaryAuditLogItem } from "@/features/hr/workforce/salary/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { SalaryAuditLogItem } from '@/features/hr/workforce/salary/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 type SalaryAuditLogSectionProps = {
   items: SalaryAuditLogItem[];
@@ -12,7 +12,9 @@ export function SalaryAuditLogSection({ items }: SalaryAuditLogSectionProps) {
   return (
     <Card className="gap-0 rounded-[12px] border-border py-0 shadow-none">
       <CardContent className="space-y-4 p-4">
-        <p className="text-sm tracking-[-0.3125px] text-black">Salary Audit Log</p>
+        <p className="text-sm tracking-[-0.3125px] text-black">
+          Salary Audit Log
+        </p>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-2">
             {firstCol.map((item) => (

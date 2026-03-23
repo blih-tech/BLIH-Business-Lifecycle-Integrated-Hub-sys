@@ -3,6 +3,7 @@
 ## Pre-Development Setup (Day 1)
 
 ### Development Environment
+
 - [ ] Install Node.js 20.x
 - [ ] Install Docker & Docker Compose
 - [ ] Install pnpm (or npm)
@@ -15,6 +16,7 @@
   - [ ] TypeScript
 
 ### Repository Setup
+
 - [ ] Initialize monorepo structure
 - [ ] Set up package.json workspaces
 - [ ] Configure TypeScript (strict mode)
@@ -23,6 +25,7 @@
 - [ ] Create .gitignore
 
 ### Infrastructure Services (Docker Compose)
+
 - [ ] MongoDB container
 - [ ] PostgreSQL container
 - [ ] Keycloak container
@@ -36,6 +39,7 @@
 ## Week 1-2: Foundation
 
 ### Day 1-3: Infrastructure
+
 - [ ] Docker Compose file created
 - [ ] All services start successfully
 - [ ] Database connections tested
@@ -43,6 +47,7 @@
 - [ ] Health check endpoints working
 
 ### Day 4-7: Keycloak Integration
+
 - [ ] Keycloak realm created (`blih-realm`)
 - [ ] Client configured (backend + frontend)
 - [ ] Initial admin user created
@@ -50,6 +55,7 @@
 - [ ] Login flow functional in frontend
 
 ### Day 8-10: Audit Logging
+
 - [ ] Audit log MongoDB collection created
 - [ ] Audit service implemented
 - [ ] Audit middleware integrated
@@ -57,6 +63,7 @@
 - [ ] Audit log export function working
 
 ### Day 11-14: Event Bus
+
 - [ ] RabbitMQ connection established
 - [ ] Event emitter service created
 - [ ] First event published
@@ -70,6 +77,7 @@
 ## Week 3-4: Core Platform
 
 ### RBAC System
+
 - [ ] Permission model defined
 - [ ] Permission guard implemented
 - [ ] Permission decorator created
@@ -77,18 +85,21 @@
 - [ ] User permissions cached in JWT
 
 ### Company Context
+
 - [ ] Company service created
 - [ ] Single `company_id` enforced
 - [ ] Company context middleware
 - [ ] All queries filtered by company_id
 
 ### Notification Service
+
 - [ ] Notification model (MongoDB)
 - [ ] In-app notification API
 - [ ] Email notification (SMTP)
 - [ ] Webhook support (optional)
 
 ### User Management UI
+
 - [ ] User list page
 - [ ] User create/edit forms
 - [ ] Role assignment UI
@@ -101,6 +112,7 @@
 ## Week 5-6: Brain + HR Module
 
 ### Brain Module (Week 5)
+
 - [ ] MongoDB collections: policies, sops, decisions
 - [ ] Document versioning implemented
 - [ ] Event observer service
@@ -108,6 +120,7 @@
 - [ ] Brain UI (list, create, view)
 
 ### HR Module (Week 6)
+
 - [ ] Employee entity/schema
 - [ ] Employee CRUD API
 - [ ] Employee list UI
@@ -123,6 +136,7 @@
 ## Week 7-8: CRM + Projects
 
 ### CRM Module
+
 - [ ] Lead entity
 - [ ] Contact entity
 - [ ] Organization entity
@@ -132,6 +146,7 @@
 - [ ] Event: `crm.deal.lost` published
 
 ### Projects Module
+
 - [ ] Project entity
 - [ ] Task entity
 - [ ] Subscribes to `crm.deal.won`
@@ -147,6 +162,7 @@
 ## Week 9-10: Finance + Integration
 
 ### Finance Module
+
 - [ ] PostgreSQL schema (transactions, accounts)
 - [ ] Double-entry bookkeeping logic
 - [ ] Invoice entity
@@ -156,6 +172,7 @@
 - [ ] Finance UI (invoices, expenses)
 
 ### Full Integration Testing
+
 - [ ] End-to-end: Deal won → Project created → Invoice generated
 - [ ] All events logged in audit
 - [ ] Brain captures patterns
@@ -168,6 +185,7 @@
 ## Week 11-12: AI + Compliance
 
 ### AI Chatbot
+
 - [ ] Qdrant setup
 - [ ] Embedding generation (Ollama)
 - [ ] Chatbot API (permission-gated)
@@ -176,6 +194,7 @@
 - [ ] Response redaction working
 
 ### Compliance Extensions
+
 - [ ] Risk Register collection
 - [ ] Risk Register UI (list, create, detail)
 - [ ] CAPA collection
@@ -191,6 +210,7 @@
 ## Week 13-14: Hardening
 
 ### Security
+
 - [ ] Encryption at rest (MinIO, DB configs)
 - [ ] HTTPS enforced
 - [ ] Secrets management (Docker secrets)
@@ -199,6 +219,7 @@
 - [ ] XSS protection verified
 
 ### Performance
+
 - [ ] Database indexes created
 - [ ] Query optimization (slow query log reviewed)
 - [ ] Caching (Redis) for frequent reads
@@ -206,18 +227,21 @@
 - [ ] Response times < 500ms (p95)
 
 ### Testing
+
 - [ ] Unit test coverage > 70%
 - [ ] Integration tests for all workflows
 - [ ] E2E tests for critical paths
 - [ ] Audit trail verification (no gaps)
 
 ### Documentation
+
 - [ ] API documentation (Swagger/OpenAPI)
 - [ ] Deployment guide
 - [ ] User manual (basic)
 - [ ] Troubleshooting guide
 
 ### Pilot Deployment
+
 - [ ] Production Docker Compose configured
 - [ ] Backup scripts tested
 - [ ] Restore procedure verified
@@ -287,18 +311,21 @@ If you hit 2+ red flags, pause and fix before continuing.
 ## Success Metrics
 
 **Technical:**
+
 - All services healthy (Docker ps)
 - Zero critical security vulnerabilities
 - API response time < 500ms (p95)
 - Test coverage > 70%
 
 **Functional:**
+
 - End-to-end workflow working (deal → project → invoice)
 - Audit trail complete (no gaps)
 - RBAC enforced (access denied when expected)
 - Compliance evidence exportable
 
 **Team:**
+
 - Daily stand-ups happening
 - Weekly demos showing progress
 - No major blockers > 2 days
@@ -307,6 +334,3 @@ If you hit 2+ red flags, pause and fix before continuing.
 ---
 
 **Remember:** This is a marathon, not a sprint. Focus on working software over perfect code. Iterate based on real usage.
-
-
-

@@ -34,17 +34,17 @@ User Request
 
 ## Implementation in blih-system-backend
 
-| Step | Component | Location / registration |
-|------|-----------|---------------------------|
-| **Middleware** | Correlation ID | `CorrelationIdMiddleware` - `AppModule.configure()` applied to `*path` |
-| **Authentication** | JWT validation | `KeycloakAuthGuard` - applied per controller via `@UseGuards(KeycloakAuthGuard, RbacGuard)` |
-| **Authorization** | RBAC permission check | `RbacGuard` - same; evaluates `@Roles()` and scope |
-| **Validation** | DTO / business rules | Global `ValidationPipe` - `main.ts` `app.useGlobalPipes(new ValidationPipe())` |
-| **Pre-Audit** | Capture "before" state | `PreAuditInterceptor` - `APP_INTERCEPTOR` in `AppModule` (registered before `AuditInterceptor`). Uses `@AuditState({ resourceIdKey, loadBefore: true })` and `AuditStateService` to load entity snapshot and attach to request. |
-| **Business logic** | Controller + use case | Controller handler invokes use case. |
-| **Post-Audit** | Capture "after" state, persist | `AuditInterceptor` - `APP_INTERCEPTOR` in `AppModule`. Reads `before` from request (set by PreAudit), uses handler response or body as `after`, writes to `AuditLog` with `before` / `after` / `resourceId`. |
-| **Event publishing** | Notify other modules | Inside use cases: `EventBusService.publish(eventType, data, metadata)` to exchange `blih.events`. |
-| **Response** | Unified envelope | `ResponseEnvelopeInterceptor` wraps every HTTP route output into `ApiResponse<T>`. `HttpExceptionFilter` emits the same shape for errors. |
+| Step                 | Component                      | Location / registration                                                                                                                                                                                                         |
+| -------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Middleware**       | Correlation ID                 | `CorrelationIdMiddleware` - `AppModule.configure()` applied to `*path`                                                                                                                                                          |
+| **Authentication**   | JWT validation                 | `KeycloakAuthGuard` - applied per controller via `@UseGuards(KeycloakAuthGuard, RbacGuard)`                                                                                                                                     |
+| **Authorization**    | RBAC permission check          | `RbacGuard` - same; evaluates `@Roles()` and scope                                                                                                                                                                              |
+| **Validation**       | DTO / business rules           | Global `ValidationPipe` - `main.ts` `app.useGlobalPipes(new ValidationPipe())`                                                                                                                                                  |
+| **Pre-Audit**        | Capture "before" state         | `PreAuditInterceptor` - `APP_INTERCEPTOR` in `AppModule` (registered before `AuditInterceptor`). Uses `@AuditState({ resourceIdKey, loadBefore: true })` and `AuditStateService` to load entity snapshot and attach to request. |
+| **Business logic**   | Controller + use case          | Controller handler invokes use case.                                                                                                                                                                                            |
+| **Post-Audit**       | Capture "after" state, persist | `AuditInterceptor` - `APP_INTERCEPTOR` in `AppModule`. Reads `before` from request (set by PreAudit), uses handler response or body as `after`, writes to `AuditLog` with `before` / `after` / `resourceId`.                    |
+| **Event publishing** | Notify other modules           | Inside use cases: `EventBusService.publish(eventType, data, metadata)` to exchange `blih.events`.                                                                                                                               |
+| **Response**         | Unified envelope               | `ResponseEnvelopeInterceptor` wraps every HTTP route output into `ApiResponse<T>`. `HttpExceptionFilter` emits the same shape for errors.                                                                                       |
 
 ---
 

@@ -64,15 +64,15 @@
 
 All BLIH modules implement these foundational security controls:
 
-| Control | Implementation | All Modules |
-|---------|----------------|-------------|
-| **Authentication** | Keycloak SSO + MFA | ✅ |
-| **Authorization** | RBAC with granular permissions | ✅ |
-| **Audit Logging** | Immutable audit trails | ✅ |
-| **Data Encryption** | AES-256 at rest, TLS 1.3 in transit | ✅ |
-| **Input Validation** | Zod schemas, sanitization | ✅ |
-| **Rate Limiting** | 100 req/15min per user | ✅ |
-| **Session Management** | Secure, httpOnly cookies | ✅ |
+| Control                | Implementation                      | All Modules |
+| ---------------------- | ----------------------------------- | ----------- |
+| **Authentication**     | Keycloak SSO + MFA                  | ✅          |
+| **Authorization**      | RBAC with granular permissions      | ✅          |
+| **Audit Logging**      | Immutable audit trails              | ✅          |
+| **Data Encryption**    | AES-256 at rest, TLS 1.3 in transit | ✅          |
+| **Input Validation**   | Zod schemas, sanitization           | ✅          |
+| **Rate Limiting**      | 100 req/15min per user              | ✅          |
+| **Session Management** | Secure, httpOnly cookies            | ✅          |
 
 ### 2.2 Company Context Isolation
 
@@ -92,6 +92,7 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 ```
 
 **Critical:** All queries MUST include `company_id` filter. This is enforced at:
+
 - Application level (TypeORM repository layer)
 - Database level (Row-Level Security policies)
 - Audit level (all logs include company_id)
@@ -105,12 +106,14 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 **Criticality:** 🔴 **VERY HIGH** (PII, employment records)
 
 **Key Security Concerns:**
+
 - Employee personal information (SSN, addresses, salary)
 - Performance reviews (sensitive feedback)
 - Disciplinary records (legal implications)
 - Health information (HIPAA considerations)
 
 **Security Controls:**
+
 - Field-level encryption for SSN, salary
 - Access control: Only HR managers + employee themselves
 - Audit all accesses to employee records
@@ -125,12 +128,14 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 **Criticality:** 🟡 **HIGH** (Customer data, GDPR)
 
 **Key Security Concerns:**
+
 - Customer contact information (GDPR protected)
 - Deal values (confidential business data)
 - Communication history (may contain PII)
 - Third-party integrations (email, calendar)
 
 **Security Controls:**
+
 - Customer data consent tracking
 - GDPR compliance (right to be forgotten)
 - Access control: Sales team + deal owners
@@ -146,12 +151,14 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 **Criticality:** 🔴 **VERY HIGH** (Financial data, SOX compliance)
 
 **Key Security Concerns:**
+
 - Financial transactions (immutable, auditable)
 - Bank account information (PCI-DSS)
 - Invoice data (tax implications)
 - Payroll processing (confidential, regulated)
 
 **Security Controls:**
+
 - Double-entry bookkeeping (integrity)
 - Immutable transaction logs
 - Segregation of duties (maker-checker)
@@ -168,12 +175,14 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 **Criticality:** 🟡 **HIGH** (Client confidentiality, IP)
 
 **Key Security Concerns:**
+
 - Project documents (may be confidential)
 - Client information (NDAs, contracts)
 - Time tracking data (billing accuracy)
 - Resource allocation (competitive intelligence)
 
 **Security Controls:**
+
 - Project-level access control
 - Document encryption
 - Client data compartmentalization
@@ -189,12 +198,14 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 **Criticality:** 🟡 **HIGH** (Knowledge base, AI model)
 
 **Key Security Concerns:**
+
 - Proprietary knowledge (trade secrets)
 - AI model security (prompt injection)
 - Document access control (sensitive info)
 - RAG pipeline security (data exposure)
 
 **Security Controls:**
+
 - Vector embeddings access control
 - Document classification (confidential/public)
 - AI model isolation (per company)
@@ -210,13 +221,13 @@ USING (company_id = current_setting('app.company_id')::TEXT);
 
 ### 4.1 Regulatory Compliance
 
-| Regulation | Scope | Modules Affected | Status |
-|------------|-------|------------------|--------|
-| **GDPR** | EU customer data | HR, CRM | ✅ Compliant |
-| **ISO 27001** | Information security | All | ✅ Implemented |
-| **SOX** | Financial controls | Finance | ✅ Compliant |
-| **HIPAA** | Health information | HR (if applicable) | ⚠️ Optional |
-| **PCI-DSS** | Payment processing | Finance | ⚠️ If payments enabled |
+| Regulation    | Scope                | Modules Affected   | Status                 |
+| ------------- | -------------------- | ------------------ | ---------------------- |
+| **GDPR**      | EU customer data     | HR, CRM            | ✅ Compliant           |
+| **ISO 27001** | Information security | All                | ✅ Implemented         |
+| **SOX**       | Financial controls   | Finance            | ✅ Compliant           |
+| **HIPAA**     | Health information   | HR (if applicable) | ⚠️ Optional            |
+| **PCI-DSS**   | Payment processing   | Finance            | ⚠️ If payments enabled |
 
 ### 4.2 GDPR Compliance Summary
 
@@ -269,13 +280,13 @@ ORDER BY sensitive_accesses DESC;
 
 ### 5.1 Security Metrics
 
-| Metric | Target | Alert Threshold |
-|--------|--------|-----------------|
-| **Failed Logins** | <0.5% | >5 in 5 min |
-| **Unauthorized Access** | 0 | >0 |
-| **Sensitive Data Access** | Logged 100% | <100% logged |
-| **Certificate Expiry** | >30 days | <15 days |
-| **Vulnerability Scan** | 0 critical | >0 critical |
+| Metric                    | Target      | Alert Threshold |
+| ------------------------- | ----------- | --------------- |
+| **Failed Logins**         | <0.5%       | >5 in 5 min     |
+| **Unauthorized Access**   | 0           | >0              |
+| **Sensitive Data Access** | Logged 100% | <100% logged    |
+| **Certificate Expiry**    | >30 days    | <15 days        |
+| **Vulnerability Scan**    | 0 critical  | >0 critical     |
 
 ### 5.2 Security Alerts
 
@@ -287,7 +298,7 @@ ORDER BY sensitive_accesses DESC;
   labels:
     severity: critical
   annotations:
-    summary: "Potential brute force attack"
+    summary: 'Potential brute force attack'
 
 - alert: UnauthorizedDataAccess
   expr: unauthorized_access_total > 0
@@ -295,15 +306,15 @@ ORDER BY sensitive_accesses DESC;
   labels:
     severity: critical
   annotations:
-    summary: "Unauthorized data access detected"
+    summary: 'Unauthorized data access detected'
 
 - alert: AnomalousDataExport
-  expr: data_export_size_bytes > 100000000  # 100MB
+  expr: data_export_size_bytes > 100000000 # 100MB
   for: 1m
   labels:
     severity: warning
   annotations:
-    summary: "Large data export detected"
+    summary: 'Large data export detected'
 ```
 
 ---
@@ -312,12 +323,12 @@ ORDER BY sensitive_accesses DESC;
 
 ### 6.1 Security Incident Classification
 
-| Severity | Examples | Response Time |
-|----------|----------|---------------|
-| **P0 - Critical** | Data breach, ransomware | Immediate |
-| **P1 - High** | Unauthorized access, DDoS | <1 hour |
-| **P2 - Medium** | Suspicious activity, failed attacks | <4 hours |
-| **P3 - Low** | Policy violations, misconfigurations | <24 hours |
+| Severity          | Examples                             | Response Time |
+| ----------------- | ------------------------------------ | ------------- |
+| **P0 - Critical** | Data breach, ransomware              | Immediate     |
+| **P1 - High**     | Unauthorized access, DDoS            | <1 hour       |
+| **P2 - Medium**   | Suspicious activity, failed attacks  | <4 hours      |
+| **P3 - Low**      | Policy violations, misconfigurations | <24 hours     |
 
 ### 6.2 Incident Response Plan
 
@@ -376,20 +387,24 @@ External SOC: [If applicable]
 ### Ongoing Security Maintenance
 
 **Daily:**
+
 - [ ] Review security alerts
 - [ ] Check failed login attempts
 
 **Weekly:**
+
 - [ ] Review audit logs for anomalies
 - [ ] Check certificate expiry dates
 - [ ] Verify backup integrity
 
 **Monthly:**
+
 - [ ] Vulnerability scanning
 - [ ] Access review (remove inactive users)
 - [ ] Security patch updates
 
 **Quarterly:**
+
 - [ ] Penetration testing
 - [ ] Compliance audit
 - [ ] Security awareness training

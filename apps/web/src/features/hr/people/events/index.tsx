@@ -67,9 +67,7 @@ export function PeopleEventsContent() {
                 variant="ghost"
                 className={cn(
                   'relative h-11 overflow-hidden rounded-[6px] px-6 text-sm font-medium tracking-[-0.1504px] text-foreground',
-                  isActive
-                    ? 'border border-primary'
-                    : 'bg-card hover:bg-muted',
+                  isActive ? 'border border-primary' : 'bg-card hover:bg-muted',
                 )}
                 onClick={() => setActiveCategory(category.id)}
               >

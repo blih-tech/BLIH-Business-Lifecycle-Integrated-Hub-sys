@@ -1,36 +1,40 @@
-"use client";
+'use client';
 
-import { UsersRound } from "lucide-react";
-import { useState } from "react";
+import { UsersRound } from 'lucide-react';
+import { useState } from 'react';
 
-import { CandidateDetailDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/candidate-detail-dialog";
-import { PipelineCandidateCard } from "@/features/hr/recruitment/ongoing-recruitment/components/pipeline-candidate-card";
-import type { OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
+import { CandidateDetailDialog } from '@/features/hr/recruitment/ongoing-recruitment/components/candidate-detail-dialog';
+import { PipelineCandidateCard } from '@/features/hr/recruitment/ongoing-recruitment/components/pipeline-candidate-card';
+import type { OngoingRecruitmentJob } from '@/features/hr/recruitment/ongoing-recruitment/types';
 
 type WaitlistedTabProps = {
   job: OngoingRecruitmentJob;
 };
 
 export function WaitlistedTab({ job }: WaitlistedTabProps) {
-  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(
+    null,
+  );
 
   function handleMoveToShortlist(candidateId: string) {
-    console.log("rejectedAction", {
+    console.log('rejectedAction', {
       jobId: job.id,
       candidateId,
-      action: "move_to_shortlist",
+      action: 'move_to_shortlist',
     });
   }
 
   function handleMoveToInterview(candidateId: string) {
-    console.log("rejectedAction", {
+    console.log('rejectedAction', {
       jobId: job.id,
       candidateId,
-      action: "move_to_interview",
+      action: 'move_to_interview',
     });
   }
 
-  const selectedCandidate = job.waitlisted.find((candidate) => candidate.id === selectedCandidateId) ?? null;
+  const selectedCandidate =
+    job.waitlisted.find((candidate) => candidate.id === selectedCandidateId) ??
+    null;
 
   return (
     <>
@@ -39,7 +43,9 @@ export function WaitlistedTab({ job }: WaitlistedTabProps) {
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-[6px] bg-black text-white">
             <UsersRound className="h-4 w-4" />
           </span>
-          <p className="text-base font-medium tracking-[-0.3125px] text-black">Rejected</p>
+          <p className="text-base font-medium tracking-[-0.3125px] text-black">
+            Rejected
+          </p>
         </div>
 
         <div className="max-h-[320px] overflow-y-auto pr-1 [scrollbar-color:#d4d4d8_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#d4d4d8] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5">
@@ -71,4 +77,3 @@ export function WaitlistedTab({ job }: WaitlistedTabProps) {
     </>
   );
 }
-

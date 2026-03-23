@@ -4,10 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
-import type {
-  ProbationResponseDto,
-  UpdateProbationDto,
-} from './probation.dto';
+import type { ProbationResponseDto, UpdateProbationDto } from './probation.dto';
 import { mapProbation, probationInclude } from './create-probation.usecase';
 
 async function assertKpisExist(

@@ -1,1 +1,1 @@
-export * from "@/features/hr/onboarding/contract/components/contract-card";
+export * from '@/features/hr/onboarding/contract/components/contract-card';

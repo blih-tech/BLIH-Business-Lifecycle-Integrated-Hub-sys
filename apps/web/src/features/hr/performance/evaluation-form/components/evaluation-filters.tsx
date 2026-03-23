@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { ArrowUpDown, ListFilter, Plus, Search } from "lucide-react";
+import { ArrowUpDown, ListFilter, Plus, Search } from 'lucide-react';
 
-import type { EvaluationSortBy } from "@/features/hr/performance/evaluation-form/types";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import type { EvaluationSortBy } from '@/features/hr/performance/evaluation-form/types';
+import { Button } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from '@/shared/components/ui/select';
 
 type EvaluationFiltersProps = {
   search: string;
@@ -39,14 +39,24 @@ export function EvaluationFilters({
         <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => onSearchChange(event.target.value)}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            onSearchChange(event.target.value)
+          }
           placeholder="Search by name..."
           className="h-8 rounded-[4px] border-input bg-white pl-9 text-sm"
         />
       </div>
 
-      <Select value={sortBy} onValueChange={(value: string) => onSortByChange(value as EvaluationSortBy)}>
-        <SelectTrigger size="sm" className="h-8 min-w-[88px] rounded-[4px] border-input bg-white text-xs">
+      <Select
+        value={sortBy}
+        onValueChange={(value: string) =>
+          onSortByChange(value as EvaluationSortBy)
+        }
+      >
+        <SelectTrigger
+          size="sm"
+          className="h-8 min-w-[88px] rounded-[4px] border-input bg-white text-xs"
+        >
           <div className="inline-flex items-center gap-1">
             <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
             <SelectValue />

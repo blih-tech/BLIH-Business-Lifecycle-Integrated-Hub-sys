@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Clock3 } from "lucide-react";
+import { Clock3 } from 'lucide-react';
 
-import type { PreviousMemoRow } from "@/features/hr/attendance/memo-log/types";
-import { Button } from "@/shared/components/ui/button";
+import type { PreviousMemoRow } from '@/features/hr/attendance/memo-log/types';
+import { Button } from '@/shared/components/ui/button';
 
 type SelectedMemoCardProps = {
   request: PreviousMemoRow;
 };
 
-function DeptBadge({ label }: { label: "TECHNICAL DEPT." | "CREATIVE DEPT." }) {
+function DeptBadge({ label }: { label: 'TECHNICAL DEPT.' | 'CREATIVE DEPT.' }) {
   return (
     <span className="rounded-[4px] bg-[rgba(30,102,247,0.1)] px-1.5 py-0.5 text-[9px] font-semibold uppercase text-primary">
       {label}
@@ -44,14 +44,20 @@ export function SelectedMemoCard({ request }: SelectedMemoCardProps) {
           <div className="grid grid-cols-2 gap-x-4 gap-y-2">
             <Info label="From" value={request.from} />
             <Info label="To" value={request.to} />
-            <Info label="Duration" value={request.duration} valueClass="text-primary text-base font-semibold" />
+            <Info
+              label="Duration"
+              value={request.duration}
+              valueClass="text-primary text-base font-semibold"
+            />
             <div>
               <p className="text-[12px] text-[#666]">Submitted</p>
               <p className="mt-0.5 inline-flex items-center gap-1 text-[12px] font-semibold text-black">
                 <Clock3 className="h-3 w-3 text-primary" />
                 {request.submittedTime}
               </p>
-              <p className="text-[12px] font-semibold text-black">{request.submittedDate}</p>
+              <p className="text-[12px] font-semibold text-black">
+                {request.submittedDate}
+              </p>
             </div>
           </div>
         </div>
@@ -65,12 +71,17 @@ export function SelectedMemoCard({ request }: SelectedMemoCardProps) {
           <p className="text-sm font-medium text-black">Approved By</p>
           <div className="mt-2 space-y-2">
             {request.approvedBy.map((person, idx) => (
-              <div key={`${person.name}-${idx}`} className="flex items-center gap-2">
+              <div
+                key={`${person.name}-${idx}`}
+                className="flex items-center gap-2"
+              >
                 <div className="grid h-7 w-7 place-items-center rounded-full bg-primary text-[10px] font-semibold text-white">
                   {person.initials}
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-black">{person.name}</p>
+                  <p className="text-xs font-medium text-black">
+                    {person.name}
+                  </p>
                   <p className="text-[10px] text-[#666]">{person.role}</p>
                 </div>
                 <DeptBadge label={person.deptLabel} />
@@ -79,7 +90,9 @@ export function SelectedMemoCard({ request }: SelectedMemoCardProps) {
           </div>
         </div>
 
-        <Button className="h-8 w-full rounded-[4px] text-[11px]">View Profile</Button>
+        <Button className="h-8 w-full rounded-[4px] text-[11px]">
+          View Profile
+        </Button>
       </div>
     </aside>
   );
@@ -97,7 +110,9 @@ function Info({
   return (
     <div>
       <p className="text-[12px] text-[#666]">{label}</p>
-      <p className={valueClass ?? "text-[12px] font-semibold text-black"}>{value}</p>
+      <p className={valueClass ?? 'text-[12px] font-semibold text-black'}>
+        {value}
+      </p>
     </div>
   );
 }

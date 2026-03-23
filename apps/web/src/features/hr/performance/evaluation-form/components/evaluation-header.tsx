@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/shared/components/ui/card";
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 export function EvaluationHeader() {
   return (
@@ -8,7 +8,8 @@ export function EvaluationHeader() {
           Evaluation Forms &amp; Questionnaires
         </p>
         <p className="mt-1 text-xs text-[#666]">
-          Create and manage performance evaluation forms, KPI assessments, and OKR check-ins
+          Create and manage performance evaluation forms, KPI assessments, and
+          OKR check-ins
         </p>
       </CardContent>
     </Card>

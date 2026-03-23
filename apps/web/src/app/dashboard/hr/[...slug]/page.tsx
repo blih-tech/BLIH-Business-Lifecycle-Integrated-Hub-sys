@@ -12,6 +12,9 @@ export default async function HrNestedPage() {
     redirect('/dashboard');
   }
 
-  return <div className="p-6 text-sm text-muted-foreground">Content coming soon.</div>;
+  return (
+    <div className="p-6 text-sm text-muted-foreground">
+      Content coming soon.
+    </div>
+  );
 }
-

@@ -485,7 +485,11 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                       {salaryMode === 'fixed' ? 'Salary Amount' : 'Salary From'}
                     </FormLabel>
                     <FormControl>
-                      <Input inputMode="numeric" disabled={!hasStructuredSalary} {...field} />
+                      <Input
+                        inputMode="numeric"
+                        disabled={!hasStructuredSalary}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -502,7 +506,11 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                         Salary To
                       </FormLabel>
                       <FormControl>
-                        <Input inputMode="numeric" disabled={!isVariableSalary} {...field} />
+                        <Input
+                          inputMode="numeric"
+                          disabled={!isVariableSalary}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -520,7 +528,10 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="w-full bg-background" disabled={!hasStructuredSalary}>
+                        <SelectTrigger
+                          className="w-full bg-background"
+                          disabled={!hasStructuredSalary}
+                        >
                           <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
                       </FormControl>
@@ -623,8 +634,8 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                           salaryRangeMin?.trim() &&
                           salaryRangeMax?.trim() &&
                           salaryCurrency?.trim()
-                      ? `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`
-                      : optionLabel(salaryMode, salaryModeOptions)
+                        ? `${salaryCurrency} ${salaryRangeMin} - ${salaryRangeMax}`
+                        : optionLabel(salaryMode, salaryModeOptions)
                   }
                 />
                 <SummaryItem

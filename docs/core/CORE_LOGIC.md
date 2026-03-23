@@ -15,14 +15,15 @@ BLIH operates on a **Decentralized Logic / Centralized Governance** model.
 The system uses asynchronous events to trigger logic in downstream modules.
 
 ### Case Study: Lead-to-Project Lifecycle
+
 1.  **CRM Module**: A user marks a `Deal` as `WON`.
     - Logic: Update deal status, calculate final commissions.
     - Event: Emits `crm.deal.won`.
 2.  **Projects Module**: Listens for `crm.deal.won`.
-    - Logic: 
-        - Auto-create a `Project` record linked to the `Deal`.
-        - Create a `Project Folder` in the Knowledge Base (Brain).
-        - Copy "Service Items" from the Deal as initial "Milestones" in the Project.
+    - Logic:
+      - Auto-create a `Project` record linked to the `Deal`.
+      - Create a `Project Folder` in the Knowledge Base (Brain).
+      - Copy "Service Items" from the Deal as initial "Milestones" in the Project.
 3.  **Finance Module**: Listens for `crm.deal.won`.
     - Logic: Generate a "Deposit Invoice" if the project terms require upfront payment.
 
@@ -39,22 +40,24 @@ Maintaining a consistent "Source of Truth" across MongoDB, PostgreSQL, and Qdran
 The following logic rules are enforced globally to ensure consistency:
 
 ### 📅 Temporal Logic
+
 - **Timezones**: All database timestamps are stored in **UTC**. Conversion to local timezone (e.g., `Africa/Addis_Ababa`) happens at the Presentation Layer.
 - **Calendars**: The system supports the **Ethiopian Calendar** for HR and Attendance logic. A global utility service handles the algorithmic conversion between Gregorian and Ethiopian dates.
 
 ### 💰 Monetary Logic
+
 - **Precision**: Monetary values are stored as integers (cents/minimum units) to avoid floating-point errors.
-- **Multi-Currency**: Base currency is **ETB**. Exchange rates are fetched daily and cached in Redis. Every transaction stores both the *transacted currency* and the *base currency equivalent* at the time of transaction.
+- **Multi-Currency**: Base currency is **ETB**. Exchange rates are fetched daily and cached in Redis. Every transaction stores both the _transacted currency_ and the _base currency equivalent_ at the time of transaction.
 
 ## 5. State Machine Patterns
 
 All core business entities (Leads, Employees, Projects, Invoices) follow a standardized status transition logic:
 
-| Event | Transition | Validation Rule |
-|-------|------------|-----------------|
+| Event     | Transition           | Validation Rule                                     |
+| --------- | -------------------- | --------------------------------------------------- |
 | `APPROVE` | `PENDING` → `ACTIVE` | Requires a User with sufficient `ActionPermission`. |
-| `SUSPEND` | `ACTIVE` → `SUSPND` | Only if no critical dependencies exist. |
-| `ARCHIVE` | `*` → `ARCHIV` | Immutable state. No further edits allowed. |
+| `SUSPEND` | `ACTIVE` → `SUSPND`  | Only if no critical dependencies exist.             |
+| `ARCHIVE` | `*` → `ARCHIV`       | Immutable state. No further edits allowed.          |
 
 ## 6. Audit & Governance Logic
 
@@ -66,4 +69,5 @@ The **Audit Service** logic ensures "Defense in Depth":
 - **Evidence Bundling**: Logic in the Compliance sub-system allows a user to "flag" multiple audit logs as evidence for a specific ISO control, creating a logical link for auditors.
 
 ---
-*Last Updated: February 2026*
+
+_Last Updated: February 2026_

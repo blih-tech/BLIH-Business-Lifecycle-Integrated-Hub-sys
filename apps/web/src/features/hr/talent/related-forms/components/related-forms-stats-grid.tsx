@@ -1,6 +1,6 @@
-import type { RelatedFormsStat } from "@/features/hr/talent/related-forms/types";
+import type { RelatedFormsStat } from '@/features/hr/talent/related-forms/types';
 
-import { RelatedFormsStatCard } from "./related-forms-stat-card";
+import { RelatedFormsStatCard } from './related-forms-stat-card';
 
 type RelatedFormsStatsGridProps = {
   items: RelatedFormsStat[];

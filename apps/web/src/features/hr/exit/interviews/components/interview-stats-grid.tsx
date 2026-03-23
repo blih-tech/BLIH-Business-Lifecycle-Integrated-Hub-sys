@@ -1,6 +1,6 @@
-import type { ExitInterviewStat } from "@/features/hr/exit/interviews/types";
+import type { ExitInterviewStat } from '@/features/hr/exit/interviews/types';
 
-import { InterviewStatsCard } from "./interview-stats-card";
+import { InterviewStatsCard } from './interview-stats-card';
 
 type InterviewStatsGridProps = {
   items: ExitInterviewStat[];

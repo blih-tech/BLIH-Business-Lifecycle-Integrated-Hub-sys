@@ -43,13 +43,13 @@ Start with these documents:
 
 ### 1.3 Team Introductions
 
-| Role | Name | Contact | Specialty |
-|------|------|---------|-----------|
-| Tech Lead | [Name] | @slack | Architecture decisions |
-| Frontend Lead | [Name] | @slack | Next.js, UI/UX |
-| Backend Lead | [Name] | @slack | NestJS, APIs |
-| DevOps Lead | [Name] | @slack | Deployment, CI/CD |
-| QA Lead | [Name] | @slack | Testing strategies |
+| Role          | Name   | Contact | Specialty              |
+| ------------- | ------ | ------- | ---------------------- |
+| Tech Lead     | [Name] | @slack  | Architecture decisions |
+| Frontend Lead | [Name] | @slack  | Next.js, UI/UX         |
+| Backend Lead  | [Name] | @slack  | NestJS, APIs           |
+| DevOps Lead   | [Name] | @slack  | Deployment, CI/CD      |
+| QA Lead       | [Name] | @slack  | Testing strategies     |
 
 ---
 
@@ -58,12 +58,14 @@ Start with these documents:
 ### 2.1 Hardware Requirements
 
 **Minimum:**
+
 - 16 GB RAM
 - 4-core CPU
 - 50 GB free disk space
 - Stable internet connection
 
 **Recommended:**
+
 - 32 GB RAM
 - 8-core CPU
 - 100 GB SSD
@@ -237,6 +239,7 @@ Open your browser and test:
 - ✅ **RabbitMQ Management**: http://localhost:15672 (guest/guest)
 
 **Expected Response:**
+
 ```json
 {
   "status": "ok",
@@ -313,19 +316,19 @@ BLIH-Business-Lifecycle-Integrated-Hub-/
 
 ### 3.2 Tech Stack Quick Reference
 
-| Layer | Technology | Location | Purpose |
-|-------|-----------|----------|---------|
-| **Frontend** | Next.js 16 | `apps/frontend` | Server & Client components |
-| **UI** | Tailwind CSS + shadcn/ui | `apps/frontend/src/components` | Styled components |
-| **State** | TanStack Query + Zustand | `apps/frontend/src/lib` | Server & client state |
-| **Backend** | NestJS | `apps/api` | REST API, WebSockets |
-| **Auth** | Keycloak | External service | SSO, OAuth2, OIDC |
-| **Database** | PostgreSQL | Docker | Transactional data |
-| **Documents** | MongoDB | Docker | Flexible schemas |
-| **Cache** | Redis | Docker | Sessions, caching |
-| **Queue** | RabbitMQ | Docker | Event bus |
-| **Vectors** | Qdrant | Docker | AI embeddings |
-| **LLM** | Ollama | Docker | Local AI model |
+| Layer         | Technology               | Location                       | Purpose                    |
+| ------------- | ------------------------ | ------------------------------ | -------------------------- |
+| **Frontend**  | Next.js 16               | `apps/frontend`                | Server & Client components |
+| **UI**        | Tailwind CSS + shadcn/ui | `apps/frontend/src/components` | Styled components          |
+| **State**     | TanStack Query + Zustand | `apps/frontend/src/lib`        | Server & client state      |
+| **Backend**   | NestJS                   | `apps/api`                     | REST API, WebSockets       |
+| **Auth**      | Keycloak                 | External service               | SSO, OAuth2, OIDC          |
+| **Database**  | PostgreSQL               | Docker                         | Transactional data         |
+| **Documents** | MongoDB                  | Docker                         | Flexible schemas           |
+| **Cache**     | Redis                    | Docker                         | Sessions, caching          |
+| **Queue**     | RabbitMQ                 | Docker                         | Event bus                  |
+| **Vectors**   | Qdrant                   | Docker                         | AI embeddings              |
+| **LLM**       | Ollama                   | Docker                         | Local AI model             |
 
 ### 3.3 Key Directories Explained
 
@@ -452,13 +455,13 @@ export class EmployeeService {
     // Validate
     // Execute business logic
     const employee = await this.employeeRepo.save(dto);
-    
+
     // Publish event
     await this.eventBus.publish('hr.employee.created', employee);
-    
+
     // Audit
     await this.auditService.log({ action: 'EMPLOYEE_CREATED', ...});
-    
+
     return employee;
   }
 }
@@ -526,6 +529,7 @@ git push origin feat/hr-attendance-tracking
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -535,6 +539,7 @@ git push origin feat/hr-attendance-tracking
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```bash
 git commit -m "feat(hr): add employee onboarding checklist"
 git commit -m "fix(crm): resolve deal value calculation error"
@@ -544,6 +549,7 @@ git commit -m "docs(api): update HR endpoints documentation"
 ### 4.2 Code Review Process
 
 **Before Creating PR:**
+
 - [ ] Code compiles without errors
 - [ ] All tests pass (`npm run test`)
 - [ ] Linting passes (`npm run lint`)
@@ -555,24 +561,30 @@ git commit -m "docs(api): update HR endpoints documentation"
 
 ```markdown
 ## Description
+
 Brief description of what this PR does
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 How to test this change:
+
 1. Step 1
 2. Step 2
 3. Expected result
 
 ## Screenshots (if applicable)
+
 [Add screenshots here]
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Tests added/updated
@@ -580,6 +592,7 @@ How to test this change:
 ```
 
 **Review Timeline:**
+
 - Small PRs (< 200 lines): 24 hours
 - Medium PRs (200-500 lines): 48 hours
 - Large PRs (> 500 lines): Should be split up!
@@ -638,10 +651,10 @@ import { apiClient } from '../client';
 export const hrApi = {
   getEmployees: (params?: EmployeeQueryParams) =>
     apiClient.get<Employee[]>('/hr/employees', { params }),
-  
+
   createEmployee: (data: CreateEmployeeDto) =>
     apiClient.post<Employee>('/hr/employees', data),
-  
+
   updateEmployee: (id: string, data: UpdateEmployeeDto) =>
     apiClient.patch<Employee>(`/hr/employees/${id}`, data),
 };
@@ -738,23 +751,23 @@ export class EmployeeService {
   async create(dto: CreateEmployeeDto, user: User): Promise<Employee> {
     // 1. Validate business rules
     await this.validateEmployee(dto);
-    
+
     // 2. Execute
     const employee = await this.employeeRepo.create(dto);
-    
+
     // 3. Publish event
     await this.eventBus.publish('hr.employee.created', {
       employeeId: employee.id,
       createdBy: user.id,
     });
-    
+
     // 4. Audit
     await this.auditService.log({
       action: 'EMPLOYEE_CREATED',
       userId: user.id,
       resourceId: employee.id,
     });
-    
+
     return employee;
   }
 }
@@ -771,6 +784,7 @@ export class EmployeeService {
 - **E2E Tests**: Test full user workflows
 
 **Coverage Goals:**
+
 - Critical business logic: 90%+
 - Services: 80%+
 - Controllers: 70%+
@@ -847,7 +861,7 @@ describe('Employees (e2e)', () => {
         email: 'john@example.com',
       })
       .expect(201)
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.firstName).toBe('John');
       });
@@ -905,16 +919,13 @@ export class EmployeeService {
 
   async create(dto: CreateEmployeeDto) {
     this.logger.log(`Creating employee: ${dto.email}`);
-    
+
     try {
       const employee = await this.employeeRepo.create(dto);
       this.logger.log(`Employee created: ${employee.id}`);
       return employee;
     } catch (error) {
-      this.logger.error(
-        `Failed to create employee: ${dto.email}`,
-        error.stack
-      );
+      this.logger.error(`Failed to create employee: ${dto.email}`, error.stack);
       throw error;
     }
   }
@@ -923,13 +934,13 @@ export class EmployeeService {
 
 ### 7.3 Common Issues & Solutions
 
-| Issue | Solution |
-|-------|----------|
-| **Port already in use** | `lsof -ti:3000 \| xargs kill -9` |
+| Issue                          | Solution                             |
+| ------------------------------ | ------------------------------------ |
+| **Port already in use**        | `lsof -ti:3000 \| xargs kill -9`     |
 | **Database connection failed** | Check Docker containers: `docker ps` |
-| **TypeScript errors** | `npm run type-check` |
-| **Module not found** | `rm -rf node_modules && npm install` |
-| **Stale cache** | `npm run clean && npm run build` |
+| **TypeScript errors**          | `npm run type-check`                 |
+| **Module not found**           | `rm -rf node_modules && npm install` |
+| **Stale cache**                | `npm run clean && npm run build`     |
 
 ---
 
@@ -938,6 +949,7 @@ export class EmployeeService {
 ### 8.1 Week 1: Orientation
 
 **Day 1-2: Setup & Exploration**
+
 - [ ] Complete environment setup
 - [ ] Browse codebase structure
 - [ ] Run application locally
@@ -945,6 +957,7 @@ export class EmployeeService {
 - [ ] Meet the team
 
 **Day 3-5: First Contribution**
+
 - [ ] Pick a "good first issue" from GitHub
 - [ ] Implement the fix/feature
 - [ ] Write tests
@@ -956,6 +969,7 @@ export class EmployeeService {
 Look for issues tagged with `good-first-issue`:
 
 **Example Starter Tasks:**
+
 1. **Add validation to form field** (Frontend)
    - File: `apps/frontend/src/components/forms/employee-form.tsx`
    - Add phone number format validation
@@ -987,6 +1001,7 @@ Pick ONE module to specialize in:
 - **Brain**: AI, knowledge base, RAG search
 
 **Tasks:**
+
 - [ ] Read module documentation
 - [ ] Understand module data models
 - [ ] Review existing code
@@ -1008,6 +1023,7 @@ Pick ONE module to specialize in:
 ### 9.2 External Resources
 
 **Official Docs:**
+
 - [Next.js](https://nextjs.org/docs)
 - [NestJS](https://docs.nestjs.com/)
 - [TypeScript](https://www.typescriptlang.org/docs/)
@@ -1015,18 +1031,19 @@ Pick ONE module to specialize in:
 - [shadcn/ui](https://ui.shadcn.com/)
 
 **Tutorials:**
+
 - [Next.js App Router](https://nextjs.org/learn)
 - [NestJS Fundamentals](https://learn.nestjs.com/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
 
 ### 9.3 Communication Channels
 
-| Channel | Purpose | Response Time |
-|---------|---------|---------------|
-| **#blih-dev** | General development | 1-2 hours |
-| **#blih-support** | Technical issues | 30 mins |
-| **#blih-deployments** | Deployment notifications | FYI only |
-| **#blih-incidents** | Production incidents | Immediate |
+| Channel               | Purpose                  | Response Time |
+| --------------------- | ------------------------ | ------------- |
+| **#blih-dev**         | General development      | 1-2 hours     |
+| **#blih-support**     | Technical issues         | 30 mins       |
+| **#blih-deployments** | Deployment notifications | FYI only      |
+| **#blih-incidents**   | Production incidents     | Immediate     |
 
 ### 9.4 Meeting Schedule
 
@@ -1041,6 +1058,7 @@ Pick ONE module to specialize in:
 ## Quick Reference Card
 
 **Start Development:**
+
 ```bash
 docker-compose -f docker-compose.dev.yml up -d
 cd apps/api && npm run start:dev
@@ -1048,6 +1066,7 @@ cd apps/frontend && npm run dev
 ```
 
 **Run Tests:**
+
 ```bash
 npm run test
 npm run test:watch
@@ -1055,6 +1074,7 @@ npm run test:e2e
 ```
 
 **Common Commands:**
+
 ```bash
 npm run lint           # Check code style
 npm run format         # Format code
@@ -1063,6 +1083,7 @@ npm run migration:run  # Run migrations
 ```
 
 **Helpful Aliases:** (Add to `~/.bashrc` or `~/.zshrc`)
+
 ```bash
 alias blih-dev="cd ~/workspace/blih"
 alias blih-up="docker-compose -f docker-compose.dev.yml up -d"
@@ -1076,5 +1097,5 @@ alias blih-logs="docker-compose -f docker-compose.dev.yml logs -f"
 
 If you have any questions, don't hesitate to reach out on Slack or during standup.
 
-*Last Updated: February 2026*  
-*Maintained by: Tech Lead*
+_Last Updated: February 2026_  
+_Maintained by: Tech Lead_

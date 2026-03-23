@@ -27,6 +27,7 @@ Authorization: Bearer <jwt_token>
 ```
 
 **Required Permissions:**
+
 - `CRM:customers:read` - View customers
 - `CRM:customers:write` - Create/edit customers
 - `CRM:deals:read` - View deals
@@ -54,6 +55,7 @@ GET /api/v1/crm/customers
 | `order` | enum | No | `ASC` or `DESC` (default: `DESC`) |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -90,6 +92,7 @@ GET /api/v1/crm/customers/:id
 ```
 
 **Response:**
+
 ```json
 {
   "id": "cust_abc123",
@@ -123,6 +126,7 @@ POST /api/v1/crm/customers
 ```
 
 **Request Body:**
+
 ```json
 {
   "firstName": "John",
@@ -141,6 +145,7 @@ POST /api/v1/crm/customers
 ```
 
 **Response:** `201 Created`
+
 ```json
 {
   "id": "cust_abc123",
@@ -155,6 +160,7 @@ PATCH /api/v1/crm/customers/:id
 ```
 
 **Request Body:** (Partial update)
+
 ```json
 {
   "status": "CUSTOMER",
@@ -192,6 +198,7 @@ GET /api/v1/crm/leads
 | `score` | integer | Lead score filter (0-100) |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -220,6 +227,7 @@ POST /api/v1/crm/leads/:id/convert
 ```
 
 **Response:**
+
 ```json
 {
   "customer_id": "cust_new123",
@@ -246,6 +254,7 @@ GET /api/v1/crm/deals
 | `max_value` | number | Maximum deal value |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -278,6 +287,7 @@ POST /api/v1/crm/deals
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "Enterprise License - Acme Corp",
@@ -298,6 +308,7 @@ PATCH /api/v1/crm/deals/:id/stage
 ```
 
 **Request Body:**
+
 ```json
 {
   "stage": "PROPOSAL",
@@ -312,12 +323,13 @@ POST /api/v1/crm/deals/:id/close
 ```
 
 **Request Body:**
+
 ```json
 {
-  "status": "WON",  // or "LOST"
+  "status": "WON", // or "LOST"
   "actual_value": 48000,
   "notes": "Closed with 4% discount",
-  "lost_reason": null  // Required if status = "LOST"
+  "lost_reason": null // Required if status = "LOST"
 }
 ```
 
@@ -341,6 +353,7 @@ GET /api/v1/crm/activities
 | `to_date` | date | End date |
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -370,6 +383,7 @@ POST /api/v1/crm/activities
 ```
 
 **Request Body:**
+
 ```json
 {
   "type": "CALL",
@@ -407,14 +421,14 @@ POST /api/v1/crm/activities
 
 ### Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `UNAUTHORIZED` | 401 | Missing or invalid JWT token |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `VALIDATION_ERROR` | 400 | Invalid request data |
-| `CONFLICT` | 409 | Duplicate customer (email exists) |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
+| Code                  | HTTP Status | Description                       |
+| --------------------- | ----------- | --------------------------------- |
+| `UNAUTHORIZED`        | 401         | Missing or invalid JWT token      |
+| `FORBIDDEN`           | 403         | Insufficient permissions          |
+| `NOT_FOUND`           | 404         | Resource not found                |
+| `VALIDATION_ERROR`    | 400         | Invalid request data              |
+| `CONFLICT`            | 409         | Duplicate customer (email exists) |
+| `RATE_LIMIT_EXCEEDED` | 429         | Too many requests                 |
 
 ---
 
@@ -435,6 +449,7 @@ POST /api/v1/crm/webhooks
 ```
 
 **Request Body:**
+
 ```json
 {
   "url": "https://your-app.com/webhooks/crm",
@@ -444,6 +459,7 @@ POST /api/v1/crm/webhooks
 ```
 
 **Event Payload:**
+
 ```json
 {
   "event": "deal.won",
@@ -459,6 +475,7 @@ POST /api/v1/crm/webhooks
 ---
 
 **Related Documentation:**
+
 - [CRM_SECURITY.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/security/CRM_SECURITY.md) - Security controls
 - [MODULE_CRM.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/modules/MODULE_CRM.md) - Feature documentation
 - [API_REFERENCE_COMPLETE.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/API_REFERENCE_COMPLETE.md) - Full API reference

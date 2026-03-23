@@ -49,8 +49,7 @@ export class CreateEvaluationScoreDto {
 
 export class CreateCheckpointEvaluationDto {
   @ApiProperty({
-    description:
-      'UUID of the ProbationCheckpoint this evaluation belongs to.',
+    description: 'UUID of the ProbationCheckpoint this evaluation belongs to.',
     example: 'checkpoint-uuid-1',
   })
   @IsUUID()
@@ -99,7 +98,10 @@ export class EvaluationScoreResponseDto {
   @ApiProperty({ example: 85, minimum: 0, maximum: 100 })
   score!: number;
 
-  @ApiPropertyOptional({ nullable: true, example: 'Clean and maintainable code' })
+  @ApiPropertyOptional({
+    nullable: true,
+    example: 'Clean and maintainable code',
+  })
   comment!: string | null;
 
   @ApiProperty({ example: '2026-03-21T14:00:00.000Z' })
@@ -119,7 +121,10 @@ export class CheckpointEvaluationResponseDto {
   })
   checkpointName!: string;
 
-  @ApiPropertyOptional({ nullable: true, example: 'Improving well, but teamwork needs attention.' })
+  @ApiPropertyOptional({
+    nullable: true,
+    example: 'Improving well, but teamwork needs attention.',
+  })
   comment!: string | null;
 
   @ApiProperty({

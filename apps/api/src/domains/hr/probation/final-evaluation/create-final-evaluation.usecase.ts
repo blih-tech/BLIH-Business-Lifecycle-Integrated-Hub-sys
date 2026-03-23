@@ -134,7 +134,9 @@ export class CreateFinalEvaluationUseCase {
       (cp) => cp.evaluations.length === 0,
     );
     if (unevaluatedCheckpoints.length > 0) {
-      const names = unevaluatedCheckpoints.map((cp) => `"${cp.name}"`).join(', ');
+      const names = unevaluatedCheckpoints
+        .map((cp) => `"${cp.name}"`)
+        .join(', ');
       throw new UnprocessableEntityException(
         `Cannot create final evaluation — the following checkpoints have not been evaluated yet: ${names}. ` +
           `Please complete all checkpoint evaluations before submitting the final evaluation.`,

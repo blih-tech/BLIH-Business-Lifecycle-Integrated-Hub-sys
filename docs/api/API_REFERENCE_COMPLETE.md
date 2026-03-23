@@ -36,6 +36,7 @@ curl -X GET "https://api.blih.yourcompany.com/api/v1/users/me" \
 ```
 
 **Response:**
+
 ```json
 {
   "id": "user_123",
@@ -53,10 +54,10 @@ curl -X GET "https://api.blih.yourcompany.com/api/v1/users/me" \
 
 ### 2.1 Authentication Methods
 
-| Method | Use Case | Format |
-|--------|----------|--------|
-| **API Key** | Server-to-server | `Authorization: Bearer sk_live_...` |
-| **JWT Token** | User sessions | `Authorization: Bearer eyJhbGc...` |
+| Method        | Use Case                 | Format                              |
+| ------------- | ------------------------ | ----------------------------------- |
+| **API Key**   | Server-to-server         | `Authorization: Bearer sk_live_...` |
+| **JWT Token** | User sessions            | `Authorization: Bearer eyJhbGc...`  |
 | **OAuth 2.0** | Third-party integrations | `Authorization: Bearer oauth_token` |
 
 ### 2.2 Get JWT Token
@@ -66,15 +67,17 @@ POST /api/v1/auth/login
 ```
 
 **Request:**
+
 ```json
 {
   "email": "user@company.com",
   "password": "your_password",
-  "mfa_code": "123456"  // If MFA enabled
+  "mfa_code": "123456" // If MFA enabled
 }
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -91,6 +94,7 @@ POST /api/v1/auth/refresh
 ```
 
 **Request:**
+
 ```json
 {
   "refresh_token": "rt_abc123..."
@@ -105,11 +109,11 @@ POST /api/v1/auth/refresh
 
 **System-wide functionality**
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /users` | List users |
-| `GET /companies` | List companies |
-| `GET /audit-logs` | Query audit trail |
+| Endpoint              | Description       |
+| --------------------- | ----------------- |
+| `GET /users`          | List users        |
+| `GET /companies`      | List companies    |
+| `GET /audit-logs`     | Query audit trail |
 | `POST /notifications` | Send notification |
 
 📄 **[CORE_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/CORE_API.md)** - Full documentation
@@ -121,6 +125,7 @@ POST /api/v1/auth/refresh
 **Human Resources management**
 
 **Key Endpoints:**
+
 ```
 GET    /hr/employees           # List employees
 POST   /hr/employees           # Create employee
@@ -142,6 +147,7 @@ GET    /hr/payroll             # Payroll processing
 **Customer Relationship Management**
 
 **Key Endpoints:**
+
 ```
 GET    /crm/customers          # List customers
 POST   /crm/customers          # Create customer
@@ -166,6 +172,7 @@ POST   /crm/activities         # Log activity
 **Finance & Accounting**
 
 **Key Endpoints:**
+
 ```
 GET    /finance/accounts             # Chart of accounts
 GET    /finance/accounts/:id/balance # Account balance
@@ -193,6 +200,7 @@ GET    /finance/reports/cash-flow         # Cash flow
 **Project Management**
 
 **Key Endpoints:**
+
 ```
 GET    /projects                     # List projects
 POST   /projects                     # Create project
@@ -220,6 +228,7 @@ GET    /projects/:id/timeline        # Gantt chart data
 **AI & Knowledge Management**
 
 **Key Endpoints:**
+
 ```
 GET    /brain/knowledge/documents    # Knowledge base
 POST   /brain/knowledge/documents    # Upload document
@@ -252,6 +261,7 @@ GET /api/v1/crm/customers?page=2&limit=50
 ```
 
 **Response:**
+
 ```json
 {
   "data": [...],
@@ -327,32 +337,32 @@ GET /api/v1/finance/journal-entries?from_date=2026-01-01&to_date=2026-01-31
 
 ### 5.2 Common HTTP Status Codes
 
-| Code | Meaning | Example |
-|------|---------|---------|
-| **200** | OK | Successful GET, PATCH |
-| **201** | Created | Successful POST |
-| **204** | No Content | Successful DELETE |
-| **400** | Bad Request | Validation error |
-| **401** | Unauthorized | Missing/invalid token |
-| **403** | Forbidden | Insufficient permissions |
-| **404** | Not Found | Resource doesn't exist |
-| **409** | Conflict | Duplicate resource |
-| **422** | Unprocessable Entity | Business rule violation |
-| **429** | Too Many Requests | Rate limit exceeded |
-| **500** | Internal Server Error | Server error |
+| Code    | Meaning               | Example                  |
+| ------- | --------------------- | ------------------------ |
+| **200** | OK                    | Successful GET, PATCH    |
+| **201** | Created               | Successful POST          |
+| **204** | No Content            | Successful DELETE        |
+| **400** | Bad Request           | Validation error         |
+| **401** | Unauthorized          | Missing/invalid token    |
+| **403** | Forbidden             | Insufficient permissions |
+| **404** | Not Found             | Resource doesn't exist   |
+| **409** | Conflict              | Duplicate resource       |
+| **422** | Unprocessable Entity  | Business rule violation  |
+| **429** | Too Many Requests     | Rate limit exceeded      |
+| **500** | Internal Server Error | Server error             |
 
 ### 5.3 Error Codes Reference
 
-| Code | Description | Action |
-|------|-------------|--------|
-| `UNAUTHORIZED` | Invalid credentials | Re-authenticate |
-| `FORBIDDEN` | Insufficient permissions | Contact admin |
-| `VALIDATION_ERROR` | Invalid input | Fix request data |
-| `NOT_FOUND` | Resource not found | Check ID |
-| `CONFLICT` | Duplicate resource | Use different value |
-| `RATE_LIMIT_EXCEEDED` | Too many requests | Wait and retry |
-| `SOD_VIOLATION` | Segregation of duties | Different approver needed |
-| `JAILBREAK_DETECTED` | AI prompt injection | Rephrase query |
+| Code                  | Description              | Action                    |
+| --------------------- | ------------------------ | ------------------------- |
+| `UNAUTHORIZED`        | Invalid credentials      | Re-authenticate           |
+| `FORBIDDEN`           | Insufficient permissions | Contact admin             |
+| `VALIDATION_ERROR`    | Invalid input            | Fix request data          |
+| `NOT_FOUND`           | Resource not found       | Check ID                  |
+| `CONFLICT`            | Duplicate resource       | Use different value       |
+| `RATE_LIMIT_EXCEEDED` | Too many requests        | Wait and retry            |
+| `SOD_VIOLATION`       | Segregation of duties    | Different approver needed |
+| `JAILBREAK_DETECTED`  | AI prompt injection      | Rephrase query            |
 
 ---
 
@@ -360,13 +370,13 @@ GET /api/v1/finance/journal-entries?from_date=2026-01-01&to_date=2026-01-31
 
 ### 6.1 Rate Limits by Endpoint Type
 
-| Endpoint Type | Limit | Window |
-|---------------|-------|--------|
-| **Standard** | 100 requests | 1 minute |
-| **Reports** | 20 requests | 1 hour |
-| **AI Queries** | 50 requests | 1 hour |
-| **Bulk Operations** | 10 requests | 1 minute |
-| **File Uploads** | 20 requests | 1 hour |
+| Endpoint Type       | Limit        | Window   |
+| ------------------- | ------------ | -------- |
+| **Standard**        | 100 requests | 1 minute |
+| **Reports**         | 20 requests  | 1 hour   |
+| **AI Queries**      | 50 requests  | 1 hour   |
+| **Bulk Operations** | 10 requests  | 1 minute |
+| **File Uploads**    | 20 requests  | 1 hour   |
 
 ### 6.2 Rate Limit Headers
 
@@ -398,13 +408,13 @@ X-RateLimit-Reset: 1707573600
 
 Subscribe to real-time events:
 
-| Module | Events |
-|--------|--------|
-| **HR** | `employee.created`, `employee.terminated`, `attendance.submitted` |
-| **CRM** | `customer.created`, `deal.won`, `deal.lost` |
-| **Finance** | `invoice.created`, `payment.received`, `payment.approved` |
-| **Projects** | `project.created`, `task.completed`, `time.submitted` |
-| **Brain** | `document.indexed`, `decision.created` |
+| Module       | Events                                                            |
+| ------------ | ----------------------------------------------------------------- |
+| **HR**       | `employee.created`, `employee.terminated`, `attendance.submitted` |
+| **CRM**      | `customer.created`, `deal.won`, `deal.lost`                       |
+| **Finance**  | `invoice.created`, `payment.received`, `payment.approved`         |
+| **Projects** | `project.created`, `task.completed`, `time.submitted`             |
+| **Brain**    | `document.indexed`, `decision.created`                            |
 
 ### 7.2 Create Webhook
 
@@ -413,6 +423,7 @@ POST /api/v1/webhooks
 ```
 
 **Request:**
+
 ```json
 {
   "url": "https://your-app.com/webhooks/blih",
@@ -442,12 +453,16 @@ POST /api/v1/webhooks
 ```typescript
 import crypto from 'crypto';
 
-function verifyWebhook(payload: string, signature: string, secret: string): boolean {
+function verifyWebhook(
+  payload: string,
+  signature: string,
+  secret: string,
+): boolean {
   const expectedSignature = crypto
     .createHmac('sha256', secret)
     .update(payload)
     .digest('hex');
-  
+
   return `sha256=${expectedSignature}` === signature;
 }
 ```
@@ -476,20 +491,20 @@ import { BLIHClient } from '@blih/sdk';
 
 const client = new BLIHClient({
   apiKey: 'sk_live_...',
-  baseURL: 'https://api.blih.yourcompany.com'
+  baseURL: 'https://api.blih.yourcompany.com',
 });
 
 // List customers
 const customers = await client.crm.customers.list({
   status: 'ACTIVE',
-  limit: 50
+  limit: 50,
 });
 
 // Create deal
 const deal = await client.crm.deals.create({
   title: 'Enterprise License',
   customer_id: 'cust_123',
-  value: 50000
+  value: 50000,
 });
 ```
 
@@ -504,6 +519,7 @@ Import our Postman collection for easy testing:
 **OpenAPI 3.0 Spec:** [https://api.blih.yourcompany.com/openapi.json](link)
 
 Use with tools like:
+
 - Swagger UI
 - Redoc
 - Postman
@@ -523,6 +539,7 @@ Use with tools like:
 ## Support & Resources
 
 ### Documentation
+
 - **Core API:** [CORE_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/CORE_API.md)
 - **HR API:** [HR_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/HR_API.md)
 - **CRM API:** [CRM_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/CRM_API.md)
@@ -531,9 +548,11 @@ Use with tools like:
 - **Brain API:** [BRAIN_API.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/api/BRAIN_API.md)
 
 ### Security
+
 - **Security Overview:** [SECURITY_OVERVIEW.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/security/SECURITY_OVERVIEW.md)
 
 ### Getting Help
+
 - **Email:** api-support@yourcompany.com
 - **Slack:** #api-support
 - **Status Page:** https://status.blih.yourcompany.com

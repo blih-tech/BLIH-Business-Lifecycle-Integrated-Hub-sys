@@ -1,10 +1,12 @@
-import { Card, CardContent } from "@/shared/components/ui/card";
+import { Card, CardContent } from '@/shared/components/ui/card';
 
 export function OffboardingSummaryCard() {
   return (
     <Card className="gap-0 rounded-[10px] border-border py-0 shadow-none">
       <CardContent className="space-y-4 p-4">
-        <p className="text-base font-medium tracking-[-0.176px] text-black">Offboarding Summary</p>
+        <p className="text-base font-medium tracking-[-0.176px] text-black">
+          Offboarding Summary
+        </p>
         <div className="space-y-3">
           <SummaryRow label="Pending Exit Interviews" value="3" />
           <SummaryRow label="Pending Clearance Checklists" value="12" />

@@ -1,8 +1,8 @@
-export type TimesheetViewMode = "daily" | "weekly" | "monthly";
+export type TimesheetViewMode = 'daily' | 'weekly' | 'monthly';
 
-export type TimesheetStatus = "on-track" | "overtime" | "on-leave";
+export type TimesheetStatus = 'on-track' | 'overtime' | 'on-leave';
 
-export type TimesheetSort = "name-asc" | "name-desc";
+export type TimesheetSort = 'name-asc' | 'name-desc';
 
 export type TimesheetMetrics = {
   hoursPerWeek: string;
@@ -34,5 +34,5 @@ export type AttendanceTimesheetStatItem = {
   id: string;
   label: string;
   value: string;
-  icon: "clock-3" | "circle-check-big";
+  icon: 'clock-3' | 'circle-check-big';
 };

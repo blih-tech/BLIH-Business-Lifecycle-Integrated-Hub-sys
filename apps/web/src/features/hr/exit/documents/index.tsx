@@ -3,16 +3,16 @@ import {
   employeeClearanceItems,
   exitDocumentsStats,
   recentlyClearedDocuments,
-} from "@/features/hr/exit/documents/mock-data";
+} from '@/features/hr/exit/documents/mock-data';
 import {
   DocumentsStatsGrid,
   DocumentTemplatesSection,
   EmployeeDocumentClearanceSection,
   RecentlyClearedDocumentsSection,
-} from "@/features/hr/exit/documents/components";
+} from '@/features/hr/exit/documents/components';
 
-export * from "@/features/hr/exit/documents/components";
-export * from "@/features/hr/exit/documents/types";
+export * from '@/features/hr/exit/documents/components';
+export * from '@/features/hr/exit/documents/types';
 
 export function ExitDocumentsContent() {
   return (

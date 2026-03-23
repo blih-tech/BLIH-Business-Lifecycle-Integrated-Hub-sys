@@ -1,6 +1,6 @@
-import type { CulturePolicy } from "@/features/hr/talent/culture/types";
+import type { CulturePolicy } from '@/features/hr/talent/culture/types';
 
-import { PolicyCard } from "./policy-card";
+import { PolicyCard } from './policy-card';
 
 type PoliciesGridProps = {
   items: CulturePolicy[];

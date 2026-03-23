@@ -1,6 +1,6 @@
-import type { KpiItem } from "@/features/hr/performance/kpis/types";
+import type { KpiItem } from '@/features/hr/performance/kpis/types';
 
-import { KpiCard } from "./kpi-card";
+import { KpiCard } from './kpi-card';
 
 type KpisListProps = {
   items: KpiItem[];

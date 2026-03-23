@@ -1,1 +1,1 @@
-export * from "@/features/hr/onboarding/probation/components/probation-card";
+export * from '@/features/hr/onboarding/probation/components/probation-card';

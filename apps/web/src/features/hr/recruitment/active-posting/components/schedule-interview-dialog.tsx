@@ -1,15 +1,22 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
-import { Button } from "@/shared/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
-import { Input } from "@/shared/components/ui/input";
+import type { ActiveJobItem } from '@/features/hr/recruitment/active-posting/types';
+import { Button } from '@/shared/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/shared/components/ui/dialog';
+import { Input } from '@/shared/components/ui/input';
 
 type ScheduleInterviewDialogProps = {
   open: boolean;
-  applicants: ActiveJobItem["applicants"];
+  applicants: ActiveJobItem['applicants'];
   onOpenChange: (open: boolean) => void;
   onProceed: (payload: {
     applicantIds: string[];
@@ -24,13 +31,13 @@ export function ScheduleInterviewDialog({
   onOpenChange,
   onProceed,
 }: ScheduleInterviewDialogProps) {
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
 
   useEffect(() => {
     if (open) {
-      setDate("");
-      setTime("");
+      setDate('');
+      setTime('');
     }
   }, [open]);
 
@@ -51,7 +58,8 @@ export function ScheduleInterviewDialog({
         <DialogHeader>
           <DialogTitle>Schedule Interview</DialogTitle>
           <DialogDescription>
-            {applicants.length} applicant{applicants.length === 1 ? "" : "s"} selected
+            {applicants.length} applicant{applicants.length === 1 ? '' : 's'}{' '}
+            selected
           </DialogDescription>
         </DialogHeader>
 
@@ -70,20 +78,36 @@ export function ScheduleInterviewDialog({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <p className="text-sm font-medium text-black">Date</p>
-              <Input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+              <Input
+                type="date"
+                value={date}
+                onChange={(event) => setDate(event.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-black">Time</p>
-              <Input type="time" value={time} onChange={(event) => setTime(event.target.value)} />
+              <Input
+                type="time"
+                value={time}
+                onChange={(event) => setTime(event.target.value)}
+              />
             </div>
           </div>
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
             Discard
           </Button>
-          <Button type="button" onClick={handleProceed} disabled={!date || !time || applicants.length === 0}>
+          <Button
+            type="button"
+            onClick={handleProceed}
+            disabled={!date || !time || applicants.length === 0}
+          >
             Proceed
           </Button>
         </DialogFooter>

@@ -7,6 +7,7 @@
 ---
 
 ## Table of Contents
+
 1. [Reporting Overview](#1-reporting-overview)
 2. [Report Categories](#2-report-categories)
 3. [Attendance Reports](#3-attendance-reports)
@@ -43,23 +44,23 @@
 
 ### 1.2 Data Freshness
 
-| Report Type | Data Refresh | Latency |
-|-------------|---------------|----------|
-| Real-time | Continuous | < 1 minute |
-| Daily | 2:00 AM local | < 5 minutes |
-| Weekly | Monday 6:00 AM | < 10 minutes |
-| Monthly | 1st of month 8:00 AM | < 30 minutes |
+| Report Type | Data Refresh         | Latency      |
+| ----------- | -------------------- | ------------ |
+| Real-time   | Continuous           | < 1 minute   |
+| Daily       | 2:00 AM local        | < 5 minutes  |
+| Weekly      | Monday 6:00 AM       | < 10 minutes |
+| Monthly     | 1st of month 8:00 AM | < 30 minutes |
 
 ### 1.3 Access Control
 
-| Report Category | Default Access | Can Override |
-|-----------------|---------------|--------------|
-| Attendance | Employee (own), Manager (team), HR (all) | Yes |
-| Leave | Employee (own), Manager (team), HR (all) | Yes |
-| Performance | Manager (team), HR (all) | Yes |
-| Recruitment | HR, Hiring Managers | Yes |
-| Compensation | HR, Finance | No (strict) |
-| Compliance | HR, Compliance Officers | No (strict) |
+| Report Category | Default Access                           | Can Override |
+| --------------- | ---------------------------------------- | ------------ |
+| Attendance      | Employee (own), Manager (team), HR (all) | Yes          |
+| Leave           | Employee (own), Manager (team), HR (all) | Yes          |
+| Performance     | Manager (team), HR (all)                 | Yes          |
+| Recruitment     | HR, Hiring Managers                      | Yes          |
+| Compensation    | HR, Finance                              | No (strict)  |
+| Compliance      | HR, Compliance Officers                  | No (strict)  |
 
 ---
 
@@ -67,24 +68,24 @@
 
 ### 2.1 Standard Reports
 
-| Category | Reports | Frequency | Audience |
-|----------|---------|-----------|-----------|
-| **Attendance** | Daily, Weekly, Monthly, Pattern Analysis | Managers, HR |
-| **Leave** | Balance, Utilization, Forecast, Calendar | Employees, Managers, HR |
-| **Performance** | Review Status, Rating Distribution, Goal Progress | Managers, HR, Executives |
-| **Recruitment** | Pipeline, Time-to-Hire, Source Effectiveness | HR, Hiring Managers |
-| **Employee** | Headcount, Turnover, Demographics, Tenure | HR, Executives |
-| **Compliance** | Audit Trail, Access Reviews, Policy Adherence | Compliance Officers, Auditors |
+| Category        | Reports                                           | Frequency                     | Audience |
+| --------------- | ------------------------------------------------- | ----------------------------- | -------- |
+| **Attendance**  | Daily, Weekly, Monthly, Pattern Analysis          | Managers, HR                  |
+| **Leave**       | Balance, Utilization, Forecast, Calendar          | Employees, Managers, HR       |
+| **Performance** | Review Status, Rating Distribution, Goal Progress | Managers, HR, Executives      |
+| **Recruitment** | Pipeline, Time-to-Hire, Source Effectiveness      | HR, Hiring Managers           |
+| **Employee**    | Headcount, Turnover, Demographics, Tenure         | HR, Executives                |
+| **Compliance**  | Audit Trail, Access Reviews, Policy Adherence     | Compliance Officers, Auditors |
 
 ### 2.2 Report Formats
 
-| Format | Use Case | Features |
-|---------|-----------|----------|
-| **Interactive Dashboard** | Real-time monitoring | Drilling, filtering, export |
-| **PDF Report** | Formal presentations | Branded, printable, signatures |
-| **Excel Workbook** | Data analysis | Multiple sheets, formulas, pivot tables |
-| **CSV Export** | System integration | Raw data, bulk processing |
-| **JSON API** | Custom applications | Real-time data, programmatic access |
+| Format                    | Use Case             | Features                                |
+| ------------------------- | -------------------- | --------------------------------------- |
+| **Interactive Dashboard** | Real-time monitoring | Drilling, filtering, export             |
+| **PDF Report**            | Formal presentations | Branded, printable, signatures          |
+| **Excel Workbook**        | Data analysis        | Multiple sheets, formulas, pivot tables |
+| **CSV Export**            | System integration   | Raw data, bulk processing               |
+| **JSON API**              | Custom applications  | Real-time data, programmatic access     |
 
 ---
 
@@ -97,6 +98,7 @@
 **API Endpoint:** `GET /api/v1/hr/reports/attendance/daily`
 
 **Parameters:**
+
 ```json
 {
   "date": "2026-02-15",
@@ -106,6 +108,7 @@
 ```
 
 **Sample Output:**
+
 ```json
 {
   "reportDate": "2026-02-15",
@@ -137,6 +140,7 @@
 **Purpose:** Monthly attendance trends and patterns
 
 **Key Metrics:**
+
 - Attendance rate by department
 - Late arrival patterns
 - Overtime analysis
@@ -144,6 +148,7 @@
 - Day-wise attendance distribution
 
 **Visualization Examples:**
+
 ```javascript
 // Attendance trend chart
 const attendanceTrend = {
@@ -155,10 +160,10 @@ const attendanceTrend = {
         label: 'Attendance Rate %',
         data: [95.2, 94.8, 96.1, 95.5],
         borderColor: '#10B981',
-        backgroundColor: 'rgba(16, 185, 129, 0.1)'
-      }
-    ]
-  }
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+      },
+    ],
+  },
 };
 
 // Department comparison
@@ -170,10 +175,10 @@ const departmentComparison = {
       {
         label: 'Attendance Rate %',
         data: [96.2, 94.5, 95.8, 97.1],
-        backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B']
-      }
-    ]
-  }
+        backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B'],
+      },
+    ],
+  },
 };
 ```
 
@@ -182,6 +187,7 @@ const departmentComparison = {
 **Purpose:** Identify attendance patterns and anomalies
 
 **Analysis Dimensions:**
+
 - Day of week patterns
 - Late arrival frequency
 - Early departure trends
@@ -189,6 +195,7 @@ const departmentComparison = {
 - Seasonal variations
 
 **Sample Insights:**
+
 ```json
 {
   "patterns": {
@@ -228,6 +235,7 @@ const departmentComparison = {
 **API Endpoint:** `GET /api/v1/hr/reports/leave/balances`
 
 **Sample Output:**
+
 ```json
 {
   "asOfDate": "2026-02-15",
@@ -269,6 +277,7 @@ const departmentComparison = {
 **Purpose:** Analyze leave usage patterns and trends
 
 **Key Metrics:**
+
 - Leave utilization by department
 - Monthly leave trends
 - Leave type distribution
@@ -276,35 +285,36 @@ const departmentComparison = {
 - Leave balance forecasting
 
 **Forecasting Logic:**
+
 ```javascript
 const forecastLeaveBalance = (employeeId, monthsAhead) => {
   const currentBalance = getCurrentLeaveBalance(employeeId);
   const historicalUsage = getHistoricalUsage(employeeId, 12); // months
-  
+
   // Calculate average monthly usage
-  const avgMonthlyUsage = historicalUsage.reduce((sum, month) => 
-    sum + month.totalDays, 0) / 12;
-  
+  const avgMonthlyUsage =
+    historicalUsage.reduce((sum, month) => sum + month.totalDays, 0) / 12;
+
   // Project future balance
   const projectedBalance = [];
   let balance = currentBalance.available;
-  
+
   for (let i = 1; i <= monthsAhead; i++) {
     // Apply monthly accrual
     balance += 1.67; // Monthly accrual rate
-    
+
     // Apply projected usage with seasonal adjustment
     const seasonalFactor = getSeasonalFactor(i);
     const projectedUsage = avgMonthlyUsage * seasonalFactor;
     balance = Math.max(0, balance - projectedUsage);
-    
+
     projectedBalance.push({
       month: addMonths(new Date(), i),
       projectedBalance: Math.round(balance * 10) / 10,
-      projectedUsage: Math.round(projectedUsage * 10) / 10
+      projectedUsage: Math.round(projectedUsage * 10) / 10,
     });
   }
-  
+
   return projectedBalance;
 };
 ```
@@ -314,6 +324,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Visual representation of team leave schedules
 
 **Features:**
+
 - Heat map showing leave density
 - Department-wise leave calendars
 - Conflict identification
@@ -328,12 +339,14 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Track performance review completion rates
 
 **Metrics:**
+
 - Self-assessment completion rate
 - Manager review completion rate
 - Overdue reviews by department
 - Average time to complete reviews
 
 **API Response:**
+
 ```json
 {
   "period": "2024-Q4",
@@ -375,12 +388,14 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Analyze rating distributions and patterns
 
 **Visualizations:**
+
 - Rating distribution histogram
 - Department comparison charts
 - Rating trends over time
 - High/low performer identification
 
 **Sample Analysis:**
+
 ```json
 {
   "ratingDistribution": {
@@ -388,7 +403,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
     "EXCEEDS_EXPECTATIONS": 30, // 20%
     "MEETS_EXPECTATIONS": 75, // 50%
     "BELOW_EXPECTATIONS": 25, // 16.7%
-    "UNSATISFACTORY": 5, // 3.3%
+    "UNSATISFACTORY": 5 // 3.3%
   },
   "departmentAverages": {
     "Engineering": 3.8,
@@ -413,6 +428,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Track objective and key results achievement
 
 **Metrics:**
+
 - OKR completion rate
 - KR achievement distribution
 - Progress by department
@@ -427,9 +443,11 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Track candidates through recruitment stages
 
 **Funnel Stages:**
+
 1. Applied → 2. Screened → 3. Interview → 4. Assessment → 5. Offer → 6. Hired
 
 **Conversion Metrics:**
+
 ```json
 {
   "period": "2024-Q4",
@@ -465,6 +483,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Analyze recruitment channel performance
 
 **Channels:**
+
 - Company website
 - Job boards (LinkedIn, Indeed)
 - Employee referrals
@@ -473,6 +492,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 - Social media
 
 **Effectiveness Metrics:**
+
 - Cost per hire
 - Quality of hire (performance ratings)
 - Time to fill
@@ -487,6 +507,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Track employee numbers and composition
 
 **Dimensions:**
+
 - By department
 - By employment type
 - By location
@@ -494,6 +515,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 - By gender/age (demographics)
 
 **Sample Output:**
+
 ```json
 {
   "asOfDate": "2026-02-15",
@@ -527,6 +549,7 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 **Purpose:** Analyze employee turnover rates and patterns
 
 **Key Metrics:**
+
 - Monthly turnover rate
 - Voluntary vs involuntary turnover
 - Turnover by department
@@ -534,22 +557,23 @@ const forecastLeaveBalance = (employeeId, monthsAhead) => {
 - Exit reason analysis
 
 **Turnover Calculation:**
+
 ```javascript
 const calculateTurnoverRate = (period) => {
   const startHeadcount = getHeadcount(period.startDate);
   const endHeadcount = getHeadcount(period.endDate);
   const separations = getSeparations(period);
-  
+
   const averageHeadcount = (startHeadcount + endHeadcount) / 2;
   const turnoverRate = (separations / averageHeadcount) * 100;
-  
+
   return {
     period,
     startHeadcount,
     endHeadcount,
     separations,
     averageHeadcount,
-    turnoverRate: Math.round(turnoverRate * 100) / 100
+    turnoverRate: Math.round(turnoverRate * 100) / 100,
   };
 };
 ```
@@ -563,6 +587,7 @@ const calculateTurnoverRate = (period) => {
 **Purpose:** Complete audit log for compliance verification
 
 **Filtering Options:**
+
 - Date range
 - User/Department
 - Action type
@@ -570,6 +595,7 @@ const calculateTurnoverRate = (period) => {
 - Data sensitivity level
 
 **Sample Export:**
+
 ```csv
 Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 2026-02-15 08:45:00,John Doe,john@company.com,employee.update,HR,EMP1001,192.168.1.100,Mozilla/5.0...
@@ -581,6 +607,7 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 **Purpose:** Document access certification activities
 
 **Content:**
+
 - Review campaign details
 - Certifications completed
 - Access changes made
@@ -592,6 +619,7 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 **Purpose:** GDPR and data privacy compliance
 
 **Metrics:**
+
 - Data processing activities
 - Consent records
 - Data subject requests
@@ -605,6 +633,7 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 ### 9.1 Report Builder
 
 **Features:**
+
 - Drag-and-drop interface
 - Custom field selection
 - Filter configuration
@@ -612,6 +641,7 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 - Visualization options
 
 **Building Blocks:**
+
 - Data sources (tables, views)
 - Fields and aggregations
 - Filters and parameters
@@ -621,6 +651,7 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 ### 9.2 Scheduled Reports
 
 **Configuration:**
+
 ```json
 {
   "reportId": "custom-attendance-summary",
@@ -648,13 +679,13 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 
 ### 10.1 Export Formats
 
-| Format | Features | File Size | Use Case |
-|--------|----------|------------|----------|
-| **Excel** | Multiple sheets, formulas, charts | Medium | Detailed analysis |
-| **CSV** | Raw data, universal | Small | System integration |
-| **PDF** | Formatted, printable, signatures | Medium | Presentations |
-| **JSON** | Structured, API-ready | Small | Custom applications |
-| **XML** | Standardized, enterprise | Medium | Legacy systems |
+| Format    | Features                          | File Size | Use Case            |
+| --------- | --------------------------------- | --------- | ------------------- |
+| **Excel** | Multiple sheets, formulas, charts | Medium    | Detailed analysis   |
+| **CSV**   | Raw data, universal               | Small     | System integration  |
+| **PDF**   | Formatted, printable, signatures  | Medium    | Presentations       |
+| **JSON**  | Structured, API-ready             | Small     | Custom applications |
+| **XML**   | Standardized, enterprise          | Medium    | Legacy systems      |
 
 ### 10.2 Bulk Export API
 
@@ -663,8 +694,8 @@ Timestamp,User,Email,Action,Module,Resource,IP Address,User Agent
 const exportRequest = await fetch('/api/v1/hr/reports/export', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer ' + token,
-    'Content-Type': 'application/json'
+    Authorization: 'Bearer ' + token,
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     reportType: 'attendance_history',
@@ -672,9 +703,9 @@ const exportRequest = await fetch('/api/v1/hr/reports/export', {
       startDate: '2026-01-01',
       endDate: '2026-12-31',
       format: 'excel',
-      includeFields: ['employeeId', 'date', 'checkIn', 'checkOut', 'hours']
-    }
-  })
+      includeFields: ['employeeId', 'date', 'checkIn', 'checkOut', 'hours'],
+    },
+  }),
 });
 
 // Response with export job ID
@@ -684,7 +715,7 @@ const { jobId } = await exportRequest.json();
 const checkStatus = async () => {
   const status = await fetch(`/api/v1/hr/reports/export/${jobId}/status`);
   const { status, downloadUrl, progress } = await status.json();
-  
+
   if (status === 'completed') {
     window.open(downloadUrl);
   } else if (status === 'failed') {
@@ -699,12 +730,12 @@ checkStatus();
 
 ### 10.3 Export Limits
 
-| User Type | Concurrent Exports | Max Records | Retention |
-|-----------|-------------------|--------------|------------|
-| Employee | 1 | 10,000 | 7 days |
-| Manager | 2 | 50,000 | 14 days |
-| HR Admin | 5 | 500,000 | 30 days |
-| System Admin | 10 | Unlimited | 90 days |
+| User Type    | Concurrent Exports | Max Records | Retention |
+| ------------ | ------------------ | ----------- | --------- |
+| Employee     | 1                  | 10,000      | 7 days    |
+| Manager      | 2                  | 50,000      | 14 days   |
+| HR Admin     | 5                  | 500,000     | 30 days   |
+| System Admin | 10                 | Unlimited   | 90 days   |
 
 ---
 
@@ -712,17 +743,18 @@ checkStatus();
 
 ### 11.1 Pre-built Dashboards
 
-| Dashboard | Audience | Key Widgets |
-|-----------|-----------|--------------|
-| **HR Overview** | HR Managers | Headcount, turnover, open positions, pending approvals |
-| **Attendance Dashboard** | Operations | Real-time attendance, late arrivals, absenteeism |
-| **Leave Dashboard** | All Employees | Team calendar, leave balances, utilization |
-| **Performance Dashboard** | Management | Review status, rating distribution, goal progress |
-| **Recruitment Dashboard** | Recruiters | Pipeline metrics, time-to-hire, source effectiveness |
+| Dashboard                 | Audience      | Key Widgets                                            |
+| ------------------------- | ------------- | ------------------------------------------------------ |
+| **HR Overview**           | HR Managers   | Headcount, turnover, open positions, pending approvals |
+| **Attendance Dashboard**  | Operations    | Real-time attendance, late arrivals, absenteeism       |
+| **Leave Dashboard**       | All Employees | Team calendar, leave balances, utilization             |
+| **Performance Dashboard** | Management    | Review status, rating distribution, goal progress      |
+| **Recruitment Dashboard** | Recruiters    | Pipeline metrics, time-to-hire, source effectiveness   |
 
 ### 11.2 Custom Dashboard Builder
 
 **Widget Types:**
+
 - KPI cards
 - Charts (line, bar, pie, gauge)
 - Tables with pagination
@@ -731,6 +763,7 @@ checkStatus();
 - Goal progress bars
 
 **Layout Options:**
+
 - Grid-based drag-and-drop
 - Responsive breakpoints
 - Widget sizing (small, medium, large, full-width)
@@ -744,7 +777,7 @@ const ws = new WebSocket('wss://blih.company.com/dashboard/updates');
 
 ws.on('message', (event) => {
   const update = JSON.parse(event.data);
-  
+
   switch (update.type) {
     case 'attendance_update':
       updateAttendanceWidget(update.data);
@@ -772,15 +805,15 @@ ws.on('message', (event) => {
 
 ### 11.2 Caching Strategy
 
-| Data Type | Cache Duration | Invalidation |
-|------------|----------------|---------------|
-| Employee master | 24 hours | On employee update |
-| Attendance data | 1 hour | On new attendance |
-| Leave balances | 30 minutes | On leave transaction |
-| Report results | 15 minutes | On data change |
+| Data Type       | Cache Duration | Invalidation         |
+| --------------- | -------------- | -------------------- |
+| Employee master | 24 hours       | On employee update   |
+| Attendance data | 1 hour         | On new attendance    |
+| Leave balances  | 30 minutes     | On leave transaction |
+| Report results  | 15 minutes     | On data change       |
 
 ---
 
-*Reporting Guide Version: 1.0*  
-*Last Updated: February 2026*  
-*For reporting support: reports@blih.com*
+_Reporting Guide Version: 1.0_  
+_Last Updated: February 2026_  
+_For reporting support: reports@blih.com_

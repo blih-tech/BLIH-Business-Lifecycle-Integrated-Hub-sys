@@ -1,9 +1,9 @@
-import { Copy, Eye, Pencil, Trash2 } from "lucide-react";
+import { Copy, Eye, Pencil, Trash2 } from 'lucide-react';
 
-import type { EvaluationFormItem } from "@/features/hr/performance/evaluation-form/types";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { cn } from "@/shared/lib/utils";
+import type { EvaluationFormItem } from '@/features/hr/performance/evaluation-form/types';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { cn } from '@/shared/lib/utils';
 
 type EvaluationFormCardProps = {
   form: EvaluationFormItem;
@@ -16,11 +16,15 @@ export function EvaluationFormCard({ form }: EvaluationFormCardProps) {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="mb-1 flex flex-wrap items-center gap-1.5">
-              <p className="text-base font-semibold tracking-[-0.3125px] text-black">{form.title}</p>
+              <p className="text-base font-semibold tracking-[-0.3125px] text-black">
+                {form.title}
+              </p>
               <span
                 className={cn(
-                  "inline-flex h-[22px] items-center rounded-[6px] px-2 text-[10px] font-medium",
-                  form.status === "active" ? "bg-primary text-white" : "bg-[#4a5565] text-white",
+                  'inline-flex h-[22px] items-center rounded-[6px] px-2 text-[10px] font-medium',
+                  form.status === 'active'
+                    ? 'bg-primary text-white'
+                    : 'bg-[#4a5565] text-white',
                 )}
               >
                 {form.status}
@@ -43,7 +47,9 @@ export function EvaluationFormCard({ form }: EvaluationFormCardProps) {
                 <span className="font-medium">{form.sections}</span> sections
               </p>
               <p>
-                Used by <span className="font-medium">{form.usedByEmployees}</span> employees
+                Used by{' '}
+                <span className="font-medium">{form.usedByEmployees}</span>{' '}
+                employees
               </p>
               <p>Modified: {form.modifiedOn}</p>
             </div>

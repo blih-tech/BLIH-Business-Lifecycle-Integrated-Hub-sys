@@ -1,12 +1,24 @@
-import { Plus } from "lucide-react";
-import { useFormContext } from "react-hook-form";
+import { Plus } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 
-import type { EmployeeProfileFormValues } from "@/features/hr/people/create/form-schema";
-import { FormSectionCard } from "@/features/hr/people/create/components/form-section-card";
-import { Button } from "@/shared/components/ui/button";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
+import { Button } from '@/shared/components/ui/button';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
 
 export function AssetsCredentialsSection() {
   const form = useFormContext<EmployeeProfileFormValues>();
@@ -21,7 +33,10 @@ export function AssetsCredentialsSection() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Responsible For</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ""}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                >
                   <FormControl>
                     <SelectTrigger className="h-[50px] w-full rounded-[6px] border-[#e5e5e5]">
                       <SelectValue placeholder="Select" />
@@ -75,7 +90,10 @@ export function AssetsCredentialsSection() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Responsible For</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ""}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                >
                   <FormControl>
                     <SelectTrigger className="h-[50px] w-full rounded-[6px] border-[#e5e5e5]">
                       <SelectValue placeholder="Select" />
@@ -83,7 +101,9 @@ export function AssetsCredentialsSection() {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="Credential">Credential</SelectItem>
-                    <SelectItem value="Security Access">Security Access</SelectItem>
+                    <SelectItem value="Security Access">
+                      Security Access
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -97,7 +117,10 @@ export function AssetsCredentialsSection() {
               <FormItem>
                 <FormLabel>Credential Type</FormLabel>
                 <FormControl>
-                  <Input placeholder="Web Analytics & SEO Password Sheet" {...field} />
+                  <Input
+                    placeholder="Web Analytics & SEO Password Sheet"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +146,11 @@ export function AssetsCredentialsSection() {
       </div>
 
       <div className="mt-4">
-        <Button type="button" variant="outline" className="h-8 rounded-[6px] border-[#e5e5e5] text-[#666]">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-8 rounded-[6px] border-[#e5e5e5] text-[#666]"
+        >
           <Plus className="h-4 w-4" />
           Add Responsibility
         </Button>

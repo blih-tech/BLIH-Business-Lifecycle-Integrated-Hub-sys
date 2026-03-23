@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { Sparkles } from 'lucide-react';
 
 export function CreateWithAICard() {
   return (
@@ -6,8 +6,12 @@ export function CreateWithAICard() {
       <span className="inline-flex h-[40px] w-[40px] items-center justify-center rounded-[6px] bg-black text-white">
         <Sparkles className="h-5 w-5" />
       </span>
-      <p className="mt-3 text-base font-medium tracking-[-0.3125px] text-black">Create with AI</p>
-      <p className="mt-2 text-xs text-[#666]">Generate a form using AI based on job requirements</p>
+      <p className="mt-3 text-base font-medium tracking-[-0.3125px] text-black">
+        Create with AI
+      </p>
+      <p className="mt-2 text-xs text-[#666]">
+        Generate a form using AI based on job requirements
+      </p>
     </article>
   );
 }

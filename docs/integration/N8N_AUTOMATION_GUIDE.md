@@ -59,7 +59,7 @@ services:
     image: n8nio/n8n:latest
     restart: always
     ports:
-      - "5678:5678"
+      - '5678:5678'
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
@@ -134,8 +134,9 @@ To verify that incoming webhooks to n8n are actually from BLIH:
 
 1. **BLIH:** Signs payloads with `HmacSHA256(payload, secret)`. Sends signature in header `X-BLIH-Signature`.
 2. **n8n:** Use **Crypto** node to replicate the hash and compare.
-   
+
 **Workflow Validation Step:**
+
 ```javascript
 // Function Node
 const crypto = require('crypto');
@@ -143,7 +144,10 @@ const secret = 'my_webhook_secret';
 const signature = items[0].json.headers['x-blih-signature'];
 const payload = JSON.stringify(items[0].json.body);
 
-const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+const expected = crypto
+  .createHmac('sha256', secret)
+  .update(payload)
+  .digest('hex');
 
 if (signature !== expected) {
   throw new Error('Invalid Webhook Signature');
@@ -163,6 +167,7 @@ For a better developer experience, we can construct a declarative **OpenAPI node
 Alternatively, standard **HTTP Request** nodes are sufficient for most tasks.
 
 **Common Configuration:**
+
 - **URL:** `http://blih-backend:3000/api/v1/{{resource}}` (Internal Docker DNS)
 - **Auth:** Header Auth Credential
 - **Keep Alive:** True (for performance)
@@ -208,11 +213,11 @@ For bulk updates (e.g., updating 10,000 Lead Scores):
 
 ### 6.2 Common Errors
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `ECONNREFUSED` | n8n cannot reach BLIH container | Use Docker service name `http://blih-backend` not `localhost` |
-| `401 Unauthorized` | API Key invalid/expired | Rotate API Key in n8n Credentials |
-| `Memory Leak` | Large binary files | Avoid "All Executions" logging for heavy workflows. Use `binary` property, don't convert to JSON. |
+| Error              | Cause                           | Fix                                                                                               |
+| ------------------ | ------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `ECONNREFUSED`     | n8n cannot reach BLIH container | Use Docker service name `http://blih-backend` not `localhost`                                     |
+| `401 Unauthorized` | API Key invalid/expired         | Rotate API Key in n8n Credentials                                                                 |
+| `Memory Leak`      | Large binary files              | Avoid "All Executions" logging for heavy workflows. Use `binary` property, don't convert to JSON. |
 
 ---
 
@@ -228,5 +233,6 @@ For bulk updates (e.g., updating 10,000 Lead Scores):
 ---
 
 **Related Documentation:**
+
 - [AI_CHATBOT_RAG_GUIDE.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/modules/AI_CHATBOT_RAG_GUIDE.md) - AI Workflows
 - [DEPLOYMENT_INFRASTRUCTURE.md](file:///home/michot/project/BLIH-Business-Lifecycle-Integrated-Hub-/docs/integration/DEPLOYMENT_INFRASTRUCTURE.md) - Infrastructure Context

@@ -1,4 +1,4 @@
-import { TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import { TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 
 type TopTriggersProps = {
   onInterviewCount: number;
@@ -6,7 +6,11 @@ type TopTriggersProps = {
   waitlistedCount: number;
 };
 
-export function TopTriggers({ onInterviewCount, shortlistedCount, waitlistedCount }: TopTriggersProps) {
+export function TopTriggers({
+  onInterviewCount,
+  shortlistedCount,
+  waitlistedCount,
+}: TopTriggersProps) {
   return (
     <TabsList className="h-auto w-full gap-2 rounded-none bg-transparent p-0">
       <TabsTrigger

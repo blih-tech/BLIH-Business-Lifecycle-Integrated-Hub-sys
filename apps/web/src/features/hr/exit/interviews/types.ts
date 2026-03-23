@@ -2,7 +2,7 @@ export type ExitInterviewStat = {
   id: string;
   label: string;
   value: string;
-  icon: "scheduled" | "rating" | "completed";
+  icon: 'scheduled' | 'rating' | 'completed';
 };
 
 export type UpcomingInterview = {
@@ -11,7 +11,7 @@ export type UpcomingInterview = {
   name: string;
   role: string;
   department: string;
-  status: "scheduled";
+  status: 'scheduled';
   date: string;
   time: string;
   interviewer: string;

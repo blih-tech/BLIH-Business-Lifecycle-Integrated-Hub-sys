@@ -3,8 +3,8 @@ export type ExitOverviewStat = {
   label: string;
   value: string;
   badge: string;
-  icon: "active" | "interview" | "clearance" | "completed";
-  badgeTone?: "primary" | "neutral" | "danger";
+  icon: 'active' | 'interview' | 'clearance' | 'completed';
+  badgeTone?: 'primary' | 'neutral' | 'danger';
 };
 
 export type ResignationNotification = {
@@ -12,7 +12,7 @@ export type ResignationNotification = {
   initials: string;
   name: string;
   department: string;
-  priority: "low" | "high" | "urgent";
+  priority: 'low' | 'high' | 'urgent';
   summary: string;
   date: string;
   remaining: string;
@@ -27,7 +27,7 @@ export type ActiveResignation = {
   resignationDate: string;
   lastWorkingDay: string;
   daysRemaining: string;
-  status: "interview pending" | "clearance progress" | "documents pending";
+  status: 'interview pending' | 'clearance progress' | 'documents pending';
 };
 
 export type ResignationTrendPoint = {

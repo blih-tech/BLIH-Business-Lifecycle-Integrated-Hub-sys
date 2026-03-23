@@ -56,22 +56,53 @@ const probationExample = {
   endDate: '2026-03-31',
   status: 'NOT_STARTED',
   kpis: [
-    { id: 'probation-kpi-uuid-1', kpiId: 'kpi-uuid-1', kpiName: 'Q1 Sales Target', createdAt: '2026-01-01T00:00:00.000Z' },
+    {
+      id: 'probation-kpi-uuid-1',
+      kpiId: 'kpi-uuid-1',
+      kpiName: 'Q1 Sales Target',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    },
   ],
   checkpoints: [
-    { id: 'checkpoint-uuid-1', name: 'Month 1 Review', checkpointDate: '2026-02-01T00:00:00.000Z', createdAt: '2026-01-01T00:00:00.000Z' },
-    { id: 'checkpoint-uuid-2', name: 'Final Review', checkpointDate: '2026-03-31T00:00:00.000Z', createdAt: '2026-01-01T00:00:00.000Z' },
+    {
+      id: 'checkpoint-uuid-1',
+      name: 'Month 1 Review',
+      checkpointDate: '2026-02-01T00:00:00.000Z',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    },
+    {
+      id: 'checkpoint-uuid-2',
+      name: 'Final Review',
+      checkpointDate: '2026-03-31T00:00:00.000Z',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    },
   ],
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
 };
 
-const probationResponse = envelope('Probation plan retrieved successfully', probationExample);
-const probationCreated = envelope('Probation plan created successfully', probationExample);
-const probationUpdated = envelope('Probation plan updated successfully', probationExample);
-const probationList = envelope('Probation plans retrieved successfully', [probationExample]);
-const probationPaginatedList = paginatedEnvelope('Probation plans retrieved successfully', [probationExample]);
-const deleteResponse = envelope('Probation plan deleted successfully', { success: true });
+const probationResponse = envelope(
+  'Probation plan retrieved successfully',
+  probationExample,
+);
+const probationCreated = envelope(
+  'Probation plan created successfully',
+  probationExample,
+);
+const probationUpdated = envelope(
+  'Probation plan updated successfully',
+  probationExample,
+);
+const probationList = envelope('Probation plans retrieved successfully', [
+  probationExample,
+]);
+const probationPaginatedList = paginatedEnvelope(
+  'Probation plans retrieved successfully',
+  [probationExample],
+);
+const deleteResponse = envelope('Probation plan deleted successfully', {
+  success: true,
+});
 
 // ─── Controller-level class decorator ─────────────────────────────────────────
 
@@ -95,10 +126,7 @@ export function ApiCreateProbation() {
             startDate: '2026-01-01',
             endDate: '2026-03-31',
             status: 'NOT_STARTED',
-            kpis: [
-              { kpiId: 'kpi-uuid-1' },
-              { kpiId: 'kpi-uuid-2' },
-            ],
+            kpis: [{ kpiId: 'kpi-uuid-1' }, { kpiId: 'kpi-uuid-2' }],
             checkpoints: [
               { name: 'Month 1 Review', checkpointDate: '2026-02-01' },
               { name: 'Month 2 Review', checkpointDate: '2026-03-01' },

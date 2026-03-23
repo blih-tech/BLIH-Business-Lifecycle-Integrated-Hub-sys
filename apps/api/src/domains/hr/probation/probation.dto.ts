@@ -28,7 +28,10 @@ export type ProbationStatusValue = (typeof PROBATION_STATUSES)[number];
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
-  return value.trim().replace(/[\s-]+/g, '_').toUpperCase();
+  return value
+    .trim()
+    .replace(/[\s-]+/g, '_')
+    .toUpperCase();
 };
 
 // ─── Nested Input DTOs ────────────────────────────────────────────────────────
@@ -130,8 +133,7 @@ export class UpdateProbationCheckpointDto {
 export class UpdateProbationDto extends PartialType(CreateProbationDto) {
   @ApiPropertyOptional({
     type: () => [UpdateProbationCheckpointDto],
-    description:
-      'Checkpoints to sync. Items not included are removed.',
+    description: 'Checkpoints to sync. Items not included are removed.',
   })
   @IsOptional()
   @IsArray()

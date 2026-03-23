@@ -42,9 +42,7 @@ function buildWhere(
 export class ListAllProbationUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(
-    query: ProbationListQueryDto,
-  ): Promise<ProbationResponseDto[]> {
+  async execute(query: ProbationListQueryDto): Promise<ProbationResponseDto[]> {
     const plans = await this.prisma.probationPlan.findMany({
       where: buildWhere(query),
       include: probationInclude,

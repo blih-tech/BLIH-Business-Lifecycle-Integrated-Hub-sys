@@ -112,13 +112,19 @@ export class FinalScoreResponseDto {
   @ApiProperty({ example: 'probation-kpi-uuid-1' })
   probationKpiId!: string;
 
-  @ApiProperty({ example: 'Q1 Sales Target', description: 'KPI name for display.' })
+  @ApiProperty({
+    example: 'Q1 Sales Target',
+    description: 'KPI name for display.',
+  })
   kpiName!: string;
 
   @ApiProperty({ example: 90, minimum: 0, maximum: 100 })
   score!: number;
 
-  @ApiPropertyOptional({ nullable: true, example: 'Consistently high-quality code' })
+  @ApiPropertyOptional({
+    nullable: true,
+    example: 'Consistently high-quality code',
+  })
   comment!: string | null;
 
   @ApiProperty({ example: '2026-03-21T14:00:00.000Z' })
@@ -135,7 +141,10 @@ export class FinalEvaluationResponseDto {
   @ApiProperty({ enum: PROBATION_OUTCOMES, example: 'CONFIRMED' })
   outcome!: ProbationOutcomeValue;
 
-  @ApiPropertyOptional({ nullable: true, example: 'Strong performance overall. Ready for full-time role.' })
+  @ApiPropertyOptional({
+    nullable: true,
+    example: 'Strong performance overall. Ready for full-time role.',
+  })
   comment!: string | null;
 
   @ApiProperty({

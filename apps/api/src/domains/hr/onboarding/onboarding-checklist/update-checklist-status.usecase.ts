@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { UpdateChecklistStatusDto } from './onboarding-checklist.dto';
 import type { OnboardingChecklistResponseDto } from '../onboarding.dto';
@@ -24,7 +28,9 @@ export class UpdateChecklistStatusUseCase {
     }
 
     if (checklist.onboarding.status === 'CANCELLED') {
-      throw new BadRequestException('Cannot update checklist for a cancelled onboarding');
+      throw new BadRequestException(
+        'Cannot update checklist for a cancelled onboarding',
+      );
     }
 
     const updatedChecklist = await this.prisma.$transaction(async (tx) => {
@@ -46,8 +52,12 @@ export class UpdateChecklistStatusUseCase {
       });
 
       const total = allChecklists.length;
-      const completed = allChecklists.filter((c) => c.status === 'COMPLETED').length;
-      const inProgress = allChecklists.filter((c) => c.status === 'IN_PROGRESS').length;
+      const completed = allChecklists.filter(
+        (c) => c.status === 'COMPLETED',
+      ).length;
+      const inProgress = allChecklists.filter(
+        (c) => c.status === 'IN_PROGRESS',
+      ).length;
 
       // 3. Evaluate parent onboarding status
       let newParentStatus = checklist.onboarding.status;

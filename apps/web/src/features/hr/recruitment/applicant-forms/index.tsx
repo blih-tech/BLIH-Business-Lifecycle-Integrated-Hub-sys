@@ -2,11 +2,11 @@ import {
   CreateNewFormCard,
   CreateWithAICard,
   FormCard,
-} from "@/features/hr/recruitment/applicant-forms/components";
-import { createdApplicantForms } from "@/features/hr/recruitment/applicant-forms/mock-data";
+} from '@/features/hr/recruitment/applicant-forms/components';
+import { createdApplicantForms } from '@/features/hr/recruitment/applicant-forms/mock-data';
 
-export * from "@/features/hr/recruitment/applicant-forms/components";
-export * from "@/features/hr/recruitment/applicant-forms/types";
+export * from '@/features/hr/recruitment/applicant-forms/components';
+export * from '@/features/hr/recruitment/applicant-forms/types';
 
 export function RecruitmentApplicantFormsContent() {
   return (
@@ -18,8 +18,12 @@ export function RecruitmentApplicantFormsContent() {
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-base font-semibold tracking-[-0.3125px] text-black">Previously Created Forms</h2>
-          <p className="text-sm text-[#666]">Find applicant-to-fill forms with their job positions.</p>
+          <h2 className="text-base font-semibold tracking-[-0.3125px] text-black">
+            Previously Created Forms
+          </h2>
+          <p className="text-sm text-[#666]">
+            Find applicant-to-fill forms with their job positions.
+          </p>
         </div>
 
         {createdApplicantForms.length > 0 ? (
@@ -30,7 +34,9 @@ export function RecruitmentApplicantFormsContent() {
           </div>
         ) : (
           <div className="flex h-[240px] items-center justify-center rounded-[12px] border border-[#e5e5e5] bg-[#f8f8f8]">
-            <p className="text-sm text-[#666]">No forms yet. Create or Generate using AI.</p>
+            <p className="text-sm text-[#666]">
+              No forms yet. Create or Generate using AI.
+            </p>
           </div>
         )}
       </section>

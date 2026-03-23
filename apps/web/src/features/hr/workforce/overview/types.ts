@@ -3,17 +3,17 @@ export type WorkforceOverviewStat = {
   label: string;
   value: string;
   chip: string;
-  icon: "clock" | "dollar" | "users";
+  icon: 'clock' | 'dollar' | 'users';
 };
 
 export type WorkforceNotification = {
   id: string;
   title: string;
   date: string;
-  tone: "blue" | "red" | "yellow" | "gray";
+  tone: 'blue' | 'red' | 'yellow' | 'gray';
 };
 
-export type WorkforceApprovalPriority = "high" | "medium" | "low";
+export type WorkforceApprovalPriority = 'high' | 'medium' | 'low';
 
 export type WorkforcePendingApproval = {
   id: string;
@@ -39,5 +39,5 @@ export type DepartmentBudgetPoint = {
 export type WorkforceQuickAction = {
   id: string;
   label: string;
-  icon: "payroll" | "salary" | "budget" | "expense";
+  icon: 'payroll' | 'salary' | 'budget' | 'expense';
 };

@@ -2,7 +2,7 @@ export type BudgetStat = {
   id: string;
   label: string;
   value: string;
-  icon: "allocated" | "spent" | "remaining" | "utilization";
+  icon: 'allocated' | 'spent' | 'remaining' | 'utilization';
 };
 
 export type DepartmentBudgetPoint = {

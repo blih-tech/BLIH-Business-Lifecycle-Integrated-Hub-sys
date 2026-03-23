@@ -2,15 +2,15 @@ import {
   allDisciplineCases,
   disciplineActionCases,
   disciplineStats,
-} from "@/features/hr/talent/discipline/mock-data";
+} from '@/features/hr/talent/discipline/mock-data';
 import {
   AllDisciplineCases,
   DisciplineActionRequired,
   DisciplineStatistics,
-} from "@/features/hr/talent/discipline/components";
+} from '@/features/hr/talent/discipline/components';
 
-export * from "@/features/hr/talent/discipline/components";
-export * from "@/features/hr/talent/discipline/types";
+export * from '@/features/hr/talent/discipline/components';
+export * from '@/features/hr/talent/discipline/types';
 
 export function TalentDisciplineContent() {
   return (

@@ -1,10 +1,10 @@
-export type CheckinViewMode = "daily" | "weekly" | "monthly";
+export type CheckinViewMode = 'daily' | 'weekly' | 'monthly';
 
-export type CheckinStatus = "completed" | "in-progress" | "missed";
+export type CheckinStatus = 'completed' | 'in-progress' | 'missed';
 
-export type CheckinSort = "name-asc" | "name-desc";
+export type CheckinSort = 'name-asc' | 'name-desc';
 
-export type CheckinStampValue = string | "Missed" | null;
+export type CheckinStampValue = string | 'Missed' | null;
 
 export type CheckinStamps = {
   morIn: CheckinStampValue;
@@ -35,5 +35,5 @@ export type AttendanceCheckinStatItem = {
   id: string;
   label: string;
   value: string;
-  icon: "clock-3" | "circle-check-big";
+  icon: 'clock-3' | 'circle-check-big';
 };

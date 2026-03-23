@@ -63,7 +63,9 @@ export class GetEvaluationByCheckpointUseCase {
 export class ListEvaluationsByProbationUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(probationId: string): Promise<CheckpointEvaluationResponseDto[]> {
+  async execute(
+    probationId: string,
+  ): Promise<CheckpointEvaluationResponseDto[]> {
     const plan = await this.prisma.probationPlan.findUnique({
       where: { id: probationId },
       select: { id: true },

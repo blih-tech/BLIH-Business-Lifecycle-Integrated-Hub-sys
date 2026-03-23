@@ -54,6 +54,7 @@ BLIH emits events for **all** standard lifecycle changes. n8n can subscribe to a
 **Endpoint Pattern:** `POST /webhook/{workflow_id}`
 
 **Standard Payload:**
+
 ```json
 {
   "event_type": "crm.lead.created",
@@ -78,12 +79,12 @@ BLIH emits events for **all** standard lifecycle changes. n8n can subscribe to a
 
 ### 2.2 Supported Events
 
-| Module | Event | Description |
-|--------|-------|-------------|
-| **CRM** | `lead.created`, `lead.converted`, `deal.stage_changed` | Sales pipeline automation |
-| **Finance** | `invoice.overdue`, `payment.received`, `expense.approved` | Dunning and reconciliation |
-| **Projects** | `task.assigned`, `milestone.reached`, `budget.exceeded` | Notifications |
-| **Brain** | `document.indexed`, `chat.handoff` | Knowledge ops |
+| Module       | Event                                                     | Description                |
+| ------------ | --------------------------------------------------------- | -------------------------- |
+| **CRM**      | `lead.created`, `lead.converted`, `deal.stage_changed`    | Sales pipeline automation  |
+| **Finance**  | `invoice.overdue`, `payment.received`, `expense.approved` | Dunning and reconciliation |
+| **Projects** | `task.assigned`, `milestone.reached`, `budget.exceeded`   | Notifications              |
+| **Brain**    | `document.indexed`, `chat.handoff`                        | Knowledge ops              |
 
 ---
 
@@ -101,14 +102,17 @@ Although n8n uses generic HTTP Request nodes, we provide a **BLIH OpenAPI Specif
 ### 3.2 Common Actions
 
 **CRM: Create Activity**
+
 - **Method:** POST `/crm/activities`
 - **Use Case:** Log an interactions (Email/Call) from external tools.
 
 **Finance: Create Invoice**
+
 - **Method:** POST `/finance/invoices`
 - **Use Case:** Generate invoice from e-commerce order (Shopify/WooCommerce).
 
 **System: Send Notification**
+
 - **Method:** POST `/notifications/send`
 - **Use Case:** Push in-app alert to user.
 
@@ -124,41 +128,42 @@ For a premium integration experience, we develop a custom n8n node package: `n8n
 
 ```typescript
 export class BLIH implements INodeType {
-    description: INodeTypeDescription = {
-        displayName: 'BLIH',
-        name: 'blih',
-        icon: 'file:blih.svg',
-        group: ['transform'],
-        version: 1,
-        defaults: { name: 'BLIH' },
-        inputs: ['main'],
-        outputs: ['main'],
-        credentials: [
-            {
-                name: 'blihApi',
-                required: true,
-            },
+  description: INodeTypeDescription = {
+    displayName: 'BLIH',
+    name: 'blih',
+    icon: 'file:blih.svg',
+    group: ['transform'],
+    version: 1,
+    defaults: { name: 'BLIH' },
+    inputs: ['main'],
+    outputs: ['main'],
+    credentials: [
+      {
+        name: 'blihApi',
+        required: true,
+      },
+    ],
+    properties: [
+      {
+        displayName: 'Resource',
+        name: 'resource',
+        type: 'options',
+        options: [
+          { name: 'Lead', value: 'lead' },
+          { name: 'Invoice', value: 'invoice' },
         ],
-        properties: [
-            {
-                displayName: 'Resource',
-                name: 'resource',
-                type: 'options',
-                options: [
-                    { name: 'Lead', value: 'lead' },
-                    { name: 'Invoice', value: 'invoice' },
-                ],
-                default: 'lead',
-            },
-            // ... Operations (Create, Get, Update)
-        ]
-    };
+        default: 'lead',
+      },
+      // ... Operations (Create, Get, Update)
+    ],
+  };
 }
 ```
 
 ### 4.2 Installation
 
 Dockerfile injection:
+
 ```dockerfile
 FROM n8nio/n8n:latest
 USER root
@@ -170,14 +175,14 @@ USER node
 
 ## 5. Embedded Workflow Editor
 
-Integrating the n8n UI *inside* BLIH Dashboard (Iframe).
+Integrating the n8n UI _inside_ BLIH Dashboard (Iframe).
 
 ### 5.1 Iframe Integration
 
 **Route:** `/admin/automation`
 
 ```tsx
-<iframe 
+<iframe
   src="https://n8n.blih.com/workflow/new?embed=true"
   width="100%"
   height="800px"
@@ -188,6 +193,7 @@ Integrating the n8n UI *inside* BLIH Dashboard (Iframe).
 ### 5.2 SSO (Single Sign-On)
 
 To prevent double-login:
+
 1. BLIH generates a **JWT** for the Admin user.
 2. n8n is configured behind `n8n-auth-proxy`.
 3. Proxy validates JWT -> Sets `X-N8N-User-Id` header.

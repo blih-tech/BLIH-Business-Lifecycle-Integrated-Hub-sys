@@ -1,6 +1,6 @@
-import type { CareerStatItem } from "@/features/hr/talent/career/types";
+import type { CareerStatItem } from '@/features/hr/talent/career/types';
 
-import { StatsCard } from "./stats-card";
+import { StatsCard } from './stats-card';
 
 type StatsGridProps = {
   items: CareerStatItem[];

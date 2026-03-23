@@ -1,15 +1,17 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from 'lucide-react';
 
-import type { UnexpectedExpenseItem } from "@/features/hr/workforce/expense/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { UnexpectedExpenseItem } from '@/features/hr/workforce/expense/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
-import { UnexpectedExpenseCard } from "./unexpected-expense-card";
+import { UnexpectedExpenseCard } from './unexpected-expense-card';
 
 type UnexpectedExpensesSectionProps = {
   items: UnexpectedExpenseItem[];
 };
 
-export function UnexpectedExpensesSection({ items }: UnexpectedExpensesSectionProps) {
+export function UnexpectedExpensesSection({
+  items,
+}: UnexpectedExpensesSectionProps) {
   return (
     <Card className="gap-0 rounded-[12px] border-border py-0 shadow-none">
       <CardContent className="space-y-4 p-4">

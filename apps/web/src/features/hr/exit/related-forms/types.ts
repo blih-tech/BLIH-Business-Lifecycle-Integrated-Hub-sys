@@ -25,5 +25,5 @@ export type ExitTemplateFormItem = {
   usedCount: string;
   previewTitle: string;
   previewText: string;
-  actions: ("download" | "delete" | "edit")[];
+  actions: ('download' | 'delete' | 'edit')[];
 };

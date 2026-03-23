@@ -2,24 +2,32 @@ import {
   emptyRequestsMessage,
   jobRequests,
   requestStats,
-} from "@/features/hr/recruitment/requests/mock-data";
+} from '@/features/hr/recruitment/requests/mock-data';
 import {
   EmptyRequestsState,
   RequestsSection,
   RequestsStatsCard,
-} from "@/features/hr/recruitment/requests/components";
+} from '@/features/hr/recruitment/requests/components';
 
-export * from "@/features/hr/recruitment/requests/components";
-export * from "@/features/hr/recruitment/requests/types";
+export * from '@/features/hr/recruitment/requests/components';
+export * from '@/features/hr/recruitment/requests/types';
 
 type RecruitmentRequestsContentProps = {
   currentUserName: string;
 };
 
-export function RecruitmentRequestsContent({ currentUserName }: RecruitmentRequestsContentProps) {
-  const pendingRequests = jobRequests.filter((request) => request.status === "active");
-  const approvedByYouRequests = jobRequests.filter((request) => request.status === "by_me");
-  const declinedRequests = jobRequests.filter((request) => request.status === "closed");
+export function RecruitmentRequestsContent({
+  currentUserName,
+}: RecruitmentRequestsContentProps) {
+  const pendingRequests = jobRequests.filter(
+    (request) => request.status === 'active',
+  );
+  const approvedByYouRequests = jobRequests.filter(
+    (request) => request.status === 'by_me',
+  );
+  const declinedRequests = jobRequests.filter(
+    (request) => request.status === 'closed',
+  );
 
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-8 px-4 py-5 md:px-5 md:py-6">

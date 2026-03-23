@@ -1,6 +1,6 @@
-import type { TalentOverviewStat } from "@/features/hr/talent/overview/types";
+import type { TalentOverviewStat } from '@/features/hr/talent/overview/types';
 
-import { OverviewStatCard } from "./overview-stat-card";
+import { OverviewStatCard } from './overview-stat-card';
 
 type OverviewStatsGridProps = {
   items: TalentOverviewStat[];

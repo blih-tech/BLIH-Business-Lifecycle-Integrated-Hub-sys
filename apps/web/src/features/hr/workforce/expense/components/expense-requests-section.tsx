@@ -1,9 +1,9 @@
-import { Clock } from "lucide-react";
+import { Clock } from 'lucide-react';
 
-import type { ExpenseRequestItem } from "@/features/hr/workforce/expense/types";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import type { ExpenseRequestItem } from '@/features/hr/workforce/expense/types';
+import { Card, CardContent } from '@/shared/components/ui/card';
 
-import { ExpenseRequestCard } from "./expense-request-card";
+import { ExpenseRequestCard } from './expense-request-card';
 
 type ExpenseRequestsSectionProps = {
   items: ExpenseRequestItem[];

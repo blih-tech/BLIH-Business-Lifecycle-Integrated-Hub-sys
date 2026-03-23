@@ -9,11 +9,11 @@
 
 ## 1. User Personas
 
-| Persona | Role | Primary Goals | Tech Comfort |
-|---------|------|---------------|--------------|
-| **Jordan** | New Hire | Find policies, ask "dumb" questions | Low |
-| **Alex** | Knowledge Mgr | Organize docs, track usage metrics | High |
-| **Taylor** | Manager | Document decisions, find precedents | Medium |
+| Persona    | Role          | Primary Goals                       | Tech Comfort |
+| ---------- | ------------- | ----------------------------------- | ------------ |
+| **Jordan** | New Hire      | Find policies, ask "dumb" questions | Low          |
+| **Alex**   | Knowledge Mgr | Organize docs, track usage metrics  | High         |
+| **Taylor** | Manager       | Document decisions, find precedents | Medium       |
 
 ---
 
@@ -24,57 +24,63 @@
 **Scenario:** Jordan starts Day 1 and needs to find the handbook.
 
 ```
-Dashboard "Welcome" → Click "Ask Brain" 
+Dashboard "Welcome" → Click "Ask Brain"
 → Type "Where is the handbook?" → View Source → Download
 ```
 
 **Key Screens:**
+
 1.  **Global Chat Widget:** Floating button on bottom-right.
 2.  **AI Response:** "Here is the Employee Handbook v3.2 [PDF]."
 3.  **Source Preview:** Sidebar opens PDF to relevant page (p.12).
 4.  **Follow-Up:** "Do you want to know about holidays? [Yes/No]"
 
 **UX Principles:**
--   **Conversation:** Mimic a helpful colleague, not a search engine.
--   **Instant Gratification:** Direct link to files, not just text answers.
+
+- **Conversation:** Mimic a helpful colleague, not a search engine.
+- **Instant Gratification:** Direct link to files, not just text answers.
 
 ### Flow 2: Documenting a Key Decision (Manager)
 
 **Scenario:** Taylor's team chooses a new vendor and wants to record why.
 
 ```
-Brain Module → Decisions Tab → "Log New Decision" 
+Brain Module → Decisions Tab → "Log New Decision"
 → Fill Template (Context, Options, Choice) → Save & Share
 ```
 
 **Key Screens:**
+
 1.  **Decision Template:** "What problem are we trying to solve?"
 2.  **Options Matrix:** (Option A vs Option B).
 3.  **Rationale Field:** "We chose X because Y..."
 4.  **Share Modal:** Notify "Project Team" via email/Slack.
 
 **UX Principles:**
--   **Structure:** Force thinking through "Options Considered" prevents bias.
--   **Institutional Memory:** Make it searchable for future teams.
+
+- **Structure:** Force thinking through "Options Considered" prevents bias.
+- **Institutional Memory:** Make it searchable for future teams.
 
 ### Flow 3: Policy Update & Acknowledgment (Knowledge Manager)
 
 **Scenario:** Alex updates the "Remote Work Policy".
 
 ```
-Upload New Version → AI Auto-Tags → Publish 
+Upload New Version → AI Auto-Tags → Publish
 → "Request Acknowledgment" → Employees Notified
 ```
 
 **Key Screens:**
+
 1.  **Upload Dialog:** Drag & Drop PDF.
 2.  **AI Tagging:** "Tags: HR, Remote, Security (Confidence: 98%)".
 3.  **Distribution:** Select "All Staff".
 4.  **Compliance Dashboard:** Tracker showing "150/200 Acknowledged".
 
 **UX Principles:**
--   **Low Friction:** AI does the tagging work.
--   **Accountability:** Clear dashboard for who has/hasn't read it.
+
+- **Low Friction:** AI does the tagging work.
+- **Accountability:** Clear dashboard for who has/hasn't read it.
 
 ---
 
@@ -173,15 +179,15 @@ Upload New Version → AI Auto-Tags → Publish
 ## 5. Mobile Experience
 
 ### Key Mobile Flows
--   **In-Field Answers:** Sales rep asks "What's our pricing for Enterprise?" on phone.
--   **Audio Query:** Tap microphone to ask a question while driving.
--   **Notifications:** "Please read updated Safety Policy".
+
+- **In-Field Answers:** Sales rep asks "What's our pricing for Enterprise?" on phone.
+- **Audio Query:** Tap microphone to ask a question while driving.
+- **Notifications:** "Please read updated Safety Policy".
 
 ---
 
 ## 6. Integrations
 
--   **Slack/Teams:** @Brain "What is the policy on gifts?" (Chatbot in channels).
--   **Google Drive/SharePoint:** Auto-sync documents to Knowledge Base.
--   **Jira:** Auto-log decisions from tickets into Brain Memory.
-
+- **Slack/Teams:** @Brain "What is the policy on gifts?" (Chatbot in channels).
+- **Google Drive/SharePoint:** Auto-sync documents to Knowledge Base.
+- **Jira:** Auto-log decisions from tickets into Brain Memory.

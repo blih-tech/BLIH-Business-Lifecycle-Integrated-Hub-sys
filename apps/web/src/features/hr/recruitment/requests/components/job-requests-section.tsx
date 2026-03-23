@@ -1,56 +1,82 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { CreateRequestDialog } from "@/features/hr/recruitment/requests/components/create-request-dialog";
-import { JobRequestDetailsDialog } from "@/features/hr/recruitment/requests/components/job-request-details-dialog";
-import { JobRequestCard } from "@/features/hr/recruitment/requests/components/job-request-card";
-import { JobRequestJustifyDialog } from "@/features/hr/recruitment/requests/components/job-request-justify-dialog";
-import type { FullJobRequest, JobRequestPriority } from "@/features/hr/recruitment/requests/types";
+import { CreateRequestDialog } from '@/features/hr/recruitment/requests/components/create-request-dialog';
+import { JobRequestDetailsDialog } from '@/features/hr/recruitment/requests/components/job-request-details-dialog';
+import { JobRequestCard } from '@/features/hr/recruitment/requests/components/job-request-card';
+import { JobRequestJustifyDialog } from '@/features/hr/recruitment/requests/components/job-request-justify-dialog';
+import type {
+  FullJobRequest,
+  JobRequestPriority,
+} from '@/features/hr/recruitment/requests/types';
 
 type JobRequestsSectionProps = {
   items: FullJobRequest[];
   currentUserName: string;
 };
 
-export function JobRequestsSection({ items, currentUserName }: JobRequestsSectionProps) {
+export function JobRequestsSection({
+  items,
+  currentUserName,
+}: JobRequestsSectionProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
-  const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
-  const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
-  const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState<
+    number | null
+  >(null);
+  const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(
+    null,
+  );
+  const isCreateRequestDialogOpen =
+    searchParams.get('create') === 'new-request';
+  const requestPriorityOrder: JobRequestPriority[] = ['high', 'medium', 'low'];
 
   const filteredItems = useMemo(() => items, [items]);
   const filteredRequestEntries = useMemo(
     () =>
       filteredItems.map((request) => ({
         request,
-        requestId: `REQ-${String(items.indexOf(request) + 1).padStart(3, "0")}`,
+        requestId: `REQ-${String(items.indexOf(request) + 1).padStart(3, '0')}`,
       })),
     [filteredItems, items],
   );
 
   const selectedRequest = useMemo(
-    () => (selectedRequestIndex === null ? null : filteredRequestEntries[selectedRequestIndex]?.request ?? null),
+    () =>
+      selectedRequestIndex === null
+        ? null
+        : (filteredRequestEntries[selectedRequestIndex]?.request ?? null),
     [filteredRequestEntries, selectedRequestIndex],
   );
   const justifyRequest = useMemo(
-    () => (justifyRequestIndex === null ? null : filteredRequestEntries[justifyRequestIndex]?.request ?? null),
+    () =>
+      justifyRequestIndex === null
+        ? null
+        : (filteredRequestEntries[justifyRequestIndex]?.request ?? null),
     [filteredRequestEntries, justifyRequestIndex],
   );
   const justifyRequestId = useMemo(
-    () => (justifyRequestIndex === null ? null : filteredRequestEntries[justifyRequestIndex]?.requestId ?? null),
+    () =>
+      justifyRequestIndex === null
+        ? null
+        : (filteredRequestEntries[justifyRequestIndex]?.requestId ?? null),
     [filteredRequestEntries, justifyRequestIndex],
   );
 
   useEffect(() => {
-    if (selectedRequestIndex !== null && !filteredRequestEntries[selectedRequestIndex]) {
+    if (
+      selectedRequestIndex !== null &&
+      !filteredRequestEntries[selectedRequestIndex]
+    ) {
       setSelectedRequestIndex(null);
     }
-    if (justifyRequestIndex !== null && !filteredRequestEntries[justifyRequestIndex]) {
+    if (
+      justifyRequestIndex !== null &&
+      !filteredRequestEntries[justifyRequestIndex]
+    ) {
       setJustifyRequestIndex(null);
     }
   }, [filteredRequestEntries, justifyRequestIndex, selectedRequestIndex]);
@@ -58,7 +84,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
   function handleCreateRequestDialogOpenChange(isOpen: boolean) {
     if (isOpen) return;
     const nextParams = new URLSearchParams(searchParams.toString());
-    nextParams.delete("create");
+    nextParams.delete('create');
     const query = nextParams.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
   }
@@ -71,7 +97,10 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
             <JobRequestCard
               key={`${request.requestForm.jobTitle}-${index}`}
               item={request}
-              priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
+              priority={
+                requestPriorityOrder[index % requestPriorityOrder.length] ??
+                'low'
+              }
               onClick={() => setSelectedRequestIndex(index)}
               onJustifyClick={() => setJustifyRequestIndex(index)}
             />
@@ -89,7 +118,7 @@ export function JobRequestsSection({ items, currentUserName }: JobRequestsSectio
       <JobRequestDetailsDialog
         request={selectedRequest}
         currentUserName={currentUserName}
-        variant={selectedRequest?.status ?? "active"}
+        variant={selectedRequest?.status ?? 'active'}
         onOpenChange={(isOpen) => {
           if (!isOpen) setSelectedRequestIndex(null);
         }}
