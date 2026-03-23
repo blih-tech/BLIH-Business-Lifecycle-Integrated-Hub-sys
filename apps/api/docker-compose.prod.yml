@@ -55,10 +55,7 @@ services:
         condition: service_healthy
     healthcheck:
       test:
-        [
-          'CMD-SHELL',
-          'wget -qO /dev/null http://127.0.0.1:9000/health/ready || exit 1',
-        ]
+        ['CMD-SHELL', 'curl -fsS http://127.0.0.1:9000/health/ready || exit 1']
       interval: 15s
       timeout: 10s
       retries: 10
