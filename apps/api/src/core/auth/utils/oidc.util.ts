@@ -453,6 +453,88 @@ export function isOriginAllowed(
   });
 }
 
+export function isValidOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+export function validateOriginAgainstAllowed(
+  origin: string,
+  allowedOrigins: string[],
+): boolean {
+  return allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+
+    // Exact match
+    if (origin === allowed) return true;
+
+    // Subdomain match (e.g., https://app.example.com matches https://example.com)
+    if (allowed.startsWith('https://')) {
+      const allowedDomain = allowed.replace('https://', '');
+      const originDomain = origin.replace('https://', '');
+
+      if (
+        originDomain === allowedDomain ||
+        originDomain.endsWith(`.${allowedDomain}`)
+      ) {
+        return true;
+      }
+    }
+
+    // Prefix match for development scenarios
+    return origin.startsWith(`${allowed}/`);
+  });
+}
+
+export function extractOriginFromRequest(request: Request): string | undefined {
+  // Priority order:
+  // 1) Forwarded headers (proxy/load balancer)
+  // 2) Origin header
+  // 3) Referer header
+  // 4) Host header (last resort)
+  let origin: string | undefined;
+
+  // Priority 1: Forwarded headers (for proxy/load balancer scenarios)
+  const forwardedProto = request.headers['x-forwarded-proto'] as string;
+  const forwardedHost = request.headers['x-forwarded-host'] as string;
+
+  if (forwardedProto && forwardedHost) {
+    origin = `${forwardedProto}://${forwardedHost}`;
+  }
+
+  // Priority 2: Origin header
+  if (!origin && request.headers.origin) {
+    origin = request.headers.origin as string;
+  }
+
+  // Priority 3: Referer header
+  if (!origin && request.headers.referer) {
+    try {
+      const refererUrl = new URL(request.headers.referer as string);
+      origin = refererUrl.origin;
+    } catch {
+      // Invalid referer, continue to next method
+    }
+  }
+
+  // Priority 4: Host header (fallback for direct requests)
+  if (!origin && request.headers.host) {
+    const protocol = forwardedProto || 'http';
+    origin = `${protocol}://${request.headers.host}`;
+  }
+
+  // Validate origin format
+  if (origin && isValidOrigin(origin)) {
+    return origin;
+  }
+
+  return undefined;
+}
+
 function normalizeRedirectPath(path: string | undefined): string | undefined {
   if (!path) {
     return undefined;

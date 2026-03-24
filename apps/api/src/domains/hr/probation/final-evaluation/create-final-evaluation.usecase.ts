@@ -11,6 +11,7 @@ import type {
   FinalEvaluationResponseDto,
   ProbationOutcomeValue,
 } from './final-evaluation.dto';
+import { ProbationStatus } from '../../../../platform/prisma/prisma-client';
 
 // ─── Shared helpers ────────────────────────────────────────────────────────────
 
@@ -45,12 +46,12 @@ function computeAverage(scores: number[]): number {
  * - TERMINATED → FAILED
  * - RESIGNED   → CANCELLED
  */
-function outcomeToStatus(outcome: ProbationOutcomeValue): string {
-  const map: Record<ProbationOutcomeValue, string> = {
-    CONFIRMED: 'COMPLETED',
-    EXTENDED: 'EXTENDED',
-    TERMINATED: 'FAILED',
-    RESIGNED: 'CANCELLED',
+function outcomeToStatus(outcome: ProbationOutcomeValue): ProbationStatus {
+  const map: Record<ProbationOutcomeValue, ProbationStatus> = {
+    CONFIRMED: ProbationStatus.COMPLETED,
+    EXTENDED: ProbationStatus.EXTENDED,
+    TERMINATED: ProbationStatus.FAILED,
+    RESIGNED: ProbationStatus.CANCELLED,
   };
   return map[outcome];
 }

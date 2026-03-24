@@ -9,6 +9,7 @@ import { SendNotificationUseCase } from '../../../core/notifications/use-cases/s
 import { UserProvisioningService } from '../../../core/users/user-provisioning.service';
 import { Prisma } from '../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
+import { OnboardingStatus } from '../../../platform/prisma/prisma-client';
 import {
   recalculateJobMetrics,
   transitionApplicantStatus,
@@ -183,7 +184,7 @@ export class RecruitmentTransitionService {
         const onboarding = await tx.onboarding.create({
           data: {
             employeeId: provisioned.employee.id,
-            status: 'PENDING',
+            status: OnboardingStatus.NOT_STARTED,
             joinDate,
           },
         });

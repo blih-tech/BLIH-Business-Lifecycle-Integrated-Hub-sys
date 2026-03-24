@@ -3,7 +3,7 @@ import { Transform } from 'class-transformer';
 import { IsDateString, IsEnum, IsOptional } from 'class-validator';
 import {
   ONBOARDING_CHECKLIST_STATUSES,
-  OnboardingChecklistStatusValue,
+  type OnboardingChecklistStatusValue,
 } from '../onboarding.dto';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {

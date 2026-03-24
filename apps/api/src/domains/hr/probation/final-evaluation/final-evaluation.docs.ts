@@ -26,7 +26,7 @@ import { ProbationPlanPermissions } from '@repo/types/rbac';
 import {
   FinalEvaluationResponseDto,
   PROBATION_OUTCOMES,
-  ProbationOutcomeValue,
+  type ProbationOutcomeValue,
 } from './final-evaluation.dto';
 import { CreateFinalEvaluationDto } from './final-evaluation.dto';
 

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from '../../../../platform/prisma/prisma-client';
 import type { KpiListQueryDto } from './probation-kpi.dto';
 import { mapKpi } from './create-probation-kpi.usecase';
 

@@ -27,7 +27,9 @@ export class UpdateChecklistStatusUseCase {
       throw new NotFoundException(`Checklist item with id "${id}" not found`);
     }
 
-    if (checklist.onboarding.status === 'CANCELLED') {
+    const onboarding = checklist.onboarding; // Cache to avoid null checks
+
+    if (onboarding.status === 'CANCELLED') {
       throw new BadRequestException(
         'Cannot update checklist for a cancelled onboarding',
       );
@@ -60,23 +62,23 @@ export class UpdateChecklistStatusUseCase {
       ).length;
 
       // 3. Evaluate parent onboarding status
-      let newParentStatus = checklist.onboarding.status;
-      let newStartedAt = undefined;
-      let newCompletedAt = undefined;
+      let newParentStatus = onboarding.status;
+      let newStartedAt: Date | undefined = undefined;
+      let newCompletedAt: Date | undefined = undefined;
 
       if (completed === total && total > 0) {
         newParentStatus = 'COMPLETED';
         newCompletedAt = new Date();
       } else if (completed > 0 || inProgress > 0) {
         newParentStatus = 'IN_PROGRESS';
-        if (!checklist.onboarding.startedAt) {
+        if (!onboarding.startedAt) {
           newStartedAt = new Date();
         }
       }
 
       // If status changed, update the parent onboarding
       if (
-        newParentStatus !== checklist.onboarding.status ||
+        newParentStatus !== onboarding.status ||
         newStartedAt ||
         newCompletedAt
       ) {
