@@ -1,15 +1,23 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
 export function proxy(request: NextRequest) {
-  const hasAccessToken = request.cookies.has("kc_access");
+  if (DEMO_MODE) {
+    return NextResponse.next();
+  }
+
+  const hasAccessToken = request.cookies.has('kc_access');
   if (!hasAccessToken) {
-    const signInUrl = new URL("/auth/signin", request.url);
-    return NextResponse.redirect(signInUrl);
+    const loginUrl = new URL(`${API_BASE_URL}/auth/login`, request.url);
+    loginUrl.searchParams.set('redirect', '/dashboard');
+    return NextResponse.redirect(loginUrl);
   }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: "/",
+  matcher: '/',
 };

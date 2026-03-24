@@ -1,10 +1,9 @@
 ﻿'use client';
 
-import { ChevronUp, Clock, Pencil } from 'lucide-react';
+import { ChevronUp, Clock, Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 import type {
-  ApprovalProgressState,
   FullJobRequest,
   JobRequestDepartment,
 } from '@/features/hr/recruitment/requests/types';
@@ -29,6 +28,7 @@ type JobRequestDetailsDialogProps = {
   onApprove: () => void;
   onJustify: () => void;
   onEdit?: () => void;
+  isApproving?: boolean;
 };
 
 type EmployeeCardProps = {
@@ -39,7 +39,7 @@ type EmployeeCardProps = {
 };
 
 type BulletListProps = {
-  items: string[];
+  items?: string[] | null;
 };
 
 type InfoBlockProps = {
@@ -48,8 +48,8 @@ type InfoBlockProps = {
   valueBadge?: boolean;
 };
 
-function formatRichText(value: string) {
-  const trimmedValue = value.trim();
+function formatRichText(value?: string | null) {
+  const trimmedValue = value?.trim() ?? '';
   if (!trimmedValue) return '';
   if (/<[a-z][\s\S]*>/i.test(trimmedValue)) return trimmedValue;
 
@@ -62,21 +62,25 @@ function formatRichText(value: string) {
 function departmentLabel(department: JobRequestDepartment) {
   if (department === 'technical') return 'TECHNICAL DEPT.';
   if (department === 'creative') return 'CREATIVE DEPT.';
-  return 'DIGITAL MARKETING DEPT.';
+  if (department === 'digital_marketing') return 'DIGITAL MARKETING DEPT.';
+  return 'DEPARTMENT';
 }
 
 function employmentTypeLabel(
   value: FullJobRequest['jobDetailsForm']['employmentType'],
 ) {
-  if (value === 'full_time') return 'Full-time';
-  if (value === 'part_time') return 'Part-time';
-  if (value === 'contract') return 'Contract';
+  const normalized = value.toLowerCase();
+  if (normalized === 'full_time') return 'Full-time';
+  if (normalized === 'part_time') return 'Part-time';
+  if (normalized === 'contract') return 'Contract';
+  if (normalized === 'temporary') return 'Temporary';
   return 'Intern';
 }
 
 function urgencyLabel(value: FullJobRequest['requestForm']['urgency']) {
-  if (value === 'high') return 'High';
-  if (value === 'medium') return 'Medium';
+  const normalized = value.toLowerCase();
+  if (normalized === 'high') return 'High';
+  if (normalized === 'medium') return 'Medium';
   return 'Low';
 }
 
@@ -138,7 +142,7 @@ function EmployeeCard({
 }
 
 function BulletList({ items }: BulletListProps) {
-  if (items.length === 0) {
+  if (!items || items.length === 0) {
     return <p className="text-sm text-[#666]">No details provided.</p>;
   }
 
@@ -182,64 +186,58 @@ export function JobRequestDetailsDialog({
   onApprove,
   onJustify,
   onEdit,
+  isApproving = false,
 }: JobRequestDetailsDialogProps) {
-  const [isCommitteeOpen, setIsCommitteeOpen] = useState(true);
-  const [isRevisionsOpen, setIsRevisionsOpen] = useState(true);
-  const [isApprovedOpen, setIsApprovedOpen] = useState(true);
   const dialogVariant = variant ?? 'active';
   const ownRequest = request
-    ? request.requestForm.requestedBy.trim().toLowerCase() ===
+    ? (request.requestForm.requestedBy ?? '').trim().toLowerCase() ===
       currentUserName.trim().toLowerCase()
     : false;
 
-  const hiringCommittee = request
-    ? [
-        {
-          name: request.requestForm.requestedBy,
-          role: formatValue(request.requestForm.position),
-          department: departmentLabel(
-            request.requestForm.department as JobRequestDepartment,
-          ),
-        },
-      ]
-    : [];
+  const [isCommitteeOpen, setIsCommitteeOpen] = useState(true);
+  const [isApprovedOpen, setIsApprovedOpen] = useState(true);
 
-  const revisionSources = request
-    ? (
-        Object.entries(request.progress) as [
-          string,
-          { status: ApprovalProgressState },
-        ][]
-      )
-        .filter(
-          ([, step]) =>
-            step.status === 'requested_review' || step.status === 'rejected',
-        )
-        .map(([key]) => ({
-          name: `${key.toUpperCase()} Reviewer`,
-          role: 'Review Team',
-          department: departmentLabel(
+  const hiringCommittee = [
+    {
+      name: request?.requestForm.requestedBy ?? 'Request Owner',
+      role: request ? formatValue(request.requestForm.position) : 'Hiring Lead',
+      department: request
+        ? departmentLabel(
             request.requestForm.department as JobRequestDepartment,
-          ),
-        }))
-    : [];
+          )
+        : 'DEPARTMENT',
+    },
+    {
+      name: 'HR Partner',
+      role: 'HR Business Partner',
+      department: request
+        ? departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          )
+        : 'DEPARTMENT',
+    },
+  ];
 
-  const approvedBy = request
-    ? (
-        Object.entries(request.progress) as [
-          string,
-          { status: ApprovalProgressState },
-        ][]
-      )
-        .filter(([, step]) => step.status === 'approved')
-        .map(([key]) => ({
-          name: `${key.toUpperCase()} Approver`,
-          role: 'Approval Team',
-          department: departmentLabel(
+  const approvedBy = [
+    {
+      name: 'GM Approver',
+      role: 'General Manager',
+      department: request
+        ? departmentLabel(
             request.requestForm.department as JobRequestDepartment,
-          ),
-        }))
-    : [];
+          )
+        : 'DEPARTMENT',
+    },
+    {
+      name: 'Finance Approver',
+      role: 'Finance Lead',
+      department: request
+        ? departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          )
+        : 'DEPARTMENT',
+    },
+  ];
 
   return (
     <Dialog open={request !== null} onOpenChange={onOpenChange}>
@@ -251,7 +249,8 @@ export function JobRequestDetailsDialog({
                 <div className="min-w-0 flex-1 space-y-4">
                   <div className="flex flex-wrap items-center gap-4">
                     <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-                      {request.jobDetailsForm.jobTitle}
+                      {request.requestForm.jobTitle ||
+                        request.jobDetailsForm.title}
                     </DialogTitle>
                     <Badge
                       variant="outline"
@@ -327,7 +326,7 @@ export function JobRequestDetailsDialog({
                   <div className="space-y-2">
                     <p className="text-[12px] text-[#666]">Requested By</p>
                     <EmployeeCard
-                      name={request.requestForm.requestedBy}
+                      name={request.requestForm.requestedBy ?? 'Request Owner'}
                       role={formatValue(request.requestForm.position)}
                       department={departmentLabel(
                         request.requestForm.department as JobRequestDepartment,
@@ -348,7 +347,7 @@ export function JobRequestDetailsDialog({
                       <span
                         dangerouslySetInnerHTML={{
                           __html: formatRichText(
-                            request.jobDetailsForm.jobSummary,
+                            request.jobDetailsForm.description,
                           ),
                         }}
                       />
@@ -358,16 +357,35 @@ export function JobRequestDetailsDialog({
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
                       Requirements
                     </p>
-                    <BulletList items={request.jobDetailsForm.requirements} />
+                    <BulletList
+                      items={(request.jobDetailsForm.requiredSkills ?? '')
+                        .split('\n')
+                        .map((item) => item.trim())
+                        .filter(Boolean)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Preferred Skills
+                    </p>
+                    <BulletList
+                      items={(request.jobDetailsForm.preferredSkills ?? '')
+                        .split('\n')
+                        .map((item) => item.trim())
+                        .filter(Boolean)}
+                    />
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
-                      Qualifications
+                      Responsibilities
                     </p>
                     <BulletList
-                      items={request.jobDetailsForm.keyResponsibilities}
+                      items={(request.jobDetailsForm.responsibilities ?? '')
+                        .split('\n')
+                        .map((item) => item.trim())
+                        .filter(Boolean)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -377,11 +395,6 @@ export function JobRequestDetailsDialog({
                     <p className="text-sm leading-5 text-[#666]">
                       {request.requestForm.businessJustification}
                     </p>
-                    {request.jobDetailsForm.whyJoinUs ? (
-                      <p className="text-sm leading-5 text-[#666]">
-                        {request.jobDetailsForm.whyJoinUs}
-                      </p>
-                    ) : null}
                   </div>
                 </div>
               </section>
@@ -413,79 +426,36 @@ export function JobRequestDetailsDialog({
                     </div>
                   ) : null}
                 </div>
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <button
-                      type="button"
-                      className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
-                      onClick={() => setIsRevisionsOpen((prev) => !prev)}
-                    >
-                      <p className="text-sm font-semibold tracking-[-0.4px] text-black">
-                        Revisions From
-                      </p>
-                      <ChevronUp
-                        className={`h-4 w-4 text-[#1e66f7] ${isRevisionsOpen ? '' : 'rotate-180'}`}
-                      />
-                    </button>
-                    {isRevisionsOpen ? (
-                      revisionSources.length > 0 ? (
-                        <div className="space-y-3">
-                          {revisionSources.map((member) => (
-                            <div key={member.name} className="space-y-1">
-                              <EmployeeCard
-                                name={member.name}
-                                role={member.role}
-                                department={member.department}
-                              />
-                              <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
-                                <Clock className="h-3.5 w-3.5 text-[#1e66f7]" />
-                                <span>02:33 PM · Dec 30, 2025</span>
-                              </div>
-                            </div>
-                          ))}
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
+                    onClick={() => setIsApprovedOpen((prev) => !prev)}
+                  >
+                    <p className="text-sm font-semibold tracking-[-0.4px] text-black">
+                      Approved By
+                    </p>
+                    <ChevronUp
+                      className={`h-4 w-4 text-[#1e66f7] ${isApprovedOpen ? '' : 'rotate-180'}`}
+                    />
+                  </button>
+                  {isApprovedOpen ? (
+                    <div className="space-y-3">
+                      {approvedBy.map((member) => (
+                        <div key={member.name} className="space-y-1">
+                          <EmployeeCard
+                            name={member.name}
+                            role={member.role}
+                            department={member.department}
+                          />
+                          <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
+                            <Clock className="h-3.5 w-3.5 text-[#1e66f7]" />
+                            <span>02:33 PM · Dec 30, 2025</span>
+                          </div>
                         </div>
-                      ) : (
-                        <p className="text-sm text-[#666]">
-                          No revisions requested.
-                        </p>
-                      )
-                    ) : null}
-                  </div>
-                  <div className="space-y-4">
-                    <button
-                      type="button"
-                      className="flex w-full cursor-pointer items-center justify-between rounded-[8px] bg-[#e9f0fe] px-3 py-2"
-                      onClick={() => setIsApprovedOpen((prev) => !prev)}
-                    >
-                      <p className="text-sm font-semibold tracking-[-0.4px] text-black">
-                        Approved By
-                      </p>
-                      <ChevronUp
-                        className={`h-4 w-4 text-[#1e66f7] ${isApprovedOpen ? '' : 'rotate-180'}`}
-                      />
-                    </button>
-                    {isApprovedOpen ? (
-                      approvedBy.length > 0 ? (
-                        <div className="space-y-3">
-                          {approvedBy.map((member) => (
-                            <div key={member.name} className="space-y-1">
-                              <EmployeeCard
-                                name={member.name}
-                                role={member.role}
-                                department={member.department}
-                              />
-                              <div className="flex items-center gap-2 pl-11 text-[12px] text-[#666]">
-                                <Clock className="h-3.5 w-3.5 text-[#1e66f7]" />
-                                <span>02:33 PM · Dec 30, 2025</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm text-[#666]">No approvals yet.</p>
-                      )
-                    ) : null}
-                  </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </section>
             </div>
@@ -503,8 +473,16 @@ export function JobRequestDetailsDialog({
                       type="button"
                       className="h-9 w-full rounded-[6px] bg-[#1e66f7] text-sm text-white hover:bg-[#1b5ce0]"
                       onClick={onApprove}
+                      disabled={isApproving}
                     >
-                      Approve
+                      {isApproving ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Approving...
+                        </>
+                      ) : (
+                        'Approve'
+                      )}
                     </Button>
                     <Button
                       type="button"

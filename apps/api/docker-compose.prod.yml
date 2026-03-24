@@ -34,23 +34,22 @@ services:
     env_file:
       - .env.production
     environment:
-      KC_DB: postgres
+      KC_DB: ${KC_DB:-postgres}
       KC_DB_URL: ${KEYCLOAK_DB_URL}
       KC_DB_USERNAME: ${KEYCLOAK_DB_USERNAME}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
-      KC_HEALTH_ENABLED: 'true'
-      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME:-${KEYCLOAK_ADMIN:-admin}}
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD:-${KEYCLOAK_ADMIN_PASSWORD:-admin}}
-      KC_FRONTEND_URL: ${KEYCLOAK_FRONTEND_URL:-http://localhost:8080}
-      KC_HOSTNAME_URL: ${KEYCLOAK_HOSTNAME_URL:-http://localhost:8080}
-      KC_HOSTNAME_ADMIN_URL: ${KEYCLOAK_HOSTNAME_ADMIN_URL:-http://localhost:8080}
-      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME:-localhost}
-      KC_HTTPS_ENABLED: ${KEYCLOAK_HTTPS_ENABLED:-false}
+      KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED:-true}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      # Optional hostname overrides — add KC_HOSTNAME_URL, KC_HOSTNAME_ADMIN_URL,
+      # KC_FRONTEND_URL directly to .env.production when deploying behind a
+      # reverse proxy with a real domain. Omitting them here prevents Keycloak
+      # from receiving empty-string values that cause startup validation errors.
     ports:
-      - '127.0.0.1:${KEYCLOAK_PORT:-8080}:8080'
+      - '127.0.0.1:${KEYCLOAK_PORT:-8180}:8080'
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+      - ./keycloak/import:/opt/keycloak/data/import:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -58,12 +57,12 @@ services:
       test:
         [
           'CMD-SHELL',
-          'wget -q -O /dev/null http://127.0.0.1:8080/realms/${KEYCLOAK_HEALTH_REALM:-master} || exit 1',
+          "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000 2>/dev/null && exec 3>&-'",
         ]
       interval: 15s
       timeout: 10s
-      retries: 8
-      start_period: 90s
+      retries: 10
+      start_period: 120s
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -86,16 +85,18 @@ services:
         condition: service_healthy
       mailhog:
         condition: service_started
+      keycloak:
+        condition: service_healthy
     healthcheck:
       test:
         [
           'CMD-SHELL',
-          'wget -q -O /dev/null http://127.0.0.1:5000/${API_HEALTH_PATH:-api/v1/health} || exit 1',
+          'wget -q -O /dev/null "http://127.0.0.1:$${PORT:-5000}/$${API_PREFIX:-api/v1}/health" || exit 1',
         ]
       interval: ${HEALTH_CHECK_INTERVAL:-15s}
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
       retries: ${HEALTH_CHECK_RETRIES:-8}
-      start_period: 40s
+      start_period: 120s
     logging:
       driver: 'json-file'
       options:

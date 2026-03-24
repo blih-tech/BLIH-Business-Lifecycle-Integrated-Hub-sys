@@ -1,17 +1,19 @@
-import { getDashboardPath } from "@/shared/auth/role-routing";
-import { getSession } from "@/shared/auth/session";
-import { redirect } from "next/navigation";
+import { getDashboardPath } from '@/shared/auth/role-routing';
+import { getSession } from '@/shared/auth/session';
+import { redirect } from 'next/navigation';
+
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
 export default async function DashboardIndexPage() {
-  const session = await getSession();
-  if (!session.authenticated) {
-    redirect("/auth/signin");
+  if (DEMO_MODE) {
+    redirect('/dashboard/hr');
   }
 
+  const session = await getSession();
   const dashboardPath = getDashboardPath(session.roles);
   if (dashboardPath) {
     redirect(dashboardPath);
   }
 
-  redirect("/auth/signin?error=role_missing");
+  redirect('/no-access');
 }
