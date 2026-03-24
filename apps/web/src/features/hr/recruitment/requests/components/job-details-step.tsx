@@ -90,14 +90,38 @@ const salaryModeOptions = [
 }>;
 
 const hiringManagerOptions = [
-  { value: 'h1a2b3c4d-e5f6-7890-abcd-ef1234567890', label: 'John Smith - Engineering' },
-  { value: 'i2b3c4d5-e6f7-8901-bcde-f23456789012', label: 'Sarah Johnson - Product' },
-  { value: 'j3c4d5e6-f7a8-9012-cdef-345678901234', label: 'Mike Williams - Design' },
-  { value: 'k4d5e6f7-a8b9-0123-defg-456789012345', label: 'Emily Brown - Marketing' },
-  { value: 'l5e6f7a8-b9c0-1234-efgh-567890123456', label: 'David Lee - Operations' },
-  { value: 'm6f7a8b9-c0d1-2345-fghi-678901234567', label: 'Lisa Chen - Finance' },
-  { value: 'n7a8b9c0-d1e2-3456-ghij-789012345678', label: 'Robert Taylor - HR' },
-  { value: 'o8b9c0d1-e2f3-4567-hijk-890123456789', label: 'Amanda White - Sales' },
+  {
+    value: 'h1a2b3c4d-e5f6-7890-abcd-ef1234567890',
+    label: 'John Smith - Engineering',
+  },
+  {
+    value: 'i2b3c4d5-e6f7-8901-bcde-f23456789012',
+    label: 'Sarah Johnson - Product',
+  },
+  {
+    value: 'j3c4d5e6-f7a8-9012-cdef-345678901234',
+    label: 'Mike Williams - Design',
+  },
+  {
+    value: 'k4d5e6f7-a8b9-0123-defg-456789012345',
+    label: 'Emily Brown - Marketing',
+  },
+  {
+    value: 'l5e6f7a8-b9c0-1234-efgh-567890123456',
+    label: 'David Lee - Operations',
+  },
+  {
+    value: 'm6f7a8b9-c0d1-2345-fghi-678901234567',
+    label: 'Lisa Chen - Finance',
+  },
+  {
+    value: 'n7a8b9c0-d1e2-3456-ghij-789012345678',
+    label: 'Robert Taylor - HR',
+  },
+  {
+    value: 'o8b9c0d1-e2f3-4567-hijk-890123456789',
+    label: 'Amanda White - Sales',
+  },
 ] as const;
 
 function optionLabel(
@@ -214,7 +238,10 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
   const preferredSkillsPreview = listPreview(preferredSkills);
   const benefitsPreview = listPreview(benefits);
   const toolsPreview = listPreview(tools);
-  const hasStructuredSalary = salaryMode === 'FIXED' || salaryMode === 'NEGOTIABLE' || salaryMode === 'COMPETITIVE';
+  const hasStructuredSalary =
+    salaryMode === 'FIXED' ||
+    salaryMode === 'NEGOTIABLE' ||
+    salaryMode === 'COMPETITIVE';
 
   return (
     <div className="space-y-4 p-4">
@@ -675,7 +702,9 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="ui-meta text-muted-foreground">
-                          {salaryMode === 'FIXED' ? 'Salary Amount' : 'Salary From'}
+                          {salaryMode === 'FIXED'
+                            ? 'Salary Amount'
+                            : 'Salary From'}
                         </FormLabel>
                         <FormControl>
                           <Input inputMode="numeric" {...field} />
@@ -707,11 +736,18 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                     control={form.control}
                     name="currency"
                     render={({ field }) => (
-                      <FormItem className={salaryMode === 'COMPETITIVE' ? 'md:col-span-2' : ''}>
+                      <FormItem
+                        className={
+                          salaryMode === 'COMPETITIVE' ? 'md:col-span-2' : ''
+                        }
+                      >
                         <FormLabel className="ui-meta text-muted-foreground">
                           Salary Currency
                         </FormLabel>
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <FormControl>
                             <SelectTrigger className="w-full bg-background">
                               <SelectValue placeholder="Select currency" />
@@ -719,7 +755,10 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
                           </FormControl>
                           <SelectContent>
                             {salaryCurrencyOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
                                 {option.label}
                               </SelectItem>
                             ))}
@@ -763,10 +802,7 @@ export function JobDetailsStep({ form }: JobDetailsStepProps) {
               </div>
 
               <div className="mt-3.5">
-                <SummaryItem
-                  label="Openings"
-                  value={openings || '1'}
-                />
+                <SummaryItem label="Openings" value={openings || '1'} />
                 <SummaryItem
                   label="Hiring manager"
                   value={idToLabel(hiringManagerId, hiringManagerOptions)}

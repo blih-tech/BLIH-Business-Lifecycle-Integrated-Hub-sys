@@ -11,7 +11,12 @@ export const EmploymentType = {
   INTERN: 'INTERN',
   TEMPORARY: 'TEMPORARY',
 } as const;
-export type EmploymentType = 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERN' | 'TEMPORARY';
+export type EmploymentType =
+  | 'FULL_TIME'
+  | 'PART_TIME'
+  | 'CONTRACT'
+  | 'INTERN'
+  | 'TEMPORARY';
 
 export const WorkLocationType = {
   ON_SITE: 'ON_SITE',
@@ -42,7 +47,13 @@ export const ExperienceLevel = {
   LEAD: 'LEAD',
   PRINCIPAL: 'PRINCIPAL',
 } as const;
-export type ExperienceLevel = 'ENTRY' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'PRINCIPAL';
+export type ExperienceLevel =
+  | 'ENTRY'
+  | 'JUNIOR'
+  | 'MID'
+  | 'SENIOR'
+  | 'LEAD'
+  | 'PRINCIPAL';
 
 export const JobContractType = {
   PERMANENT: 'PERMANENT',
@@ -50,7 +61,11 @@ export const JobContractType = {
   INTERNSHIP: 'INTERNSHIP',
   FREELANCE: 'FREELANCE',
 } as const;
-export type JobContractType = 'PERMANENT' | 'CONTRACT' | 'INTERNSHIP' | 'FREELANCE';
+export type JobContractType =
+  | 'PERMANENT'
+  | 'CONTRACT'
+  | 'INTERNSHIP'
+  | 'FREELANCE';
 
 export const JobSalaryMode = {
   NOT_SPECIFIED: 'NOT_SPECIFIED',
@@ -58,7 +73,11 @@ export const JobSalaryMode = {
   NEGOTIABLE: 'NEGOTIABLE',
   COMPETITIVE: 'COMPETITIVE',
 } as const;
-export type JobSalaryMode = 'NOT_SPECIFIED' | 'FIXED' | 'NEGOTIABLE' | 'COMPETITIVE';
+export type JobSalaryMode =
+  | 'NOT_SPECIFIED'
+  | 'FIXED'
+  | 'NEGOTIABLE'
+  | 'COMPETITIVE';
 
 export const JobApplicationFieldType = {
   TEXT: 'TEXT',
@@ -69,7 +88,14 @@ export const JobApplicationFieldType = {
   DATE: 'DATE',
   CHECKBOX: 'CHECKBOX',
 } as const;
-export type JobApplicationFieldType = 'TEXT' | 'TEXTAREA' | 'NUMBER' | 'SELECT' | 'FILE' | 'DATE' | 'CHECKBOX';
+export type JobApplicationFieldType =
+  | 'TEXT'
+  | 'TEXTAREA'
+  | 'NUMBER'
+  | 'SELECT'
+  | 'FILE'
+  | 'DATE'
+  | 'CHECKBOX';
 
 export const JobApplicantOptionalFieldKey = {
   FIRST_NAME: 'FIRST_NAME',
@@ -85,7 +111,19 @@ export const JobApplicantOptionalFieldKey = {
   EXPECTED_SALARY: 'EXPECTED_SALARY',
   COVER_LETTER: 'COVER_LETTER',
 } as const;
-export type JobApplicantOptionalFieldKey = 'FIRST_NAME' | 'LAST_NAME' | 'EMAIL' | 'PHONE' | 'RESUME_URL' | 'LINKEDIN_URL' | 'PORTFOLIO_URL' | 'GITHUB_URL' | 'CURRENT_COMPANY' | 'YEARS_OF_EXPERIENCE' | 'EXPECTED_SALARY' | 'COVER_LETTER';
+export type JobApplicantOptionalFieldKey =
+  | 'FIRST_NAME'
+  | 'LAST_NAME'
+  | 'EMAIL'
+  | 'PHONE'
+  | 'RESUME_URL'
+  | 'LINKEDIN_URL'
+  | 'PORTFOLIO_URL'
+  | 'GITHUB_URL'
+  | 'CURRENT_COMPANY'
+  | 'YEARS_OF_EXPERIENCE'
+  | 'EXPECTED_SALARY'
+  | 'COVER_LETTER';
 
 export const JobApplicationFormSectionKey = {
   EDUCATION: 'EDUCATION',
@@ -101,14 +139,23 @@ export const JobWorkflowStatus = {
   CLOSED: 'CLOSED',
   REJECTED: 'REJECTED',
 } as const;
-export type JobWorkflowStatus = 'DRAFT' | 'PENDING_FOR_APPROVAL' | 'READY_TO_POST' | 'PUBLISHED' | 'CLOSED' | 'REJECTED';
+export type JobWorkflowStatus =
+  | 'DRAFT'
+  | 'PENDING_FOR_APPROVAL'
+  | 'READY_TO_POST'
+  | 'PUBLISHED'
+  | 'CLOSED'
+  | 'REJECTED';
 
 export const JobApprovalStatus = {
   PENDING_FOR_APPROVAL: 'PENDING_FOR_APPROVAL',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
 } as const;
-export type JobApprovalStatus = 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
+export type JobApprovalStatus =
+  | 'PENDING_FOR_APPROVAL'
+  | 'APPROVED'
+  | 'REJECTED';
 
 export const JobApprovalDepartment = {
   FINANCE: 'FINANCE',

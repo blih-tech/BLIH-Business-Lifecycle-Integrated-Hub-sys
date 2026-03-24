@@ -123,7 +123,8 @@ const jobs: JobResponseDto[] = [
       position: 'marketing_manager',
       requestType: 'NEW',
       replaceForUserId: null,
-      businessJustification: 'Scale regional demand generation and brand performance.',
+      businessJustification:
+        'Scale regional demand generation and brand performance.',
       employmentType: 'FULL_TIME',
       workMode: 'ON_SITE',
       urgency: 'HIGH',
@@ -151,12 +152,16 @@ const jobs: JobResponseDto[] = [
       description: {
         type: 'doc',
         version: 1,
-        content: [{ type: 'paragraph', text: 'Lead regional marketing efforts.' }],
+        content: [
+          { type: 'paragraph', text: 'Lead regional marketing efforts.' },
+        ],
       },
       summary: {
         type: 'doc',
         version: 1,
-        content: [{ type: 'paragraph', text: 'Own demand gen and brand programs.' }],
+        content: [
+          { type: 'paragraph', text: 'Own demand gen and brand programs.' },
+        ],
       },
       experienceLevel: 'SENIOR',
       contractType: 'PERMANENT',
@@ -229,12 +234,16 @@ const jobs: JobResponseDto[] = [
       description: {
         type: 'doc',
         version: 1,
-        content: [{ type: 'paragraph', text: 'Own backend services and delivery.' }],
+        content: [
+          { type: 'paragraph', text: 'Own backend services and delivery.' },
+        ],
       },
       summary: {
         type: 'doc',
         version: 1,
-        content: [{ type: 'paragraph', text: 'Scale critical platform systems.' }],
+        content: [
+          { type: 'paragraph', text: 'Scale critical platform systems.' },
+        ],
       },
       experienceLevel: 'SENIOR',
       contractType: 'PERMANENT',
@@ -307,12 +316,16 @@ const jobs: JobResponseDto[] = [
       description: {
         type: 'doc',
         version: 1,
-        content: [{ type: 'paragraph', text: 'Lead roadmap planning and execution.' }],
+        content: [
+          { type: 'paragraph', text: 'Lead roadmap planning and execution.' },
+        ],
       },
       summary: {
         type: 'doc',
         version: 1,
-        content: [{ type: 'paragraph', text: 'Drive cross-functional delivery.' }],
+        content: [
+          { type: 'paragraph', text: 'Drive cross-functional delivery.' },
+        ],
       },
       experienceLevel: 'MID',
       contractType: 'PERMANENT',

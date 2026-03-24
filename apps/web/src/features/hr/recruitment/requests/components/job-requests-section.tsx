@@ -1,16 +1,19 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { CreateRequestDialog } from "@/features/hr/recruitment/requests/components/create-request-dialog";
-import { JobRequestDetailsDialog } from "@/features/hr/recruitment/requests/components/job-request-details-dialog";
-import { JobRequestCard } from "@/features/hr/recruitment/requests/components/job-request-card";
-import { JobRequestJustifyDialog } from "@/features/hr/recruitment/requests/components/job-request-justify-dialog";
-import { JobRequestCardSkeleton } from "@/features/hr/recruitment/requests/components/job-request-card-skeleton";
-import type { FullJobRequest, JobRequestPriority } from "@/features/hr/recruitment/requests/types";
-import { delay } from "@/shared/lib/demo-utils";
-import { toast } from "sonner";
+import { CreateRequestDialog } from '@/features/hr/recruitment/requests/components/create-request-dialog';
+import { JobRequestDetailsDialog } from '@/features/hr/recruitment/requests/components/job-request-details-dialog';
+import { JobRequestCard } from '@/features/hr/recruitment/requests/components/job-request-card';
+import { JobRequestJustifyDialog } from '@/features/hr/recruitment/requests/components/job-request-justify-dialog';
+import { JobRequestCardSkeleton } from '@/features/hr/recruitment/requests/components/job-request-card-skeleton';
+import type {
+  FullJobRequest,
+  JobRequestPriority,
+} from '@/features/hr/recruitment/requests/types';
+import { delay } from '@/shared/lib/demo-utils';
+import { toast } from 'sonner';
 
 type JobRequestsSectionProps = {
   items: FullJobRequest[];
@@ -18,46 +21,74 @@ type JobRequestsSectionProps = {
   isLoading?: boolean;
 };
 
-export function JobRequestsSection({ items, currentUserName, isLoading = false }: JobRequestsSectionProps) {
+export function JobRequestsSection({
+  items,
+  currentUserName,
+  isLoading = false,
+}: JobRequestsSectionProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedRequestIndex, setSelectedRequestIndex] = useState<number | null>(null);
-  const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(null);
-  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
-  const [submittingJustifyAction, setSubmittingJustifyAction] = useState<"review" | "reject" | null>(null);
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState<
+    number | null
+  >(null);
+  const [justifyRequestIndex, setJustifyRequestIndex] = useState<number | null>(
+    null,
+  );
+  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(
+    null,
+  );
+  const [submittingJustifyAction, setSubmittingJustifyAction] = useState<
+    'review' | 'reject' | null
+  >(null);
   const [editRequest, setEditRequest] = useState<FullJobRequest | null>(null);
-  const isCreateRequestDialogOpen = searchParams.get("create") === "new-request";
-  const requestPriorityOrder: JobRequestPriority[] = ["high", "medium", "low"];
+  const isCreateRequestDialogOpen =
+    searchParams.get('create') === 'new-request';
+  const requestPriorityOrder: JobRequestPriority[] = ['high', 'medium', 'low'];
 
   const filteredItems = useMemo(() => items, [items]);
   const filteredRequestEntries = useMemo(
     () =>
       filteredItems.map((request) => ({
         request,
-        requestId: `REQ-${String(items.indexOf(request) + 1).padStart(3, "0")}`,
+        requestId: `REQ-${String(items.indexOf(request) + 1).padStart(3, '0')}`,
       })),
     [filteredItems, items],
   );
 
   const selectedRequest = useMemo(
-    () => (selectedRequestIndex === null ? null : filteredRequestEntries[selectedRequestIndex]?.request ?? null),
+    () =>
+      selectedRequestIndex === null
+        ? null
+        : (filteredRequestEntries[selectedRequestIndex]?.request ?? null),
     [filteredRequestEntries, selectedRequestIndex],
   );
   const justifyRequest = useMemo(
-    () => (justifyRequestIndex === null ? null : filteredRequestEntries[justifyRequestIndex]?.request ?? null),
+    () =>
+      justifyRequestIndex === null
+        ? null
+        : (filteredRequestEntries[justifyRequestIndex]?.request ?? null),
     [filteredRequestEntries, justifyRequestIndex],
   );
   const justifyRequestId = useMemo(
-    () => (justifyRequestIndex === null ? null : filteredRequestEntries[justifyRequestIndex]?.requestId ?? null),
+    () =>
+      justifyRequestIndex === null
+        ? null
+        : (filteredRequestEntries[justifyRequestIndex]?.requestId ?? null),
     [filteredRequestEntries, justifyRequestIndex],
   );
 
   useEffect(() => {
-    if (selectedRequestIndex !== null && !filteredRequestEntries[selectedRequestIndex]) {
+    if (
+      selectedRequestIndex !== null &&
+      !filteredRequestEntries[selectedRequestIndex]
+    ) {
       setSelectedRequestIndex(null);
     }
-    if (justifyRequestIndex !== null && !filteredRequestEntries[justifyRequestIndex]) {
+    if (
+      justifyRequestIndex !== null &&
+      !filteredRequestEntries[justifyRequestIndex]
+    ) {
       setJustifyRequestIndex(null);
     }
   }, [filteredRequestEntries, justifyRequestIndex, selectedRequestIndex]);
@@ -65,7 +96,7 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
   function handleCreateRequestDialogOpenChange(isOpen: boolean) {
     if (isOpen) return;
     const nextParams = new URLSearchParams(searchParams.toString());
-    nextParams.delete("create");
+    nextParams.delete('create');
     const query = nextParams.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
   }
@@ -77,7 +108,7 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
 
   async function handleApprove() {
     if (!selectedRequest?.jobId) {
-      toast.error("Unable to approve this request.");
+      toast.error('Unable to approve this request.');
       return;
     }
 
@@ -89,11 +120,11 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       // });
 
       await delay(1200);
-      toast.success("Approval submitted");
+      toast.success('Approval submitted');
       setSelectedRequestIndex(null);
     } catch (error) {
-      console.error("Failed to approve job request:", error);
-      toast.error("Approval failed");
+      console.error('Failed to approve job request:', error);
+      toast.error('Approval failed');
     } finally {
       setApprovingRequestId(null);
     }
@@ -101,7 +132,7 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
 
   async function handleCardApprove(request: FullJobRequest) {
     if (!request.jobId) {
-      toast.error("Unable to approve this request.");
+      toast.error('Unable to approve this request.');
       return;
     }
 
@@ -113,19 +144,22 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       // });
 
       await delay(1200);
-      toast.success("Approval submitted");
+      toast.success('Approval submitted');
     } catch (error) {
-      console.error("Failed to approve job request:", error);
-      toast.error("Approval failed");
+      console.error('Failed to approve job request:', error);
+      toast.error('Approval failed');
     } finally {
       setApprovingRequestId(null);
     }
   }
 
-  async function handleJustify(action: "review" | "reject", justification: string) {
+  async function handleJustify(
+    action: 'review' | 'reject',
+    justification: string,
+  ) {
     const request = justifyRequest;
     if (!request?.jobId) {
-      toast.error("Unable to submit this request.");
+      toast.error('Unable to submit this request.');
       return;
     }
 
@@ -142,10 +176,12 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       // });
 
       await delay(1200);
-      toast.success(action === "review" ? "Revision requested" : "Request declined");
+      toast.success(
+        action === 'review' ? 'Revision requested' : 'Request declined',
+      );
     } catch (error) {
-      console.error("Failed to submit justification:", error);
-      toast.error("Request failed");
+      console.error('Failed to submit justification:', error);
+      toast.error('Request failed');
     } finally {
       setSubmittingJustifyAction(null);
     }
@@ -165,7 +201,10 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
             <JobRequestCard
               key={`${request.requestForm.jobTitle}-${index}`}
               item={request}
-              priority={requestPriorityOrder[index % requestPriorityOrder.length] ?? "low"}
+              priority={
+                requestPriorityOrder[index % requestPriorityOrder.length] ??
+                'low'
+              }
               onClick={() => setSelectedRequestIndex(index)}
               onJustifyClick={() => setJustifyRequestIndex(index)}
               onApproveClick={() => handleCardApprove(request)}
@@ -183,44 +222,44 @@ export function JobRequestsSection({ items, currentUserName, isLoading = false }
       )}
 
       {!isLoading ? (
-      <JobRequestDetailsDialog
-        request={selectedRequest}
-        currentUserName={currentUserName}
-        variant={selectedRequest?.status ?? "active"}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setSelectedRequestIndex(null);
-        }}
-        onApprove={handleApprove}
-        onJustify={() => {
-          setSelectedRequestIndex(null);
-          setJustifyRequestIndex(selectedRequestIndex);
-        }}
-        onEdit={() => {
-          const request = selectedRequest;
-          setSelectedRequestIndex(null);
-          if (request) setEditRequest(request);
-        }}
-        isApproving={approvingRequestId === selectedRequest?.jobId}
-      />
+        <JobRequestDetailsDialog
+          request={selectedRequest}
+          currentUserName={currentUserName}
+          variant={selectedRequest?.status ?? 'active'}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setSelectedRequestIndex(null);
+          }}
+          onApprove={handleApprove}
+          onJustify={() => {
+            setSelectedRequestIndex(null);
+            setJustifyRequestIndex(selectedRequestIndex);
+          }}
+          onEdit={() => {
+            const request = selectedRequest;
+            setSelectedRequestIndex(null);
+            if (request) setEditRequest(request);
+          }}
+          isApproving={approvingRequestId === selectedRequest?.jobId}
+        />
       ) : null}
 
       {!isLoading ? (
-      <JobRequestJustifyDialog
-        request={justifyRequest}
-        requestId={justifyRequestId}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setJustifyRequestIndex(null);
-        }}
-        onSubmit={handleJustify}
-        submittingAction={submittingJustifyAction}
-      />
+        <JobRequestJustifyDialog
+          request={justifyRequest}
+          requestId={justifyRequestId}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setJustifyRequestIndex(null);
+          }}
+          onSubmit={handleJustify}
+          submittingAction={submittingJustifyAction}
+        />
       ) : null}
 
       {!isLoading ? (
         <CreateRequestDialog
-        open={isCreateRequestDialogOpen}
-        onOpenChange={handleCreateRequestDialogOpenChange}
-        currentUserName={currentUserName}
+          open={isCreateRequestDialogOpen}
+          onOpenChange={handleCreateRequestDialogOpenChange}
+          currentUserName={currentUserName}
         />
       ) : null}
 

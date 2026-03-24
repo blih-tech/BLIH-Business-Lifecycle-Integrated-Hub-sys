@@ -7,7 +7,9 @@ import type {
 } from '@/types/recruitment';
 import type { ApprovalProgressState, FullJobRequest } from './types';
 
-const fallbackApproval: { status: ApprovalProgressState } = { status: 'pending' };
+const fallbackApproval: { status: ApprovalProgressState } = {
+  status: 'pending',
+};
 
 function normalizeLower(value?: string | null): string {
   if (!value) return '';
@@ -35,16 +37,16 @@ function extractRichTextText(value: unknown): string {
   return pieces.join(' ').trim();
 }
 
-function approvalToProgress(approval?: JobApprovalResponseDto): ApprovalProgressState {
+function approvalToProgress(
+  approval?: JobApprovalResponseDto,
+): ApprovalProgressState {
   if (!approval) return 'pending';
   if (approval.decision === 'APPROVED') return 'approved';
   if (approval.decision === 'REJECTED') return 'rejected';
   return 'pending';
 }
 
-function buildApplicationForm(
-  job: JobResponseDto,
-): ApplicationFormValues {
+function buildApplicationForm(job: JobResponseDto): ApplicationFormValues {
   const applicantFields =
     job.applicationForm?.applicantFields?.map((field) => ({
       key: field.key,
@@ -84,7 +86,8 @@ export function mapJobResponseToRequest(
 ): FullJobRequest {
   const requestForm: CreateRequestFormValues = {
     jobTitle: job.requestForm?.jobTitle ?? job.job.title ?? 'Untitled Job',
-    department: job.requestForm?.department ?? job.job.departmentId ?? 'unknown',
+    department:
+      job.requestForm?.department ?? job.job.departmentId ?? 'unknown',
     requestedBy: job.requestForm?.requestedBy ?? 'Unknown',
     position: job.job.title ?? job.requestForm?.position ?? '',
     requestType:
@@ -94,18 +97,22 @@ export function mapJobResponseToRequest(
     replaceFor: job.requestForm?.replaceForUserId ?? '',
     businessJustification: job.requestForm?.businessJustification ?? '',
     employmentType:
-      (normalizeUpper(job.requestForm?.employmentType) as CreateRequestFormValues['employmentType']) ||
-      'FULL_TIME',
+      (normalizeUpper(
+        job.requestForm?.employmentType,
+      ) as CreateRequestFormValues['employmentType']) || 'FULL_TIME',
     workMode:
-      (normalizeUpper(job.requestForm?.workMode) as CreateRequestFormValues['workMode']) ||
-      'ON_SITE',
+      (normalizeUpper(
+        job.requestForm?.workMode,
+      ) as CreateRequestFormValues['workMode']) || 'ON_SITE',
     urgency:
-      (normalizeUpper(job.requestForm?.urgency) as CreateRequestFormValues['urgency']) ||
-      'MEDIUM',
+      (normalizeUpper(
+        job.requestForm?.urgency,
+      ) as CreateRequestFormValues['urgency']) || 'MEDIUM',
     neededByDate: job.requestForm?.neededByDate ?? '',
     priority:
-      (normalizeUpper(job.requestForm?.priority) as CreateRequestFormValues['priority']) ||
-      'MEDIUM',
+      (normalizeUpper(
+        job.requestForm?.priority,
+      ) as CreateRequestFormValues['priority']) || 'MEDIUM',
   };
 
   const jobDetailsForm: JobDetailsFormValues = {
@@ -113,10 +120,13 @@ export function mapJobResponseToRequest(
     city: job.job.city ?? '',
     country: job.job.country ?? '',
     workLocationType:
-      (normalizeUpper(job.job.workLocationType) as JobDetailsFormValues['workLocationType']) ||
-      'ON_SITE',
+      (normalizeUpper(
+        job.job.workLocationType,
+      ) as JobDetailsFormValues['workLocationType']) || 'ON_SITE',
     employmentType:
-      (normalizeUpper(job.job.employmentType) as JobDetailsFormValues['employmentType']) ||
+      (normalizeUpper(
+        job.job.employmentType,
+      ) as JobDetailsFormValues['employmentType']) ||
       (requestForm.employmentType as JobDetailsFormValues['employmentType']) ||
       'FULL_TIME',
     description: extractRichTextText(job.job.description),
@@ -125,14 +135,17 @@ export function mapJobResponseToRequest(
     requiredSkills: (job.job.requiredSkills ?? []).join('\n'),
     preferredSkills: (job.job.preferredSkills ?? []).join('\n'),
     experienceLevel:
-      (normalizeUpper(job.job.experienceLevel) as JobDetailsFormValues['experienceLevel']) ||
-      'MID',
+      (normalizeUpper(
+        job.job.experienceLevel,
+      ) as JobDetailsFormValues['experienceLevel']) || 'MID',
     contractType:
-      (normalizeUpper(job.job.contractType) as JobDetailsFormValues['contractType']) ||
-      'PERMANENT',
+      (normalizeUpper(
+        job.job.contractType,
+      ) as JobDetailsFormValues['contractType']) || 'PERMANENT',
     salaryMode:
-      (normalizeUpper(job.job.salaryMode) as JobDetailsFormValues['salaryMode']) ||
-      'NOT_SPECIFIED',
+      (normalizeUpper(
+        job.job.salaryMode,
+      ) as JobDetailsFormValues['salaryMode']) || 'NOT_SPECIFIED',
     salaryMin: job.job.salaryMin ?? '',
     salaryMax: job.job.salaryMax ?? '',
     currency: job.job.currency ?? '',
@@ -146,20 +159,31 @@ export function mapJobResponseToRequest(
   const approvals = job.approvals ?? [];
   const gmApproval = approvals.find((item) => item.department === 'GM');
   const hrApproval = approvals.find((item) => item.department === 'HR');
-  const financeApproval = approvals.find((item) => item.department === 'FINANCE');
+  const financeApproval = approvals.find(
+    (item) => item.department === 'FINANCE',
+  );
 
   return {
     jobId: job.job.id,
     status,
     progress: {
       jm: gmApproval
-        ? { status: approvalToProgress(gmApproval), justification: gmApproval.comments ?? undefined }
+        ? {
+            status: approvalToProgress(gmApproval),
+            justification: gmApproval.comments ?? undefined,
+          }
         : fallbackApproval,
       hr: hrApproval
-        ? { status: approvalToProgress(hrApproval), justification: hrApproval.comments ?? undefined }
+        ? {
+            status: approvalToProgress(hrApproval),
+            justification: hrApproval.comments ?? undefined,
+          }
         : fallbackApproval,
       finance: financeApproval
-        ? { status: approvalToProgress(financeApproval), justification: financeApproval.comments ?? undefined }
+        ? {
+            status: approvalToProgress(financeApproval),
+            justification: financeApproval.comments ?? undefined,
+          }
         : fallbackApproval,
     },
     requestForm: {

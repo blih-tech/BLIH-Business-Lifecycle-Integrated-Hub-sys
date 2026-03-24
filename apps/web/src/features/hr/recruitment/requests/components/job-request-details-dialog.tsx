@@ -202,14 +202,18 @@ export function JobRequestDetailsDialog({
       name: request?.requestForm.requestedBy ?? 'Request Owner',
       role: request ? formatValue(request.requestForm.position) : 'Hiring Lead',
       department: request
-        ? departmentLabel(request.requestForm.department as JobRequestDepartment)
+        ? departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          )
         : 'DEPARTMENT',
     },
     {
       name: 'HR Partner',
       role: 'HR Business Partner',
       department: request
-        ? departmentLabel(request.requestForm.department as JobRequestDepartment)
+        ? departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          )
         : 'DEPARTMENT',
     },
   ];
@@ -219,14 +223,18 @@ export function JobRequestDetailsDialog({
       name: 'GM Approver',
       role: 'General Manager',
       department: request
-        ? departmentLabel(request.requestForm.department as JobRequestDepartment)
+        ? departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          )
         : 'DEPARTMENT',
     },
     {
       name: 'Finance Approver',
       role: 'Finance Lead',
       department: request
-        ? departmentLabel(request.requestForm.department as JobRequestDepartment)
+        ? departmentLabel(
+            request.requestForm.department as JobRequestDepartment,
+          )
         : 'DEPARTMENT',
     },
   ];
@@ -241,7 +249,8 @@ export function JobRequestDetailsDialog({
                 <div className="min-w-0 flex-1 space-y-4">
                   <div className="flex flex-wrap items-center gap-4">
                     <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-                      {request.requestForm.jobTitle || request.jobDetailsForm.title}
+                      {request.requestForm.jobTitle ||
+                        request.jobDetailsForm.title}
                     </DialogTitle>
                     <Badge
                       variant="outline"

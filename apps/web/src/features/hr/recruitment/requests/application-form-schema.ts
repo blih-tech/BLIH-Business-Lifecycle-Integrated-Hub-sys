@@ -1,26 +1,39 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const applicationFieldTypeValues = ["TEXT", "TEXTAREA", "NUMBER", "SELECT", "FILE", "DATE", "CHECKBOX"] as const;
+export const applicationFieldTypeValues = [
+  'TEXT',
+  'TEXTAREA',
+  'NUMBER',
+  'SELECT',
+  'FILE',
+  'DATE',
+  'CHECKBOX',
+] as const;
 export type ApplicationFieldType = (typeof applicationFieldTypeValues)[number];
 
 export const applicantOptionalFieldKeyValues = [
-  "FIRST_NAME",
-  "LAST_NAME",
-  "EMAIL",
-  "PHONE",
-  "RESUME_URL",
-  "LINKEDIN_URL",
-  "PORTFOLIO_URL",
-  "GITHUB_URL",
-  "CURRENT_COMPANY",
-  "YEARS_OF_EXPERIENCE",
-  "EXPECTED_SALARY",
-  "COVER_LETTER",
+  'FIRST_NAME',
+  'LAST_NAME',
+  'EMAIL',
+  'PHONE',
+  'RESUME_URL',
+  'LINKEDIN_URL',
+  'PORTFOLIO_URL',
+  'GITHUB_URL',
+  'CURRENT_COMPANY',
+  'YEARS_OF_EXPERIENCE',
+  'EXPECTED_SALARY',
+  'COVER_LETTER',
 ] as const;
-export type ApplicantOptionalFieldKey = (typeof applicantOptionalFieldKeyValues)[number];
+export type ApplicantOptionalFieldKey =
+  (typeof applicantOptionalFieldKeyValues)[number];
 
-export const applicationFormSectionKeyValues = ["EDUCATION", "EXPERIENCE"] as const;
-export type ApplicationFormSectionKey = (typeof applicationFormSectionKeyValues)[number];
+export const applicationFormSectionKeyValues = [
+  'EDUCATION',
+  'EXPERIENCE',
+] as const;
+export type ApplicationFormSectionKey =
+  (typeof applicationFormSectionKeyValues)[number];
 
 export const applicantFieldSchema = z.object({
   key: z.enum(applicantOptionalFieldKeyValues),
@@ -38,9 +51,9 @@ export const applicationFormSectionSchema = z.object({
 
 export const customApplicationFieldSchema = z.object({
   id: z.string(),
-  label: z.string().trim().min(1, "Field label is required"),
+  label: z.string().trim().min(1, 'Field label is required'),
   type: z.enum(applicationFieldTypeValues, {
-    error: () => "Field type is required",
+    error: () => 'Field type is required',
   }),
   required: z.boolean(),
   helpText: z.string().trim().optional(),
@@ -54,5 +67,7 @@ export const applicationFormSchema = z.object({
 });
 
 export type ApplicationFormValues = z.infer<typeof applicationFormSchema>;
-export type CustomApplicationField = z.infer<typeof customApplicationFieldSchema>;
+export type CustomApplicationField = z.infer<
+  typeof customApplicationFieldSchema
+>;
 export const PredefinedApplicationField = applicantFieldSchema;

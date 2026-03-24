@@ -39,24 +39,42 @@ type SummaryItemProps = {
 };
 
 const departmentOptions = [
-  { value: '1f31a301-dfb8-4071-aab1-ad6bc4891da7', label: 'Technical Department' },
-  { value: '2c42b412-eca9-5182-bbc2-ce7cd5902e51', label: 'Creative Department' },
-  { value: '3d53c523-fdb9-6293-ccd3-df8de6a3f62', label: 'Marketing Department' },
-  { value: '4e64d634-aeea-73a4-dde4-eg9ef7b4g73', label: 'Operations Department' },
+  {
+    value: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
+    label: 'Technical Department',
+  },
+  {
+    value: '2c42b412-eca9-5182-bbc2-ce7cd5902e51',
+    label: 'Creative Department',
+  },
+  {
+    value: '3d53c523-fdb9-6293-ccd3-df8de6a3f62',
+    label: 'Marketing Department',
+  },
+  {
+    value: '4e64d634-aeea-73a4-dde4-eg9ef7b4g73',
+    label: 'Operations Department',
+  },
   { value: '5f75e745-bffb-84b5-ee5f-fh0gf8c5h84', label: 'Finance Department' },
 ] as const;
 
 const positionOptions = [
   { value: '8b76752b-df18-45bc-af74-1ea9a0db2e40', label: 'Frontend Engineer' },
   { value: '9c87865c-eg29-56cd-bf85-2fb0b1ec3f51', label: 'Backend Engineer' },
-  { value: 'ad98976d-fh30-67de-cg96-3gc1c2fd4g62', label: 'Fullstack Engineer' },
+  {
+    value: 'ad98976d-fh30-67de-cg96-3gc1c2fd4g62',
+    label: 'Fullstack Engineer',
+  },
   { value: 'be09098e-gi41-78ef-dh07-4hd2d3ge5h73', label: 'QA Engineer' },
   { value: 'cf10109f-hj52-89fg-ei18-5ie3e4hf6i84', label: 'DevOps Engineer' },
   { value: 'dg21210g-ik63-90gh-fj29-6jf4f5ig7j95', label: 'UI/UX Designer' },
   { value: 'eh32311h-jl74-01hi-gk30-7kg5g6jh8k06', label: 'Product Designer' },
   { value: 'fi43412i-km85-12ij-hl41-8lh6h7ki9l17', label: 'Product Manager' },
   { value: 'gj54513j-ln96-23jk-im52-9mi7i8lj0m28', label: 'Data Analyst' },
-  { value: 'hk65614k-mp07-34kl-jn63-0nj8j9mk1n39', label: 'Marketing Specialist' },
+  {
+    value: 'hk65614k-mp07-34kl-jn63-0nj8j9mk1n39',
+    label: 'Marketing Specialist',
+  },
 ] as const;
 
 const requestTypeOptions = [
@@ -167,16 +185,16 @@ export function RequestFormStep({ form }: RequestFormStepProps) {
   ] = useWatch({
     control: form.control,
     name: [
-        'jobTitle',
-        'department',
-        'position',
-        'requestType',
-        'replaceFor',
-        'employmentType',
-        'workMode',
-        'urgency',
-        'neededByDate',
-        'priority',
+      'jobTitle',
+      'department',
+      'position',
+      'requestType',
+      'replaceFor',
+      'employmentType',
+      'workMode',
+      'urgency',
+      'neededByDate',
+      'priority',
     ],
   });
 
@@ -459,7 +477,9 @@ export function RequestFormStep({ form }: RequestFormStepProps) {
                     </FormLabel>
                     <Select
                       value={field.value}
-                      onValueChange={(val) => field.onChange(val as typeof field.value)}
+                      onValueChange={(val) =>
+                        field.onChange(val as typeof field.value)
+                      }
                     >
                       <FormControl>
                         <SelectTrigger className="w-full bg-background">
