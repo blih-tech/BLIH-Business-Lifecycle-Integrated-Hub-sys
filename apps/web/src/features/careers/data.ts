@@ -58,11 +58,9 @@ function departmentLabel(department: JobRequestDepartment) {
   return 'Digital Marketing';
 }
 
-function workModeLabel(
-  value: FullJobRequest['jobDetailsForm']['workLocationType'],
-) {
-  if (value === 'ON_SITE') return 'On-site';
-  if (value === 'HYBRID') return 'Hybrid';
+function workModeLabel(value: FullJobRequest['jobDetailsForm']['workMode']) {
+  if (value === 'on_site') return 'On-site';
+  if (value === 'hybrid') return 'Hybrid';
   return 'Remote';
 }
 
