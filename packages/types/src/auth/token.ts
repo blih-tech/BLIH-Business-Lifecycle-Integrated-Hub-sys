@@ -1,6 +1,6 @@
 export interface AuthLoginQueryDto {
   redirect?: string;
-  successRedirect?: string;
+  redirect_origin?: string;
   prompt?: string;
 }
 
@@ -11,6 +11,7 @@ export interface AuthCallbackQueryDto {
 
 export interface AuthLogoutQueryDto {
   redirect?: string;
+  redirect_origin?: string;
 }
 
 export interface ValidateTokenRequestDto {

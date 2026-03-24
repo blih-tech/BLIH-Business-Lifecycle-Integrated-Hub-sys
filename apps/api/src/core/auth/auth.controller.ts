@@ -97,17 +97,17 @@ export class AuthController {
     example: '/dashboard',
   })
   @ApiQuery({
-    name: 'successRedirect',
-    required: false,
-    description:
-      'Alias for redirect. Relative frontend URL path used after successful login.',
-    example: '/dashboard/hr',
-  })
-  @ApiQuery({
     name: 'prompt',
     required: false,
     description: 'Optional OIDC prompt forwarded to Keycloak.',
     example: 'login',
+  })
+  @ApiQuery({
+    name: 'redirect_origin',
+    required: false,
+    description:
+      'Frontend origin URL used for post-login redirects. Takes priority over headers.',
+    example: 'http://localhost:3000',
   })
   @ApiResponse({
     status: 302,
@@ -127,9 +127,9 @@ export class AuthController {
   async login(
     @Query('redirect')
     redirectPath: AuthLoginQueryDtoType['redirect'] | undefined,
-    @Query('successRedirect')
-    successRedirectPath: AuthLoginQueryDtoType['successRedirect'] | undefined,
     @Query('prompt') prompt: AuthLoginQueryDtoType['prompt'] | undefined,
+    @Query('redirect_origin')
+    redirectOrigin: AuthLoginQueryDtoType['redirect_origin'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
@@ -152,7 +152,7 @@ export class AuthController {
       nonceEnabled: env.AUTH_NONCE_ENABLED,
     });
     const safeRedirectPath = resolveSafeRedirectPath(
-      successRedirectPath ?? redirectPath,
+      redirectPath,
       env.AUTH_POST_LOGIN_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
@@ -178,7 +178,7 @@ export class AuthController {
 
     // Capture and store frontend origin
     const allowedOrigins = this.getAllowedOrigins();
-    const extractedOrigin = extractFrontendOrigin(request);
+    const extractedOrigin = extractFrontendOrigin(request, redirectOrigin);
     const validatedOrigin = validateFrontendOrigin(
       extractedOrigin,
       allowedOrigins,
@@ -219,6 +219,8 @@ export class AuthController {
       nonceEnabled: env.AUTH_NONCE_ENABLED,
       frontendOriginStored: Boolean(validatedOrigin),
       frontendOrigin: validatedOrigin || 'fallback',
+      redirectOriginUsed: Boolean(redirectOrigin),
+      redirectOrigin: redirectOrigin || 'not_provided',
     });
 
     response.redirect(302, authorizeUrl);
@@ -441,6 +443,13 @@ export class AuthController {
     description: 'Relative URL path used after logout completion.',
     example: '/login',
   })
+  @ApiQuery({
+    name: 'redirect_origin',
+    required: false,
+    description:
+      'Frontend origin URL used for post-logout redirects. Takes priority over headers.',
+    example: 'http://localhost:3000',
+  })
   @ApiResponse({
     status: 302,
     description:
@@ -459,6 +468,8 @@ export class AuthController {
   async logout(
     @Query('redirect')
     redirectPath: AuthLogoutQueryDtoType['redirect'] | undefined,
+    @Query('redirect_origin')
+    redirectOrigin: AuthLogoutQueryDtoType['redirect_origin'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
@@ -474,6 +485,8 @@ export class AuthController {
     const postLogoutRedirectUrl = this.buildFrontendRedirect(
       safePostLogoutPath,
       request,
+      undefined, // Don't use stored origin for logout, use current request
+      redirectOrigin,
     );
     const subject = await this.resolveSubjectFromAccessToken(accessToken);
 
@@ -498,6 +511,8 @@ export class AuthController {
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGOUT, {
       hasIdToken: Boolean(idToken),
       subject,
+      redirectOriginUsed: Boolean(redirectOrigin),
+      redirectOrigin: redirectOrigin || 'not_provided',
     });
 
     if (!idToken) {
@@ -986,19 +1001,32 @@ export class AuthController {
     path: string,
     request?: Request,
     storedFrontendOrigin?: string,
+    redirectOrigin?: string,
   ): string {
-    // Priority 1: Use stored frontend origin from cookie
+    // Priority 1: Use redirect_origin query parameter if provided
+    if (redirectOrigin) {
+      const allowedOrigins = this.getAllowedOrigins();
+      const validatedOrigin = validateFrontendOrigin(
+        redirectOrigin,
+        allowedOrigins,
+      );
+      if (validatedOrigin) {
+        return new URL(path, validatedOrigin).toString();
+      }
+    }
+
+    // Priority 2: Use stored frontend origin from cookie
     if (storedFrontendOrigin) {
       return new URL(path, storedFrontendOrigin).toString();
     }
 
-    // Priority 2: Use dynamic origin extraction from request (existing logic)
+    // Priority 3: Use dynamic origin extraction from request (existing logic)
     if (request) {
       const allowedOrigins = this.getAllowedOrigins();
       return buildDynamicFrontendRedirectUrl(request, path, allowedOrigins);
     }
 
-    // Priority 3: Fallback to configured base URL
+    // Priority 4: Fallback to configured base URL
     return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
   }
 
