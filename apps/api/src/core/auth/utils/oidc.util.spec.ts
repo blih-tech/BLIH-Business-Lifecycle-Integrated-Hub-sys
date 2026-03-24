@@ -200,6 +200,22 @@ describe('oidc.util', () => {
       expect(origin).toBe('https://app.example.com');
     });
 
+    it('prioritizes redirect_origin query parameter over headers', () => {
+      const request = {
+        headers: {
+          'x-frontend-origin': 'https://priority.example.com',
+          origin: 'https://origin.example.com',
+          referer: 'https://referer.example.com/dashboard',
+        },
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(
+        request,
+        'https://query.example.com',
+      );
+      expect(origin).toBe('https://query.example.com');
+    });
+
     it('prioritizes X-Frontend-Origin over other headers', () => {
       const request = {
         headers: {
