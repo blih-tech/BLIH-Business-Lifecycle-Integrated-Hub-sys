@@ -6,8 +6,6 @@ node_modules
 .pnp.js
 
 # Local env files
-.env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -43,3 +41,4 @@ yarn-error.log*
 
 # Demo HR Types (ignore from Git)
 apps/api/src/shared/demo-hr-types/
+config.bat
