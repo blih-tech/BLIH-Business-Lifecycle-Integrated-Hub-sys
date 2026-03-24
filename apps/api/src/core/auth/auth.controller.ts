@@ -64,6 +64,8 @@ import {
   parseAllowedRedirectPathPrefixes,
   readCookie,
   resolveSafeRedirectPath,
+  extractFrontendOrigin,
+  validateFrontendOrigin,
 } from './utils/oidc.util';
 
 @ApiTags('Auth')
@@ -174,6 +176,22 @@ export class AuthController {
       transientCookieMaxAge,
     );
 
+    // Capture and store frontend origin
+    const allowedOrigins = this.getAllowedOrigins();
+    const extractedOrigin = extractFrontendOrigin(request);
+    const validatedOrigin = validateFrontendOrigin(
+      extractedOrigin,
+      allowedOrigins,
+    );
+
+    if (validatedOrigin) {
+      response.cookie(
+        AUTH_COOKIE_NAMES.frontendOrigin,
+        validatedOrigin,
+        cookieOptions,
+      );
+    }
+
     response.cookie(AUTH_COOKIE_NAMES.state, authRequest.state, cookieOptions);
     if (authRequest.codeVerifier) {
       response.cookie(
@@ -199,6 +217,8 @@ export class AuthController {
       redirectPath: safeRedirectPath,
       pkceEnabled: env.AUTH_PKCE_ENABLED,
       nonceEnabled: env.AUTH_NONCE_ENABLED,
+      frontendOriginStored: Boolean(validatedOrigin),
+      frontendOrigin: validatedOrigin || 'fallback',
     });
 
     response.redirect(302, authorizeUrl);
@@ -250,6 +270,10 @@ export class AuthController {
     const storedState = readCookie(request, AUTH_COOKIE_NAMES.state);
     const codeVerifier = readCookie(request, AUTH_COOKIE_NAMES.verifier);
     const storedNonce = readCookie(request, AUTH_COOKIE_NAMES.nonce);
+    const storedFrontendOrigin = readCookie(
+      request,
+      AUTH_COOKIE_NAMES.frontendOrigin,
+    );
     const requestedRedirectPath = readCookie(
       request,
       AUTH_COOKIE_NAMES.redirect,
@@ -259,7 +283,11 @@ export class AuthController {
       env.AUTH_LOGIN_ERROR_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
-    const loginErrorUrl = this.buildFrontendRedirect(loginErrorPath, request);
+    const loginErrorUrl = this.buildFrontendRedirect(
+      loginErrorPath,
+      request,
+      storedFrontendOrigin,
+    );
 
     if (
       !code ||
@@ -352,6 +380,8 @@ export class AuthController {
       });
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS, {
         subject: validatedIdToken.sub,
+        frontendOriginUsed: Boolean(storedFrontendOrigin),
+        frontendOrigin: storedFrontendOrigin || 'dynamic',
       });
 
       const successRedirectPath = resolveSafeRedirectPath(
@@ -361,7 +391,11 @@ export class AuthController {
       );
       response.redirect(
         302,
-        this.buildFrontendRedirect(successRedirectPath, request),
+        this.buildFrontendRedirect(
+          successRedirectPath,
+          request,
+          storedFrontendOrigin,
+        ),
       );
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
@@ -903,6 +937,7 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.verifier, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.redirect, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.nonce, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.frontendOrigin, clearOptions);
   }
 
   private clearAuthCookies(response: Response): void {
@@ -947,11 +982,23 @@ export class AuthController {
     return corsOrigin.split(',').map((origin) => origin.trim());
   }
 
-  private buildFrontendRedirect(path: string, request?: Request): string {
+  private buildFrontendRedirect(
+    path: string,
+    request?: Request,
+    storedFrontendOrigin?: string,
+  ): string {
+    // Priority 1: Use stored frontend origin from cookie
+    if (storedFrontendOrigin) {
+      return new URL(path, storedFrontendOrigin).toString();
+    }
+
+    // Priority 2: Use dynamic origin extraction from request (existing logic)
     if (request) {
       const allowedOrigins = this.getAllowedOrigins();
       return buildDynamicFrontendRedirectUrl(request, path, allowedOrigins);
     }
+
+    // Priority 3: Fallback to configured base URL
     return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
   }
 

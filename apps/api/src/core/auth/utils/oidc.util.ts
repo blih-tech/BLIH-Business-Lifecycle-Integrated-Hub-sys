@@ -15,6 +15,7 @@ export const AUTH_COOKIE_NAMES = {
   access: 'kc_access',
   refresh: 'kc_refresh',
   id: 'kc_id',
+  frontendOrigin: 'kc_frontend_origin',
 } as const;
 
 export type AuthCookieSameSite = 'lax' | 'strict' | 'none';
@@ -332,6 +333,62 @@ export function buildFrontendRedirectUrl(
   path: string,
 ): string {
   return new URL(path, frontendBaseUrl).toString();
+}
+
+export function extractFrontendOrigin(request: Request): string | undefined {
+  // Priority 1: X-Frontend-Origin header (explicit client signal)
+  const frontendOriginHeader = request.headers['x-frontend-origin'] as string;
+  if (frontendOriginHeader && isValidOrigin(frontendOriginHeader)) {
+    return frontendOriginHeader;
+  }
+
+  // Priority 2: Origin header (standard browser header)
+  const originHeader = request.headers.origin as string;
+  if (originHeader && isValidOrigin(originHeader)) {
+    return originHeader;
+  }
+
+  // Priority 3: Referer header (fallback extraction)
+  const refererHeader = request.headers.referer as string;
+  if (refererHeader) {
+    try {
+      const refererUrl = new URL(refererHeader);
+      const origin = refererUrl.origin;
+      if (isValidOrigin(origin)) {
+        return origin;
+      }
+    } catch {
+      // Invalid URL, continue to undefined
+    }
+  }
+
+  return undefined;
+}
+
+export function isValidOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function validateFrontendOrigin(
+  origin: string | undefined,
+  allowedOrigins: string[],
+): string | undefined {
+  if (!origin) {
+    return undefined;
+  }
+
+  // Check if origin is in allowed list
+  const isAllowed = allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+    return origin === allowed || origin.startsWith(`${allowed}/`);
+  });
+
+  return isAllowed ? origin : undefined;
 }
 
 export function buildDynamicFrontendRedirectUrl(
