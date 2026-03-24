@@ -221,7 +221,11 @@ jobs:
           keyscan_ok=false
           for attempt in 1 2 3; do
             echo "ssh-keyscan attempt ${attempt}/3..."
-            if ssh-keyscan -T 30 -p "${HOSTINGER_SSH_PORT}" "${HOSTINGER_SSH_HOST}" >> ~/.ssh/known_hosts 2>/dev/null; then
+            if ssh-keyscan \
+                -o KexAlgorithms=+diffie-hellman-group14-sha256 \
+                -T 30 \
+                -p "${HOSTINGER_SSH_PORT}" \
+                "${HOSTINGER_SSH_HOST}" >> ~/.ssh/known_hosts 2>/dev/null; then
               keyscan_ok=true
               echo "Host key obtained via ssh-keyscan."
               break
