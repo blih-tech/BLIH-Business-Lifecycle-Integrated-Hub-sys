@@ -475,56 +475,6 @@ export const CvScreeningDecisionType = {
 export type CvScreeningDecisionType = (typeof CvScreeningDecisionType)[keyof typeof CvScreeningDecisionType]
 
 
-export const OnboardingStatus = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
-} as const
-
-export type OnboardingStatus = (typeof OnboardingStatus)[keyof typeof OnboardingStatus]
-
-
-export const OnboardingChecklistStatus = {
-  NOT_STARTED: 'NOT_STARTED',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  OVERDUE: 'OVERDUE'
-} as const
-
-export type OnboardingChecklistStatus = (typeof OnboardingChecklistStatus)[keyof typeof OnboardingChecklistStatus]
-
-
-export const OnboardingTaskDepartment = {
-  HR: 'HR',
-  IT: 'IT',
-  ADMIN: 'ADMIN',
-  TEAM: 'TEAM'
-} as const
-
-export type OnboardingTaskDepartment = (typeof OnboardingTaskDepartment)[keyof typeof OnboardingTaskDepartment]
-
-
-export const OnboardingTaskStatus = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  OVERDUE: 'OVERDUE'
-} as const
-
-export type OnboardingTaskStatus = (typeof OnboardingTaskStatus)[keyof typeof OnboardingTaskStatus]
-
-
-export const ProbationPlanStatus = {
-  DRAFT: 'DRAFT',
-  ACTIVE: 'ACTIVE',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
-} as const
-
-export type ProbationPlanStatus = (typeof ProbationPlanStatus)[keyof typeof ProbationPlanStatus]
-
-
 export const ProbationEvaluationRound = {
   DAY_30: 'DAY_30',
   DAY_55: 'DAY_55',
@@ -1117,3 +1067,55 @@ export const ScreeningRecommendation = {
 } as const
 
 export type ScreeningRecommendation = (typeof ScreeningRecommendation)[keyof typeof ScreeningRecommendation]
+
+
+export const OnboardingStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OnboardingStatus = (typeof OnboardingStatus)[keyof typeof OnboardingStatus]
+
+
+export const OnboardingChecklistStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  OVERDUE: 'OVERDUE'
+} as const
+
+export type OnboardingChecklistStatus = (typeof OnboardingChecklistStatus)[keyof typeof OnboardingChecklistStatus]
+
+
+export const OnboardingTaskDepartment = {
+  HR: 'HR',
+  IT: 'IT',
+  ADMIN: 'ADMIN',
+  TEAM: 'TEAM'
+} as const
+
+export type OnboardingTaskDepartment = (typeof OnboardingTaskDepartment)[keyof typeof OnboardingTaskDepartment]
+
+
+export const ProbationStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED',
+  EXTENDED: 'EXTENDED'
+} as const
+
+export type ProbationStatus = (typeof ProbationStatus)[keyof typeof ProbationStatus]
+
+
+export const ProbationOutcome = {
+  CONFIRMED: 'CONFIRMED',
+  EXTENDED: 'EXTENDED',
+  TERMINATED: 'TERMINATED',
+  RESIGNED: 'RESIGNED'
+} as const
+
+export type ProbationOutcome = (typeof ProbationOutcome)[keyof typeof ProbationOutcome]

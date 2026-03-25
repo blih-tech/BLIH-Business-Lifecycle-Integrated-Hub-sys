@@ -123,9 +123,13 @@ export const ModelName = {
   KeyResult: 'KeyResult',
   KeyResultUpdate: 'KeyResultUpdate',
   OkrManagerReview: 'OkrManagerReview',
-  ProbationKpiPlan: 'ProbationKpiPlan',
-  ProbationEvaluation: 'ProbationEvaluation',
-  ProbationConfirmation: 'ProbationConfirmation',
+  ProbationPlan: 'ProbationPlan',
+  KPI: 'KPI',
+  ProbationKPI: 'ProbationKPI',
+  ProbationCheckpoint: 'ProbationCheckpoint',
+  CheckpointEvaluation: 'CheckpointEvaluation',
+  EvaluationScore: 'EvaluationScore',
+  FinalEvaluation: 'FinalEvaluation',
   JobRequestForm: 'JobRequestForm',
   Job: 'Job',
   JobApplicationForm: 'JobApplicationForm',
@@ -1169,11 +1173,8 @@ export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
   onboardingTaskId: 'onboardingTaskId',
   onboardingId: 'onboardingId',
-  overseerId: 'overseerId',
   status: 'status',
-  teamLeadVerifiedAt: 'teamLeadVerifiedAt',
-  ceoSignOffRequired: 'ceoSignOffRequired',
-  ceoSignOffAt: 'ceoSignOffAt',
+  dueDate: 'dueDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1186,7 +1187,6 @@ export const OnboardingTaskScalarFieldEnum = {
   department: 'department',
   title: 'title',
   description: 'description',
-  completedById: 'completedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1427,65 +1427,85 @@ export const OkrManagerReviewScalarFieldEnum = {
 export type OkrManagerReviewScalarFieldEnum = (typeof OkrManagerReviewScalarFieldEnum)[keyof typeof OkrManagerReviewScalarFieldEnum]
 
 
-export const ProbationKpiPlanScalarFieldEnum = {
+export const ProbationPlanScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
-  supervisorId: 'supervisorId',
-  probationStart: 'probationStart',
-  probationEnd: 'probationEnd',
-  goals: 'goals',
-  development: 'development',
-  employeeEndorsedAt: 'employeeEndorsedAt',
-  supervisorEndorsedAt: 'supervisorEndorsedAt',
-  hrEndorsedAt: 'hrEndorsedAt',
+  startDate: 'startDate',
+  endDate: 'endDate',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type ProbationKpiPlanScalarFieldEnum = (typeof ProbationKpiPlanScalarFieldEnum)[keyof typeof ProbationKpiPlanScalarFieldEnum]
+export type ProbationPlanScalarFieldEnum = (typeof ProbationPlanScalarFieldEnum)[keyof typeof ProbationPlanScalarFieldEnum]
 
 
-export const ProbationEvaluationScalarFieldEnum = {
+export const KPIScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
-  probationPlanId: 'probationPlanId',
-  round: 'round',
-  evaluationDate: 'evaluationDate',
-  performanceScore: 'performanceScore',
-  attitudeScore: 'attitudeScore',
-  potentialScore: 'potentialScore',
-  overallScore: 'overallScore',
-  strengths: 'strengths',
-  improvements: 'improvements',
-  recommendation: 'recommendation',
-  evaluatorComments: 'evaluatorComments',
-  employeeComments: 'employeeComments',
-  status: 'status',
+  name: 'name',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type ProbationEvaluationScalarFieldEnum = (typeof ProbationEvaluationScalarFieldEnum)[keyof typeof ProbationEvaluationScalarFieldEnum]
+export type KPIScalarFieldEnum = (typeof KPIScalarFieldEnum)[keyof typeof KPIScalarFieldEnum]
 
 
-export const ProbationConfirmationScalarFieldEnum = {
+export const ProbationKPIScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
-  reviewSummary: 'reviewSummary',
-  verdict: 'verdict',
-  extension: 'extension',
-  termination: 'termination',
-  confirmation: 'confirmation',
-  hrCheckedAt: 'hrCheckedAt',
-  ceoSignOffAt: 'ceoSignOffAt',
-  employeeNotifiedAt: 'employeeNotifiedAt',
-  archivedInEmployeeFile: 'archivedInEmployeeFile',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  probationId: 'probationId',
+  kpiId: 'kpiId',
+  createdAt: 'createdAt'
 } as const
 
-export type ProbationConfirmationScalarFieldEnum = (typeof ProbationConfirmationScalarFieldEnum)[keyof typeof ProbationConfirmationScalarFieldEnum]
+export type ProbationKPIScalarFieldEnum = (typeof ProbationKPIScalarFieldEnum)[keyof typeof ProbationKPIScalarFieldEnum]
+
+
+export const ProbationCheckpointScalarFieldEnum = {
+  id: 'id',
+  probationId: 'probationId',
+  name: 'name',
+  checkpointDate: 'checkpointDate',
+  createdAt: 'createdAt'
+} as const
+
+export type ProbationCheckpointScalarFieldEnum = (typeof ProbationCheckpointScalarFieldEnum)[keyof typeof ProbationCheckpointScalarFieldEnum]
+
+
+export const CheckpointEvaluationScalarFieldEnum = {
+  id: 'id',
+  checkpointId: 'checkpointId',
+  comment: 'comment',
+  totalScore: 'totalScore',
+  createdAt: 'createdAt'
+} as const
+
+export type CheckpointEvaluationScalarFieldEnum = (typeof CheckpointEvaluationScalarFieldEnum)[keyof typeof CheckpointEvaluationScalarFieldEnum]
+
+
+export const EvaluationScoreScalarFieldEnum = {
+  id: 'id',
+  probationKpiId: 'probationKpiId',
+  checkpointEvaluationId: 'checkpointEvaluationId',
+  finalEvaluationId: 'finalEvaluationId',
+  score: 'score',
+  comment: 'comment',
+  createdAt: 'createdAt'
+} as const
+
+export type EvaluationScoreScalarFieldEnum = (typeof EvaluationScoreScalarFieldEnum)[keyof typeof EvaluationScoreScalarFieldEnum]
+
+
+export const FinalEvaluationScalarFieldEnum = {
+  id: 'id',
+  probationId: 'probationId',
+  comment: 'comment',
+  totalScore: 'totalScore',
+  outcome: 'outcome',
+  createdAt: 'createdAt'
+} as const
+
+export type FinalEvaluationScalarFieldEnum = (typeof FinalEvaluationScalarFieldEnum)[keyof typeof FinalEvaluationScalarFieldEnum]
 
 
 export const JobRequestFormScalarFieldEnum = {
