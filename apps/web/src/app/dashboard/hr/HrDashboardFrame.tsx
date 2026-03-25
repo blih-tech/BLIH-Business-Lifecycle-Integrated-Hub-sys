@@ -12,6 +12,7 @@ type HrDashboardFrameProps = {
     initials: string;
     name: string;
     email: string;
+    onLogout?: () => void;
   };
   children: React.ReactNode;
 };
@@ -27,13 +28,15 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
     () => ({
       '/dashboard/hr/recruitment/requests': {
         label: 'Create New Request',
-        onClick: () => router.push('/dashboard/hr/recruitment/requests?create=new-request'),
+        onClick: () =>
+          router.push('/dashboard/hr/recruitment/requests?create=new-request'),
       },
     }),
     [router],
   );
 
-  const createAction = createActionByPath[pathname as keyof typeof createActionByPath];
+  const createAction =
+    createActionByPath[pathname as keyof typeof createActionByPath];
 
   React.useEffect(() => {
     setSubnavOpen(!isHrRoot);
@@ -47,10 +50,27 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
     setSubnavOpen((prev) => !prev);
   }, [isHrRoot, toggleSidebar]);
 
+  const handleLogout = React.useCallback(async () => {
+    try {
+      const response = await fetch('/auth/logout?redirect=/', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok || response.redirected) {
+        router.push('/');
+      } else {
+        router.push('/');
+      }
+    } catch {
+      router.push('/');
+    }
+  }, [router]);
+
   return (
     <div className="flex min-h-screen w-full bg-background">
       <HrSidebarShell
-        user={user}
+        user={{ ...user, onLogout: handleLogout }}
         subnavOpen={subnavOpen}
         onRequestOpenSubnav={() => setSubnavOpen(true)}
       />

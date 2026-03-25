@@ -12,8 +12,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/shared/components/ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/shared/components/ui/dropdown-menu';
 import { SearchInput } from '@/shared/components/SearchInput';
 import Image from 'next/image';
+import { LogOut } from 'lucide-react';
 
 type SidebarItem = {
   id: string;
@@ -30,6 +37,7 @@ type SidebarUser = {
   initials: string;
   name: string;
   email: string;
+  onLogout?: () => void;
 };
 
 type SidebarProps = {
@@ -158,17 +166,30 @@ export function AppSidebar({
 
       <SidebarFooter className="relative border-t border-sidebar-border px-3 py-3 group-data-[collapsible=icon]:px-1.5">
         {user ? (
-          <div className="flex items-center gap-2.5 pl-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
-            <div className="flex size-[28px] items-center justify-center rounded-full bg-white text-[10px] text-primary">
-              {user.initials}
-            </div>
-            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-              <p className="text-[12px] font-semibold tracking-[-0.08px] text-white">
-                {user.name}
-              </p>
-              <p className="text-[9px] text-white">{user.email}</p>
-            </div>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex w-full items-center gap-2.5 pl-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
+                <div className="flex size-[28px] items-center justify-center rounded-full bg-white text-[10px] text-primary cursor-pointer hover:opacity-80 transition-opacity">
+                  {user.initials}
+                </div>
+                <div className="flex flex-1 flex-col items-start group-data-[collapsible=icon]:hidden">
+                  <p className="text-[12px] font-semibold tracking-[-0.08px] text-white">
+                    {user.name}
+                  </p>
+                  <p className="text-[9px] text-white">{user.email}</p>
+                </div>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              <DropdownMenuItem
+                onClick={user.onLogout}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : null}
       </SidebarFooter>
     </Sidebar>
