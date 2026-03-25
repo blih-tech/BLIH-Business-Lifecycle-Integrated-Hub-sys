@@ -36,6 +36,7 @@ type HrSidebarShellProps = {
     initials: string;
     name: string;
     email: string;
+    onLogout?: () => void;
   };
 };
 
@@ -119,7 +120,7 @@ export function HrSidebarShell({
         title="Blih CORE"
         subtitle="HR Portal"
         backgroundImage={assets.background}
-        logo={(
+        logo={
           <Link
             href="/dashboard/hr"
             aria-label="Go to HR dashboard"
@@ -127,7 +128,7 @@ export function HrSidebarShell({
           >
             <Brain className="h-5 w-5" />
           </Link>
-        )}
+        }
         searchIcon={<Search className="h-2.5 w-2.5 text-white" />}
         items={items}
         user={user}
