@@ -44,7 +44,10 @@ async function request<T>(
   });
 
   if (response.status === 401) {
-    window.location.href = `${API_BASE_URL}/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+    const redirectUrl = new URL(`${API_BASE_URL}/auth/login`);
+    redirectUrl.searchParams.set('redirect', window.location.pathname);
+    redirectUrl.searchParams.set('redirect_origin', window.location.origin);
+    window.location.href = redirectUrl.toString();
     throw new ApiError('Unauthorized', 401, 'Unauthorized');
   }
 
