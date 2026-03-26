@@ -72,10 +72,10 @@ jobs:
           npm run check-types --workspace web
 
       - name: Pull Vercel preview environment
-        run: npx vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+        run: npx vercel pull --yes --environment=preview --token="$VERCEL_TOKEN" --cwd apps/web
 
       - name: Build preview deployment
-        run: npx vercel build --token="$VERCEL_TOKEN" --yes
+        run: npx vercel build --token="$VERCEL_TOKEN" --yes --cwd apps/web
 
       - name: Check build output
         run: |
@@ -85,7 +85,7 @@ jobs:
       - name: Deploy preview
         id: deploy_preview
         run: |
-          url="$(npx vercel deploy --prebuilt --token="$VERCEL_TOKEN" --yes)"
+          url="$(npx vercel deploy --prebuilt --token="$VERCEL_TOKEN" --yes --cwd apps/web --debug)"
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL
@@ -138,10 +138,10 @@ jobs:
           npm run check-types --workspace web
 
       - name: Pull Vercel production environment
-        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN" --cwd apps/web
 
       - name: Build production deployment
-        run: npx vercel build --prod --token="$VERCEL_TOKEN" --yes
+        run: npx vercel build --prod --token="$VERCEL_TOKEN" --yes --cwd apps/web
 
       - name: Check build output
         run: |
@@ -149,4 +149,4 @@ jobs:
           ls -R apps/web/.vercel/output || echo "No apps/web output"
 
       - name: Deploy production
-        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --yes
+        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --yes --cwd apps/web --debug
