@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   // if (DEMO_MODE) {
   //   return NextResponse.next();
   // }
