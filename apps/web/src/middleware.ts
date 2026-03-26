@@ -12,8 +12,10 @@ export function middleware(request: NextRequest) {
 
   // Allow auth endpoints (login, logout, callback) to pass through without auth check
   if (request.nextUrl.pathname.startsWith('/auth/')) {
-    const targetUrl = `${API_BASE_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
-    return NextResponse.rewrite(targetUrl);
+    const targetUrl = new URL(
+      `${API_BASE_URL}${request.nextUrl.pathname}${request.nextUrl.search}`,
+    );
+    return NextResponse.redirect(targetUrl);
   }
 
   const hasAccessToken = request.cookies.has('kc_access');
