@@ -10,6 +10,23 @@ enum ScreeningRecommendation {
   REJECT
 }
 
+model Policy {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  module      String   // hr, finance, etc.
+  version     Int      @default(1)
+  isActive    Boolean  @default(true)
+
+  tags        String[]
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([module])
+  @@index([isActive])
+}
+
 // AI Document Management Models
 model AiDocument {
   id           String   @id @default(uuid()) @db.Uuid

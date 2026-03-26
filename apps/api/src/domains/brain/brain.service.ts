@@ -198,9 +198,26 @@ export class BrainService {
 
     const detectedType = this.detectQueryType(processedQuestion);
 
-    const isGlobalQuery =
-      processedQuestion.toLowerCase().includes('company') ||
-      processedQuestion.toLowerCase().includes('overall');
+    const intentCheckResponse = await firstValueFrom(
+      this.httpService.post(`${this.ragUrl}/rag/ask`, {
+        question: `
+    Classify this question:
+    "${processedQuestion}"
+
+    Return ONLY one:
+    - SINGLE_MODULE
+    - CROSS_MODULE
+    `,
+        history: [],
+        filter: {},
+      }),
+    );
+
+    const reasoningMode = intentCheckResponse.data.answer.includes(
+      'CROSS_MODULE',
+    )
+      ? 'cross-module'
+      : 'single-module';
 
     const payload = {
       userId,
@@ -209,17 +226,35 @@ export class BrainService {
         role: m.role,
         content: m.content,
       })),
-      filter: isGlobalQuery
-        ? { must: [] }
-        : {
-            must: [{ key: 'module', match: { value: module } }],
-            should: [
-              { key: 'userId', match: { value: userId } },
-              { key: 'type', match: { value: detectedType } },
-            ],
-          },
-    };
+      reasoningMode,
+      detectedType,
+      queryVariants:
+        reasoningMode === 'cross-module'
+          ? [
+              processedQuestion,
+              `HR perspective: ${processedQuestion}`,
+              `Finance perspective: ${processedQuestion}`,
+              `Project perspective: ${processedQuestion}`,
+            ]
+          : [processedQuestion],
 
+      filter:
+        reasoningMode === 'cross-module'
+          ? {
+              must: [{ key: 'isAI', match: { value: false } }],
+              should: [{ key: 'userId', match: { value: userId } }],
+            }
+          : {
+              must: [
+                { key: 'module', match: { value: module.toLowerCase() } },
+                { key: 'isAI', match: { value: false } },
+              ],
+              should: [
+                { key: 'userId', match: { value: userId } },
+                { key: 'type', match: { value: detectedType } },
+              ],
+            },
+    };
     const response = await firstValueFrom(
       this.httpService.post(`${this.ragUrl}/rag/ask`, payload),
     );
@@ -229,13 +264,18 @@ export class BrainService {
     try {
       await firstValueFrom(
         this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
-          text: aiAnswer,
+          text: `
+          Question: ${processedQuestion}
+
+          Answer: ${aiAnswer}
+          `,
           source: 'ai-generated',
           metadata: {
-            module,
+            module: reasoningMode === 'cross-module' ? 'global' : module,
             userId,
             type: 'insight',
-            tags: ['ai-generated'],
+            tags: ['ai-generated', detectedType],
+            isAI: true,
           },
         }),
       );
@@ -248,7 +288,8 @@ export class BrainService {
         {
           sessionId: session.id,
           role: 'user',
-          content: question || '[File Upload]',
+          content:
+            question || `[File Upload: ${file?.originalname || 'unknown'}]`,
         },
         { sessionId: session.id, role: 'assistant', content: aiAnswer },
       ],
