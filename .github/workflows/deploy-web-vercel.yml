@@ -74,10 +74,15 @@ jobs:
       - name: Pull Vercel preview environment
         run: npx vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
+      - name: Build preview deployment
+        run: npx vercel build --token="$VERCEL_TOKEN" --yes
+        env:
+          NEXT_PUBLIC_API_URL: https://blihapi.blihmarketing.com/api/v1
+
       - name: Deploy preview
         id: deploy_preview
         run: |
-          url="$(npx vercel deploy --token="$VERCEL_TOKEN" --yes --no-wait)"
+          url="$(npx vercel deploy --prebuilt --token="$VERCEL_TOKEN" --yes --no-wait)"
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL
@@ -132,5 +137,10 @@ jobs:
       - name: Pull Vercel production environment
         run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
+      - name: Build production deployment
+        run: npx vercel build --prod --token="$VERCEL_TOKEN" --yes
+        env:
+          NEXT_PUBLIC_API_URL: https://blihapi.blihmarketing.com/api/v1
+
       - name: Deploy production
-        run: npx vercel deploy --prod --token="$VERCEL_TOKEN" --yes --no-wait
+        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --yes --no-wait
