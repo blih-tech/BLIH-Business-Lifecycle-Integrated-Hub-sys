@@ -186,7 +186,7 @@ export class CreateFinalEvaluationUseCase {
       // Update the probation plan status based on outcome
       await tx.probationPlan.update({
         where: { id: dto.probationId },
-        data: { status: outcomeToStatus(dto.outcome) },
+        data: { status: outcomeToStatus(dto.outcome) as any },
       });
 
       return created;

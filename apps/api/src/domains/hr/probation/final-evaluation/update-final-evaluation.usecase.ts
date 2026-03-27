@@ -121,7 +121,7 @@ export class UpdateFinalEvaluationUseCase {
       if (dto.outcome !== undefined) {
         await tx.probationPlan.update({
           where: { id: existing.probationId },
-          data: { status: outcomeToStatus(dto.outcome) },
+          data: { status: outcomeToStatus(dto.outcome) as any },
         });
       }
 

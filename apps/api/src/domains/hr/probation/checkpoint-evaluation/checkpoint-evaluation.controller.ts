@@ -38,9 +38,9 @@ import { UpdateCheckpointEvaluationUseCase } from './update-checkpoint-evaluatio
 export class CheckpointEvaluationController {
   constructor(
     private readonly createEvaluation: CreateCheckpointEvaluationUseCase,
-    private readonly getById: GetCheckpointEvaluationByIdUseCase,
-    private readonly getByCheckpoint: GetEvaluationByCheckpointUseCase,
-    private readonly listByProbation: ListEvaluationsByProbationUseCase,
+    private readonly getByIdUseCase: GetCheckpointEvaluationByIdUseCase,
+    private readonly getByCheckpointUseCase: GetEvaluationByCheckpointUseCase,
+    private readonly listByProbationUseCase: ListEvaluationsByProbationUseCase,
     private readonly updateEvaluation: UpdateCheckpointEvaluationUseCase,
     private readonly deleteEvaluation: DeleteCheckpointEvaluationUseCase,
   ) {}
@@ -56,21 +56,21 @@ export class CheckpointEvaluationController {
   @Roles(ProbationPlanPermissions.VIEW)
   @ApiGetEvaluationByCheckpoint()
   getByCheckpoint(@Param('checkpointId') checkpointId: string) {
-    return this.getByCheckpoint.execute(checkpointId);
+    return this.getByCheckpointUseCase.execute(checkpointId);
   }
 
   @Get('by-probation/:probationId')
   @Roles(ProbationPlanPermissions.VIEW)
   @ApiListEvaluationsByProbation()
   listByProbation(@Param('probationId') probationId: string) {
-    return this.listByProbation.execute(probationId);
+    return this.listByProbationUseCase.execute(probationId);
   }
 
   @Get(':id')
   @Roles(ProbationPlanPermissions.VIEW)
   @ApiGetCheckpointEvaluationById()
   getById(@Param('id') id: string) {
-    return this.getById.execute(id);
+    return this.getByIdUseCase.execute(id);
   }
 
   @Patch(':id')

@@ -183,7 +183,7 @@ export class RecruitmentTransitionService {
         const onboarding = await tx.onboarding.create({
           data: {
             employeeId: provisioned.employee.id,
-            status: 'PENDING',
+            status: 'NOT_STARTED',
             joinDate,
           },
         });

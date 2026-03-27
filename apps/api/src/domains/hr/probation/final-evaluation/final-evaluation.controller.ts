@@ -36,8 +36,8 @@ import { UpdateFinalEvaluationUseCase } from './update-final-evaluation.usecase'
 export class FinalEvaluationController {
   constructor(
     private readonly createEvaluation: CreateFinalEvaluationUseCase,
-    private readonly getById: GetFinalEvaluationByIdUseCase,
-    private readonly getByProbation: GetFinalEvaluationByProbationUseCase,
+    private readonly getByIdUseCase: GetFinalEvaluationByIdUseCase,
+    private readonly getByProbationUseCase: GetFinalEvaluationByProbationUseCase,
     private readonly updateEvaluation: UpdateFinalEvaluationUseCase,
     private readonly deleteEvaluation: DeleteFinalEvaluationUseCase,
   ) {}
@@ -53,14 +53,14 @@ export class FinalEvaluationController {
   @Roles(ProbationPlanPermissions.VIEW)
   @ApiGetFinalEvaluationByProbation()
   getByProbation(@Param('probationId') probationId: string) {
-    return this.getByProbation.execute(probationId);
+    return this.getByProbationUseCase.execute(probationId);
   }
 
   @Get(':id')
   @Roles(ProbationPlanPermissions.VIEW)
   @ApiGetFinalEvaluationById()
   getById(@Param('id') id: string) {
-    return this.getById.execute(id);
+    return this.getByIdUseCase.execute(id);
   }
 
   @Patch(':id')

@@ -33,6 +33,8 @@ export class UpdateChecklistStatusUseCase {
       );
     }
 
+    const parentOnboarding = checklist.onboarding;
+
     const updatedChecklist = await this.prisma.$transaction(async (tx) => {
       // 1. Update the checklist itself
       const updated = await tx.onboardingChecklist.update({
@@ -60,32 +62,32 @@ export class UpdateChecklistStatusUseCase {
       ).length;
 
       // 3. Evaluate parent onboarding status
-      let newParentStatus = checklist.onboarding.status;
-      let newStartedAt = undefined;
-      let newCompletedAt = undefined;
+      let newParentStatus = parentOnboarding.status;
+      let newStartedAt: Date | undefined = undefined;
+      let newCompletedAt: Date | undefined = undefined;
 
       if (completed === total && total > 0) {
         newParentStatus = 'COMPLETED';
         newCompletedAt = new Date();
       } else if (completed > 0 || inProgress > 0) {
         newParentStatus = 'IN_PROGRESS';
-        if (!checklist.onboarding.startedAt) {
+        if (!parentOnboarding.startedAt) {
           newStartedAt = new Date();
         }
       }
 
       // If status changed, update the parent onboarding
       if (
-        newParentStatus !== checklist.onboarding.status ||
+        newParentStatus !== parentOnboarding.status ||
         newStartedAt ||
         newCompletedAt
       ) {
         await tx.onboarding.update({
           where: { id: checklist.onboardingId },
           data: {
-            status: newParentStatus,
-            ...(newStartedAt && { startedAt: newStartedAt }),
-            ...(newCompletedAt && { completedAt: newCompletedAt }),
+            status: newParentStatus as any,
+            startedAt: newStartedAt,
+            completedAt: newCompletedAt,
           },
         });
       }
