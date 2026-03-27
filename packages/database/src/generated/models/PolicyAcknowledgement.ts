@@ -218,8 +218,8 @@ export type PolicyAcknowledgementWhereInput = {
   verifiedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   verifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
 }
 
 export type PolicyAcknowledgementOrderByWithRelationInput = {
@@ -233,8 +233,8 @@ export type PolicyAcknowledgementOrderByWithRelationInput = {
   verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  employee?: Prisma.EmployeeOrderByWithRelationInput
   verifiedBy?: Prisma.UserOrderByWithRelationInput
+  employee?: Prisma.EmployeeOrderByWithRelationInput
 }
 
 export type PolicyAcknowledgementWhereUniqueInput = Prisma.AtLeast<{
@@ -251,8 +251,8 @@ export type PolicyAcknowledgementWhereUniqueInput = Prisma.AtLeast<{
   verifiedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   verifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
 }, "id">
 
 export type PolicyAcknowledgementOrderByWithAggregationInput = {
@@ -296,8 +296,8 @@ export type PolicyAcknowledgementCreateInput = {
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutPolicyAcknowledgementsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutPolicyAcknowledgementsVerifiedInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutPolicyAcknowledgementsInput
 }
 
 export type PolicyAcknowledgementUncheckedCreateInput = {
@@ -322,8 +322,8 @@ export type PolicyAcknowledgementUpdateInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutPolicyAcknowledgementsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutPolicyAcknowledgementsVerifiedNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutPolicyAcknowledgementsNestedInput
 }
 
 export type PolicyAcknowledgementUncheckedUpdateInput = {
@@ -732,8 +732,8 @@ export type PolicyAcknowledgementSelect<ExtArgs extends runtime.Types.Extensions
   verifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
+  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["policyAcknowledgement"]>
 
 export type PolicyAcknowledgementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -747,8 +747,8 @@ export type PolicyAcknowledgementSelectCreateManyAndReturn<ExtArgs extends runti
   verifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
+  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["policyAcknowledgement"]>
 
 export type PolicyAcknowledgementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -762,8 +762,8 @@ export type PolicyAcknowledgementSelectUpdateManyAndReturn<ExtArgs extends runti
   verifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
+  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["policyAcknowledgement"]>
 
 export type PolicyAcknowledgementSelectScalar = {
@@ -781,23 +781,23 @@ export type PolicyAcknowledgementSelectScalar = {
 
 export type PolicyAcknowledgementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "policies" | "allAcknowledged" | "confirmedAt" | "systemAccessGrantedAt" | "verifiedById" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["policyAcknowledgement"]>
 export type PolicyAcknowledgementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
+  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
 export type PolicyAcknowledgementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
+  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
 export type PolicyAcknowledgementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
+  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
 
 export type $PolicyAcknowledgementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PolicyAcknowledgement"
   objects: {
-    employee: Prisma.$EmployeePayload<ExtArgs>
     verifiedBy: Prisma.$UserPayload<ExtArgs> | null
+    employee: Prisma.$EmployeePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1204,8 +1204,8 @@ readonly fields: PolicyAcknowledgementFieldRefs;
  */
 export interface Prisma__PolicyAcknowledgementClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   verifiedBy<T extends Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

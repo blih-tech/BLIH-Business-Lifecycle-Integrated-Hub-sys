@@ -52,6 +52,7 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
     description: 'Policy acknowledgement workflows',
   },
   { name: 'probation_plan', description: 'Probation KPI plan workflows' },
+  { name: 'probation_kpi', description: 'Probation KPI management' },
   {
     name: 'probation_evaluation',
     description: 'Probation evaluation workflows',

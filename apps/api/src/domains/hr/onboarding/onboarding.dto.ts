@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
-  IsBoolean,
   IsDateString,
   IsEnum,
   IsInt,
@@ -14,7 +13,7 @@ import {
 } from 'class-validator';
 
 export const ONBOARDING_STATUSES = [
-  'PENDING',
+  'NOT_STARTED',
   'IN_PROGRESS',
   'COMPLETED',
   'CANCELLED',
@@ -38,13 +37,6 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
     .toUpperCase();
 };
 
-const normalizeBooleanValue = ({ value }: { value: unknown }) => {
-  if (typeof value !== 'string') return value;
-  if (value.trim().toLowerCase() === 'true') return true;
-  if (value.trim().toLowerCase() === 'false') return false;
-  return value;
-};
-
 // ─── Input DTOs ──────────────────────────────────────────────────────────────
 
 export class CreateOnboardingChecklistItemDto {
@@ -56,22 +48,12 @@ export class CreateOnboardingChecklistItemDto {
   onboardingTaskId!: string;
 
   @ApiPropertyOptional({
-    description: 'User UUID responsible for overseeing this checklist item.',
-    example: 'user-uuid-1',
-    nullable: true,
+    description: 'Target due date for this checklist item.',
+    example: '2026-03-15T10:00:00.000Z',
   })
   @IsOptional()
-  @IsUUID()
-  overseerId?: string | null;
-
-  @ApiPropertyOptional({
-    description: 'Whether this checklist item requires CEO sign-off.',
-    example: true,
-  })
-  @IsOptional()
-  @Transform(normalizeBooleanValue)
-  @IsBoolean()
-  ceoSignOffRequired?: boolean;
+  @IsDateString()
+  dueDate?: string;
 }
 
 export class CreateOnboardingDto {
@@ -92,7 +74,7 @@ export class CreateOnboardingDto {
   @ApiPropertyOptional({
     enum: ONBOARDING_STATUSES,
     description: 'Initial onboarding status.',
-    example: 'PENDING',
+    example: 'NOT_STARTED',
   })
   @IsOptional()
   @Transform(normalizeEnumValue)
@@ -137,15 +119,6 @@ export class UpdateOnboardingChecklistItemDto {
   onboardingTaskId!: string;
 
   @ApiPropertyOptional({
-    description: 'User UUID responsible for overseeing this checklist item.',
-    example: 'user-uuid-1',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsUUID()
-  overseerId?: string | null;
-
-  @ApiPropertyOptional({
     enum: ONBOARDING_CHECKLIST_STATUSES,
     description: 'Checklist item status.',
     example: 'IN_PROGRESS',
@@ -156,31 +129,12 @@ export class UpdateOnboardingChecklistItemDto {
   status?: OnboardingChecklistStatusValue;
 
   @ApiPropertyOptional({
-    description: 'Team lead verification timestamp.',
-    example: '2026-03-12T09:00:00.000Z',
-    nullable: true,
+    description: 'Updated due date for this checklist item.',
+    example: '2026-03-16T10:00:00.000Z',
   })
   @IsOptional()
   @IsDateString()
-  teamLeadVerifiedAt?: string | null;
-
-  @ApiPropertyOptional({
-    description: 'Whether this checklist item requires CEO sign-off.',
-    example: true,
-  })
-  @IsOptional()
-  @Transform(normalizeBooleanValue)
-  @IsBoolean()
-  ceoSignOffRequired?: boolean;
-
-  @ApiPropertyOptional({
-    description: 'CEO sign-off timestamp.',
-    example: '2026-03-20T12:00:00.000Z',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsDateString()
-  ceoSignOffAt?: string | null;
+  dueDate?: string;
 }
 
 export class UpdateOnboardingDto extends PartialType(CreateOnboardingDto) {
@@ -241,14 +195,6 @@ export class OnboardingListQueryDto {
   onboardingTaskId?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by checklist overseer UUID.',
-    example: 'user-uuid-1',
-  })
-  @IsOptional()
-  @IsUUID()
-  overseerId?: string;
-
-  @ApiPropertyOptional({
     enum: ONBOARDING_CHECKLIST_STATUSES,
     description: 'Filter by checklist status.',
     example: 'IN_PROGRESS',
@@ -290,13 +236,10 @@ export class OnboardingChecklistResponseDto {
   id!: string;
 
   @ApiProperty({ example: 'task-uuid-1' })
-  onboardingTaskId!: string | null;
+  onboardingTaskId!: string;
 
   @ApiProperty({ example: 'onboarding-uuid-1' })
-  onboardingId!: string | null;
-
-  @ApiPropertyOptional({ example: 'user-uuid-1', nullable: true })
-  overseerId!: string | null;
+  onboardingId!: string;
 
   @ApiProperty({
     enum: ONBOARDING_CHECKLIST_STATUSES,
@@ -304,20 +247,8 @@ export class OnboardingChecklistResponseDto {
   })
   status!: OnboardingChecklistStatusValue;
 
-  @ApiPropertyOptional({
-    example: '2026-03-12T09:00:00.000Z',
-    nullable: true,
-  })
-  teamLeadVerifiedAt!: string | null;
-
-  @ApiProperty({ example: false })
-  ceoSignOffRequired!: boolean;
-
-  @ApiPropertyOptional({
-    example: '2026-03-20T12:00:00.000Z',
-    nullable: true,
-  })
-  ceoSignOffAt!: string | null;
+  @ApiPropertyOptional({ example: '2026-03-15T10:00:00.000Z' })
+  dueDate!: string | null;
 
   @ApiProperty({ example: '2026-03-11T08:00:00.000Z' })
   createdAt!: string;
@@ -333,7 +264,7 @@ export class OnboardingResponseDto {
   @ApiProperty({ example: 'employee-uuid' })
   employeeId!: string;
 
-  @ApiProperty({ enum: ONBOARDING_STATUSES, example: 'PENDING' })
+  @ApiProperty({ enum: ONBOARDING_STATUSES, example: 'NOT_STARTED' })
   status!: OnboardingStatusValue;
 
   @ApiPropertyOptional({

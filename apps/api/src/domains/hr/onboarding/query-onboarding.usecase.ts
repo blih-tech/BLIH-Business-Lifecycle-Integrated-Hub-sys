@@ -37,9 +37,6 @@ function buildWhere(
   if (query.onboardingTaskId) {
     checklistFilters.onboardingTaskId = query.onboardingTaskId;
   }
-  if (query.overseerId) {
-    checklistFilters.overseerId = query.overseerId;
-  }
   if (query.checklistStatus) {
     checklistFilters.status = query.checklistStatus;
   }
