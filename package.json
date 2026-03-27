@@ -43,8 +43,10 @@
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
     "concurrently": "^9.2.1",
     "husky": "^9.1.7",
+    "lightningcss-linux-x64-gnu": "^1.32.0",
     "lint-staged": "^16.3.2",
     "postgres": "^3.4.8",
     "prettier": "^3.7.4",
@@ -65,7 +67,7 @@
   ],
   "dependencies": {
     "@prisma/client": "^7.4.2",
-    "next": "15.5.14",
+    "next": "15.1.12",
     "pdf-parse-debugging-disabled": "^1.1.1",
     "react": "19.0.0",
     "react-dom": "19.0.0"
