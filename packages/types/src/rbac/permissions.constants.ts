@@ -358,6 +358,14 @@ export const ProbationPlanPermissions = {
   ALL: 'probation_plan:*',
 } as const;
 
+export const ProbationKpiPermissions = {
+  VIEW: 'probation_kpi:view',
+  CREATE: 'probation_kpi:create',
+  UPDATE: 'probation_kpi:update',
+  DELETE: 'probation_kpi:delete',
+  ALL: 'probation_kpi:*',
+} as const;
+
 export const ProbationEvaluationPermissions = {
   VIEW: 'probation_evaluation:view',
   CREATE: 'probation_evaluation:create',
@@ -536,6 +544,7 @@ export const PermissionGroups = {
   asset_provisioning: AssetProvisioningPermissions,
   policy_acknowledgement: PolicyAcknowledgementPermissions,
   probation_plan: ProbationPlanPermissions,
+  probation_kpi: ProbationKpiPermissions,
   probation_evaluation: ProbationEvaluationPermissions,
   probation_confirmation: ProbationConfirmationPermissions,
   performance: PerformancePermissions,

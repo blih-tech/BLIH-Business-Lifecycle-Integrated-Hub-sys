@@ -20,6 +20,7 @@ import { CreateJobDescriptionUseCase } from './job-descriptions/use-cases/create
 import { UpdateJobDescriptionUseCase } from './job-descriptions/use-cases/update-job-description.usecase';
 import { DocumentExpiryJob } from './jobs/document-expiry.job';
 import { AttendanceReconciliationJob } from './jobs/attendance-reconciliation.job';
+import { CheckOverdueChecklistsJob } from './jobs/check-overdue-checklists.job';
 import { JobsController } from './recruitment/jobs.controller';
 import { ApplicantsController } from './recruitment/applicants.controller';
 import { InterviewsController } from './recruitment/interviews.controller';
@@ -222,9 +223,15 @@ import { InternalTransferService } from './career/internal-transfer.service';
 import { SalaryAdjustmentsController } from './career/salary-adjustments.controller';
 import { SalaryAdjustmentService } from './career/salary-adjustment.service';
 import { OnboardingModule } from './onboarding/onboarding.module';
+import { ProbationModule } from './probation/probation.module';
 
 @Module({
-  imports: [OnboardingModule, NotificationsModule, UsersModule],
+  imports: [
+    OnboardingModule,
+    ProbationModule,
+    NotificationsModule,
+    UsersModule,
+  ],
   controllers: [
     EmployeesController,
     EmployeeRecordsController,
@@ -281,6 +288,7 @@ import { OnboardingModule } from './onboarding/onboarding.module';
     UpdateJobDescriptionUseCase,
     DocumentExpiryJob,
     AttendanceReconciliationJob,
+    CheckOverdueChecklistsJob,
     CertificationExpiryJob,
     RecruitmentJobLifecycleJob,
     CreateJobUseCase,

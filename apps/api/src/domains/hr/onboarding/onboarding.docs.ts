@@ -53,11 +53,7 @@ const onboardingChecklistExample = {
   id: 'checklist-uuid-1',
   onboardingTaskId: 'task-uuid-1',
   onboardingId: 'onboarding-uuid-1',
-  overseerId: 'user-uuid-1',
   status: 'NOT_STARTED',
-  teamLeadVerifiedAt: null,
-  ceoSignOffRequired: true,
-  ceoSignOffAt: null,
   createdAt: '2026-03-11T14:00:00.000Z',
   updatedAt: '2026-03-11T14:00:00.000Z',
 };
@@ -65,7 +61,7 @@ const onboardingChecklistExample = {
 const onboardingExample = {
   id: 'onboarding-uuid-1',
   employeeId: 'employee-uuid',
-  status: 'PENDING',
+  status: 'NOT_STARTED',
   startedAt: null,
   joinDate: '2026-03-10',
   completedAt: null,
@@ -118,15 +114,8 @@ export function ApiCreateOnboarding() {
             employeeId: 'employee-uuid',
             joinDate: '2026-03-10',
             checklists: [
-              {
-                onboardingTaskId: 'task-uuid-1',
-                overseerId: 'user-uuid-1',
-                ceoSignOffRequired: true,
-              },
-              {
-                onboardingTaskId: 'task-uuid-2',
-                overseerId: 'user-uuid-2',
-              },
+              { onboardingTaskId: 'task-uuid-1' },
+              { onboardingTaskId: 'task-uuid-2' },
             ],
           },
         },
@@ -155,7 +144,7 @@ export function ApiListAllOnboarding() {
     ApiOperation({
       summary: 'List onboarding records',
       description:
-        'Returns the full (un-paginated) list.\n\nFilters: `employeeId`, `status`, `joinDateFrom`, `joinDateTo`, `onboardingTaskId`, `overseerId`, `checklistStatus`.',
+        'Returns the full (un-paginated) list.\n\nFilters: `employeeId`, `status`, `joinDateFrom`, `joinDateTo`, `onboardingTaskId`, `checklistStatus`.',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding',
@@ -179,7 +168,7 @@ export function ApiListPaginatedOnboarding() {
     ApiOperation({
       summary: 'List onboarding records (paginated)',
       description:
-        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `employeeId`, `status`, `joinDateFrom`, `joinDateTo`, `onboardingTaskId`, `overseerId`, `checklistStatus`, `page`, `limit`.',
+        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `employeeId`, `status`, `joinDateFrom`, `joinDateTo`, `onboardingTaskId`, `checklistStatus`, `page`, `limit`.',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding/paginated',
@@ -238,7 +227,6 @@ export function ApiUpdateOnboarding() {
               {
                 onboardingTaskId: 'task-uuid-1',
                 status: 'IN_PROGRESS',
-                overseerId: 'user-uuid-1',
               },
             ],
           },
@@ -279,6 +267,29 @@ export function ApiDeleteOnboarding() {
     ),
     ApiDefaultErrors({
       path: '/api/v1/hr/onboarding/:id',
+      notFound: 'Onboarding not found',
+      unauthorized: 'Unauthorized: missing or invalid bearer access token',
+      forbidden: 'Required roles are missing',
+    }),
+  );
+}
+
+export function ApiCancelOnboarding() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Cancel onboarding' }),
+    ApiParam({ name: 'id', description: 'Onboarding UUID' }),
+    ApiProtected({
+      path: '/api/v1/hr/onboarding/:id/cancel',
+      roles: [OnboardingPermissions.UPDATE],
+    }),
+    ApiEnvelopeOkResponse(
+      OnboardingResponseDto,
+      'Cancelled onboarding',
+      onboardingUpdated,
+    ),
+    ApiDefaultErrors({
+      path: '/api/v1/hr/onboarding/:id/cancel',
+      badRequest: 'Onboarding payload is invalid or already cancelled',
       notFound: 'Onboarding not found',
       unauthorized: 'Unauthorized: missing or invalid bearer access token',
       forbidden: 'Required roles are missing',

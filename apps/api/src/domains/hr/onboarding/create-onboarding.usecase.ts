@@ -32,23 +32,6 @@ async function assertEmployeeExists(
   }
 }
 
-async function assertUsersExist(
-  prisma: PrismaService,
-  userIds: string[],
-  field: string,
-): Promise<void> {
-  if (userIds.length === 0) return;
-  const found = await prisma.user.findMany({
-    where: { id: { in: userIds } },
-    select: { id: true },
-  });
-  if (found.length !== userIds.length) {
-    throw new BadRequestException(
-      `${field} contains one or more unknown user ids`,
-    );
-  }
-}
-
 async function assertOnboardingTasksExist(
   prisma: PrismaService,
   taskIds: string[],
@@ -72,11 +55,8 @@ export const onboardingInclude = {
       id: true,
       onboardingTaskId: true,
       onboardingId: true,
-      overseerId: true,
       status: true,
-      teamLeadVerifiedAt: true,
-      ceoSignOffRequired: true,
-      ceoSignOffAt: true,
+      dueDate: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -96,13 +76,10 @@ export function mapOnboarding(onboarding: {
   updatedAt: Date;
   checklists: Array<{
     id: string;
-    onboardingTaskId: string | null;
-    onboardingId: string | null;
-    overseerId: string | null;
+    onboardingTaskId: string;
+    onboardingId: string;
     status: string;
-    teamLeadVerifiedAt: Date | null;
-    ceoSignOffRequired: boolean;
-    ceoSignOffAt: Date | null;
+    dueDate: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }>;
@@ -120,11 +97,8 @@ export function mapOnboarding(onboarding: {
       id: item.id,
       onboardingTaskId: item.onboardingTaskId,
       onboardingId: item.onboardingId,
-      overseerId: item.overseerId,
       status: item.status as OnboardingChecklistStatusValue,
-      teamLeadVerifiedAt: toIso(item.teamLeadVerifiedAt),
-      ceoSignOffRequired: item.ceoSignOffRequired,
-      ceoSignOffAt: toIso(item.ceoSignOffAt),
+      dueDate: toIso(item.dueDate),
       createdAt: item.createdAt.toISOString(),
       updatedAt: item.updatedAt.toISOString(),
     })),
@@ -150,13 +124,6 @@ export class CreateOnboardingUseCase {
 
     await assertOnboardingTasksExist(this.prisma, taskIds);
 
-    const overseerIds = unique(
-      checklists
-        .map((item) => item.overseerId)
-        .filter((id): id is string => Boolean(id)),
-    );
-    await assertUsersExist(this.prisma, overseerIds, 'checklists.overseerId');
-
     const onboarding = await this.prisma.onboarding.create({
       data: {
         employeeId: dto.employeeId,
@@ -168,8 +135,7 @@ export class CreateOnboardingUseCase {
           checklists: {
             create: checklists.map((item) => ({
               onboardingTaskId: item.onboardingTaskId,
-              overseerId: item.overseerId ?? null,
-              ceoSignOffRequired: item.ceoSignOffRequired ?? false,
+              dueDate: item.dueDate ? new Date(item.dueDate) : undefined,
             })),
           },
         }),
