@@ -179,7 +179,7 @@ describe('RecruitmentTransitionService', () => {
     expect(tx.onboarding.create).toHaveBeenCalledWith({
       data: {
         employeeId: 'user-1',
-        status: 'PENDING',
+        status: 'NOT_STARTED',
         joinDate: new Date('2026-04-01T00:00:00.000Z'),
       },
     });
