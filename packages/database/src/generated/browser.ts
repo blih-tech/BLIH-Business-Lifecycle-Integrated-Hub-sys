@@ -378,20 +378,40 @@ export type KeyResultUpdate = Prisma.KeyResultUpdateModel
  */
 export type OkrManagerReview = Prisma.OkrManagerReviewModel
 /**
- * Model ProbationKpiPlan
+ * Model ProbationPlan
  * 
  */
-export type ProbationKpiPlan = Prisma.ProbationKpiPlanModel
+export type ProbationPlan = Prisma.ProbationPlanModel
 /**
- * Model ProbationEvaluation
+ * Model KPI
  * 
  */
-export type ProbationEvaluation = Prisma.ProbationEvaluationModel
+export type KPI = Prisma.KPIModel
 /**
- * Model ProbationConfirmation
+ * Model ProbationKPI
  * 
  */
-export type ProbationConfirmation = Prisma.ProbationConfirmationModel
+export type ProbationKPI = Prisma.ProbationKPIModel
+/**
+ * Model ProbationCheckpoint
+ * 
+ */
+export type ProbationCheckpoint = Prisma.ProbationCheckpointModel
+/**
+ * Model CheckpointEvaluation
+ * 
+ */
+export type CheckpointEvaluation = Prisma.CheckpointEvaluationModel
+/**
+ * Model EvaluationScore
+ * 
+ */
+export type EvaluationScore = Prisma.EvaluationScoreModel
+/**
+ * Model FinalEvaluation
+ * 
+ */
+export type FinalEvaluation = Prisma.FinalEvaluationModel
 /**
  * Model JobRequestForm
  * 

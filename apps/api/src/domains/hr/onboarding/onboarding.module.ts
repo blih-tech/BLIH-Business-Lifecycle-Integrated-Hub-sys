@@ -11,9 +11,13 @@ import {
 } from './query-onboarding.usecase';
 import { UpdateOnboardingUseCase } from './update-onboarding.usecase';
 import { DeleteOnboardingUseCase } from './delete-onboarding.usecase';
+import { CancelOnboardingUseCase } from './cancel-onboarding.usecase';
+
+import { OnboardingChecklistModule } from './onboarding-checklist/onboarding-checklist.module';
 
 @Module({
   imports: [
+    OnboardingChecklistModule,
     OnboardingTasksModule,
     AssetProvisioningModule,
     PolicyAcknowledgementModule,
@@ -26,6 +30,7 @@ import { DeleteOnboardingUseCase } from './delete-onboarding.usecase';
     ListAllOnboardingUseCase,
     ListPaginatedOnboardingUseCase,
     GetOnboardingByIdUseCase,
+    CancelOnboardingUseCase,
   ],
 })
 export class OnboardingModule {}
