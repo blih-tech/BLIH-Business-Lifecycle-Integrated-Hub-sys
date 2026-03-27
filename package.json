@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "build": "turbo run build",
-    "dev": "concurrently -k --kill-signal SIGINT --kill-timeout 2000 --names api,web --prefix-colors cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "build": "node init && turbo run build",
+    "dev": "node init && concurrently -k --kill-signal SIGINT --kill-timeout 2000 --names api,web --prefix-colors cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "npm run dev --workspace blih-system-backend",
     "dev:web": "npm run dev --workspace web",
     "start:api": "npm run start --workspace blih-system-backend",
@@ -65,6 +65,9 @@
   ],
   "dependencies": {
     "@prisma/client": "^7.4.2",
-    "pdf-parse-debugging-disabled": "^1.1.1"
+    "next": "15.1.7",
+    "pdf-parse-debugging-disabled": "^1.1.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   }
 }
