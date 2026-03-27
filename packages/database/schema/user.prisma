@@ -1,6 +1,44 @@
 // User and Employee Management Models
 // This file contains User, Employee, and related profile models
 
+enum EmailType {
+  PERSONAL
+  COMPANY
+}
+
+enum PhoneType {
+  PERSONAL
+  COMPANY
+}
+
+enum GovernmentIdCardType {
+  KEBELE_ID
+  PASSPORT
+  FAYDA
+  OTHER
+}
+
+enum VerificationStatus {
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+enum EducationLevel {
+  HIGH_SCHOOL
+  DIPLOMA
+  BACHELOR
+  MASTER
+  PHD
+  CERTIFICATION
+}
+
+enum EmployeeStatus {
+  ONBOARDING
+  ON_PROBATION
+  ACTIVE
+}
+
 model User {
   id                               String                        @id @default(uuid()) @db.Uuid
   keycloakId                       String                        @unique
@@ -33,13 +71,13 @@ model User {
   jobApprovalHistoryChanges        JobApprovalHistory[]          @relation("JobApprovalHistoryUser")
   // checklistsOverseen               OnboardingChecklist[]         @relation("OnboardingChecklistOverseer")
   // completedOnboardingTasks         OnboardingTask[]              @relation("OnboardingTaskCompletedBy")
-  policyAcknowledgementsVerified   PolicyAcknowledgement[]       @relation("PolicyAcknowledgementVerifiedBy")
   delegatedLeaveHandovers          LeaveRequest[]                @relation("LeaveRequestHandoverDelegate")
   leaveRequestsApproved            LeaveRequest[]                @relation("LeaveRequestApprover")
   leaveApprovals                   LeaveApproval[]               @relation("LeaveApprovalApprover")
   attendanceCorrectionsApproved    AttendanceCorrectionRequest[] @relation("AttendanceCorrectionApprover")
   overtimeRequestsApproved         OvertimeRequest[]             @relation("OvertimeRequestApprover")
   flexWorkRequestsApproved         FlexWorkRequest[]             @relation("FlexWorkRequestApprover")
+  contractsToSign                  ContractSigner[]
   approvedTimesheets               Timesheet[]                   @relation("TimesheetApprover")
   createdCareerDevelopmentPlans    CareerDevelopmentPlan[]       @relation("CareerPlanCreatedBy")
   assessedTrainingNeeds            TrainingNeedsAssessment[]     @relation("TrainingNeedsAssessmentAssessor")
@@ -85,16 +123,21 @@ model Employee {
   userId                      String?                       @unique @map("user_id") @db.Uuid
   user                        User?                         @relation(fields: [userId], references: [id], onDelete: SetNull)
   profile                     UserProfile?
+  employeeAddress             EmployeeAddress?
+  employeeBankDetail          EmployeeBankDetail?
+  employeeEmergencyContact    EmployeeEmergencyContact?
+  employeeEducation           EmployeeEducation?
+  employeeContract            EmployeeContract?
+  employeePolicyAcknowledgement EmployeePolicyAcknowledgement?
+  onboarding                  Onboarding?
+  applicantId                 String?                       @unique @map("applicant_id") @db.Uuid
+  applicant                   Applicant?                    @relation(fields: [applicantId], references: [id], onDelete: SetNull)
   employment                  UserEmployment?
   compensation                UserCompensation?
   compensationHistory         UserCompensationHistory[]
   compensationComponents      CompensationComponent[]
   lifecycle                   UserLifecycle?
   employeeDocuments           EmployeeDocument[]
-  contracts                   Contract[]
-  onboardings                 Onboarding[]
-  assetProvisionings          AssetProvisioning[]
-  policyAcknowledgements      PolicyAcknowledgement[]
   probationPlan               ProbationPlan[]
   leaveRequests               LeaveRequest[]
   leaveBalances               LeaveBalance[]
@@ -131,34 +174,197 @@ model Employee {
   complianceChecklists        ComplianceChecklist[]
   createdAt                   DateTime                      @default(now())
   updatedAt                   DateTime                      @updatedAt
+  employeeStatus              EmployeeStatus                @default(ONBOARDING)
 
   @@index([userId])
 }
 
+/**
+ * basic info
+ * bank info
+ * identity verification (passport size photo, fayda, passport, fin, criminal clearance, )
+ * address
+ * emergency contact
+ * contact detail
+ * contract
+ * policy
+ * education
+ */
+
 model UserProfile {
-  id                    String            @id @default(uuid()) @db.Uuid
-  employeeId            String            @unique @map("employee_id") @db.Uuid
-  employee              Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  dateOfBirth           DateTime?
-  gender                Gender?
-  nationalityId         String?           @db.Uuid
-  nationality           CountryReference? @relation("ProfileNationality", fields: [nationalityId], references: [id], onDelete: SetNull)
-  maritalStatus         MaritalStatus?
-  avatarUrl             String?
-  addressLine1          String?
-  addressLine2          String?
-  city                  String?
-  state                 String?
-  countryId             String?           @db.Uuid
-  country               CountryReference? @relation("ProfileResidenceCountry", fields: [countryId], references: [id], onDelete: SetNull)
-  postalCode            String?
-  emergencyContactName  String?
-  emergencyContactPhone String?
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt
+  id                   String                @id @default(uuid()) @db.Uuid
+  employeeId           String                @unique @map("employee_id") @db.Uuid
+  employee             Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  additionalEmail      String?
+  additionalEmailType  EmailType?
+  additionalPhone      String?
+  additionalPhoneType  PhoneType
+  dateOfBirth          DateTime?
+  gender               Gender?
+  nationalityId        String?               @db.Uuid
+  nationality          CountryReference?     @relation("ProfileNationality", fields: [nationalityId], references: [id], onDelete: SetNull)
+  maritalStatus        MaritalStatus?
+  avatarUrl            String?
+  passportSizePhotoURL String?
+  faydaNumber          String?
+  governmentIdCard     String?
+  governmentIdCardType GovernmentIdCardType?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([nationalityId])
-  @@index([countryId])
+}
+
+model EmployeeAddress {
+  id         String   @id @default(uuid()) @db.Uuid
+  employeeId String   @unique @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  countryId String           @db.Uuid
+  country   CountryReference @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  region    String? // e.g. state / region
+  city      String
+  subCity   String? // useful for Addis Ababa
+  woreda    String? // Ethiopia-specific
+  kebele    String? // Ethiopia-specific
+
+  street      String?
+  houseNumber String?
+  postalCode  String?
+
+  status     VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback String? // Reason for rejection if status is REJECTED
+}
+
+model EmployeeBankDetail {
+  id           String             @id @default(uuid()) @db.Uuid
+  employeeId   String             @unique @map("employee_id") @db.Uuid
+  employee     Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  bankAccounts BankAccount[]
+  status       VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback   String? // Reason for rejection if status is REJECTED
+}
+
+model BankAccount {
+  id String @id @default(uuid())
+
+  employeeBankDetailId String
+  employeeBankDetail   EmployeeBankDetail @relation(fields: [employeeBankDetailId], references: [id])
+
+  bankName      String // e.g. Commercial Bank of Ethiopia
+  accountName   String // Name on account (SAVING)
+  accountNumber String
+
+  branchName String?
+  swiftCode  String?
+
+  isPrimary Boolean @default(true)
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeBankDetailId])
+}
+
+model EmployeeEmergencyContact {
+  id                String             @id @default(uuid()) @db.Uuid
+  employeeId        String             @unique @map("employee_id") @db.Uuid
+  employee          Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  emergencyContacts EmergencyContact[]
+  status            VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback        String? // Reason for rejection if status is REJECTED
+}
+
+model EmergencyContact {
+  id                         String                   @id @default(uuid())
+  employeeEmergencyContactId String
+  employeeEmergencyContact   EmployeeEmergencyContact @relation(fields: [employeeEmergencyContactId], references: [id], onDelete: Cascade)
+  firstName                  String
+  lastName                   String
+  relationship               String // "Father", "Spouse", "Friend"
+
+  primaryPhone String
+  email        String?
+
+  isFirstToCall Boolean @default(false)
+  isActive      Boolean @default(true)
+
+  // Address (embedded fields)
+  countryId String?           @db.Uuid
+  country   CountryReference? @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  city      String?
+  subCity   String?
+  woreda    String?
+  kebele    String?
+  street    String?
+
+  notes String? // medical info, instructions
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeEmergencyContactId])
+}
+
+model EmployeeEducation {
+  id         String             @id @default(uuid()) @db.Uuid
+  employeeId String             @unique @map("employee_id") @db.Uuid
+  employee   Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  educations Education[]
+  status     VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback String? // Reason for rejection if status is REJECTED
+}
+
+model Education {
+  id String @id @default(uuid())
+
+  employeeEducationId String
+  employeeEducation   EmployeeEducation @relation(fields: [employeeEducationId], references: [id])
+
+  institution  String // University / School name
+  degree       String // BSc, MSc, Diploma
+  fieldOfStudy String // Computer Science, Accounting
+
+  level EducationLevel
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  grade       String? // GPA or result
+  description String? // extra notes
+
+  isCompleted Boolean @default(true)
+
+  documentUrl String? // certificate (PDF, image)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeEducationId])
+}
+
+model EmployeeContract {
+  id         String             @id @default(uuid()) @db.Uuid
+  employeeId String             @unique @map("employee_id") @db.Uuid
+  employee   Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contracts  Contract[]
+  status     VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback String? // Reason for rejection if status is REJECTED
+}
+
+model EmployeePolicyAcknowledgement {
+  id         String             @id @default(uuid()) @db.Uuid
+  employeeId String             @unique @map("employee_id") @db.Uuid
+  employee   Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  status     VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback String?            @db.Text // Reason for rejection if status is REJECTED
+
+  acknowledgements PolicyAcknowledgement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model UserEmployment {

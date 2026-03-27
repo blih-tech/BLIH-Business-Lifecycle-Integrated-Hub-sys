@@ -1,0 +1,74 @@
+model Policy {
+  id          String  @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+
+  isMandatory Boolean @default(true)
+  isActive    Boolean @default(true)
+
+  currentVersionId String?      @db.Uuid
+  currentVersion   PolicyVersion? @relation("CurrentPolicyVersion", fields: [currentVersionId], references: [id])
+
+  versions PolicyVersion[] @relation("PolicyVersions")
+
+  acknowledgements PolicyAcknowledgement[] @relation("PolicyAcknowledgements")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PolicyVersion {
+  id String @id @default(uuid()) @db.Uuid
+
+  policyId String @db.Uuid
+
+  policy Policy @relation("PolicyVersions", fields: [policyId], references: [id])
+
+  currentForPolicies Policy[] @relation("CurrentPolicyVersion")
+
+  version Int
+  content Json
+
+  fileId String?      @db.Uuid
+  file   PolicyFile? @relation(fields: [fileId], references: [id])
+
+  isActive Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  acknowledgements PolicyAcknowledgement[] @relation("PolicyVersionAcknowledgements")
+
+  @@unique([policyId, version])
+}
+
+model PolicyFile {
+  id       String @id @default(uuid()) @db.Uuid
+  url      String
+  fileName String
+  fileType String
+
+  createdAt DateTime @default(now())
+
+  versions PolicyVersion[]
+}
+
+model PolicyAcknowledgement {
+  id String @id @default(uuid()) @db.Uuid
+
+  employeePolicyAcknowledgementId String                        @map("employee_policy_acknowledgement_id") @db.Uuid
+  employeePolicyAcknowledgement   EmployeePolicyAcknowledgement @relation(fields: [employeePolicyAcknowledgementId], references: [id], onDelete: Cascade)
+
+  policyId String @db.Uuid
+  policy   Policy @relation("PolicyAcknowledgements", fields: [policyId], references: [id])
+
+  policyVersionId String        @db.Uuid
+  policyVersion   PolicyVersion @relation("PolicyVersionAcknowledgements", fields: [policyVersionId], references: [id])
+
+  acknowledgedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([employeePolicyAcknowledgementId, policyVersionId])
+  @@index([employeePolicyAcknowledgementId])
+}

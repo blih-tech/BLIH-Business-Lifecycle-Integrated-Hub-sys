@@ -27,19 +27,19 @@ export type AggregateUserProfile = {
 export type UserProfileMinAggregateOutputType = {
   id: string | null
   employeeId: string | null
+  additionalEmail: string | null
+  additionalEmailType: $Enums.EmailType | null
+  additionalPhone: string | null
+  additionalPhoneType: $Enums.PhoneType | null
   dateOfBirth: Date | null
   gender: $Enums.Gender | null
   nationalityId: string | null
   maritalStatus: $Enums.MaritalStatus | null
   avatarUrl: string | null
-  addressLine1: string | null
-  addressLine2: string | null
-  city: string | null
-  state: string | null
-  countryId: string | null
-  postalCode: string | null
-  emergencyContactName: string | null
-  emergencyContactPhone: string | null
+  passportSizePhotoURL: string | null
+  faydaNumber: string | null
+  governmentIdCard: string | null
+  governmentIdCardType: $Enums.GovernmentIdCardType | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,19 +47,19 @@ export type UserProfileMinAggregateOutputType = {
 export type UserProfileMaxAggregateOutputType = {
   id: string | null
   employeeId: string | null
+  additionalEmail: string | null
+  additionalEmailType: $Enums.EmailType | null
+  additionalPhone: string | null
+  additionalPhoneType: $Enums.PhoneType | null
   dateOfBirth: Date | null
   gender: $Enums.Gender | null
   nationalityId: string | null
   maritalStatus: $Enums.MaritalStatus | null
   avatarUrl: string | null
-  addressLine1: string | null
-  addressLine2: string | null
-  city: string | null
-  state: string | null
-  countryId: string | null
-  postalCode: string | null
-  emergencyContactName: string | null
-  emergencyContactPhone: string | null
+  passportSizePhotoURL: string | null
+  faydaNumber: string | null
+  governmentIdCard: string | null
+  governmentIdCardType: $Enums.GovernmentIdCardType | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -67,19 +67,19 @@ export type UserProfileMaxAggregateOutputType = {
 export type UserProfileCountAggregateOutputType = {
   id: number
   employeeId: number
+  additionalEmail: number
+  additionalEmailType: number
+  additionalPhone: number
+  additionalPhoneType: number
   dateOfBirth: number
   gender: number
   nationalityId: number
   maritalStatus: number
   avatarUrl: number
-  addressLine1: number
-  addressLine2: number
-  city: number
-  state: number
-  countryId: number
-  postalCode: number
-  emergencyContactName: number
-  emergencyContactPhone: number
+  passportSizePhotoURL: number
+  faydaNumber: number
+  governmentIdCard: number
+  governmentIdCardType: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -89,19 +89,19 @@ export type UserProfileCountAggregateOutputType = {
 export type UserProfileMinAggregateInputType = {
   id?: true
   employeeId?: true
+  additionalEmail?: true
+  additionalEmailType?: true
+  additionalPhone?: true
+  additionalPhoneType?: true
   dateOfBirth?: true
   gender?: true
   nationalityId?: true
   maritalStatus?: true
   avatarUrl?: true
-  addressLine1?: true
-  addressLine2?: true
-  city?: true
-  state?: true
-  countryId?: true
-  postalCode?: true
-  emergencyContactName?: true
-  emergencyContactPhone?: true
+  passportSizePhotoURL?: true
+  faydaNumber?: true
+  governmentIdCard?: true
+  governmentIdCardType?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -109,19 +109,19 @@ export type UserProfileMinAggregateInputType = {
 export type UserProfileMaxAggregateInputType = {
   id?: true
   employeeId?: true
+  additionalEmail?: true
+  additionalEmailType?: true
+  additionalPhone?: true
+  additionalPhoneType?: true
   dateOfBirth?: true
   gender?: true
   nationalityId?: true
   maritalStatus?: true
   avatarUrl?: true
-  addressLine1?: true
-  addressLine2?: true
-  city?: true
-  state?: true
-  countryId?: true
-  postalCode?: true
-  emergencyContactName?: true
-  emergencyContactPhone?: true
+  passportSizePhotoURL?: true
+  faydaNumber?: true
+  governmentIdCard?: true
+  governmentIdCardType?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -129,19 +129,19 @@ export type UserProfileMaxAggregateInputType = {
 export type UserProfileCountAggregateInputType = {
   id?: true
   employeeId?: true
+  additionalEmail?: true
+  additionalEmailType?: true
+  additionalPhone?: true
+  additionalPhoneType?: true
   dateOfBirth?: true
   gender?: true
   nationalityId?: true
   maritalStatus?: true
   avatarUrl?: true
-  addressLine1?: true
-  addressLine2?: true
-  city?: true
-  state?: true
-  countryId?: true
-  postalCode?: true
-  emergencyContactName?: true
-  emergencyContactPhone?: true
+  passportSizePhotoURL?: true
+  faydaNumber?: true
+  governmentIdCard?: true
+  governmentIdCardType?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -222,19 +222,19 @@ export type UserProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type UserProfileGroupByOutputType = {
   id: string
   employeeId: string
+  additionalEmail: string | null
+  additionalEmailType: $Enums.EmailType | null
+  additionalPhone: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth: Date | null
   gender: $Enums.Gender | null
   nationalityId: string | null
   maritalStatus: $Enums.MaritalStatus | null
   avatarUrl: string | null
-  addressLine1: string | null
-  addressLine2: string | null
-  city: string | null
-  state: string | null
-  countryId: string | null
-  postalCode: string | null
-  emergencyContactName: string | null
-  emergencyContactPhone: string | null
+  passportSizePhotoURL: string | null
+  faydaNumber: string | null
+  governmentIdCard: string | null
+  governmentIdCardType: $Enums.GovernmentIdCardType | null
   createdAt: Date
   updatedAt: Date
   _count: UserProfileCountAggregateOutputType | null
@@ -263,47 +263,45 @@ export type UserProfileWhereInput = {
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   id?: Prisma.UuidFilter<"UserProfile"> | string
   employeeId?: Prisma.UuidFilter<"UserProfile"> | string
+  additionalEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  additionalEmailType?: Prisma.EnumEmailTypeNullableFilter<"UserProfile"> | $Enums.EmailType | null
+  additionalPhone?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFilter<"UserProfile"> | $Enums.PhoneType
   dateOfBirth?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   gender?: Prisma.EnumGenderNullableFilter<"UserProfile"> | $Enums.Gender | null
   nationalityId?: Prisma.UuidNullableFilter<"UserProfile"> | string | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableFilter<"UserProfile"> | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  addressLine1?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  addressLine2?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  city?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  state?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  countryId?: Prisma.UuidNullableFilter<"UserProfile"> | string | null
-  postalCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  emergencyContactName?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  emergencyContactPhone?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  passportSizePhotoURL?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  faydaNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  governmentIdCard?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   nationality?: Prisma.XOR<Prisma.CountryReferenceNullableScalarRelationFilter, Prisma.CountryReferenceWhereInput> | null
-  country?: Prisma.XOR<Prisma.CountryReferenceNullableScalarRelationFilter, Prisma.CountryReferenceWhereInput> | null
 }
 
 export type UserProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  additionalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  additionalEmailType?: Prisma.SortOrderInput | Prisma.SortOrder
+  additionalPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  additionalPhoneType?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   nationalityId?: Prisma.SortOrderInput | Prisma.SortOrder
   maritalStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  addressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
-  addressLine2?: Prisma.SortOrderInput | Prisma.SortOrder
-  city?: Prisma.SortOrderInput | Prisma.SortOrder
-  state?: Prisma.SortOrderInput | Prisma.SortOrder
-  countryId?: Prisma.SortOrderInput | Prisma.SortOrder
-  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
-  emergencyContactName?: Prisma.SortOrderInput | Prisma.SortOrder
-  emergencyContactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  passportSizePhotoURL?: Prisma.SortOrderInput | Prisma.SortOrder
+  faydaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  governmentIdCard?: Prisma.SortOrderInput | Prisma.SortOrder
+  governmentIdCardType?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
   nationality?: Prisma.CountryReferenceOrderByWithRelationInput
-  country?: Prisma.CountryReferenceOrderByWithRelationInput
 }
 
 export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -312,42 +310,41 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   OR?: Prisma.UserProfileWhereInput[]
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
+  additionalEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  additionalEmailType?: Prisma.EnumEmailTypeNullableFilter<"UserProfile"> | $Enums.EmailType | null
+  additionalPhone?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFilter<"UserProfile"> | $Enums.PhoneType
   dateOfBirth?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   gender?: Prisma.EnumGenderNullableFilter<"UserProfile"> | $Enums.Gender | null
   nationalityId?: Prisma.UuidNullableFilter<"UserProfile"> | string | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableFilter<"UserProfile"> | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  addressLine1?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  addressLine2?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  city?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  state?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  countryId?: Prisma.UuidNullableFilter<"UserProfile"> | string | null
-  postalCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  emergencyContactName?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  emergencyContactPhone?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  passportSizePhotoURL?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  faydaNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  governmentIdCard?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   nationality?: Prisma.XOR<Prisma.CountryReferenceNullableScalarRelationFilter, Prisma.CountryReferenceWhereInput> | null
-  country?: Prisma.XOR<Prisma.CountryReferenceNullableScalarRelationFilter, Prisma.CountryReferenceWhereInput> | null
 }, "id" | "employeeId">
 
 export type UserProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  additionalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  additionalEmailType?: Prisma.SortOrderInput | Prisma.SortOrder
+  additionalPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  additionalPhoneType?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   nationalityId?: Prisma.SortOrderInput | Prisma.SortOrder
   maritalStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  addressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
-  addressLine2?: Prisma.SortOrderInput | Prisma.SortOrder
-  city?: Prisma.SortOrderInput | Prisma.SortOrder
-  state?: Prisma.SortOrderInput | Prisma.SortOrder
-  countryId?: Prisma.SortOrderInput | Prisma.SortOrder
-  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
-  emergencyContactName?: Prisma.SortOrderInput | Prisma.SortOrder
-  emergencyContactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  passportSizePhotoURL?: Prisma.SortOrderInput | Prisma.SortOrder
+  faydaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  governmentIdCard?: Prisma.SortOrderInput | Prisma.SortOrder
+  governmentIdCardType?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserProfileCountOrderByAggregateInput
@@ -361,99 +358,99 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   NOT?: Prisma.UserProfileScalarWhereWithAggregatesInput | Prisma.UserProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"UserProfile"> | string
   employeeId?: Prisma.UuidWithAggregatesFilter<"UserProfile"> | string
+  additionalEmail?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  additionalEmailType?: Prisma.EnumEmailTypeNullableWithAggregatesFilter<"UserProfile"> | $Enums.EmailType | null
+  additionalPhone?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeWithAggregatesFilter<"UserProfile"> | $Enums.PhoneType
   dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
   gender?: Prisma.EnumGenderNullableWithAggregatesFilter<"UserProfile"> | $Enums.Gender | null
   nationalityId?: Prisma.UuidNullableWithAggregatesFilter<"UserProfile"> | string | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableWithAggregatesFilter<"UserProfile"> | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  addressLine1?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  addressLine2?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  city?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  state?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  countryId?: Prisma.UuidNullableWithAggregatesFilter<"UserProfile"> | string | null
-  postalCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  emergencyContactName?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  emergencyContactPhone?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  passportSizePhotoURL?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  faydaNumber?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  governmentIdCard?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableWithAggregatesFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
 }
 
 export type UserProfileCreateInput = {
   id?: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutProfileInput
   nationality?: Prisma.CountryReferenceCreateNestedOneWithoutNationalityProfilesInput
-  country?: Prisma.CountryReferenceCreateNestedOneWithoutResidenceProfilesInput
 }
 
 export type UserProfileUncheckedCreateInput = {
   id?: string
   employeeId: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   nationalityId?: string | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  countryId?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutProfileNestedInput
   nationality?: Prisma.CountryReferenceUpdateOneWithoutNationalityProfilesNestedInput
-  country?: Prisma.CountryReferenceUpdateOneWithoutResidenceProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   nationalityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -461,36 +458,37 @@ export type UserProfileUncheckedUpdateInput = {
 export type UserProfileCreateManyInput = {
   id?: string
   employeeId: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   nationalityId?: string | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  countryId?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -498,19 +496,19 @@ export type UserProfileUpdateManyMutationInput = {
 export type UserProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   nationalityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -533,19 +531,19 @@ export type UserProfileNullableScalarRelationFilter = {
 export type UserProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  additionalEmail?: Prisma.SortOrder
+  additionalEmailType?: Prisma.SortOrder
+  additionalPhone?: Prisma.SortOrder
+  additionalPhoneType?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   nationalityId?: Prisma.SortOrder
   maritalStatus?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
-  addressLine1?: Prisma.SortOrder
-  addressLine2?: Prisma.SortOrder
-  city?: Prisma.SortOrder
-  state?: Prisma.SortOrder
-  countryId?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrder
-  emergencyContactName?: Prisma.SortOrder
-  emergencyContactPhone?: Prisma.SortOrder
+  passportSizePhotoURL?: Prisma.SortOrder
+  faydaNumber?: Prisma.SortOrder
+  governmentIdCard?: Prisma.SortOrder
+  governmentIdCardType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -553,19 +551,19 @@ export type UserProfileCountOrderByAggregateInput = {
 export type UserProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  additionalEmail?: Prisma.SortOrder
+  additionalEmailType?: Prisma.SortOrder
+  additionalPhone?: Prisma.SortOrder
+  additionalPhoneType?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   nationalityId?: Prisma.SortOrder
   maritalStatus?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
-  addressLine1?: Prisma.SortOrder
-  addressLine2?: Prisma.SortOrder
-  city?: Prisma.SortOrder
-  state?: Prisma.SortOrder
-  countryId?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrder
-  emergencyContactName?: Prisma.SortOrder
-  emergencyContactPhone?: Prisma.SortOrder
+  passportSizePhotoURL?: Prisma.SortOrder
+  faydaNumber?: Prisma.SortOrder
+  governmentIdCard?: Prisma.SortOrder
+  governmentIdCardType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -573,19 +571,19 @@ export type UserProfileMaxOrderByAggregateInput = {
 export type UserProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  additionalEmail?: Prisma.SortOrder
+  additionalEmailType?: Prisma.SortOrder
+  additionalPhone?: Prisma.SortOrder
+  additionalPhoneType?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   nationalityId?: Prisma.SortOrder
   maritalStatus?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
-  addressLine1?: Prisma.SortOrder
-  addressLine2?: Prisma.SortOrder
-  city?: Prisma.SortOrder
-  state?: Prisma.SortOrder
-  countryId?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrder
-  emergencyContactName?: Prisma.SortOrder
-  emergencyContactPhone?: Prisma.SortOrder
+  passportSizePhotoURL?: Prisma.SortOrder
+  faydaNumber?: Prisma.SortOrder
+  governmentIdCard?: Prisma.SortOrder
+  governmentIdCardType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -597,24 +595,10 @@ export type UserProfileCreateNestedManyWithoutNationalityInput = {
   connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
 }
 
-export type UserProfileCreateNestedManyWithoutCountryInput = {
-  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutCountryInput, Prisma.UserProfileUncheckedCreateWithoutCountryInput> | Prisma.UserProfileCreateWithoutCountryInput[] | Prisma.UserProfileUncheckedCreateWithoutCountryInput[]
-  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutCountryInput | Prisma.UserProfileCreateOrConnectWithoutCountryInput[]
-  createMany?: Prisma.UserProfileCreateManyCountryInputEnvelope
-  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-}
-
 export type UserProfileUncheckedCreateNestedManyWithoutNationalityInput = {
   create?: Prisma.XOR<Prisma.UserProfileCreateWithoutNationalityInput, Prisma.UserProfileUncheckedCreateWithoutNationalityInput> | Prisma.UserProfileCreateWithoutNationalityInput[] | Prisma.UserProfileUncheckedCreateWithoutNationalityInput[]
   connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutNationalityInput | Prisma.UserProfileCreateOrConnectWithoutNationalityInput[]
   createMany?: Prisma.UserProfileCreateManyNationalityInputEnvelope
-  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-}
-
-export type UserProfileUncheckedCreateNestedManyWithoutCountryInput = {
-  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutCountryInput, Prisma.UserProfileUncheckedCreateWithoutCountryInput> | Prisma.UserProfileCreateWithoutCountryInput[] | Prisma.UserProfileUncheckedCreateWithoutCountryInput[]
-  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutCountryInput | Prisma.UserProfileCreateOrConnectWithoutCountryInput[]
-  createMany?: Prisma.UserProfileCreateManyCountryInputEnvelope
   connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
 }
 
@@ -632,20 +616,6 @@ export type UserProfileUpdateManyWithoutNationalityNestedInput = {
   deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
 }
 
-export type UserProfileUpdateManyWithoutCountryNestedInput = {
-  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutCountryInput, Prisma.UserProfileUncheckedCreateWithoutCountryInput> | Prisma.UserProfileCreateWithoutCountryInput[] | Prisma.UserProfileUncheckedCreateWithoutCountryInput[]
-  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutCountryInput | Prisma.UserProfileCreateOrConnectWithoutCountryInput[]
-  upsert?: Prisma.UserProfileUpsertWithWhereUniqueWithoutCountryInput | Prisma.UserProfileUpsertWithWhereUniqueWithoutCountryInput[]
-  createMany?: Prisma.UserProfileCreateManyCountryInputEnvelope
-  set?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  disconnect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  delete?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  update?: Prisma.UserProfileUpdateWithWhereUniqueWithoutCountryInput | Prisma.UserProfileUpdateWithWhereUniqueWithoutCountryInput[]
-  updateMany?: Prisma.UserProfileUpdateManyWithWhereWithoutCountryInput | Prisma.UserProfileUpdateManyWithWhereWithoutCountryInput[]
-  deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
-}
-
 export type UserProfileUncheckedUpdateManyWithoutNationalityNestedInput = {
   create?: Prisma.XOR<Prisma.UserProfileCreateWithoutNationalityInput, Prisma.UserProfileUncheckedCreateWithoutNationalityInput> | Prisma.UserProfileCreateWithoutNationalityInput[] | Prisma.UserProfileUncheckedCreateWithoutNationalityInput[]
   connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutNationalityInput | Prisma.UserProfileCreateOrConnectWithoutNationalityInput[]
@@ -657,20 +627,6 @@ export type UserProfileUncheckedUpdateManyWithoutNationalityNestedInput = {
   connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
   update?: Prisma.UserProfileUpdateWithWhereUniqueWithoutNationalityInput | Prisma.UserProfileUpdateWithWhereUniqueWithoutNationalityInput[]
   updateMany?: Prisma.UserProfileUpdateManyWithWhereWithoutNationalityInput | Prisma.UserProfileUpdateManyWithWhereWithoutNationalityInput[]
-  deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
-}
-
-export type UserProfileUncheckedUpdateManyWithoutCountryNestedInput = {
-  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutCountryInput, Prisma.UserProfileUncheckedCreateWithoutCountryInput> | Prisma.UserProfileCreateWithoutCountryInput[] | Prisma.UserProfileUncheckedCreateWithoutCountryInput[]
-  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutCountryInput | Prisma.UserProfileCreateOrConnectWithoutCountryInput[]
-  upsert?: Prisma.UserProfileUpsertWithWhereUniqueWithoutCountryInput | Prisma.UserProfileUpsertWithWhereUniqueWithoutCountryInput[]
-  createMany?: Prisma.UserProfileCreateManyCountryInputEnvelope
-  set?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  disconnect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  delete?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
-  update?: Prisma.UserProfileUpdateWithWhereUniqueWithoutCountryInput | Prisma.UserProfileUpdateWithWhereUniqueWithoutCountryInput[]
-  updateMany?: Prisma.UserProfileUpdateManyWithWhereWithoutCountryInput | Prisma.UserProfileUpdateManyWithWhereWithoutCountryInput[]
   deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
 }
 
@@ -706,6 +662,14 @@ export type UserProfileUncheckedUpdateOneWithoutEmployeeNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserProfileUpdateToOneWithWhereWithoutEmployeeInput, Prisma.UserProfileUpdateWithoutEmployeeInput>, Prisma.UserProfileUncheckedUpdateWithoutEmployeeInput>
 }
 
+export type NullableEnumEmailTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EmailType | null
+}
+
+export type EnumPhoneTypeFieldUpdateOperationsInput = {
+  set?: $Enums.PhoneType
+}
+
 export type NullableEnumGenderFieldUpdateOperationsInput = {
   set?: $Enums.Gender | null
 }
@@ -714,40 +678,44 @@ export type NullableEnumMaritalStatusFieldUpdateOperationsInput = {
   set?: $Enums.MaritalStatus | null
 }
 
+export type NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput = {
+  set?: $Enums.GovernmentIdCardType | null
+}
+
 export type UserProfileCreateWithoutNationalityInput = {
   id?: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutProfileInput
-  country?: Prisma.CountryReferenceCreateNestedOneWithoutResidenceProfilesInput
 }
 
 export type UserProfileUncheckedCreateWithoutNationalityInput = {
   id?: string
   employeeId: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  countryId?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -759,54 +727,6 @@ export type UserProfileCreateOrConnectWithoutNationalityInput = {
 
 export type UserProfileCreateManyNationalityInputEnvelope = {
   data: Prisma.UserProfileCreateManyNationalityInput | Prisma.UserProfileCreateManyNationalityInput[]
-  skipDuplicates?: boolean
-}
-
-export type UserProfileCreateWithoutCountryInput = {
-  id?: string
-  dateOfBirth?: Date | string | null
-  gender?: $Enums.Gender | null
-  maritalStatus?: $Enums.MaritalStatus | null
-  avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutProfileInput
-  nationality?: Prisma.CountryReferenceCreateNestedOneWithoutNationalityProfilesInput
-}
-
-export type UserProfileUncheckedCreateWithoutCountryInput = {
-  id?: string
-  employeeId: string
-  dateOfBirth?: Date | string | null
-  gender?: $Enums.Gender | null
-  nationalityId?: string | null
-  maritalStatus?: $Enums.MaritalStatus | null
-  avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type UserProfileCreateOrConnectWithoutCountryInput = {
-  where: Prisma.UserProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserProfileCreateWithoutCountryInput, Prisma.UserProfileUncheckedCreateWithoutCountryInput>
-}
-
-export type UserProfileCreateManyCountryInputEnvelope = {
-  data: Prisma.UserProfileCreateManyCountryInput | Prisma.UserProfileCreateManyCountryInput[]
   skipDuplicates?: boolean
 }
 
@@ -832,73 +752,57 @@ export type UserProfileScalarWhereInput = {
   NOT?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
   id?: Prisma.UuidFilter<"UserProfile"> | string
   employeeId?: Prisma.UuidFilter<"UserProfile"> | string
+  additionalEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  additionalEmailType?: Prisma.EnumEmailTypeNullableFilter<"UserProfile"> | $Enums.EmailType | null
+  additionalPhone?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFilter<"UserProfile"> | $Enums.PhoneType
   dateOfBirth?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   gender?: Prisma.EnumGenderNullableFilter<"UserProfile"> | $Enums.Gender | null
   nationalityId?: Prisma.UuidNullableFilter<"UserProfile"> | string | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableFilter<"UserProfile"> | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  addressLine1?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  addressLine2?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  city?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  state?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  countryId?: Prisma.UuidNullableFilter<"UserProfile"> | string | null
-  postalCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  emergencyContactName?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  emergencyContactPhone?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  passportSizePhotoURL?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  faydaNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  governmentIdCard?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
 }
 
-export type UserProfileUpsertWithWhereUniqueWithoutCountryInput = {
-  where: Prisma.UserProfileWhereUniqueInput
-  update: Prisma.XOR<Prisma.UserProfileUpdateWithoutCountryInput, Prisma.UserProfileUncheckedUpdateWithoutCountryInput>
-  create: Prisma.XOR<Prisma.UserProfileCreateWithoutCountryInput, Prisma.UserProfileUncheckedCreateWithoutCountryInput>
-}
-
-export type UserProfileUpdateWithWhereUniqueWithoutCountryInput = {
-  where: Prisma.UserProfileWhereUniqueInput
-  data: Prisma.XOR<Prisma.UserProfileUpdateWithoutCountryInput, Prisma.UserProfileUncheckedUpdateWithoutCountryInput>
-}
-
-export type UserProfileUpdateManyWithWhereWithoutCountryInput = {
-  where: Prisma.UserProfileScalarWhereInput
-  data: Prisma.XOR<Prisma.UserProfileUpdateManyMutationInput, Prisma.UserProfileUncheckedUpdateManyWithoutCountryInput>
-}
-
 export type UserProfileCreateWithoutEmployeeInput = {
   id?: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
   nationality?: Prisma.CountryReferenceCreateNestedOneWithoutNationalityProfilesInput
-  country?: Prisma.CountryReferenceCreateNestedOneWithoutResidenceProfilesInput
 }
 
 export type UserProfileUncheckedCreateWithoutEmployeeInput = {
   id?: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   nationalityId?: string | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  countryId?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -921,38 +825,38 @@ export type UserProfileUpdateToOneWithWhereWithoutEmployeeInput = {
 
 export type UserProfileUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationality?: Prisma.CountryReferenceUpdateOneWithoutNationalityProfilesNestedInput
-  country?: Prisma.CountryReferenceUpdateOneWithoutResidenceProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   nationalityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -960,75 +864,56 @@ export type UserProfileUncheckedUpdateWithoutEmployeeInput = {
 export type UserProfileCreateManyNationalityInput = {
   id?: string
   employeeId: string
+  additionalEmail?: string | null
+  additionalEmailType?: $Enums.EmailType | null
+  additionalPhone?: string | null
+  additionalPhoneType: $Enums.PhoneType
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
   avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  countryId?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type UserProfileCreateManyCountryInput = {
-  id?: string
-  employeeId: string
-  dateOfBirth?: Date | string | null
-  gender?: $Enums.Gender | null
-  nationalityId?: string | null
-  maritalStatus?: $Enums.MaritalStatus | null
-  avatarUrl?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  state?: string | null
-  postalCode?: string | null
-  emergencyContactName?: string | null
-  emergencyContactPhone?: string | null
+  passportSizePhotoURL?: string | null
+  faydaNumber?: string | null
+  governmentIdCard?: string | null
+  governmentIdCardType?: $Enums.GovernmentIdCardType | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserProfileUpdateWithoutNationalityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutProfileNestedInput
-  country?: Prisma.CountryReferenceUpdateOneWithoutResidenceProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateWithoutNationalityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1036,75 +921,18 @@ export type UserProfileUncheckedUpdateWithoutNationalityInput = {
 export type UserProfileUncheckedUpdateManyWithoutNationalityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalEmailType?: Prisma.NullableEnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType | null
+  additionalPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhoneType?: Prisma.EnumPhoneTypeFieldUpdateOperationsInput | $Enums.PhoneType
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type UserProfileUpdateWithoutCountryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
-  maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutProfileNestedInput
-  nationality?: Prisma.CountryReferenceUpdateOneWithoutNationalityProfilesNestedInput
-}
-
-export type UserProfileUncheckedUpdateWithoutCountryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
-  nationalityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type UserProfileUncheckedUpdateManyWithoutCountryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
-  nationalityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportSizePhotoURL?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1114,107 +942,101 @@ export type UserProfileUncheckedUpdateManyWithoutCountryInput = {
 export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  additionalEmail?: boolean
+  additionalEmailType?: boolean
+  additionalPhone?: boolean
+  additionalPhoneType?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   nationalityId?: boolean
   maritalStatus?: boolean
   avatarUrl?: boolean
-  addressLine1?: boolean
-  addressLine2?: boolean
-  city?: boolean
-  state?: boolean
-  countryId?: boolean
-  postalCode?: boolean
-  emergencyContactName?: boolean
-  emergencyContactPhone?: boolean
+  passportSizePhotoURL?: boolean
+  faydaNumber?: boolean
+  governmentIdCard?: boolean
+  governmentIdCardType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
-  country?: boolean | Prisma.UserProfile$countryArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
 export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  additionalEmail?: boolean
+  additionalEmailType?: boolean
+  additionalPhone?: boolean
+  additionalPhoneType?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   nationalityId?: boolean
   maritalStatus?: boolean
   avatarUrl?: boolean
-  addressLine1?: boolean
-  addressLine2?: boolean
-  city?: boolean
-  state?: boolean
-  countryId?: boolean
-  postalCode?: boolean
-  emergencyContactName?: boolean
-  emergencyContactPhone?: boolean
+  passportSizePhotoURL?: boolean
+  faydaNumber?: boolean
+  governmentIdCard?: boolean
+  governmentIdCardType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
-  country?: boolean | Prisma.UserProfile$countryArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
 export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  additionalEmail?: boolean
+  additionalEmailType?: boolean
+  additionalPhone?: boolean
+  additionalPhoneType?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   nationalityId?: boolean
   maritalStatus?: boolean
   avatarUrl?: boolean
-  addressLine1?: boolean
-  addressLine2?: boolean
-  city?: boolean
-  state?: boolean
-  countryId?: boolean
-  postalCode?: boolean
-  emergencyContactName?: boolean
-  emergencyContactPhone?: boolean
+  passportSizePhotoURL?: boolean
+  faydaNumber?: boolean
+  governmentIdCard?: boolean
+  governmentIdCardType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
-  country?: boolean | Prisma.UserProfile$countryArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
 export type UserProfileSelectScalar = {
   id?: boolean
   employeeId?: boolean
+  additionalEmail?: boolean
+  additionalEmailType?: boolean
+  additionalPhone?: boolean
+  additionalPhoneType?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   nationalityId?: boolean
   maritalStatus?: boolean
   avatarUrl?: boolean
-  addressLine1?: boolean
-  addressLine2?: boolean
-  city?: boolean
-  state?: boolean
-  countryId?: boolean
-  postalCode?: boolean
-  emergencyContactName?: boolean
-  emergencyContactPhone?: boolean
+  passportSizePhotoURL?: boolean
+  faydaNumber?: boolean
+  governmentIdCard?: boolean
+  governmentIdCardType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "dateOfBirth" | "gender" | "nationalityId" | "maritalStatus" | "avatarUrl" | "addressLine1" | "addressLine2" | "city" | "state" | "countryId" | "postalCode" | "emergencyContactName" | "emergencyContactPhone" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "additionalEmail" | "additionalEmailType" | "additionalPhone" | "additionalPhoneType" | "dateOfBirth" | "gender" | "nationalityId" | "maritalStatus" | "avatarUrl" | "passportSizePhotoURL" | "faydaNumber" | "governmentIdCard" | "governmentIdCardType" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
-  country?: boolean | Prisma.UserProfile$countryArgs<ExtArgs>
 }
 export type UserProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
-  country?: boolean | Prisma.UserProfile$countryArgs<ExtArgs>
 }
 export type UserProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
-  country?: boolean | Prisma.UserProfile$countryArgs<ExtArgs>
 }
 
 export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1222,24 +1044,23 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     employee: Prisma.$EmployeePayload<ExtArgs>
     nationality: Prisma.$CountryReferencePayload<ExtArgs> | null
-    country: Prisma.$CountryReferencePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     employeeId: string
+    additionalEmail: string | null
+    additionalEmailType: $Enums.EmailType | null
+    additionalPhone: string | null
+    additionalPhoneType: $Enums.PhoneType
     dateOfBirth: Date | null
     gender: $Enums.Gender | null
     nationalityId: string | null
     maritalStatus: $Enums.MaritalStatus | null
     avatarUrl: string | null
-    addressLine1: string | null
-    addressLine2: string | null
-    city: string | null
-    state: string | null
-    countryId: string | null
-    postalCode: string | null
-    emergencyContactName: string | null
-    emergencyContactPhone: string | null
+    passportSizePhotoURL: string | null
+    faydaNumber: string | null
+    governmentIdCard: string | null
+    governmentIdCardType: $Enums.GovernmentIdCardType | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userProfile"]>
@@ -1638,7 +1459,6 @@ export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   nationality<T extends Prisma.UserProfile$nationalityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProfile$nationalityArgs<ExtArgs>>): Prisma.Prisma__CountryReferenceClient<runtime.Types.Result.GetResult<Prisma.$CountryReferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  country<T extends Prisma.UserProfile$countryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProfile$countryArgs<ExtArgs>>): Prisma.Prisma__CountryReferenceClient<runtime.Types.Result.GetResult<Prisma.$CountryReferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1670,19 +1490,19 @@ export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends runt
 export interface UserProfileFieldRefs {
   readonly id: Prisma.FieldRef<"UserProfile", 'String'>
   readonly employeeId: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly additionalEmail: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly additionalEmailType: Prisma.FieldRef<"UserProfile", 'EmailType'>
+  readonly additionalPhone: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly additionalPhoneType: Prisma.FieldRef<"UserProfile", 'PhoneType'>
   readonly dateOfBirth: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly gender: Prisma.FieldRef<"UserProfile", 'Gender'>
   readonly nationalityId: Prisma.FieldRef<"UserProfile", 'String'>
   readonly maritalStatus: Prisma.FieldRef<"UserProfile", 'MaritalStatus'>
   readonly avatarUrl: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly addressLine1: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly addressLine2: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly city: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly state: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly countryId: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly postalCode: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly emergencyContactName: Prisma.FieldRef<"UserProfile", 'String'>
-  readonly emergencyContactPhone: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly passportSizePhotoURL: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly faydaNumber: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly governmentIdCard: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly governmentIdCardType: Prisma.FieldRef<"UserProfile", 'GovernmentIdCardType'>
   readonly createdAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
 }
@@ -2084,25 +1904,6 @@ export type UserProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
  * UserProfile.nationality
  */
 export type UserProfile$nationalityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the CountryReference
-   */
-  select?: Prisma.CountryReferenceSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the CountryReference
-   */
-  omit?: Prisma.CountryReferenceOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CountryReferenceInclude<ExtArgs> | null
-  where?: Prisma.CountryReferenceWhereInput
-}
-
-/**
- * UserProfile.country
- */
-export type UserProfile$countryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the CountryReference
    */

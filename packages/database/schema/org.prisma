@@ -69,15 +69,16 @@ model Position {
 }
 
 model CountryReference {
-  id                  String        @id @default(uuid()) @db.Uuid
-  code                String?       @unique @db.VarChar(3)
-  name                String        @unique
-  isActive            Boolean       @default(true)
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  nationalityProfiles UserProfile[] @relation("ProfileNationality")
-  residenceProfiles   UserProfile[] @relation("ProfileResidenceCountry")
+  id                  String             @id @default(uuid()) @db.Uuid
+  code                String?            @unique @db.VarChar(3)
+  name                String             @unique
+  isActive            Boolean            @default(true)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  nationalityProfiles UserProfile[]      @relation("ProfileNationality")
   holidays            Holiday[]
+  employeeAddresses   EmployeeAddress[]
+  emergencyContacts   EmergencyContact[]
 
   @@index([isActive])
 }

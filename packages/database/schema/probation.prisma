@@ -10,8 +10,8 @@ enum ProbationStatus {
 enum ProbationOutcome {
   CONFIRMED
   EXTENDED
-  TERMINATED 
-  RESIGNED 
+  TERMINATED
+  RESIGNED
 }
 
 model ProbationPlan {
@@ -26,77 +26,77 @@ model ProbationPlan {
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
 
-  employee        Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 }
+
 model KPI {
-  id            String      @id @default(uuid()) @db.Uuid
-  name          String      @unique
-  description   String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   probationKpis ProbationKPI[]
 }
 
 model ProbationKPI {
-  id            String          @id @default(uuid()) @db.Uuid
-  probationId   String          @db.Uuid
-  kpiId         String          @db.Uuid
-  scores        EvaluationScore[]
-  createdAt     DateTime        @default(now())
-  probation     ProbationPlan   @relation(fields: [probationId], references: [id], onDelete: Cascade)
-  kpi           KPI             @relation(fields: [kpiId], references: [id])
+  id          String            @id @default(uuid()) @db.Uuid
+  probationId String            @db.Uuid
+  kpiId       String            @db.Uuid
+  scores      EvaluationScore[]
+  createdAt   DateTime          @default(now())
+  probation   ProbationPlan     @relation(fields: [probationId], references: [id], onDelete: Cascade)
+  kpi         KPI               @relation(fields: [kpiId], references: [id])
 
   @@unique([probationId, kpiId])
 }
 
 model ProbationCheckpoint {
-  id              String                @id @default(uuid()) @db.Uuid
-  probationId     String                @db.Uuid
-  name            String                // e.g. "Month 1 Review"
-  checkpointDate  DateTime
-  createdAt       DateTime              @default(now())
-  evaluations     CheckpointEvaluation[]
+  id             String                 @id @default(uuid()) @db.Uuid
+  probationId    String                 @db.Uuid
+  name           String // e.g. "Month 1 Review"
+  checkpointDate DateTime
+  createdAt      DateTime               @default(now())
+  evaluations    CheckpointEvaluation[]
 
-  probation       ProbationPlan         @relation(fields: [probationId], references: [id], onDelete: Cascade)
+  probation ProbationPlan @relation(fields: [probationId], references: [id], onDelete: Cascade)
 }
 
-
 model CheckpointEvaluation {
-  id              String              @id @default(uuid()) @db.Uuid
-  checkpointId    String              @db.Uuid
-  comment         String?
-  totalScore      Float               // calculated out of 100
-  createdAt       DateTime            @default(now())
-  scores          EvaluationScore[]
+  id           String            @id @default(uuid()) @db.Uuid
+  checkpointId String            @db.Uuid
+  comment      String?
+  totalScore   Float // calculated out of 100
+  createdAt    DateTime          @default(now())
+  scores       EvaluationScore[]
 
-  checkpoint      ProbationCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
+  checkpoint ProbationCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
 }
 
 model EvaluationScore {
-  id                      String                  @id @default(uuid()) @db.Uuid
-  probationKpiId          String                  @db.Uuid
-  checkpointEvaluationId  String?                 @db.Uuid
-  finalEvaluationId       String?                 @db.Uuid
-  score                   Float                  // out of 100
-  comment                 String?
-  createdAt               DateTime               @default(now())
+  id                     String   @id @default(uuid()) @db.Uuid
+  probationKpiId         String   @db.Uuid
+  checkpointEvaluationId String?  @db.Uuid
+  finalEvaluationId      String?  @db.Uuid
+  score                  Float // out of 100
+  comment                String?
+  createdAt              DateTime @default(now())
 
-  probationKpi            ProbationKPI            @relation(fields: [probationKpiId], references: [id], onDelete: Cascade)
-  checkpointEvaluation    CheckpointEvaluation?   @relation(fields: [checkpointEvaluationId], references: [id], onDelete: Cascade)
-  finalEvaluation         FinalEvaluation?        @relation(fields: [finalEvaluationId], references: [id], onDelete: Cascade)
+  probationKpi         ProbationKPI          @relation(fields: [probationKpiId], references: [id], onDelete: Cascade)
+  checkpointEvaluation CheckpointEvaluation? @relation(fields: [checkpointEvaluationId], references: [id], onDelete: Cascade)
+  finalEvaluation      FinalEvaluation?      @relation(fields: [finalEvaluationId], references: [id], onDelete: Cascade)
 
   @@unique([probationKpiId, checkpointEvaluationId])
 }
 
 model FinalEvaluation {
-  id              String           @id @default(uuid()) @db.Uuid
-  probationId     String           @unique @db.Uuid
-  comment         String?
-  totalScore      Float            // out of 100
-  outcome        ProbationOutcome
-  scores          EvaluationScore[]
-  createdAt       DateTime         @default(now())
+  id          String            @id @default(uuid()) @db.Uuid
+  probationId String            @unique @db.Uuid
+  comment     String?
+  totalScore  Float // out of 100
+  outcome     ProbationOutcome
+  scores      EvaluationScore[]
+  createdAt   DateTime          @default(now())
 
-  probation       ProbationPlan    @relation(fields: [probationId], references: [id], onDelete: Cascade)
+  probation ProbationPlan @relation(fields: [probationId], references: [id], onDelete: Cascade)
 }

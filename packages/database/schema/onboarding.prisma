@@ -1,104 +1,98 @@
 enum OnboardingStatus {
-  NOT_STARTED
   IN_PROGRESS
   COMPLETED
   CANCELLED
 }
 
 enum OnboardingChecklistStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
-  OVERDUE
+  TODO
+  SUBMITTED        // Employee completed their part, waiting for HR
+  CHANGES_REQUESTED // HR rejected, sent back to employee
+  COMPLETED        // Fully done (and verified, if required)
 }
 
-enum OnboardingTaskDepartment {
-  HR
-  IT
-  ADMIN
-  TEAM
+enum TaskType {
+  NON_CUSTOM // System-integrated tasks: renders a typed form/viewer (Address, Bank, Contract, Policy, etc.)
+  CUSTOM     // Ad-hoc human tasks: "Meet your manager", "Get laptop", "Read the Employee Handbook"
 }
 
+enum TargetDataModel {
+  USER_PROFILE
+  EMPLOYEE_ADDRESS
+  EMPLOYEE_BANK_DETAIL
+  EMPLOYEE_EMERGENCY_CONTACT
+  EMPLOYEE_EDUCATION
+  EMPLOYEE_CONTRACT
+  EMPLOYEE_POLICY_ACKNOWLEDGEMENT
+}
+
+// One record per employee. @unique on employeeId enforces the one-onboarding-per-employee rule at DB level.
 model Onboarding {
   id          String                @id @default(uuid()) @db.Uuid
-  employeeId  String                @map("employee_id") @db.Uuid
-  status      OnboardingStatus      @default(NOT_STARTED)
+  employeeId  String                @unique @map("employee_id") @db.Uuid // @unique enforces 1-to-1
+  status      OnboardingStatus      @default(IN_PROGRESS) // Record is only created when HR clicks "Start Onboarding"
   startedAt   DateTime?             @map("started_at")
   joinDate    DateTime              @map("join_date") @db.Date
   completedAt DateTime?             @map("completed_at")
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
   checklists  OnboardingChecklist[]
-
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employee    Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  offer       Offer?                @relation("OnboardingOffer")
 
   @@index([employeeId])
   @@index([status])
 }
 
 model OnboardingChecklist {
-  id                 String                    @id @default(uuid()) @db.Uuid
-  onboardingTaskId   String                   @map("onboarding_task_id") @db.Uuid
-  onboardingId       String                   @map("onboarding_id") @db.Uuid
-  // overseerId         String?                   @map("overseer_id") @db.Uuid
-  status             OnboardingChecklistStatus @default(NOT_STARTED)
-  dueDate            DateTime?                 @map("due_date")
-  createdAt          DateTime                  @default(now())
-  updatedAt          DateTime                  @updatedAt
+  id             String                    @id @default(uuid()) @db.Uuid
+  onboardingId   String                    @map("onboarding_id") @db.Uuid
+  taskInstanceId String                    @map("task_instance_id") @db.Uuid
+  status         OnboardingChecklistStatus @default(TODO)
+  dueDate        DateTime?                 @map("due_date")
+  isRequired     Boolean                   @default(true)
 
-  onboarding     Onboarding?     @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
-  onboardingTask OnboardingTask? @relation(fields: [onboardingTaskId], references: [id], onDelete: Cascade)
-  // overseer       User?           @relation("OnboardingChecklistOverseer", fields: [overseerId], references: [id], onDelete: SetNull)
+  verifiedAt      DateTime? @map("verified_at")
+  verifiedBy      String?   @map("verified_by") @db.Uuid // HR User ID
+  rejectionReason String?   @map("rejection_reason") @db.Text
 
-  @@unique([onboardingId, onboardingTaskId])
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  // Non-nullable: a checklist item cannot exist without a parent onboarding record
+  onboarding   Onboarding            @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+  taskInstance OnboardingTaskInstance @relation(fields: [taskInstanceId], references: [id], onDelete: Cascade)
+
+  @@unique([onboardingId, taskInstanceId])
   @@index([onboardingId])
   @@index([status])
 }
 
+// The global task library HR uses to define available onboarding tasks.
 model OnboardingTask {
-  id            String                   @id @default(uuid()) @db.Uuid
-  department    OnboardingTaskDepartment
-  title         String
-  description   String?                  @db.Text
-  // completedById String?                  @map("completed_by_id") @db.Uuid
-  // completedBy   User?                    @relation("OnboardingTaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
-  createdAt     DateTime                 @default(now())
-  updatedAt     DateTime                 @updatedAt
-  checklist     OnboardingChecklist[]
+  id                     String           @id @default(uuid()) @db.Uuid
+  title                  String
+  description            String?          @db.Text
+  taskType               TaskType
+  // ROUTING LOGIC:
+  // If taskType == NON_CUSTOM, tell the frontend which component/form to render
+  targetDataModel        TargetDataModel? // e.g., EMPLOYEE_ADDRESS, EMPLOYEE_CONTRACT
+  requiresHrVerification Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model AssetProvisioning {
-  id                      String                  @id @default(uuid()) @db.Uuid
-  employeeId              String                  @map("employee_id") @db.Uuid
-  equipment               Json?                   @db.JsonB
-  platformPermissions     Json?                   @db.JsonB
-  itSupervisorApprovedAt  DateTime?               @map("it_supervisor_approved_at")
-  adminApprovedAt         DateTime?               @map("admin_approved_at")
-  financeApprovalRequired Boolean                 @default(false) @map("finance_approval_required")
-  status                  AssetProvisioningStatus @default(PENDING)
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
+// Snapshot of a task cloned from the library when HR starts onboarding.
+// Ensures historical records are preserved even if HR edits the original OnboardingTask later.
+model OnboardingTaskInstance {
+  id                     String                @id @default(uuid()) @db.Uuid
+  title                  String
+  description            String?               @db.Text
+  taskType               TaskType
+  targetDataModel        TargetDataModel?
+  requiresHrVerification Boolean               @default(false)
+  checklist              OnboardingChecklist[]
 
-  employee                Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  @@index([employeeId])
-}
-
-model PolicyAcknowledgement {
-  id                    String    @id @default(uuid()) @db.Uuid
-  employeeId            String    @map("employee_id") @db.Uuid
-  policies              Json?     @db.JsonB
-  allAcknowledged       Boolean   @default(false) @map("all_acknowledged")
-  confirmedAt           DateTime? @map("confirmed_at")
-  systemAccessGrantedAt DateTime? @map("system_access_granted_at")
-  verifiedById          String?   @map("verified_by_id") @db.Uuid
-  verifiedAt            DateTime? @map("verified_at")
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-
-  verifiedBy            User?     @relation("PolicyAcknowledgementVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
-  employee              Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  @@index([employeeId])
-  @@index([verifiedById])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

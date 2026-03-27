@@ -26,37 +26,30 @@ export type AggregatePolicyAcknowledgement = {
 
 export type PolicyAcknowledgementMinAggregateOutputType = {
   id: string | null
-  employeeId: string | null
-  allAcknowledged: boolean | null
-  confirmedAt: Date | null
-  systemAccessGrantedAt: Date | null
-  verifiedById: string | null
-  verifiedAt: Date | null
+  employeePolicyAcknowledgementId: string | null
+  policyId: string | null
+  policyVersionId: string | null
+  acknowledgedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type PolicyAcknowledgementMaxAggregateOutputType = {
   id: string | null
-  employeeId: string | null
-  allAcknowledged: boolean | null
-  confirmedAt: Date | null
-  systemAccessGrantedAt: Date | null
-  verifiedById: string | null
-  verifiedAt: Date | null
+  employeePolicyAcknowledgementId: string | null
+  policyId: string | null
+  policyVersionId: string | null
+  acknowledgedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type PolicyAcknowledgementCountAggregateOutputType = {
   id: number
-  employeeId: number
-  policies: number
-  allAcknowledged: number
-  confirmedAt: number
-  systemAccessGrantedAt: number
-  verifiedById: number
-  verifiedAt: number
+  employeePolicyAcknowledgementId: number
+  policyId: number
+  policyVersionId: number
+  acknowledgedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -65,37 +58,30 @@ export type PolicyAcknowledgementCountAggregateOutputType = {
 
 export type PolicyAcknowledgementMinAggregateInputType = {
   id?: true
-  employeeId?: true
-  allAcknowledged?: true
-  confirmedAt?: true
-  systemAccessGrantedAt?: true
-  verifiedById?: true
-  verifiedAt?: true
+  employeePolicyAcknowledgementId?: true
+  policyId?: true
+  policyVersionId?: true
+  acknowledgedAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type PolicyAcknowledgementMaxAggregateInputType = {
   id?: true
-  employeeId?: true
-  allAcknowledged?: true
-  confirmedAt?: true
-  systemAccessGrantedAt?: true
-  verifiedById?: true
-  verifiedAt?: true
+  employeePolicyAcknowledgementId?: true
+  policyId?: true
+  policyVersionId?: true
+  acknowledgedAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type PolicyAcknowledgementCountAggregateInputType = {
   id?: true
-  employeeId?: true
-  policies?: true
-  allAcknowledged?: true
-  confirmedAt?: true
-  systemAccessGrantedAt?: true
-  verifiedById?: true
-  verifiedAt?: true
+  employeePolicyAcknowledgementId?: true
+  policyId?: true
+  policyVersionId?: true
+  acknowledgedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -175,13 +161,10 @@ export type PolicyAcknowledgementGroupByArgs<ExtArgs extends runtime.Types.Exten
 
 export type PolicyAcknowledgementGroupByOutputType = {
   id: string
-  employeeId: string
-  policies: runtime.JsonValue | null
-  allAcknowledged: boolean
-  confirmedAt: Date | null
-  systemAccessGrantedAt: Date | null
-  verifiedById: string | null
-  verifiedAt: Date | null
+  employeePolicyAcknowledgementId: string
+  policyId: string
+  policyVersionId: string
+  acknowledgedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: PolicyAcknowledgementCountAggregateOutputType | null
@@ -209,61 +192,53 @@ export type PolicyAcknowledgementWhereInput = {
   OR?: Prisma.PolicyAcknowledgementWhereInput[]
   NOT?: Prisma.PolicyAcknowledgementWhereInput | Prisma.PolicyAcknowledgementWhereInput[]
   id?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
-  employeeId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
-  policies?: Prisma.JsonNullableFilter<"PolicyAcknowledgement">
-  allAcknowledged?: Prisma.BoolFilter<"PolicyAcknowledgement"> | boolean
-  confirmedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
-  systemAccessGrantedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
-  verifiedById?: Prisma.UuidNullableFilter<"PolicyAcknowledgement"> | string | null
-  verifiedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  policyId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  policyVersionId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  acknowledgedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
-  verifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  employeePolicyAcknowledgement?: Prisma.XOR<Prisma.EmployeePolicyAcknowledgementScalarRelationFilter, Prisma.EmployeePolicyAcknowledgementWhereInput>
+  policy?: Prisma.XOR<Prisma.PolicyScalarRelationFilter, Prisma.PolicyWhereInput>
+  policyVersion?: Prisma.XOR<Prisma.PolicyVersionScalarRelationFilter, Prisma.PolicyVersionWhereInput>
 }
 
 export type PolicyAcknowledgementOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  policies?: Prisma.SortOrderInput | Prisma.SortOrder
-  allAcknowledged?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  systemAccessGrantedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifiedById?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  employeePolicyAcknowledgementId?: Prisma.SortOrder
+  policyId?: Prisma.SortOrder
+  policyVersionId?: Prisma.SortOrder
+  acknowledgedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  verifiedBy?: Prisma.UserOrderByWithRelationInput
-  employee?: Prisma.EmployeeOrderByWithRelationInput
+  employeePolicyAcknowledgement?: Prisma.EmployeePolicyAcknowledgementOrderByWithRelationInput
+  policy?: Prisma.PolicyOrderByWithRelationInput
+  policyVersion?: Prisma.PolicyVersionOrderByWithRelationInput
 }
 
 export type PolicyAcknowledgementWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  employeePolicyAcknowledgementId_policyVersionId?: Prisma.PolicyAcknowledgementEmployeePolicyAcknowledgementIdPolicyVersionIdCompoundUniqueInput
   AND?: Prisma.PolicyAcknowledgementWhereInput | Prisma.PolicyAcknowledgementWhereInput[]
   OR?: Prisma.PolicyAcknowledgementWhereInput[]
   NOT?: Prisma.PolicyAcknowledgementWhereInput | Prisma.PolicyAcknowledgementWhereInput[]
-  employeeId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
-  policies?: Prisma.JsonNullableFilter<"PolicyAcknowledgement">
-  allAcknowledged?: Prisma.BoolFilter<"PolicyAcknowledgement"> | boolean
-  confirmedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
-  systemAccessGrantedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
-  verifiedById?: Prisma.UuidNullableFilter<"PolicyAcknowledgement"> | string | null
-  verifiedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  policyId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  policyVersionId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  acknowledgedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
-  verifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-}, "id">
+  employeePolicyAcknowledgement?: Prisma.XOR<Prisma.EmployeePolicyAcknowledgementScalarRelationFilter, Prisma.EmployeePolicyAcknowledgementWhereInput>
+  policy?: Prisma.XOR<Prisma.PolicyScalarRelationFilter, Prisma.PolicyWhereInput>
+  policyVersion?: Prisma.XOR<Prisma.PolicyVersionScalarRelationFilter, Prisma.PolicyVersionWhereInput>
+}, "id" | "employeePolicyAcknowledgementId_policyVersionId">
 
 export type PolicyAcknowledgementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  policies?: Prisma.SortOrderInput | Prisma.SortOrder
-  allAcknowledged?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  systemAccessGrantedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifiedById?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  employeePolicyAcknowledgementId?: Prisma.SortOrder
+  policyId?: Prisma.SortOrder
+  policyVersionId?: Prisma.SortOrder
+  acknowledgedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PolicyAcknowledgementCountOrderByAggregateInput
@@ -276,141 +251,79 @@ export type PolicyAcknowledgementScalarWhereWithAggregatesInput = {
   OR?: Prisma.PolicyAcknowledgementScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PolicyAcknowledgementScalarWhereWithAggregatesInput | Prisma.PolicyAcknowledgementScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"PolicyAcknowledgement"> | string
-  employeeId?: Prisma.UuidWithAggregatesFilter<"PolicyAcknowledgement"> | string
-  policies?: Prisma.JsonNullableWithAggregatesFilter<"PolicyAcknowledgement">
-  allAcknowledged?: Prisma.BoolWithAggregatesFilter<"PolicyAcknowledgement"> | boolean
-  confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PolicyAcknowledgement"> | Date | string | null
-  systemAccessGrantedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PolicyAcknowledgement"> | Date | string | null
-  verifiedById?: Prisma.UuidNullableWithAggregatesFilter<"PolicyAcknowledgement"> | string | null
-  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PolicyAcknowledgement"> | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.UuidWithAggregatesFilter<"PolicyAcknowledgement"> | string
+  policyId?: Prisma.UuidWithAggregatesFilter<"PolicyAcknowledgement"> | string
+  policyVersionId?: Prisma.UuidWithAggregatesFilter<"PolicyAcknowledgement"> | string
+  acknowledgedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PolicyAcknowledgement"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PolicyAcknowledgement"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PolicyAcknowledgement"> | Date | string
 }
 
 export type PolicyAcknowledgementCreateInput = {
   id?: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedAt?: Date | string | null
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  verifiedBy?: Prisma.UserCreateNestedOneWithoutPolicyAcknowledgementsVerifiedInput
-  employee: Prisma.EmployeeCreateNestedOneWithoutPolicyAcknowledgementsInput
+  employeePolicyAcknowledgement: Prisma.EmployeePolicyAcknowledgementCreateNestedOneWithoutAcknowledgementsInput
+  policy: Prisma.PolicyCreateNestedOneWithoutAcknowledgementsInput
+  policyVersion: Prisma.PolicyVersionCreateNestedOneWithoutAcknowledgementsInput
 }
 
 export type PolicyAcknowledgementUncheckedCreateInput = {
   id?: string
-  employeeId: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedById?: string | null
-  verifiedAt?: Date | string | null
+  employeePolicyAcknowledgementId: string
+  policyId: string
+  policyVersionId: string
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PolicyAcknowledgementUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedBy?: Prisma.UserUpdateOneWithoutPolicyAcknowledgementsVerifiedNestedInput
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutPolicyAcknowledgementsNestedInput
+  employeePolicyAcknowledgement?: Prisma.EmployeePolicyAcknowledgementUpdateOneRequiredWithoutAcknowledgementsNestedInput
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutAcknowledgementsNestedInput
+  policyVersion?: Prisma.PolicyVersionUpdateOneRequiredWithoutAcknowledgementsNestedInput
 }
 
 export type PolicyAcknowledgementUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyVersionId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PolicyAcknowledgementCreateManyInput = {
   id?: string
-  employeeId: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedById?: string | null
-  verifiedAt?: Date | string | null
+  employeePolicyAcknowledgementId: string
+  policyId: string
+  policyVersionId: string
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PolicyAcknowledgementUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PolicyAcknowledgementUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyVersionId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type PolicyAcknowledgementCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  policies?: Prisma.SortOrder
-  allAcknowledged?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrder
-  systemAccessGrantedAt?: Prisma.SortOrder
-  verifiedById?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type PolicyAcknowledgementMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  allAcknowledged?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrder
-  systemAccessGrantedAt?: Prisma.SortOrder
-  verifiedById?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type PolicyAcknowledgementMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  allAcknowledged?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrder
-  systemAccessGrantedAt?: Prisma.SortOrder
-  verifiedById?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type PolicyAcknowledgementListRelationFilter = {
@@ -423,138 +336,209 @@ export type PolicyAcknowledgementOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type PolicyAcknowledgementCreateNestedManyWithoutVerifiedByInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput> | Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyVerifiedByInputEnvelope
+export type PolicyAcknowledgementEmployeePolicyAcknowledgementIdPolicyVersionIdCompoundUniqueInput = {
+  employeePolicyAcknowledgementId: string
+  policyVersionId: string
+}
+
+export type PolicyAcknowledgementCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  employeePolicyAcknowledgementId?: Prisma.SortOrder
+  policyId?: Prisma.SortOrder
+  policyVersionId?: Prisma.SortOrder
+  acknowledgedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type PolicyAcknowledgementMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  employeePolicyAcknowledgementId?: Prisma.SortOrder
+  policyId?: Prisma.SortOrder
+  policyVersionId?: Prisma.SortOrder
+  acknowledgedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type PolicyAcknowledgementMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  employeePolicyAcknowledgementId?: Prisma.SortOrder
+  policyId?: Prisma.SortOrder
+  policyVersionId?: Prisma.SortOrder
+  acknowledgedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type PolicyAcknowledgementCreateNestedManyWithoutPolicyInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyInputEnvelope
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
 }
 
-export type PolicyAcknowledgementUncheckedCreateNestedManyWithoutVerifiedByInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput> | Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyVerifiedByInputEnvelope
+export type PolicyAcknowledgementUncheckedCreateNestedManyWithoutPolicyInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyInputEnvelope
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
 }
 
-export type PolicyAcknowledgementUpdateManyWithoutVerifiedByNestedInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput> | Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput[]
-  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutVerifiedByInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutVerifiedByInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyVerifiedByInputEnvelope
+export type PolicyAcknowledgementUpdateManyWithoutPolicyNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput[]
+  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyInputEnvelope
   set?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   disconnect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   delete?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
-  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutVerifiedByInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutVerifiedByInput[]
-  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutVerifiedByInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutVerifiedByInput[]
+  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyInput[]
+  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyInput[]
   deleteMany?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
 }
 
-export type PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByNestedInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput> | Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput[]
-  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutVerifiedByInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutVerifiedByInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyVerifiedByInputEnvelope
+export type PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyInput[]
+  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyInputEnvelope
   set?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   disconnect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   delete?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
-  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutVerifiedByInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutVerifiedByInput[]
-  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutVerifiedByInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutVerifiedByInput[]
+  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyInput[]
+  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyInput[]
   deleteMany?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
 }
 
-export type PolicyAcknowledgementCreateNestedManyWithoutEmployeeInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeeInputEnvelope
+export type PolicyAcknowledgementCreateNestedManyWithoutPolicyVersionInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyVersionInputEnvelope
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
 }
 
-export type PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeeInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeeInputEnvelope
+export type PolicyAcknowledgementUncheckedCreateNestedManyWithoutPolicyVersionInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyVersionInputEnvelope
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
 }
 
-export type PolicyAcknowledgementUpdateManyWithoutEmployeeNestedInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput[]
-  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeeInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeeInputEnvelope
+export type PolicyAcknowledgementUpdateManyWithoutPolicyVersionNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput[]
+  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyVersionInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyVersionInputEnvelope
   set?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   disconnect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   delete?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
-  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeeInput[]
-  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeeInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeeInput[]
+  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyVersionInput[]
+  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyVersionInput[]
   deleteMany?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
 }
 
-export type PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeNestedInput = {
-  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput[]
-  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeeInput[]
-  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeeInputEnvelope
+export type PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput> | Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput[]
+  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyVersionInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyPolicyVersionInputEnvelope
   set?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   disconnect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   delete?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
   connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
-  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeeInput[]
-  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeeInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeeInput[]
+  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyVersionInput[]
+  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyVersionInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyVersionInput[]
   deleteMany?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
 }
 
-export type PolicyAcknowledgementCreateWithoutVerifiedByInput = {
+export type PolicyAcknowledgementCreateNestedManyWithoutEmployeePolicyAcknowledgementInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInputEnvelope
+  connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+}
+
+export type PolicyAcknowledgementUncheckedCreateNestedManyWithoutEmployeePolicyAcknowledgementInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInputEnvelope
+  connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+}
+
+export type PolicyAcknowledgementUpdateManyWithoutEmployeePolicyAcknowledgementNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput[]
+  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInputEnvelope
+  set?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  disconnect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  delete?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput[]
+  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeePolicyAcknowledgementInput[]
+  deleteMany?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
+}
+
+export type PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeePolicyAcknowledgementNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput> | Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput[] | Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput[]
+  connectOrCreate?: Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput[]
+  upsert?: Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput[]
+  createMany?: Prisma.PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInputEnvelope
+  set?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  disconnect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  delete?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  connect?: Prisma.PolicyAcknowledgementWhereUniqueInput | Prisma.PolicyAcknowledgementWhereUniqueInput[]
+  update?: Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput[]
+  updateMany?: Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeePolicyAcknowledgementInput[]
+  deleteMany?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
+}
+
+export type PolicyAcknowledgementCreateWithoutPolicyInput = {
   id?: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedAt?: Date | string | null
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutPolicyAcknowledgementsInput
+  employeePolicyAcknowledgement: Prisma.EmployeePolicyAcknowledgementCreateNestedOneWithoutAcknowledgementsInput
+  policyVersion: Prisma.PolicyVersionCreateNestedOneWithoutAcknowledgementsInput
 }
 
-export type PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput = {
+export type PolicyAcknowledgementUncheckedCreateWithoutPolicyInput = {
   id?: string
-  employeeId: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedAt?: Date | string | null
+  employeePolicyAcknowledgementId: string
+  policyVersionId: string
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PolicyAcknowledgementCreateOrConnectWithoutVerifiedByInput = {
+export type PolicyAcknowledgementCreateOrConnectWithoutPolicyInput = {
   where: Prisma.PolicyAcknowledgementWhereUniqueInput
-  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput>
+  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput>
 }
 
-export type PolicyAcknowledgementCreateManyVerifiedByInputEnvelope = {
-  data: Prisma.PolicyAcknowledgementCreateManyVerifiedByInput | Prisma.PolicyAcknowledgementCreateManyVerifiedByInput[]
+export type PolicyAcknowledgementCreateManyPolicyInputEnvelope = {
+  data: Prisma.PolicyAcknowledgementCreateManyPolicyInput | Prisma.PolicyAcknowledgementCreateManyPolicyInput[]
   skipDuplicates?: boolean
 }
 
-export type PolicyAcknowledgementUpsertWithWhereUniqueWithoutVerifiedByInput = {
+export type PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyInput = {
   where: Prisma.PolicyAcknowledgementWhereUniqueInput
-  update: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutVerifiedByInput>
-  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutVerifiedByInput>
+  update: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutPolicyInput>
+  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyInput>
 }
 
-export type PolicyAcknowledgementUpdateWithWhereUniqueWithoutVerifiedByInput = {
+export type PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyInput = {
   where: Prisma.PolicyAcknowledgementWhereUniqueInput
-  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutVerifiedByInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutVerifiedByInput>
+  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutPolicyInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutPolicyInput>
 }
 
-export type PolicyAcknowledgementUpdateManyWithWhereWithoutVerifiedByInput = {
+export type PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyInput = {
   where: Prisma.PolicyAcknowledgementScalarWhereInput
-  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateManyMutationInput, Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByInput>
+  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateManyMutationInput, Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyInput>
 }
 
 export type PolicyAcknowledgementScalarWhereInput = {
@@ -562,159 +546,206 @@ export type PolicyAcknowledgementScalarWhereInput = {
   OR?: Prisma.PolicyAcknowledgementScalarWhereInput[]
   NOT?: Prisma.PolicyAcknowledgementScalarWhereInput | Prisma.PolicyAcknowledgementScalarWhereInput[]
   id?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
-  employeeId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
-  policies?: Prisma.JsonNullableFilter<"PolicyAcknowledgement">
-  allAcknowledged?: Prisma.BoolFilter<"PolicyAcknowledgement"> | boolean
-  confirmedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
-  systemAccessGrantedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
-  verifiedById?: Prisma.UuidNullableFilter<"PolicyAcknowledgement"> | string | null
-  verifiedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  policyId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  policyVersionId?: Prisma.UuidFilter<"PolicyAcknowledgement"> | string
+  acknowledgedAt?: Prisma.DateTimeNullableFilter<"PolicyAcknowledgement"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PolicyAcknowledgement"> | Date | string
 }
 
-export type PolicyAcknowledgementCreateWithoutEmployeeInput = {
+export type PolicyAcknowledgementCreateWithoutPolicyVersionInput = {
   id?: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedAt?: Date | string | null
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  verifiedBy?: Prisma.UserCreateNestedOneWithoutPolicyAcknowledgementsVerifiedInput
+  employeePolicyAcknowledgement: Prisma.EmployeePolicyAcknowledgementCreateNestedOneWithoutAcknowledgementsInput
+  policy: Prisma.PolicyCreateNestedOneWithoutAcknowledgementsInput
 }
 
-export type PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput = {
+export type PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput = {
   id?: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedById?: string | null
-  verifiedAt?: Date | string | null
+  employeePolicyAcknowledgementId: string
+  policyId: string
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PolicyAcknowledgementCreateOrConnectWithoutEmployeeInput = {
+export type PolicyAcknowledgementCreateOrConnectWithoutPolicyVersionInput = {
   where: Prisma.PolicyAcknowledgementWhereUniqueInput
-  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput>
+  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput>
 }
 
-export type PolicyAcknowledgementCreateManyEmployeeInputEnvelope = {
-  data: Prisma.PolicyAcknowledgementCreateManyEmployeeInput | Prisma.PolicyAcknowledgementCreateManyEmployeeInput[]
+export type PolicyAcknowledgementCreateManyPolicyVersionInputEnvelope = {
+  data: Prisma.PolicyAcknowledgementCreateManyPolicyVersionInput | Prisma.PolicyAcknowledgementCreateManyPolicyVersionInput[]
   skipDuplicates?: boolean
 }
 
-export type PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeeInput = {
+export type PolicyAcknowledgementUpsertWithWhereUniqueWithoutPolicyVersionInput = {
   where: Prisma.PolicyAcknowledgementWhereUniqueInput
-  update: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutEmployeeInput>
-  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeeInput>
+  update: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutPolicyVersionInput>
+  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutPolicyVersionInput>
 }
 
-export type PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeeInput = {
+export type PolicyAcknowledgementUpdateWithWhereUniqueWithoutPolicyVersionInput = {
   where: Prisma.PolicyAcknowledgementWhereUniqueInput
-  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutEmployeeInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutEmployeeInput>
+  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutPolicyVersionInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutPolicyVersionInput>
 }
 
-export type PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeeInput = {
+export type PolicyAcknowledgementUpdateManyWithWhereWithoutPolicyVersionInput = {
   where: Prisma.PolicyAcknowledgementScalarWhereInput
-  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateManyMutationInput, Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeInput>
+  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateManyMutationInput, Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionInput>
 }
 
-export type PolicyAcknowledgementCreateManyVerifiedByInput = {
+export type PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput = {
   id?: string
-  employeeId: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedAt?: Date | string | null
+  acknowledgedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policy: Prisma.PolicyCreateNestedOneWithoutAcknowledgementsInput
+  policyVersion: Prisma.PolicyVersionCreateNestedOneWithoutAcknowledgementsInput
+}
+
+export type PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput = {
+  id?: string
+  policyId: string
+  policyVersionId: string
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PolicyAcknowledgementUpdateWithoutVerifiedByInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutPolicyAcknowledgementsNestedInput
+export type PolicyAcknowledgementCreateOrConnectWithoutEmployeePolicyAcknowledgementInput = {
+  where: Prisma.PolicyAcknowledgementWhereUniqueInput
+  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput>
 }
 
-export type PolicyAcknowledgementUncheckedUpdateWithoutVerifiedByInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInputEnvelope = {
+  data: Prisma.PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInput | Prisma.PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInput[]
+  skipDuplicates?: boolean
 }
 
-export type PolicyAcknowledgementUncheckedUpdateManyWithoutVerifiedByInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type PolicyAcknowledgementUpsertWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput = {
+  where: Prisma.PolicyAcknowledgementWhereUniqueInput
+  update: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutEmployeePolicyAcknowledgementInput>
+  create: Prisma.XOR<Prisma.PolicyAcknowledgementCreateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedCreateWithoutEmployeePolicyAcknowledgementInput>
 }
 
-export type PolicyAcknowledgementCreateManyEmployeeInput = {
+export type PolicyAcknowledgementUpdateWithWhereUniqueWithoutEmployeePolicyAcknowledgementInput = {
+  where: Prisma.PolicyAcknowledgementWhereUniqueInput
+  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateWithoutEmployeePolicyAcknowledgementInput, Prisma.PolicyAcknowledgementUncheckedUpdateWithoutEmployeePolicyAcknowledgementInput>
+}
+
+export type PolicyAcknowledgementUpdateManyWithWhereWithoutEmployeePolicyAcknowledgementInput = {
+  where: Prisma.PolicyAcknowledgementScalarWhereInput
+  data: Prisma.XOR<Prisma.PolicyAcknowledgementUpdateManyMutationInput, Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeePolicyAcknowledgementInput>
+}
+
+export type PolicyAcknowledgementCreateManyPolicyInput = {
   id?: string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: boolean
-  confirmedAt?: Date | string | null
-  systemAccessGrantedAt?: Date | string | null
-  verifiedById?: string | null
-  verifiedAt?: Date | string | null
+  employeePolicyAcknowledgementId: string
+  policyVersionId: string
+  acknowledgedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PolicyAcknowledgementUpdateWithoutEmployeeInput = {
+export type PolicyAcknowledgementUpdateWithoutPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedBy?: Prisma.UserUpdateOneWithoutPolicyAcknowledgementsVerifiedNestedInput
+  employeePolicyAcknowledgement?: Prisma.EmployeePolicyAcknowledgementUpdateOneRequiredWithoutAcknowledgementsNestedInput
+  policyVersion?: Prisma.PolicyVersionUpdateOneRequiredWithoutAcknowledgementsNestedInput
 }
 
-export type PolicyAcknowledgementUncheckedUpdateWithoutEmployeeInput = {
+export type PolicyAcknowledgementUncheckedUpdateWithoutPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyVersionId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeInput = {
+export type PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  policies?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  allAcknowledged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  systemAccessGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeePolicyAcknowledgementId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyVersionId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PolicyAcknowledgementCreateManyPolicyVersionInput = {
+  id?: string
+  employeePolicyAcknowledgementId: string
+  policyId: string
+  acknowledgedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PolicyAcknowledgementUpdateWithoutPolicyVersionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeePolicyAcknowledgement?: Prisma.EmployeePolicyAcknowledgementUpdateOneRequiredWithoutAcknowledgementsNestedInput
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutAcknowledgementsNestedInput
+}
+
+export type PolicyAcknowledgementUncheckedUpdateWithoutPolicyVersionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeePolicyAcknowledgementId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeePolicyAcknowledgementId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PolicyAcknowledgementCreateManyEmployeePolicyAcknowledgementInput = {
+  id?: string
+  policyId: string
+  policyVersionId: string
+  acknowledgedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PolicyAcknowledgementUpdateWithoutEmployeePolicyAcknowledgementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutAcknowledgementsNestedInput
+  policyVersion?: Prisma.PolicyVersionUpdateOneRequiredWithoutAcknowledgementsNestedInput
+}
+
+export type PolicyAcknowledgementUncheckedUpdateWithoutEmployeePolicyAcknowledgementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyVersionId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeePolicyAcknowledgementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyVersionId?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -723,91 +754,83 @@ export type PolicyAcknowledgementUncheckedUpdateManyWithoutEmployeeInput = {
 
 export type PolicyAcknowledgementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
-  policies?: boolean
-  allAcknowledged?: boolean
-  confirmedAt?: boolean
-  systemAccessGrantedAt?: boolean
-  verifiedById?: boolean
-  verifiedAt?: boolean
+  employeePolicyAcknowledgementId?: boolean
+  policyId?: boolean
+  policyVersionId?: boolean
+  acknowledgedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeePolicyAcknowledgement?: boolean | Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  policyVersion?: boolean | Prisma.PolicyVersionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["policyAcknowledgement"]>
 
 export type PolicyAcknowledgementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
-  policies?: boolean
-  allAcknowledged?: boolean
-  confirmedAt?: boolean
-  systemAccessGrantedAt?: boolean
-  verifiedById?: boolean
-  verifiedAt?: boolean
+  employeePolicyAcknowledgementId?: boolean
+  policyId?: boolean
+  policyVersionId?: boolean
+  acknowledgedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeePolicyAcknowledgement?: boolean | Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  policyVersion?: boolean | Prisma.PolicyVersionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["policyAcknowledgement"]>
 
 export type PolicyAcknowledgementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
-  policies?: boolean
-  allAcknowledged?: boolean
-  confirmedAt?: boolean
-  systemAccessGrantedAt?: boolean
-  verifiedById?: boolean
-  verifiedAt?: boolean
+  employeePolicyAcknowledgementId?: boolean
+  policyId?: boolean
+  policyVersionId?: boolean
+  acknowledgedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeePolicyAcknowledgement?: boolean | Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  policyVersion?: boolean | Prisma.PolicyVersionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["policyAcknowledgement"]>
 
 export type PolicyAcknowledgementSelectScalar = {
   id?: boolean
-  employeeId?: boolean
-  policies?: boolean
-  allAcknowledged?: boolean
-  confirmedAt?: boolean
-  systemAccessGrantedAt?: boolean
-  verifiedById?: boolean
-  verifiedAt?: boolean
+  employeePolicyAcknowledgementId?: boolean
+  policyId?: boolean
+  policyVersionId?: boolean
+  acknowledgedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PolicyAcknowledgementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "policies" | "allAcknowledged" | "confirmedAt" | "systemAccessGrantedAt" | "verifiedById" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["policyAcknowledgement"]>
+export type PolicyAcknowledgementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeePolicyAcknowledgementId" | "policyId" | "policyVersionId" | "acknowledgedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["policyAcknowledgement"]>
 export type PolicyAcknowledgementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeePolicyAcknowledgement?: boolean | Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  policyVersion?: boolean | Prisma.PolicyVersionDefaultArgs<ExtArgs>
 }
 export type PolicyAcknowledgementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeePolicyAcknowledgement?: boolean | Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  policyVersion?: boolean | Prisma.PolicyVersionDefaultArgs<ExtArgs>
 }
 export type PolicyAcknowledgementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  verifiedBy?: boolean | Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeePolicyAcknowledgement?: boolean | Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  policyVersion?: boolean | Prisma.PolicyVersionDefaultArgs<ExtArgs>
 }
 
 export type $PolicyAcknowledgementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PolicyAcknowledgement"
   objects: {
-    verifiedBy: Prisma.$UserPayload<ExtArgs> | null
-    employee: Prisma.$EmployeePayload<ExtArgs>
+    employeePolicyAcknowledgement: Prisma.$EmployeePolicyAcknowledgementPayload<ExtArgs>
+    policy: Prisma.$PolicyPayload<ExtArgs>
+    policyVersion: Prisma.$PolicyVersionPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    employeeId: string
-    policies: runtime.JsonValue | null
-    allAcknowledged: boolean
-    confirmedAt: Date | null
-    systemAccessGrantedAt: Date | null
-    verifiedById: string | null
-    verifiedAt: Date | null
+    employeePolicyAcknowledgementId: string
+    policyId: string
+    policyVersionId: string
+    acknowledgedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["policyAcknowledgement"]>
@@ -1204,8 +1227,9 @@ readonly fields: PolicyAcknowledgementFieldRefs;
  */
 export interface Prisma__PolicyAcknowledgementClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  verifiedBy<T extends Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyAcknowledgement$verifiedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  employeePolicyAcknowledgement<T extends Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeePolicyAcknowledgementDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeePolicyAcknowledgementClient<runtime.Types.Result.GetResult<Prisma.$EmployeePolicyAcknowledgementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  policy<T extends Prisma.PolicyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyDefaultArgs<ExtArgs>>): Prisma.Prisma__PolicyClient<runtime.Types.Result.GetResult<Prisma.$PolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  policyVersion<T extends Prisma.PolicyVersionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyVersionDefaultArgs<ExtArgs>>): Prisma.Prisma__PolicyVersionClient<runtime.Types.Result.GetResult<Prisma.$PolicyVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1236,13 +1260,10 @@ export interface Prisma__PolicyAcknowledgementClient<T, Null = never, ExtArgs ex
  */
 export interface PolicyAcknowledgementFieldRefs {
   readonly id: Prisma.FieldRef<"PolicyAcknowledgement", 'String'>
-  readonly employeeId: Prisma.FieldRef<"PolicyAcknowledgement", 'String'>
-  readonly policies: Prisma.FieldRef<"PolicyAcknowledgement", 'Json'>
-  readonly allAcknowledged: Prisma.FieldRef<"PolicyAcknowledgement", 'Boolean'>
-  readonly confirmedAt: Prisma.FieldRef<"PolicyAcknowledgement", 'DateTime'>
-  readonly systemAccessGrantedAt: Prisma.FieldRef<"PolicyAcknowledgement", 'DateTime'>
-  readonly verifiedById: Prisma.FieldRef<"PolicyAcknowledgement", 'String'>
-  readonly verifiedAt: Prisma.FieldRef<"PolicyAcknowledgement", 'DateTime'>
+  readonly employeePolicyAcknowledgementId: Prisma.FieldRef<"PolicyAcknowledgement", 'String'>
+  readonly policyId: Prisma.FieldRef<"PolicyAcknowledgement", 'String'>
+  readonly policyVersionId: Prisma.FieldRef<"PolicyAcknowledgement", 'String'>
+  readonly acknowledgedAt: Prisma.FieldRef<"PolicyAcknowledgement", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"PolicyAcknowledgement", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PolicyAcknowledgement", 'DateTime'>
 }
@@ -1638,25 +1659,6 @@ export type PolicyAcknowledgementDeleteManyArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many PolicyAcknowledgements to delete.
    */
   limit?: number
-}
-
-/**
- * PolicyAcknowledgement.verifiedBy
- */
-export type PolicyAcknowledgement$verifiedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
 }
 
 /**
