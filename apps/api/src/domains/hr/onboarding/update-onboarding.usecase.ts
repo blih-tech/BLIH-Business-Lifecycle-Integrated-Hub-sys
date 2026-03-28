@@ -12,18 +12,22 @@ import { mapOnboarding, onboardingInclude } from './create-onboarding.usecase';
 
 const unique = (values: string[]) => Array.from(new Set(values));
 
-async function assertOnboardingTasksExist(
+async function assertTaskInstancesExist(
   prisma: PrismaService,
-  taskIds: string[],
+  onboardingId: string,
+  taskInstanceIds: string[],
 ): Promise<void> {
-  if (taskIds.length === 0) return;
-  const found = await prisma.onboardingTask.findMany({
-    where: { id: { in: taskIds } },
-    select: { id: true },
+  if (taskInstanceIds.length === 0) return;
+  const found = await prisma.onboardingChecklist.findMany({
+    where: {
+      onboardingId,
+      taskInstanceId: { in: taskInstanceIds },
+    },
+    select: { taskInstanceId: true },
   });
-  if (found.length !== taskIds.length) {
+  if (found.length !== taskInstanceIds.length) {
     throw new BadRequestException(
-      'checklists contains one or more unknown onboardingTaskId values',
+      'tasks contains one or more unknown or invalid taskInstanceId values for this onboarding',
     );
   }
 }
@@ -44,16 +48,15 @@ export class UpdateOnboardingUseCase {
       throw new NotFoundException(`Onboarding with id "${id}" not found`);
     }
 
-    if (dto.checklists) {
-      const taskIds = dto.checklists.map((item) => item.onboardingTaskId);
+    if (dto.tasks) {
+      const taskIds = dto.tasks.map((item) => item.taskInstanceId);
       const uniqueTaskIds = unique(taskIds);
       if (uniqueTaskIds.length !== taskIds.length) {
         throw new BadRequestException(
-          'checklists contains duplicate onboardingTaskId values',
+          'tasks contains duplicate taskInstanceId values',
         );
       }
-
-      await assertOnboardingTasksExist(this.prisma, uniqueTaskIds);
+      await assertTaskInstancesExist(this.prisma, id, uniqueTaskIds);
     }
 
     const onboarding = await this.prisma.$transaction(async (tx) => {
@@ -61,9 +64,6 @@ export class UpdateOnboardingUseCase {
         where: { id },
         data: {
           ...(dto.status !== undefined && { status: dto.status }),
-          ...(dto.joinDate !== undefined && {
-            joinDate: new Date(dto.joinDate),
-          }),
           ...(dto.startedAt !== undefined && {
             startedAt: dto.startedAt ? new Date(dto.startedAt) : null,
           }),
@@ -73,43 +73,63 @@ export class UpdateOnboardingUseCase {
         },
       });
 
-      if (dto.checklists !== undefined) {
-        const checklists = dto.checklists;
+      if (dto.tasks !== undefined) {
+        const tasks = dto.tasks;
 
-        if (checklists.length === 0) {
+        if (tasks.length === 0) {
+          const toDelete = await tx.onboardingChecklist.findMany({
+            where: { onboardingId: id },
+            select: { taskInstanceId: true },
+          });
+          const instanceIds = toDelete.map((c) => c.taskInstanceId);
           await tx.onboardingChecklist.deleteMany({
             where: { onboardingId: id },
           });
+          if (instanceIds.length > 0) {
+            await tx.onboardingTaskInstance.deleteMany({
+              where: { id: { in: instanceIds } },
+            });
+          }
         } else {
-          const taskIds = checklists.map((item) => item.onboardingTaskId);
+          const keepTaskInstanceIds = tasks.map((item) => item.taskInstanceId);
+
+          const toDelete = await tx.onboardingChecklist.findMany({
+            where: {
+              onboardingId: id,
+              taskInstanceId: { notIn: keepTaskInstanceIds },
+            },
+            select: { taskInstanceId: true },
+          });
 
           await tx.onboardingChecklist.deleteMany({
             where: {
               onboardingId: id,
-              onboardingTaskId: { notIn: taskIds },
+              taskInstanceId: { notIn: keepTaskInstanceIds },
             },
           });
 
+          const deleteIds = toDelete.map((c) => c.taskInstanceId);
+          if (deleteIds.length > 0) {
+            await tx.onboardingTaskInstance.deleteMany({
+              where: { id: { in: deleteIds } },
+            });
+          }
+
+          // We only update existing checklists (upsert is blocked since we shouldn't create new snapshots here natively without a library mapped logic)
           await Promise.all(
-            checklists.map((item) =>
-              tx.onboardingChecklist.upsert({
+            tasks.map((item) =>
+              tx.onboardingChecklist.update({
                 where: {
-                  onboardingId_onboardingTaskId: {
+                  onboardingId_taskInstanceId: {
                     onboardingId: id,
-                    onboardingTaskId: item.onboardingTaskId,
+                    taskInstanceId: item.taskInstanceId,
                   },
                 },
-                update: {
+                data: {
                   ...(item.status !== undefined && { status: item.status }),
                   ...(item.dueDate !== undefined && {
                     dueDate: item.dueDate ? new Date(item.dueDate) : null,
                   }),
-                },
-                create: {
-                  onboardingId: id,
-                  onboardingTaskId: item.onboardingTaskId,
-                  status: item.status ?? undefined,
-                  dueDate: item.dueDate ? new Date(item.dueDate) : undefined,
                 },
               }),
             ),

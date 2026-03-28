@@ -51,9 +51,9 @@ const paginatedEnvelope = <TData>(message: string, data: TData) => ({
 
 const onboardingChecklistExample = {
   id: 'checklist-uuid-1',
-  onboardingTaskId: 'task-uuid-1',
+  taskInstanceId: 'task-instance-uuid-1',
   onboardingId: 'onboarding-uuid-1',
-  status: 'NOT_STARTED',
+  status: 'TODO',
   createdAt: '2026-03-11T14:00:00.000Z',
   updatedAt: '2026-03-11T14:00:00.000Z',
 };
@@ -61,9 +61,8 @@ const onboardingChecklistExample = {
 const onboardingExample = {
   id: 'onboarding-uuid-1',
   employeeId: 'employee-uuid',
-  status: 'NOT_STARTED',
+  status: 'IN_PROGRESS',
   startedAt: null,
-  joinDate: '2026-03-10',
   completedAt: null,
   createdAt: '2026-03-11T14:00:00.000Z',
   updatedAt: '2026-03-11T14:00:00.000Z',
@@ -106,17 +105,13 @@ export function ApiCreateOnboarding() {
     ApiOperation({ summary: 'Create onboarding' }),
     ApiBody({
       type: CreateOnboardingDto,
-      description: '`employeeId` and `joinDate` are required.',
+      description: '`employeeId` is required.',
       examples: {
         create: {
-          summary: 'Create onboarding with checklists',
+          summary: 'Create onboarding linking tasks',
           value: {
             employeeId: 'employee-uuid',
-            joinDate: '2026-03-10',
-            checklists: [
-              { onboardingTaskId: 'task-uuid-1' },
-              { onboardingTaskId: 'task-uuid-2' },
-            ],
+            tasks: [{ taskId: 'task-uuid-1' }, { taskId: 'task-uuid-2' }],
           },
         },
       },
@@ -144,7 +139,7 @@ export function ApiListAllOnboarding() {
     ApiOperation({
       summary: 'List onboarding records',
       description:
-        'Returns the full (un-paginated) list.\n\nFilters: `employeeId`, `status`, `joinDateFrom`, `joinDateTo`, `onboardingTaskId`, `checklistStatus`.',
+        'Returns the full (un-paginated) list.\n\nFilters: `employeeId`, `status`, `taskInstanceId`, `checklistStatus`.',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding',
@@ -168,7 +163,7 @@ export function ApiListPaginatedOnboarding() {
     ApiOperation({
       summary: 'List onboarding records (paginated)',
       description:
-        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `employeeId`, `status`, `joinDateFrom`, `joinDateTo`, `onboardingTaskId`, `checklistStatus`, `page`, `limit`.',
+        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `employeeId`, `status`, `taskInstanceId`, `checklistStatus`, `page`, `limit`.',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding/paginated',
@@ -219,14 +214,14 @@ export function ApiUpdateOnboarding() {
         'All fields are optional — only provided fields are updated.',
       examples: {
         update: {
-          summary: 'Update onboarding status and checklist',
+          summary: 'Update onboarding status and tasks',
           value: {
-            status: 'IN_PROGRESS',
+            status: 'COMPLETED',
             startedAt: '2026-03-11T09:00:00.000Z',
-            checklists: [
+            tasks: [
               {
-                onboardingTaskId: 'task-uuid-1',
-                status: 'IN_PROGRESS',
+                taskInstanceId: 'task-instance-uuid-1',
+                status: 'SUBMITTED',
               },
             ],
           },

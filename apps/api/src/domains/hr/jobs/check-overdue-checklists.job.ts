@@ -13,10 +13,12 @@ export class CheckOverdueChecklistsJob {
   async run(): Promise<void> {
     const now = new Date();
 
+    // Find checklist items that are still pending (TODO, SUBMITTED, or CHANGES_REQUESTED)
+    // and whose due date has passed
     const overdueChecklists = await this.prisma.onboardingChecklist.findMany({
       where: {
-        status: { in: ['NOT_STARTED', 'IN_PROGRESS'] },
-        dueDate: { lt: now }, // Due date has passed
+        status: { in: ['TODO', 'SUBMITTED', 'CHANGES_REQUESTED'] },
+        dueDate: { lt: now },
       },
       select: { id: true },
     });
@@ -25,11 +27,8 @@ export class CheckOverdueChecklistsJob {
 
     const ids = overdueChecklists.map((c) => c.id);
 
-    await this.prisma.onboardingChecklist.updateMany({
-      where: { id: { in: ids } },
-      data: { status: 'OVERDUE' },
-    });
-
-    this.logger.log(`Marked ${ids.length} onboarding checklists as OVERDUE`);
+    this.logger.warn(
+      `Found ${ids.length} overdue onboarding checklist items: ${ids.join(', ')}`,
+    );
   }
 }

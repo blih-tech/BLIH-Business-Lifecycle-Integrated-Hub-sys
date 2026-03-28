@@ -14,6 +14,7 @@ import {
   OnboardingTaskResponseDto,
   UpdateOnboardingTaskDto,
 } from './onboarding-tasks.dto';
+import { TaskType, TargetDataModel } from '@repo/database';
 
 // ─── Swagger example data ─────────────────────────────────────────────────────
 
@@ -51,11 +52,11 @@ const paginatedEnvelope = <TData>(message: string, data: TData) => ({
 
 const onboardingTaskExample = {
   id: 'c9a7b3e1-12d4-4f18-b5a6-3f9d2c8e7b01',
-  department: 'IT',
-  title: 'Set up employee email account',
-  description:
-    'Create a corporate email and configure MFA for the new employee.',
-  checklistCount: 3,
+  title: 'Fill out HR Address Form',
+  description: 'Provide permanent and current address.',
+  taskType: TaskType.NON_CUSTOM,
+  targetDataModel: TargetDataModel.EMPLOYEE_ADDRESS,
+  requiresHrVerification: false,
   createdAt: '2026-03-11T14:00:00.000Z',
   updatedAt: '2026-03-11T14:00:00.000Z',
 };
@@ -96,14 +97,17 @@ export function ApiCreateOnboardingTask() {
     ApiOperation({ summary: 'Create an onboarding task' }),
     ApiBody({
       type: CreateOnboardingTaskDto,
-      description: '`department` and `title` are required.',
+      description:
+        '`title` and `taskType` are required. `targetDataModel` is required if `taskType` is NON_CUSTOM.',
       examples: {
         create: {
-          summary: 'Create IT onboarding task',
+          summary: 'Create data-model linked task',
           value: {
-            department: 'IT',
-            title: 'Set up employee email account',
-            description: 'Create a corporate email and configure MFA.',
+            title: 'Provide your Address Details',
+            description: 'We need this to ensure accurate record keeping.',
+            taskType: TaskType.NON_CUSTOM,
+            targetDataModel: TargetDataModel.EMPLOYEE_ADDRESS,
+            requiresHrVerification: true,
           },
         },
       },
@@ -131,7 +135,7 @@ export function ApiListAllOnboardingTasks() {
     ApiOperation({
       summary: 'List all onboarding tasks',
       description:
-        'Returns the full (un-paginated) list.\n\nFilters: `department`, `search` (matches title/description).',
+        'Returns the full (un-paginated) list.\n\nFilters: `taskType`, `targetDataModel`, `requiresHrVerification`, `search` (matches title/description).',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding/tasks',
@@ -155,7 +159,7 @@ export function ApiListPaginatedOnboardingTasks() {
     ApiOperation({
       summary: 'List onboarding tasks (paginated)',
       description:
-        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `department`, `search`, `page`, `limit`.',
+        'Paginated list wrapped in a success envelope with `meta.pagination`.\n\nFilters: `taskType`, `targetDataModel`, `requiresHrVerification`, `search`, `page`, `limit`.',
     }),
     ApiProtected({
       path: '/api/v1/hr/onboarding/tasks/paginated',
@@ -206,9 +210,9 @@ export function ApiUpdateOnboardingTask() {
         'All fields are optional — only provided fields are updated.',
       examples: {
         update: {
-          summary: 'Update title',
+          summary: 'Update task execution requirement',
           value: {
-            title: 'Set up employee email & Slack',
+            requiresHrVerification: true,
           },
         },
       },

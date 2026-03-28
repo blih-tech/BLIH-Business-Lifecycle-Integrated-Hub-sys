@@ -26,27 +26,33 @@ export type AggregateOnboardingTask = {
 
 export type OnboardingTaskMinAggregateOutputType = {
   id: string | null
-  department: $Enums.OnboardingTaskDepartment | null
   title: string | null
   description: string | null
+  taskType: $Enums.TaskType | null
+  targetDataModel: $Enums.TargetDataModel | null
+  requiresHrVerification: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type OnboardingTaskMaxAggregateOutputType = {
   id: string | null
-  department: $Enums.OnboardingTaskDepartment | null
   title: string | null
   description: string | null
+  taskType: $Enums.TaskType | null
+  targetDataModel: $Enums.TargetDataModel | null
+  requiresHrVerification: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type OnboardingTaskCountAggregateOutputType = {
   id: number
-  department: number
   title: number
   description: number
+  taskType: number
+  targetDataModel: number
+  requiresHrVerification: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -55,27 +61,33 @@ export type OnboardingTaskCountAggregateOutputType = {
 
 export type OnboardingTaskMinAggregateInputType = {
   id?: true
-  department?: true
   title?: true
   description?: true
+  taskType?: true
+  targetDataModel?: true
+  requiresHrVerification?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type OnboardingTaskMaxAggregateInputType = {
   id?: true
-  department?: true
   title?: true
   description?: true
+  taskType?: true
+  targetDataModel?: true
+  requiresHrVerification?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type OnboardingTaskCountAggregateInputType = {
   id?: true
-  department?: true
   title?: true
   description?: true
+  taskType?: true
+  targetDataModel?: true
+  requiresHrVerification?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -155,9 +167,11 @@ export type OnboardingTaskGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 
 export type OnboardingTaskGroupByOutputType = {
   id: string
-  department: $Enums.OnboardingTaskDepartment
   title: string
   description: string | null
+  taskType: $Enums.TaskType
+  targetDataModel: $Enums.TargetDataModel | null
+  requiresHrVerification: boolean
   createdAt: Date
   updatedAt: Date
   _count: OnboardingTaskCountAggregateOutputType | null
@@ -185,22 +199,24 @@ export type OnboardingTaskWhereInput = {
   OR?: Prisma.OnboardingTaskWhereInput[]
   NOT?: Prisma.OnboardingTaskWhereInput | Prisma.OnboardingTaskWhereInput[]
   id?: Prisma.UuidFilter<"OnboardingTask"> | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFilter<"OnboardingTask"> | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringFilter<"OnboardingTask"> | string
   description?: Prisma.StringNullableFilter<"OnboardingTask"> | string | null
+  taskType?: Prisma.EnumTaskTypeFilter<"OnboardingTask"> | $Enums.TaskType
+  targetDataModel?: Prisma.EnumTargetDataModelNullableFilter<"OnboardingTask"> | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolFilter<"OnboardingTask"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OnboardingTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OnboardingTask"> | Date | string
-  checklist?: Prisma.OnboardingChecklistListRelationFilter
 }
 
 export type OnboardingTaskOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  department?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  taskType?: Prisma.SortOrder
+  targetDataModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiresHrVerification?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  checklist?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
 }
 
 export type OnboardingTaskWhereUniqueInput = Prisma.AtLeast<{
@@ -208,19 +224,22 @@ export type OnboardingTaskWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OnboardingTaskWhereInput | Prisma.OnboardingTaskWhereInput[]
   OR?: Prisma.OnboardingTaskWhereInput[]
   NOT?: Prisma.OnboardingTaskWhereInput | Prisma.OnboardingTaskWhereInput[]
-  department?: Prisma.EnumOnboardingTaskDepartmentFilter<"OnboardingTask"> | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringFilter<"OnboardingTask"> | string
   description?: Prisma.StringNullableFilter<"OnboardingTask"> | string | null
+  taskType?: Prisma.EnumTaskTypeFilter<"OnboardingTask"> | $Enums.TaskType
+  targetDataModel?: Prisma.EnumTargetDataModelNullableFilter<"OnboardingTask"> | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolFilter<"OnboardingTask"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OnboardingTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OnboardingTask"> | Date | string
-  checklist?: Prisma.OnboardingChecklistListRelationFilter
 }, "id">
 
 export type OnboardingTaskOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  department?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  taskType?: Prisma.SortOrder
+  targetDataModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiresHrVerification?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OnboardingTaskCountOrderByAggregateInput
@@ -233,271 +252,191 @@ export type OnboardingTaskScalarWhereWithAggregatesInput = {
   OR?: Prisma.OnboardingTaskScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OnboardingTaskScalarWhereWithAggregatesInput | Prisma.OnboardingTaskScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"OnboardingTask"> | string
-  department?: Prisma.EnumOnboardingTaskDepartmentWithAggregatesFilter<"OnboardingTask"> | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringWithAggregatesFilter<"OnboardingTask"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"OnboardingTask"> | string | null
+  taskType?: Prisma.EnumTaskTypeWithAggregatesFilter<"OnboardingTask"> | $Enums.TaskType
+  targetDataModel?: Prisma.EnumTargetDataModelNullableWithAggregatesFilter<"OnboardingTask"> | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolWithAggregatesFilter<"OnboardingTask"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OnboardingTask"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OnboardingTask"> | Date | string
 }
 
 export type OnboardingTaskCreateInput = {
   id?: string
-  department: $Enums.OnboardingTaskDepartment
   title: string
   description?: string | null
+  taskType: $Enums.TaskType
+  targetDataModel?: $Enums.TargetDataModel | null
+  requiresHrVerification?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  checklist?: Prisma.OnboardingChecklistCreateNestedManyWithoutOnboardingTaskInput
 }
 
 export type OnboardingTaskUncheckedCreateInput = {
   id?: string
-  department: $Enums.OnboardingTaskDepartment
   title: string
   description?: string | null
+  taskType: $Enums.TaskType
+  targetDataModel?: $Enums.TargetDataModel | null
+  requiresHrVerification?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  checklist?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutOnboardingTaskInput
 }
 
 export type OnboardingTaskUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFieldUpdateOperationsInput | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskType?: Prisma.EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+  targetDataModel?: Prisma.NullableEnumTargetDataModelFieldUpdateOperationsInput | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  checklist?: Prisma.OnboardingChecklistUpdateManyWithoutOnboardingTaskNestedInput
 }
 
 export type OnboardingTaskUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFieldUpdateOperationsInput | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskType?: Prisma.EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+  targetDataModel?: Prisma.NullableEnumTargetDataModelFieldUpdateOperationsInput | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  checklist?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutOnboardingTaskNestedInput
 }
 
 export type OnboardingTaskCreateManyInput = {
   id?: string
-  department: $Enums.OnboardingTaskDepartment
   title: string
   description?: string | null
+  taskType: $Enums.TaskType
+  targetDataModel?: $Enums.TargetDataModel | null
+  requiresHrVerification?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type OnboardingTaskUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFieldUpdateOperationsInput | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskType?: Prisma.EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+  targetDataModel?: Prisma.NullableEnumTargetDataModelFieldUpdateOperationsInput | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OnboardingTaskUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFieldUpdateOperationsInput | $Enums.OnboardingTaskDepartment
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskType?: Prisma.EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+  targetDataModel?: Prisma.NullableEnumTargetDataModelFieldUpdateOperationsInput | $Enums.TargetDataModel | null
+  requiresHrVerification?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type OnboardingTaskNullableScalarRelationFilter = {
-  is?: Prisma.OnboardingTaskWhereInput | null
-  isNot?: Prisma.OnboardingTaskWhereInput | null
-}
-
 export type OnboardingTaskCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  department?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  taskType?: Prisma.SortOrder
+  targetDataModel?: Prisma.SortOrder
+  requiresHrVerification?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type OnboardingTaskMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  department?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  taskType?: Prisma.SortOrder
+  targetDataModel?: Prisma.SortOrder
+  requiresHrVerification?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type OnboardingTaskMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  department?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  taskType?: Prisma.SortOrder
+  targetDataModel?: Prisma.SortOrder
+  requiresHrVerification?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type OnboardingTaskCreateNestedOneWithoutChecklistInput = {
-  create?: Prisma.XOR<Prisma.OnboardingTaskCreateWithoutChecklistInput, Prisma.OnboardingTaskUncheckedCreateWithoutChecklistInput>
-  connectOrCreate?: Prisma.OnboardingTaskCreateOrConnectWithoutChecklistInput
-  connect?: Prisma.OnboardingTaskWhereUniqueInput
+export type EnumTaskTypeFieldUpdateOperationsInput = {
+  set?: $Enums.TaskType
 }
 
-export type OnboardingTaskUpdateOneWithoutChecklistNestedInput = {
-  create?: Prisma.XOR<Prisma.OnboardingTaskCreateWithoutChecklistInput, Prisma.OnboardingTaskUncheckedCreateWithoutChecklistInput>
-  connectOrCreate?: Prisma.OnboardingTaskCreateOrConnectWithoutChecklistInput
-  upsert?: Prisma.OnboardingTaskUpsertWithoutChecklistInput
-  disconnect?: Prisma.OnboardingTaskWhereInput | boolean
-  delete?: Prisma.OnboardingTaskWhereInput | boolean
-  connect?: Prisma.OnboardingTaskWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingTaskUpdateToOneWithWhereWithoutChecklistInput, Prisma.OnboardingTaskUpdateWithoutChecklistInput>, Prisma.OnboardingTaskUncheckedUpdateWithoutChecklistInput>
+export type NullableEnumTargetDataModelFieldUpdateOperationsInput = {
+  set?: $Enums.TargetDataModel | null
 }
 
-export type EnumOnboardingTaskDepartmentFieldUpdateOperationsInput = {
-  set?: $Enums.OnboardingTaskDepartment
-}
-
-export type OnboardingTaskCreateWithoutChecklistInput = {
-  id?: string
-  department: $Enums.OnboardingTaskDepartment
-  title: string
-  description?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type OnboardingTaskUncheckedCreateWithoutChecklistInput = {
-  id?: string
-  department: $Enums.OnboardingTaskDepartment
-  title: string
-  description?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type OnboardingTaskCreateOrConnectWithoutChecklistInput = {
-  where: Prisma.OnboardingTaskWhereUniqueInput
-  create: Prisma.XOR<Prisma.OnboardingTaskCreateWithoutChecklistInput, Prisma.OnboardingTaskUncheckedCreateWithoutChecklistInput>
-}
-
-export type OnboardingTaskUpsertWithoutChecklistInput = {
-  update: Prisma.XOR<Prisma.OnboardingTaskUpdateWithoutChecklistInput, Prisma.OnboardingTaskUncheckedUpdateWithoutChecklistInput>
-  create: Prisma.XOR<Prisma.OnboardingTaskCreateWithoutChecklistInput, Prisma.OnboardingTaskUncheckedCreateWithoutChecklistInput>
-  where?: Prisma.OnboardingTaskWhereInput
-}
-
-export type OnboardingTaskUpdateToOneWithWhereWithoutChecklistInput = {
-  where?: Prisma.OnboardingTaskWhereInput
-  data: Prisma.XOR<Prisma.OnboardingTaskUpdateWithoutChecklistInput, Prisma.OnboardingTaskUncheckedUpdateWithoutChecklistInput>
-}
-
-export type OnboardingTaskUpdateWithoutChecklistInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFieldUpdateOperationsInput | $Enums.OnboardingTaskDepartment
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type OnboardingTaskUncheckedUpdateWithoutChecklistInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.EnumOnboardingTaskDepartmentFieldUpdateOperationsInput | $Enums.OnboardingTaskDepartment
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-
-/**
- * Count Type OnboardingTaskCountOutputType
- */
-
-export type OnboardingTaskCountOutputType = {
-  checklist: number
-}
-
-export type OnboardingTaskCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  checklist?: boolean | OnboardingTaskCountOutputTypeCountChecklistArgs
-}
-
-/**
- * OnboardingTaskCountOutputType without action
- */
-export type OnboardingTaskCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OnboardingTaskCountOutputType
-   */
-  select?: Prisma.OnboardingTaskCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * OnboardingTaskCountOutputType without action
- */
-export type OnboardingTaskCountOutputTypeCountChecklistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OnboardingChecklistWhereInput
-}
 
 
 export type OnboardingTaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  department?: boolean
   title?: boolean
   description?: boolean
+  taskType?: boolean
+  targetDataModel?: boolean
+  requiresHrVerification?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  checklist?: boolean | Prisma.OnboardingTask$checklistArgs<ExtArgs>
-  _count?: boolean | Prisma.OnboardingTaskCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingTask"]>
 
 export type OnboardingTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  department?: boolean
   title?: boolean
   description?: boolean
+  taskType?: boolean
+  targetDataModel?: boolean
+  requiresHrVerification?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["onboardingTask"]>
 
 export type OnboardingTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  department?: boolean
   title?: boolean
   description?: boolean
+  taskType?: boolean
+  targetDataModel?: boolean
+  requiresHrVerification?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["onboardingTask"]>
 
 export type OnboardingTaskSelectScalar = {
   id?: boolean
-  department?: boolean
   title?: boolean
   description?: boolean
+  taskType?: boolean
+  targetDataModel?: boolean
+  requiresHrVerification?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OnboardingTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "department" | "title" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingTask"]>
-export type OnboardingTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  checklist?: boolean | Prisma.OnboardingTask$checklistArgs<ExtArgs>
-  _count?: boolean | Prisma.OnboardingTaskCountOutputTypeDefaultArgs<ExtArgs>
-}
-export type OnboardingTaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type OnboardingTaskIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type OnboardingTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "taskType" | "targetDataModel" | "requiresHrVerification" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingTask"]>
 
 export type $OnboardingTaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OnboardingTask"
-  objects: {
-    checklist: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
-  }
+  objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    department: $Enums.OnboardingTaskDepartment
     title: string
     description: string | null
+    taskType: $Enums.TaskType
+    targetDataModel: $Enums.TargetDataModel | null
+    requiresHrVerification: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["onboardingTask"]>
@@ -894,7 +833,6 @@ readonly fields: OnboardingTaskFieldRefs;
  */
 export interface Prisma__OnboardingTaskClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  checklist<T extends Prisma.OnboardingTask$checklistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingTask$checklistArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -925,9 +863,11 @@ export interface Prisma__OnboardingTaskClient<T, Null = never, ExtArgs extends r
  */
 export interface OnboardingTaskFieldRefs {
   readonly id: Prisma.FieldRef<"OnboardingTask", 'String'>
-  readonly department: Prisma.FieldRef<"OnboardingTask", 'OnboardingTaskDepartment'>
   readonly title: Prisma.FieldRef<"OnboardingTask", 'String'>
   readonly description: Prisma.FieldRef<"OnboardingTask", 'String'>
+  readonly taskType: Prisma.FieldRef<"OnboardingTask", 'TaskType'>
+  readonly targetDataModel: Prisma.FieldRef<"OnboardingTask", 'TargetDataModel'>
+  readonly requiresHrVerification: Prisma.FieldRef<"OnboardingTask", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"OnboardingTask", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"OnboardingTask", 'DateTime'>
 }
@@ -947,10 +887,6 @@ export type OnboardingTaskFindUniqueArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  /**
    * Filter, which OnboardingTask to fetch.
    */
   where: Prisma.OnboardingTaskWhereUniqueInput
@@ -969,10 +905,6 @@ export type OnboardingTaskFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ex
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  /**
    * Filter, which OnboardingTask to fetch.
    */
   where: Prisma.OnboardingTaskWhereUniqueInput
@@ -990,10 +922,6 @@ export type OnboardingTaskFindFirstArgs<ExtArgs extends runtime.Types.Extensions
    * Omit specific fields from the OnboardingTask
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
   /**
    * Filter, which OnboardingTask to fetch.
    */
@@ -1043,10 +971,6 @@ export type OnboardingTaskFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  /**
    * Filter, which OnboardingTask to fetch.
    */
   where?: Prisma.OnboardingTaskWhereInput
@@ -1095,10 +1019,6 @@ export type OnboardingTaskFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  /**
    * Filter, which OnboardingTasks to fetch.
    */
   where?: Prisma.OnboardingTaskWhereInput
@@ -1141,10 +1061,6 @@ export type OnboardingTaskCreateArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the OnboardingTask
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
   /**
    * The data needed to create a OnboardingTask.
    */
@@ -1193,10 +1109,6 @@ export type OnboardingTaskUpdateArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the OnboardingTask
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
   /**
    * The data needed to update a OnboardingTask.
    */
@@ -1264,10 +1176,6 @@ export type OnboardingTaskUpsertArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  /**
    * The filter to search for the OnboardingTask to update in case it exists.
    */
   where: Prisma.OnboardingTaskWhereUniqueInput
@@ -1294,10 +1202,6 @@ export type OnboardingTaskDeleteArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
-  /**
    * Filter which OnboardingTask to delete.
    */
   where: Prisma.OnboardingTaskWhereUniqueInput
@@ -1318,30 +1222,6 @@ export type OnboardingTaskDeleteManyArgs<ExtArgs extends runtime.Types.Extension
 }
 
 /**
- * OnboardingTask.checklist
- */
-export type OnboardingTask$checklistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the OnboardingChecklist
-   */
-  select?: Prisma.OnboardingChecklistSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the OnboardingChecklist
-   */
-  omit?: Prisma.OnboardingChecklistOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingChecklistInclude<ExtArgs> | null
-  where?: Prisma.OnboardingChecklistWhereInput
-  orderBy?: Prisma.OnboardingChecklistOrderByWithRelationInput | Prisma.OnboardingChecklistOrderByWithRelationInput[]
-  cursor?: Prisma.OnboardingChecklistWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OnboardingChecklistScalarFieldEnum | Prisma.OnboardingChecklistScalarFieldEnum[]
-}
-
-/**
  * OnboardingTask without action
  */
 export type OnboardingTaskDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1353,8 +1233,4 @@ export type OnboardingTaskDefaultArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the OnboardingTask
    */
   omit?: Prisma.OnboardingTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OnboardingTaskInclude<ExtArgs> | null
 }

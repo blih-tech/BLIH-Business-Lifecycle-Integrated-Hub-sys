@@ -2,6 +2,7 @@ import { PartialType } from '@nestjs/swagger';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -9,16 +10,9 @@ import {
   IsString,
   Min,
   Max,
+  ValidateIf,
 } from 'class-validator';
-
-export const ONBOARDING_TASK_DEPARTMENTS = [
-  'HR',
-  'IT',
-  'ADMIN',
-  'TEAM',
-] as const;
-export type OnboardingTaskDepartmentValue =
-  (typeof ONBOARDING_TASK_DEPARTMENTS)[number];
+import { TaskType, TargetDataModel } from '@repo/database';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string') return value;
@@ -31,15 +25,6 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
 // ─── Input DTOs ──────────────────────────────────────────────────────────────
 
 export class CreateOnboardingTaskDto {
-  @ApiProperty({
-    enum: ONBOARDING_TASK_DEPARTMENTS,
-    example: 'HR',
-    description: 'Department responsible for this onboarding task.',
-  })
-  @Transform(normalizeEnumValue)
-  @IsEnum(ONBOARDING_TASK_DEPARTMENTS)
-  department!: OnboardingTaskDepartmentValue;
-
   @ApiProperty({
     example: 'Set up employee email account',
     description: 'Short title describing the task.',
@@ -56,6 +41,36 @@ export class CreateOnboardingTaskDto {
   @IsOptional()
   @IsString()
   description?: string | null;
+
+  @ApiProperty({
+    enum: TaskType,
+    example: TaskType.NON_CUSTOM,
+    description: 'Type of task determining system routing vs ad-hoc.',
+  })
+  @Transform(normalizeEnumValue)
+  @IsEnum(TaskType)
+  taskType!: TaskType;
+
+  @ApiPropertyOptional({
+    enum: TargetDataModel,
+    example: TargetDataModel.EMPLOYEE_ADDRESS,
+    description:
+      'Required if taskType is NON_CUSTOM to route to the correct data model form.',
+  })
+  @ValidateIf((o) => o.taskType === TaskType.NON_CUSTOM)
+  @IsNotEmpty()
+  @Transform(normalizeEnumValue)
+  @IsEnum(TargetDataModel)
+  targetDataModel?: TargetDataModel;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    example: true,
+    description: 'Whether HR verification is required before marked completed.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  requiresHrVerification?: boolean;
 }
 
 export class UpdateOnboardingTaskDto extends PartialType(
@@ -66,13 +81,31 @@ export class UpdateOnboardingTaskDto extends PartialType(
 
 export class OnboardingTaskListQueryDto {
   @ApiPropertyOptional({
-    enum: ONBOARDING_TASK_DEPARTMENTS,
-    description: 'Filter by responsible department.',
+    enum: TaskType,
+    description: 'Filter by task type.',
   })
   @IsOptional()
   @Transform(normalizeEnumValue)
-  @IsEnum(ONBOARDING_TASK_DEPARTMENTS)
-  department?: OnboardingTaskDepartmentValue;
+  @IsEnum(TaskType)
+  taskType?: TaskType;
+
+  @ApiPropertyOptional({
+    enum: TargetDataModel,
+    description: 'Filter by target data model.',
+  })
+  @IsOptional()
+  @Transform(normalizeEnumValue)
+  @IsEnum(TargetDataModel)
+  targetDataModel?: TargetDataModel;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    description: 'Filter by HR verification requirement.',
+  })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  requiresHrVerification?: boolean;
 
   @ApiPropertyOptional({
     description: 'Case-insensitive keyword search on title and description.',
@@ -113,9 +146,6 @@ export class OnboardingTaskResponseDto {
   @ApiProperty({ example: 'c9a7b3e1-12d4-4f18-b5a6-3f9d2c8e7b01' })
   id!: string;
 
-  @ApiProperty({ enum: ONBOARDING_TASK_DEPARTMENTS, example: 'IT' })
-  department!: OnboardingTaskDepartmentValue;
-
   @ApiProperty({ example: 'Set up employee email account' })
   title!: string;
 
@@ -125,11 +155,18 @@ export class OnboardingTaskResponseDto {
   })
   description!: string | null;
 
-  @ApiProperty({
-    example: 3,
-    description: 'Number of onboarding checklists linked to this task.',
+  @ApiProperty({ enum: TaskType, example: TaskType.NON_CUSTOM })
+  taskType!: TaskType;
+
+  @ApiPropertyOptional({
+    enum: TargetDataModel,
+    nullable: true,
+    example: TargetDataModel.EMPLOYEE_ADDRESS,
   })
-  checklistCount!: number;
+  targetDataModel!: TargetDataModel | null;
+
+  @ApiProperty({ type: Boolean, example: true })
+  requiresHrVerification!: boolean;
 
   @ApiProperty({ example: '2026-03-11T14:00:00.000Z' })
   createdAt!: string;

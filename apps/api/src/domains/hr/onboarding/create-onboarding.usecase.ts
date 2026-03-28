@@ -9,9 +9,6 @@ import type {
 
 // ─── Shared helpers ────────────────────────────────────────────────────────────
 
-const toDateOnly = (value: Date | null | undefined) =>
-  value ? value.toISOString().slice(0, 10) : null;
-
 const toIso = (value: Date | null | undefined) =>
   value ? value.toISOString() : null;
 
@@ -32,20 +29,17 @@ async function assertEmployeeExists(
   }
 }
 
-async function assertOnboardingTasksExist(
-  prisma: PrismaService,
-  taskIds: string[],
-): Promise<void> {
-  if (taskIds.length === 0) return;
+async function getOnboardingTasks(prisma: PrismaService, taskIds: string[]) {
+  if (taskIds.length === 0) return [];
   const found = await prisma.onboardingTask.findMany({
     where: { id: { in: taskIds } },
-    select: { id: true },
   });
   if (found.length !== taskIds.length) {
     throw new BadRequestException(
-      'checklists contains one or more unknown onboardingTaskId values',
+      'tasks contains one or more unknown taskId values',
     );
   }
+  return found;
 }
 
 /** Standard Prisma include for Onboarding queries. */
@@ -53,7 +47,7 @@ export const onboardingInclude = {
   checklists: {
     select: {
       id: true,
-      onboardingTaskId: true,
+      taskInstanceId: true,
       onboardingId: true,
       status: true,
       dueDate: true,
@@ -70,13 +64,12 @@ export function mapOnboarding(onboarding: {
   employeeId: string;
   status: string;
   startedAt: Date | null;
-  joinDate: Date;
   completedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   checklists: Array<{
     id: string;
-    onboardingTaskId: string;
+    taskInstanceId: string;
     onboardingId: string;
     status: string;
     dueDate: Date | null;
@@ -89,13 +82,12 @@ export function mapOnboarding(onboarding: {
     employeeId: onboarding.employeeId,
     status: onboarding.status as OnboardingStatusValue,
     startedAt: toIso(onboarding.startedAt),
-    joinDate: toDateOnly(onboarding.joinDate) ?? '',
     completedAt: toIso(onboarding.completedAt),
     createdAt: onboarding.createdAt.toISOString(),
     updatedAt: onboarding.updatedAt.toISOString(),
     checklists: onboarding.checklists.map((item) => ({
       id: item.id,
-      onboardingTaskId: item.onboardingTaskId,
+      taskInstanceId: item.taskInstanceId,
       onboardingId: item.onboardingId,
       status: item.status as OnboardingChecklistStatusValue,
       dueDate: toIso(item.dueDate),
@@ -114,33 +106,54 @@ export class CreateOnboardingUseCase {
   async execute(dto: CreateOnboardingDto): Promise<OnboardingResponseDto> {
     await assertEmployeeExists(this.prisma, dto.employeeId);
 
-    const checklists = dto.checklists ?? [];
-    const taskIds = unique(checklists.map((item) => item.onboardingTaskId));
-    if (taskIds.length !== checklists.length) {
-      throw new BadRequestException(
-        'checklists contains duplicate onboardingTaskId values',
-      );
+    const tasks = dto.tasks ?? [];
+    const taskIds = unique(tasks.map((item) => item.taskId));
+    if (taskIds.length !== tasks.length) {
+      throw new BadRequestException('tasks contains duplicate taskId values');
     }
 
-    await assertOnboardingTasksExist(this.prisma, taskIds);
+    const libraryTasks = await getOnboardingTasks(this.prisma, taskIds);
 
-    const onboarding = await this.prisma.onboarding.create({
-      data: {
-        employeeId: dto.employeeId,
-        joinDate: new Date(dto.joinDate),
-        status: dto.status ?? undefined,
-        startedAt: dto.startedAt ? new Date(dto.startedAt) : undefined,
-        completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
-        ...(checklists.length > 0 && {
-          checklists: {
-            create: checklists.map((item) => ({
-              onboardingTaskId: item.onboardingTaskId,
+    const onboarding = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.onboarding.create({
+        data: {
+          employeeId: dto.employeeId,
+          status: dto.status ?? 'IN_PROGRESS',
+          startedAt: dto.startedAt ? new Date(dto.startedAt) : undefined,
+          completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
+        },
+      });
+
+      if (tasks.length > 0) {
+        for (const item of tasks) {
+          const blueprint = libraryTasks.find((t) => t.id === item.taskId)!;
+
+          const instance = await tx.onboardingTaskInstance.create({
+            data: {
+              title: blueprint.title,
+              description: blueprint.description,
+              taskType: blueprint.taskType,
+              targetDataModel: blueprint.targetDataModel,
+              requiresHrVerification: blueprint.requiresHrVerification,
+            },
+          });
+
+          await tx.onboardingChecklist.create({
+            data: {
+              onboardingId: created.id,
+              taskInstanceId: instance.id,
+              status: 'TODO',
               dueDate: item.dueDate ? new Date(item.dueDate) : undefined,
-            })),
-          },
-        }),
-      },
-      include: onboardingInclude,
+              isRequired: item.isRequired ?? true,
+            },
+          });
+        }
+      }
+
+      return tx.onboarding.findUniqueOrThrow({
+        where: { id: created.id },
+        include: onboardingInclude,
+      });
     });
 
     return mapOnboarding(onboarding);

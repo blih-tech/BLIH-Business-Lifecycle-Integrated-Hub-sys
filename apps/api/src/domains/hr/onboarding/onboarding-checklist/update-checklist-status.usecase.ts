@@ -58,7 +58,7 @@ export class UpdateChecklistStatusUseCase {
         (c) => c.status === 'COMPLETED',
       ).length;
       const inProgress = allChecklists.filter(
-        (c) => c.status === 'IN_PROGRESS',
+        (c) => c.status === 'SUBMITTED' || c.status === 'CHANGES_REQUESTED',
       ).length;
 
       // 3. Evaluate parent onboarding status
@@ -97,7 +97,7 @@ export class UpdateChecklistStatusUseCase {
 
     return {
       id: updatedChecklist.id,
-      onboardingTaskId: updatedChecklist.onboardingTaskId,
+      taskInstanceId: updatedChecklist.taskInstanceId,
       onboardingId: updatedChecklist.onboardingId,
       status: updatedChecklist.status as any,
       dueDate: toIso(updatedChecklist.dueDate),

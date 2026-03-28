@@ -158,3 +158,10 @@ export interface ApplicantListQueryDto {
   email?: string;
   search?: string;
 }
+
+export interface HireApplicantDto {
+  companyEmail?: string | null;
+  isCompanyEmailPrimary?: boolean;
+  companyPhone?: string | null;
+  isCompanyPhonePrimary?: boolean;
+}

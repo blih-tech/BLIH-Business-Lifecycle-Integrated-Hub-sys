@@ -68,7 +68,7 @@ export class AttendanceCalendarService {
       select: {
         id: true,
         lifecycle: { select: { status: true } },
-        profile: { select: { countryId: true } },
+        profile: { select: { nationalityId: true } },
       },
     });
 
@@ -79,7 +79,7 @@ export class AttendanceCalendarService {
     const [schedule, holiday, approvedLeave, approvedFlexRequest] =
       await Promise.all([
         this.resolveSchedule(employee.id, date),
-        this.resolveHoliday(employee.profile?.countryId ?? null, date),
+        this.resolveHoliday(employee.profile?.nationalityId ?? null, date),
         this.prisma.leaveRequest.findFirst({
           where: {
             employeeId: employee.id,
@@ -120,7 +120,7 @@ export class AttendanceCalendarService {
     return {
       employeeId: employee.id,
       lifecycleStatus: employee.lifecycle?.status ?? null,
-      countryId: employee.profile?.countryId ?? null,
+      countryId: employee.profile?.nationalityId ?? null,
       date,
       schedule: adjustedSchedule,
       holiday,

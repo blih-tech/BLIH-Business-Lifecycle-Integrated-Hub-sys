@@ -22,6 +22,7 @@ import {
   Max,
   Min,
   ValidateNested,
+  IsBoolean,
 } from 'class-validator';
 import {
   APPLICANT_STATUSES,
@@ -43,6 +44,7 @@ import type {
   CreateApplicantDto as CreateApplicantDtoType,
   UpdateApplicantDto as UpdateApplicantDtoType,
   UpdateApplicantStatusDto as UpdateApplicantStatusDtoType,
+  HireApplicantDto as HireApplicantDtoType,
 } from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
@@ -485,4 +487,41 @@ export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @IsOptional()
   @IsString()
   search?: string;
+}
+
+export class HireApplicantDto implements HireApplicantDtoType {
+  @ApiPropertyOptional({
+    example: 'abel.tesfaye@blih.com',
+    description:
+      'Override default email with company designated business email.',
+  })
+  @IsOptional()
+  @IsEmail()
+  companyEmail?: string | null;
+
+  @ApiPropertyOptional({
+    example: true,
+    description:
+      'If True, prioritizes the companyEmail as the Keycloak / System primary identity.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isCompanyEmailPrimary?: boolean;
+
+  @ApiPropertyOptional({
+    example: '+251123456789',
+    description: 'Company phone number.',
+  })
+  @IsOptional()
+  @IsString()
+  companyPhone?: string | null;
+
+  @ApiPropertyOptional({
+    example: true,
+    description:
+      'If True, prioritizes the companyPhone over their personal supplied application phone.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isCompanyPhonePrimary?: boolean;
 }

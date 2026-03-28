@@ -32,12 +32,14 @@ import {
   ApplicantResponseDto,
   UpdateApplicantDto,
   UpdateApplicantStatusDto,
+  HireApplicantDto,
 } from './dto/applicant.dto';
 import {
   applicantListResponseEnvelope,
   applicantResponseEnvelope,
   bulkApplicantStatusResponseEnvelope,
 } from './recruitment.swagger-examples';
+import { RecruitmentTransitionService } from './recruitment-transition.service';
 import {
   BulkUpdateApplicantStatusUseCase,
   GetApplicantUseCase,
@@ -56,6 +58,7 @@ export class ApplicantsController {
     private readonly getApplicantById: GetApplicantUseCase,
     private readonly updateApplicantById: UpdateApplicantUseCase,
     private readonly updateApplicantStatusById: UpdateApplicantStatusUseCase,
+    private readonly transitions: RecruitmentTransitionService,
   ) {}
 
   @Get()
@@ -234,5 +237,37 @@ export class ApplicantsController {
       body,
       user.userId ?? user.sub,
     );
+  }
+
+  @Post(':id/hire')
+  @Roles(ApplicantPermissions.UPDATE)
+  @Audit('recruitment.applicant.hire', 'hr.applicant')
+  @ApiProtected({
+    path: '/api/v1/hr/recruitment/applicants/:id/hire',
+    roles: [ApplicantPermissions.UPDATE],
+  })
+  @ApiOperation({ summary: 'Hire applicant and create employee Identity' })
+  @ApiParam({ name: 'id', description: 'Applicant id' })
+  @ApiBody({
+    type: HireApplicantDto,
+    description:
+      'Provide an alternative primary company email/phone to override original applicant values.',
+  })
+  @ApiEnvelopeOkResponse(Object, 'Hired employee graph mapping response', {})
+  @ApiDefaultErrors({
+    path: '/api/v1/hr/recruitment/applicants/:id/hire',
+    badRequest: 'Only applicants with accepted offers can be hired',
+    notFound: 'Applicant not found',
+  })
+  hireApplicant(
+    @Param('id') id: string,
+    @Body() body: HireApplicantDto,
+    @Req() req: Request & { user?: AuthPrincipal },
+  ) {
+    const user = req.user as AuthPrincipal | undefined;
+    if (!user) {
+      throw new ForbiddenException('Authenticated user context is required');
+    }
+    return this.transitions.hireApplicant(id, body, user.userId ?? user.sub);
   }
 }

@@ -3,10 +3,7 @@ import { Prisma } from '../../../../platform/prisma/prisma-client';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import { buildSuccessEnvelope } from '../../../../shared/dto/response-envelope.dto';
 import type { OnboardingTaskListQueryDto } from './onboarding-tasks.dto';
-import {
-  mapOnboardingTask,
-  onboardingTaskInclude,
-} from './create-onboarding-tasks.usecase';
+import { mapOnboardingTask } from './create-onboarding-tasks.usecase';
 
 // ─── Shared filter builder ──────────────────────────────────────────────────
 
@@ -15,8 +12,16 @@ function buildWhere(
 ): Prisma.OnboardingTaskWhereInput {
   const where: Prisma.OnboardingTaskWhereInput = {};
 
-  if (query.department) {
-    where.department = query.department;
+  if (query.taskType) {
+    where.taskType = query.taskType;
+  }
+
+  if (query.targetDataModel) {
+    where.targetDataModel = query.targetDataModel;
+  }
+
+  if (query.requiresHrVerification !== undefined) {
+    where.requiresHrVerification = query.requiresHrVerification;
   }
 
   if (query.search?.trim()) {
@@ -31,7 +36,6 @@ function buildWhere(
 
 // ─── Use Cases ────────────────────────────────────────────────────────────────
 
-/** Returns the full (un-paginated) list of onboarding tasks with rich filters. */
 @Injectable()
 export class ListAllOnboardingTasksUseCase {
   constructor(private readonly prisma: PrismaService) {}
@@ -39,7 +43,6 @@ export class ListAllOnboardingTasksUseCase {
   async execute(query: OnboardingTaskListQueryDto) {
     const tasks = await this.prisma.onboardingTask.findMany({
       where: buildWhere(query),
-      include: onboardingTaskInclude,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -47,7 +50,6 @@ export class ListAllOnboardingTasksUseCase {
   }
 }
 
-/** Returns a paginated list of onboarding tasks wrapped in a success envelope. */
 @Injectable()
 export class ListPaginatedOnboardingTasksUseCase {
   constructor(private readonly prisma: PrismaService) {}
@@ -62,7 +64,6 @@ export class ListPaginatedOnboardingTasksUseCase {
     const [tasks, total] = await this.prisma.$transaction([
       this.prisma.onboardingTask.findMany({
         where,
-        include: onboardingTaskInclude,
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
@@ -88,7 +89,6 @@ export class ListPaginatedOnboardingTasksUseCase {
   }
 }
 
-/** Returns a single onboarding task by id, or throws 404. */
 @Injectable()
 export class GetOnboardingTaskByIdUseCase {
   constructor(private readonly prisma: PrismaService) {}
@@ -96,7 +96,6 @@ export class GetOnboardingTaskByIdUseCase {
   async execute(id: string) {
     const task = await this.prisma.onboardingTask.findUnique({
       where: { id },
-      include: onboardingTaskInclude,
     });
 
     if (!task) {

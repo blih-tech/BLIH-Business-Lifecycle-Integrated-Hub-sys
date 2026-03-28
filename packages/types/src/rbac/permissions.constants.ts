@@ -315,6 +315,7 @@ export const OnboardingPermissions = {
   VIEW: 'onboarding:view',
   CREATE: 'onboarding:create',
   UPDATE: 'onboarding:update',
+  VERIFY: 'onboarding:verify',
   DELETE: 'onboarding:delete',
   ALL: 'onboarding:*',
 } as const;

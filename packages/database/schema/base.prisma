@@ -77,13 +77,6 @@ enum DocumentType {
   OTHER
 }
 
-enum ContractType {
-  INITIAL
-  RENEWAL
-  AMENDMENT
-  ADDENDUM
-}
-
 enum ContractStatus {
   DRAFT
   ACTIVE
