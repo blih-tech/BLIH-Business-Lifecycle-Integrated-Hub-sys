@@ -8,6 +8,7 @@ import { InterviewQuestionsController } from './interview-questions.controller';
 import { InterviewsController } from './interviews.controller';
 import { JobsController } from './jobs.controller';
 import { OffersController } from './offers.controller';
+import { RecruitmentTransitionService } from './recruitment-transition.service';
 import {
   ApproveJobUseCase,
   BulkUpdateApplicantStatusUseCase,
@@ -58,6 +59,7 @@ const useCaseTokens = [
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
   UpsertJobResponsibilitiesUseCase,
+  RecruitmentTransitionService,
   CreateApplicantUseCase,
   ListApplicantsUseCase,
   BulkUpdateApplicantStatusUseCase,
