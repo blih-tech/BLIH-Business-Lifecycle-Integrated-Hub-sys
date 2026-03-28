@@ -71,6 +71,9 @@ describe('RecruitmentTransitionService', () => {
       job: {
         update: jest.fn().mockResolvedValue(undefined),
       },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
+      },
     };
 
     const prisma = {
@@ -182,6 +185,9 @@ describe('RecruitmentTransitionService', () => {
     const tx = {
       applicant: {
         update: jest.fn().mockRejectedValue(new Error('database failure')),
+      },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
       },
     };
 
