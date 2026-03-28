@@ -2197,6 +2197,13 @@ export type EnumGovernmentIdCardTypeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel> | $Enums.GovernmentIdCardType | null
 }
 
+export type EnumVerificationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationStatus | Prisma.EnumVerificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
+}
+
 export type EnumEmailTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.EmailType | Prisma.EnumEmailTypeFieldRefInput<$PrismaModel> | null
   in?: $Enums.EmailType[] | Prisma.ListEnumEmailTypeFieldRefInput<$PrismaModel> | null
@@ -2245,13 +2252,6 @@ export type EnumGovernmentIdCardTypeNullableWithAggregatesFilter<$PrismaModel = 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel>
-}
-
-export type EnumVerificationStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.VerificationStatus | Prisma.EnumVerificationStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
 }
 
 export type EnumVerificationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -4448,6 +4448,13 @@ export type NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel = never> =
   not?: Prisma.NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel> | $Enums.GovernmentIdCardType | null
 }
 
+export type NestedEnumVerificationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationStatus | Prisma.EnumVerificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
+}
+
 export type NestedEnumEmailTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.EmailType | Prisma.EnumEmailTypeFieldRefInput<$PrismaModel> | null
   in?: $Enums.EmailType[] | Prisma.ListEnumEmailTypeFieldRefInput<$PrismaModel> | null
@@ -4496,13 +4503,6 @@ export type NestedEnumGovernmentIdCardTypeNullableWithAggregatesFilter<$PrismaMo
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumGovernmentIdCardTypeNullableFilter<$PrismaModel>
-}
-
-export type NestedEnumVerificationStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.VerificationStatus | Prisma.EnumVerificationStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
 }
 
 export type NestedEnumVerificationStatusWithAggregatesFilter<$PrismaModel = never> = {

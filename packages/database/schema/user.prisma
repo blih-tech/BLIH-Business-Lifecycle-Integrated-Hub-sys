@@ -210,6 +210,9 @@ model UserProfile {
   governmentIdCard     String?
   governmentIdCardType GovernmentIdCardType?
 
+  status     VerificationStatus @default(PENDING_REVIEW)
+  hrFeedback String? // Reason for rejection if status is REJECTED
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

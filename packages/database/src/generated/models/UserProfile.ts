@@ -40,6 +40,8 @@ export type UserProfileMinAggregateOutputType = {
   faydaNumber: string | null
   governmentIdCard: string | null
   governmentIdCardType: $Enums.GovernmentIdCardType | null
+  status: $Enums.VerificationStatus | null
+  hrFeedback: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +62,8 @@ export type UserProfileMaxAggregateOutputType = {
   faydaNumber: string | null
   governmentIdCard: string | null
   governmentIdCardType: $Enums.GovernmentIdCardType | null
+  status: $Enums.VerificationStatus | null
+  hrFeedback: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,6 +84,8 @@ export type UserProfileCountAggregateOutputType = {
   faydaNumber: number
   governmentIdCard: number
   governmentIdCardType: number
+  status: number
+  hrFeedback: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -102,6 +108,8 @@ export type UserProfileMinAggregateInputType = {
   faydaNumber?: true
   governmentIdCard?: true
   governmentIdCardType?: true
+  status?: true
+  hrFeedback?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +130,8 @@ export type UserProfileMaxAggregateInputType = {
   faydaNumber?: true
   governmentIdCard?: true
   governmentIdCardType?: true
+  status?: true
+  hrFeedback?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +152,8 @@ export type UserProfileCountAggregateInputType = {
   faydaNumber?: true
   governmentIdCard?: true
   governmentIdCardType?: true
+  status?: true
+  hrFeedback?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -235,6 +247,8 @@ export type UserProfileGroupByOutputType = {
   faydaNumber: string | null
   governmentIdCard: string | null
   governmentIdCardType: $Enums.GovernmentIdCardType | null
+  status: $Enums.VerificationStatus
+  hrFeedback: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserProfileCountAggregateOutputType | null
@@ -276,6 +290,8 @@ export type UserProfileWhereInput = {
   faydaNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   governmentIdCard?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFilter<"UserProfile"> | $Enums.VerificationStatus
+  hrFeedback?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -298,6 +314,8 @@ export type UserProfileOrderByWithRelationInput = {
   faydaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   governmentIdCard?: Prisma.SortOrderInput | Prisma.SortOrder
   governmentIdCardType?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hrFeedback?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -323,6 +341,8 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   faydaNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   governmentIdCard?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFilter<"UserProfile"> | $Enums.VerificationStatus
+  hrFeedback?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -345,6 +365,8 @@ export type UserProfileOrderByWithAggregationInput = {
   faydaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   governmentIdCard?: Prisma.SortOrderInput | Prisma.SortOrder
   governmentIdCardType?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hrFeedback?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserProfileCountOrderByAggregateInput
@@ -371,6 +393,8 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   faydaNumber?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   governmentIdCard?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableWithAggregatesFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusWithAggregatesFilter<"UserProfile"> | $Enums.VerificationStatus
+  hrFeedback?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
 }
@@ -389,6 +413,8 @@ export type UserProfileCreateInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutProfileInput
@@ -411,6 +437,8 @@ export type UserProfileUncheckedCreateInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -429,6 +457,8 @@ export type UserProfileUpdateInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutProfileNestedInput
@@ -451,6 +481,8 @@ export type UserProfileUncheckedUpdateInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -471,6 +503,8 @@ export type UserProfileCreateManyInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -489,6 +523,8 @@ export type UserProfileUpdateManyMutationInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -509,6 +545,8 @@ export type UserProfileUncheckedUpdateManyInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -544,6 +582,8 @@ export type UserProfileCountOrderByAggregateInput = {
   faydaNumber?: Prisma.SortOrder
   governmentIdCard?: Prisma.SortOrder
   governmentIdCardType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hrFeedback?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -564,6 +604,8 @@ export type UserProfileMaxOrderByAggregateInput = {
   faydaNumber?: Prisma.SortOrder
   governmentIdCard?: Prisma.SortOrder
   governmentIdCardType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hrFeedback?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -584,6 +626,8 @@ export type UserProfileMinOrderByAggregateInput = {
   faydaNumber?: Prisma.SortOrder
   governmentIdCard?: Prisma.SortOrder
   governmentIdCardType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hrFeedback?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -682,6 +726,10 @@ export type NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput = {
   set?: $Enums.GovernmentIdCardType | null
 }
 
+export type EnumVerificationStatusFieldUpdateOperationsInput = {
+  set?: $Enums.VerificationStatus
+}
+
 export type UserProfileCreateWithoutNationalityInput = {
   id?: string
   additionalEmail?: string | null
@@ -696,6 +744,8 @@ export type UserProfileCreateWithoutNationalityInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutProfileInput
@@ -716,6 +766,8 @@ export type UserProfileUncheckedCreateWithoutNationalityInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -765,6 +817,8 @@ export type UserProfileScalarWhereInput = {
   faydaNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   governmentIdCard?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   governmentIdCardType?: Prisma.EnumGovernmentIdCardTypeNullableFilter<"UserProfile"> | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFilter<"UserProfile"> | $Enums.VerificationStatus
+  hrFeedback?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
 }
@@ -783,6 +837,8 @@ export type UserProfileCreateWithoutEmployeeInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   nationality?: Prisma.CountryReferenceCreateNestedOneWithoutNationalityProfilesInput
@@ -803,6 +859,8 @@ export type UserProfileUncheckedCreateWithoutEmployeeInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -837,6 +895,8 @@ export type UserProfileUpdateWithoutEmployeeInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationality?: Prisma.CountryReferenceUpdateOneWithoutNationalityProfilesNestedInput
@@ -857,6 +917,8 @@ export type UserProfileUncheckedUpdateWithoutEmployeeInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -876,6 +938,8 @@ export type UserProfileCreateManyNationalityInput = {
   faydaNumber?: string | null
   governmentIdCard?: string | null
   governmentIdCardType?: $Enums.GovernmentIdCardType | null
+  status?: $Enums.VerificationStatus
+  hrFeedback?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -894,6 +958,8 @@ export type UserProfileUpdateWithoutNationalityInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutProfileNestedInput
@@ -914,6 +980,8 @@ export type UserProfileUncheckedUpdateWithoutNationalityInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -933,6 +1001,8 @@ export type UserProfileUncheckedUpdateManyWithoutNationalityInput = {
   faydaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   governmentIdCardType?: Prisma.NullableEnumGovernmentIdCardTypeFieldUpdateOperationsInput | $Enums.GovernmentIdCardType | null
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  hrFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -955,6 +1025,8 @@ export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   faydaNumber?: boolean
   governmentIdCard?: boolean
   governmentIdCardType?: boolean
+  status?: boolean
+  hrFeedback?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -977,6 +1049,8 @@ export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   faydaNumber?: boolean
   governmentIdCard?: boolean
   governmentIdCardType?: boolean
+  status?: boolean
+  hrFeedback?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -999,6 +1073,8 @@ export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   faydaNumber?: boolean
   governmentIdCard?: boolean
   governmentIdCardType?: boolean
+  status?: boolean
+  hrFeedback?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -1021,11 +1097,13 @@ export type UserProfileSelectScalar = {
   faydaNumber?: boolean
   governmentIdCard?: boolean
   governmentIdCardType?: boolean
+  status?: boolean
+  hrFeedback?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "additionalEmail" | "additionalEmailType" | "additionalPhone" | "additionalPhoneType" | "dateOfBirth" | "gender" | "nationalityId" | "maritalStatus" | "avatarUrl" | "passportSizePhotoURL" | "faydaNumber" | "governmentIdCard" | "governmentIdCardType" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "additionalEmail" | "additionalEmailType" | "additionalPhone" | "additionalPhoneType" | "dateOfBirth" | "gender" | "nationalityId" | "maritalStatus" | "avatarUrl" | "passportSizePhotoURL" | "faydaNumber" | "governmentIdCard" | "governmentIdCardType" | "status" | "hrFeedback" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   nationality?: boolean | Prisma.UserProfile$nationalityArgs<ExtArgs>
@@ -1061,6 +1139,8 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
     faydaNumber: string | null
     governmentIdCard: string | null
     governmentIdCardType: $Enums.GovernmentIdCardType | null
+    status: $Enums.VerificationStatus
+    hrFeedback: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userProfile"]>
@@ -1503,6 +1583,8 @@ export interface UserProfileFieldRefs {
   readonly faydaNumber: Prisma.FieldRef<"UserProfile", 'String'>
   readonly governmentIdCard: Prisma.FieldRef<"UserProfile", 'String'>
   readonly governmentIdCardType: Prisma.FieldRef<"UserProfile", 'GovernmentIdCardType'>
+  readonly status: Prisma.FieldRef<"UserProfile", 'VerificationStatus'>
+  readonly hrFeedback: Prisma.FieldRef<"UserProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
 }

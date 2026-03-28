@@ -574,10 +574,6 @@ export type EmployeeAddressUncheckedUpdateOneWithoutEmployeeNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeAddressUpdateToOneWithWhereWithoutEmployeeInput, Prisma.EmployeeAddressUpdateWithoutEmployeeInput>, Prisma.EmployeeAddressUncheckedUpdateWithoutEmployeeInput>
 }
 
-export type EnumVerificationStatusFieldUpdateOperationsInput = {
-  set?: $Enums.VerificationStatus
-}
-
 export type EmployeeAddressCreateWithoutCountryInput = {
   id?: string
   region?: string | null

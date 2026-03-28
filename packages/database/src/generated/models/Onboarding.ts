@@ -29,7 +29,6 @@ export type OnboardingMinAggregateOutputType = {
   employeeId: string | null
   status: $Enums.OnboardingStatus | null
   startedAt: Date | null
-  joinDate: Date | null
   completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -40,7 +39,6 @@ export type OnboardingMaxAggregateOutputType = {
   employeeId: string | null
   status: $Enums.OnboardingStatus | null
   startedAt: Date | null
-  joinDate: Date | null
   completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,7 +49,6 @@ export type OnboardingCountAggregateOutputType = {
   employeeId: number
   status: number
   startedAt: number
-  joinDate: number
   completedAt: number
   createdAt: number
   updatedAt: number
@@ -64,7 +61,6 @@ export type OnboardingMinAggregateInputType = {
   employeeId?: true
   status?: true
   startedAt?: true
-  joinDate?: true
   completedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -75,7 +71,6 @@ export type OnboardingMaxAggregateInputType = {
   employeeId?: true
   status?: true
   startedAt?: true
-  joinDate?: true
   completedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -86,7 +81,6 @@ export type OnboardingCountAggregateInputType = {
   employeeId?: true
   status?: true
   startedAt?: true
-  joinDate?: true
   completedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -170,7 +164,6 @@ export type OnboardingGroupByOutputType = {
   employeeId: string
   status: $Enums.OnboardingStatus
   startedAt: Date | null
-  joinDate: Date
   completedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -202,7 +195,6 @@ export type OnboardingWhereInput = {
   employeeId?: Prisma.UuidFilter<"Onboarding"> | string
   status?: Prisma.EnumOnboardingStatusFilter<"Onboarding"> | $Enums.OnboardingStatus
   startedAt?: Prisma.DateTimeNullableFilter<"Onboarding"> | Date | string | null
-  joinDate?: Prisma.DateTimeFilter<"Onboarding"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"Onboarding"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Onboarding"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Onboarding"> | Date | string
@@ -216,7 +208,6 @@ export type OnboardingOrderByWithRelationInput = {
   employeeId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  joinDate?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -233,7 +224,6 @@ export type OnboardingWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OnboardingWhereInput | Prisma.OnboardingWhereInput[]
   status?: Prisma.EnumOnboardingStatusFilter<"Onboarding"> | $Enums.OnboardingStatus
   startedAt?: Prisma.DateTimeNullableFilter<"Onboarding"> | Date | string | null
-  joinDate?: Prisma.DateTimeFilter<"Onboarding"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"Onboarding"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Onboarding"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Onboarding"> | Date | string
@@ -247,7 +237,6 @@ export type OnboardingOrderByWithAggregationInput = {
   employeeId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  joinDate?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -264,7 +253,6 @@ export type OnboardingScalarWhereWithAggregatesInput = {
   employeeId?: Prisma.UuidWithAggregatesFilter<"Onboarding"> | string
   status?: Prisma.EnumOnboardingStatusWithAggregatesFilter<"Onboarding"> | $Enums.OnboardingStatus
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Onboarding"> | Date | string | null
-  joinDate?: Prisma.DateTimeWithAggregatesFilter<"Onboarding"> | Date | string
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Onboarding"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Onboarding"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Onboarding"> | Date | string
@@ -274,7 +262,6 @@ export type OnboardingCreateInput = {
   id?: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -288,7 +275,6 @@ export type OnboardingUncheckedCreateInput = {
   employeeId: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -300,7 +286,6 @@ export type OnboardingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,7 +299,6 @@ export type OnboardingUncheckedUpdateInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -327,7 +311,6 @@ export type OnboardingCreateManyInput = {
   employeeId: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -337,7 +320,6 @@ export type OnboardingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -348,7 +330,6 @@ export type OnboardingUncheckedUpdateManyInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -359,7 +340,6 @@ export type OnboardingCountOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
-  joinDate?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -370,7 +350,6 @@ export type OnboardingMaxOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
-  joinDate?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -381,7 +360,6 @@ export type OnboardingMinOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
-  joinDate?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -467,7 +445,6 @@ export type OnboardingCreateWithoutChecklistsInput = {
   id?: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -480,7 +457,6 @@ export type OnboardingUncheckedCreateWithoutChecklistsInput = {
   employeeId: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -507,7 +483,6 @@ export type OnboardingUpdateWithoutChecklistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -520,7 +495,6 @@ export type OnboardingUncheckedUpdateWithoutChecklistsInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -531,7 +505,6 @@ export type OnboardingCreateWithoutOfferInput = {
   id?: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -544,7 +517,6 @@ export type OnboardingUncheckedCreateWithoutOfferInput = {
   employeeId: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -571,7 +543,6 @@ export type OnboardingUpdateWithoutOfferInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,7 +555,6 @@ export type OnboardingUncheckedUpdateWithoutOfferInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -595,7 +565,6 @@ export type OnboardingCreateWithoutEmployeeInput = {
   id?: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -607,7 +576,6 @@ export type OnboardingUncheckedCreateWithoutEmployeeInput = {
   id?: string
   status?: $Enums.OnboardingStatus
   startedAt?: Date | string | null
-  joinDate: Date | string
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -635,7 +603,6 @@ export type OnboardingUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -647,7 +614,6 @@ export type OnboardingUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  joinDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -691,7 +657,6 @@ export type OnboardingSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   employeeId?: boolean
   status?: boolean
   startedAt?: boolean
-  joinDate?: boolean
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -706,7 +671,6 @@ export type OnboardingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   employeeId?: boolean
   status?: boolean
   startedAt?: boolean
-  joinDate?: boolean
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -718,7 +682,6 @@ export type OnboardingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   employeeId?: boolean
   status?: boolean
   startedAt?: boolean
-  joinDate?: boolean
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -730,13 +693,12 @@ export type OnboardingSelectScalar = {
   employeeId?: boolean
   status?: boolean
   startedAt?: boolean
-  joinDate?: boolean
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "status" | "startedAt" | "joinDate" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboarding"]>
+export type OnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "status" | "startedAt" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboarding"]>
 export type OnboardingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checklists?: boolean | Prisma.Onboarding$checklistsArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -762,7 +724,6 @@ export type $OnboardingPayload<ExtArgs extends runtime.Types.Extensions.Internal
     employeeId: string
     status: $Enums.OnboardingStatus
     startedAt: Date | null
-    joinDate: Date
     completedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1196,7 +1157,6 @@ export interface OnboardingFieldRefs {
   readonly employeeId: Prisma.FieldRef<"Onboarding", 'String'>
   readonly status: Prisma.FieldRef<"Onboarding", 'OnboardingStatus'>
   readonly startedAt: Prisma.FieldRef<"Onboarding", 'DateTime'>
-  readonly joinDate: Prisma.FieldRef<"Onboarding", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"Onboarding", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Onboarding", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Onboarding", 'DateTime'>

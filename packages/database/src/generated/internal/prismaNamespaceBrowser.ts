@@ -1203,7 +1203,6 @@ export const OnboardingScalarFieldEnum = {
   employeeId: 'employeeId',
   status: 'status',
   startedAt: 'startedAt',
-  joinDate: 'joinDate',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2409,6 +2408,8 @@ export const UserProfileScalarFieldEnum = {
   faydaNumber: 'faydaNumber',
   governmentIdCard: 'governmentIdCard',
   governmentIdCardType: 'governmentIdCardType',
+  status: 'status',
+  hrFeedback: 'hrFeedback',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

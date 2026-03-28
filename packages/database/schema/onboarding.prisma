@@ -32,7 +32,6 @@ model Onboarding {
   employeeId  String                @unique @map("employee_id") @db.Uuid // @unique enforces 1-to-1
   status      OnboardingStatus      @default(IN_PROGRESS) // Record is only created when HR clicks "Start Onboarding"
   startedAt   DateTime?             @map("started_at")
-  joinDate    DateTime              @map("join_date") @db.Date
   completedAt DateTime?             @map("completed_at")
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
