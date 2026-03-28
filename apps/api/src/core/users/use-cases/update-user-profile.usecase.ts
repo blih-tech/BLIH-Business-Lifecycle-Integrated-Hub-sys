@@ -40,23 +40,7 @@ export class UpdateUserProfileUseCase {
         ...(dto.nationalityId !== undefined
           ? { nationalityId: dto.nationalityId }
           : {}),
-        ...(dto.countryId !== undefined ? { countryId: dto.countryId } : {}),
         ...(dto.avatarUrl !== undefined ? { avatarUrl: dto.avatarUrl } : {}),
-        ...(dto.addressLine1 !== undefined
-          ? { addressLine1: dto.addressLine1 }
-          : {}),
-        ...(dto.addressLine2 !== undefined
-          ? { addressLine2: dto.addressLine2 }
-          : {}),
-        ...(dto.city !== undefined ? { city: dto.city } : {}),
-        ...(dto.state !== undefined ? { state: dto.state } : {}),
-        ...(dto.postalCode !== undefined ? { postalCode: dto.postalCode } : {}),
-        ...(dto.emergencyContactName !== undefined
-          ? { emergencyContactName: dto.emergencyContactName }
-          : {}),
-        ...(dto.emergencyContactPhone !== undefined
-          ? { emergencyContactPhone: dto.emergencyContactPhone }
-          : {}),
         ...(dto.dateOfBirth !== undefined
           ? { dateOfBirth: new Date(dto.dateOfBirth) }
           : {}),
@@ -66,15 +50,8 @@ export class UpdateUserProfileUseCase {
         gender: dto.gender,
         maritalStatus: dto.maritalStatus,
         nationalityId: dto.nationalityId,
-        countryId: dto.countryId,
         avatarUrl: dto.avatarUrl,
-        addressLine1: dto.addressLine1,
-        addressLine2: dto.addressLine2,
-        city: dto.city,
-        state: dto.state,
-        postalCode: dto.postalCode,
-        emergencyContactName: dto.emergencyContactName,
-        emergencyContactPhone: dto.emergencyContactPhone,
+        additionalPhoneType: 'MOBILE' as any,
         ...(dto.dateOfBirth !== undefined
           ? { dateOfBirth: new Date(dto.dateOfBirth) }
           : {}),
@@ -83,16 +60,12 @@ export class UpdateUserProfileUseCase {
         nationality: {
           select: { name: true },
         },
-        country: {
-          select: { name: true },
-        },
       },
     });
 
     return {
       ...profile,
       nationality: profile.nationality?.name ?? null,
-      country: profile.country?.name ?? null,
       dateOfBirth: profile.dateOfBirth?.toISOString() ?? null,
       createdAt: profile.createdAt.toISOString(),
       updatedAt: profile.updatedAt.toISOString(),
