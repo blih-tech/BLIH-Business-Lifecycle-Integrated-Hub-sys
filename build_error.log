@@ -1,0 +1,44 @@
+
+> web@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.12
+   - Environments: .env
+
+   Creating an optimized production build ...
+Failed to compile.
+
+src/app/layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '../lightningcss.linux-x64-gnu.node'
+Require stack:
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/lightningcss/node/index.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/@tailwindcss/node/dist/index.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/@tailwindcss/postcss/dist/index.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/build/webpack/config/blocks/css/index.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/build/webpack/config/index.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/build/webpack-config.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/build/webpack-build/impl.js
+- /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/compiled/jest-worker/processChild.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/server/require-hook.js:55:36
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at mod.require (/root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/next/dist/server/require-hook.js:65:28)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/root/BLIH-Business-Lifecycle-Integrated-Hub-sys/node_modules/lightningcss/node/index.js:20:12)
+    at Module._compile (node:internal/modules/cjs/loader:1521:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+
+
+> Build failed because of webpack errors
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/apps/web
+npm error workspace web@0.1.0
+npm error location /root/BLIH-Business-Lifecycle-Integrated-Hub-sys/apps/web
+npm error command failed
+npm error command sh -c next build
