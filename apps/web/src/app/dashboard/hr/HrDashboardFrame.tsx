@@ -50,22 +50,9 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
     setSubnavOpen((prev) => !prev);
   }, [isHrRoot, toggleSidebar]);
 
-  const handleLogout = React.useCallback(async () => {
-    try {
-      const response = await fetch('/auth/logout?redirect=/', {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok || response.redirected) {
-        router.push('/');
-      } else {
-        router.push('/');
-      }
-    } catch {
-      router.push('/');
-    }
-  }, [router]);
+  const handleLogout = React.useCallback(() => {
+    window.location.href = '/api/auth/logout';
+  }, []);
 
   return (
     <div className="flex min-h-screen w-full bg-background">

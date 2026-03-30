@@ -25,8 +25,7 @@ import { cn } from '@/shared/lib/utils';
 import { useSidebar } from '@/shared/components/ui/sidebar';
 
 const assets = {
-  background:
-    'https://www.figma.com/api/mcp/asset/7e31743a-72ac-4836-87e2-fc85df229e91',
+  background: '/sidebar-bg.jpg',
 };
 
 type HrSidebarShellProps = {
