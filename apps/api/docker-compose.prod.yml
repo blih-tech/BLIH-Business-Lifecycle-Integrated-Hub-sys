@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     mem_limit: ${POSTGRES_MEMORY_LIMIT:-2g}
     cpus: ${POSTGRES_CPU_LIMIT:-1.0}
+    ports:
+      - '5433:5432'
     env_file:
       - .env.production
     volumes:
