@@ -65,6 +65,8 @@ export const ModelName = {
   Permission: 'Permission',
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
+  Policy: 'Policy',
+  PolicyVersion: 'PolicyVersion',
   AiDocument: 'AiDocument',
   AiChunk: 'AiChunk',
   AiChatSession: 'AiChatSession',
@@ -444,6 +446,36 @@ export const RolePermissionScalarFieldEnum = {
 } as const
 
 export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
+
+
+export const PolicyScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  module: 'module',
+  version: 'version',
+  isActive: 'isActive',
+  effectiveDate: 'effectiveDate',
+  expiryDate: 'expiryDate',
+  dependencies: 'dependencies',
+  priority: 'priority',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PolicyScalarFieldEnum = (typeof PolicyScalarFieldEnum)[keyof typeof PolicyScalarFieldEnum]
+
+
+export const PolicyVersionScalarFieldEnum = {
+  id: 'id',
+  policyId: 'policyId',
+  content: 'content',
+  version: 'version',
+  createdAt: 'createdAt'
+} as const
+
+export type PolicyVersionScalarFieldEnum = (typeof PolicyVersionScalarFieldEnum)[keyof typeof PolicyVersionScalarFieldEnum]
 
 
 export const AiDocumentScalarFieldEnum = {

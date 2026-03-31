@@ -398,6 +398,8 @@ export const ModelName = {
   Permission: 'Permission',
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
+  Policy: 'Policy',
+  PolicyVersion: 'PolicyVersion',
   AiDocument: 'AiDocument',
   AiChunk: 'AiChunk',
   AiChatSession: 'AiChatSession',
@@ -526,7 +528,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiCvScreeningInsight" | "aiSkillExtraction" | "aiExperienceAnalysis" | "aiEducationAnalysis" | "aiCvComparison" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "jobRequestForm" | "job" | "jobApplicationForm" | "jobApplicationFormField" | "jobApplicationFormSection" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApprovalStep" | "jobApprovalHistory" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interviewSession" | "interviewParticipant" | "interviewerAssignment" | "interviewFeedback" | "interviewQuestion" | "offer" | "cvScreening" | "cvScreeningCriteria" | "cvScreeningQuestion" | "cvScreeningResponse" | "cvScreeningWorkflow" | "cvScreeningWorkflowStage" | "cvScreeningDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
+    modelProps: "leaveRequest" | "leaveApproval" | "leaveBalance" | "attendanceLog" | "attendanceCorrectionRequest" | "overtimeRequest" | "flexWorkRequest" | "timesheet" | "role" | "permissionResource" | "permissionAction" | "permission" | "userRole" | "rolePermission" | "policy" | "policyVersion" | "aiDocument" | "aiChunk" | "aiChatSession" | "aiChatMessage" | "aiCvAnalysis" | "aiCvScreeningInsight" | "aiSkillExtraction" | "aiExperienceAnalysis" | "aiEducationAnalysis" | "aiCvComparison" | "aiExtractedSkill" | "aiPerformanceInsight" | "aiTrainingRecommendation" | "aiDecisionLog" | "brainKnowledgeSource" | "employeeDocument" | "contract" | "jobDescription" | "incidentReport" | "disciplinaryAction" | "grievance" | "recognition" | "survey" | "surveyResponse" | "conflictMediation" | "skill" | "employeeSkill" | "trainingBudget" | "trainingRequest" | "trainingCompletion" | "trainingFeedbackTemplate" | "trainingFeedback" | "skillGapAssessment" | "resignation" | "offboardingChecklist" | "offboardingTask" | "exitInterview" | "finalSettlement" | "assetReturn" | "complianceChecklist" | "onboarding" | "onboardingChecklist" | "onboardingTask" | "assetProvisioning" | "policyAcknowledgement" | "department" | "jobGrade" | "position" | "countryReference" | "holiday" | "reviewPeriodConfig" | "performanceReview" | "performanceReviewFeedback" | "performanceCalibration" | "okr" | "keyResult" | "keyResultUpdate" | "okrManagerReview" | "probationKpiPlan" | "probationEvaluation" | "probationConfirmation" | "jobRequestForm" | "job" | "jobApplicationForm" | "jobApplicationFormField" | "jobApplicationFormSection" | "jobApplicationCustomField" | "jobApplicationCustomFieldOption" | "jobApprovalStep" | "jobApprovalHistory" | "applicant" | "applicantStatusHistory" | "applicantEducation" | "applicantExperience" | "interviewSession" | "interviewParticipant" | "interviewerAssignment" | "interviewFeedback" | "interviewQuestion" | "offer" | "cvScreening" | "cvScreeningCriteria" | "cvScreeningQuestion" | "cvScreeningResponse" | "cvScreeningWorkflow" | "cvScreeningWorkflowStage" | "cvScreeningDecision" | "auditLog" | "auditExport" | "notification" | "notificationDelivery" | "webhookEndpoint" | "systemConfig" | "moduleConfig" | "securityPolicy" | "workSchedule" | "workScheduleDay" | "userWorkSchedule" | "successionPlan" | "promotionProposal" | "careerDevelopmentPlan" | "trainingNeedsAssessment" | "internalTransferRequest" | "salaryAdjustmentRequest" | "user" | "employee" | "userProfile" | "userEmployment" | "userEmploymentHistory" | "userCompensation" | "userCompensationHistory" | "compensationComponent" | "userLifecycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1563,6 +1565,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RolePermissionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RolePermissionCountAggregateOutputType> | number
+        }
+      }
+    }
+    Policy: {
+      payload: Prisma.$PolicyPayload<ExtArgs>
+      fields: Prisma.PolicyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PolicyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PolicyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>
+        }
+        findFirst: {
+          args: Prisma.PolicyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PolicyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>
+        }
+        findMany: {
+          args: Prisma.PolicyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>[]
+        }
+        create: {
+          args: Prisma.PolicyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>
+        }
+        createMany: {
+          args: Prisma.PolicyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PolicyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>[]
+        }
+        delete: {
+          args: Prisma.PolicyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>
+        }
+        update: {
+          args: Prisma.PolicyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>
+        }
+        deleteMany: {
+          args: Prisma.PolicyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PolicyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PolicyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>[]
+        }
+        upsert: {
+          args: Prisma.PolicyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyPayload>
+        }
+        aggregate: {
+          args: Prisma.PolicyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePolicy>
+        }
+        groupBy: {
+          args: Prisma.PolicyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PolicyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PolicyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PolicyCountAggregateOutputType> | number
+        }
+      }
+    }
+    PolicyVersion: {
+      payload: Prisma.$PolicyVersionPayload<ExtArgs>
+      fields: Prisma.PolicyVersionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PolicyVersionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PolicyVersionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>
+        }
+        findFirst: {
+          args: Prisma.PolicyVersionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PolicyVersionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>
+        }
+        findMany: {
+          args: Prisma.PolicyVersionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>[]
+        }
+        create: {
+          args: Prisma.PolicyVersionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>
+        }
+        createMany: {
+          args: Prisma.PolicyVersionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PolicyVersionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>[]
+        }
+        delete: {
+          args: Prisma.PolicyVersionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>
+        }
+        update: {
+          args: Prisma.PolicyVersionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>
+        }
+        deleteMany: {
+          args: Prisma.PolicyVersionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PolicyVersionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PolicyVersionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>[]
+        }
+        upsert: {
+          args: Prisma.PolicyVersionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolicyVersionPayload>
+        }
+        aggregate: {
+          args: Prisma.PolicyVersionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePolicyVersion>
+        }
+        groupBy: {
+          args: Prisma.PolicyVersionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PolicyVersionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PolicyVersionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PolicyVersionCountAggregateOutputType> | number
         }
       }
     }
@@ -10217,6 +10367,36 @@ export const RolePermissionScalarFieldEnum = {
 export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
 
 
+export const PolicyScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  module: 'module',
+  version: 'version',
+  isActive: 'isActive',
+  effectiveDate: 'effectiveDate',
+  expiryDate: 'expiryDate',
+  dependencies: 'dependencies',
+  priority: 'priority',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PolicyScalarFieldEnum = (typeof PolicyScalarFieldEnum)[keyof typeof PolicyScalarFieldEnum]
+
+
+export const PolicyVersionScalarFieldEnum = {
+  id: 'id',
+  policyId: 'policyId',
+  content: 'content',
+  version: 'version',
+  createdAt: 'createdAt'
+} as const
+
+export type PolicyVersionScalarFieldEnum = (typeof PolicyVersionScalarFieldEnum)[keyof typeof PolicyVersionScalarFieldEnum]
+
+
 export const AiDocumentScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -13869,6 +14049,8 @@ export type GlobalOmitConfig = {
   permission?: Prisma.PermissionOmit
   userRole?: Prisma.UserRoleOmit
   rolePermission?: Prisma.RolePermissionOmit
+  policy?: Prisma.PolicyOmit
+  policyVersion?: Prisma.PolicyVersionOmit
   aiDocument?: Prisma.AiDocumentOmit
   aiChunk?: Prisma.AiChunkOmit
   aiChatSession?: Prisma.AiChatSessionOmit

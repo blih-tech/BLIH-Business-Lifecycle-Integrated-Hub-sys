@@ -9,7 +9,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 import { parseCv } from './utils/cv-parser';
-import { ScreeningRecommendation } from '../../platform/prisma/prisma-client';
+import { ScreeningRecommendation } from '@repo/database';
 import FormData from 'form-data';
 
 const recommendationMap = {
@@ -578,5 +578,107 @@ export class BrainService {
     }
 
     return aiUser.id;
+  }
+
+  async createPolicy(data: {
+    title: string;
+    content: string;
+    module: string;
+    tags?: string[];
+    userId: string;
+  }) {
+    const normalizedModule = data.module.toLowerCase();
+
+    const policy = await this.prisma.policy.create({
+      data: {
+        title: data.title,
+        content: data.content,
+        module: normalizedModule,
+        createdBy: data.userId,
+        version: 1,
+      },
+    });
+
+    await this.prisma.policyVersion.create({
+      data: {
+        policyId: policy.id,
+        content: data.content,
+        version: 1,
+      },
+    });
+
+    try {
+      await firstValueFrom(
+        this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
+          text: data.content,
+          source: `policy:${policy.id}`,
+          metadata: {
+            module: normalizedModule,
+            type: 'policy',
+            policyId: policy.id,
+            tags: data.tags || [],
+            isAI: false,
+          },
+        }),
+      );
+      this.logger.log(
+        `Policy "${data.title}" synced to RAG for ${normalizedModule}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `RAG Sync failed for policy ${policy.id}: ${error.message}`,
+      );
+    }
+
+    return policy;
+  }
+
+  async getPolicies(module?: string) {
+    return this.prisma.policy.findMany({
+      where: {
+        isActive: true,
+        ...(module && { module }),
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async updatePolicy(id: string, content: string) {
+    const existing = await this.prisma.policy.findUnique({
+      where: { id },
+    });
+
+    if (!existing) throw new NotFoundException('Policy not found');
+
+    await this.prisma.policyVersion.create({
+      data: {
+        policyId: id,
+        content: existing.content,
+        version: existing.version,
+      },
+    });
+
+    const updated = await this.prisma.policy.update({
+      where: { id },
+      data: {
+        content,
+        version: { increment: 1 },
+      },
+    });
+
+    await firstValueFrom(
+      this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
+        text: content,
+        source: `policy:${updated.id}`, // Same source ID replaces the old vector
+        metadata: {
+          module: updated.module,
+          type: 'policy',
+          policyId: updated.id,
+          isAI: false,
+        },
+      }),
+    );
+
+    return updated;
   }
 }
