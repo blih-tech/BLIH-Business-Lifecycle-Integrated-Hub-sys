@@ -217,12 +217,14 @@ import { SalaryAdjustmentsController } from './career/salary-adjustments.control
 import { SalaryAdjustmentService } from './career/salary-adjustment.service';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { ProbationModule } from './probation/probation.module';
+import { ContractsModule } from './contracts/contracts.module';
 
 @Module({
   imports: [
     EmployeesModule,
     OnboardingModule,
     ProbationModule,
+    ContractsModule,
     NotificationsModule,
     UsersModule,
   ],
