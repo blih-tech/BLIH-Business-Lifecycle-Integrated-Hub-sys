@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { RagService } from './rag.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('RAG AI')
 @Controller('rag')

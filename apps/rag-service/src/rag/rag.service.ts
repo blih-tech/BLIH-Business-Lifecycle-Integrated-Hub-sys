@@ -6,11 +6,11 @@ import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
 interface CvAnalysisResult {
-  score?: number;
-  strengths?: string[];
-  weaknesses?: string[];
-  recommendation?: 'STRONG_RECOMMEND' | 'RECOMMEND' | 'CONSIDER' | 'REJECT';
-  summary?: string;
+  score: number;
+  strengths: string[];
+  weaknesses: string[];
+  recommendation: 'STRONG_RECOMMEND' | 'RECOMMEND' | 'CONSIDER' | 'REJECT';
+  summary: string;
 }
 
 @Injectable()
@@ -68,12 +68,17 @@ export class RagService {
   ) {
     const safeMetadata = {
       module:
-        typeof metadata?.module === 'string' ? metadata.module.toLowerCase() : 'general',
+        typeof metadata?.module === 'string'
+          ? metadata.module.toLowerCase()
+          : 'general',
 
       userId:
         typeof metadata?.userId === 'string' ? metadata.userId : undefined,
 
-      type: typeof metadata?.type === 'string' ? metadata.type.toLowerCase() : 'document',
+      type:
+        typeof metadata?.type === 'string'
+          ? metadata.type.toLowerCase()
+          : 'document',
 
       tags: Array.isArray(metadata?.tags) ? metadata.tags : [],
     };
@@ -229,52 +234,55 @@ export class RagService {
     let allDocs: Document[] = [];
 
     for (const q of queryVariants) {
-  let docs = await vectorStore.similaritySearch(
-    q,
-    reasoningMode === 'cross-module' ? 12 : 8,
-    filter,
-  );
+      let docs = await vectorStore.similaritySearch(
+        q,
+        reasoningMode === 'cross-module' ? 12 : 8,
+        filter,
+      );
 
-  if (!docs || docs.length === 0) {
-    console.log(`No docs found with filter for query: "${q}". Retrying without filter...`);
+      if (!docs || docs.length === 0) {
+        console.log(
+          `No docs found with filter for query: "${q}". Retrying without filter...`,
+        );
 
-    docs = await vectorStore.similaritySearch(
-      q,
-      reasoningMode === 'cross-module' ? 8 : 5,
-    );
-  }
-
-  allDocs = [...allDocs, ...docs];
-}
-
-    const docsByModule = {};
-
-      for (const doc of allDocs) {
-        const module = doc.metadata?.module || 'unknown';
-
-        if (!docsByModule[module]) {
-          docsByModule[module] = [];
-        }
-
-        docsByModule[module].push(doc);
+        docs = await vectorStore.similaritySearch(
+          q,
+          reasoningMode === 'cross-module' ? 8 : 5,
+        );
       }
 
-    let balancedDocs: Document[] = [];
+      allDocs = [...allDocs, ...docs];
+    }
+
+    const docsByModule: Record<string, Document[]> = {};
+
+    for (const doc of allDocs) {
+      const module = (doc.metadata?.module as string) || 'unknown';
+
+      if (!docsByModule[module]) {
+        docsByModule[module] = [];
+      }
+
+      docsByModule[module].push(doc);
+    }
+
+    const balancedDocs: Document[] = [];
 
     for (const module in docsByModule) {
       const moduleDocs = docsByModule[module];
 
       const hasRelevantDoc = moduleDocs.some((doc) =>
-        question.toLowerCase().split(/\s+/).some(word =>
-          doc.pageContent.toLowerCase().includes(word)
-        )
+        question
+          .toLowerCase()
+          .split(/\s+/)
+          .some((word) => (doc.pageContent || '').toLowerCase().includes(word)),
       );
 
       if (hasRelevantDoc) {
         balancedDocs.push(...moduleDocs.slice(0, 2));
       }
-    } 
-    
+    }
+
     allDocs = balancedDocs;
 
     const scoredDocs = allDocs.map((doc) => {
@@ -283,7 +291,7 @@ export class RagService {
 
       let score = 0;
 
-      const qWords = q.split(/\s+/).filter(w => w.length > 2);
+      const qWords = q.split(/\s+/).filter((w) => w.length > 2);
 
       for (const word of qWords) {
         if (text.includes(word)) {
@@ -314,8 +322,10 @@ export class RagService {
 
     const context = uniqueDocs
       .slice(0, 5)
-      .map((d, i) => `DOCUMENT ${i + 1} [Module: ${d.metadata?.module}]:
-${d.pageContent}`)
+      .map(
+        (d, i) => `DOCUMENT ${i + 1} [Module: ${d.metadata?.module}]:
+${d.pageContent}`,
+      )
       .join('\n\n');
 
     const chatHistoryString = history
@@ -329,8 +339,6 @@ ${d.pageContent}`)
       'Documents found:',
       uniqueDocs.map((d) => d.pageContent),
     );
-
-    
 
     const prompt = `
     ### ROLE
@@ -415,8 +423,8 @@ ${cvText}
  "recommendation": "STRONG_RECOMMEND" | "RECOMMEND" | "CONSIDER" | "REJECT",
  "summary": "Be blunt. Explain why the candidate is or is not a fit for this specific technical role."
 }
-`;
-
+`;  
+  
     const response = await this.llm.invoke([
       {
         role: 'system',
@@ -436,7 +444,7 @@ ${cvText}
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       const jsonString = jsonMatch ? jsonMatch[0] : content;
 
-      const result: CvAnalysisResult = JSON.parse(
+      const result = JSON.parse(
         jsonString,
       ) as CvAnalysisResult;
 
