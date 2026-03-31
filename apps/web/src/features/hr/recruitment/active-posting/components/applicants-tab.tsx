@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { ScheduleInterviewDialog } from "@/features/hr/recruitment/active-posting/components/schedule-interview-dialog";
@@ -61,18 +61,11 @@ function SortHeader({
       onClick={() => onSort(sortKey)}
     >
       {label}
-      <span className="flex flex-col items-center leading-none">
-        <ChevronUp
-          className={`h-3 w-3 ${
-            activeSortKey === sortKey && direction === "asc" ? "text-primary opacity-100" : "opacity-30"
-          }`}
-        />
-        <ChevronDown
-          className={`-mt-1 h-3 w-3 ${
-            activeSortKey === sortKey && direction === "desc" ? "text-primary opacity-100" : "opacity-30"
-          }`}
-        />
-      </span>
+      <ChevronDown
+        className={`h-3 w-3 transition-transform ${
+          activeSortKey === sortKey ? "text-primary opacity-100" : "opacity-30"
+        } ${activeSortKey === sortKey && direction === "asc" ? "rotate-180" : ""}`}
+      />
     </Button>
   );
 }
@@ -84,6 +77,7 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
   const [selectedApplicantIds, setSelectedApplicantIds] = useState<string[]>([]);
   const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [viewedApplicantIds, setViewedApplicantIds] = useState<Set<string>>(new Set());
 
   const sortedApplicants = useMemo(() => {
     return [...job.applicants].sort((left, right) => {
@@ -164,25 +158,24 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
       <section className="space-y-2 px-6">
         {!historyMode ? (
           <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-[#666]">
-              {selectedApplicantIds.length} applicant{selectedApplicantIds.length === 1 ? "" : "s"} selected
-            </p>
+            <div className="flex items-center gap-3 text-sm text-[#666]">
+              <input
+                type="checkbox"
+                checked={allVisibleSelected}
+                onChange={(event) => toggleSelectAllVisible(event.target.checked)}
+                aria-label="Select all applicants on current page"
+                className="h-4 w-4 rounded border-border accent-[#1e66f7]"
+              />
+              <span>Select All</span>
+              <span className="text-black">
+                {selectedApplicantIds.length}/{job.applicants.length}
+              </span>
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 type="button"
-                variant="outline"
                 size="sm"
-                className="h-8 cursor-pointer text-xs"
-                disabled={selectedApplicantIds.length === 0}
-                onClick={() => handleBulkAction("summon_for_interview")}
-              >
-                Summon for Interview
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-8 cursor-pointer text-xs"
+                className="h-8 min-w-[110px] cursor-pointer rounded-[6px] bg-[#1e66f7] px-4 text-xs text-white hover:bg-[#1e66f7]"
                 disabled={selectedApplicantIds.length === 0}
                 onClick={() => handleBulkAction("shortlist")}
               >
@@ -192,7 +185,17 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-8 cursor-pointer text-xs"
+                className="h-8 min-w-[120px] cursor-pointer rounded-[6px] border-[#1e66f7] px-4 text-xs text-[#1e66f7] hover:bg-white"
+                disabled={selectedApplicantIds.length === 0}
+                onClick={() => handleBulkAction("summon_for_interview")}
+              >
+                Mark Reviewed
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 min-w-[96px] cursor-pointer rounded-[6px] border-[#ff3b30] px-4 text-xs text-[#ff3b30] hover:bg-white"
                 disabled={selectedApplicantIds.length === 0}
                 onClick={() => handleBulkAction("reject")}
               >
@@ -205,17 +208,7 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              {!historyMode ? (
-                <TableHead className="w-12 px-4 py-3">
-                  <input
-                    type="checkbox"
-                    checked={allVisibleSelected}
-                    onChange={(event) => toggleSelectAllVisible(event.target.checked)}
-                    aria-label="Select all applicants on current page"
-                    className="h-4 w-4 rounded border-border"
-                  />
-                </TableHead>
-              ) : null}
+              {!historyMode ? <TableHead className="w-12 px-4 py-3" /> : null}
               <TableHead className="px-4 py-3">
                 <SortHeader label="Name" sortKey="name" activeSortKey={sortKey} direction={sortDirection} onSort={handleSort} />
               </TableHead>
@@ -237,8 +230,19 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
             {paginatedApplicants.map((applicant) => (
               <TableRow
                 key={applicant.id}
-                className="group border-0 bg-white transition-colors duration-200 hover:cursor-pointer hover:bg-[#f8fbff]"
-                onClick={() => setSelectedApplicantId(applicant.id)}
+                className={`group border-0 transition-colors duration-200 hover:cursor-pointer hover:bg-[#f8fbff] ${
+                  viewedApplicantIds.has(applicant.id)
+                    ? "bg-[#e9f0fe] border-y border-[#1e66f7]"
+                    : "bg-white"
+                }`}
+                onClick={() => {
+                  setSelectedApplicantId(applicant.id);
+                  setViewedApplicantIds((current) => {
+                    const next = new Set(current);
+                    next.add(applicant.id);
+                    return next;
+                  });
+                }}
               >
                 {!historyMode ? (
                   <TableCell className="w-12 px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
@@ -248,13 +252,17 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
                       onClick={(event) => event.stopPropagation()}
                       onChange={(event) => toggleApplicantSelection(applicant.id, event.target.checked)}
                       aria-label={`Select ${applicant.fullName}`}
-                      className="h-4 w-4 rounded border-border"
+                        className="h-4 w-4 rounded border-border accent-[#1e66f7]"
                     />
                   </TableCell>
                 ) : null}
                 <TableCell className="px-4 py-3 transition-colors duration-200 group-hover:bg-transparent">
                   <div className="space-y-0.5">
-                    <p className="text-base font-medium tracking-[-0.3125px] text-black">{applicant.fullName}</p>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-base font-medium tracking-[-0.3125px] text-black">
+                        {applicant.fullName}
+                      </p>
+                    </div>
                     <p className="text-xs text-[#666]">{applicant.phone}</p>
                   </div>
                 </TableCell>
@@ -277,37 +285,49 @@ export function ApplicantsTab({ job, historyMode = false }: ApplicantsTabProps) 
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
-          <p className="text-sm text-[#666]">
-            Page {currentPage} of {totalPages}
-          </p>
+        <div className="flex items-center justify-center gap-4 border-t border-border pt-4">
+          <button
+            type="button"
+            className="flex h-5 w-5 items-center justify-center text-[#666]"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            aria-label="Previous page"
+          >
+            <ChevronDown className="h-4 w-4 rotate-90" />
+          </button>
           <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-8 cursor-pointer text-xs"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-            >
-              Previous
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-8 cursor-pointer text-xs"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-            >
-              Next
-            </Button>
+            {Array.from({ length: totalPages }, (_, index) => {
+              const pageNumber = index + 1;
+              const isActive = pageNumber === currentPage;
+              return (
+                <button
+                  key={`page-${pageNumber}`}
+                  type="button"
+                  className={`flex h-4 w-4 items-center justify-center rounded-full text-[12px] ${
+                    isActive ? "bg-[#1e66f7] text-white" : "text-black"
+                  }`}
+                  onClick={() => setCurrentPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
           </div>
+          <button
+            type="button"
+            className="flex h-5 w-5 items-center justify-center text-[#666]"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            aria-label="Next page"
+          >
+            <ChevronDown className="h-4 w-4 -rotate-90" />
+          </button>
         </div>
       </section>
 
       <CandidateDetailDialog
         candidate={selectedCandidate}
+        job={job}
         open={selectedCandidate !== null}
         onOpenChange={(open) => {
           if (!open) {

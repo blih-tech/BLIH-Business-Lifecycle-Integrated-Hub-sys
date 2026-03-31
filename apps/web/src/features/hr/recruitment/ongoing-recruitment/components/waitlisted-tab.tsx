@@ -60,6 +60,7 @@ export function WaitlistedTab({ job }: WaitlistedTabProps) {
 
       <CandidateDetailDialog
         candidate={selectedCandidate}
+        job={job}
         open={selectedCandidate !== null}
         onOpenChange={(open) => {
           if (!open) {
