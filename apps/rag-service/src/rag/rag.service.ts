@@ -423,8 +423,8 @@ ${cvText}
  "recommendation": "STRONG_RECOMMEND" | "RECOMMEND" | "CONSIDER" | "REJECT",
  "summary": "Be blunt. Explain why the candidate is or is not a fit for this specific technical role."
 }
-`;  
-  
+`;
+
     const response = await this.llm.invoke([
       {
         role: 'system',
@@ -444,9 +444,7 @@ ${cvText}
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       const jsonString = jsonMatch ? jsonMatch[0] : content;
 
-      const result = JSON.parse(
-        jsonString,
-      ) as CvAnalysisResult;
+      const result = JSON.parse(jsonString) as CvAnalysisResult;
 
       return {
         score: Number(result.score ?? 0),
