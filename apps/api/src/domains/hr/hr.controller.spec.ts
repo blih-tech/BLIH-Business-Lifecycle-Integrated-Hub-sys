@@ -1,9 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmployeesController } from './employees/employees.controller';
-import { ListEmployeesUseCase } from './employees/use-cases/list-employees.usecase';
-import { GetEmployeeFullUseCase } from './employees/use-cases/get-employee-full.usecase';
+import { CreateEmployeeUseCase } from './employees/use-cases/create-employee.usecase';
+import {
+  GetEmployeeFullUseCase,
+  ListAllEmployeesUseCase,
+  ListPaginatedEmployeesUseCase,
+} from './employees/use-cases/list-employees.usecase';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
+import { UpdateEmployeeUseCase } from './employees/use-cases/update-employee.usecase';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
@@ -13,7 +18,19 @@ describe('EmployeesController', () => {
       controllers: [EmployeesController],
       providers: [
         {
-          provide: ListEmployeesUseCase,
+          provide: CreateEmployeeUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: UpdateEmployeeUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: ListAllEmployeesUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: ListPaginatedEmployeesUseCase,
           useValue: { execute: jest.fn() },
         },
         {
