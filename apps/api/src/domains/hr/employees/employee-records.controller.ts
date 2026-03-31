@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -38,7 +37,6 @@ import {
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
-  ActionSuccessResponseDto,
   ApiDefaultErrors,
   ApiEnvelopeArrayResponse,
   ApiEnvelopeOkResponse,
@@ -379,42 +377,6 @@ export class EmployeeRecordsController {
       employeeId,
       componentId,
       body,
-    );
-  }
-
-  @Delete('compensation/components/:componentId')
-  @Roles(
-    EmployeePermissions.UPDATE,
-    UserCompensationPermissions.COMPONENT_MANAGE,
-  )
-  @Audit('employee.compensation.components.delete', 'hr.employee')
-  @ApiProtected({
-    path: '/api/v1/hr/employees/:employeeId/compensation/components/:componentId',
-    roles: [
-      EmployeePermissions.UPDATE,
-      UserCompensationPermissions.COMPONENT_MANAGE,
-    ],
-  })
-  @ApiOperation({ summary: 'Delete employee compensation component' })
-  @ApiParam({ name: 'employeeId' })
-  @ApiParam({ name: 'componentId' })
-  @ApiEnvelopeOkResponse(
-    ActionSuccessResponseDto,
-    'Deleted compensation component',
-  )
-  @ApiDefaultErrors({
-    path: '/api/v1/hr/employees/:employeeId/compensation/components/:componentId',
-    notFound: 'Employee or compensation component not found',
-    unauthorized: 'Unauthorized: missing or invalid bearer access token',
-    forbidden: 'Required roles are missing',
-  })
-  deleteCompensationComponent(
-    @Param('employeeId') employeeId: string,
-    @Param('componentId') componentId: string,
-  ) {
-    return this.deleteCompensationComponentUseCase.execute(
-      employeeId,
-      componentId,
     );
   }
 }
