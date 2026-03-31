@@ -113,17 +113,6 @@ export const DocumentType = {
 export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType]
 
 
-export const ContractStatus = {
-  DRAFT: 'DRAFT',
-  ACTIVE: 'ACTIVE',
-  EXPIRED: 'EXPIRED',
-  TERMINATED: 'TERMINATED',
-  RENEWED: 'RENEWED'
-} as const
-
-export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
-
-
 export const JobWorkflowStatus = {
   DRAFT: 'DRAFT',
   PENDING_FOR_APPROVAL: 'PENDING_FOR_APPROVAL',

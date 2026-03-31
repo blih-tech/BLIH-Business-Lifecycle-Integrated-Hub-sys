@@ -719,7 +719,6 @@ export const ContractScalarFieldEnum = {
   id: 'id',
   templateId: 'templateId',
   signedFileUrl: 'signedFileUrl',
-  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   employeeContractId: 'employeeContractId'

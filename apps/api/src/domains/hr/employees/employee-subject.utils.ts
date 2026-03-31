@@ -43,7 +43,6 @@ export async function ensureEmployeeForUser(
     },
     update: {},
     create: {
-      id: userId,
       userId,
     },
     select: {

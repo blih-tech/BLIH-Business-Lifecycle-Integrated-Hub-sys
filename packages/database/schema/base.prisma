@@ -77,13 +77,7 @@ enum DocumentType {
   OTHER
 }
 
-enum ContractStatus {
-  DRAFT
-  ACTIVE
-  EXPIRED
-  TERMINATED
-  RENEWED
-}
+
 
 // Recruitment Enums
 enum JobWorkflowStatus {
