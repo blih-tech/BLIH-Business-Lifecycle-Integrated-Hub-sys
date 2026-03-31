@@ -11896,7 +11896,6 @@ export const ContractScalarFieldEnum = {
   id: 'id',
   templateId: 'templateId',
   signedFileUrl: 'signedFileUrl',
-  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   employeeContractId: 'employeeContractId'
@@ -14071,20 +14070,6 @@ export type EnumScreeningRecommendationFieldRefInput<$PrismaModel> = FieldRefInp
  * Reference to a field of type 'ScreeningRecommendation[]'
  */
 export type ListEnumScreeningRecommendationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScreeningRecommendation[]'>
-    
-
-
-/**
- * Reference to a field of type 'ContractStatus'
- */
-export type EnumContractStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractStatus'>
-    
-
-
-/**
- * Reference to a field of type 'ContractStatus[]'
- */
-export type ListEnumContractStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractStatus[]'>
     
 
 

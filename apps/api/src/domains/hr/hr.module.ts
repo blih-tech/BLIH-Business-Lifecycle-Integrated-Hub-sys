@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NotificationsModule } from '../../core/notifications/notifications.module';
 import { UsersModule } from '../../core/users/users.module';
-import { EmployeesController } from './employees/employees.controller';
-import { EmployeeRecordsController } from './employees/employee-records.controller';
-import { ListEmployeesUseCase } from './employees/use-cases/list-employees.usecase';
-import { GetEmployeeFullUseCase } from './employees/use-cases/get-employee-full.usecase';
+import { EmployeesModule } from './employees/employees.module';
 import { EmployeeDocumentsController } from './documents/employee-documents.controller';
 import { ListEmployeeDocumentsUseCase } from './documents/use-cases/list-employee-documents.usecase';
 import { CreateEmployeeDocumentUseCase } from './documents/use-cases/create-employee-document.usecase';
@@ -220,17 +217,18 @@ import { SalaryAdjustmentsController } from './career/salary-adjustments.control
 import { SalaryAdjustmentService } from './career/salary-adjustment.service';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { ProbationModule } from './probation/probation.module';
+import { ContractsModule } from './contracts/contracts.module';
 
 @Module({
   imports: [
+    EmployeesModule,
     OnboardingModule,
     ProbationModule,
+    ContractsModule,
     NotificationsModule,
     UsersModule,
   ],
   controllers: [
-    EmployeesController,
-    EmployeeRecordsController,
     EmployeeDocumentsController,
     JobDescriptionsController,
     JobsController,
@@ -256,8 +254,6 @@ import { ProbationModule } from './probation/probation.module';
     OffboardingController,
   ],
   providers: [
-    ListEmployeesUseCase,
-    GetEmployeeFullUseCase,
     GetUserProfileUseCase,
     UpdateUserProfileUseCase,
     GetUserEmploymentUseCase,
