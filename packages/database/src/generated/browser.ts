@@ -88,16 +88,6 @@ export type UserRole = Prisma.UserRoleModel
  */
 export type RolePermission = Prisma.RolePermissionModel
 /**
- * Model Policy
- * 
- */
-export type Policy = Prisma.PolicyModel
-/**
- * Model PolicyVersion
- * 
- */
-export type PolicyVersion = Prisma.PolicyVersionModel
-/**
  * Model AiDocument
  * 
  */

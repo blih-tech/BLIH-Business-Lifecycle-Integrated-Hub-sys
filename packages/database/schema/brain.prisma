@@ -10,36 +10,6 @@ enum ScreeningRecommendation {
   REJECT
 }
 
-model Policy {
-  id          String   @id @default(uuid())
-  title       String
-  content     String   @db.Text
-  module      String   
-  version     Int      @default(1)
-  isActive    Boolean  @default(true)
-  
-  effectiveDate DateTime @default(now())
-  expiryDate    DateTime?
-  dependencies  String[] 
-  priority      Int      @default(1) 
-  
-  createdBy   String
-  versions    PolicyVersion[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model PolicyVersion {
-  id        String   @id @default(uuid())
-  policyId  String
-  policy    Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
-  content   String
-  version   Int
-  createdAt DateTime @default(now())
-
-  @@index([policyId])
-}
-
 // AI Document Management Models
 model AiDocument {
   id           String   @id @default(uuid()) @db.Uuid
