@@ -7,7 +7,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RagService } from './rag.service';
 
 @ApiTags('RAG AI')
@@ -16,16 +16,15 @@ export class RagController {
   constructor(private readonly ragService: RagService) {}
 
   @Post('ingest-text')
-  @ApiOperation({ summary: 'Ingest text into vector DB' })
-  async ingestText(
-    @Body()
-    data: {
-      text: string;
-      source: string;
-      metadata?: Record<string, unknown>;
-    },
-  ) {
-    console.log(`Received document from source: ${data.source}`);
+async ingestText(
+  @Body()
+  data: {
+    text: string;
+    source: string;
+    metadata?: Record<string, unknown>;
+  },
+) {
+  console.log(`Received document from source: ${data.source}`);
 
     const rawMetadata = data.metadata ?? {};
 
