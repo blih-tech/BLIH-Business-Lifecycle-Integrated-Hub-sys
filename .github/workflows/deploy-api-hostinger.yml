@@ -3,7 +3,7 @@ name: Deploy API to Hostinger
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
       - 'apps/api/**'
       - 'packages/types/**'
@@ -118,8 +118,8 @@ jobs:
       - name: Build and push Keycloak image
         uses: docker/build-push-action@v6
         with:
-          context: apps/api
-          file: deploy/hostinger/keycloak/Dockerfile
+          context: .
+          file: apps/api/keycloak/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.keycloak_image }}
 
@@ -185,6 +185,12 @@ jobs:
 
       - name: Prepare SSH
         run: |
+          echo "Checking required secrets..."
+          echo "HOSTINGER_SSH_HOST is set: $(if [ -n "${HOSTINGER_SSH_HOST}" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HOSTINGER_SSH_USER is set: $(if [ -n "${HOSTINGER_SSH_USER}" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HOSTINGER_SSH_KEY is set: $(if [ -n "${HOSTINGER_SSH_KEY}" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HOSTINGER_DEPLOY_PATH is set: $(if [ -n "${HOSTINGER_DEPLOY_PATH}" ]; then echo "YES"; else echo "NO"; fi)"
+
           : "${HOSTINGER_SSH_HOST:?HOSTINGER_SSH_HOST secret is required}"
           : "${HOSTINGER_SSH_USER:?HOSTINGER_SSH_USER secret is required}"
           : "${HOSTINGER_SSH_KEY:?HOSTINGER_SSH_KEY secret is required}"
@@ -192,23 +198,73 @@ jobs:
           HOSTINGER_SSH_PORT="${HOSTINGER_SSH_PORT:-22}"
 
           install -m 700 -d ~/.ssh
-          printf '%s\n' "${HOSTINGER_SSH_KEY}" > ~/.ssh/id_ed25519
+          printf '%s\n' "${HOSTINGER_SSH_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "${HOSTINGER_SSH_PORT}" "${HOSTINGER_SSH_HOST}" >> ~/.ssh/known_hosts
+          touch ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+          if ! ssh-keygen -yf ~/.ssh/id_ed25519 >/dev/null 2>&1; then
+            echo "HOSTINGER_SSH_KEY is not a valid private key. Check that the GitHub secret contains the full unencrypted key."
+            exit 1
+          fi
+
+          # Write SSH client config for all subsequent steps: timeouts, keepalives, retry
+          printf 'Host %s\n  Port %s\n  IdentityFile ~/.ssh/id_ed25519\n  ConnectTimeout 30\n  ServerAliveInterval 60\n  ServerAliveCountMax 5\n  TCPKeepAlive yes\n' \
+            "${HOSTINGER_SSH_HOST}" "${HOSTINGER_SSH_PORT}" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+          # Try ssh-keyscan up to 3 times with a 30s timeout.
+          # Hostinger (and many hosters) rate-limit external port scans, so
+          # a single 15s attempt is often not enough. If all attempts fail we
+          # fall back to StrictHostKeyChecking=accept-new which auto-adds the
+          # host key on the first real SSH connection instead.
+          keyscan_ok=false
+          for attempt in 1 2 3; do
+            echo "ssh-keyscan attempt ${attempt}/3..."
+            if ssh-keyscan \
+                -o KexAlgorithms=+diffie-hellman-group14-sha256 \
+                -T 30 \
+                -p "${HOSTINGER_SSH_PORT}" \
+                "${HOSTINGER_SSH_HOST}" >> ~/.ssh/known_hosts 2>/dev/null; then
+              keyscan_ok=true
+              echo "Host key obtained via ssh-keyscan."
+              break
+            fi
+            sleep $((attempt * 5))
+          done
+
+          if [[ "${keyscan_ok}" != "true" ]]; then
+            echo "ssh-keyscan could not reach the host after 3 attempts."
+            echo "Falling back to StrictHostKeyChecking=accept-new (host key will be saved on first connection)."
+            # Append the fallback setting; it overrides the Host block above only for StrictHostKeyChecking
+            echo "  StrictHostKeyChecking accept-new" >> ~/.ssh/config
+          fi
 
       - name: Sync deploy manifests to Hostinger
         run: |
-          HOSTINGER_SSH_PORT="${HOSTINGER_SSH_PORT:-22}"
+          # Port, identity file, and host-key settings are all in ~/.ssh/config
+          # so plain `ssh` and `rsync -e ssh` pick them up automatically.
           remote="${HOSTINGER_SSH_USER}@${HOSTINGER_SSH_HOST}"
-          ssh -p "${HOSTINGER_SSH_PORT}" "${remote}" "mkdir -p '${HOSTINGER_DEPLOY_PATH}'"
-          rsync -az --delete \
-            -e "ssh -p ${HOSTINGER_SSH_PORT}" \
-            apps/api/deploy/hostinger/ \
+          ssh "${remote}" "mkdir -p '${HOSTINGER_DEPLOY_PATH}'"
+          rsync -az --checksum \
+            apps/api/docker-compose.prod.yml \
             "${remote}:${HOSTINGER_DEPLOY_PATH}/"
+          rsync -az --checksum \
+            apps/api/deploy.sh \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/"
+          rsync -az --checksum \
+            apps/api/healthcheck.sh \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/"
+          rsync -az --checksum \
+            apps/api/.env.production \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/.env.production"
+          rsync -az --checksum \
+            apps/api/keycloak/import/ \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/keycloak/import/"
 
       - name: Run remote deploy script
         run: |
-          HOSTINGER_SSH_PORT="${HOSTINGER_SSH_PORT:-22}"
+          # Port, identity, and host-key settings come from ~/.ssh/config
           remote="${HOSTINGER_SSH_USER}@${HOSTINGER_SSH_HOST}"
           api_image_escaped="$(printf '%q' "${API_IMAGE}")"
           api_migrator_image_escaped="$(printf '%q' "${API_MIGRATOR_IMAGE}")"
@@ -217,7 +273,7 @@ jobs:
           ghcr_token_escaped="$(printf '%q' "${GHCR_PULL_TOKEN}")"
           git_sha_escaped="$(printf '%q' "${GITHUB_SHA}")"
 
-          ssh -p "${HOSTINGER_SSH_PORT}" "${remote}" \
+          ssh "${remote}" \
             "set -euo pipefail; cd '${HOSTINGER_DEPLOY_PATH}'; chmod +x deploy.sh healthcheck.sh; \
             API_IMAGE=${api_image_escaped} \
             API_MIGRATOR_IMAGE=${api_migrator_image_escaped} \

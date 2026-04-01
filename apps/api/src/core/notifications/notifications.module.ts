@@ -17,5 +17,6 @@ import { SendWebhookUseCase } from './use-cases/send-webhook.usecase';
     SendWebhookUseCase,
     NotifySecurityEventUseCase,
   ],
+  exports: [SendNotificationUseCase],
 })
 export class NotificationsModule {}

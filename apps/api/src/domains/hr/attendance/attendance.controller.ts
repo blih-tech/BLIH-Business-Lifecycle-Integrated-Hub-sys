@@ -39,7 +39,7 @@ import {
   OvertimePermissions,
   PunctualityPermissions,
   TimesheetPermissions,
-} from '../../../core/rbac/constants/permissions.constants';
+} from '@repo/types/rbac';
 import {
   ApiDefaultErrors,
   ApiEnvelopeArrayResponse,

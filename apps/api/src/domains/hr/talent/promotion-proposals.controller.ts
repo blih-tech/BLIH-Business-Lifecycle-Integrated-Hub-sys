@@ -12,7 +12,7 @@ import type {
   CreatePromotionProposalDto,
   ReviewPromotionProposalDto,
 } from '@repo/types';
-import { PromotionProposalPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { PromotionProposalPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

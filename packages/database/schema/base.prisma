@@ -77,13 +77,6 @@ enum DocumentType {
   OTHER
 }
 
-enum ContractType {
-  INITIAL
-  RENEWAL
-  AMENDMENT
-  ADDENDUM
-}
-
 enum ContractStatus {
   DRAFT
   ACTIVE
@@ -340,42 +333,6 @@ enum CvScreeningDecisionType {
   REQUEST_CHANGES
   ESCALATE
   HOLD
-}
-
-// Onboarding Enums
-enum OnboardingStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum OnboardingChecklistStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
-  OVERDUE
-}
-
-enum OnboardingTaskDepartment {
-  HR
-  IT
-  ADMIN
-  TEAM
-}
-
-enum OnboardingTaskStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  OVERDUE
-}
-
-enum ProbationPlanStatus {
-  DRAFT
-  ACTIVE
-  COMPLETED
-  CANCELLED
 }
 
 enum ProbationEvaluationRound {

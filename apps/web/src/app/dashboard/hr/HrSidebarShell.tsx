@@ -25,8 +25,7 @@ import { cn } from '@/shared/lib/utils';
 import { useSidebar } from '@/shared/components/ui/sidebar';
 
 const assets = {
-  background:
-    'https://www.figma.com/api/mcp/asset/7e31743a-72ac-4836-87e2-fc85df229e91',
+  background: '/sidebar-bg.jpg',
 };
 
 type HrSidebarShellProps = {
@@ -36,6 +35,7 @@ type HrSidebarShellProps = {
     initials: string;
     name: string;
     email: string;
+    onLogout?: () => void;
   };
 };
 
@@ -119,7 +119,7 @@ export function HrSidebarShell({
         title="Blih CORE"
         subtitle="HR Portal"
         backgroundImage={assets.background}
-        logo={(
+        logo={
           <Link
             href="/dashboard/hr"
             aria-label="Go to HR dashboard"
@@ -127,7 +127,7 @@ export function HrSidebarShell({
           >
             <Brain className="h-5 w-5" />
           </Link>
-        )}
+        }
         searchIcon={<Search className="h-2.5 w-2.5 text-white" />}
         items={items}
         user={user}

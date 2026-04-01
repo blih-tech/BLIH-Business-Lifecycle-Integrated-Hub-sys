@@ -18,9 +18,6 @@ export class GetUserProfileUseCase {
         nationality: {
           select: { name: true },
         },
-        country: {
-          select: { name: true },
-        },
       },
     });
 
@@ -31,7 +28,6 @@ export class GetUserProfileUseCase {
     return {
       ...profile,
       nationality: profile.nationality?.name ?? null,
-      country: profile.country?.name ?? null,
       dateOfBirth: profile.dateOfBirth?.toISOString() ?? null,
       createdAt: profile.createdAt.toISOString(),
       updatedAt: profile.updatedAt.toISOString(),

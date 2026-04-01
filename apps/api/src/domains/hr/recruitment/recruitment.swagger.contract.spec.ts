@@ -8,8 +8,10 @@ import { InterviewQuestionsController } from './interview-questions.controller';
 import { InterviewsController } from './interviews.controller';
 import { JobsController } from './jobs.controller';
 import { OffersController } from './offers.controller';
+import { RecruitmentTransitionService } from './recruitment-transition.service';
 import {
   ApproveJobUseCase,
+  BulkUpdateApplicantStatusUseCase,
   CloseJobUseCase,
   CreateApplicantUseCase,
   CreateInterviewUseCase,
@@ -57,8 +59,10 @@ const useCaseTokens = [
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
   UpsertJobResponsibilitiesUseCase,
+  RecruitmentTransitionService,
   CreateApplicantUseCase,
   ListApplicantsUseCase,
+  BulkUpdateApplicantStatusUseCase,
   GetApplicantUseCase,
   UpdateApplicantUseCase,
   UpdateApplicantStatusUseCase,
@@ -92,6 +96,11 @@ const expectedOperations: Array<{
   { path: '/hr/recruitment/jobs', method: 'post', expectsBody: true },
   { path: '/hr/recruitment/jobs', method: 'get', expectsBody: false },
   { path: '/hr/recruitment/jobs/{id}', method: 'get', expectsBody: false },
+  {
+    path: '/hr/recruitment/jobs/{id}/apply',
+    method: 'post',
+    expectsBody: true,
+  },
   { path: '/hr/recruitment/jobs/{id}', method: 'patch', expectsBody: true },
   {
     path: '/hr/recruitment/jobs/{id}/submit',
@@ -128,8 +137,12 @@ const expectedOperations: Array<{
     method: 'post',
     expectsBody: true,
   },
-  { path: '/hr/recruitment/applicants', method: 'post', expectsBody: true },
   { path: '/hr/recruitment/applicants', method: 'get', expectsBody: false },
+  {
+    path: '/hr/recruitment/applicants/bulk-status',
+    method: 'post',
+    expectsBody: true,
+  },
   {
     path: '/hr/recruitment/applicants/{id}',
     method: 'get',
@@ -301,5 +314,21 @@ describe('Recruitment Swagger Contract', () => {
         successJson?.example ?? successJson?.schema?.example;
       expect(responseExample).toBeDefined();
     }
+  });
+
+  it('documents job apply as a public operation', () => {
+    const doc = SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder().setTitle('Recruitment').build(),
+    );
+    const operation = doc.paths['/hr/recruitment/jobs/{id}/apply']?.post;
+
+    expect(operation).toBeDefined();
+    expect(operation?.security).toBeUndefined();
+    expect(operation?.responses?.['401']).toBeUndefined();
+    expect(operation?.responses?.['403']).toBeUndefined();
+    expect(
+      (operation as Record<string, unknown> | undefined)?.['x-required-roles'],
+    ).toBeUndefined();
   });
 });

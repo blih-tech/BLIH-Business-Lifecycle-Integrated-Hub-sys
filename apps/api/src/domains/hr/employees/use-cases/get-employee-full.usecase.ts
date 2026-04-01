@@ -20,7 +20,6 @@ const employeeDetailsInclude = {
   profile: {
     include: {
       nationality: { select: { name: true } },
-      country: { select: { name: true } },
     },
   },
   employment: {
@@ -38,7 +37,7 @@ const employeeDetailsInclude = {
   compensationComponents: true,
   lifecycle: true,
   _count: {
-    select: { employeeDocuments: true, contracts: true },
+    select: { employeeDocuments: true },
   },
 } satisfies Prisma.EmployeeInclude;
 
@@ -87,16 +86,6 @@ export class GetEmployeeFullUseCase {
             nationalityId: employee.profile.nationalityId ?? null,
             nationalityName: employee.profile.nationality?.name ?? null,
             maritalStatus: employee.profile.maritalStatus,
-            addressLine1: employee.profile.addressLine1 ?? null,
-            addressLine2: employee.profile.addressLine2 ?? null,
-            city: employee.profile.city ?? null,
-            state: employee.profile.state ?? null,
-            countryId: employee.profile.countryId ?? null,
-            countryName: employee.profile.country?.name ?? null,
-            postalCode: employee.profile.postalCode ?? null,
-            emergencyContactName: employee.profile.emergencyContactName ?? null,
-            emergencyContactPhone:
-              employee.profile.emergencyContactPhone ?? null,
           }
         : null,
       employment: employee.employment
@@ -151,7 +140,7 @@ export class GetEmployeeFullUseCase {
           }
         : null,
       documentsCount: employee._count.employeeDocuments,
-      contractsCount: employee._count.contracts,
+      contractsCount: 0,
       createdAt: employee.createdAt.toISOString(),
       updatedAt: employee.updatedAt.toISOString(),
     };

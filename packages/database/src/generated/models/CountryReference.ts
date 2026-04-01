@@ -191,8 +191,9 @@ export type CountryReferenceWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"CountryReference"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CountryReference"> | Date | string
   nationalityProfiles?: Prisma.UserProfileListRelationFilter
-  residenceProfiles?: Prisma.UserProfileListRelationFilter
   holidays?: Prisma.HolidayListRelationFilter
+  employeeAddresses?: Prisma.EmployeeAddressListRelationFilter
+  emergencyContacts?: Prisma.EmergencyContactListRelationFilter
 }
 
 export type CountryReferenceOrderByWithRelationInput = {
@@ -203,8 +204,9 @@ export type CountryReferenceOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   nationalityProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
-  residenceProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
   holidays?: Prisma.HolidayOrderByRelationAggregateInput
+  employeeAddresses?: Prisma.EmployeeAddressOrderByRelationAggregateInput
+  emergencyContacts?: Prisma.EmergencyContactOrderByRelationAggregateInput
 }
 
 export type CountryReferenceWhereUniqueInput = Prisma.AtLeast<{
@@ -218,8 +220,9 @@ export type CountryReferenceWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"CountryReference"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CountryReference"> | Date | string
   nationalityProfiles?: Prisma.UserProfileListRelationFilter
-  residenceProfiles?: Prisma.UserProfileListRelationFilter
   holidays?: Prisma.HolidayListRelationFilter
+  employeeAddresses?: Prisma.EmployeeAddressListRelationFilter
+  emergencyContacts?: Prisma.EmergencyContactListRelationFilter
 }, "id" | "code" | "name">
 
 export type CountryReferenceOrderByWithAggregationInput = {
@@ -254,8 +257,9 @@ export type CountryReferenceCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   nationalityProfiles?: Prisma.UserProfileCreateNestedManyWithoutNationalityInput
-  residenceProfiles?: Prisma.UserProfileCreateNestedManyWithoutCountryInput
   holidays?: Prisma.HolidayCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutCountryInput
 }
 
 export type CountryReferenceUncheckedCreateInput = {
@@ -266,8 +270,9 @@ export type CountryReferenceUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   nationalityProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutNationalityInput
-  residenceProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutCountryInput
   holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutCountryInput
 }
 
 export type CountryReferenceUpdateInput = {
@@ -278,8 +283,9 @@ export type CountryReferenceUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationalityProfiles?: Prisma.UserProfileUpdateManyWithoutNationalityNestedInput
-  residenceProfiles?: Prisma.UserProfileUpdateManyWithoutCountryNestedInput
   holidays?: Prisma.HolidayUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutCountryNestedInput
 }
 
 export type CountryReferenceUncheckedUpdateInput = {
@@ -290,8 +296,9 @@ export type CountryReferenceUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationalityProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutNationalityNestedInput
-  residenceProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutCountryNestedInput
   holidays?: Prisma.HolidayUncheckedUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutCountryNestedInput
 }
 
 export type CountryReferenceCreateManyInput = {
@@ -353,6 +360,11 @@ export type CountryReferenceNullableScalarRelationFilter = {
   isNot?: Prisma.CountryReferenceWhereInput | null
 }
 
+export type CountryReferenceScalarRelationFilter = {
+  is?: Prisma.CountryReferenceWhereInput
+  isNot?: Prisma.CountryReferenceWhereInput
+}
+
 export type CountryReferenceCreateNestedOneWithoutHolidaysInput = {
   create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutHolidaysInput, Prisma.CountryReferenceUncheckedCreateWithoutHolidaysInput>
   connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutHolidaysInput
@@ -375,12 +387,6 @@ export type CountryReferenceCreateNestedOneWithoutNationalityProfilesInput = {
   connect?: Prisma.CountryReferenceWhereUniqueInput
 }
 
-export type CountryReferenceCreateNestedOneWithoutResidenceProfilesInput = {
-  create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutResidenceProfilesInput, Prisma.CountryReferenceUncheckedCreateWithoutResidenceProfilesInput>
-  connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutResidenceProfilesInput
-  connect?: Prisma.CountryReferenceWhereUniqueInput
-}
-
 export type CountryReferenceUpdateOneWithoutNationalityProfilesNestedInput = {
   create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutNationalityProfilesInput, Prisma.CountryReferenceUncheckedCreateWithoutNationalityProfilesInput>
   connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutNationalityProfilesInput
@@ -391,14 +397,34 @@ export type CountryReferenceUpdateOneWithoutNationalityProfilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CountryReferenceUpdateToOneWithWhereWithoutNationalityProfilesInput, Prisma.CountryReferenceUpdateWithoutNationalityProfilesInput>, Prisma.CountryReferenceUncheckedUpdateWithoutNationalityProfilesInput>
 }
 
-export type CountryReferenceUpdateOneWithoutResidenceProfilesNestedInput = {
-  create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutResidenceProfilesInput, Prisma.CountryReferenceUncheckedCreateWithoutResidenceProfilesInput>
-  connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutResidenceProfilesInput
-  upsert?: Prisma.CountryReferenceUpsertWithoutResidenceProfilesInput
+export type CountryReferenceCreateNestedOneWithoutEmployeeAddressesInput = {
+  create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmployeeAddressesInput, Prisma.CountryReferenceUncheckedCreateWithoutEmployeeAddressesInput>
+  connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutEmployeeAddressesInput
+  connect?: Prisma.CountryReferenceWhereUniqueInput
+}
+
+export type CountryReferenceUpdateOneRequiredWithoutEmployeeAddressesNestedInput = {
+  create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmployeeAddressesInput, Prisma.CountryReferenceUncheckedCreateWithoutEmployeeAddressesInput>
+  connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutEmployeeAddressesInput
+  upsert?: Prisma.CountryReferenceUpsertWithoutEmployeeAddressesInput
+  connect?: Prisma.CountryReferenceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CountryReferenceUpdateToOneWithWhereWithoutEmployeeAddressesInput, Prisma.CountryReferenceUpdateWithoutEmployeeAddressesInput>, Prisma.CountryReferenceUncheckedUpdateWithoutEmployeeAddressesInput>
+}
+
+export type CountryReferenceCreateNestedOneWithoutEmergencyContactsInput = {
+  create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmergencyContactsInput, Prisma.CountryReferenceUncheckedCreateWithoutEmergencyContactsInput>
+  connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutEmergencyContactsInput
+  connect?: Prisma.CountryReferenceWhereUniqueInput
+}
+
+export type CountryReferenceUpdateOneWithoutEmergencyContactsNestedInput = {
+  create?: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmergencyContactsInput, Prisma.CountryReferenceUncheckedCreateWithoutEmergencyContactsInput>
+  connectOrCreate?: Prisma.CountryReferenceCreateOrConnectWithoutEmergencyContactsInput
+  upsert?: Prisma.CountryReferenceUpsertWithoutEmergencyContactsInput
   disconnect?: Prisma.CountryReferenceWhereInput | boolean
   delete?: Prisma.CountryReferenceWhereInput | boolean
   connect?: Prisma.CountryReferenceWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.CountryReferenceUpdateToOneWithWhereWithoutResidenceProfilesInput, Prisma.CountryReferenceUpdateWithoutResidenceProfilesInput>, Prisma.CountryReferenceUncheckedUpdateWithoutResidenceProfilesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CountryReferenceUpdateToOneWithWhereWithoutEmergencyContactsInput, Prisma.CountryReferenceUpdateWithoutEmergencyContactsInput>, Prisma.CountryReferenceUncheckedUpdateWithoutEmergencyContactsInput>
 }
 
 export type CountryReferenceCreateWithoutHolidaysInput = {
@@ -409,7 +435,8 @@ export type CountryReferenceCreateWithoutHolidaysInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   nationalityProfiles?: Prisma.UserProfileCreateNestedManyWithoutNationalityInput
-  residenceProfiles?: Prisma.UserProfileCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutCountryInput
 }
 
 export type CountryReferenceUncheckedCreateWithoutHolidaysInput = {
@@ -420,7 +447,8 @@ export type CountryReferenceUncheckedCreateWithoutHolidaysInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   nationalityProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutNationalityInput
-  residenceProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutCountryInput
 }
 
 export type CountryReferenceCreateOrConnectWithoutHolidaysInput = {
@@ -447,7 +475,8 @@ export type CountryReferenceUpdateWithoutHolidaysInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationalityProfiles?: Prisma.UserProfileUpdateManyWithoutNationalityNestedInput
-  residenceProfiles?: Prisma.UserProfileUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutCountryNestedInput
 }
 
 export type CountryReferenceUncheckedUpdateWithoutHolidaysInput = {
@@ -458,7 +487,8 @@ export type CountryReferenceUncheckedUpdateWithoutHolidaysInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationalityProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutNationalityNestedInput
-  residenceProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutCountryNestedInput
 }
 
 export type CountryReferenceCreateWithoutNationalityProfilesInput = {
@@ -468,8 +498,9 @@ export type CountryReferenceCreateWithoutNationalityProfilesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  residenceProfiles?: Prisma.UserProfileCreateNestedManyWithoutCountryInput
   holidays?: Prisma.HolidayCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutCountryInput
 }
 
 export type CountryReferenceUncheckedCreateWithoutNationalityProfilesInput = {
@@ -479,40 +510,14 @@ export type CountryReferenceUncheckedCreateWithoutNationalityProfilesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  residenceProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutCountryInput
   holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutCountryInput
 }
 
 export type CountryReferenceCreateOrConnectWithoutNationalityProfilesInput = {
   where: Prisma.CountryReferenceWhereUniqueInput
   create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutNationalityProfilesInput, Prisma.CountryReferenceUncheckedCreateWithoutNationalityProfilesInput>
-}
-
-export type CountryReferenceCreateWithoutResidenceProfilesInput = {
-  id?: string
-  code?: string | null
-  name: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  nationalityProfiles?: Prisma.UserProfileCreateNestedManyWithoutNationalityInput
-  holidays?: Prisma.HolidayCreateNestedManyWithoutCountryInput
-}
-
-export type CountryReferenceUncheckedCreateWithoutResidenceProfilesInput = {
-  id?: string
-  code?: string | null
-  name: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  nationalityProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutNationalityInput
-  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutCountryInput
-}
-
-export type CountryReferenceCreateOrConnectWithoutResidenceProfilesInput = {
-  where: Prisma.CountryReferenceWhereUniqueInput
-  create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutResidenceProfilesInput, Prisma.CountryReferenceUncheckedCreateWithoutResidenceProfilesInput>
 }
 
 export type CountryReferenceUpsertWithoutNationalityProfilesInput = {
@@ -533,8 +538,9 @@ export type CountryReferenceUpdateWithoutNationalityProfilesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  residenceProfiles?: Prisma.UserProfileUpdateManyWithoutCountryNestedInput
   holidays?: Prisma.HolidayUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutCountryNestedInput
 }
 
 export type CountryReferenceUncheckedUpdateWithoutNationalityProfilesInput = {
@@ -544,22 +550,52 @@ export type CountryReferenceUncheckedUpdateWithoutNationalityProfilesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  residenceProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutCountryNestedInput
   holidays?: Prisma.HolidayUncheckedUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutCountryNestedInput
 }
 
-export type CountryReferenceUpsertWithoutResidenceProfilesInput = {
-  update: Prisma.XOR<Prisma.CountryReferenceUpdateWithoutResidenceProfilesInput, Prisma.CountryReferenceUncheckedUpdateWithoutResidenceProfilesInput>
-  create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutResidenceProfilesInput, Prisma.CountryReferenceUncheckedCreateWithoutResidenceProfilesInput>
+export type CountryReferenceCreateWithoutEmployeeAddressesInput = {
+  id?: string
+  code?: string | null
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  nationalityProfiles?: Prisma.UserProfileCreateNestedManyWithoutNationalityInput
+  holidays?: Prisma.HolidayCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutCountryInput
+}
+
+export type CountryReferenceUncheckedCreateWithoutEmployeeAddressesInput = {
+  id?: string
+  code?: string | null
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  nationalityProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutNationalityInput
+  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutCountryInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutCountryInput
+}
+
+export type CountryReferenceCreateOrConnectWithoutEmployeeAddressesInput = {
+  where: Prisma.CountryReferenceWhereUniqueInput
+  create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmployeeAddressesInput, Prisma.CountryReferenceUncheckedCreateWithoutEmployeeAddressesInput>
+}
+
+export type CountryReferenceUpsertWithoutEmployeeAddressesInput = {
+  update: Prisma.XOR<Prisma.CountryReferenceUpdateWithoutEmployeeAddressesInput, Prisma.CountryReferenceUncheckedUpdateWithoutEmployeeAddressesInput>
+  create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmployeeAddressesInput, Prisma.CountryReferenceUncheckedCreateWithoutEmployeeAddressesInput>
   where?: Prisma.CountryReferenceWhereInput
 }
 
-export type CountryReferenceUpdateToOneWithWhereWithoutResidenceProfilesInput = {
+export type CountryReferenceUpdateToOneWithWhereWithoutEmployeeAddressesInput = {
   where?: Prisma.CountryReferenceWhereInput
-  data: Prisma.XOR<Prisma.CountryReferenceUpdateWithoutResidenceProfilesInput, Prisma.CountryReferenceUncheckedUpdateWithoutResidenceProfilesInput>
+  data: Prisma.XOR<Prisma.CountryReferenceUpdateWithoutEmployeeAddressesInput, Prisma.CountryReferenceUncheckedUpdateWithoutEmployeeAddressesInput>
 }
 
-export type CountryReferenceUpdateWithoutResidenceProfilesInput = {
+export type CountryReferenceUpdateWithoutEmployeeAddressesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -568,9 +604,10 @@ export type CountryReferenceUpdateWithoutResidenceProfilesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationalityProfiles?: Prisma.UserProfileUpdateManyWithoutNationalityNestedInput
   holidays?: Prisma.HolidayUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutCountryNestedInput
 }
 
-export type CountryReferenceUncheckedUpdateWithoutResidenceProfilesInput = {
+export type CountryReferenceUncheckedUpdateWithoutEmployeeAddressesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -579,6 +616,71 @@ export type CountryReferenceUncheckedUpdateWithoutResidenceProfilesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nationalityProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutNationalityNestedInput
   holidays?: Prisma.HolidayUncheckedUpdateManyWithoutCountryNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutCountryNestedInput
+}
+
+export type CountryReferenceCreateWithoutEmergencyContactsInput = {
+  id?: string
+  code?: string | null
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  nationalityProfiles?: Prisma.UserProfileCreateNestedManyWithoutNationalityInput
+  holidays?: Prisma.HolidayCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressCreateNestedManyWithoutCountryInput
+}
+
+export type CountryReferenceUncheckedCreateWithoutEmergencyContactsInput = {
+  id?: string
+  code?: string | null
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  nationalityProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutNationalityInput
+  holidays?: Prisma.HolidayUncheckedCreateNestedManyWithoutCountryInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedCreateNestedManyWithoutCountryInput
+}
+
+export type CountryReferenceCreateOrConnectWithoutEmergencyContactsInput = {
+  where: Prisma.CountryReferenceWhereUniqueInput
+  create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmergencyContactsInput, Prisma.CountryReferenceUncheckedCreateWithoutEmergencyContactsInput>
+}
+
+export type CountryReferenceUpsertWithoutEmergencyContactsInput = {
+  update: Prisma.XOR<Prisma.CountryReferenceUpdateWithoutEmergencyContactsInput, Prisma.CountryReferenceUncheckedUpdateWithoutEmergencyContactsInput>
+  create: Prisma.XOR<Prisma.CountryReferenceCreateWithoutEmergencyContactsInput, Prisma.CountryReferenceUncheckedCreateWithoutEmergencyContactsInput>
+  where?: Prisma.CountryReferenceWhereInput
+}
+
+export type CountryReferenceUpdateToOneWithWhereWithoutEmergencyContactsInput = {
+  where?: Prisma.CountryReferenceWhereInput
+  data: Prisma.XOR<Prisma.CountryReferenceUpdateWithoutEmergencyContactsInput, Prisma.CountryReferenceUncheckedUpdateWithoutEmergencyContactsInput>
+}
+
+export type CountryReferenceUpdateWithoutEmergencyContactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nationalityProfiles?: Prisma.UserProfileUpdateManyWithoutNationalityNestedInput
+  holidays?: Prisma.HolidayUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUpdateManyWithoutCountryNestedInput
+}
+
+export type CountryReferenceUncheckedUpdateWithoutEmergencyContactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nationalityProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutNationalityNestedInput
+  holidays?: Prisma.HolidayUncheckedUpdateManyWithoutCountryNestedInput
+  employeeAddresses?: Prisma.EmployeeAddressUncheckedUpdateManyWithoutCountryNestedInput
 }
 
 
@@ -588,14 +690,16 @@ export type CountryReferenceUncheckedUpdateWithoutResidenceProfilesInput = {
 
 export type CountryReferenceCountOutputType = {
   nationalityProfiles: number
-  residenceProfiles: number
   holidays: number
+  employeeAddresses: number
+  emergencyContacts: number
 }
 
 export type CountryReferenceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nationalityProfiles?: boolean | CountryReferenceCountOutputTypeCountNationalityProfilesArgs
-  residenceProfiles?: boolean | CountryReferenceCountOutputTypeCountResidenceProfilesArgs
   holidays?: boolean | CountryReferenceCountOutputTypeCountHolidaysArgs
+  employeeAddresses?: boolean | CountryReferenceCountOutputTypeCountEmployeeAddressesArgs
+  emergencyContacts?: boolean | CountryReferenceCountOutputTypeCountEmergencyContactsArgs
 }
 
 /**
@@ -618,15 +722,22 @@ export type CountryReferenceCountOutputTypeCountNationalityProfilesArgs<ExtArgs 
 /**
  * CountryReferenceCountOutputType without action
  */
-export type CountryReferenceCountOutputTypeCountResidenceProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.UserProfileWhereInput
+export type CountryReferenceCountOutputTypeCountHolidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HolidayWhereInput
 }
 
 /**
  * CountryReferenceCountOutputType without action
  */
-export type CountryReferenceCountOutputTypeCountHolidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HolidayWhereInput
+export type CountryReferenceCountOutputTypeCountEmployeeAddressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeAddressWhereInput
+}
+
+/**
+ * CountryReferenceCountOutputType without action
+ */
+export type CountryReferenceCountOutputTypeCountEmergencyContactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmergencyContactWhereInput
 }
 
 
@@ -638,8 +749,9 @@ export type CountryReferenceSelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdAt?: boolean
   updatedAt?: boolean
   nationalityProfiles?: boolean | Prisma.CountryReference$nationalityProfilesArgs<ExtArgs>
-  residenceProfiles?: boolean | Prisma.CountryReference$residenceProfilesArgs<ExtArgs>
   holidays?: boolean | Prisma.CountryReference$holidaysArgs<ExtArgs>
+  employeeAddresses?: boolean | Prisma.CountryReference$employeeAddressesArgs<ExtArgs>
+  emergencyContacts?: boolean | Prisma.CountryReference$emergencyContactsArgs<ExtArgs>
   _count?: boolean | Prisma.CountryReferenceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["countryReference"]>
 
@@ -673,8 +785,9 @@ export type CountryReferenceSelectScalar = {
 export type CountryReferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["countryReference"]>
 export type CountryReferenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nationalityProfiles?: boolean | Prisma.CountryReference$nationalityProfilesArgs<ExtArgs>
-  residenceProfiles?: boolean | Prisma.CountryReference$residenceProfilesArgs<ExtArgs>
   holidays?: boolean | Prisma.CountryReference$holidaysArgs<ExtArgs>
+  employeeAddresses?: boolean | Prisma.CountryReference$employeeAddressesArgs<ExtArgs>
+  emergencyContacts?: boolean | Prisma.CountryReference$emergencyContactsArgs<ExtArgs>
   _count?: boolean | Prisma.CountryReferenceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CountryReferenceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -684,8 +797,9 @@ export type $CountryReferencePayload<ExtArgs extends runtime.Types.Extensions.In
   name: "CountryReference"
   objects: {
     nationalityProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
-    residenceProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
     holidays: Prisma.$HolidayPayload<ExtArgs>[]
+    employeeAddresses: Prisma.$EmployeeAddressPayload<ExtArgs>[]
+    emergencyContacts: Prisma.$EmergencyContactPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1089,8 +1203,9 @@ readonly fields: CountryReferenceFieldRefs;
 export interface Prisma__CountryReferenceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   nationalityProfiles<T extends Prisma.CountryReference$nationalityProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryReference$nationalityProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  residenceProfiles<T extends Prisma.CountryReference$residenceProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryReference$residenceProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   holidays<T extends Prisma.CountryReference$holidaysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryReference$holidaysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employeeAddresses<T extends Prisma.CountryReference$employeeAddressesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryReference$employeeAddressesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  emergencyContacts<T extends Prisma.CountryReference$emergencyContactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryReference$emergencyContactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmergencyContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1538,30 +1653,6 @@ export type CountryReference$nationalityProfilesArgs<ExtArgs extends runtime.Typ
 }
 
 /**
- * CountryReference.residenceProfiles
- */
-export type CountryReference$residenceProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the UserProfile
-   */
-  select?: Prisma.UserProfileSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the UserProfile
-   */
-  omit?: Prisma.UserProfileOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserProfileInclude<ExtArgs> | null
-  where?: Prisma.UserProfileWhereInput
-  orderBy?: Prisma.UserProfileOrderByWithRelationInput | Prisma.UserProfileOrderByWithRelationInput[]
-  cursor?: Prisma.UserProfileWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.UserProfileScalarFieldEnum | Prisma.UserProfileScalarFieldEnum[]
-}
-
-/**
  * CountryReference.holidays
  */
 export type CountryReference$holidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1583,6 +1674,54 @@ export type CountryReference$holidaysArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.HolidayScalarFieldEnum | Prisma.HolidayScalarFieldEnum[]
+}
+
+/**
+ * CountryReference.employeeAddresses
+ */
+export type CountryReference$employeeAddressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeAddress
+   */
+  select?: Prisma.EmployeeAddressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeAddress
+   */
+  omit?: Prisma.EmployeeAddressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeAddressInclude<ExtArgs> | null
+  where?: Prisma.EmployeeAddressWhereInput
+  orderBy?: Prisma.EmployeeAddressOrderByWithRelationInput | Prisma.EmployeeAddressOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeAddressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeAddressScalarFieldEnum | Prisma.EmployeeAddressScalarFieldEnum[]
+}
+
+/**
+ * CountryReference.emergencyContacts
+ */
+export type CountryReference$emergencyContactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmergencyContact
+   */
+  select?: Prisma.EmergencyContactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmergencyContact
+   */
+  omit?: Prisma.EmergencyContactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmergencyContactInclude<ExtArgs> | null
+  where?: Prisma.EmergencyContactWhereInput
+  orderBy?: Prisma.EmergencyContactOrderByWithRelationInput | Prisma.EmergencyContactOrderByWithRelationInput[]
+  cursor?: Prisma.EmergencyContactWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmergencyContactScalarFieldEnum | Prisma.EmergencyContactScalarFieldEnum[]
 }
 
 /**

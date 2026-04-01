@@ -4,8 +4,9 @@
   "scripts": {
     "prepare": "husky",
     "build": "turbo run build",
-    "dev": "turbo run dev",
-    "dev:api": "turbo run dev --filter=blih-system-backend",
+    "dev": "concurrently -k --kill-signal SIGINT --kill-timeout 2000 --names api,web --prefix-colors cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run dev --workspace blih-system-backend",
+    "dev:web": "npm run dev --workspace web",
     "start:api": "npm run start --workspace blih-system-backend",
     "lint": "turbo run lint",
     "test": "turbo run test",
@@ -42,7 +43,10 @@
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
+    "concurrently": "^9.2.1",
     "husky": "^9.1.7",
+    "lightningcss-linux-x64-gnu": "^1.32.0",
     "lint-staged": "^16.3.2",
     "postgres": "^3.4.8",
     "prettier": "^3.7.4",
@@ -63,6 +67,9 @@
   ],
   "dependencies": {
     "@prisma/client": "^7.4.2",
-    "pdf-parse-debugging-disabled": "^1.1.1"
+    "next": "15.1.12",
+    "pdf-parse-debugging-disabled": "^1.1.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   }
 }

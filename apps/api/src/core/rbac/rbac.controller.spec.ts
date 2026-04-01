@@ -3,7 +3,7 @@ import {
   SystemPermissionPermissions,
   SystemResourcePermissions,
   SystemRolePermissions,
-} from './constants/permissions.constants';
+} from '@repo/types/rbac';
 import { RolesController } from './roles/roles.controller';
 import { PermissionsController } from './permissions/permissions.controller';
 import { ResourcesController } from './resources/resources.controller';

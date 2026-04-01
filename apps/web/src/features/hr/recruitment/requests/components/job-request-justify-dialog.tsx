@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -32,6 +32,11 @@ type JobRequestJustifyDialogProps = {
   request: FullJobRequest | null;
   requestId: string | null;
   onOpenChange: (isOpen: boolean) => void;
+  onSubmit: (
+    action: 'review' | 'reject',
+    justification: string,
+  ) => Promise<void>;
+  submittingAction?: 'review' | 'reject' | null;
 };
 
 const justifySchema = z.object({
@@ -53,6 +58,8 @@ export function JobRequestJustifyDialog({
   request,
   requestId,
   onOpenChange,
+  onSubmit,
+  submittingAction = null,
 }: JobRequestJustifyDialogProps) {
   const form = useForm<JustifyFormValues>({
     resolver: zodResolver(justifySchema),
@@ -75,17 +82,10 @@ export function JobRequestJustifyDialog({
   }
 
   function handleSubmit(action: 'review' | 'reject') {
-    return (values: JustifyFormValues) => {
-    if (!request || !requestId) return;
-
-    const payload = {
-      requestId,
-        action,
-      justification: values.justification,
-    };
-
-    console.log('jobRequestJustification', payload);
-    closeDialog();
+    return async (values: JustifyFormValues) => {
+      if (!request || !requestId) return;
+      await onSubmit(action, values.justification);
+      closeDialog();
     };
   }
 
@@ -99,12 +99,14 @@ export function JobRequestJustifyDialog({
                 <div className="flex-1 space-y-4">
                   <div className="flex flex-wrap items-center gap-4">
                     <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-                      {request.jobDetailsForm.jobTitle}
+                      {request.jobDetailsForm.title}
                     </DialogTitle>
                     <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] border border-[#1e66f7] px-[9px] py-[3px] text-[12px] font-medium leading-[16px] text-[#1e66f7]">
                       {request.jobDetailsForm.experienceLevel
                         .split('_')
-                        .map((value) => value[0]?.toUpperCase() + value.slice(1))
+                        .map(
+                          (value) => value[0]?.toUpperCase() + value.slice(1),
+                        )
                         .join(' ')}
                     </span>
                   </div>
@@ -115,11 +117,11 @@ export function JobRequestJustifyDialog({
                       )}
                     </span>
                     <span>
-                      {request.jobDetailsForm.employmentType === 'full_time'
+                      {request.jobDetailsForm.employmentType === 'FULL_TIME'
                         ? 'Full-time'
-                        : request.jobDetailsForm.employmentType === 'part_time'
+                        : request.jobDetailsForm.employmentType === 'PART_TIME'
                           ? 'Part-time'
-                          : request.jobDetailsForm.employmentType === 'contract'
+                          : request.jobDetailsForm.employmentType === 'CONTRACT'
                             ? 'Contract'
                             : 'Intern'}
                     </span>
@@ -180,18 +182,32 @@ export function JobRequestJustifyDialog({
                     <Button
                       type="submit"
                       className="h-[32px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
-                      disabled={!form.formState.isValid}
+                      disabled={!form.formState.isValid || !!submittingAction}
                     >
-                      Revise
+                      {submittingAction === 'review' ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        'Revise'
+                      )}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       className="h-[32px] rounded-[6px] border-[#e5e5e5] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-black hover:bg-white"
                       onClick={form.handleSubmit(handleSubmit('reject'))}
-                      disabled={!form.formState.isValid}
+                      disabled={!form.formState.isValid || !!submittingAction}
                     >
-                      Decline
+                      {submittingAction === 'reject' ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        'Decline'
+                      )}
                     </Button>
                   </div>
                 </div>

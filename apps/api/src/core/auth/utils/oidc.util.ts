@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
 import type { CookieOptions } from 'express';
+import type { Request } from 'express';
 import {
   KEYCLOAK_AUTH_PATH,
   KEYCLOAK_LOGOUT_PATH,
@@ -14,6 +15,7 @@ export const AUTH_COOKIE_NAMES = {
   access: 'kc_access',
   refresh: 'kc_refresh',
   id: 'kc_id',
+  frontendOrigin: 'kc_frontend_origin',
 } as const;
 
 export type AuthCookieSameSite = 'lax' | 'strict' | 'none';
@@ -331,6 +333,108 @@ export function buildFrontendRedirectUrl(
   path: string,
 ): string {
   return new URL(path, frontendBaseUrl).toString();
+}
+
+export function extractFrontendOrigin(
+  request: Request,
+  redirectOrigin?: string,
+): string | undefined {
+  // Priority 1: redirect_origin query parameter (explicit client signal)
+  if (redirectOrigin && isValidOrigin(redirectOrigin)) {
+    return redirectOrigin;
+  }
+
+  // Priority 2: X-Frontend-Origin header (explicit client signal)
+  const frontendOriginHeader = request.headers['x-frontend-origin'] as string;
+  if (frontendOriginHeader && isValidOrigin(frontendOriginHeader)) {
+    return frontendOriginHeader;
+  }
+
+  // Priority 3: Origin header (standard browser header)
+  const originHeader = request.headers.origin as string;
+  if (originHeader && isValidOrigin(originHeader)) {
+    return originHeader;
+  }
+
+  // Priority 4: Referer header (fallback extraction)
+  const refererHeader = request.headers.referer as string;
+  if (refererHeader) {
+    try {
+      const refererUrl = new URL(refererHeader);
+      const origin = refererUrl.origin;
+      if (isValidOrigin(origin)) {
+        return origin;
+      }
+    } catch {
+      // Invalid URL, continue to undefined
+    }
+  }
+
+  return undefined;
+}
+
+export function isValidOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function validateFrontendOrigin(
+  origin: string | undefined,
+  allowedOrigins: string[],
+): string | undefined {
+  if (!origin) {
+    return undefined;
+  }
+
+  // Check if origin is in allowed list
+  const isAllowed = allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+    return origin === allowed || origin.startsWith(`${allowed}/`);
+  });
+
+  return isAllowed ? origin : undefined;
+}
+
+export function buildDynamicFrontendRedirectUrl(
+  request: Request,
+  path: string,
+  allowedOrigins: string[],
+): string {
+  // Extract origin from request headers
+  const origin =
+    (request.headers.origin as string) ||
+    (request.headers.referer
+      ? new URL(request.headers.referer as string).origin
+      : undefined);
+
+  // Fallback to configured base URL if no origin found
+  if (!origin) {
+    return new URL(
+      path,
+      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
+    ).toString();
+  }
+
+  // Validate origin against allowed origins
+  const isAllowed = allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+    return origin === allowed || origin.startsWith(`${allowed}/`);
+  });
+
+  if (!isAllowed) {
+    // Fallback to configured base URL for security
+    return new URL(
+      path,
+      process.env.AUTH_FRONTEND_BASE_URL || 'http://localhost:3000',
+    ).toString();
+  }
+
+  // Use request origin for redirect
+  return new URL(path, origin).toString();
 }
 
 function normalizeRedirectPath(path: string | undefined): string | undefined {

@@ -14,7 +14,7 @@ import type {
   UpdateCareerDevelopmentPlanDto,
   UpdateCareerDevelopmentProgressDto,
 } from '@repo/types';
-import { CareerDevelopmentPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { CareerDevelopmentPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

@@ -10,7 +10,11 @@ import {
   parseAllowedRedirectPathPrefixes,
   parseCookieHeader,
   resolveSafeRedirectPath,
+  extractFrontendOrigin,
+  validateFrontendOrigin,
+  isValidOrigin,
 } from './oidc.util';
+import type { Request } from 'express';
 
 describe('oidc.util', () => {
   it('creates PKCE auth request context with url-safe values', () => {
@@ -159,6 +163,120 @@ describe('oidc.util', () => {
       domain: 'localhost',
       path: '/',
       maxAge: 60000,
+    });
+  });
+
+  describe('Frontend Origin Preservation', () => {
+    it('extracts frontend origin from X-Frontend-Origin header', () => {
+      const request = {
+        headers: {
+          'x-frontend-origin': 'https://app.example.com',
+        },
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(request);
+      expect(origin).toBe('https://app.example.com');
+    });
+
+    it('extracts frontend origin from Origin header as fallback', () => {
+      const request = {
+        headers: {
+          origin: 'https://app.example.com',
+        },
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(request);
+      expect(origin).toBe('https://app.example.com');
+    });
+
+    it('extracts frontend origin from Referer header as final fallback', () => {
+      const request = {
+        headers: {
+          referer: 'https://app.example.com/dashboard',
+        },
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(request);
+      expect(origin).toBe('https://app.example.com');
+    });
+
+    it('prioritizes redirect_origin query parameter over headers', () => {
+      const request = {
+        headers: {
+          'x-frontend-origin': 'https://priority.example.com',
+          origin: 'https://origin.example.com',
+          referer: 'https://referer.example.com/dashboard',
+        },
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(
+        request,
+        'https://query.example.com',
+      );
+      expect(origin).toBe('https://query.example.com');
+    });
+
+    it('prioritizes X-Frontend-Origin over other headers', () => {
+      const request = {
+        headers: {
+          'x-frontend-origin': 'https://priority.example.com',
+          origin: 'https://origin.example.com',
+          referer: 'https://referer.example.com/dashboard',
+        },
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(request);
+      expect(origin).toBe('https://priority.example.com');
+    });
+
+    it('returns undefined when no valid origin headers are present', () => {
+      const request = {
+        headers: {},
+      } as unknown as Request;
+
+      const origin = extractFrontendOrigin(request);
+      expect(origin).toBeUndefined();
+    });
+
+    it('validates origins against allowed origins list', () => {
+      const allowedOrigins = [
+        'https://app.example.com',
+        'https://admin.example.com',
+      ];
+
+      expect(
+        validateFrontendOrigin('https://app.example.com', allowedOrigins),
+      ).toBe('https://app.example.com');
+      expect(
+        validateFrontendOrigin('https://admin.example.com', allowedOrigins),
+      ).toBe('https://admin.example.com');
+      expect(
+        validateFrontendOrigin('https://evil.example.com', allowedOrigins),
+      ).toBeUndefined();
+      expect(validateFrontendOrigin(undefined, allowedOrigins)).toBeUndefined();
+    });
+
+    it('allows all origins when wildcard is in allowed list', () => {
+      const allowedOrigins = ['*'];
+
+      expect(
+        validateFrontendOrigin('https://any.example.com', allowedOrigins),
+      ).toBe('https://any.example.com');
+      expect(
+        validateFrontendOrigin('http://localhost:3000', allowedOrigins),
+      ).toBe('http://localhost:3000');
+    });
+
+    it('validates origin URLs correctly', () => {
+      expect(isValidOrigin('https://example.com')).toBe(true);
+      expect(isValidOrigin('http://localhost:3000')).toBe(true);
+      expect(isValidOrigin('ftp://example.com')).toBe(false);
+      expect(isValidOrigin('invalid-url')).toBe(false);
+      expect(isValidOrigin('')).toBe(false);
+    });
+
+    it('includes kc_frontend_origin in AUTH_COOKIE_NAMES', () => {
+      expect(AUTH_COOKIE_NAMES.frontendOrigin).toBe('kc_frontend_origin');
     });
   });
 });

@@ -31,29 +31,20 @@
       "types": "./dist/src/generated/enums.d.ts",
       "import": "./dist/src/generated/enums.js",
       "default": "./dist/src/generated/enums.js"
-    },
-    "./rbac/permissions.constants": {
-      "types": "./dist/src/rbac/permissions.constants.d.ts",
-      "import": "./dist/src/rbac/permissions.constants.js",
-      "default": "./dist/src/rbac/permissions.constants.js"
-    },
-    "./seed/rbac.manifest": {
-      "types": "./dist/seed/rbac.manifest.d.ts",
-      "import": "./dist/seed/rbac.manifest.js",
-      "default": "./dist/seed/rbac.manifest.js"
     }
   },
   "scripts": {
-    "build": "npm run prisma:generate && tsc -p tsconfig.json",
-    "check-types": "npm run prisma:generate && tsc -p tsconfig.json --noEmit",
+    "build": "npm run build --workspace @repo/types && npm run prisma:generate && tsc -p tsconfig.json",
+    "check-types": "npm run build --workspace @repo/types && tsc -p tsconfig.json --noEmit",
     "prisma:format": "prisma format",
     "prisma:generate": "prisma generate",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:seed": "tsx seed/prisma.seed.ts",
+    "prisma:seed": "npm run build --workspace @repo/types && tsx seed/prisma.seed.ts",
     "prisma:validate": "prisma validate"
   },
   "dependencies": {
+    "@repo/types": "*",
     "@prisma/adapter-pg": "7.4.1",
     "@prisma/client": "7.4.1",
     "pg": "^8.18.0"

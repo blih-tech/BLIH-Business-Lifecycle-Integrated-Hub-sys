@@ -37,24 +37,43 @@ export type PolicyVersionSumAggregateOutputType = {
 export type PolicyVersionMinAggregateOutputType = {
   id: string | null
   policyId: string | null
+<<<<<<< HEAD
   content: string | null
   version: number | null
+=======
+  version: number | null
+  fileId: string | null
+  isActive: boolean | null
+>>>>>>> dev
   createdAt: Date | null
 }
 
 export type PolicyVersionMaxAggregateOutputType = {
   id: string | null
   policyId: string | null
+<<<<<<< HEAD
   content: string | null
   version: number | null
+=======
+  version: number | null
+  fileId: string | null
+  isActive: boolean | null
+>>>>>>> dev
   createdAt: Date | null
 }
 
 export type PolicyVersionCountAggregateOutputType = {
   id: number
   policyId: number
+<<<<<<< HEAD
   content: number
   version: number
+=======
+  version: number
+  content: number
+  fileId: number
+  isActive: number
+>>>>>>> dev
   createdAt: number
   _all: number
 }
@@ -71,24 +90,43 @@ export type PolicyVersionSumAggregateInputType = {
 export type PolicyVersionMinAggregateInputType = {
   id?: true
   policyId?: true
+<<<<<<< HEAD
   content?: true
   version?: true
+=======
+  version?: true
+  fileId?: true
+  isActive?: true
+>>>>>>> dev
   createdAt?: true
 }
 
 export type PolicyVersionMaxAggregateInputType = {
   id?: true
   policyId?: true
+<<<<<<< HEAD
   content?: true
   version?: true
+=======
+  version?: true
+  fileId?: true
+  isActive?: true
+>>>>>>> dev
   createdAt?: true
 }
 
 export type PolicyVersionCountAggregateInputType = {
   id?: true
   policyId?: true
+<<<<<<< HEAD
   content?: true
   version?: true
+=======
+  version?: true
+  content?: true
+  fileId?: true
+  isActive?: true
+>>>>>>> dev
   createdAt?: true
   _all?: true
 }
@@ -182,8 +220,15 @@ export type PolicyVersionGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type PolicyVersionGroupByOutputType = {
   id: string
   policyId: string
+<<<<<<< HEAD
   content: string
   version: number
+=======
+  version: number
+  content: runtime.JsonValue
+  fileId: string | null
+  isActive: boolean
+>>>>>>> dev
   createdAt: Date
   _count: PolicyVersionCountAggregateOutputType | null
   _avg: PolicyVersionAvgAggregateOutputType | null
@@ -211,25 +256,52 @@ export type PolicyVersionWhereInput = {
   AND?: Prisma.PolicyVersionWhereInput | Prisma.PolicyVersionWhereInput[]
   OR?: Prisma.PolicyVersionWhereInput[]
   NOT?: Prisma.PolicyVersionWhereInput | Prisma.PolicyVersionWhereInput[]
+<<<<<<< HEAD
   id?: Prisma.StringFilter<"PolicyVersion"> | string
   policyId?: Prisma.StringFilter<"PolicyVersion"> | string
   content?: Prisma.StringFilter<"PolicyVersion"> | string
   version?: Prisma.IntFilter<"PolicyVersion"> | number
   createdAt?: Prisma.DateTimeFilter<"PolicyVersion"> | Date | string
   policy?: Prisma.XOR<Prisma.PolicyScalarRelationFilter, Prisma.PolicyWhereInput>
+=======
+  id?: Prisma.UuidFilter<"PolicyVersion"> | string
+  policyId?: Prisma.UuidFilter<"PolicyVersion"> | string
+  version?: Prisma.IntFilter<"PolicyVersion"> | number
+  content?: Prisma.JsonFilter<"PolicyVersion">
+  fileId?: Prisma.UuidNullableFilter<"PolicyVersion"> | string | null
+  isActive?: Prisma.BoolFilter<"PolicyVersion"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"PolicyVersion"> | Date | string
+  policy?: Prisma.XOR<Prisma.PolicyScalarRelationFilter, Prisma.PolicyWhereInput>
+  currentForPolicies?: Prisma.PolicyListRelationFilter
+  file?: Prisma.XOR<Prisma.PolicyFileNullableScalarRelationFilter, Prisma.PolicyFileWhereInput> | null
+  acknowledgements?: Prisma.PolicyAcknowledgementListRelationFilter
+>>>>>>> dev
 }
 
 export type PolicyVersionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   policyId?: Prisma.SortOrder
+<<<<<<< HEAD
   content?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   policy?: Prisma.PolicyOrderByWithRelationInput
+=======
+  version?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  fileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  policy?: Prisma.PolicyOrderByWithRelationInput
+  currentForPolicies?: Prisma.PolicyOrderByRelationAggregateInput
+  file?: Prisma.PolicyFileOrderByWithRelationInput
+  acknowledgements?: Prisma.PolicyAcknowledgementOrderByRelationAggregateInput
+>>>>>>> dev
 }
 
 export type PolicyVersionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+<<<<<<< HEAD
   AND?: Prisma.PolicyVersionWhereInput | Prisma.PolicyVersionWhereInput[]
   OR?: Prisma.PolicyVersionWhereInput[]
   NOT?: Prisma.PolicyVersionWhereInput | Prisma.PolicyVersionWhereInput[]
@@ -239,12 +311,36 @@ export type PolicyVersionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"PolicyVersion"> | Date | string
   policy?: Prisma.XOR<Prisma.PolicyScalarRelationFilter, Prisma.PolicyWhereInput>
 }, "id">
+=======
+  policyId_version?: Prisma.PolicyVersionPolicyIdVersionCompoundUniqueInput
+  AND?: Prisma.PolicyVersionWhereInput | Prisma.PolicyVersionWhereInput[]
+  OR?: Prisma.PolicyVersionWhereInput[]
+  NOT?: Prisma.PolicyVersionWhereInput | Prisma.PolicyVersionWhereInput[]
+  policyId?: Prisma.UuidFilter<"PolicyVersion"> | string
+  version?: Prisma.IntFilter<"PolicyVersion"> | number
+  content?: Prisma.JsonFilter<"PolicyVersion">
+  fileId?: Prisma.UuidNullableFilter<"PolicyVersion"> | string | null
+  isActive?: Prisma.BoolFilter<"PolicyVersion"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"PolicyVersion"> | Date | string
+  policy?: Prisma.XOR<Prisma.PolicyScalarRelationFilter, Prisma.PolicyWhereInput>
+  currentForPolicies?: Prisma.PolicyListRelationFilter
+  file?: Prisma.XOR<Prisma.PolicyFileNullableScalarRelationFilter, Prisma.PolicyFileWhereInput> | null
+  acknowledgements?: Prisma.PolicyAcknowledgementListRelationFilter
+}, "id" | "policyId_version">
+>>>>>>> dev
 
 export type PolicyVersionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   policyId?: Prisma.SortOrder
+<<<<<<< HEAD
   content?: Prisma.SortOrder
   version?: Prisma.SortOrder
+=======
+  version?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  fileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+>>>>>>> dev
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PolicyVersionCountOrderByAggregateInput
   _avg?: Prisma.PolicyVersionAvgOrderByAggregateInput
@@ -257,68 +353,147 @@ export type PolicyVersionScalarWhereWithAggregatesInput = {
   AND?: Prisma.PolicyVersionScalarWhereWithAggregatesInput | Prisma.PolicyVersionScalarWhereWithAggregatesInput[]
   OR?: Prisma.PolicyVersionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PolicyVersionScalarWhereWithAggregatesInput | Prisma.PolicyVersionScalarWhereWithAggregatesInput[]
+<<<<<<< HEAD
   id?: Prisma.StringWithAggregatesFilter<"PolicyVersion"> | string
   policyId?: Prisma.StringWithAggregatesFilter<"PolicyVersion"> | string
   content?: Prisma.StringWithAggregatesFilter<"PolicyVersion"> | string
   version?: Prisma.IntWithAggregatesFilter<"PolicyVersion"> | number
+=======
+  id?: Prisma.UuidWithAggregatesFilter<"PolicyVersion"> | string
+  policyId?: Prisma.UuidWithAggregatesFilter<"PolicyVersion"> | string
+  version?: Prisma.IntWithAggregatesFilter<"PolicyVersion"> | number
+  content?: Prisma.JsonWithAggregatesFilter<"PolicyVersion">
+  fileId?: Prisma.UuidNullableWithAggregatesFilter<"PolicyVersion"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"PolicyVersion"> | boolean
+>>>>>>> dev
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PolicyVersion"> | Date | string
 }
 
 export type PolicyVersionCreateInput = {
   id?: string
+<<<<<<< HEAD
   content: string
   version: number
   createdAt?: Date | string
   policy: Prisma.PolicyCreateNestedOneWithoutVersionsInput
+=======
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+  policy: Prisma.PolicyCreateNestedOneWithoutVersionsInput
+  currentForPolicies?: Prisma.PolicyCreateNestedManyWithoutCurrentVersionInput
+  file?: Prisma.PolicyFileCreateNestedOneWithoutVersionsInput
+  acknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutPolicyVersionInput
+>>>>>>> dev
 }
 
 export type PolicyVersionUncheckedCreateInput = {
   id?: string
   policyId: string
+<<<<<<< HEAD
   content: string
   version: number
   createdAt?: Date | string
+=======
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedCreateNestedManyWithoutCurrentVersionInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutPolicyVersionInput
+>>>>>>> dev
 }
 
 export type PolicyVersionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   policy?: Prisma.PolicyUpdateOneRequiredWithoutVersionsNestedInput
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutVersionsNestedInput
+  currentForPolicies?: Prisma.PolicyUpdateManyWithoutCurrentVersionNestedInput
+  file?: Prisma.PolicyFileUpdateOneWithoutVersionsNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutPolicyVersionNestedInput
+>>>>>>> dev
 }
 
 export type PolicyVersionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   policyId?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedUpdateManyWithoutCurrentVersionNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionNestedInput
+>>>>>>> dev
 }
 
 export type PolicyVersionCreateManyInput = {
   id?: string
   policyId: string
+<<<<<<< HEAD
   content: string
   version: number
+=======
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: string | null
+  isActive?: boolean
+>>>>>>> dev
   createdAt?: Date | string
 }
 
 export type PolicyVersionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+>>>>>>> dev
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PolicyVersionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   policyId?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PolicyVersionNullableScalarRelationFilter = {
+  is?: Prisma.PolicyVersionWhereInput | null
+  isNot?: Prisma.PolicyVersionWhereInput | null
+}
+
+>>>>>>> dev
 export type PolicyVersionListRelationFilter = {
   every?: Prisma.PolicyVersionWhereInput
   some?: Prisma.PolicyVersionWhereInput
@@ -329,11 +504,26 @@ export type PolicyVersionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+<<<<<<< HEAD
 export type PolicyVersionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   policyId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   version?: Prisma.SortOrder
+=======
+export type PolicyVersionPolicyIdVersionCompoundUniqueInput = {
+  policyId: string
+  version: number
+}
+
+export type PolicyVersionCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  policyId?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  fileId?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+>>>>>>> dev
   createdAt?: Prisma.SortOrder
 }
 
@@ -344,16 +534,28 @@ export type PolicyVersionAvgOrderByAggregateInput = {
 export type PolicyVersionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   policyId?: Prisma.SortOrder
+<<<<<<< HEAD
   content?: Prisma.SortOrder
   version?: Prisma.SortOrder
+=======
+  version?: Prisma.SortOrder
+  fileId?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+>>>>>>> dev
   createdAt?: Prisma.SortOrder
 }
 
 export type PolicyVersionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   policyId?: Prisma.SortOrder
+<<<<<<< HEAD
   content?: Prisma.SortOrder
   version?: Prisma.SortOrder
+=======
+  version?: Prisma.SortOrder
+  fileId?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+>>>>>>> dev
   createdAt?: Prisma.SortOrder
 }
 
@@ -361,6 +563,20 @@ export type PolicyVersionSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
+<<<<<<< HEAD
+=======
+export type PolicyVersionScalarRelationFilter = {
+  is?: Prisma.PolicyVersionWhereInput
+  isNot?: Prisma.PolicyVersionWhereInput
+}
+
+export type PolicyVersionCreateNestedOneWithoutCurrentForPoliciesInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUncheckedCreateWithoutCurrentForPoliciesInput>
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutCurrentForPoliciesInput
+  connect?: Prisma.PolicyVersionWhereUniqueInput
+}
+
+>>>>>>> dev
 export type PolicyVersionCreateNestedManyWithoutPolicyInput = {
   create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutPolicyInput, Prisma.PolicyVersionUncheckedCreateWithoutPolicyInput> | Prisma.PolicyVersionCreateWithoutPolicyInput[] | Prisma.PolicyVersionUncheckedCreateWithoutPolicyInput[]
   connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutPolicyInput | Prisma.PolicyVersionCreateOrConnectWithoutPolicyInput[]
@@ -375,6 +591,19 @@ export type PolicyVersionUncheckedCreateNestedManyWithoutPolicyInput = {
   connect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
 }
 
+<<<<<<< HEAD
+=======
+export type PolicyVersionUpdateOneWithoutCurrentForPoliciesNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUncheckedCreateWithoutCurrentForPoliciesInput>
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutCurrentForPoliciesInput
+  upsert?: Prisma.PolicyVersionUpsertWithoutCurrentForPoliciesInput
+  disconnect?: Prisma.PolicyVersionWhereInput | boolean
+  delete?: Prisma.PolicyVersionWhereInput | boolean
+  connect?: Prisma.PolicyVersionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PolicyVersionUpdateToOneWithWhereWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUpdateWithoutCurrentForPoliciesInput>, Prisma.PolicyVersionUncheckedUpdateWithoutCurrentForPoliciesInput>
+}
+
+>>>>>>> dev
 export type PolicyVersionUpdateManyWithoutPolicyNestedInput = {
   create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutPolicyInput, Prisma.PolicyVersionUncheckedCreateWithoutPolicyInput> | Prisma.PolicyVersionCreateWithoutPolicyInput[] | Prisma.PolicyVersionUncheckedCreateWithoutPolicyInput[]
   connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutPolicyInput | Prisma.PolicyVersionCreateOrConnectWithoutPolicyInput[]
@@ -403,18 +632,123 @@ export type PolicyVersionUncheckedUpdateManyWithoutPolicyNestedInput = {
   deleteMany?: Prisma.PolicyVersionScalarWhereInput | Prisma.PolicyVersionScalarWhereInput[]
 }
 
+<<<<<<< HEAD
 export type PolicyVersionCreateWithoutPolicyInput = {
   id?: string
   content: string
   version: number
   createdAt?: Date | string
+=======
+export type PolicyVersionCreateNestedManyWithoutFileInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutFileInput, Prisma.PolicyVersionUncheckedCreateWithoutFileInput> | Prisma.PolicyVersionCreateWithoutFileInput[] | Prisma.PolicyVersionUncheckedCreateWithoutFileInput[]
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutFileInput | Prisma.PolicyVersionCreateOrConnectWithoutFileInput[]
+  createMany?: Prisma.PolicyVersionCreateManyFileInputEnvelope
+  connect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+}
+
+export type PolicyVersionUncheckedCreateNestedManyWithoutFileInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutFileInput, Prisma.PolicyVersionUncheckedCreateWithoutFileInput> | Prisma.PolicyVersionCreateWithoutFileInput[] | Prisma.PolicyVersionUncheckedCreateWithoutFileInput[]
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutFileInput | Prisma.PolicyVersionCreateOrConnectWithoutFileInput[]
+  createMany?: Prisma.PolicyVersionCreateManyFileInputEnvelope
+  connect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+}
+
+export type PolicyVersionUpdateManyWithoutFileNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutFileInput, Prisma.PolicyVersionUncheckedCreateWithoutFileInput> | Prisma.PolicyVersionCreateWithoutFileInput[] | Prisma.PolicyVersionUncheckedCreateWithoutFileInput[]
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutFileInput | Prisma.PolicyVersionCreateOrConnectWithoutFileInput[]
+  upsert?: Prisma.PolicyVersionUpsertWithWhereUniqueWithoutFileInput | Prisma.PolicyVersionUpsertWithWhereUniqueWithoutFileInput[]
+  createMany?: Prisma.PolicyVersionCreateManyFileInputEnvelope
+  set?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  disconnect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  delete?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  connect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  update?: Prisma.PolicyVersionUpdateWithWhereUniqueWithoutFileInput | Prisma.PolicyVersionUpdateWithWhereUniqueWithoutFileInput[]
+  updateMany?: Prisma.PolicyVersionUpdateManyWithWhereWithoutFileInput | Prisma.PolicyVersionUpdateManyWithWhereWithoutFileInput[]
+  deleteMany?: Prisma.PolicyVersionScalarWhereInput | Prisma.PolicyVersionScalarWhereInput[]
+}
+
+export type PolicyVersionUncheckedUpdateManyWithoutFileNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutFileInput, Prisma.PolicyVersionUncheckedCreateWithoutFileInput> | Prisma.PolicyVersionCreateWithoutFileInput[] | Prisma.PolicyVersionUncheckedCreateWithoutFileInput[]
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutFileInput | Prisma.PolicyVersionCreateOrConnectWithoutFileInput[]
+  upsert?: Prisma.PolicyVersionUpsertWithWhereUniqueWithoutFileInput | Prisma.PolicyVersionUpsertWithWhereUniqueWithoutFileInput[]
+  createMany?: Prisma.PolicyVersionCreateManyFileInputEnvelope
+  set?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  disconnect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  delete?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  connect?: Prisma.PolicyVersionWhereUniqueInput | Prisma.PolicyVersionWhereUniqueInput[]
+  update?: Prisma.PolicyVersionUpdateWithWhereUniqueWithoutFileInput | Prisma.PolicyVersionUpdateWithWhereUniqueWithoutFileInput[]
+  updateMany?: Prisma.PolicyVersionUpdateManyWithWhereWithoutFileInput | Prisma.PolicyVersionUpdateManyWithWhereWithoutFileInput[]
+  deleteMany?: Prisma.PolicyVersionScalarWhereInput | Prisma.PolicyVersionScalarWhereInput[]
+}
+
+export type PolicyVersionCreateNestedOneWithoutAcknowledgementsInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutAcknowledgementsInput, Prisma.PolicyVersionUncheckedCreateWithoutAcknowledgementsInput>
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutAcknowledgementsInput
+  connect?: Prisma.PolicyVersionWhereUniqueInput
+}
+
+export type PolicyVersionUpdateOneRequiredWithoutAcknowledgementsNestedInput = {
+  create?: Prisma.XOR<Prisma.PolicyVersionCreateWithoutAcknowledgementsInput, Prisma.PolicyVersionUncheckedCreateWithoutAcknowledgementsInput>
+  connectOrCreate?: Prisma.PolicyVersionCreateOrConnectWithoutAcknowledgementsInput
+  upsert?: Prisma.PolicyVersionUpsertWithoutAcknowledgementsInput
+  connect?: Prisma.PolicyVersionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PolicyVersionUpdateToOneWithWhereWithoutAcknowledgementsInput, Prisma.PolicyVersionUpdateWithoutAcknowledgementsInput>, Prisma.PolicyVersionUncheckedUpdateWithoutAcknowledgementsInput>
+}
+
+export type PolicyVersionCreateWithoutCurrentForPoliciesInput = {
+  id?: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+  policy: Prisma.PolicyCreateNestedOneWithoutVersionsInput
+  file?: Prisma.PolicyFileCreateNestedOneWithoutVersionsInput
+  acknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutPolicyVersionInput
+}
+
+export type PolicyVersionUncheckedCreateWithoutCurrentForPoliciesInput = {
+  id?: string
+  policyId: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutPolicyVersionInput
+}
+
+export type PolicyVersionCreateOrConnectWithoutCurrentForPoliciesInput = {
+  where: Prisma.PolicyVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PolicyVersionCreateWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUncheckedCreateWithoutCurrentForPoliciesInput>
+}
+
+export type PolicyVersionCreateWithoutPolicyInput = {
+  id?: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+  currentForPolicies?: Prisma.PolicyCreateNestedManyWithoutCurrentVersionInput
+  file?: Prisma.PolicyFileCreateNestedOneWithoutVersionsInput
+  acknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutPolicyVersionInput
+>>>>>>> dev
 }
 
 export type PolicyVersionUncheckedCreateWithoutPolicyInput = {
   id?: string
+<<<<<<< HEAD
   content: string
   version: number
   createdAt?: Date | string
+=======
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedCreateNestedManyWithoutCurrentVersionInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutPolicyVersionInput
+>>>>>>> dev
 }
 
 export type PolicyVersionCreateOrConnectWithoutPolicyInput = {
@@ -427,6 +761,42 @@ export type PolicyVersionCreateManyPolicyInputEnvelope = {
   skipDuplicates?: boolean
 }
 
+<<<<<<< HEAD
+=======
+export type PolicyVersionUpsertWithoutCurrentForPoliciesInput = {
+  update: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUncheckedUpdateWithoutCurrentForPoliciesInput>
+  create: Prisma.XOR<Prisma.PolicyVersionCreateWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUncheckedCreateWithoutCurrentForPoliciesInput>
+  where?: Prisma.PolicyVersionWhereInput
+}
+
+export type PolicyVersionUpdateToOneWithWhereWithoutCurrentForPoliciesInput = {
+  where?: Prisma.PolicyVersionWhereInput
+  data: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutCurrentForPoliciesInput, Prisma.PolicyVersionUncheckedUpdateWithoutCurrentForPoliciesInput>
+}
+
+export type PolicyVersionUpdateWithoutCurrentForPoliciesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutVersionsNestedInput
+  file?: Prisma.PolicyFileUpdateOneWithoutVersionsNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutPolicyVersionNestedInput
+}
+
+export type PolicyVersionUncheckedUpdateWithoutCurrentForPoliciesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionNestedInput
+}
+
+>>>>>>> dev
 export type PolicyVersionUpsertWithWhereUniqueWithoutPolicyInput = {
   where: Prisma.PolicyVersionWhereUniqueInput
   update: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutPolicyInput, Prisma.PolicyVersionUncheckedUpdateWithoutPolicyInput>
@@ -447,6 +817,7 @@ export type PolicyVersionScalarWhereInput = {
   AND?: Prisma.PolicyVersionScalarWhereInput | Prisma.PolicyVersionScalarWhereInput[]
   OR?: Prisma.PolicyVersionScalarWhereInput[]
   NOT?: Prisma.PolicyVersionScalarWhereInput | Prisma.PolicyVersionScalarWhereInput[]
+<<<<<<< HEAD
   id?: Prisma.StringFilter<"PolicyVersion"> | string
   policyId?: Prisma.StringFilter<"PolicyVersion"> | string
   content?: Prisma.StringFilter<"PolicyVersion"> | string
@@ -458,62 +829,329 @@ export type PolicyVersionCreateManyPolicyInput = {
   id?: string
   content: string
   version: number
+=======
+  id?: Prisma.UuidFilter<"PolicyVersion"> | string
+  policyId?: Prisma.UuidFilter<"PolicyVersion"> | string
+  version?: Prisma.IntFilter<"PolicyVersion"> | number
+  content?: Prisma.JsonFilter<"PolicyVersion">
+  fileId?: Prisma.UuidNullableFilter<"PolicyVersion"> | string | null
+  isActive?: Prisma.BoolFilter<"PolicyVersion"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"PolicyVersion"> | Date | string
+}
+
+export type PolicyVersionCreateWithoutFileInput = {
+  id?: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+  policy: Prisma.PolicyCreateNestedOneWithoutVersionsInput
+  currentForPolicies?: Prisma.PolicyCreateNestedManyWithoutCurrentVersionInput
+  acknowledgements?: Prisma.PolicyAcknowledgementCreateNestedManyWithoutPolicyVersionInput
+}
+
+export type PolicyVersionUncheckedCreateWithoutFileInput = {
+  id?: string
+  policyId: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedCreateNestedManyWithoutCurrentVersionInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedCreateNestedManyWithoutPolicyVersionInput
+}
+
+export type PolicyVersionCreateOrConnectWithoutFileInput = {
+  where: Prisma.PolicyVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PolicyVersionCreateWithoutFileInput, Prisma.PolicyVersionUncheckedCreateWithoutFileInput>
+}
+
+export type PolicyVersionCreateManyFileInputEnvelope = {
+  data: Prisma.PolicyVersionCreateManyFileInput | Prisma.PolicyVersionCreateManyFileInput[]
+  skipDuplicates?: boolean
+}
+
+export type PolicyVersionUpsertWithWhereUniqueWithoutFileInput = {
+  where: Prisma.PolicyVersionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutFileInput, Prisma.PolicyVersionUncheckedUpdateWithoutFileInput>
+  create: Prisma.XOR<Prisma.PolicyVersionCreateWithoutFileInput, Prisma.PolicyVersionUncheckedCreateWithoutFileInput>
+}
+
+export type PolicyVersionUpdateWithWhereUniqueWithoutFileInput = {
+  where: Prisma.PolicyVersionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutFileInput, Prisma.PolicyVersionUncheckedUpdateWithoutFileInput>
+}
+
+export type PolicyVersionUpdateManyWithWhereWithoutFileInput = {
+  where: Prisma.PolicyVersionScalarWhereInput
+  data: Prisma.XOR<Prisma.PolicyVersionUpdateManyMutationInput, Prisma.PolicyVersionUncheckedUpdateManyWithoutFileInput>
+}
+
+export type PolicyVersionCreateWithoutAcknowledgementsInput = {
+  id?: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+  policy: Prisma.PolicyCreateNestedOneWithoutVersionsInput
+  currentForPolicies?: Prisma.PolicyCreateNestedManyWithoutCurrentVersionInput
+  file?: Prisma.PolicyFileCreateNestedOneWithoutVersionsInput
+}
+
+export type PolicyVersionUncheckedCreateWithoutAcknowledgementsInput = {
+  id?: string
+  policyId: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedCreateNestedManyWithoutCurrentVersionInput
+}
+
+export type PolicyVersionCreateOrConnectWithoutAcknowledgementsInput = {
+  where: Prisma.PolicyVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PolicyVersionCreateWithoutAcknowledgementsInput, Prisma.PolicyVersionUncheckedCreateWithoutAcknowledgementsInput>
+}
+
+export type PolicyVersionUpsertWithoutAcknowledgementsInput = {
+  update: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutAcknowledgementsInput, Prisma.PolicyVersionUncheckedUpdateWithoutAcknowledgementsInput>
+  create: Prisma.XOR<Prisma.PolicyVersionCreateWithoutAcknowledgementsInput, Prisma.PolicyVersionUncheckedCreateWithoutAcknowledgementsInput>
+  where?: Prisma.PolicyVersionWhereInput
+}
+
+export type PolicyVersionUpdateToOneWithWhereWithoutAcknowledgementsInput = {
+  where?: Prisma.PolicyVersionWhereInput
+  data: Prisma.XOR<Prisma.PolicyVersionUpdateWithoutAcknowledgementsInput, Prisma.PolicyVersionUncheckedUpdateWithoutAcknowledgementsInput>
+}
+
+export type PolicyVersionUpdateWithoutAcknowledgementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutVersionsNestedInput
+  currentForPolicies?: Prisma.PolicyUpdateManyWithoutCurrentVersionNestedInput
+  file?: Prisma.PolicyFileUpdateOneWithoutVersionsNestedInput
+}
+
+export type PolicyVersionUncheckedUpdateWithoutAcknowledgementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedUpdateManyWithoutCurrentVersionNestedInput
+}
+
+export type PolicyVersionCreateManyPolicyInput = {
+  id?: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: string | null
+  isActive?: boolean
+>>>>>>> dev
   createdAt?: Date | string
 }
 
 export type PolicyVersionUpdateWithoutPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentForPolicies?: Prisma.PolicyUpdateManyWithoutCurrentVersionNestedInput
+  file?: Prisma.PolicyFileUpdateOneWithoutVersionsNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutPolicyVersionNestedInput
+>>>>>>> dev
 }
 
 export type PolicyVersionUncheckedUpdateWithoutPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedUpdateManyWithoutCurrentVersionNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionNestedInput
+>>>>>>> dev
 }
 
 export type PolicyVersionUncheckedUpdateManyWithoutPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+<<<<<<< HEAD
   content?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+=======
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PolicyVersionCreateManyFileInput = {
+  id?: string
+  policyId: string
+  version: number
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: boolean
+  createdAt?: Date | string
+}
+
+export type PolicyVersionUpdateWithoutFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policy?: Prisma.PolicyUpdateOneRequiredWithoutVersionsNestedInput
+  currentForPolicies?: Prisma.PolicyUpdateManyWithoutCurrentVersionNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUpdateManyWithoutPolicyVersionNestedInput
+}
+
+export type PolicyVersionUncheckedUpdateWithoutFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentForPolicies?: Prisma.PolicyUncheckedUpdateManyWithoutCurrentVersionNestedInput
+  acknowledgements?: Prisma.PolicyAcknowledgementUncheckedUpdateManyWithoutPolicyVersionNestedInput
+}
+
+export type PolicyVersionUncheckedUpdateManyWithoutFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type PolicyVersionCountOutputType
+ */
+
+export type PolicyVersionCountOutputType = {
+  currentForPolicies: number
+  acknowledgements: number
+}
+
+export type PolicyVersionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  currentForPolicies?: boolean | PolicyVersionCountOutputTypeCountCurrentForPoliciesArgs
+  acknowledgements?: boolean | PolicyVersionCountOutputTypeCountAcknowledgementsArgs
+}
+
+/**
+ * PolicyVersionCountOutputType without action
+ */
+export type PolicyVersionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PolicyVersionCountOutputType
+   */
+  select?: Prisma.PolicyVersionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PolicyVersionCountOutputType without action
+ */
+export type PolicyVersionCountOutputTypeCountCurrentForPoliciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PolicyWhereInput
+}
+
+/**
+ * PolicyVersionCountOutputType without action
+ */
+export type PolicyVersionCountOutputTypeCountAcknowledgementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PolicyAcknowledgementWhereInput
+}
+>>>>>>> dev
 
 
 export type PolicyVersionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   policyId?: boolean
+<<<<<<< HEAD
   content?: boolean
   version?: boolean
   createdAt?: boolean
   policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+=======
+  version?: boolean
+  content?: boolean
+  fileId?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  currentForPolicies?: boolean | Prisma.PolicyVersion$currentForPoliciesArgs<ExtArgs>
+  file?: boolean | Prisma.PolicyVersion$fileArgs<ExtArgs>
+  acknowledgements?: boolean | Prisma.PolicyVersion$acknowledgementsArgs<ExtArgs>
+  _count?: boolean | Prisma.PolicyVersionCountOutputTypeDefaultArgs<ExtArgs>
+>>>>>>> dev
 }, ExtArgs["result"]["policyVersion"]>
 
 export type PolicyVersionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   policyId?: boolean
+<<<<<<< HEAD
   content?: boolean
   version?: boolean
   createdAt?: boolean
   policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+=======
+  version?: boolean
+  content?: boolean
+  fileId?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  file?: boolean | Prisma.PolicyVersion$fileArgs<ExtArgs>
+>>>>>>> dev
 }, ExtArgs["result"]["policyVersion"]>
 
 export type PolicyVersionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   policyId?: boolean
+<<<<<<< HEAD
   content?: boolean
   version?: boolean
   createdAt?: boolean
   policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+=======
+  version?: boolean
+  content?: boolean
+  fileId?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  file?: boolean | Prisma.PolicyVersion$fileArgs<ExtArgs>
+>>>>>>> dev
 }, ExtArgs["result"]["policyVersion"]>
 
 export type PolicyVersionSelectScalar = {
   id?: boolean
   policyId?: boolean
+<<<<<<< HEAD
   content?: boolean
   version?: boolean
   createdAt?: boolean
@@ -528,18 +1166,55 @@ export type PolicyVersionIncludeCreateManyAndReturn<ExtArgs extends runtime.Type
 }
 export type PolicyVersionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+=======
+  version?: boolean
+  content?: boolean
+  fileId?: boolean
+  isActive?: boolean
+  createdAt?: boolean
+}
+
+export type PolicyVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "policyId" | "version" | "content" | "fileId" | "isActive" | "createdAt", ExtArgs["result"]["policyVersion"]>
+export type PolicyVersionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  currentForPolicies?: boolean | Prisma.PolicyVersion$currentForPoliciesArgs<ExtArgs>
+  file?: boolean | Prisma.PolicyVersion$fileArgs<ExtArgs>
+  acknowledgements?: boolean | Prisma.PolicyVersion$acknowledgementsArgs<ExtArgs>
+  _count?: boolean | Prisma.PolicyVersionCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type PolicyVersionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  file?: boolean | Prisma.PolicyVersion$fileArgs<ExtArgs>
+}
+export type PolicyVersionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  policy?: boolean | Prisma.PolicyDefaultArgs<ExtArgs>
+  file?: boolean | Prisma.PolicyVersion$fileArgs<ExtArgs>
+>>>>>>> dev
 }
 
 export type $PolicyVersionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PolicyVersion"
   objects: {
     policy: Prisma.$PolicyPayload<ExtArgs>
+<<<<<<< HEAD
+=======
+    currentForPolicies: Prisma.$PolicyPayload<ExtArgs>[]
+    file: Prisma.$PolicyFilePayload<ExtArgs> | null
+    acknowledgements: Prisma.$PolicyAcknowledgementPayload<ExtArgs>[]
+>>>>>>> dev
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     policyId: string
+<<<<<<< HEAD
     content: string
     version: number
+=======
+    version: number
+    content: runtime.JsonValue
+    fileId: string | null
+    isActive: boolean
+>>>>>>> dev
     createdAt: Date
   }, ExtArgs["result"]["policyVersion"]>
   composites: {}
@@ -936,6 +1611,12 @@ readonly fields: PolicyVersionFieldRefs;
 export interface Prisma__PolicyVersionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   policy<T extends Prisma.PolicyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyDefaultArgs<ExtArgs>>): Prisma.Prisma__PolicyClient<runtime.Types.Result.GetResult<Prisma.$PolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+<<<<<<< HEAD
+=======
+  currentForPolicies<T extends Prisma.PolicyVersion$currentForPoliciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyVersion$currentForPoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  file<T extends Prisma.PolicyVersion$fileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyVersion$fileArgs<ExtArgs>>): Prisma.Prisma__PolicyFileClient<runtime.Types.Result.GetResult<Prisma.$PolicyFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  acknowledgements<T extends Prisma.PolicyVersion$acknowledgementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PolicyVersion$acknowledgementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PolicyAcknowledgementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+>>>>>>> dev
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -967,8 +1648,15 @@ export interface Prisma__PolicyVersionClient<T, Null = never, ExtArgs extends ru
 export interface PolicyVersionFieldRefs {
   readonly id: Prisma.FieldRef<"PolicyVersion", 'String'>
   readonly policyId: Prisma.FieldRef<"PolicyVersion", 'String'>
+<<<<<<< HEAD
   readonly content: Prisma.FieldRef<"PolicyVersion", 'String'>
   readonly version: Prisma.FieldRef<"PolicyVersion", 'Int'>
+=======
+  readonly version: Prisma.FieldRef<"PolicyVersion", 'Int'>
+  readonly content: Prisma.FieldRef<"PolicyVersion", 'Json'>
+  readonly fileId: Prisma.FieldRef<"PolicyVersion", 'String'>
+  readonly isActive: Prisma.FieldRef<"PolicyVersion", 'Boolean'>
+>>>>>>> dev
   readonly createdAt: Prisma.FieldRef<"PolicyVersion", 'DateTime'>
 }
     
@@ -1366,6 +2054,76 @@ export type PolicyVersionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * PolicyVersion.currentForPolicies
+ */
+export type PolicyVersion$currentForPoliciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Policy
+   */
+  select?: Prisma.PolicySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Policy
+   */
+  omit?: Prisma.PolicyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PolicyInclude<ExtArgs> | null
+  where?: Prisma.PolicyWhereInput
+  orderBy?: Prisma.PolicyOrderByWithRelationInput | Prisma.PolicyOrderByWithRelationInput[]
+  cursor?: Prisma.PolicyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PolicyScalarFieldEnum | Prisma.PolicyScalarFieldEnum[]
+}
+
+/**
+ * PolicyVersion.file
+ */
+export type PolicyVersion$fileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PolicyFile
+   */
+  select?: Prisma.PolicyFileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PolicyFile
+   */
+  omit?: Prisma.PolicyFileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PolicyFileInclude<ExtArgs> | null
+  where?: Prisma.PolicyFileWhereInput
+}
+
+/**
+ * PolicyVersion.acknowledgements
+ */
+export type PolicyVersion$acknowledgementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PolicyAcknowledgement
+   */
+  select?: Prisma.PolicyAcknowledgementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PolicyAcknowledgement
+   */
+  omit?: Prisma.PolicyAcknowledgementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PolicyAcknowledgementInclude<ExtArgs> | null
+  where?: Prisma.PolicyAcknowledgementWhereInput
+  orderBy?: Prisma.PolicyAcknowledgementOrderByWithRelationInput | Prisma.PolicyAcknowledgementOrderByWithRelationInput[]
+  cursor?: Prisma.PolicyAcknowledgementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PolicyAcknowledgementScalarFieldEnum | Prisma.PolicyAcknowledgementScalarFieldEnum[]
+}
+
+/**
+>>>>>>> dev
  * PolicyVersion without action
  */
 export type PolicyVersionDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {

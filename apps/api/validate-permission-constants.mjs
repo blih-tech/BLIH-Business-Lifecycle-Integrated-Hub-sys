@@ -11,7 +11,7 @@ const constantsPath = path.join(
   '..',
   '..',
   'packages',
-  'database',
+  'types',
   'src',
   'rbac',
   'permissions.constants.ts',
@@ -49,7 +49,10 @@ const getNamedImportsForPermissionsConstants = (sourceFile) => {
       continue;
     }
     const moduleSpecifier = statement.moduleSpecifier.getText(sourceFile);
-    if (!moduleSpecifier.includes('permissions.constants')) {
+    if (
+      !moduleSpecifier.includes('permissions.constants') &&
+      !moduleSpecifier.includes('@repo/types/rbac')
+    ) {
       continue;
     }
     const clause = statement.importClause;

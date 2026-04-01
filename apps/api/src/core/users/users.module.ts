@@ -2,6 +2,7 @@
 import { KeycloakModule } from '../../platform/keycloak/keycloak.module';
 import { UserProfileController } from './user-profile.controller';
 import { UsersController } from './users.controller';
+import { UserProvisioningService } from './user-provisioning.service';
 import { CreateUserCompensationHistoryUseCase } from './use-cases/create-user-compensation-history.usecase';
 import { CreateCompensationComponentUseCase } from './use-cases/create-compensation-component.usecase';
 import { CreateUserUseCase } from './use-cases/create-user.usecase';
@@ -26,6 +27,7 @@ import { UpdateUserUseCase } from './use-cases/update-user.usecase';
   imports: [KeycloakModule],
   controllers: [UsersController, UserProfileController],
   providers: [
+    UserProvisioningService,
     CreateUserUseCase,
     UpdateUserUseCase,
     DisableUserUseCase,
@@ -46,6 +48,6 @@ import { UpdateUserUseCase } from './use-cases/update-user.usecase';
     GetUserLifecycleUseCase,
     UpdateUserLifecycleUseCase,
   ],
-  exports: [ListUsersUseCase],
+  exports: [ListUsersUseCase, UserProvisioningService],
 })
 export class UsersModule {}

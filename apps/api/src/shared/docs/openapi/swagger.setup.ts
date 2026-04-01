@@ -2,14 +2,13 @@ import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { OpenAPIObject } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { RESPONSE_MESSAGE_EXTENSION } from '../../decorators/response-message.decorator';
 import {
   SWAGGER_BEARER_AUTH_NAME,
   SWAGGER_COOKIE_AUTH_NAME,
   SWAGGER_DEFAULT_DOCS_PATH,
-  SWAGGER_JSON_SPEC_PATH,
   SWAGGER_TAGS,
-  SWAGGER_YAML_SPEC_PATH,
 } from './openapi.constants';
 import { SWAGGER_EXPORT_BUTTON_CSS } from './swagger-export-button';
 
@@ -885,7 +884,7 @@ export function addKeycloakLoginOperation(
                 grant_type: 'authorization_code',
                 client_id: defaultClientId,
                 code: '3f95f8f9-1f31-40c1-9ed7-8eb7f0f3866f',
-                redirect_uri: 'http://localhost:5000/api/v1/auth/callback',
+                redirect_uri: '{request-origin}/api/v1/auth/callback',
                 code_verifier: 'mX1j2N9Q8kP0pV2Yb9JQjTg7oQWJ5u0rZkQ1m3s9v7A',
               },
             },
@@ -1003,6 +1002,14 @@ export function setupSwagger(app: INestApplication): void {
   const docsPath = normalizePath(
     configService.get<string>('SWAGGER_PATH', SWAGGER_DEFAULT_DOCS_PATH),
   );
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+  const port = configService.get<string>('PORT', '5000');
+
+  // Use dynamic origin detection at runtime
+  const serverUrl =
+    nodeEnv === 'production'
+      ? '{request-origin}' // Placeholder that will be replaced by client
+      : `http://localhost:${port}`; // Development fallback
 
   const downloadBasePath = `/${apiPrefix}/${docsPath}/download`;
   const exportLinks = `**[Export OpenAPI spec (JSON)](${downloadBasePath}/openapi.json)** | **[YAML](${downloadBasePath}/openapi.yaml)**`;
@@ -1019,6 +1026,7 @@ export function setupSwagger(app: INestApplication): void {
 \n\n${exportLinks}`,
     )
     .setVersion('1.0.0')
+    .addServer(serverUrl, 'Application origin')
     .addBearerAuth(
       {
         type: 'http',
@@ -1051,7 +1059,7 @@ export function setupSwagger(app: INestApplication): void {
 
   document.servers = [
     {
-      url: resolveApiServerUrl(document, apiPrefix),
+      url: serverUrl,
       description: 'Application origin',
     },
   ];
@@ -1067,6 +1075,34 @@ export function setupSwagger(app: INestApplication): void {
     ),
   );
 
+  // Configure Swagger options to avoid HTTPS/HTTP mixed content issues
+  const swaggerOptions: any = {
+    persistAuthorization: true,
+    filter: true,
+    displayRequestDuration: true,
+    docExpansion: 'none',
+    tagsSorter: 'alpha',
+    operationsSorter: 'alpha',
+  };
+
+  // Disable HTTPS-only features in HTTP environments
+  if (
+    nodeEnv !== 'production' ||
+    !configService.get<string>('API_HOST', '').includes('https')
+  ) {
+    swaggerOptions['supportedSubmitMethods'] = [
+      'get',
+      'post',
+      'put',
+      'delete',
+      'patch',
+    ];
+    swaggerOptions['onComplete'] = function () {
+      // Override any HTTPS redirects
+      console.log('Swagger UI loaded in HTTP mode');
+    };
+  }
+
   SwaggerModule.setup(docsPath, app, document, {
     useGlobalPrefix: true,
     customSiteTitle: 'BLIH Core Platform API Docs',
@@ -1079,7 +1115,5 @@ export function setupSwagger(app: INestApplication): void {
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
     },
-    jsonDocumentUrl: `${docsPath}/${SWAGGER_JSON_SPEC_PATH}`,
-    yamlDocumentUrl: `${docsPath}/${SWAGGER_YAML_SPEC_PATH}`,
   });
 }

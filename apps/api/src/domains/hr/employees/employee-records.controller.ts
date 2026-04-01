@@ -34,7 +34,7 @@ import {
   UserEmploymentPermissions,
   UserLifecyclePermissions,
   UserProfilePermissions,
-} from '../../../core/rbac/constants/permissions.constants';
+} from '@repo/types/rbac';
 import { Audit } from '../../../shared/decorators/audit.decorator';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {

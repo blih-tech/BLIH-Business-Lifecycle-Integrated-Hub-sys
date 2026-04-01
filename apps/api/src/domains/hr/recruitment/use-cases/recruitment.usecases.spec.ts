@@ -5,7 +5,12 @@ import {
 } from '@nestjs/common';
 import { SYSTEM_ROLES } from '../../../../shared/constants/system-roles.constant';
 import { ApproveJobUseCase, SubmitJobUseCase } from './jobs.usecases';
-import { UpdateApplicantStatusUseCase } from './applicants.usecases';
+import {
+  BulkUpdateApplicantStatusUseCase,
+  CreateApplicantUseCase,
+  ListApplicantsUseCase,
+  UpdateApplicantStatusUseCase,
+} from './applicants.usecases';
 import {
   CreateInterviewQuestionUseCase,
   DeactivateInterviewQuestionUseCase,
@@ -18,6 +23,7 @@ import {
   UpdateInterviewUseCase,
   UpsertInterviewFeedbackUseCase,
 } from './interviews.usecases';
+import { SendOfferUseCase } from './offers.usecases';
 
 type ApprovalDepartment = 'FINANCE' | 'GM' | 'HR';
 type ApprovalStatus = 'PENDING_FOR_APPROVAL' | 'APPROVED' | 'REJECTED';
@@ -140,6 +146,85 @@ const buildSubmitCandidate = (
   creatorIsHr: false,
   createdById: 'creator-1',
   requestForm: { id: 'request-1', status },
+  ...overrides,
+});
+
+const buildApplicantRow = (
+  status: string,
+  overrides: Record<string, unknown> = {},
+) => ({
+  id: 'app-1',
+  jobId: 'job-1',
+  applicationFormId: null,
+  firstName: 'Abel',
+  lastName: 'Tesfaye',
+  email: 'abel@example.com',
+  phone: '+251900000001',
+  resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+  linkedinUrl: 'https://linkedin.com/in/abel',
+  portfolioUrl: null,
+  githubUrl: 'https://github.com/abel',
+  source: 'COMPANY_SITE',
+  referredById: null,
+  currentCompany: 'TechCorp',
+  currentPosition: 'Engineer',
+  yearsExperience: 6,
+  location: 'Addis Ababa',
+  nationality: 'Ethiopian',
+  expectedSalary: 120000,
+  currentSalary: 100000,
+  educationLevel: 'BACHELORS',
+  highestDegree: 'BSc',
+  skills: ['typescript'],
+  status,
+  coverLetter: null,
+  sourceSnapshot: null,
+  customFieldValues: null,
+  appliedAt: fixedNow,
+  screeningAt: status !== 'APPLIED' ? fixedNow : null,
+  shortlistedAt: status === 'SHORTLISTED' ? fixedNow : null,
+  interviewAt: status === 'INTERVIEW' ? fixedNow : null,
+  waitlistAt: status === 'WAITLIST' ? fixedNow : null,
+  offerAt: status === 'OFFER' ? fixedNow : null,
+  hiredAt: status === 'HIRED' ? fixedNow : null,
+  rejectedAt: status === 'REJECTED' ? fixedNow : null,
+  withdrawnAt: status === 'WITHDRAWN' ? fixedNow : null,
+  lastActivityAt: fixedNow,
+  profileScore: 80,
+  educations: [],
+  experiences: [],
+  statusHistory: [],
+  createdAt: fixedNow,
+  updatedAt: fixedNow,
+  ...overrides,
+});
+
+const buildOfferRow = (
+  status: string,
+  overrides: Record<string, unknown> = {},
+) => ({
+  id: 'offer-1',
+  jobId: 'job-1',
+  applicantId: 'app-1',
+  createdById: 'hr-1',
+  status,
+  salary: 145000,
+  currency: 'USD',
+  startDate: new Date('2026-04-01T00:00:00.000Z'),
+  payFrequency: 'MONTHLY',
+  employmentType: 'FULL_TIME',
+  bonus: 5000,
+  equity: 0,
+  offerLetterUrl: null,
+  notes: null,
+  sentAt: status === 'SENT' ? fixedNow : null,
+  respondedAt: status === 'ACCEPTED' || status === 'DECLINED' ? fixedNow : null,
+  expiresAt: null,
+  onboardingId: null,
+  employeeId: null,
+  userId: null,
+  createdAt: fixedNow,
+  updatedAt: fixedNow,
   ...overrides,
 });
 
@@ -477,7 +562,395 @@ describe('Recruitment UseCases', () => {
     );
   });
 
+  it('creates an applicant for a published job and refreshes metrics', async () => {
+    const applicant = buildApplicantRow('APPLIED', {
+      id: 'app-1',
+      jobId: 'job-1',
+      applicationFormId: 'form-1',
+      email: 'abel.tesfaye@example.com',
+    });
+    const tx = {
+      applicant: {
+        create: jest.fn().mockResolvedValue(applicant),
+        update: jest.fn().mockResolvedValue(undefined),
+        count: jest
+          .fn()
+          .mockResolvedValueOnce(1)
+          .mockResolvedValueOnce(0)
+          .mockResolvedValueOnce(0),
+      },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
+      },
+      interviewParticipant: {
+        count: jest.fn().mockResolvedValue(0),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+    };
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'PUBLISHED',
+          },
+          applicationForm: {
+            id: 'form-1',
+            applicantFields: [],
+            sections: [],
+            customFields: [],
+          },
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest
+        .fn()
+        .mockImplementation(async (callback) => callback(tx)),
+    };
+    const notifications = {
+      notifyUsers: jest.fn().mockResolvedValue(undefined),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    const result = await usecase.execute({
+      jobId: 'job-1',
+      firstName: 'Abel',
+      lastName: 'Tesfaye',
+      email: 'abel.tesfaye@example.com',
+      phone: '+251912345678',
+      resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      skills: ['TypeScript', 'Node.js'],
+    });
+
+    expect(tx.applicant.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          jobId: 'job-1',
+          applicationFormId: 'form-1',
+          email: 'abel.tesfaye@example.com',
+          emailNormalized: 'abel.tesfaye@example.com',
+        }),
+      }),
+    );
+    expect(tx.job.update).toHaveBeenCalledWith({
+      where: { id: 'job-1' },
+      data: {
+        applicationsCount: 1,
+        shortlistedCount: 0,
+        offersCount: 0,
+        hiresCount: 0,
+        interviewsCount: 0,
+      },
+    });
+    expect(notifications.notifyUsers).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userIds: ['creator-1'],
+        payload: {
+          jobId: 'job-1',
+          applicantId: 'app-1',
+        },
+      }),
+    );
+    expect(result.id).toBe('app-1');
+  });
+
+  it('rejects applications for jobs that are not published', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'DRAFT',
+          },
+          applicationForm: null,
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest.fn(),
+    };
+    const notifications = {
+      notifyUsers: jest.fn(),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    await expect(
+      usecase.execute({
+        jobId: 'job-1',
+        firstName: 'Abel',
+        lastName: 'Tesfaye',
+        email: 'abel.tesfaye@example.com',
+        resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('rejects applications that miss required application form fields', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'PUBLISHED',
+          },
+          applicationForm: {
+            id: 'form-1',
+            applicantFields: [
+              {
+                key: 'PHONE',
+                enabled: true,
+                required: true,
+              },
+            ],
+            sections: [],
+            customFields: [],
+          },
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest.fn(),
+    };
+    const notifications = {
+      notifyUsers: jest.fn(),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    await expect(
+      usecase.execute({
+        jobId: 'job-1',
+        firstName: 'Abel',
+        lastName: 'Tesfaye',
+        email: 'abel.tesfaye@example.com',
+        resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('maps duplicate applicant inserts to a conflict error', async () => {
+    const prisma = {
+      job: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'job-1',
+          title: 'Senior Backend Engineer',
+          createdById: 'creator-1',
+          requestForm: {
+            status: 'PUBLISHED',
+          },
+          applicationForm: null,
+        }),
+      },
+      user: {
+        findUnique: jest.fn(),
+      },
+      $transaction: jest.fn().mockRejectedValue({ code: 'P2002' }),
+    };
+    const notifications = {
+      notifyUsers: jest.fn(),
+    };
+    const usecase = new CreateApplicantUseCase(
+      prisma as never,
+      notifications as never,
+    );
+
+    await expect(
+      usecase.execute({
+        jobId: 'job-1',
+        firstName: 'Abel',
+        lastName: 'Tesfaye',
+        email: 'abel.tesfaye@example.com',
+        resumeUrl: 'https://cdn.example.com/cv/abel.pdf',
+      }),
+    ).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  it('adds free-text applicant search filters without breaking existing filters', async () => {
+    const prisma = {
+      applicant: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+    };
+    const usecase = new ListApplicantsUseCase(prisma as never);
+
+    await usecase.execute({
+      status: 'SCREENING',
+      jobId: 'job-1',
+      search: 'abel techcorp',
+    });
+
+    expect(prisma.applicant.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          status: 'SCREENING',
+          jobId: 'job-1',
+          AND: [
+            {
+              OR: expect.arrayContaining([
+                {
+                  firstName: { contains: 'abel', mode: 'insensitive' },
+                },
+                {
+                  currentCompany: {
+                    contains: 'abel',
+                    mode: 'insensitive',
+                  },
+                },
+              ]),
+            },
+            {
+              OR: expect.arrayContaining([
+                {
+                  firstName: { contains: 'techcorp', mode: 'insensitive' },
+                },
+                {
+                  currentCompany: {
+                    contains: 'techcorp',
+                    mode: 'insensitive',
+                  },
+                },
+              ]),
+            },
+          ],
+        }),
+      }),
+    );
+  });
+
+  it('bulk shortlists applicants atomically and records status history', async () => {
+    const tx = {
+      applicant: {
+        update: jest.fn().mockResolvedValue(undefined),
+        findMany: jest
+          .fn()
+          .mockResolvedValue([
+            buildApplicantRow('SHORTLISTED', { id: 'app-1' }),
+            buildApplicantRow('SHORTLISTED', { id: 'app-2' }),
+          ]),
+        count: jest
+          .fn()
+          .mockResolvedValueOnce(2)
+          .mockResolvedValueOnce(2)
+          .mockResolvedValueOnce(0),
+      },
+      applicantStatusHistory: {
+        create: jest.fn().mockResolvedValue(undefined),
+      },
+      offer: {
+        count: jest.fn().mockResolvedValue(0),
+      },
+      interviewParticipant: {
+        count: jest.fn().mockResolvedValue(0),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+    };
+    const prisma = {
+      applicant: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'app-1',
+            status: 'SCREENING',
+            jobId: 'job-1',
+          },
+          {
+            id: 'app-2',
+            status: 'SCREENING',
+            jobId: 'job-1',
+          },
+        ]),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+
+    const usecase = new BulkUpdateApplicantStatusUseCase(prisma as never);
+    const result = await usecase.execute(
+      {
+        applicantIds: ['app-1', 'app-2'],
+        status: 'SHORTLISTED',
+        notes: 'Passed HR review',
+      },
+      'hr-1',
+    );
+
+    expect(tx.applicant.update).toHaveBeenCalledTimes(2);
+    expect(tx.applicantStatusHistory.create).toHaveBeenCalledTimes(2);
+    expect(tx.job.update).toHaveBeenCalledTimes(1);
+    expect(result.status).toBe('SHORTLISTED');
+    expect(result.updatedCount).toBe(2);
+    expect(result.applicants.map((applicant) => applicant.id)).toEqual([
+      'app-1',
+      'app-2',
+    ]);
+  });
+
+  it('rejects invalid bulk applicant transitions before starting the transaction', async () => {
+    const prisma = {
+      applicant: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'app-1',
+            status: 'APPLIED',
+            jobId: 'job-1',
+          },
+        ]),
+      },
+      $transaction: jest.fn(),
+    };
+
+    const usecase = new BulkUpdateApplicantStatusUseCase(prisma as never);
+
+    await expect(
+      usecase.execute({
+        applicantIds: ['app-1'],
+        status: 'SHORTLISTED',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
   it('rejects invalid applicant status transitions', async () => {
+    const tx = {
+      applicant: {
+        update: jest.fn(),
+        findUniqueOrThrow: jest.fn(),
+      },
+      applicantStatusHistory: {
+        create: jest.fn(),
+      },
+      offer: {
+        count: jest.fn(),
+      },
+      interviewParticipant: {
+        count: jest.fn(),
+      },
+      job: {
+        update: jest.fn(),
+      },
+    };
     const prisma = {
       applicant: {
         findUnique: jest.fn().mockResolvedValue({
@@ -487,12 +960,76 @@ describe('Recruitment UseCases', () => {
         }),
         update: jest.fn(),
       },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
     };
     const usecase = new UpdateApplicantStatusUseCase(prisma as never);
 
     await expect(
       usecase.execute('app-1', { status: 'HIRED' }),
     ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('sends an offer only from an interviewable applicant state and records history', async () => {
+    const tx = {
+      offer: {
+        update: jest.fn().mockResolvedValue(undefined),
+        findUniqueOrThrow: jest.fn().mockResolvedValue(buildOfferRow('SENT')),
+        count: jest.fn().mockResolvedValue(1),
+      },
+      applicant: {
+        update: jest.fn().mockResolvedValue(undefined),
+        count: jest.fn().mockResolvedValueOnce(1).mockResolvedValueOnce(0),
+      },
+      applicantStatusHistory: {
+        create: jest.fn().mockResolvedValue(undefined),
+      },
+      interviewParticipant: {
+        count: jest.fn().mockResolvedValue(1),
+      },
+      job: {
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+      onboarding: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+    };
+    const prisma = {
+      offer: {
+        findUnique: jest.fn().mockResolvedValue({
+          id: 'offer-1',
+          status: 'DRAFT',
+          jobId: 'job-1',
+          applicantId: 'app-1',
+          applicant: {
+            status: 'INTERVIEW',
+          },
+        }),
+      },
+      onboarding: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+      $transaction: jest.fn().mockImplementation((callback) => callback(tx)),
+    };
+
+    const usecase = new SendOfferUseCase(prisma as never);
+    const result = await usecase.execute('offer-1', {}, 'hr-1');
+
+    expect(tx.offer.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'offer-1' },
+        data: expect.objectContaining({ status: 'SENT' }),
+      }),
+    );
+    expect(tx.applicantStatusHistory.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          applicantId: 'app-1',
+          toStatus: 'OFFER',
+          changedById: 'hr-1',
+        }),
+      }),
+    );
+    expect(result.status).toBe('SENT');
   });
 
   it('rejects invalid interview status transitions', async () => {

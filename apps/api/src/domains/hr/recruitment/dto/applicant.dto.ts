@@ -1,6 +1,13 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  ArrayUnique,
   IsArray,
   IsDateString,
   IsEmail,
@@ -15,8 +22,13 @@ import {
   Max,
   Min,
   ValidateNested,
+  IsBoolean,
 } from 'class-validator';
-import { APPLICANT_STATUSES, CANDIDATE_SOURCES } from '@repo/types';
+import {
+  APPLICANT_STATUSES,
+  BULK_REVIEW_APPLICANT_STATUSES,
+  CANDIDATE_SOURCES,
+} from '@repo/types';
 import type {
   ApplicantEducationDto as ApplicantEducationDtoType,
   ApplicantExperienceDto as ApplicantExperienceDtoType,
@@ -24,10 +36,15 @@ import type {
   ApplicantResponseDto as ApplicantResponseDtoType,
   ApplicantStatus,
   ApplicantStatusHistoryDto as ApplicantStatusHistoryDtoType,
+  ApplyToJobDto as ApplyToJobDtoType,
+  BulkApplicantStatusResponseDto as BulkApplicantStatusResponseDtoType,
+  BulkReviewApplicantStatus,
+  BulkUpdateApplicantStatusDto as BulkUpdateApplicantStatusDtoType,
   CandidateSource,
   CreateApplicantDto as CreateApplicantDtoType,
   UpdateApplicantDto as UpdateApplicantDtoType,
   UpdateApplicantStatusDto as UpdateApplicantStatusDtoType,
+  HireApplicantDto as HireApplicantDtoType,
 } from '@repo/types';
 
 const normalizeEnumValue = ({ value }: { value: unknown }) => {
@@ -235,6 +252,10 @@ export class CreateApplicantDto implements CreateApplicantDtoType {
   experiences?: ApplicantExperienceInputDto[];
 }
 
+export class ApplyToJobDto
+  extends OmitType(CreateApplicantDto, ['jobId'] as const)
+  implements ApplyToJobDtoType {}
+
 export class UpdateApplicantDto
   extends PartialType(CreateApplicantDto)
   implements UpdateApplicantDtoType {}
@@ -244,6 +265,25 @@ export class UpdateApplicantStatusDto implements UpdateApplicantStatusDtoType {
   @Transform(normalizeEnumValue)
   @IsEnum(APPLICANT_STATUSES)
   status!: ApplicantStatus;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  notes?: string | null;
+}
+
+export class BulkUpdateApplicantStatusDto implements BulkUpdateApplicantStatusDtoType {
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsUUID(undefined, { each: true })
+  applicantIds!: string[];
+
+  @ApiProperty({ enum: BULK_REVIEW_APPLICANT_STATUSES })
+  @Transform(normalizeEnumValue)
+  @IsEnum(BULK_REVIEW_APPLICANT_STATUSES)
+  status!: BulkReviewApplicantStatus;
 
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
@@ -412,6 +452,20 @@ export class ApplicantResponseDto implements ApplicantResponseDtoType {
   updatedAt!: string;
 }
 
+export class BulkApplicantStatusResponseDto implements BulkApplicantStatusResponseDtoType {
+  @ApiProperty({ enum: BULK_REVIEW_APPLICANT_STATUSES })
+  status!: BulkReviewApplicantStatus;
+
+  @ApiProperty()
+  requestedCount!: number;
+
+  @ApiProperty()
+  updatedCount!: number;
+
+  @ApiProperty({ type: [ApplicantResponseDto] })
+  applicants!: ApplicantResponseDto[];
+}
+
 export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @ApiPropertyOptional({ enum: APPLICANT_STATUSES })
   @IsOptional()
@@ -428,4 +482,46 @@ export class ApplicantListQueryDto implements ApplicantListQueryDtoType {
   @IsOptional()
   @IsEmail()
   email?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  search?: string;
+}
+
+export class HireApplicantDto implements HireApplicantDtoType {
+  @ApiPropertyOptional({
+    example: 'abel.tesfaye@blih.com',
+    description:
+      'Override default email with company designated business email.',
+  })
+  @IsOptional()
+  @IsEmail()
+  companyEmail?: string | null;
+
+  @ApiPropertyOptional({
+    example: true,
+    description:
+      'If True, prioritizes the companyEmail as the Keycloak / System primary identity.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isCompanyEmailPrimary?: boolean;
+
+  @ApiPropertyOptional({
+    example: '+251123456789',
+    description: 'Company phone number.',
+  })
+  @IsOptional()
+  @IsString()
+  companyPhone?: string | null;
+
+  @ApiPropertyOptional({
+    example: true,
+    description:
+      'If True, prioritizes the companyPhone over their personal supplied application phone.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isCompanyPhonePrimary?: boolean;
 }

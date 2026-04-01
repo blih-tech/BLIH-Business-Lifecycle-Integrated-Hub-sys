@@ -1,132 +1,47 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
-import { env } from '../../../config/env.config';
-import { KeycloakAdminService } from '../../../platform/keycloak/keycloak-admin.service';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
-import { ensureEmployeeForUser } from '../../../domains/hr/employees/employee-subject.utils';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UserProvisioningService } from '../user-provisioning.service';
 
 @Injectable()
 export class CreateUserUseCase {
   constructor(
-    private readonly keycloakAdmin: KeycloakAdminService,
     private readonly prisma: PrismaService,
+    private readonly provisioning: UserProvisioningService,
   ) {}
 
   async execute(dto: CreateUserDto) {
-    const realmName = env.KEYCLOAK_REALM;
     const username = dto.username.trim();
-    let keycloakId: string;
-    try {
-      keycloakId =
-        (await this.keycloakAdmin.createUser(realmName, {
-          email: dto.email,
-          username,
-          enabled: true,
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-        })) ?? `${dto.email}-${Date.now()}`;
-    } catch (error: unknown) {
-      this.rethrowCreateUserError(error);
-    }
+    await this.provisioning.assertLocalIdentityAvailable({
+      email: dto.email,
+      username,
+    });
 
-    const user = await this.prisma.$transaction(async (tx) => {
-      const createdUser = await tx.user.create({
-        data: {
+    const keycloakId = await this.provisioning.createExternalUser({
+      email: dto.email,
+      username,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      phone: dto.phone,
+    });
+
+    try {
+      const provisioned = await this.prisma.$transaction((tx) =>
+        this.provisioning.createLocalUserGraph(tx, {
           keycloakId,
           username,
           email: dto.email,
           firstName: dto.firstName,
           lastName: dto.lastName,
           phone: dto.phone,
-        },
-      });
+          lifecycleStatus: 'ONBOARDING',
+        }),
+      );
 
-      await ensureEmployeeForUser(tx as PrismaService, createdUser.id);
-
-      await tx.userLifecycle.upsert({
-        where: {
-          employeeId: createdUser.id,
-        },
-        update: {},
-        create: {
-          employeeId: createdUser.id,
-          status: 'ONBOARDING',
-        },
-      });
-
-      return createdUser;
-    });
-
-    return user;
-  }
-
-  private rethrowCreateUserError(error: unknown): never {
-    const response = (
-      error as {
-        response?: {
-          status?: number;
-          data?: unknown;
-        };
-      }
-    ).response;
-
-    const status = response?.status;
-    const details = this.formatKeycloakErrorDetails(response?.data);
-
-    if (status === 400) {
-      throw new BadRequestException({
-        message: 'Invalid user payload',
-        details,
-      });
+      return provisioned.user;
+    } catch (error: unknown) {
+      await this.provisioning.cleanupExternalUser(keycloakId);
+      this.provisioning.rethrowPersistenceError(error);
     }
-
-    if (status === 409) {
-      throw new ConflictException({
-        message: 'User already exists',
-        details,
-      });
-    }
-
-    throw error;
-  }
-
-  private formatKeycloakErrorDetails(data: unknown): string {
-    const fallback = 'Keycloak rejected the user payload';
-
-    if (!data || typeof data !== 'object') {
-      return fallback;
-    }
-
-    const payload = data as {
-      field?: unknown;
-      errorMessage?: unknown;
-      params?: unknown;
-      error?: unknown;
-      error_description?: unknown;
-    };
-
-    if (
-      typeof payload.field === 'string' &&
-      typeof payload.errorMessage === 'string'
-    ) {
-      if (payload.errorMessage === 'error-username-invalid-character') {
-        return `${payload.field} contains invalid characters. Use letters, numbers, dots, underscores, and hyphens only.`;
-      }
-      return `${payload.field}: ${payload.errorMessage}`;
-    }
-
-    if (typeof payload.error_description === 'string') {
-      return payload.error_description;
-    }
-
-    if (typeof payload.error === 'string') {
-      return payload.error;
-    }
-
-    return fallback;
   }
 }

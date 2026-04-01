@@ -16,7 +16,7 @@ import type {
   UpdateKeyResultDto,
   UpdateOkrDto,
 } from '@repo/types';
-import { OkrPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { OkrPermissions } from '@repo/types/rbac';
 import {
   ApiDefaultErrors,
   ApiEnvelopeArrayResponse,

@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { ChevronUp, Pencil, Send } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ChevronUp, Pencil, Send } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-import type { ApprovalProgressState } from "@/features/hr/recruitment/requests/types";
+import type { ApprovalProgressState } from '@/features/hr/recruitment/requests/types';
 import type {
   ReadyToPostDepartment,
   ReadyToPostJob,
-} from "@/features/hr/recruitment/ready-to-post/types";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
+} from '@/features/hr/recruitment/ready-to-post/types';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
+} from '@/shared/components/ui/dialog';
 
 type JobPostPreviewDialogProps = {
   item: ReadyToPostJob | null;
@@ -29,7 +29,7 @@ type EmployeeCardProps = {
   name: string;
   role?: string;
   department?: string;
-  variant?: "stacked" | "inline";
+  variant?: 'stacked' | 'inline';
 };
 
 type BulletListProps = {
@@ -43,61 +43,65 @@ type InfoBlockProps = {
 };
 
 function departmentLabel(department: ReadyToPostDepartment) {
-  if (department === "technical") return "TECHNICAL DEPT.";
-  if (department === "creative") return "CREATIVE DEPT.";
-  return "DIGITAL MARKETING DEPT.";
+  if (department === 'technical') return 'TECHNICAL DEPT.';
+  if (department === 'creative') return 'CREATIVE DEPT.';
+  return 'DIGITAL MARKETING DEPT.';
 }
 
 function employmentTypeLabel(
-  value: ReadyToPostJob["jobDetailsForm"]["employmentType"],
+  value: ReadyToPostJob['jobDetailsForm']['employmentType'],
 ) {
-  if (value === "full_time") return "Full-time";
-  if (value === "part_time") return "Part-time";
-  if (value === "contract") return "Contract";
-  return "Intern";
+  if (value === 'FULL_TIME') return 'Full-time';
+  if (value === 'PART_TIME') return 'Part-time';
+  if (value === 'CONTRACT') return 'Contract';
+  return 'Intern';
 }
 
-function urgencyLabel(value: ReadyToPostJob["requestForm"]["urgency"]) {
-  if (value === "high") return "High";
-  if (value === "medium") return "Medium";
-  return "Low";
+function urgencyLabel(value: ReadyToPostJob['requestForm']['urgency']) {
+  if (value === 'HIGH') return 'High';
+  if (value === 'MEDIUM') return 'Medium';
+  return 'Low';
 }
 
 function formatValue(value: string) {
   return value
-    .split("_")
+    .split('_')
     .map((part) => (part ? part[0]!.toUpperCase() + part.slice(1) : part))
-    .join(" ");
+    .join(' ');
 }
 
 function getInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   const initials = parts.slice(0, 2).map((part) => part[0]!.toUpperCase());
-  return initials.join("") || "--";
+  return initials.join('') || '--';
 }
 
 function formatPositions(openings?: string) {
-  if (!openings) return "1 Position";
+  if (!openings) return '1 Position';
   const numeric = Number(openings);
   if (Number.isNaN(numeric) || numeric <= 0) return openings;
-  return `${numeric} Position${numeric === 1 ? "" : "s"}`;
+  return `${numeric} Position${numeric === 1 ? '' : 's'}`;
 }
 
 function EmployeeCard({
   name,
   role,
   department,
-  variant = "inline",
+  variant = 'inline',
 }: EmployeeCardProps) {
   return (
     <div
-      className={`flex items-center gap-2 ${variant === "stacked" ? "items-start" : ""}`}
+      className={`flex items-center gap-2 ${variant === 'stacked' ? 'items-start' : ''}`}
     >
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e66f7] text-sm font-semibold text-white">
         {getInitials(name)}
       </div>
-      <div className={variant === "stacked" ? "space-y-1" : "flex items-center gap-2"}>
-        <div className={variant === "stacked" ? "space-y-0.5" : ""}>
+      <div
+        className={
+          variant === 'stacked' ? 'space-y-1' : 'flex items-center gap-2'
+        }
+      >
+        <div className={variant === 'stacked' ? 'space-y-0.5' : ''}>
           <p className="text-sm font-semibold tracking-[-0.2px] text-black">
             {name}
           </p>
@@ -167,7 +171,7 @@ export function JobPostPreviewDialog({
       item
         ? [
             {
-              name: item.requestForm.requestedBy,
+              name: item.requestForm.requestedBy ?? 'Request Owner',
               role: formatValue(item.requestForm.position),
               department: departmentLabel(
                 item.requestForm.department as ReadyToPostDepartment,
@@ -189,11 +193,12 @@ export function JobPostPreviewDialog({
           )
             .filter(
               ([, step]) =>
-                step.status === "requested_review" || step.status === "rejected",
+                step.status === 'requested_review' ||
+                step.status === 'rejected',
             )
             .map(([key]) => ({
               name: `${key.toUpperCase()} Reviewer`,
-              role: "Review Team",
+              role: 'Review Team',
               department: departmentLabel(
                 item.requestForm.department as ReadyToPostDepartment,
               ),
@@ -211,10 +216,10 @@ export function JobPostPreviewDialog({
               { status: ApprovalProgressState },
             ][]
           )
-            .filter(([, step]) => step.status === "approved")
+            .filter(([, step]) => step.status === 'approved')
             .map(([key]) => ({
               name: `${key.toUpperCase()} Approver`,
-              role: "Approval Team",
+              role: 'Approval Team',
               department: departmentLabel(
                 item.requestForm.department as ReadyToPostDepartment,
               ),
@@ -233,7 +238,7 @@ export function JobPostPreviewDialog({
                 <div className="min-w-0 flex-1 space-y-4">
                   <div className="flex flex-wrap items-center gap-4">
                     <DialogTitle className="text-[18px] font-semibold tracking-[-0.4px] text-black">
-                      {item.jobDetailsForm.jobTitle}
+                      {item.jobDetailsForm.title}
                     </DialogTitle>
                     <Badge
                       variant="outline"
@@ -284,7 +289,7 @@ export function JobPostPreviewDialog({
                     />
                     <InfoBlock
                       label="Date Requested"
-                      value={item.requestForm.createdDate ?? "Not set"}
+                      value={item.requestForm.createdDate ?? 'Not set'}
                     />
                   </div>
                   <div className="space-y-4">
@@ -300,7 +305,7 @@ export function JobPostPreviewDialog({
                   <div className="space-y-2">
                     <p className="text-[12px] text-[#666]">Requested By</p>
                     <EmployeeCard
-                      name={item.requestForm.requestedBy}
+                      name={item.requestForm.requestedBy ?? 'Request Owner'}
                       role={formatValue(item.requestForm.position)}
                       department={departmentLabel(
                         item.requestForm.department as ReadyToPostDepartment,
@@ -318,14 +323,19 @@ export function JobPostPreviewDialog({
                       Job Overview
                     </p>
                     <DialogDescription className="text-sm leading-5 text-[#666]">
-                      {item.jobDetailsForm.jobSummary}
+                      {item.jobDetailsForm.description}
                     </DialogDescription>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
                       Requirements
                     </p>
-                    <BulletList items={item.jobDetailsForm.requirements} />
+                    <BulletList
+                      items={(item.jobDetailsForm.requiredSkills ?? '')
+                        .split('\n')
+                        .map((itemText) => itemText.trim())
+                        .filter(Boolean)}
+                    />
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -333,7 +343,12 @@ export function JobPostPreviewDialog({
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
                       Qualifications
                     </p>
-                    <BulletList items={item.jobDetailsForm.keyResponsibilities} />
+                    <BulletList
+                      items={(item.jobDetailsForm.responsibilities ?? '')
+                        .split('\n')
+                        .map((itemText) => itemText.trim())
+                        .filter(Boolean)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold tracking-[-0.4px] text-black">
@@ -342,9 +357,9 @@ export function JobPostPreviewDialog({
                     <p className="text-sm leading-5 text-[#666]">
                       {item.requestForm.businessJustification}
                     </p>
-                    {item.jobDetailsForm.whyJoinUs ? (
+                    {item.jobDetailsForm.summary ? (
                       <p className="text-sm leading-5 text-[#666]">
-                        {item.jobDetailsForm.whyJoinUs}
+                        {item.jobDetailsForm.summary}
                       </p>
                     ) : null}
                   </div>
@@ -362,7 +377,7 @@ export function JobPostPreviewDialog({
                       Hiring Committee
                     </p>
                     <ChevronUp
-                      className={`h-4 w-4 text-[#1e66f7] ${isCommitteeOpen ? "" : "rotate-180"}`}
+                      className={`h-4 w-4 text-[#1e66f7] ${isCommitteeOpen ? '' : 'rotate-180'}`}
                     />
                   </button>
                   {isCommitteeOpen ? (
@@ -389,7 +404,7 @@ export function JobPostPreviewDialog({
                         Revisions From
                       </p>
                       <ChevronUp
-                        className={`h-4 w-4 text-[#1e66f7] ${isRevisionsOpen ? "" : "rotate-180"}`}
+                        className={`h-4 w-4 text-[#1e66f7] ${isRevisionsOpen ? '' : 'rotate-180'}`}
                       />
                     </button>
                     {isRevisionsOpen ? (
@@ -425,7 +440,7 @@ export function JobPostPreviewDialog({
                         Approved By
                       </p>
                       <ChevronUp
-                        className={`h-4 w-4 text-[#1e66f7] ${isApprovedOpen ? "" : "rotate-180"}`}
+                        className={`h-4 w-4 text-[#1e66f7] ${isApprovedOpen ? '' : 'rotate-180'}`}
                       />
                     </button>
                     {isApprovedOpen ? (

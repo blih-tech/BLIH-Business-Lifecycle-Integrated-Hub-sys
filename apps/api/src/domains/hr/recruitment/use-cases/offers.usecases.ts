@@ -15,10 +15,13 @@ import type {
   UpdateOfferDto,
   WithdrawOfferDto,
 } from '@repo/types';
+import { RecruitmentTransitionService } from '../recruitment-transition.service';
 import {
+  attachOfferProvisioningSubjects,
   mapOffer,
   recalculateJobMetrics,
   touchApplicantActivity,
+  transitionApplicantStatus,
 } from './recruitment.usecase-helpers';
 
 @Injectable()
@@ -80,7 +83,10 @@ export class CreateOfferUseCase {
       await recalculateJobMetrics(tx, dto.jobId);
     });
 
-    return mapOffer(created);
+    const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
+      created,
+    ]);
+    return mapOffer(enriched);
   }
 }
 
@@ -97,7 +103,8 @@ export class ListOffersUseCase {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return rows.map((row) => mapOffer(row));
+    const enriched = await attachOfferProvisioningSubjects(this.prisma, rows);
+    return enriched.map((row) => mapOffer(row));
   }
 }
 
@@ -108,7 +115,10 @@ export class GetOfferUseCase {
   async execute(id: string): Promise<OfferResponseDto> {
     const row = await this.prisma.offer.findUnique({ where: { id } });
     if (!row) throw new NotFoundException('Offer not found');
-    return mapOffer(row);
+    const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
+      row,
+    ]);
+    return mapOffer(enriched);
   }
 }
 
@@ -151,8 +161,10 @@ export class UpdateOfferUseCase {
         }),
       },
     });
-
-    return mapOffer(updated);
+    const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
+      updated,
+    ]);
+    return mapOffer(enriched);
   }
 }
 
@@ -160,19 +172,41 @@ export class UpdateOfferUseCase {
 export class SendOfferUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(id: string, dto: SendOfferDto): Promise<OfferResponseDto> {
+  async execute(
+    id: string,
+    dto: SendOfferDto,
+    changedById?: string,
+  ): Promise<OfferResponseDto> {
+    if (!changedById)
+      throw new ForbiddenException('Authenticated user id required');
+
     const existing = await this.prisma.offer.findUnique({
       where: { id },
-      select: { id: true, status: true, jobId: true, applicantId: true },
+      select: {
+        id: true,
+        status: true,
+        jobId: true,
+        applicantId: true,
+        applicant: {
+          select: {
+            status: true,
+          },
+        },
+      },
     });
     if (!existing) throw new NotFoundException('Offer not found');
     if (existing.status !== 'DRAFT') {
       throw new BadRequestException('Only draft offers can be sent');
     }
+    if (!['INTERVIEW', 'WAITLIST'].includes(existing.applicant.status)) {
+      throw new BadRequestException(
+        'Applicant must be in INTERVIEW or WAITLIST before sending offer',
+      );
+    }
 
     const now = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
-      const row = await tx.offer.update({
+      await tx.offer.update({
         where: { id },
         data: {
           status: 'SENT',
@@ -181,25 +215,41 @@ export class SendOfferUseCase {
         },
       });
 
-      await tx.applicant.update({
-        where: { id: existing.applicantId },
-        data: { status: 'OFFER', offerAt: now, lastActivityAt: now },
+      await transitionApplicantStatus(tx, {
+        applicantId: existing.applicantId,
+        currentStatus: existing.applicant.status,
+        nextStatus: 'OFFER',
+        notes: 'Offer sent',
+        changedById,
+        at: now,
       });
 
-      await touchApplicantActivity(tx, existing.applicantId, now);
       await recalculateJobMetrics(tx, existing.jobId);
-      return row;
+      return tx.offer.findUniqueOrThrow({ where: { id } });
     });
 
-    return mapOffer(updated);
+    const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
+      updated,
+    ]);
+    return mapOffer(enriched);
   }
 }
 
 @Injectable()
 export class RespondOfferUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly transitions: RecruitmentTransitionService,
+  ) {}
 
-  async execute(id: string, dto: RespondOfferDto): Promise<OfferResponseDto> {
+  async execute(
+    id: string,
+    dto: RespondOfferDto,
+    changedById?: string,
+  ): Promise<OfferResponseDto> {
+    if (!changedById)
+      throw new ForbiddenException('Authenticated user id required');
+
     const existing = await this.prisma.offer.findUnique({
       where: { id },
       select: {
@@ -208,7 +258,11 @@ export class RespondOfferUseCase {
         jobId: true,
         applicantId: true,
         onboardingId: true,
-        startDate: true,
+        applicant: {
+          select: {
+            status: true,
+          },
+        },
       },
     });
     if (!existing) throw new NotFoundException('Offer not found');
@@ -218,50 +272,43 @@ export class RespondOfferUseCase {
 
     const now = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
-      const nextStatus = dto.decision;
-      const row = await tx.offer.update({
-        where: { id },
-        data: { status: nextStatus, respondedAt: now },
-      });
-
-      if (nextStatus === 'DECLINED') {
-        await tx.applicant.update({
-          where: { id: existing.applicantId },
-          data: { status: 'REJECTED', rejectedAt: now, lastActivityAt: now },
+      if (dto.decision === 'ACCEPTED') {
+        const result = await tx.offer.update({
+          where: { id },
+          data: { status: 'ACCEPTED', respondedAt: now },
         });
-        await touchApplicantActivity(tx, existing.applicantId, now);
         await recalculateJobMetrics(tx, existing.jobId);
-        return row;
+        return result;
+      } else {
+        if (existing.applicant.status !== 'OFFER') {
+          throw new BadRequestException(
+            'Applicant must be in OFFER status before offer decline',
+          );
+        }
+
+        const result = await tx.offer.update({
+          where: { id },
+          data: { status: 'DECLINED', respondedAt: now },
+        });
+
+        await transitionApplicantStatus(tx, {
+          applicantId: existing.applicantId,
+          currentStatus: existing.applicant.status,
+          nextStatus: 'REJECTED',
+          notes: 'Offer declined',
+          changedById,
+          at: now,
+        });
+
+        await recalculateJobMetrics(tx, existing.jobId);
+        return result;
       }
-
-      // ACCEPTED => create Employee + Onboarding and mark applicant hired
-      const employee = await tx.employee.create({ data: {} });
-      const onboarding = await tx.onboarding.create({
-        data: {
-          employeeId: employee.id,
-          status: 'PENDING',
-          joinDate: existing.startDate ?? now,
-        },
-      });
-
-      await tx.offer.update({
-        where: { id },
-        data: { onboardingId: onboarding.id },
-      });
-
-      await tx.applicant.update({
-        where: { id: existing.applicantId },
-        data: { status: 'HIRED', hiredAt: now, lastActivityAt: now },
-      });
-
-      await touchApplicantActivity(tx, existing.applicantId, now);
-      await recalculateJobMetrics(tx, existing.jobId);
-
-      // re-fetch for onboardingId
-      return tx.offer.findUniqueOrThrow({ where: { id } });
     });
 
-    return mapOffer(updated);
+    const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
+      updated,
+    ]);
+    return mapOffer(enriched);
   }
 }
 
@@ -283,7 +330,7 @@ export class WithdrawOfferUseCase {
 
     const now = new Date();
     const updated = await this.prisma.$transaction(async (tx) => {
-      const row = await tx.offer.update({
+      await tx.offer.update({
         where: { id },
         data: {
           status: 'WITHDRAWN',
@@ -294,9 +341,12 @@ export class WithdrawOfferUseCase {
 
       await touchApplicantActivity(tx, existing.applicantId, now);
       await recalculateJobMetrics(tx, existing.jobId);
-      return row;
+      return tx.offer.findUniqueOrThrow({ where: { id } });
     });
 
-    return mapOffer(updated);
+    const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
+      updated,
+    ]);
+    return mapOffer(enriched);
   }
 }

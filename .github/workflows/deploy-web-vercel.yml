@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - 'apps/web/**'
-      - 'packages/ui/**'
       - 'packages/types/**'
       - 'package.json'
       - 'package-lock.json'
@@ -17,7 +16,6 @@ on:
       - dev
     paths:
       - 'apps/web/**'
-      - 'packages/ui/**'
       - 'packages/types/**'
       - 'package.json'
       - 'package-lock.json'
@@ -71,20 +69,13 @@ jobs:
           npm run lint --workspace web
           npm run check-types --workspace web
 
-      - name: Pull Vercel preview environment
-        run: npx vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
-        working-directory: apps/web
-
-      - name: Build preview deployment
-        run: npx vercel build --token="$VERCEL_TOKEN"
-        working-directory: apps/web
-
       - name: Deploy preview
         id: deploy_preview
         run: |
-          url="$(npx vercel deploy --prebuilt --token="$VERCEL_TOKEN")"
+          url="$(npx vercel deploy --token="$VERCEL_TOKEN" --yes --no-wait)"
           echo "url=${url}" >> "$GITHUB_OUTPUT"
-        working-directory: apps/web
+        env:
+          NEXT_PUBLIC_API_URL: https://blihapi.blihmarketing.com/api/v1
 
       - name: Comment preview URL
         uses: actions/github-script@v7
@@ -135,14 +126,7 @@ jobs:
           npm run lint --workspace web
           npm run check-types --workspace web
 
-      - name: Pull Vercel production environment
-        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-        working-directory: apps/web
-
-      - name: Build production deployment
-        run: npx vercel build --prod --token="$VERCEL_TOKEN"
-        working-directory: apps/web
-
       - name: Deploy production
-        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
-        working-directory: apps/web
+        run: npx vercel deploy --prod --token="$VERCEL_TOKEN" --yes --no-wait
+        env:
+          NEXT_PUBLIC_API_URL: https://blihapi.blihmarketing.com/api/v1

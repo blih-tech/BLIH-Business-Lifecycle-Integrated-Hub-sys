@@ -23,7 +23,7 @@ import { ResponseMessage } from '../../shared/decorators/response-message.decora
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
-import { JobGradePermissions } from '../rbac/constants/permissions.constants';
+import { JobGradePermissions } from '@repo/types/rbac';
 import { CreateJobGradeDto } from './dto/create-job-grade.dto';
 import { JobGradeResponseDto } from './dto/job-grade-response.dto';
 import { UpdateJobGradeDto } from './dto/update-job-grade.dto';

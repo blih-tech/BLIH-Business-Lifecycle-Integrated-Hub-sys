@@ -26,7 +26,7 @@ import type {
   CreateConflictMediationDto,
   UpdateConflictMediationDto,
 } from '@repo/types';
-import { RelationsPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { RelationsPermissions } from '@repo/types/rbac';
 import { ApiProtected } from '../../../shared/docs/openapi';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';

@@ -15,7 +15,7 @@ import type {
   RejectSalaryAdjustmentRequestDto,
   UpdateSalaryAdjustmentRequestDto,
 } from '@repo/types';
-import { SalaryAdjustmentPermissions } from '../../../core/rbac/constants/permissions.constants';
+import { SalaryAdjustmentPermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import {
   ApiDefaultErrors,

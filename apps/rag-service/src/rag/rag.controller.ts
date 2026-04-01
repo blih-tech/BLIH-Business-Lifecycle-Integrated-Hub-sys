@@ -6,9 +6,9 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { RagService } from './rag.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RagService } from './rag.service';
 
 @ApiTags('RAG AI')
 @Controller('rag')

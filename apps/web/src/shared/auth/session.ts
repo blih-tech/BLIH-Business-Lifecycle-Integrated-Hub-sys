@@ -1,25 +1,102 @@
-import { type Role } from "@/shared/constants/roles";
-import { cookies, headers } from "next/headers";
-import { cache } from "react";
+import { type Role } from '@/shared/constants/roles';
+import { cookies } from 'next/headers';
+import { cache } from 'react';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export type SessionResponse = {
   authenticated: boolean;
   roles: Role[];
   username: string | null;
   email: string | null;
+  firstName: string | null;
+  lastName: string | null;
   exp: number | null;
 };
 
 export const getSession = cache(async (): Promise<SessionResponse> => {
-  const host = (await headers()).get("host");
-  const baseUrl = host ? `http://${host}` : "http://localhost:3000";
   const cookieHeader = (await cookies()).toString();
-  const res = await fetch(`${baseUrl}/api/auth/session`, {
-    cache: "no-store",
-    headers: cookieHeader ? { cookie: cookieHeader } : undefined,
-  });
-  if (!res.ok) {
-    return { authenticated: false, roles: [], username: null, email: null, exp: null };
+
+  console.log('[getSession] Cookie header present:', !!cookieHeader);
+
+  if (!cookieHeader) {
+    console.log('[getSession] No cookie header, returning unauthenticated');
+    return {
+      authenticated: false,
+      roles: [],
+      username: null,
+      email: null,
+      firstName: null,
+      lastName: null,
+      exp: null,
+    };
   }
-  return (await res.json()) as SessionResponse;
+
+  const res = await fetch(`${API_BASE_URL}/auth/me`, {
+    cache: 'no-store',
+    headers: {
+      cookie: cookieHeader,
+    },
+    credentials: 'include',
+  });
+
+  console.log('[getSession] Auth endpoint status:', res.status);
+
+  if (!res.ok) {
+    console.log('[getSession] Auth failed with status:', res.status);
+    return {
+      authenticated: false,
+      roles: [],
+      username: null,
+      email: null,
+      firstName: null,
+      lastName: null,
+      exp: null,
+    };
+  }
+
+  const envelope = (await res.json()) as {
+    success: boolean;
+    data: {
+      id: string;
+      keycloakId: string;
+      username?: string;
+      email: string;
+      firstName?: string;
+      lastName?: string;
+      roles: string[];
+      permissions: string[];
+      scopes: string[];
+      phone?: string;
+      status?: string;
+      departmentId?: string | null;
+      sub: string;
+      sessionId?: string;
+      clientId?: string;
+    };
+    message: string;
+    error: null;
+    meta: {
+      timestamp: string;
+      requestId: string;
+      version: string;
+    };
+  };
+
+  console.log(
+    '[getSession] Response envelope:',
+    JSON.stringify(envelope, null, 2),
+  );
+
+  const user = envelope.data;
+
+  return {
+    authenticated: true,
+    roles: (user.roles as Role[]) ?? [],
+    username: user.username ?? null,
+    email: user.email ?? null,
+    firstName: user.firstName ?? null,
+    lastName: user.lastName ?? null,
+    exp: null,
+  };
 });

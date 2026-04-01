@@ -21,7 +21,7 @@ import { ResponseMessage } from '../../../shared/decorators/response-message.dec
 import { ApiDefaultErrors, ApiProtected } from '../../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
-import { SystemPermissionPermissions } from '../constants/permissions.constants';
+import { SystemPermissionPermissions } from '@repo/types/rbac';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { PermissionResponseDto } from './dto/permission-response.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';

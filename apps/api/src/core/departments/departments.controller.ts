@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { DepartmentPermissions } from '../rbac/constants/permissions.constants';
+import { DepartmentPermissions } from '@repo/types/rbac';
 import { Roles } from '../../shared/decorators/roles.decorator';
 import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';

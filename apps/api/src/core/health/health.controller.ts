@@ -80,9 +80,13 @@ export class HealthController {
 
   private async keycloakCheck() {
     try {
-      const baseUrl = this.configService.getOrThrow<string>('KEYCLOAK_URL');
+      const baseUrl =
+        this.configService.get<string>('KEYCLOAK_INTERNAL_URL') ||
+        this.configService.getOrThrow<string>('KEYCLOAK_URL');
       const realm = this.configService.get<string>('KEYCLOAK_REALM', 'master');
-      await firstValueFrom(this.httpService.get(`${baseUrl}/realms/${realm}`));
+      await firstValueFrom(
+        this.httpService.get(`${baseUrl}/realms/${realm}`, { timeout: 5000 }),
+      );
       return { status: 'up' as const };
     } catch (error) {
       return { status: 'down' as const, error: this.getMessage(error) };

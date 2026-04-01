@@ -193,15 +193,30 @@ export type AiDecisionLog = Prisma.AiDecisionLogModel
  */
 export type BrainKnowledgeSource = Prisma.BrainKnowledgeSourceModel
 /**
- * Model EmployeeDocument
+ * Model ContractTemplate
  * 
  */
-export type EmployeeDocument = Prisma.EmployeeDocumentModel
+export type ContractTemplate = Prisma.ContractTemplateModel
 /**
  * Model Contract
  * 
  */
 export type Contract = Prisma.ContractModel
+/**
+ * Model ContractSigner
+ * 
+ */
+export type ContractSigner = Prisma.ContractSignerModel
+/**
+ * Model ContractType
+ * 
+ */
+export type ContractType = Prisma.ContractTypeModel
+/**
+ * Model EmployeeDocument
+ * 
+ */
+export type EmployeeDocument = Prisma.EmployeeDocumentModel
 /**
  * Model JobDescription
  * 
@@ -333,15 +348,10 @@ export type OnboardingChecklist = Prisma.OnboardingChecklistModel
  */
 export type OnboardingTask = Prisma.OnboardingTaskModel
 /**
- * Model AssetProvisioning
+ * Model OnboardingTaskInstance
  * 
  */
-export type AssetProvisioning = Prisma.AssetProvisioningModel
-/**
- * Model PolicyAcknowledgement
- * 
- */
-export type PolicyAcknowledgement = Prisma.PolicyAcknowledgementModel
+export type OnboardingTaskInstance = Prisma.OnboardingTaskInstanceModel
 /**
  * Model Department
  * 
@@ -408,20 +418,60 @@ export type KeyResultUpdate = Prisma.KeyResultUpdateModel
  */
 export type OkrManagerReview = Prisma.OkrManagerReviewModel
 /**
- * Model ProbationKpiPlan
+ * Model Policy
  * 
  */
-export type ProbationKpiPlan = Prisma.ProbationKpiPlanModel
+export type Policy = Prisma.PolicyModel
 /**
- * Model ProbationEvaluation
+ * Model PolicyVersion
  * 
  */
-export type ProbationEvaluation = Prisma.ProbationEvaluationModel
+export type PolicyVersion = Prisma.PolicyVersionModel
 /**
- * Model ProbationConfirmation
+ * Model PolicyFile
  * 
  */
-export type ProbationConfirmation = Prisma.ProbationConfirmationModel
+export type PolicyFile = Prisma.PolicyFileModel
+/**
+ * Model PolicyAcknowledgement
+ * 
+ */
+export type PolicyAcknowledgement = Prisma.PolicyAcknowledgementModel
+/**
+ * Model ProbationPlan
+ * 
+ */
+export type ProbationPlan = Prisma.ProbationPlanModel
+/**
+ * Model KPI
+ * 
+ */
+export type KPI = Prisma.KPIModel
+/**
+ * Model ProbationKPI
+ * 
+ */
+export type ProbationKPI = Prisma.ProbationKPIModel
+/**
+ * Model ProbationCheckpoint
+ * 
+ */
+export type ProbationCheckpoint = Prisma.ProbationCheckpointModel
+/**
+ * Model CheckpointEvaluation
+ * 
+ */
+export type CheckpointEvaluation = Prisma.CheckpointEvaluationModel
+/**
+ * Model EvaluationScore
+ * 
+ */
+export type EvaluationScore = Prisma.EvaluationScoreModel
+/**
+ * Model FinalEvaluation
+ * 
+ */
+export type FinalEvaluation = Prisma.FinalEvaluationModel
 /**
  * Model JobRequestForm
  * 
@@ -652,6 +702,51 @@ export type Employee = Prisma.EmployeeModel
  * 
  */
 export type UserProfile = Prisma.UserProfileModel
+/**
+ * Model EmployeeAddress
+ * 
+ */
+export type EmployeeAddress = Prisma.EmployeeAddressModel
+/**
+ * Model EmployeeBankDetail
+ * 
+ */
+export type EmployeeBankDetail = Prisma.EmployeeBankDetailModel
+/**
+ * Model BankAccount
+ * 
+ */
+export type BankAccount = Prisma.BankAccountModel
+/**
+ * Model EmployeeEmergencyContact
+ * 
+ */
+export type EmployeeEmergencyContact = Prisma.EmployeeEmergencyContactModel
+/**
+ * Model EmergencyContact
+ * 
+ */
+export type EmergencyContact = Prisma.EmergencyContactModel
+/**
+ * Model EmployeeEducation
+ * 
+ */
+export type EmployeeEducation = Prisma.EmployeeEducationModel
+/**
+ * Model Education
+ * 
+ */
+export type Education = Prisma.EducationModel
+/**
+ * Model EmployeeContract
+ * 
+ */
+export type EmployeeContract = Prisma.EmployeeContractModel
+/**
+ * Model EmployeePolicyAcknowledgement
+ * 
+ */
+export type EmployeePolicyAcknowledgement = Prisma.EmployeePolicyAcknowledgementModel
 /**
  * Model UserEmployment
  * 

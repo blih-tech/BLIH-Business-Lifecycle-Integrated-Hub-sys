@@ -1,18 +1,35 @@
-"use client";
+'use client';
 
-import { Plus, Trash2 } from "lucide-react";
-import type { ReactNode } from "react";
-import { useFieldArray, useWatch, type Control, type UseFormReturn } from "react-hook-form";
+import { Plus, Trash2 } from 'lucide-react';
+import { useEffect, type ReactNode } from 'react';
+import {
+  useFieldArray,
+  useWatch,
+  type Control,
+  type UseFormReturn,
+} from 'react-hook-form';
 
 import type {
   ApplicationFieldType,
   ApplicationFormValues,
   CustomApplicationField,
-} from "@/features/hr/recruitment/requests/application-form-schema";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
-import { Button } from "@/shared/components/ui/button";
+} from '@/features/hr/recruitment/requests/application-form-schema';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
+import { Button } from '@/shared/components/ui/button';
 
 type ApplicationFormStepProps = {
   form: UseFormReturn<ApplicationFormValues>;
@@ -34,17 +51,30 @@ type PreviewField = {
   options?: string[];
 };
 
-const fieldTypeOptions: Array<{ value: ApplicationFieldType; label: string }> = [
-  { value: "text", label: "Short Text" },
-  { value: "textarea", label: "Long Text" },
-  { value: "number", label: "Number" },
-  { value: "select", label: "Select" },
-  { value: "file", label: "File Upload" },
-  { value: "date", label: "Date" },
-  { value: "checkbox", label: "Checkbox" },
-];
+const lockedApplicantFieldKeys = new Set([
+  'FIRST_NAME',
+  'LAST_NAME',
+  'EMAIL',
+  'PHONE',
+]);
 
-function FormSectionCard({ title, description, eyebrow, children }: FormSectionCardProps) {
+const fieldTypeOptions: Array<{ value: ApplicationFieldType; label: string }> =
+  [
+    { value: 'TEXT', label: 'Short Text' },
+    { value: 'TEXTAREA', label: 'Long Text' },
+    { value: 'NUMBER', label: 'Number' },
+    { value: 'SELECT', label: 'Select' },
+    { value: 'FILE', label: 'File Upload' },
+    { value: 'DATE', label: 'Date' },
+    { value: 'CHECKBOX', label: 'Checkbox' },
+  ];
+
+function FormSectionCard({
+  title,
+  description,
+  eyebrow,
+  children,
+}: FormSectionCardProps) {
   return (
     <section className="overflow-hidden rounded-[18px] border border-border/80 bg-background shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
       <div className="border-b border-border/70 bg-[linear-gradient(180deg,rgba(248,250,252,0.96),rgba(255,255,255,0.92))] px-4 py-3">
@@ -53,7 +83,9 @@ function FormSectionCard({ title, description, eyebrow, children }: FormSectionC
             {eyebrow}
           </p>
         ) : null}
-        <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-foreground">{title}</h3>
+        <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-foreground">
+          {title}
+        </h3>
         <p className="mt-1 text-xs text-muted-foreground">{description}</p>
       </div>
       <div className="p-4">{children}</div>
@@ -62,26 +94,30 @@ function FormSectionCard({ title, description, eyebrow, children }: FormSectionC
 }
 
 function typeLabel(type: ApplicationFieldType) {
-  return fieldTypeOptions.find((option) => option.value === type)?.label ?? type;
+  return (
+    fieldTypeOptions.find((option) => option.value === type)?.label ?? type
+  );
 }
 
 function defaultCustomField(): CustomApplicationField {
   return {
     id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    label: "",
-    type: "text",
+    label: '',
+    type: 'TEXT',
     required: false,
-    helpText: "",
+    helpText: '',
     options: [],
   };
 }
 
 function PreviewInput({ type }: { type: ApplicationFieldType }) {
-  if (type === "textarea") {
-    return <div className="mt-2 h-20 rounded-[10px] border border-border bg-muted/60" />;
+  if (type === 'TEXTAREA') {
+    return (
+      <div className="mt-2 h-20 rounded-[10px] border border-border bg-muted/60" />
+    );
   }
 
-  if (type === "checkbox") {
+  if (type === 'CHECKBOX') {
     return (
       <div className="mt-2 flex items-center gap-2">
         <div className="h-4 w-4 rounded border border-border bg-background" />
@@ -90,10 +126,18 @@ function PreviewInput({ type }: { type: ApplicationFieldType }) {
     );
   }
 
-  return <div className="mt-2 h-9 rounded-[10px] border border-border bg-muted/60" />;
+  return (
+    <div className="mt-2 h-9 rounded-[10px] border border-border bg-muted/60" />
+  );
 }
 
-function CustomFieldOptionsEditor({ control, fieldIndex }: { control: Control<ApplicationFormValues>; fieldIndex: number }) {
+function CustomFieldOptionsEditor({
+  control,
+  fieldIndex,
+}: {
+  control: Control<ApplicationFormValues>;
+  fieldIndex: number;
+}) {
   return (
     <div className="space-y-2">
       <FormField
@@ -101,22 +145,26 @@ function CustomFieldOptionsEditor({ control, fieldIndex }: { control: Control<Ap
         name={`customFields.${fieldIndex}.options`}
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="ui-meta text-muted-foreground">Options</FormLabel>
+            <FormLabel className="ui-meta text-muted-foreground">
+              Options
+            </FormLabel>
             <FormControl>
               <textarea
-                value={field.value.join("\n")}
+                value={field.value.join('\n')}
                 onChange={(event) =>
                   field.onChange(
                     event.target.value
-                      .split("\n")
-                      .map((option) => option.trim())
+                      .split('\n')
+                      .map((option) => option.trim()),
                   )
                 }
-                placeholder={"Yes\nNo\nMaybe"}
+                placeholder={'Yes\nNo\nMaybe'}
                 className="min-h-[120px] w-full rounded-[10px] border border-border bg-background px-3 py-2 text-sm outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
               />
             </FormControl>
-            <p className="text-xs text-muted-foreground">Add one option per line.</p>
+            <p className="text-xs text-muted-foreground">
+              Add one option per line.
+            </p>
             <FormMessage />
           </FormItem>
         )}
@@ -143,10 +191,20 @@ function CustomFieldCard({
     <div className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.92))] p-3.5">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-foreground">Custom Field {index + 1}</p>
-          <p className="text-xs text-muted-foreground">Add a question for applicants.</p>
+          <p className="text-sm font-semibold text-foreground">
+            Custom Field {index + 1}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Add a question for applicants.
+          </p>
         </div>
-        <Button type="button" variant="outline" size="icon-sm" className="cursor-pointer" onClick={onRemove}>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          className="cursor-pointer"
+          onClick={onRemove}
+        >
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
@@ -157,7 +215,9 @@ function CustomFieldCard({
           name={`customFields.${index}.label`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="ui-meta text-muted-foreground">Label</FormLabel>
+              <FormLabel className="ui-meta text-muted-foreground">
+                Label
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Visa sponsorship status" {...field} />
               </FormControl>
@@ -171,7 +231,9 @@ function CustomFieldCard({
           name={`customFields.${index}.type`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="ui-meta text-muted-foreground">Field Type</FormLabel>
+              <FormLabel className="ui-meta text-muted-foreground">
+                Field Type
+              </FormLabel>
               <Select
                 value={field.value}
                 onValueChange={(value: string) => {
@@ -201,15 +263,17 @@ function CustomFieldCard({
           name={`customFields.${index}.required`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="ui-meta text-muted-foreground">Required</FormLabel>
+              <FormLabel className="ui-meta text-muted-foreground">
+                Required
+              </FormLabel>
               <FormControl>
                 <Button
                   type="button"
-                  variant={field.value ? "default" : "outline"}
+                  variant={field.value ? 'default' : 'outline'}
                   className="w-full cursor-pointer justify-start"
                   onClick={() => field.onChange(!field.value)}
                 >
-                  {field.value ? "Required" : "Optional"}
+                  {field.value ? 'Required' : 'Optional'}
                 </Button>
               </FormControl>
               <FormMessage />
@@ -222,7 +286,9 @@ function CustomFieldCard({
           name={`customFields.${index}.helpText`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="ui-meta text-muted-foreground">Help Text</FormLabel>
+              <FormLabel className="ui-meta text-muted-foreground">
+                Help Text
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Shown below the field" {...field} />
               </FormControl>
@@ -232,7 +298,7 @@ function CustomFieldCard({
         />
       </div>
 
-      {fieldType === "select" ? (
+      {fieldType === 'SELECT' ? (
         <div className="mt-4 border-t border-border/70 pt-4">
           <CustomFieldOptionsEditor control={control} fieldIndex={index} />
         </div>
@@ -244,21 +310,53 @@ function CustomFieldCard({
 export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "customFields",
+    name: 'customFields',
   });
 
-  const [predefinedFields, customFields] = useWatch({
+  const [applicantFields, sections, customFields] = useWatch({
     control: form.control,
-    name: ["predefinedFields", "customFields"],
+    name: ['applicantFields', 'sections', 'customFields'],
   });
 
-  const enabledPredefinedFields = (predefinedFields ?? []).filter((field) => field.enabled);
+  useEffect(() => {
+    (applicantFields ?? []).forEach((field, index) => {
+      if (!lockedApplicantFieldKeys.has(field.key)) return;
+      if (!field.enabled) {
+        form.setValue(`applicantFields.${index}.enabled`, true, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+      if (!field.required) {
+        form.setValue(`applicantFields.${index}.required`, true, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+    });
+  }, [applicantFields, form]);
+
+  const enabledApplicantFields = (applicantFields ?? []).filter(
+    (field) => field.enabled,
+  );
+  const enabledSections = (sections ?? []).filter((section) => section.enabled);
   const previewFields: PreviewField[] = [
-    ...enabledPredefinedFields.map((field) => ({
+    ...enabledApplicantFields.map((field) => ({
       previewId: field.key,
-      label: field.label,
-      type: field.type,
+      label: field.key
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, (l) => l.toUpperCase()),
+      type: 'TEXT' as ApplicationFieldType,
       required: field.required,
+    })),
+    ...enabledSections.map((section) => ({
+      previewId: section.key,
+      label: section.key,
+      type: 'TEXTAREA' as ApplicationFieldType,
+      required: section.required,
     })),
     ...((customFields ?? []).map((field) => ({
       previewId: field.id,
@@ -276,11 +374,11 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
         <div className="space-y-4">
           <FormSectionCard
             eyebrow="Standard"
-            title="Predefined Fields"
+            title="Applicant Fields"
             description="Turn standard applicant fields on or off."
           >
             <div className="space-y-3">
-              {predefinedFields?.map((field, index) => (
+              {applicantFields?.map((field, index) => (
                 <div
                   key={field.key}
                   className="rounded-[14px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.92))] p-3.5"
@@ -288,9 +386,14 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                   <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-semibold text-foreground">{field.label}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {field.key
+                            .replace(/_/g, ' ')
+                            .toLowerCase()
+                            .replace(/\b\w/g, (l) => l.toUpperCase())}
+                        </p>
                         <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
-                          {typeLabel(field.type)}
+                          {typeLabel('TEXT')}
                         </span>
                       </div>
                     </div>
@@ -298,18 +401,25 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                     <div className="flex flex-wrap gap-2">
                       <FormField
                         control={form.control}
-                        name={`predefinedFields.${index}.enabled`}
+                        name={`applicantFields.${index}.enabled`}
                         render={({ field: enabledField }) => (
                           <FormItem>
                             <FormControl>
                               <Button
                                 type="button"
-                                variant={enabledField.value ? "default" : "outline"}
+                                variant={
+                                  enabledField.value ? 'default' : 'outline'
+                                }
                                 size="sm"
                                 className="cursor-pointer"
-                                onClick={() => enabledField.onChange(!enabledField.value)}
+                                disabled={lockedApplicantFieldKeys.has(
+                                  field.key,
+                                )}
+                                onClick={() =>
+                                  enabledField.onChange(!enabledField.value)
+                                }
                               >
-                                {enabledField.value ? "Included" : "Add Field"}
+                                {enabledField.value ? 'Included' : 'Add Field'}
                               </Button>
                             </FormControl>
                           </FormItem>
@@ -318,19 +428,26 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
 
                       <FormField
                         control={form.control}
-                        name={`predefinedFields.${index}.required`}
+                        name={`applicantFields.${index}.required`}
                         render={({ field: requiredField }) => (
                           <FormItem>
                             <FormControl>
                               <Button
                                 type="button"
-                                variant={requiredField.value ? "default" : "outline"}
+                                variant={
+                                  requiredField.value ? 'default' : 'outline'
+                                }
                                 size="sm"
                                 className="cursor-pointer"
-                                disabled={!predefinedFields[index]?.enabled}
-                                onClick={() => requiredField.onChange(!requiredField.value)}
+                                disabled={
+                                  !applicantFields[index]?.enabled ||
+                                  lockedApplicantFieldKeys.has(field.key)
+                                }
+                                onClick={() =>
+                                  requiredField.onChange(!requiredField.value)
+                                }
                               >
-                                {requiredField.value ? "Required" : "Optional"}
+                                {requiredField.value ? 'Required' : 'Optional'}
                               </Button>
                             </FormControl>
                           </FormItem>
@@ -343,7 +460,7 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
             </div>
             <FormField
               control={form.control}
-              name="predefinedFields"
+              name="applicantFields"
               render={() => <FormMessage />}
             />
           </FormSectionCard>
@@ -390,7 +507,9 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
           >
             <div className="rounded-[16px] border border-border bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,250,251,0.96))] p-4">
               <div className="border-b border-border/70 pb-3">
-                <p className="text-base font-semibold tracking-[-0.02em] text-foreground">Apply for this role</p>
+                <p className="text-base font-semibold tracking-[-0.02em] text-foreground">
+                  Apply for this role
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Review the applicant-facing form fields.
                 </p>
@@ -404,9 +523,14 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                 ) : null}
 
                 {previewFields.map((field) => (
-                  <div key={field.previewId} className="rounded-[12px] border border-border bg-background px-3 py-3">
+                  <div
+                    key={field.previewId}
+                    className="rounded-[12px] border border-border bg-background px-3 py-3"
+                  >
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-foreground">{field.label}</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {field.label}
+                      </p>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
                           {typeLabel(field.type)}
@@ -419,10 +543,14 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                       </div>
                     </div>
                     {field.helpText ? (
-                      <p className="mt-1 text-xs text-muted-foreground">{field.helpText}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {field.helpText}
+                      </p>
                     ) : null}
                     <PreviewInput type={field.type} />
-                    {field.type === "select" && field.options && field.options.length > 0 ? (
+                    {field.type === 'SELECT' &&
+                    field.options &&
+                    field.options.length > 0 ? (
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {field.options
                           .map((option: string) => option.trim())

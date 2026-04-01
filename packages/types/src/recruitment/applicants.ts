@@ -78,10 +78,24 @@ export interface CreateApplicantDto {
   experiences?: ApplicantExperienceDto[];
 }
 
+export type ApplyToJobDto = Omit<CreateApplicantDto, 'jobId'>;
+
 export type UpdateApplicantDto = Partial<CreateApplicantDto>;
 
 export interface UpdateApplicantStatusDto {
   status: ApplicantStatus;
+  notes?: string | null;
+}
+
+export type BulkReviewApplicantStatus = 'SHORTLISTED' | 'REJECTED';
+export const BULK_REVIEW_APPLICANT_STATUSES = [
+  'SHORTLISTED',
+  'REJECTED',
+] as const;
+
+export interface BulkUpdateApplicantStatusDto {
+  applicantIds: string[];
+  status: BulkReviewApplicantStatus;
   notes?: string | null;
 }
 
@@ -131,8 +145,23 @@ export interface ApplicantResponseDto {
   updatedAt: string;
 }
 
+export interface BulkApplicantStatusResponseDto {
+  status: BulkReviewApplicantStatus;
+  requestedCount: number;
+  updatedCount: number;
+  applicants: ApplicantResponseDto[];
+}
+
 export interface ApplicantListQueryDto {
   status?: ApplicantStatus;
   jobId?: string;
   email?: string;
+  search?: string;
+}
+
+export interface HireApplicantDto {
+  companyEmail?: string | null;
+  isCompanyEmailPrimary?: boolean;
+  companyPhone?: string | null;
+  isCompanyPhonePrimary?: boolean;
 }

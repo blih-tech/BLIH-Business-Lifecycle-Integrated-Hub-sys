@@ -414,6 +414,113 @@ export function assertApplicantTransition(
   }
 }
 
+export function buildApplicantStatusUpdateData(
+  status: ApplicantStatus,
+  at: Date,
+): Prisma.ApplicantUpdateInput {
+  const data: Prisma.ApplicantUpdateInput = {
+    status,
+    lastActivityAt: at,
+  };
+
+  if (status === 'SCREENING') data.screeningAt = at;
+  if (status === 'SHORTLISTED') data.shortlistedAt = at;
+  if (status === 'INTERVIEW') data.interviewAt = at;
+  if (status === 'WAITLIST') data.waitlistAt = at;
+  if (status === 'OFFER') data.offerAt = at;
+  if (status === 'HIRED') data.hiredAt = at;
+  if (status === 'REJECTED') data.rejectedAt = at;
+  if (status === 'WITHDRAWN') data.withdrawnAt = at;
+
+  return data;
+}
+
+export async function transitionApplicantStatus(
+  prisma: Pick<
+    Prisma.TransactionClient,
+    'applicant' | 'applicantStatusHistory'
+  >,
+  input: {
+    applicantId: string;
+    currentStatus: ApplicantStatus;
+    nextStatus: ApplicantStatus;
+    at: Date;
+    notes?: string | null;
+    changedById?: string;
+  },
+) {
+  assertApplicantTransition(input.currentStatus, input.nextStatus);
+
+  await prisma.applicant.update({
+    where: { id: input.applicantId },
+    data: buildApplicantStatusUpdateData(input.nextStatus, input.at),
+  });
+
+  if (input.currentStatus !== input.nextStatus) {
+    await prisma.applicantStatusHistory.create({
+      data: {
+        applicantId: input.applicantId,
+        fromStatus: input.currentStatus,
+        toStatus: input.nextStatus,
+        notes: input.notes ?? undefined,
+        changedById: input.changedById ?? undefined,
+        changedAt: input.at,
+      },
+    });
+  }
+}
+
+export async function attachOfferProvisioningSubjects<
+  T extends { onboardingId: string | null },
+>(
+  prisma: Pick<PrismaService, 'onboarding'>,
+  offers: T[],
+): Promise<Array<T & { employeeId: string | null; userId: string | null }>> {
+  const onboardingIds = [
+    ...new Set(
+      offers
+        .map((offer) => offer.onboardingId)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  ];
+
+  if (onboardingIds.length === 0) {
+    return offers.map((offer) => ({
+      ...offer,
+      employeeId: null,
+      userId: null,
+    }));
+  }
+
+  const onboardings = await prisma.onboarding.findMany({
+    where: { id: { in: onboardingIds } },
+    select: {
+      id: true,
+      employeeId: true,
+      employee: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+  const onboardingById = new Map(
+    onboardings.map((onboarding) => [onboarding.id, onboarding]),
+  );
+
+  return offers.map((offer) => {
+    const onboarding = offer.onboardingId
+      ? onboardingById.get(offer.onboardingId)
+      : null;
+
+    return {
+      ...offer,
+      employeeId: onboarding?.employeeId ?? null,
+      userId: onboarding?.employee?.userId ?? null,
+    };
+  });
+}
+
 export function assertInterviewTransition(
   currentStatus: InterviewStatus,
   nextStatus: InterviewStatus,
@@ -868,6 +975,8 @@ export function mapOffer(offer: any): OfferResponseDto {
     respondedAt: dateToIso(offer.respondedAt),
     expiresAt: dateToIso(offer.expiresAt),
     onboardingId: offer.onboardingId ?? null,
+    employeeId: offer.employeeId ?? null,
+    userId: offer.userId ?? null,
     createdAt: offer.createdAt.toISOString(),
     updatedAt: offer.updatedAt.toISOString(),
   };

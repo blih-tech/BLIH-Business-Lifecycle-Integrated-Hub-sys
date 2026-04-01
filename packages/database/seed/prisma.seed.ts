@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import { createPrismaPgAdapter } from '../src/prisma-adapter.js';
-import { PrismaClient } from '../src/prisma-client.js';
 import {
   RBAC_PERMISSIONS,
   RBAC_RESOURCE_CATALOG,
   RBAC_ROLES,
-} from './rbac.manifest.js';
+} from '@repo/types/rbac';
+import { createPrismaPgAdapter } from '../src/prisma-adapter.js';
+import { PrismaClient } from '../src/prisma-client.js';
 
 const getRequiredEnv = (name: string) => {
   const value = process.env[name];

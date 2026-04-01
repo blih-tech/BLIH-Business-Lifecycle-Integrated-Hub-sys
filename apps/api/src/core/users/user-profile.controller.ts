@@ -25,7 +25,7 @@ import {
   UserEmploymentPermissions,
   UserLifecyclePermissions,
   UserProfilePermissions,
-} from '../rbac/constants/permissions.constants';
+} from '@repo/types/rbac';
 import { CreateCompensationHistoryDto } from './dto/create-compensation-history.dto';
 import { CreateCompensationComponentDto } from './dto/create-compensation-component.dto';
 import { CompensationComponentResponseDto } from './dto/compensation-component-response.dto';
