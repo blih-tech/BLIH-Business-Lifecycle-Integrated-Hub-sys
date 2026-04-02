@@ -587,93 +587,98 @@ export class BrainService {
     tags?: string[];
     userId: string;
   }) {
-    const normalizedModule = data.module.toLowerCase();
-
     const policy = await this.prisma.policy.create({
       data: {
         title: data.title,
-        content: data.content,
-        module: normalizedModule,
-        createdBy: data.userId,
-        version: 1,
+        description: data.content,
       },
     });
 
-    await this.prisma.policyVersion.create({
+    const version = await this.prisma.policyVersion.create({
       data: {
         policyId: policy.id,
         content: data.content,
         version: 1,
+        isActive: true,
       },
     });
 
+    await this.prisma.policy.update({
+      where: { id: policy.id },
+      data: {
+        currentVersionId: version.id,
+      },
+    });
     try {
       await firstValueFrom(
         this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
           text: data.content,
           source: `policy:${policy.id}`,
           metadata: {
-            module: normalizedModule,
+            module: data.module,
             type: 'policy',
             policyId: policy.id,
+            version: 1,
             tags: data.tags || [],
             isAI: false,
           },
         }),
       );
-      this.logger.log(
-        `Policy "${data.title}" synced to RAG for ${normalizedModule}`,
-      );
     } catch (error) {
-      this.logger.error(
-        `RAG Sync failed for policy ${policy.id}: ${error.message}`,
-      );
+      this.logger.error(`RAG Sync failed: ${error.message}`);
     }
 
     return policy;
   }
 
-  async getPolicies(module?: string) {
+  async getPolicies() {
     return this.prisma.policy.findMany({
       where: {
         isActive: true,
-        ...(module && { module }),
+      },
+      include: {
+        currentVersion: true,
       },
       orderBy: { createdAt: 'desc' },
     });
   }
 
   async updatePolicy(id: string, content: string) {
-    const existing = await this.prisma.policy.findUnique({
+    const policy = await this.prisma.policy.findUnique({
       where: { id },
+      include: { currentVersion: true },
     });
 
-    if (!existing) throw new NotFoundException('Policy not found');
+    if (!policy) {
+      throw new NotFoundException('Policy not found');
+    }
 
-    await this.prisma.policyVersion.create({
+    const newVersionNumber = (policy.currentVersion?.version || 0) + 1;
+
+    const newVersion = await this.prisma.policyVersion.create({
       data: {
         policyId: id,
-        content: existing.content,
-        version: existing.version,
+        content,
+        version: newVersionNumber,
+        isActive: true,
       },
     });
 
     const updated = await this.prisma.policy.update({
       where: { id },
       data: {
-        content,
-        version: { increment: 1 },
+        currentVersionId: newVersion.id,
       },
     });
 
     await firstValueFrom(
       this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
         text: content,
-        source: `policy:${updated.id}`, // Same source ID replaces the old vector
+        source: `policy:${updated.id}`,
         metadata: {
-          module: updated.module,
           type: 'policy',
           policyId: updated.id,
+          version: newVersionNumber,
           isAI: false,
         },
       }),
