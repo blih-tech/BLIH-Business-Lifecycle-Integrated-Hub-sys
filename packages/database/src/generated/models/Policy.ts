@@ -20,8 +20,18 @@ export type PolicyModel = runtime.Types.Result.DefaultSelection<Prisma.$PolicyPa
 
 export type AggregatePolicy = {
   _count: PolicyCountAggregateOutputType | null
+  _avg: PolicyAvgAggregateOutputType | null
+  _sum: PolicySumAggregateOutputType | null
   _min: PolicyMinAggregateOutputType | null
   _max: PolicyMaxAggregateOutputType | null
+}
+
+export type PolicyAvgAggregateOutputType = {
+  priority: number | null
+}
+
+export type PolicySumAggregateOutputType = {
+  priority: number | null
 }
 
 export type PolicyMinAggregateOutputType = {
@@ -30,6 +40,9 @@ export type PolicyMinAggregateOutputType = {
   description: string | null
   isMandatory: boolean | null
   isActive: boolean | null
+  effectiveDate: Date | null
+  expiryDate: Date | null
+  priority: number | null
   currentVersionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +54,9 @@ export type PolicyMaxAggregateOutputType = {
   description: string | null
   isMandatory: boolean | null
   isActive: boolean | null
+  effectiveDate: Date | null
+  expiryDate: Date | null
+  priority: number | null
   currentVersionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +68,10 @@ export type PolicyCountAggregateOutputType = {
   description: number
   isMandatory: number
   isActive: number
+  effectiveDate: number
+  expiryDate: number
+  dependencies: number
+  priority: number
   currentVersionId: number
   createdAt: number
   updatedAt: number
@@ -59,12 +79,23 @@ export type PolicyCountAggregateOutputType = {
 }
 
 
+export type PolicyAvgAggregateInputType = {
+  priority?: true
+}
+
+export type PolicySumAggregateInputType = {
+  priority?: true
+}
+
 export type PolicyMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
   isMandatory?: true
   isActive?: true
+  effectiveDate?: true
+  expiryDate?: true
+  priority?: true
   currentVersionId?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +107,9 @@ export type PolicyMaxAggregateInputType = {
   description?: true
   isMandatory?: true
   isActive?: true
+  effectiveDate?: true
+  expiryDate?: true
+  priority?: true
   currentVersionId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +121,10 @@ export type PolicyCountAggregateInputType = {
   description?: true
   isMandatory?: true
   isActive?: true
+  effectiveDate?: true
+  expiryDate?: true
+  dependencies?: true
+  priority?: true
   currentVersionId?: true
   createdAt?: true
   updatedAt?: true
@@ -131,6 +169,18 @@ export type PolicyAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: PolicyAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: PolicySumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: PolicyMinAggregateInputType
@@ -161,6 +211,8 @@ export type PolicyGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: PolicyCountAggregateInputType | true
+  _avg?: PolicyAvgAggregateInputType
+  _sum?: PolicySumAggregateInputType
   _min?: PolicyMinAggregateInputType
   _max?: PolicyMaxAggregateInputType
 }
@@ -171,10 +223,16 @@ export type PolicyGroupByOutputType = {
   description: string | null
   isMandatory: boolean
   isActive: boolean
+  effectiveDate: Date
+  expiryDate: Date | null
+  dependencies: string[]
+  priority: number
   currentVersionId: string | null
   createdAt: Date
   updatedAt: Date
   _count: PolicyCountAggregateOutputType | null
+  _avg: PolicyAvgAggregateOutputType | null
+  _sum: PolicySumAggregateOutputType | null
   _min: PolicyMinAggregateOutputType | null
   _max: PolicyMaxAggregateOutputType | null
 }
@@ -203,6 +261,10 @@ export type PolicyWhereInput = {
   description?: Prisma.StringNullableFilter<"Policy"> | string | null
   isMandatory?: Prisma.BoolFilter<"Policy"> | boolean
   isActive?: Prisma.BoolFilter<"Policy"> | boolean
+  effectiveDate?: Prisma.DateTimeFilter<"Policy"> | Date | string
+  expiryDate?: Prisma.DateTimeNullableFilter<"Policy"> | Date | string | null
+  dependencies?: Prisma.StringNullableListFilter<"Policy">
+  priority?: Prisma.IntFilter<"Policy"> | number
   currentVersionId?: Prisma.UuidNullableFilter<"Policy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Policy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Policy"> | Date | string
@@ -217,6 +279,10 @@ export type PolicyOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   isMandatory?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  effectiveDate?: Prisma.SortOrder
+  expiryDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  dependencies?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   currentVersionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -234,6 +300,10 @@ export type PolicyWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Policy"> | string | null
   isMandatory?: Prisma.BoolFilter<"Policy"> | boolean
   isActive?: Prisma.BoolFilter<"Policy"> | boolean
+  effectiveDate?: Prisma.DateTimeFilter<"Policy"> | Date | string
+  expiryDate?: Prisma.DateTimeNullableFilter<"Policy"> | Date | string | null
+  dependencies?: Prisma.StringNullableListFilter<"Policy">
+  priority?: Prisma.IntFilter<"Policy"> | number
   currentVersionId?: Prisma.UuidNullableFilter<"Policy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Policy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Policy"> | Date | string
@@ -248,12 +318,18 @@ export type PolicyOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   isMandatory?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  effectiveDate?: Prisma.SortOrder
+  expiryDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  dependencies?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   currentVersionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PolicyCountOrderByAggregateInput
+  _avg?: Prisma.PolicyAvgOrderByAggregateInput
   _max?: Prisma.PolicyMaxOrderByAggregateInput
   _min?: Prisma.PolicyMinOrderByAggregateInput
+  _sum?: Prisma.PolicySumOrderByAggregateInput
 }
 
 export type PolicyScalarWhereWithAggregatesInput = {
@@ -265,6 +341,10 @@ export type PolicyScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Policy"> | string | null
   isMandatory?: Prisma.BoolWithAggregatesFilter<"Policy"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Policy"> | boolean
+  effectiveDate?: Prisma.DateTimeWithAggregatesFilter<"Policy"> | Date | string
+  expiryDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Policy"> | Date | string | null
+  dependencies?: Prisma.StringNullableListFilter<"Policy">
+  priority?: Prisma.IntWithAggregatesFilter<"Policy"> | number
   currentVersionId?: Prisma.UuidNullableWithAggregatesFilter<"Policy"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Policy"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Policy"> | Date | string
@@ -276,6 +356,10 @@ export type PolicyCreateInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currentVersion?: Prisma.PolicyVersionCreateNestedOneWithoutCurrentForPoliciesInput
@@ -289,6 +373,10 @@ export type PolicyUncheckedCreateInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   currentVersionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -302,6 +390,10 @@ export type PolicyUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currentVersion?: Prisma.PolicyVersionUpdateOneWithoutCurrentForPoliciesNestedInput
@@ -315,6 +407,10 @@ export type PolicyUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   currentVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -328,6 +424,10 @@ export type PolicyCreateManyInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   currentVersionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -339,6 +439,10 @@ export type PolicyUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -349,6 +453,10 @@ export type PolicyUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   currentVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,9 +468,17 @@ export type PolicyCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   isMandatory?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  effectiveDate?: Prisma.SortOrder
+  expiryDate?: Prisma.SortOrder
+  dependencies?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   currentVersionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PolicyAvgOrderByAggregateInput = {
+  priority?: Prisma.SortOrder
 }
 
 export type PolicyMaxOrderByAggregateInput = {
@@ -371,6 +487,9 @@ export type PolicyMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   isMandatory?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  effectiveDate?: Prisma.SortOrder
+  expiryDate?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   currentVersionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -382,9 +501,16 @@ export type PolicyMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   isMandatory?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  effectiveDate?: Prisma.SortOrder
+  expiryDate?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   currentVersionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PolicySumOrderByAggregateInput = {
+  priority?: Prisma.SortOrder
 }
 
 export type PolicyScalarRelationFilter = {
@@ -400,6 +526,15 @@ export type PolicyListRelationFilter = {
 
 export type PolicyOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type PolicyCreatedependenciesInput = {
+  set: string[]
+}
+
+export type PolicyUpdatedependenciesInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type PolicyCreateNestedOneWithoutVersionsInput = {
@@ -478,6 +613,10 @@ export type PolicyCreateWithoutVersionsInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currentVersion?: Prisma.PolicyVersionCreateNestedOneWithoutCurrentForPoliciesInput
@@ -490,6 +629,10 @@ export type PolicyUncheckedCreateWithoutVersionsInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   currentVersionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -507,6 +650,10 @@ export type PolicyCreateWithoutCurrentVersionInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.PolicyVersionCreateNestedManyWithoutPolicyInput
@@ -519,6 +666,10 @@ export type PolicyUncheckedCreateWithoutCurrentVersionInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.PolicyVersionUncheckedCreateNestedManyWithoutPolicyInput
@@ -552,6 +703,10 @@ export type PolicyUpdateWithoutVersionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currentVersion?: Prisma.PolicyVersionUpdateOneWithoutCurrentForPoliciesNestedInput
@@ -564,6 +719,10 @@ export type PolicyUncheckedUpdateWithoutVersionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   currentVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -595,6 +754,10 @@ export type PolicyScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Policy"> | string | null
   isMandatory?: Prisma.BoolFilter<"Policy"> | boolean
   isActive?: Prisma.BoolFilter<"Policy"> | boolean
+  effectiveDate?: Prisma.DateTimeFilter<"Policy"> | Date | string
+  expiryDate?: Prisma.DateTimeNullableFilter<"Policy"> | Date | string | null
+  dependencies?: Prisma.StringNullableListFilter<"Policy">
+  priority?: Prisma.IntFilter<"Policy"> | number
   currentVersionId?: Prisma.UuidNullableFilter<"Policy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Policy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Policy"> | Date | string
@@ -606,6 +769,10 @@ export type PolicyCreateWithoutAcknowledgementsInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currentVersion?: Prisma.PolicyVersionCreateNestedOneWithoutCurrentForPoliciesInput
@@ -618,6 +785,10 @@ export type PolicyUncheckedCreateWithoutAcknowledgementsInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   currentVersionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -646,6 +817,10 @@ export type PolicyUpdateWithoutAcknowledgementsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currentVersion?: Prisma.PolicyVersionUpdateOneWithoutCurrentForPoliciesNestedInput
@@ -658,6 +833,10 @@ export type PolicyUncheckedUpdateWithoutAcknowledgementsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   currentVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -670,6 +849,10 @@ export type PolicyCreateManyCurrentVersionInput = {
   description?: string | null
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: Date | string
+  expiryDate?: Date | string | null
+  dependencies?: Prisma.PolicyCreatedependenciesInput | string[]
+  priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -680,6 +863,10 @@ export type PolicyUpdateWithoutCurrentVersionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.PolicyVersionUpdateManyWithoutPolicyNestedInput
@@ -692,6 +879,10 @@ export type PolicyUncheckedUpdateWithoutCurrentVersionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.PolicyVersionUncheckedUpdateManyWithoutPolicyNestedInput
@@ -704,6 +895,10 @@ export type PolicyUncheckedUpdateManyWithoutCurrentVersionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isMandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dependencies?: Prisma.PolicyUpdatedependenciesInput | string[]
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -754,6 +949,10 @@ export type PolicySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   description?: boolean
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: boolean
+  expiryDate?: boolean
+  dependencies?: boolean
+  priority?: boolean
   currentVersionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -769,6 +968,10 @@ export type PolicySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   description?: boolean
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: boolean
+  expiryDate?: boolean
+  dependencies?: boolean
+  priority?: boolean
   currentVersionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -781,6 +984,10 @@ export type PolicySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   description?: boolean
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: boolean
+  expiryDate?: boolean
+  dependencies?: boolean
+  priority?: boolean
   currentVersionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -793,12 +1000,16 @@ export type PolicySelectScalar = {
   description?: boolean
   isMandatory?: boolean
   isActive?: boolean
+  effectiveDate?: boolean
+  expiryDate?: boolean
+  dependencies?: boolean
+  priority?: boolean
   currentVersionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "isMandatory" | "isActive" | "currentVersionId" | "createdAt" | "updatedAt", ExtArgs["result"]["policy"]>
+export type PolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "isMandatory" | "isActive" | "effectiveDate" | "expiryDate" | "dependencies" | "priority" | "currentVersionId" | "createdAt" | "updatedAt", ExtArgs["result"]["policy"]>
 export type PolicyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currentVersion?: boolean | Prisma.Policy$currentVersionArgs<ExtArgs>
   versions?: boolean | Prisma.Policy$versionsArgs<ExtArgs>
@@ -825,6 +1036,10 @@ export type $PolicyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     description: string | null
     isMandatory: boolean
     isActive: boolean
+    effectiveDate: Date
+    expiryDate: Date | null
+    dependencies: string[]
+    priority: number
     currentVersionId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1259,6 +1474,10 @@ export interface PolicyFieldRefs {
   readonly description: Prisma.FieldRef<"Policy", 'String'>
   readonly isMandatory: Prisma.FieldRef<"Policy", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Policy", 'Boolean'>
+  readonly effectiveDate: Prisma.FieldRef<"Policy", 'DateTime'>
+  readonly expiryDate: Prisma.FieldRef<"Policy", 'DateTime'>
+  readonly dependencies: Prisma.FieldRef<"Policy", 'String[]'>
+  readonly priority: Prisma.FieldRef<"Policy", 'Int'>
   readonly currentVersionId: Prisma.FieldRef<"Policy", 'String'>
   readonly createdAt: Prisma.FieldRef<"Policy", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Policy", 'DateTime'>

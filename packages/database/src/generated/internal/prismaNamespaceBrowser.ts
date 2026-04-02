@@ -1463,6 +1463,10 @@ export const PolicyScalarFieldEnum = {
   description: 'description',
   isMandatory: 'isMandatory',
   isActive: 'isActive',
+  effectiveDate: 'effectiveDate',
+  expiryDate: 'expiryDate',
+  dependencies: 'dependencies',
+  priority: 'priority',
   currentVersionId: 'currentVersionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
