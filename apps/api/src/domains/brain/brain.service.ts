@@ -132,10 +132,6 @@ export class BrainService {
     }
   }
 
-  /*
-  RAG CHAT
-  */
-
   private detectQueryType(question: string): string {
     const q = question.toLowerCase();
 
