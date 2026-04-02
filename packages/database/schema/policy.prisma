@@ -6,13 +6,18 @@ model Policy {
   isMandatory Boolean @default(true)
   isActive    Boolean @default(true)
 
+  effectiveDate DateTime @default(now())
+  expiryDate    DateTime?
+  dependencies  String[] 
+  priority      Int      @default(1) 
+
   currentVersionId String?      @db.Uuid
   currentVersion   PolicyVersion? @relation("CurrentPolicyVersion", fields: [currentVersionId], references: [id])
 
   versions PolicyVersion[] @relation("PolicyVersions")
 
   acknowledgements PolicyAcknowledgement[] @relation("PolicyAcknowledgements")
-
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -27,7 +32,7 @@ model PolicyVersion {
   currentForPolicies Policy[] @relation("CurrentPolicyVersion")
 
   version Int
-  content Json
+  content String
 
   fileId String?      @db.Uuid
   file   PolicyFile? @relation(fields: [fileId], references: [id])

@@ -9,7 +9,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 import { parseCv } from './utils/cv-parser';
-import { ScreeningRecommendation } from '../../platform/prisma/prisma-client';
+import { ScreeningRecommendation } from '@repo/database';
 import FormData from 'form-data';
 
 const recommendationMap = {
@@ -132,10 +132,6 @@ export class BrainService {
     }
   }
 
-  /*
-  RAG CHAT
-  */
-
   private detectQueryType(question: string): string {
     const q = question.toLowerCase();
 
@@ -198,9 +194,26 @@ export class BrainService {
 
     const detectedType = this.detectQueryType(processedQuestion);
 
-    const isGlobalQuery =
-      processedQuestion.toLowerCase().includes('company') ||
-      processedQuestion.toLowerCase().includes('overall');
+    const intentCheckResponse = await firstValueFrom(
+      this.httpService.post(`${this.ragUrl}/rag/ask`, {
+        question: `
+    Classify this question:
+    "${processedQuestion}"
+
+    Return ONLY one:
+    - SINGLE_MODULE
+    - CROSS_MODULE
+    `,
+        history: [],
+        filter: {},
+      }),
+    );
+
+    const reasoningMode = intentCheckResponse.data.answer.includes(
+      'CROSS_MODULE',
+    )
+      ? 'cross-module'
+      : 'single-module';
 
     const payload = {
       userId,
@@ -209,17 +222,35 @@ export class BrainService {
         role: m.role,
         content: m.content,
       })),
-      filter: isGlobalQuery
-        ? { must: [] }
-        : {
-            must: [{ key: 'module', match: { value: module } }],
-            should: [
-              { key: 'userId', match: { value: userId } },
-              { key: 'type', match: { value: detectedType } },
-            ],
-          },
-    };
+      reasoningMode,
+      detectedType,
+      queryVariants:
+        reasoningMode === 'cross-module'
+          ? [
+              processedQuestion,
+              `HR perspective: ${processedQuestion}`,
+              `Finance perspective: ${processedQuestion}`,
+              `Project perspective: ${processedQuestion}`,
+            ]
+          : [processedQuestion],
 
+      filter:
+        reasoningMode === 'cross-module'
+          ? {
+              must: [{ key: 'isAI', match: { value: false } }],
+              should: [{ key: 'userId', match: { value: userId } }],
+            }
+          : {
+              must: [
+                { key: 'module', match: { value: module.toLowerCase() } },
+                { key: 'isAI', match: { value: false } },
+              ],
+              should: [
+                { key: 'userId', match: { value: userId } },
+                { key: 'type', match: { value: detectedType } },
+              ],
+            },
+    };
     const response = await firstValueFrom(
       this.httpService.post(`${this.ragUrl}/rag/ask`, payload),
     );
@@ -229,13 +260,18 @@ export class BrainService {
     try {
       await firstValueFrom(
         this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
-          text: aiAnswer,
+          text: `
+          Question: ${processedQuestion}
+
+          Answer: ${aiAnswer}
+          `,
           source: 'ai-generated',
           metadata: {
-            module,
+            module: reasoningMode === 'cross-module' ? 'global' : module,
             userId,
             type: 'insight',
-            tags: ['ai-generated'],
+            tags: ['ai-generated', detectedType],
+            isAI: true,
           },
         }),
       );
@@ -248,7 +284,8 @@ export class BrainService {
         {
           sessionId: session.id,
           role: 'user',
-          content: question || '[File Upload]',
+          content:
+            question || `[File Upload: ${file?.originalname || 'unknown'}]`,
         },
         { sessionId: session.id, role: 'assistant', content: aiAnswer },
       ],
@@ -537,5 +574,112 @@ export class BrainService {
     }
 
     return aiUser.id;
+  }
+
+  async createPolicy(data: {
+    title: string;
+    content: string;
+    module: string;
+    tags?: string[];
+    userId: string;
+  }) {
+    const policy = await this.prisma.policy.create({
+      data: {
+        title: data.title,
+        description: data.content,
+      },
+    });
+
+    const version = await this.prisma.policyVersion.create({
+      data: {
+        policyId: policy.id,
+        content: data.content,
+        version: 1,
+        isActive: true,
+      },
+    });
+
+    await this.prisma.policy.update({
+      where: { id: policy.id },
+      data: {
+        currentVersionId: version.id,
+      },
+    });
+    try {
+      await firstValueFrom(
+        this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
+          text: data.content,
+          source: `policy:${policy.id}`,
+          metadata: {
+            module: data.module,
+            type: 'policy',
+            policyId: policy.id,
+            version: 1,
+            tags: data.tags || [],
+            isAI: false,
+          },
+        }),
+      );
+    } catch (error) {
+      this.logger.error(`RAG Sync failed: ${error.message}`);
+    }
+
+    return policy;
+  }
+
+  async getPolicies() {
+    return this.prisma.policy.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        currentVersion: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async updatePolicy(id: string, content: string) {
+    const policy = await this.prisma.policy.findUnique({
+      where: { id },
+      include: { currentVersion: true },
+    });
+
+    if (!policy) {
+      throw new NotFoundException('Policy not found');
+    }
+
+    const newVersionNumber = (policy.currentVersion?.version || 0) + 1;
+
+    const newVersion = await this.prisma.policyVersion.create({
+      data: {
+        policyId: id,
+        content,
+        version: newVersionNumber,
+        isActive: true,
+      },
+    });
+
+    const updated = await this.prisma.policy.update({
+      where: { id },
+      data: {
+        currentVersionId: newVersion.id,
+      },
+    });
+
+    await firstValueFrom(
+      this.httpService.post(`${this.ragUrl}/rag/ingest-text`, {
+        text: content,
+        source: `policy:${updated.id}`,
+        metadata: {
+          type: 'policy',
+          policyId: updated.id,
+          version: newVersionNumber,
+          isAI: false,
+        },
+      }),
+    );
+
+    return updated;
   }
 }

@@ -7,8 +7,10 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RagService } from './rag.service';
 
+@ApiTags('RAG AI')
 @Controller('rag')
 export class RagController {
   constructor(private readonly ragService: RagService) {}
@@ -65,6 +67,7 @@ export class RagController {
   }
 
   @Post('ask')
+  @ApiOperation({ summary: 'Ask question with retrieval' })
   async ask(
     @Body()
     body: {

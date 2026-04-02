@@ -6,11 +6,11 @@ import { Document } from '@langchain/core/documents';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 
 interface CvAnalysisResult {
-  score?: number;
-  strengths?: string[];
-  weaknesses?: string[];
-  recommendation?: 'STRONG_RECOMMEND' | 'RECOMMEND' | 'CONSIDER' | 'REJECT';
-  summary?: string;
+  score: number;
+  strengths: string[];
+  weaknesses: string[];
+  recommendation: 'STRONG_RECOMMEND' | 'RECOMMEND' | 'CONSIDER' | 'REJECT';
+  summary: string;
 }
 
 @Injectable()
@@ -68,12 +68,17 @@ export class RagService {
   ) {
     const safeMetadata = {
       module:
-        typeof metadata?.module === 'string' ? metadata.module : 'general',
+        typeof metadata?.module === 'string'
+          ? metadata.module.toLowerCase()
+          : 'general',
 
       userId:
         typeof metadata?.userId === 'string' ? metadata.userId : undefined,
 
-      type: typeof metadata?.type === 'string' ? metadata.type : 'document',
+      type:
+        typeof metadata?.type === 'string'
+          ? metadata.type.toLowerCase()
+          : 'document',
 
       tags: Array.isArray(metadata?.tags) ? metadata.tags : [],
     };
@@ -101,6 +106,10 @@ export class RagService {
       pageContent: content,
       metadata: {
         ...cleanMetadata,
+        module: metadata.module,
+        userId: metadata.userId,
+        type: metadata.type,
+        tags: metadata.tags ?? [],
         source,
         date_ingested: new Date().toISOString(),
       },
@@ -209,6 +218,8 @@ export class RagService {
     question: string,
     history: { role: string; content: string }[] = [],
     filter: Record<string, unknown> = {},
+    queryVariants: string[] = [question],
+    reasoningMode: 'single-module' | 'cross-module' = 'single-module',
   ) {
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
       this.embeddings,
@@ -220,13 +231,102 @@ export class RagService {
 
     console.log('Final Search Filter:', filter);
 
-    const relevantDocs = await vectorStore.similaritySearch(
-      question,
-      3,
-      filter,
+    let allDocs: Document[] = [];
+
+    for (const q of queryVariants) {
+      let docs = await vectorStore.similaritySearch(
+        q,
+        reasoningMode === 'cross-module' ? 12 : 8,
+        filter,
+      );
+
+      if (!docs || docs.length === 0) {
+        console.log(
+          `No docs found with filter for query: "${q}". Retrying without filter...`,
+        );
+
+        docs = await vectorStore.similaritySearch(
+          q,
+          reasoningMode === 'cross-module' ? 8 : 5,
+        );
+      }
+
+      allDocs = [...allDocs, ...docs];
+    }
+
+    const docsByModule: Record<string, Document[]> = {};
+
+    for (const doc of allDocs) {
+      const module = (doc.metadata?.module as string) || 'unknown';
+
+      if (!docsByModule[module]) {
+        docsByModule[module] = [];
+      }
+
+      docsByModule[module].push(doc);
+    }
+
+    const balancedDocs: Document[] = [];
+
+    for (const module in docsByModule) {
+      const moduleDocs = docsByModule[module];
+
+      const hasRelevantDoc = moduleDocs.some((doc) =>
+        question
+          .toLowerCase()
+          .split(/\s+/)
+          .some((word) => (doc.pageContent || '').toLowerCase().includes(word)),
+      );
+
+      if (hasRelevantDoc) {
+        balancedDocs.push(...moduleDocs.slice(0, 2));
+      }
+    }
+
+    allDocs = balancedDocs;
+
+    const scoredDocs = allDocs.map((doc) => {
+      const text = doc.pageContent.toLowerCase();
+      const q = question.toLowerCase();
+
+      let score = 0;
+
+      const qWords = q.split(/\s+/).filter((w) => w.length > 2);
+
+      for (const word of qWords) {
+        if (text.includes(word)) {
+          score += 2;
+        }
+      }
+
+      if (text.includes(q)) {
+        score += 5;
+      }
+
+      if (text.length < 300) {
+        score += 2;
+      }
+
+      return { doc, score };
+    });
+
+    const rerankedAllDocs = scoredDocs
+      .sort((a, b) => b.score - a.score)
+      .map((d) => d.doc);
+
+    allDocs = rerankedAllDocs;
+
+    const uniqueDocs = Array.from(
+      new Map(allDocs.map((d) => [d.pageContent, d])).values(),
     );
 
-    const context = relevantDocs.map((d) => d.pageContent).join('\n\n');
+    const context = uniqueDocs
+      .slice(0, 5)
+      .map(
+        (d, i) => `DOCUMENT ${i + 1} [Module: ${d.metadata?.module}]:
+${d.pageContent}`,
+      )
+      .join('\n\n');
 
     const chatHistoryString = history
       .map(
@@ -237,7 +337,7 @@ export class RagService {
 
     console.log(
       'Documents found:',
-      relevantDocs.map((d) => d.pageContent),
+      uniqueDocs.map((d) => d.pageContent),
     );
 
     const prompt = `
@@ -250,7 +350,10 @@ You are BLIH Brain, a highly intelligent corporate AI. Your goal is to provide a
 - You provide precise, factual, and professional answers
 
 ### GUIDELINES
-1. **Prioritize Context**: Use the "CONTEXT FROM KNOWLEDGE BASE" section below to answer. 
+1. **Strict Relevance Rule**:
+- ONLY use information directly relevant to the question
+- IGNORE unrelated documents even if they are present
+- If a document clearly answers the question, prioritize it over all others
 2. **Handle Ambiguity**: If the user uses pronouns (he, she, it, that), resolve them using the "CHAT HISTORY".
 3. **Strict Fact-Checking**: If the information is truly missing from the context, only then use your fallback: "I'm sorry, I don't have that specific information in my knowledge base."
 4. **Formatting**: Use clean, professional language.
@@ -273,7 +376,7 @@ ${question}
 
     return {
       answer: this.extractAnswer(response),
-      sources: relevantDocs.map((d) => {
+      sources: uniqueDocs.map((d) => {
         const metadata = d.metadata as { source?: unknown };
         return typeof metadata.source === 'string'
           ? metadata.source
@@ -341,9 +444,7 @@ ${cvText}
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       const jsonString = jsonMatch ? jsonMatch[0] : content;
 
-      const result: CvAnalysisResult = JSON.parse(
-        jsonString,
-      ) as CvAnalysisResult;
+      const result = JSON.parse(jsonString) as CvAnalysisResult;
 
       return {
         score: Number(result.score ?? 0),
