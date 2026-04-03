@@ -1,6 +1,6 @@
 import { RecruitmentTransitionService } from './recruitment-transition.service';
 
-const fixedNow = new Date('2026-03-12T09:00:00.000Z');
+const FIXED_EPOCH_MS = Date.parse('2026-03-12T09:00:00.000Z');
 
 const buildAcceptedOfferSnapshot = () => ({
   id: 'offer-1',
@@ -55,7 +55,7 @@ const buildApplicantSnapshot = () => ({
 
 describe('RecruitmentTransitionService', () => {
   it('hires applicants with accepted offers into user, employment, compensation records without onboarding lists', async () => {
-    jest.useFakeTimers().setSystemTime(fixedNow);
+    jest.useFakeTimers({ now: FIXED_EPOCH_MS });
 
     const tx = {
       applicant: {
