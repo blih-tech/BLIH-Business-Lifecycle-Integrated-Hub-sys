@@ -8,9 +8,11 @@ const DEMO_MODE = process.env.DEMO_MODE === 'true';
 export default async function OnboardingChecklistsPage() {
   if (!DEMO_MODE) {
     const session = await getSession();
+
     if (!session.authenticated) {
       redirect('/dashboard/hr');
     }
+
     if (!isAuthorizedForDashboard('hr', session.roles)) {
       redirect('/dashboard');
     }
