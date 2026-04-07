@@ -352,12 +352,17 @@ deploy() {
     return 1
   fi
   
-  # Wait for PostgreSQL to be healthy
-  log_step "Waiting for PostgreSQL to be ready..."
+  # Wait for PostgreSQL to be ready
+  log_step "Waiting for PostgreSQL to be ready and ensuring databases exist..."
   for i in {1..30}; do
     if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready \
       -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-postgres}" >/dev/null 2>&1; then
-      log_info "PostgreSQL is ready"
+
+      log_info "PostgreSQL is ready. Ensuring databases exist..."
+      # Run the init script manually to ensure DBs are created even if volume existed
+      docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres /docker-entrypoint-initdb.d/01-init-databases.sh
+
+      log_info "Databases verified"
       break
     fi
     if [[ $i -eq 30 ]]; then
@@ -414,9 +419,16 @@ handle_failure() {
   log_error "Deployment failed, attempting automatic rollback..."
 
   # Print all container logs BEFORE cleanup so the CI log shows the root cause
-  log_step "=== CONTAINER LOGS (last 150 lines each) ==="
-  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --no-color --tail=150 2>/dev/null || true
+  log_step "=== CONTAINER LOGS (last 250 lines each) ==="
+  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --no-color --tail=250 2>/dev/null || true
   log_step "=== END CONTAINER LOGS ==="
+
+  # Extra diagnostics for Keycloak if it's the one that failed
+  if docker ps -a | grep -q "${COMPOSE_PROJECT_NAME}-keycloak"; then
+    log_step "=== KEYCLOAK SPECIFIC DIAGNOSTICS ==="
+    docker inspect "${COMPOSE_PROJECT_NAME}-keycloak-1" --format '{{json .State.Health}}' 2>/dev/null || true
+    log_step "=== END DIAGNOSTICS ==="
+  fi
 
   rollback || true
   cleanup_docker_resources
