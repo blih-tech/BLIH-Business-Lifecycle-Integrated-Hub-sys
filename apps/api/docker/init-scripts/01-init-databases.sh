@@ -3,50 +3,30 @@ set -eu
 
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
 POSTGRES_DB="${POSTGRES_DB:-postgres}"
+POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-admin1234}"
+
 KEYCLOAK_DB_NAME="${KEYCLOAK_DB_NAME:-keycloak}"
+KEYCLOAK_DB_USERNAME="${KEYCLOAK_DB_USERNAME:-$POSTGRES_USER}"
+KEYCLOAK_DB_PASSWORD="${KEYCLOAK_DB_PASSWORD:-$POSTGRES_PASSWORD}"
 
-if [ -z "${DATABASE_URL:-}" ]; then
-  echo "Missing required environment variable: DATABASE_URL" >&2
-  exit 1
+# Try to parse API DB name from DATABASE_URL if not provided
+if [ -z "${API_DB_NAME:-}" ] && [ -n "${DATABASE_URL:-}" ]; then
+  db_url="${DATABASE_URL#postgresql://}"
+  db_url="${db_url#postgres://}"
+  db_target="${db_url#*@}"
+  api_db_from_url="${db_target#*/}"
+  api_db_from_url="${api_db_from_url%%\?*}"
+  api_db_from_url="${api_db_from_url%%\#*}"
+  API_DB_NAME="$api_db_from_url"
 fi
 
-db_url="${DATABASE_URL#postgresql://}"
-db_url="${db_url#postgres://}"
-db_creds="${db_url%%@*}"
-db_target="${db_url#*@}"
+API_DB_NAME="${API_DB_NAME:-blih-system}"
+API_DB_USERNAME="${API_DB_USERNAME:-$POSTGRES_USER}"
+API_DB_PASSWORD="${API_DB_PASSWORD:-$POSTGRES_PASSWORD}"
 
-api_user_from_url="${db_creds%%:*}"
-api_password_from_url="${db_creds#*:}"
-if [ "$api_password_from_url" = "$db_creds" ]; then
-  api_password_from_url=""
-fi
-
-api_db_from_url="${db_target#*/}"
-api_db_from_url="${api_db_from_url%%\?*}"
-api_db_from_url="${api_db_from_url%%\#*}"
-
-API_DB_NAME="${API_DB_NAME:-$api_db_from_url}"
-API_DB_USERNAME="${API_DB_USERNAME:-$api_user_from_url}"
-API_DB_PASSWORD="${API_DB_PASSWORD:-$api_password_from_url}"
-
-required_vars="
-POSTGRES_USER
-POSTGRES_DB
-KEYCLOAK_DB_NAME
-KEYCLOAK_DB_USERNAME
-KEYCLOAK_DB_PASSWORD
-API_DB_NAME
-API_DB_USERNAME
-API_DB_PASSWORD
-"
-
-for var in $required_vars; do
-  eval "value=\${$var:-}"
-  if [ -z "$value" ]; then
-    echo "Missing required environment variable: $var" >&2
-    exit 1
-  fi
-done
+echo "Initializing databases..."
+echo "- Keycloak DB: $KEYCLOAK_DB_NAME (Owner: $KEYCLOAK_DB_USERNAME)"
+echo "- API DB: $API_DB_NAME (Owner: $API_DB_USERNAME)"
 
 psql -v ON_ERROR_STOP=1 \
   --username "$POSTGRES_USER" \

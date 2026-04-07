@@ -360,7 +360,15 @@ deploy() {
 
       log_info "PostgreSQL is ready. Ensuring databases exist..."
       # Run the init script manually to ensure DBs are created even if volume existed
-      docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres /docker-entrypoint-initdb.d/01-init-databases.sh
+      # We pass the environment variables explicitly to ensure the script has them.
+      docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T \
+        -e POSTGRES_USER="${POSTGRES_USER:-postgres}" \
+        -e POSTGRES_DB="${POSTGRES_DB:-postgres}" \
+        -e POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-admin1234}" \
+        -e DATABASE_URL="${DATABASE_URL:-}" \
+        -e KEYCLOAK_DB_NAME="${KEYCLOAK_DB_NAME:-keycloak}" \
+        -e API_DB_NAME="${POSTGRES_DB:-blih-system}" \
+        postgres /docker-entrypoint-initdb.d/01-init-databases.sh
 
       log_info "Databases verified"
       break
