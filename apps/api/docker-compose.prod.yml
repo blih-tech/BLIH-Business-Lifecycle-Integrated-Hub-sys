@@ -26,6 +26,7 @@ services:
     command:
       [
         'start',
+        '--optimized',
         '--http-enabled=true',
         '--import-realm',
         '--hostname-strict=false',
