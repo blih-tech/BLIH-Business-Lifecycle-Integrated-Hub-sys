@@ -246,11 +246,22 @@ stop_existing_services() {
   docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --remove-orphans --timeout 30 || true
 
   # Force-remove any lingering containers from this project that compose down may have missed
+  # We use BOTH label and name prefix to be absolutely sure we clear the namespace.
   local lingering
   lingering=$(docker ps -a --filter "label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}" -q 2>/dev/null || true)
   if [[ -n "$lingering" ]]; then
-    log_warn "Force-removing lingering containers..."
+    log_warn "Force-removing lingering containers by label..."
     echo "$lingering" | xargs docker rm -f >/dev/null 2>&1 || true
+  fi
+
+  # Aggressive name-based cleanup to handle cases where labels might be missing or corrupted.
+  # This targets exactly the names that cause 'Conflict' errors.
+  local by_name
+  by_name=$(docker ps -aq --filter "name=^/${COMPOSE_PROJECT_NAME}-" 2>/dev/null || true)
+  if [[ -n "$by_name" ]]; then
+    log_warn "Force-removing containers matching project name prefix: ${COMPOSE_PROJECT_NAME}-*"
+    # shellcheck disable=SC2086
+    docker rm -f $by_name >/dev/null 2>&1 || true
   fi
 
   # Explicitly remove the compose network so all port bindings are released by the kernel
