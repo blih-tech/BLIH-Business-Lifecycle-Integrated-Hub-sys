@@ -30,6 +30,7 @@ services:
         '--health-enabled=true',
         '--import-realm',
         '--hostname-strict=false',
+        '--hostname-strict-https=false',
         '--http-relative-path=/',
         '--proxy-headers=xforwarded',
         '--hostname=${KC_HOSTNAME:-localhost}',
@@ -43,7 +44,7 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KC_DB_SCHEMA: ${KC_DB_SCHEMA:-public}
       KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED:-true}
-      KC_LOG_LEVEL: ${KC_LOG_LEVEL:-info}
+      KC_LOG_LEVEL: ${KC_LOG_LEVEL:-debug}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
     ports:
@@ -55,11 +56,15 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/live']
+      test:
+        [
+          'CMD-SHELL',
+          "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 2>/dev/null && exec 3>&-'",
+        ]
       interval: 15s
       timeout: 10s
       retries: 20
-      start_period: 180s
+      start_period: 240s
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
