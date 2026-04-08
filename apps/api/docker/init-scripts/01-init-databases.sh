@@ -28,9 +28,18 @@ echo "Initializing databases..."
 echo "- Keycloak DB: $KEYCLOAK_DB_NAME (Owner: $KEYCLOAK_DB_USERNAME)"
 echo "- API DB: $API_DB_NAME (Owner: $API_DB_USERNAME)"
 
+# Attempt to connect to POSTGRES_DB, fall back to "postgres" if it fails
+if psql -lqt --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" > /dev/null 2>&1; then
+    target_db="$POSTGRES_DB"
+else
+    target_db="postgres"
+fi
+
+echo "Connecting via database: $target_db"
+
 psql -v ON_ERROR_STOP=1 \
   --username "$POSTGRES_USER" \
-  --dbname "$POSTGRES_DB" \
+  --dbname "$target_db" \
   --set=keycloak_db_name="$KEYCLOAK_DB_NAME" \
   --set=keycloak_db_user="$KEYCLOAK_DB_USERNAME" \
   --set=keycloak_db_password="$KEYCLOAK_DB_PASSWORD" \
