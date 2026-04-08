@@ -435,6 +435,8 @@ handle_failure() {
   if docker ps -a | grep -q "${COMPOSE_PROJECT_NAME}-keycloak"; then
     log_step "=== KEYCLOAK SPECIFIC DIAGNOSTICS ==="
     docker inspect "${COMPOSE_PROJECT_NAME}-keycloak-1" --format '{{json .State.Health}}' 2>/dev/null || true
+    log_warn "=== KEYCLOAK RECENT LOGS ==="
+    docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --tail=100 keycloak 2>/dev/null || true
     log_step "=== END DIAGNOSTICS ==="
   fi
 
