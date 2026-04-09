@@ -33,7 +33,7 @@ export default registerAs(
   'keycloak',
   (): KeycloakConfig => ({
     enabled: env.KEYCLOAK_ENABLED,
-    url: env.KEYCLOAK_URL,
+    url: env.KEYCLOAK_INTERNAL_URL || env.KEYCLOAK_URL,
     realm: env.KEYCLOAK_REALM,
     clientId: env.KEYCLOAK_CLIENT_ID,
     clientSecret: env.KEYCLOAK_CLIENT_SECRET,
