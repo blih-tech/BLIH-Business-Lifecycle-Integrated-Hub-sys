@@ -109,7 +109,6 @@ validate_environment() {
   require_env "API_IMAGE"
   require_env "API_MIGRATOR_IMAGE"
   require_env "KEYCLOAK_IMAGE"
-  require_env "GHCR_USERNAME"
   require_env "GHCR_TOKEN"
   
   # Validate port configuration
@@ -323,7 +322,7 @@ deploy() {
   
   # Login to registry
   log_step "Logging in to GitHub Container Registry..."
-  printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+  printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR:-github-actions[bot]}" --password-stdin
 
   # Stop existing services to release ports before starting new deployment
   stop_existing_services
