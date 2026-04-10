@@ -94,7 +94,7 @@ services:
       test:
         [
           'CMD-SHELL',
-          'wget -q -O /dev/null "http://127.0.0.1/$${PORT:-5000}/$${API_PREFIX:-api/v1}/health" || exit 1',
+          'wget -q -O /dev/null "http://127.0.0.1:$${PORT:-5000}/$${API_PREFIX:-api/v1}/health" || exit 1',
         ]
       interval: ${HEALTH_CHECK_INTERVAL:-15s}
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
