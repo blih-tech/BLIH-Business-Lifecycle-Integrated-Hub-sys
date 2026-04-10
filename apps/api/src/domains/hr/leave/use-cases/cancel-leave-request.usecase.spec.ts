@@ -2,8 +2,13 @@ import { CancelLeaveRequestUseCase } from './cancel-leave-request.usecase';
 
 describe('CancelLeaveRequestUseCase', () => {
   it('cancels approved future leave and re-reconciles attendance', async () => {
-    const startDate = new Date('2026-04-10T00:00:00.000Z');
-    const endDate = new Date('2026-04-12T00:00:00.000Z');
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 30);
+    const startDate = new Date(futureDate);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(futureDate);
+    endDate.setDate(endDate.getDate() + 2);
+    endDate.setHours(0, 0, 0, 0);
     const existing = {
       id: 'leave-1',
       requestId: 'LV-2026-0001',
