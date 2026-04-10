@@ -25,16 +25,26 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     targetUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
   }
 
-  const response = await fetch(targetUrl.toString(), {
-    method: 'GET',
-    headers: {
-      cookie: request.headers.get('cookie') ?? '',
-    },
-    redirect: 'manual',
-  });
+  let response: Response;
+  try {
+    response = await fetch(targetUrl.toString(), {
+      method: 'GET',
+      headers: {
+        cookie: request.headers.get('cookie') ?? '',
+      },
+      redirect: 'manual',
+    });
+  } catch (error) {
+    console.error('Auth login fetch error:', error);
+    return NextResponse.redirect(new URL('/no-access', request.url));
+  }
 
   const location = response.headers.get('location');
   if (!location) {
+    console.error(
+      'No location header in auth response, status:',
+      response.status,
+    );
     return NextResponse.redirect(new URL('/no-access', request.url));
   }
 
