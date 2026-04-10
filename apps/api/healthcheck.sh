@@ -114,19 +114,20 @@ validate_api_response() {
     return 1
   fi
   
-  # Check for database connectivity in response
-  if grep -q '"database":"connected"' /tmp/api.health; then
+  # Log additional info but don't fail on warnings
+  if grep -q '"database":"up"' /tmp/api.health || grep -q '"database":"connected"' /tmp/api.health; then
     log_info "Database connection: OK"
   else
     log_warn "Database connection status unclear"
   fi
   
-  # Check for Keycloak connectivity in response
-  if grep -q '"keycloak":"connected"' /tmp/api.health; then
+  if grep -q '"keycloak":"up"' /tmp/api.health || grep -q '"keycloak":"connected"' /tmp/api.health; then
     log_info "Keycloak connection: OK"
   else
     log_warn "Keycloak connection status unclear"
   fi
+  
+  return 0
 }
 
 cleanup() {
