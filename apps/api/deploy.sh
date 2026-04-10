@@ -410,7 +410,7 @@ deploy() {
   # Post-deployment actions
   if [[ "$deploy_ok" == true ]]; then
     write_release_file
-    cleanup_docker_resources
+    cleanup_docker_resources || true
     docker logout ghcr.io >/dev/null 2>&1 || true
     
     log_info "=================================="
@@ -423,6 +423,7 @@ deploy() {
 
 # Rollback on failure
 handle_failure() {
+  local rollback_result=0
   log_error "Deployment failed, attempting automatic rollback..."
 
   # Print all container logs BEFORE cleanup so the CI log shows the root cause
@@ -439,10 +440,16 @@ handle_failure() {
     log_step "=== END DIAGNOSTICS ==="
   fi
 
-  rollback || true
-  cleanup_docker_resources
+  if ! rollback; then
+    rollback_result=$?
+    log_error "Rollback failed with exit code ${rollback_result}"
+  fi
+  
+  cleanup_docker_resources || true
   docker logout ghcr.io >/dev/null 2>&1 || true
-  exit 1
+  
+  # Exit with rollback status - if rollback succeeded, exit 0
+  exit $rollback_result
 }
 
 # Main execution
