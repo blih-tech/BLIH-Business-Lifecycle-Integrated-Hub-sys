@@ -32,27 +32,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       headers: {
         cookie: request.headers.get('cookie') ?? '',
       },
-      redirect: 'manual',
+      redirect: 'follow',
     });
   } catch (error) {
     console.error('Auth login fetch error:', error);
     return NextResponse.redirect(new URL('/no-access', request.url));
   }
 
-  const location = response.headers.get('location');
-  if (!location) {
-    console.error(
-      'No location header in auth response, status:',
-      response.status,
-    );
-    return NextResponse.redirect(new URL('/no-access', request.url));
+  // If we got redirected to Keycloak, relay the cookies
+  if (response.url.includes('keycloak')) {
+    const nextResponse = NextResponse.redirect(response.url);
+    for (const cookie of response.headers.getSetCookie()) {
+      nextResponse.headers.append('Set-Cookie', cookie);
+    }
+    return nextResponse;
   }
 
-  // Relay Set-Cookie headers (kc_state, kc_verifier, kc_nonce, kc_redirect)
-  // onto the FRONTEND domain so the callback route can read them.
-  const nextResponse = NextResponse.redirect(location);
-  for (const cookie of response.headers.getSetCookie()) {
-    nextResponse.headers.append('Set-Cookie', cookie);
-  }
-  return nextResponse;
+  console.error('Auth response did not redirect to Keycloak:', response.url);
+  return NextResponse.redirect(new URL('/no-access', request.url));
 }
