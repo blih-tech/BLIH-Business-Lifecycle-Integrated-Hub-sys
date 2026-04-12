@@ -38,6 +38,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const location = response.headers.get('location');
   console.log('[CALLBACK] Location:', location);
 
+  // Log all response headers for debugging
+  const allHeaders: Record<string, string> = {};
+  response.headers.forEach((value, key) => {
+    allHeaders[key] = value;
+  });
+  console.log('[CALLBACK] All headers:', JSON.stringify(allHeaders));
+
   // Check for errors - if no location or error status
   if (!location && response.status >= 400) {
     const body = await response.text().catch(() => '');
@@ -46,6 +53,25 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   if (!location) {
+    // If no location but status is 200-299, check if body contains redirect info
+    const body = await response.text().catch(() => '');
+    console.log(
+      '[CALLBACK] No location, checking body:',
+      body.substring(0, 500),
+    );
+
+    // Try to find a redirect in the body or default to dashboard
+    if (body.includes('dashboard') || response.ok) {
+      const nextResponse = NextResponse.redirect(
+        new URL('/dashboard', request.url),
+      );
+      // Try to relay any cookies from the response
+      for (const cookie of response.headers.getSetCookie()) {
+        nextResponse.headers.append('Set-Cookie', cookie);
+      }
+      return nextResponse;
+    }
+
     console.error('[CALLBACK] No location header from API');
     return NextResponse.redirect(new URL('/no-access', request.url));
   }
