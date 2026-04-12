@@ -1,75 +1,54 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
+const KEYCLOAK_URL =
+  process.env.KEYCLOAK_URL ?? 'https://keycloak.blihmarketing.com';
+const KEYCLOAK_REALM = process.env.KEYCLOAK_REALM ?? 'blih';
+const KEYCLOAK_CLIENT_ID = process.env.KEYCLOAK_CLIENT_ID ?? 'blih-system-auth';
 
 /**
- * Proxies the login initiation to the NestJS API.
+ * Direct redirect to Keycloak login - bypasses API entirely
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const origin = request.headers.get('origin') || request.nextUrl.origin;
-  const targetUrl = new URL(`${API_BASE_URL}/auth/login`);
+  const redirectOrigin =
+    request.nextUrl.searchParams.get('redirect_origin') ||
+    request.nextUrl.origin;
+  const redirect = request.nextUrl.searchParams.get('redirect') || '/dashboard';
 
-  request.nextUrl.searchParams.forEach((value, key) => {
-    targetUrl.searchParams.set(key, value);
+  const callbackUrl = `${redirectOrigin}/api/auth/callback`;
+  const state = Math.random().toString(36).substring(2);
+
+  // Build Keycloak authorization URL directly
+  const authUrl = new URL(
+    `${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth`,
+  );
+  authUrl.searchParams.set('response_type', 'code');
+  authUrl.searchParams.set('client_id', KEYCLOAK_CLIENT_ID);
+  authUrl.searchParams.set('redirect_uri', callbackUrl);
+  authUrl.searchParams.set('scope', 'openid profile email');
+  authUrl.searchParams.set('state', state);
+
+  console.log('[AUTH] Direct redirect to Keycloak:', authUrl.toString());
+
+  // Set state cookie for verification later
+  const response = NextResponse.redirect(authUrl.toString());
+  response.cookies.set('kc_state', state, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    maxAge: 600,
+  });
+  response.cookies.set('kc_redirect', redirect, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    maxAge: 600,
+  });
+  response.cookies.set('kc_frontend_origin', redirectOrigin, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    maxAge: 600,
   });
 
-  if (!targetUrl.searchParams.has('redirect_origin')) {
-    targetUrl.searchParams.set('redirect_origin', origin);
-  }
-
-  console.log('[AUTH] API_BASE_URL:', API_BASE_URL);
-  console.log('[AUTH] Target URL:', targetUrl.toString());
-  console.log('[AUTH] Origin:', origin);
-
-  let response: Response;
-  try {
-    response = await fetch(targetUrl.toString(), {
-      method: 'GET',
-      headers: {
-        origin: origin,
-        accept: 'text/plain',
-      },
-      redirect: 'manual',
-      signal: AbortSignal.timeout(10000),
-    });
-  } catch (error) {
-    console.error('[AUTH] Fetch error:', error);
-    return NextResponse.redirect(new URL('/no-access', request.url));
-  }
-
-  console.log('[AUTH] Response status:', response.status);
-
-  // Check for any error status
-  if (response.status >= 400) {
-    const body = await response.text().catch(() => '');
-    console.error(
-      '[AUTH] Error response:',
-      response.status,
-      body.substring(0, 500),
-    );
-    return NextResponse.redirect(new URL('/no-access', request.url));
-  }
-
-  const location = response.headers.get('location');
-  console.log('[AUTH] Location header:', location);
-
-  if (location && location.includes('keycloak')) {
-    const nextResponse = NextResponse.redirect(location);
-    for (const setCookie of response.headers.getSetCookie()) {
-      nextResponse.headers.append('Set-Cookie', setCookie);
-    }
-    return nextResponse;
-  }
-
-  if (response.status >= 300 && response.status < 400 && location) {
-    const nextResponse = NextResponse.redirect(location);
-    for (const setCookie of response.headers.getSetCookie()) {
-      nextResponse.headers.append('Set-Cookie', setCookie);
-    }
-    return nextResponse;
-  }
-
-  console.error('[AUTH] No valid redirect found');
-  return NextResponse.redirect(new URL('/no-access', request.url));
+  return response;
 }
