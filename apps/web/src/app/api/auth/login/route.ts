@@ -31,23 +31,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       method: 'GET',
       headers: {
         cookie: request.headers.get('cookie') ?? '',
+        origin: request.nextUrl.origin,
       },
-      redirect: 'follow',
+      redirect: 'manual',
     });
   } catch (error) {
     console.error('Auth login fetch error:', error);
     return NextResponse.redirect(new URL('/no-access', request.url));
   }
 
-  // If we got redirected to Keycloak, relay the cookies
-  if (response.url.includes('keycloak')) {
-    const nextResponse = NextResponse.redirect(response.url);
+  const location = response.headers.get('location');
+  console.log('Auth response status:', response.status, 'location:', location);
+
+  // If we got a redirect to Keycloak, relay the cookies
+  if (location && location.includes('keycloak')) {
+    const nextResponse = NextResponse.redirect(location);
     for (const cookie of response.headers.getSetCookie()) {
       nextResponse.headers.append('Set-Cookie', cookie);
     }
     return nextResponse;
   }
 
-  console.error('Auth response did not redirect to Keycloak:', response.url);
+  console.error('No location header or not keycloak:', response.status);
   return NextResponse.redirect(new URL('/no-access', request.url));
 }
