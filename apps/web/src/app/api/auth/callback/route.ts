@@ -38,6 +38,32 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const location = response.headers.get('location');
   console.log('[CALLBACK] Location:', location);
 
+  if (!location) {
+    // If no location but status is 200-299, check if body contains redirect info
+    const body = await response.text().catch(() => '');
+    console.log(
+      '[CALLBACK] No location, body preview:',
+      body.substring(0, 300),
+    );
+    console.log('[CALLBACK] Response ok:', response.ok);
+
+    // Try to find a redirect in the body or default to dashboard
+    if (body.includes('dashboard') || response.ok) {
+      console.log('[CALLBACK] Redirecting to dashboard');
+      const nextResponse = NextResponse.redirect(
+        new URL('/dashboard', request.url),
+      );
+      // Try to relay any cookies from the response
+      for (const cookie of response.headers.getSetCookie()) {
+        nextResponse.headers.append('Set-Cookie', cookie);
+      }
+      return nextResponse;
+    }
+
+    console.error('[CALLBACK] No location header from API, going to no-access');
+    return NextResponse.redirect(new URL('/no-access', request.url));
+  }
+
   // Log all response headers for debugging
   const allHeaders: Record<string, string> = {};
   response.headers.forEach((value, key) => {
@@ -49,30 +75,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!location && response.status >= 400) {
     const body = await response.text().catch(() => '');
     console.error('[CALLBACK] API error:', response.status, body);
-    return NextResponse.redirect(new URL('/no-access', request.url));
-  }
-
-  if (!location) {
-    // If no location but status is 200-299, check if body contains redirect info
-    const body = await response.text().catch(() => '');
-    console.log(
-      '[CALLBACK] No location, checking body:',
-      body.substring(0, 500),
-    );
-
-    // Try to find a redirect in the body or default to dashboard
-    if (body.includes('dashboard') || response.ok) {
-      const nextResponse = NextResponse.redirect(
-        new URL('/dashboard', request.url),
-      );
-      // Try to relay any cookies from the response
-      for (const cookie of response.headers.getSetCookie()) {
-        nextResponse.headers.append('Set-Cookie', cookie);
-      }
-      return nextResponse;
-    }
-
-    console.error('[CALLBACK] No location header from API');
     return NextResponse.redirect(new URL('/no-access', request.url));
   }
 
