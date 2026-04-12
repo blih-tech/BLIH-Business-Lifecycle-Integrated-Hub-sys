@@ -18,44 +18,51 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     targetUrl.searchParams.set('redirect_origin', origin);
   }
 
-  const requestHeaders: Record<string, string> = {
-    origin: origin,
-    accept: 'text/plain',
-  };
-
-  const cookie = request.headers.get('cookie');
-  if (cookie) {
-    requestHeaders.cookie = cookie;
-  }
-
-  console.log('Calling API:', targetUrl.toString(), 'with origin:', origin);
+  console.log('[AUTH] API_BASE_URL:', API_BASE_URL);
+  console.log('[AUTH] Target URL:', targetUrl.toString());
+  console.log('[AUTH] Origin:', origin);
 
   let response: Response;
   try {
     response = await fetch(targetUrl.toString(), {
       method: 'GET',
-      headers: requestHeaders,
+      headers: {
+        origin: origin,
+        accept: 'text/plain',
+      },
       redirect: 'manual',
+      signal: AbortSignal.timeout(10000),
     });
   } catch (error) {
-    console.error('Auth login fetch error:', error);
+    console.error('[AUTH] Fetch error:', error);
+    return NextResponse.redirect(new URL('/no-access', request.url));
+  }
+
+  console.log('[AUTH] Response status:', response.status);
+
+  // Check for any error status
+  if (response.status >= 400) {
+    const body = await response.text().catch(() => '');
+    console.error(
+      '[AUTH] Error response:',
+      response.status,
+      body.substring(0, 500),
+    );
     return NextResponse.redirect(new URL('/no-access', request.url));
   }
 
   const location = response.headers.get('location');
-  console.log('API response status:', response.status, 'location:', location);
+  console.log('[AUTH] Location header:', location);
 
   if (location && location.includes('keycloak')) {
     const nextResponse = NextResponse.redirect(location);
     for (const setCookie of response.headers.getSetCookie()) {
       nextResponse.headers.append('Set-Cookie', setCookie);
     }
-    console.log('Redirecting to Keycloak with cookies');
     return nextResponse;
   }
 
   if (response.status >= 300 && response.status < 400 && location) {
-    console.log('Following redirect to:', location);
     const nextResponse = NextResponse.redirect(location);
     for (const setCookie of response.headers.getSetCookie()) {
       nextResponse.headers.append('Set-Cookie', setCookie);
@@ -63,19 +70,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return nextResponse;
   }
 
-  const allHeaders: Record<string, string> = {};
-  response.headers.forEach((value, key) => {
-    allHeaders[key] = value;
-  });
-  console.log('All response headers:', JSON.stringify(allHeaders));
-
-  const body = await response.text().catch(() => 'Could not read body');
-  console.error(
-    'No redirect found, status:',
-    response.status,
-    'body preview:',
-    body.substring(0, 300),
-  );
-
+  console.error('[AUTH] No valid redirect found');
   return NextResponse.redirect(new URL('/no-access', request.url));
 }
