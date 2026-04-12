@@ -25,14 +25,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     targetUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
   }
 
+  const requestHeaders: Record<string, string> = {
+    // Forward the origin so the API can validate it
+    origin: request.nextUrl.origin,
+  };
+
+  // Only forward cookie if present (for state preservation)
+  const cookie = request.headers.get('cookie');
+  if (cookie) {
+    requestHeaders.cookie = cookie;
+  }
+
   let response: Response;
   try {
     response = await fetch(targetUrl.toString(), {
       method: 'GET',
-      headers: {
-        cookie: request.headers.get('cookie') ?? '',
-        origin: request.nextUrl.origin,
-      },
+      headers: requestHeaders,
       redirect: 'manual',
     });
   } catch (error) {
@@ -52,6 +60,39 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return nextResponse;
   }
 
-  console.error('No location header or not keycloak:', response.status);
+  // For other 3xx responses, follow them (in case of redirects)
+  if (response.status >= 300 && response.status < 400 && location) {
+    console.log('Following redirect to:', location);
+    const nextResponse = NextResponse.redirect(location);
+    for (const cookie of response.headers.getSetCookie()) {
+      nextResponse.headers.append('Set-Cookie', cookie);
+    }
+    return nextResponse;
+  }
+
+  // If API returned HTML (200), try to find redirect URL in body
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('text/html')) {
+    const body = await response.text();
+    // Look for meta refresh or forms that might indicate redirect
+    const metaRedirect = body.match(
+      /<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'][^;]*url=([^"']+)/i,
+    );
+    if (metaRedirect && metaRedirect[1]) {
+      console.log('Found meta redirect:', metaRedirect[1]);
+      return NextResponse.redirect(metaRedirect[1]);
+    }
+    console.log('Got HTML response, status:', response.status);
+  }
+
+  // Log response body for debugging if no location
+  const body = await response.text().catch(() => 'Could not read body');
+  console.error(
+    'No redirect found, status:',
+    response.status,
+    'body preview:',
+    body.substring(0, 300),
+  );
+
   return NextResponse.redirect(new URL('/no-access', request.url));
 }
