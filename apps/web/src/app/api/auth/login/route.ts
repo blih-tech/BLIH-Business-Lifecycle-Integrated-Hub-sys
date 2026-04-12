@@ -3,18 +3,18 @@ import { type NextRequest, NextResponse } from 'next/server';
 const KEYCLOAK_URL =
   process.env.KEYCLOAK_URL ?? 'https://keycloak.blihmarketing.com';
 const KEYCLOAK_REALM = process.env.KEYCLOAK_REALM ?? 'blih';
-const KEYCLOAK_CLIENT_ID = process.env.KEYCLOAK_CLIENT_ID ?? 'blih-system-auth';
+const KEYCLOAK_CLIENT_ID =
+  process.env.KEYCLOAK_CLIENT_ID ?? 'blih-system-frontend';
 
 /**
  * Direct redirect to Keycloak login - bypasses API entirely
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const redirectOrigin =
-    request.nextUrl.searchParams.get('redirect_origin') ||
-    request.nextUrl.origin;
+  // Always use production domain for redirect_uri to avoid Keycloak rejecting it
+  const productionOrigin = 'https://project-k22it.vercel.app';
   const redirect = request.nextUrl.searchParams.get('redirect') || '/dashboard';
 
-  const callbackUrl = `${redirectOrigin}/api/auth/callback`;
+  const callbackUrl = `${productionOrigin}/api/auth/callback`;
   const state = Math.random().toString(36).substring(2);
 
   // Build Keycloak authorization URL directly
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     sameSite: 'lax',
     maxAge: 600,
   });
-  response.cookies.set('kc_frontend_origin', redirectOrigin, {
+  response.cookies.set('kc_frontend_origin', productionOrigin, {
     httpOnly: true,
     secure: true,
     sameSite: 'lax',
