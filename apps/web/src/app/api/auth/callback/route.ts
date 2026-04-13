@@ -53,7 +53,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       headers: {
         cookie: originalCookies,
         origin: request.nextUrl.origin,
+        'cache-control': 'no-cache',
       },
+      credentials: 'same-origin',
       redirect: 'manual',
     });
 
