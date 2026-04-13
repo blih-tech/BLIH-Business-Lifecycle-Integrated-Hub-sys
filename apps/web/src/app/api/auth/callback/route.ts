@@ -35,7 +35,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   const originalCookies = request.headers.get('cookie') ?? '';
-  console.log('[CALLBACK] Forwarding cookies:', originalCookies.slice(0, 100));
+  console.log('[CALLBACK] Total cookies length:', originalCookies.length);
+  console.log('[CALLBACK] Has kc_state:', originalCookies.includes('kc_state'));
+  console.log(
+    '[CALLBACK] Has kc_verifier:',
+    originalCookies.includes('kc_verifier'),
+  );
+  console.log(
+    '[CALLBACK] Has kc_redirect:',
+    originalCookies.includes('kc_redirect'),
+  );
+  console.log('[CALLBACK] Forwarding cookies:', originalCookies.slice(0, 200));
 
   try {
     const response = await fetch(targetUrl.toString(), {
@@ -43,7 +53,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       headers: {
         cookie: originalCookies,
         origin: request.nextUrl.origin,
+        'cache-control': 'no-cache',
       },
+      credentials: 'same-origin',
       redirect: 'manual',
     });
 
@@ -52,6 +64,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     console.log('[CALLBACK] API status:', response.status);
     console.log('[CALLBACK] Set-Cookie count:', setCookies.length);
+    console.log('[CALLBACK] API location:', location);
 
     const hasAccess = setCookies.some((c) => c.startsWith('kc_access='));
 
