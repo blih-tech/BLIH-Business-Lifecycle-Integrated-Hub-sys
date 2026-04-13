@@ -2,13 +2,16 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiClient, ApiError } from '@/lib/api-client';
 import { queryKeys } from '@/lib/query-keys';
 import type {
+  ApplicantResponseDto,
   CreateJobDto,
+  InterviewResponseDto,
   JobListQueryDto,
   JobResponseDto,
+  ListJobsResponse,
+  OfferResponseDto,
+  ScreenCandidatesEnvelope,
   UpdateJobDto,
 } from '@/types';
-import { delay } from '@/shared/lib/demo-utils';
-import { mockListJobsResponse } from '@/features/hr/recruitment/requests/mock-api';
 
 const API_PREFIX = '/hr/recruitment/jobs';
 
@@ -18,14 +21,10 @@ export function useJobs(query?: JobListQueryDto) {
       query as Record<string, string> | undefined,
     ),
     queryFn: async () => {
-      // Live API call (disabled for now)
-      // return apiClient.get<ListJobsResponse>(
-      //   `${API_PREFIX}`,
-      //   query as Record<string, string> | undefined,
-      // );
-
-      await delay(1200);
-      return mockListJobsResponse;
+      return apiClient.get<ListJobsResponse>(
+        `${API_PREFIX}`,
+        query as Record<string, string> | undefined,
+      );
     },
     select: (response) => response.data ?? [],
   });
@@ -34,8 +33,70 @@ export function useJobs(query?: JobListQueryDto) {
 export function useJob(id: string) {
   return useQuery({
     queryKey: queryKeys.hr.jobs.detail(id),
-    queryFn: () => apiClient.get<JobResponseDto>(`${API_PREFIX}/${id}`),
+    queryFn: () =>
+      apiClient
+        .get<{ data: JobResponseDto }>(`${API_PREFIX}/${id}`)
+        .then((res) => res.data),
     enabled: !!id,
+  });
+}
+
+export function useApplicants(jobId?: string) {
+  return useQuery({
+    queryKey: [...queryKeys.hr.recruitment(), 'applicants', jobId ?? 'all'],
+    queryFn: async () => {
+      const res = await apiClient.get<{ data: ApplicantResponseDto[] }>(
+        '/hr/recruitment/applicants',
+        jobId ? { jobId } : undefined,
+      );
+      return res.data ?? [];
+    },
+  });
+}
+
+export function useInterviews(jobId?: string) {
+  return useQuery({
+    queryKey: [...queryKeys.hr.recruitment(), 'interviews', jobId ?? 'all'],
+    queryFn: async () => {
+      const res = await apiClient.get<{ data: InterviewResponseDto[] }>(
+        '/hr/recruitment/interviews',
+        jobId ? { jobId } : undefined,
+      );
+      return res.data ?? [];
+    },
+  });
+}
+
+export function useOffers(jobId?: string) {
+  return useQuery({
+    queryKey: [...queryKeys.hr.recruitment(), 'offers', jobId ?? 'all'],
+    queryFn: async () => {
+      const res = await apiClient.get<{ data: OfferResponseDto[] }>(
+        '/hr/recruitment/offers',
+        jobId ? { jobId } : undefined,
+      );
+      return res.data ?? [];
+    },
+  });
+}
+
+export function useScreenCandidates(jobId?: string) {
+  return useQuery({
+    queryKey: [...queryKeys.hr.recruitment(), 'brain-screen', jobId ?? 'none'],
+    enabled: Boolean(jobId),
+    queryFn: async () => {
+      if (!jobId) return {};
+      const res = await apiClient.post<ScreenCandidatesEnvelope>(
+        '/brain/screen-candidates',
+        { jobId },
+      );
+      return Object.fromEntries(
+        (res.data?.rankedApplicants ?? []).map((row) => [
+          row.candidateId,
+          row.score,
+        ]),
+      ) as Record<string, number>;
+    },
   });
 }
 

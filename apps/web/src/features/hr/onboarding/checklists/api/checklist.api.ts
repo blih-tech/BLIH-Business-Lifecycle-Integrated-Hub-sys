@@ -1,64 +1,50 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { requestJson } from '@/features/hr/onboarding/shared/api-client';
 
-function getToken() {
-  return localStorage.getItem('token') || '';
-}
+type ChecklistStatus = 'TODO' | 'SUBMITTED' | 'CHANGES_REQUESTED' | 'COMPLETED';
+
+type OnboardingRecord = {
+  employeeId: string;
+  checklists: Array<{
+    id: string;
+    taskInstanceId: string;
+    status: ChecklistStatus;
+    dueDate?: string | null;
+  }>;
+};
 
 export async function getChecklists() {
-  const res = await fetch(`${BASE_URL}/hr/onboarding/checklists`, {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
+  const records = await requestJson<OnboardingRecord[]>('/hr/onboarding');
 
-  if (!res.ok) throw new Error('Failed to fetch checklists');
-
-  const json = await res.json();
-  return json.data;
+  return records.flatMap((record) =>
+    record.checklists.map((item) => ({
+      id: item.id,
+      status: item.status,
+      dueDate: item.dueDate ?? null,
+      taskInstanceId: item.taskInstanceId,
+      taskId: item.id,
+      type: 'done',
+      employeeId: record.employeeId,
+    })),
+  );
 }
 
 export async function submitChecklist(taskId: string, type?: string) {
-  const res = await fetch(`${BASE_URL}/hr/onboarding/tasks/${taskId}/${type}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
+  void type;
+  await requestJson(`/hr/onboarding/checklists/${taskId}/status`, 'PATCH', {
+    status: 'SUBMITTED',
   });
-
-  if (!res.ok) throw new Error('Failed to submit checklist');
 }
 
 export async function approveChecklist(taskId: string, type?: string) {
-  const res = await fetch(
-    `${BASE_URL}/hr/onboarding/tasks/${taskId}/${type}/verify`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({ approved: true }),
-    },
-  );
-
-  if (!res.ok) throw new Error('Failed to approve checklist');
+  void type;
+  await requestJson(`/hr/onboarding/checklists/${taskId}/status`, 'PATCH', {
+    status: 'COMPLETED',
+  });
 }
 
 export async function rejectChecklist(taskId: string, type?: string) {
-  const res = await fetch(
-    `${BASE_URL}/hr/onboarding/tasks/${taskId}/${type}/verify`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        approved: false,
-        hrFeedback: 'Needs correction',
-      }),
-    },
-  );
-
-  if (!res.ok) throw new Error('Failed to reject checklist');
+  void type;
+  await requestJson(`/hr/onboarding/checklists/${taskId}/status`, 'PATCH', {
+    status: 'CHANGES_REQUESTED',
+  });
 }

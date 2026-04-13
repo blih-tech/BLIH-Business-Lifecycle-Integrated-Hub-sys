@@ -13,7 +13,7 @@ import {
   RequestsErrorState,
 } from '@/features/hr/recruitment/requests/components';
 import { useJobs } from '@/features/hr/recruitment/requests/hooks';
-import { mapJobResponseToRequest } from '@/features/hr/recruitment/requests/job-request-mappers';
+import { mapJobsToRequests } from '@/features/hr/recruitment/shared/mappers';
 
 export * from '@/features/hr/recruitment/requests/components';
 export * from '@/features/hr/recruitment/requests/types';
@@ -30,23 +30,7 @@ export function RecruitmentRequestsContent({
 
   const normalizedRequests = useMemo(() => {
     if (!jobs) return [];
-    return jobs.map((job) => {
-      const workflow = job.requestForm?.status?.workflow;
-      const requestedBy = job.requestForm?.requestedBy ?? '';
-      const isByMe =
-        requestedBy.trim().toLowerCase() ===
-        currentUserName.trim().toLowerCase();
-
-      if (workflow === 'REJECTED') {
-        return mapJobResponseToRequest(job, 'closed');
-      }
-
-      if (workflow === 'PENDING_FOR_APPROVAL') {
-        return mapJobResponseToRequest(job, isByMe ? 'by_me' : 'active');
-      }
-
-      return mapJobResponseToRequest(job, 'posted');
-    });
+    return mapJobsToRequests(jobs, currentUserName);
   }, [currentUserName, jobs]);
 
   const pendingRequests = normalizedRequests.filter(

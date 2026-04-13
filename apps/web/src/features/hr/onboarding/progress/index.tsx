@@ -1,30 +1,87 @@
-import { onboardingMembers, progressSummaryStats } from "@/features/hr/onboarding/progress/mock-data";
-import { OnboardingCard, ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+'use client';
+
+import { useEffect, useState } from 'react';
+import {
+  OnboardingCard,
+  ProgressStatCard,
+} from '@/features/hr/onboarding/progress/components';
+import { getEmployeeFull, getOnboardingRecords } from './api/progress.api';
+import { mapTasksToMembers } from './utils/mapProgress';
+import type { OnboardingMember } from './types';
+
+function computeStats(members: OnboardingMember[]) {
+  let inProgress = 0;
+  let completed = 0;
+  const overdue = 0;
+
+  members.forEach((m) => {
+    if (m.completionPercent === 100) completed++;
+    else if (m.completionPercent > 0) inProgress++;
+  });
+
+  return [
+    { id: 'in-progress', label: 'In Progress', value: String(inProgress) },
+    { id: 'completed', label: 'Completed', value: String(completed) },
+    { id: 'overdue', label: 'Overdue', value: String(overdue) },
+  ];
+}
 
 export function OnboardingProgressContent() {
+  const [members, setMembers] = useState<OnboardingMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const records = await getOnboardingRecords();
+        const employeeEntries = await Promise.all(
+          records.map(async (record) => {
+            try {
+              const employee = await getEmployeeFull(record.employeeId);
+              return [record.employeeId, employee] as const;
+            } catch {
+              return [record.employeeId, null] as const;
+            }
+          }),
+        );
+
+        const employeeMap = employeeEntries.reduce<
+          Record<string, Awaited<ReturnType<typeof getEmployeeFull>>>
+        >((acc, [employeeId, employee]) => {
+          if (employee) {
+            acc[employeeId] = employee;
+          }
+          return acc;
+        }, {});
+
+        const mapped = mapTasksToMembers(records, employeeMap);
+        setMembers(mapped);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
+
+  const stats = computeStats(members);
+
+  if (loading) return <p>Loading...</p>;
+
   return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
+    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4">
+      {/* ✅ STATS */}
       <section className="grid gap-4 md:grid-cols-3">
-        {progressSummaryStats.map((stat) => (
+        {stats.map((stat) => (
           <ProgressStatCard key={stat.id} stat={stat} />
         ))}
       </section>
 
-      <section className="space-y-4 rounded-[12px] border border-[#e5e7eb] bg-white p-4 md:p-5">
-        <div>
-          <h2 className="text-base font-semibold tracking-[-0.2px] text-[#111827]">Active Onboarding Processes</h2>
-          <p className="mt-1 text-sm text-[#667085]">Checklists and tracking new employees</p>
-        </div>
-
-        <div className="space-y-3">
-          {onboardingMembers.map((member) => (
-            <OnboardingCard key={member.id} member={member} />
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-[12px] border border-[#eaecf0] bg-[#f9fafb] px-4 py-5 text-center">
-        <p className="text-sm text-[#667085]">No active onboarding to track.</p>
+      {/* ✅ MEMBERS */}
+      <section className="space-y-3">
+        {members.map((member) => (
+          <OnboardingCard key={member.id} member={member} />
+        ))}
       </section>
     </main>
   );

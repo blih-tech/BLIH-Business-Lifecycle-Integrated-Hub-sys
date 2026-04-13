@@ -472,3 +472,97 @@ export interface ApiSuccessEnvelope<T> {
 }
 
 export type ListJobsResponse = ApiSuccessEnvelope<JobResponseDto[]>;
+
+export type ApplicantStatus =
+  | 'APPLIED'
+  | 'SCREENING'
+  | 'SHORTLISTED'
+  | 'INTERVIEW'
+  | 'WAITLIST'
+  | 'OFFER'
+  | 'HIRED'
+  | 'REJECTED'
+  | 'WITHDRAWN';
+
+export interface ApplicantResponseDto {
+  id: string;
+  jobId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  resumeUrl: string | null;
+  linkedinUrl: string | null;
+  portfolioUrl: string | null;
+  yearsExperience: number | null;
+  expectedSalary: string | null;
+  status: ApplicantStatus;
+  profileScore: number | null;
+  appliedAt: string;
+}
+
+export type ListApplicantsResponse = ApiSuccessEnvelope<ApplicantResponseDto[]>;
+
+export type InterviewStatus =
+  | 'SCHEDULED'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'NO_SHOW';
+export type InterviewAttendanceStatus =
+  | 'SCHEDULED'
+  | 'ATTENDING'
+  | 'NO_SHOW'
+  | 'COMPLETED'
+  | 'CANCELLED';
+
+export interface InterviewFeedbackResponseDto {
+  score: number | null;
+}
+
+export interface InterviewParticipantDto {
+  id: string;
+  applicantId: string;
+  attendanceStatus: InterviewAttendanceStatus;
+}
+
+export interface InterviewResponseDto {
+  id: string;
+  jobId: string;
+  status: InterviewStatus;
+  scheduledAt: string;
+  participants: InterviewParticipantDto[];
+  feedbacks: InterviewFeedbackResponseDto[];
+}
+
+export type ListInterviewsResponse = ApiSuccessEnvelope<InterviewResponseDto[]>;
+
+export type OfferStatus =
+  | 'DRAFT'
+  | 'SENT'
+  | 'ACCEPTED'
+  | 'DECLINED'
+  | 'EXPIRED'
+  | 'WITHDRAWN';
+
+export interface OfferResponseDto {
+  id: string;
+  jobId: string;
+  applicantId: string;
+  status: OfferStatus;
+}
+
+export type ListOffersResponse = ApiSuccessEnvelope<OfferResponseDto[]>;
+
+export interface RankedCandidateDto {
+  candidateId: string;
+  score: number;
+  recommendation: string;
+}
+
+export interface ScreenCandidatesResponseDto {
+  totalApplicants: number;
+  rankedApplicants: RankedCandidateDto[];
+}
+
+export type ScreenCandidatesEnvelope =
+  ApiSuccessEnvelope<ScreenCandidatesResponseDto>;

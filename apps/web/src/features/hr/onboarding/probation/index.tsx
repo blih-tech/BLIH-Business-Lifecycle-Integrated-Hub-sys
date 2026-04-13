@@ -1,31 +1,63 @@
-import { Award, CalendarDays, TrendingUp } from "lucide-react";
+'use client';
 
-import { probationSummaryStats, probationEmployees } from "@/features/hr/onboarding/probation/mock-data";
-import { ProbationCard } from "@/features/hr/onboarding/probation/components";
-import { ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+import { useEffect, useState } from 'react';
 
-const ICONS = {
-  calendar: <CalendarDays className="h-4 w-4" />,
-  trend: <TrendingUp className="h-4 w-4" />,
-  award: <Award className="h-4 w-4" />,
-} as const;
+import { ProbationCard } from '@/features/hr/onboarding/probation/components';
+/* import { ProgressStatCard } from "@/features/hr/onboarding/progress/components"; */
+
+import {
+  getEmployeeFull,
+  getFinalEvaluation,
+  getProbations,
+  type ProbationPlan,
+} from './api/probation.api';
+import type { ProbationEmployee } from './types';
+import { mapProbationToEmployee } from './utils/mapProbation';
 
 export function OnboardingProbationContent() {
+  const [employees, setEmployees] = useState<ProbationEmployee[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const plans = await getProbations();
+
+        const mapped = await Promise.all(
+          plans.map(async (plan: ProbationPlan) => {
+            const employee = await getEmployeeFull(plan.employeeId).catch(
+              () => null,
+            );
+            const evaluation = await getFinalEvaluation(plan.id);
+            return mapProbationToEmployee(plan, evaluation, employee);
+          }),
+        );
+
+        setEmployees(mapped);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
-      <section className="grid gap-4 md:grid-cols-3">
-        {probationSummaryStats.map((stat) => (
-          <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
-        ))}
-      </section>
-
       <section>
-        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Performance and Probation</h2>
-        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">KPI tracking, reviews, and results of employees on probation.</p>
+        <h2 className="text-xl font-semibold">Performance and Probation</h2>
 
         <div className="mt-4 space-y-3">
-          {probationEmployees.map((employee, index) => (
-            <ProbationCard key={employee.id} employee={employee} defaultExpanded={index === 0} />
+          {employees.map((employee, index) => (
+            <ProbationCard
+              key={employee.id}
+              employee={employee}
+              defaultExpanded={index === 0}
+            />
           ))}
         </div>
       </section>

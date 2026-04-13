@@ -1,8 +1,11 @@
+import { getApiBaseUrl } from '@/lib/api-base';
+import { LOCAL_SESSION_COOKIE } from '@/lib/auth-constants';
+import { isLocalDevSessionBridgeActive } from '@/lib/local-dev-auth';
 import { type Role } from '@/shared/constants/roles';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const AUTH_DEBUG = process.env.NEXT_PUBLIC_AUTH_DEBUG === 'true';
 
 export type SessionResponse = {
   authenticated: boolean;
@@ -14,45 +17,132 @@ export type SessionResponse = {
   exp: number | null;
 };
 
+type LocalSessionPayloadV1 = {
+  v: 1;
+  exp: number;
+  roles: string[];
+  username: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+};
+
+function unauthenticated(): SessionResponse {
+  return {
+    authenticated: false,
+    roles: [],
+    username: null,
+    email: null,
+    firstName: null,
+    lastName: null,
+    exp: null,
+  };
+}
+
+function decodeLocalSessionCookie(
+  raw: string | undefined,
+): LocalSessionPayloadV1 | null {
+  if (!raw) {
+    return null;
+  }
+  try {
+    const padded = raw.replace(/-/g, '+').replace(/_/g, '/');
+    const json = Buffer.from(padded, 'base64').toString('utf8');
+    const parsed = JSON.parse(json) as LocalSessionPayloadV1;
+    if (parsed.v !== 1 || typeof parsed.exp !== 'number') {
+      return null;
+    }
+    if (parsed.exp * 1000 < Date.now()) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function sessionFromLocalPayload(
+  payload: LocalSessionPayloadV1,
+): SessionResponse {
+  return {
+    authenticated: true,
+    roles: (payload.roles as Role[]) ?? [],
+    username: payload.username,
+    email: payload.email,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
+    exp: payload.exp,
+  };
+}
+
 export const getSession = cache(async (): Promise<SessionResponse> => {
-  const cookieHeader = (await cookies()).toString();
+  const API_BASE_URL = getApiBaseUrl();
+  const cookieStore = await cookies();
 
-  console.log('[getSession] Cookie header present:', !!cookieHeader);
-
-  if (!cookieHeader) {
-    console.log('[getSession] No cookie header, returning unauthenticated');
-    return {
-      authenticated: false,
-      roles: [],
-      username: null,
-      email: null,
-      firstName: null,
-      lastName: null,
-      exp: null,
-    };
+  if (isLocalDevSessionBridgeActive()) {
+    const localRaw = cookieStore.get(LOCAL_SESSION_COOKIE)?.value;
+    const localPayload = decodeLocalSessionCookie(localRaw);
+    if (localPayload) {
+      if (AUTH_DEBUG) {
+        console.log(
+          '[getSession] using local dev session cookie, roles:',
+          localPayload.roles,
+        );
+      }
+      return sessionFromLocalPayload(localPayload);
+    }
+    // Split-origin dev: Keycloak cookies are on the API host; the Next.js server
+    // cannot forward kc_access. LocalDevSessionGate sets blih_local_session from the browser.
+    if (AUTH_DEBUG) {
+      console.log(
+        '[getSession] local dev bridge: no valid blih_local_session — skip server /auth/me',
+      );
+    }
+    return unauthenticated();
   }
 
-  const res = await fetch(`${API_BASE_URL}/auth/me`, {
-    cache: 'no-store',
-    headers: {
-      cookie: cookieHeader,
-    },
-    credentials: 'include',
-  });
+  const allCookies = cookieStore.getAll();
+  const cookieHeader = allCookies.map((c) => `${c.name}=${c.value}`).join('; ');
 
-  console.log('[getSession] Auth endpoint status:', res.status);
+  if (AUTH_DEBUG) {
+    console.log(
+      '[getSession] cookie count (forwarded to API):',
+      allCookies.length,
+    );
+  }
+
+  if (allCookies.length === 0) {
+    if (AUTH_DEBUG) {
+      console.log('[getSession] No cookies, returning unauthenticated');
+    }
+    return unauthenticated();
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE_URL}/auth/me`, {
+      cache: 'no-store',
+      headers: {
+        Cookie: cookieHeader,
+      },
+      credentials: 'include',
+    });
+  } catch (error: unknown) {
+    if (AUTH_DEBUG) {
+      console.warn('[getSession] /auth/me fetch failed:', error);
+    }
+    return unauthenticated();
+  }
+
+  if (AUTH_DEBUG) {
+    console.log('[getSession] Auth endpoint status:', res.status);
+  }
 
   if (!res.ok) {
-    console.log('[getSession] Auth failed with status:', res.status);
-    return {
-      authenticated: false,
-      roles: [],
-      username: null,
-      email: null,
-      firstName: null,
-      lastName: null,
-      exp: null,
-    };
+    if (AUTH_DEBUG) {
+      console.log('[getSession] Auth failed with status:', res.status);
+    }
+    return unauthenticated();
   }
 
   const envelope = (await res.json()) as {
@@ -83,10 +173,12 @@ export const getSession = cache(async (): Promise<SessionResponse> => {
     };
   };
 
-  console.log(
-    '[getSession] Response envelope:',
-    JSON.stringify(envelope, null, 2),
-  );
+  if (AUTH_DEBUG) {
+    console.log(
+      '[getSession] /auth/me roles:',
+      envelope.data?.roles ?? '(no data)',
+    );
+  }
 
   const user = envelope.data;
 

@@ -1,10 +1,15 @@
+import { getApiBaseUrl } from '@/lib/api-base';
+import { LOCAL_SESSION_COOKIE } from '@/lib/auth-constants';
 import { NextResponse } from 'next/server';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export async function GET(request: Request) {
   const currentPath = new URL(request.url).pathname;
-  const logoutUrl = new URL(`${API_BASE_URL}/auth/logout`, request.url);
+  const logoutUrl = new URL(`${getApiBaseUrl()}/auth/logout`, request.url);
   logoutUrl.searchParams.set('redirect', currentPath);
-  return NextResponse.redirect(logoutUrl);
+  const res = NextResponse.redirect(logoutUrl);
+  res.cookies.set(LOCAL_SESSION_COOKIE, '', {
+    path: '/',
+    maxAge: 0,
+  });
+  return res;
 }

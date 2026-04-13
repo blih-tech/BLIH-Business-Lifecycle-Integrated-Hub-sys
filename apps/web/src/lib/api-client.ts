@@ -1,4 +1,7 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { getApiBaseUrl } from '@/lib/api-base';
+import { getBrowserAuthorizationHeader } from '@/lib/auth-headers';
+
+const AUTH_DEBUG = process.env.NEXT_PUBLIC_AUTH_DEBUG === 'true';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
@@ -16,7 +19,7 @@ class ApiError extends Error {
 }
 
 function buildUrl(endpoint: string, params?: Record<string, string>): string {
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
+  const url = new URL(`${getApiBaseUrl()}${endpoint}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.append(key, value);
@@ -32,8 +35,23 @@ async function request<T>(
   const { params, ...fetchOptions } = options;
   const url = buildUrl(endpoint, params);
 
+  const authHeaders =
+    typeof window !== 'undefined' ? getBrowserAuthorizationHeader() : {};
+
+  if (
+    AUTH_DEBUG &&
+    typeof window !== 'undefined' &&
+    authHeaders.Authorization
+  ) {
+    console.log(
+      '[apiClient] attaching Authorization (Bearer length)',
+      authHeaders.Authorization.length - 'Bearer '.length,
+    );
+  }
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
+    ...authHeaders,
     ...fetchOptions.headers,
   };
 
@@ -44,7 +62,7 @@ async function request<T>(
   });
 
   if (response.status === 401) {
-    const redirectUrl = new URL(`${API_BASE_URL}/auth/login`);
+    const redirectUrl = new URL(`${getApiBaseUrl()}/auth/login`);
     redirectUrl.searchParams.set('redirect', window.location.pathname);
     redirectUrl.searchParams.set('redirect_origin', window.location.origin);
     window.location.href = redirectUrl.toString();
