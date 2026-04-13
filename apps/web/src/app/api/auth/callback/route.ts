@@ -3,18 +3,35 @@ import { type NextRequest, NextResponse } from 'next/server';
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'https://blihapi.blihmarketing.com/api/v1';
 
+function extractTokenFromCookie(cookieStr: string): string | null {
+  const parts = cookieStr.split(';')[0].split('=');
+  return parts[1] ?? null;
+}
+
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const hasCode = request.nextUrl.searchParams.has('code');
+  const hasError = request.nextUrl.searchParams.has('error');
 
   if (!hasCode) {
-    return NextResponse.redirect(new URL('/api/auth/login', request.url));
+    if (hasError) {
+      const errorDesc =
+        request.nextUrl.searchParams.get('error_description') ??
+        request.nextUrl.searchParams.get('error') ??
+        'auth_failed';
+      return NextResponse.redirect(
+        new URL(`/no-access?error=${errorDesc}`, request.url),
+      );
+    }
+    return NextResponse.redirect(
+      new URL('/?redirect=%2Fdashboard', request.url),
+    );
   }
 
   const targetUrl = new URL(`${API_BASE_URL}/auth/callback`);
 
-  request.nextUrl.searchParams.forEach((value, key) => {
+  for (const [key, value] of request.nextUrl.searchParams) {
     targetUrl.searchParams.set(key, value);
-  });
+  }
 
   const originalCookies = request.headers.get('cookie') ?? '';
   console.log('[CALLBACK] Forwarding cookies:', originalCookies.slice(0, 100));
@@ -35,14 +52,40 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     console.log('[CALLBACK] API status:', response.status);
     console.log('[CALLBACK] Set-Cookie count:', setCookies.length);
 
-    if (setCookies.some((c) => c.startsWith('kc_access='))) {
+    const hasAccess = setCookies.some((c) => c.startsWith('kc_access='));
+
+    if (hasAccess) {
       const redirectTo = location ?? '/dashboard?login=1';
       const nextResponse = NextResponse.redirect(
         new URL(redirectTo, request.url),
       );
 
       for (const cookie of setCookies) {
-        nextResponse.headers.append('Set-Cookie', cookie);
+        if (cookie.startsWith('kc_access=')) {
+          const token = extractTokenFromCookie(cookie);
+          if (token) {
+            nextResponse.cookies.set('kc_access', token, {
+              httpOnly: true,
+              secure: true,
+              sameSite: 'lax',
+              maxAge: 300,
+              path: '/',
+            });
+          }
+        } else if (cookie.startsWith('kc_refresh=')) {
+          const token = extractTokenFromCookie(cookie);
+          if (token) {
+            nextResponse.cookies.set('kc_refresh', token, {
+              httpOnly: true,
+              secure: true,
+              sameSite: 'lax',
+              maxAge: 2592000,
+              path: '/',
+            });
+          }
+        } else {
+          nextResponse.headers.append('Set-Cookie', cookie);
+        }
       }
 
       return nextResponse;
