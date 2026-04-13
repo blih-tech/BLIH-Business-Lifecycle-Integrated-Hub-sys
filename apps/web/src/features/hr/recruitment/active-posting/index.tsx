@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 import { ActiveJobCard } from '@/features/hr/recruitment/active-posting/components/active-job-card';
 import {
