@@ -40,11 +40,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       signal: AbortSignal.timeout(15000),
     });
 
-    const setCookieHeader = response.headers.get('set-cookie') ?? '';
-    const accessToken = extractCookie(setCookieHeader, ACCESS_TOKEN_COOKIE);
+    const setCookies = response.headers.getSetCookie();
+    const allCookieHeader = setCookies.join('; ');
+    const accessToken = extractCookie(allCookieHeader, ACCESS_TOKEN_COOKIE);
 
     console.log('[CALLBACK] Access token extracted:', !!accessToken);
-    console.log('[CALLBACK] Set-Cookie header:', setCookieHeader.slice(0, 100));
+    console.log('[CALLBACK] Set-Cookie count:', setCookies.length);
 
     if (!accessToken) {
       console.error('[CALLBACK] No access token in API response');
@@ -57,11 +58,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       new URL('/dashboard?login=1', request.url),
     );
 
-    for (const cookie of response.headers.getSetCookie()) {
-      nextResponse.headers.append('Set-Cookie', cookie);
-    }
+    const FE_TOKEN_MAX_AGE = 300;
+    nextResponse.cookies.set(ACCESS_TOKEN_COOKIE, accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: FE_TOKEN_MAX_AGE,
+      path: '/',
+    });
 
-    nextResponse.headers.set('x-access-token', accessToken);
+    console.log('[CALLBACK] Set token cookie for frontend');
 
     return nextResponse;
   } catch (error) {
