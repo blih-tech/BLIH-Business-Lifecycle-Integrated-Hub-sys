@@ -10,6 +10,8 @@ export default async function DashboardIndexPage() {
   }
 
   const session = await getSession();
+  console.log('[Dashboard] Session:', JSON.stringify(session));
+
   const dashboardPath = getDashboardPath(session.roles);
   if (dashboardPath) {
     redirect(dashboardPath);
