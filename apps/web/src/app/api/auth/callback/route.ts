@@ -4,7 +4,8 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'https://blihapi.blihmarketing.com/api/v1';
 
 function extractTokenFromCookie(cookieStr: string): string | null {
-  const parts = cookieStr.split(';')[0].split('=');
+  const cookiePart = cookieStr.split(';')[0] ?? '';
+  const parts = cookiePart.split('=');
   return parts[1] ?? null;
 }
 
