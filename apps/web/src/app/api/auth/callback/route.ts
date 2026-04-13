@@ -28,6 +28,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   });
 
   const originalCookie = request.headers.get('cookie') ?? '';
+  console.log('[CALLBACK] Original cookies:', originalCookie.slice(0, 200));
 
   try {
     const response = await fetch(targetUrl.toString(), {
@@ -35,10 +36,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       headers: {
         cookie: originalCookie,
         origin: request.nextUrl.origin,
+        'Cache-Control': 'no-cache',
       },
       redirect: 'manual',
       signal: AbortSignal.timeout(15000),
     });
+
+    console.log('[CALLBACK] API response status:', response.status);
 
     const setCookies = response.headers.getSetCookie();
     const allCookieHeader = setCookies.join('; ');
@@ -46,6 +50,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     console.log('[CALLBACK] Access token extracted:', !!accessToken);
     console.log('[CALLBACK] Set-Cookie count:', setCookies.length);
+    console.log('[CALLBACK] All cookies:', allCookieHeader.slice(0, 200));
 
     if (!accessToken) {
       console.error('[CALLBACK] No access token in API response');
