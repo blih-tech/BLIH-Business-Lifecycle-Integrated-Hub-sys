@@ -1,5 +1,10 @@
+import { redirect } from 'next/navigation';
+
 import { HrDashboardFrame } from '@/app/dashboard/hr/HrDashboardFrame';
 import { getSession } from '@/shared/auth/session';
+import { isAuthorizedForDashboard } from '@/shared/auth/role-routing';
+
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
 type HrDashboardLayoutProps = {
   children: React.ReactNode;
@@ -52,6 +57,15 @@ export default async function HrDashboardLayout({
 }: HrDashboardLayoutProps) {
   const session = await getSession();
   console.log('[HrDashboardLayout] Session:', JSON.stringify(session, null, 2));
+
+  if (!DEMO_MODE) {
+    if (!session.authenticated) {
+      redirect('/api/auth/login');
+    }
+    if (!isAuthorizedForDashboard('hr', session.roles)) {
+      redirect('/no-access');
+    }
+  }
 
   const userName = getDisplayName(
     session.firstName,

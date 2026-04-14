@@ -54,11 +54,25 @@ export const getSession = cache(async (): Promise<SessionResponse> => {
     headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
-  const res = await fetch(`${API_BASE_URL}/auth/me`, {
-    cache: 'no-store',
-    headers,
-    credentials: 'include',
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE_URL}/auth/me`, {
+      cache: 'no-store',
+      headers,
+      credentials: 'include',
+    });
+  } catch (err) {
+    console.error('[getSession] Network error reaching auth endpoint:', err);
+    return {
+      authenticated: false,
+      roles: [],
+      username: null,
+      email: null,
+      firstName: null,
+      lastName: null,
+      exp: null,
+    };
+  }
 
   console.log('[getSession] Auth endpoint status:', res.status);
 
