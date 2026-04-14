@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'https://blihapi.blihmarketing.com/api/v1';
+  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
 
 function extractTokenFromCookie(cookieStr: string): string | null {
   const cookiePart = cookieStr.split(';')[0] ?? '';
@@ -88,7 +88,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             nextResponse.cookies.set('kc_access', token, {
               httpOnly: true,
               secure: true,
-              sameSite: 'lax',
+              sameSite: 'none',
               maxAge: 300,
               path: '/',
             });
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             nextResponse.cookies.set('kc_refresh', token, {
               httpOnly: true,
               secure: true,
-              sameSite: 'lax',
+              sameSite: 'none',
               maxAge: 2592000,
               path: '/',
             });

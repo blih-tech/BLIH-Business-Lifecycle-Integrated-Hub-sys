@@ -22,8 +22,8 @@ function computeS256Challenge(verifier: string): string {
  * the round-trip through Keycloak back to /api/auth/callback.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  // Always use production domain for redirect_uri
-  const productionOrigin = 'https://project-k22it.vercel.app';
+  const productionOrigin =
+    process.env.NEXT_PUBLIC_FRONTEND_URL ?? request.nextUrl.origin;
   const redirect = request.nextUrl.searchParams.get('redirect') || '/dashboard';
 
   const callbackUrl = `${productionOrigin}/api/auth/callback`;

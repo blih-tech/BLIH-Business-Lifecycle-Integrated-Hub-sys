@@ -1,4 +1,5 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
@@ -6,7 +7,7 @@ interface RequestOptions extends RequestInit {
 
 class ApiError extends Error {
   constructor(
-    message: string,
+    public message: string,
     public status: number,
     public statusText: string,
   ) {
@@ -44,7 +45,7 @@ async function request<T>(
   });
 
   if (response.status === 401) {
-    const redirectUrl = new URL(`${API_BASE_URL}/auth/login`);
+    const redirectUrl = new URL('/api/auth/login', window.location.origin);
     redirectUrl.searchParams.set('redirect', window.location.pathname);
     redirectUrl.searchParams.set('redirect_origin', window.location.origin);
     window.location.href = redirectUrl.toString();

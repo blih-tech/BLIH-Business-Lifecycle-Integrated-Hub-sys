@@ -2,7 +2,8 @@ import { type Role } from '@/shared/constants/roles';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
 const ACCESS_COOKIE_NAME = 'kc_access';
 
 export type SessionResponse = {
