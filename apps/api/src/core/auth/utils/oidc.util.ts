@@ -16,6 +16,7 @@ export const AUTH_COOKIE_NAMES = {
   refresh: 'kc_refresh',
   id: 'kc_id',
   frontendOrigin: 'kc_frontend_origin',
+  callbackUri: 'kc_callback_uri',
 } as const;
 
 export type AuthCookieSameSite = 'lax' | 'strict' | 'none';

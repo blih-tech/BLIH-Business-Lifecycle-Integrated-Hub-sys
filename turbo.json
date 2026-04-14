@@ -8,6 +8,7 @@
         "KEYCLOAK_URL",
         "KEYCLOAK_REALM",
         "KEYCLOAK_CLIENT_ID",
+        "KEYCLOAK_AUTH_CLIENT_ID",
         "KEYCLOAK_REDIRECT_URI",
         "NEXT_PUBLIC_API_URL"
       ],
