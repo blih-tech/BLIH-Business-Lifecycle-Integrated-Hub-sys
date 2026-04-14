@@ -7,6 +7,8 @@ const KEYCLOAK_REALM = process.env.KEYCLOAK_REALM ?? 'blih';
 // Must match the auth client used by the backend for code exchange
 const KEYCLOAK_AUTH_CLIENT_ID =
   process.env.KEYCLOAK_AUTH_CLIENT_ID ?? 'blih-system-auth';
+const KEYCLOAK_AUTH_SCOPES =
+  process.env.KEYCLOAK_AUTH_SCOPES ?? 'openid profile email';
 
 function createBase64Url(byteLength: number): string {
   return randomBytes(byteLength).toString('base64url');
@@ -41,7 +43,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('client_id', KEYCLOAK_AUTH_CLIENT_ID);
   authUrl.searchParams.set('redirect_uri', callbackUrl);
-  authUrl.searchParams.set('scope', 'openid profile email roles');
+  authUrl.searchParams.set('scope', KEYCLOAK_AUTH_SCOPES);
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('code_challenge', codeChallenge);
   authUrl.searchParams.set('code_challenge_method', 'S256');
