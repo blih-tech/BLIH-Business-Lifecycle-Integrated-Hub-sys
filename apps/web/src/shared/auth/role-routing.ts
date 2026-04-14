@@ -1,6 +1,13 @@
-import { ROLES, type Role } from "@/shared/constants/roles";
+import { ROLES, type Role } from '@/shared/constants/roles';
 
-export const DASHBOARD_KEYS = ["superadmin", "hr", "finance", "pm", "crm", "brain"] as const;
+export const DASHBOARD_KEYS = [
+  'superadmin',
+  'hr',
+  'finance',
+  'pm',
+  'crm',
+  'brain',
+] as const;
 export type DashboardKey = (typeof DASHBOARD_KEYS)[number];
 
 const DASHBOARD_ROLE_MATCHERS: Record<DashboardKey, Role[]> = {
@@ -13,19 +20,24 @@ const DASHBOARD_ROLE_MATCHERS: Record<DashboardKey, Role[]> = {
 };
 
 const DASHBOARD_PRIORITY: DashboardKey[] = [
-  "superadmin",
-  "hr",
-  "finance",
-  "pm",
-  "crm",
-  "brain",
+  'superadmin',
+  'hr',
+  'finance',
+  'pm',
+  'crm',
+  'brain',
 ];
 
+function normalizeRole(role: string): string {
+  const normalized = role.trim().toLowerCase();
+  return normalized.startsWith('role_') ? normalized.slice(5) : normalized;
+}
+
 export function getDashboardKey(roles: Role[]): DashboardKey | null {
-  const roleSet = new Set<Role>(roles);
+  const roleSet = new Set(roles.map((role) => normalizeRole(String(role))));
   for (const key of DASHBOARD_PRIORITY) {
     const matchers = DASHBOARD_ROLE_MATCHERS[key];
-    if (matchers.some((role) => roleSet.has(role))) {
+    if (matchers.some((role) => roleSet.has(normalizeRole(role)))) {
       return key;
     }
   }
@@ -37,7 +49,12 @@ export function getDashboardPath(roles: Role[]): string | null {
   return key ? `/dashboard/${key}` : null;
 }
 
-export function isAuthorizedForDashboard(key: DashboardKey, roles: Role[]): boolean {
-  const roleSet = new Set<Role>(roles);
-  return DASHBOARD_ROLE_MATCHERS[key].some((role) => roleSet.has(role));
+export function isAuthorizedForDashboard(
+  key: DashboardKey,
+  roles: Role[],
+): boolean {
+  const roleSet = new Set(roles.map((role) => normalizeRole(String(role))));
+  return DASHBOARD_ROLE_MATCHERS[key].some((role) =>
+    roleSet.has(normalizeRole(role)),
+  );
 }
