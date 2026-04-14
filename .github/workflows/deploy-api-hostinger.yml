@@ -265,6 +265,11 @@ jobs:
             "${remote}:${HOSTINGER_DEPLOY_PATH}/nginx/"
 
       - name: Apply nginx configuration
+        # Non-fatal: sudo may not be configured on the deploy user yet.
+        # The Docker deploy step below will still run.  Configure sudoers on
+        # the server to make this step fully automatic:
+        #   deploy_user ALL=(ALL) NOPASSWD: /usr/sbin/nginx, /bin/systemctl reload nginx, /bin/cp, /bin/ln
+        continue-on-error: true
         run: |
           remote="${HOSTINGER_SSH_USER}@${HOSTINGER_SSH_HOST}"
           ssh "${remote}" "
@@ -282,7 +287,7 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
             echo 'nginx reloaded successfully'
-          "
+          " || echo "WARNING: nginx apply step failed (sudo not configured?). Continuing deploy."
 
       - name: Run remote deploy script
         run: |
