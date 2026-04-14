@@ -9,7 +9,7 @@ interface RequestOptions extends RequestInit {
 
 class ApiError extends Error {
   constructor(
-    message: string,
+    public message: string,
     public status: number,
     public statusText: string,
   ) {
@@ -62,7 +62,7 @@ async function request<T>(
   });
 
   if (response.status === 401) {
-    const redirectUrl = new URL(`${getApiBaseUrl()}/auth/login`);
+    const redirectUrl = new URL('/api/auth/login', window.location.origin);
     redirectUrl.searchParams.set('redirect', window.location.pathname);
     redirectUrl.searchParams.set('redirect_origin', window.location.origin);
     window.location.href = redirectUrl.toString();

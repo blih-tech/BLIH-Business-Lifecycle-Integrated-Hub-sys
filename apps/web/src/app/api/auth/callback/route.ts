@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'https://blihapi.blihmarketing.com/api/v1';
+  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
 
 function extractTokenFromCookie(cookieStr: string): string | null {
   const cookiePart = cookieStr.split(';')[0] ?? '';
@@ -64,9 +64,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     console.log('[CALLBACK] API status:', response.status);
     console.log('[CALLBACK] Set-Cookie count:', setCookies.length);
+    console.log('[CALLBACK] Set-Cookies:', setCookies);
     console.log('[CALLBACK] API location:', location);
 
     const hasAccess = setCookies.some((c) => c.startsWith('kc_access='));
+    console.log('[CALLBACK] Has access cookie:', hasAccess);
+
+    if (!hasAccess) {
+      const bodyText = await response.text().catch(() => 'unable to read body');
+      console.log('[CALLBACK] Response body:', bodyText.slice(0, 500));
+    }
 
     if (hasAccess) {
       const redirectTo = location ?? '/dashboard?login=1';
@@ -81,7 +88,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             nextResponse.cookies.set('kc_access', token, {
               httpOnly: true,
               secure: true,
-              sameSite: 'lax',
+              sameSite: 'none',
               maxAge: 300,
               path: '/',
             });
@@ -92,7 +99,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             nextResponse.cookies.set('kc_refresh', token, {
               httpOnly: true,
               secure: true,
-              sameSite: 'lax',
+              sameSite: 'none',
               maxAge: 2592000,
               path: '/',
             });

@@ -10,7 +10,7 @@ export default async function OnboardingChecklistsPage() {
     const session = await getSession();
 
     if (!session.authenticated) {
-      redirect('/dashboard/hr');
+      redirect('/api/auth/login');
     }
 
     if (!isAuthorizedForDashboard('hr', session.roles)) {

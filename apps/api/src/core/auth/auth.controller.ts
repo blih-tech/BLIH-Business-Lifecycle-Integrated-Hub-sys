@@ -276,6 +276,10 @@ export class AuthController {
       request,
       AUTH_COOKIE_NAMES.frontendOrigin,
     );
+    const storedCallbackUri = readCookie(
+      request,
+      AUTH_COOKIE_NAMES.callbackUri,
+    );
     const requestedRedirectPath = readCookie(
       request,
       AUTH_COOKIE_NAMES.redirect,
@@ -314,7 +318,7 @@ export class AuthController {
         env.KEYCLOAK_REALM,
         env.KEYCLOAK_AUTH_CLIENT_ID,
         env.KEYCLOAK_AUTH_CLIENT_SECRET,
-        env.KEYCLOAK_AUTH_REDIRECT_URI,
+        storedCallbackUri ?? env.KEYCLOAK_AUTH_REDIRECT_URI,
       );
       if (!tokenResponse.refresh_token) {
         throw new UnauthorizedException(
@@ -953,6 +957,7 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.redirect, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.nonce, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.frontendOrigin, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.callbackUri, clearOptions);
   }
 
   private clearAuthCookies(response: Response): void {
