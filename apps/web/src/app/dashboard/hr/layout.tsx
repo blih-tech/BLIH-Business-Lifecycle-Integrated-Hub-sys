@@ -60,10 +60,13 @@ export default async function HrDashboardLayout({
 
   if (!DEMO_MODE) {
     if (!session.authenticated) {
-      redirect('/api/auth/login');
+      const currentUrl = `/dashboard/hr?from=${Date.now()}`;
+      redirect(
+        `/api/auth/login?redirect_uri=${encodeURIComponent(currentUrl)}`,
+      );
     }
     if (!isAuthorizedForDashboard('hr', session.roles)) {
-      redirect('/no-access');
+      redirect('/no-access?error=unauthorized');
     }
   }
 

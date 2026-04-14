@@ -64,9 +64,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     console.log('[CALLBACK] API status:', response.status);
     console.log('[CALLBACK] Set-Cookie count:', setCookies.length);
+    console.log('[CALLBACK] Set-Cookies:', setCookies);
     console.log('[CALLBACK] API location:', location);
 
     const hasAccess = setCookies.some((c) => c.startsWith('kc_access='));
+    console.log('[CALLBACK] Has access cookie:', hasAccess);
+
+    if (!hasAccess) {
+      const bodyText = await response.text().catch(() => 'unable to read body');
+      console.log('[CALLBACK] Response body:', bodyText.slice(0, 500));
+    }
 
     if (hasAccess) {
       const redirectTo = location ?? '/dashboard?login=1';
