@@ -211,12 +211,16 @@ export function EmployeeTable({
                         : 'bg-muted/60 group-hover/row:bg-muted/80',
                     )}
                   >
-                    <Badge
-                      variant="outline"
-                      className="h-[22px] rounded-[4px] border-primary px-[5px] py-[3px] text-[10px] font-bold leading-4 text-primary"
-                    >
-                      ⚡ {employee.rank}%
-                    </Badge>
+                    {employee.rank > 0 ? (
+                      <Badge
+                        variant="outline"
+                        className="h-[22px] rounded-[4px] border-primary px-[5px] py-[3px] text-[10px] font-bold leading-4 text-primary"
+                      >
+                        ⚡ {employee.rank}%
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                 </TableRow>
               );
