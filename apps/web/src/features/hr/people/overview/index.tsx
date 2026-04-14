@@ -1,21 +1,64 @@
+'use client';
+
+import { useMemo } from 'react';
+
 import {
   ChecklistStatCard,
   JobApplicationFrequencyCard,
   SummaryStatCard,
   WorkHoursStatCard,
-} from "@/features/hr/onboarding/overview/components";
+} from '@/features/hr/onboarding/overview/components';
+import { useEmployeeList } from '@/hooks/hr/use-employees';
 import {
   peopleChecklistStats,
   peopleJobApplicationFrequency,
-  peopleSummaryStats,
   peopleWorkHoursStats,
-} from "@/features/hr/people/overview/mock-data";
+} from '@/features/hr/people/overview/mock-data';
+import type { PeopleSummaryStat } from '@/features/hr/people/overview/types';
 
 export function PeopleOverviewContent() {
+  const { data: employees = [], isLoading } = useEmployeeList();
+
+  const summaryStats = useMemo<PeopleSummaryStat[]>(() => {
+    const onboarding = employees.filter(
+      (e) => e.lifecycleStatus === 'ONBOARDING',
+    ).length;
+    const active = employees.filter(
+      (e) => e.lifecycleStatus === 'ACTIVE',
+    ).length;
+    const total = employees.filter(
+      (e) =>
+        e.lifecycleStatus !== 'TERMINATED' &&
+        e.lifecycleStatus !== 'RESIGNED' &&
+        e.lifecycleStatus !== 'RETIRED',
+    ).length;
+
+    return [
+      {
+        id: 'active-onboarding',
+        label: 'Active Onboarding',
+        value: isLoading ? '…' : String(onboarding),
+        icon: 'users',
+      },
+      {
+        id: 'total-active',
+        label: 'Total Active',
+        value: isLoading ? '…' : String(active),
+        icon: 'check-circle',
+      },
+      {
+        id: 'total-employees',
+        label: 'Total Employees',
+        value: isLoading ? '…' : String(total),
+        icon: 'clock-3',
+      },
+    ];
+  }, [employees, isLoading]);
+
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
       <section className="grid gap-4 md:grid-cols-3">
-        {peopleSummaryStats.map((stat) => (
+        {summaryStats.map((stat) => (
           <SummaryStatCard key={stat.id} stat={stat} />
         ))}
       </section>
