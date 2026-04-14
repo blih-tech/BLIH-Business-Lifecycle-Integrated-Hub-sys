@@ -10,7 +10,7 @@ export default async function OngoingRecruitmentPage() {
 
   if (!DEMO_MODE) {
     if (!session?.authenticated) {
-      redirect('/dashboard/hr');
+      redirect('/api/auth/login');
     }
     if (!isAuthorizedForDashboard('hr', session?.roles ?? [])) {
       redirect('/dashboard');
