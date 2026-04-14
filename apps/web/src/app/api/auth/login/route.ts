@@ -24,11 +24,11 @@ function computeS256Challenge(verifier: string): string {
  * the round-trip through Keycloak back to /api/auth/callback.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const productionOrigin =
+  const frontendOrigin =
     process.env.NEXT_PUBLIC_FRONTEND_URL ?? request.nextUrl.origin;
   const redirect = request.nextUrl.searchParams.get('redirect') || '/dashboard';
 
-  const callbackUrl = `${productionOrigin}/api/auth/callback`;
+  const callbackUrl = `${frontendOrigin}/api/auth/callback`;
 
   // Generate PKCE verifier / challenge (S256)
   const codeVerifier = createBase64Url(64);
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   response.cookies.set('kc_verifier', codeVerifier, cookieOpts);
   response.cookies.set('kc_nonce', nonce, cookieOpts);
   response.cookies.set('kc_redirect', redirect, cookieOpts);
-  response.cookies.set('kc_frontend_origin', productionOrigin, cookieOpts);
+  response.cookies.set('kc_frontend_origin', frontendOrigin, cookieOpts);
   // Tell the backend which redirect_uri was used so it can match during exchange
   response.cookies.set('kc_callback_uri', callbackUrl, cookieOpts);
 
