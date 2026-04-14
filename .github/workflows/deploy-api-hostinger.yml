@@ -260,6 +260,34 @@ jobs:
           rsync -az --checksum \
             apps/api/keycloak/import/ \
             "${remote}:${HOSTINGER_DEPLOY_PATH}/keycloak/import/"
+          rsync -az --checksum \
+            apps/api/nginx/ \
+            "${remote}:${HOSTINGER_DEPLOY_PATH}/nginx/"
+
+      - name: Apply nginx configuration
+        # Non-fatal: sudo may not be configured on the deploy user yet.
+        # The Docker deploy step below will still run.  Configure sudoers on
+        # the server to make this step fully automatic:
+        #   deploy_user ALL=(ALL) NOPASSWD: /usr/sbin/nginx, /bin/systemctl reload nginx, /bin/cp, /bin/ln
+        continue-on-error: true
+        run: |
+          remote="${HOSTINGER_SSH_USER}@${HOSTINGER_SSH_HOST}"
+          ssh "${remote}" "
+            set -euo pipefail
+            NGINX_AVAILABLE=/etc/nginx/sites-available
+            NGINX_ENABLED=/etc/nginx/sites-enabled
+
+            for conf in '${HOSTINGER_DEPLOY_PATH}/nginx/'*.conf; do
+              name=\$(basename \"\$conf\")
+              sudo cp \"\$conf\" \"\${NGINX_AVAILABLE}/\${name}\"
+              sudo ln -sf \"\${NGINX_AVAILABLE}/\${name}\" \"\${NGINX_ENABLED}/\${name}\"
+              echo \"Installed nginx config: \${name}\"
+            done
+
+            sudo nginx -t
+            sudo systemctl reload nginx
+            echo 'nginx reloaded successfully'
+          " || echo "WARNING: nginx apply step failed (sudo not configured?). Continuing deploy."
 
       - name: Run remote deploy script
         run: |
