@@ -43,7 +43,7 @@ export function middleware(request: NextRequest) {
 
   if (!skipKcCookieCheck && !hasApiCookie && !hasLocalDevSession) {
     try {
-      const loginUrl = new URL(`${API_BASE_URL}/auth/login`, request.url);
+      const loginUrl = new URL('/api/auth/login', request.url);
       loginUrl.searchParams.set('redirect', '/dashboard');
       loginUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
       return NextResponse.redirect(loginUrl);

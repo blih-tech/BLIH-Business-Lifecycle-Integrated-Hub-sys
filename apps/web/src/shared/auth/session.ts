@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { cache } from 'react';
 
 const AUTH_DEBUG = process.env.NEXT_PUBLIC_AUTH_DEBUG === 'true';
+const ACCESS_COOKIE_NAME = 'kc_access';
 
 export type SessionResponse = {
   authenticated: boolean;
@@ -75,6 +76,16 @@ function sessionFromLocalPayload(
   };
 }
 
+function extractAccessToken(cookieHeader: string): string | null {
+  const pairs = cookieHeader.split(';').map((c) => c.trim());
+  for (const pair of pairs) {
+    if (pair.startsWith(ACCESS_COOKIE_NAME + '=')) {
+      return pair.slice(ACCESS_COOKIE_NAME.length + 1);
+    }
+  }
+  return null;
+}
+
 export const getSession = cache(async (): Promise<SessionResponse> => {
   const API_BASE_URL = getApiBaseUrl();
   const cookieStore = await cookies();
@@ -120,11 +131,17 @@ export const getSession = cache(async (): Promise<SessionResponse> => {
 
   let res: Response;
   try {
+    const accessToken = extractAccessToken(cookieHeader);
+    const headers: Record<string, string> = {
+      Cookie: cookieHeader,
+    };
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     res = await fetch(`${API_BASE_URL}/auth/me`, {
       cache: 'no-store',
-      headers: {
-        Cookie: cookieHeader,
-      },
+      headers,
       credentials: 'include',
     });
   } catch (error: unknown) {
