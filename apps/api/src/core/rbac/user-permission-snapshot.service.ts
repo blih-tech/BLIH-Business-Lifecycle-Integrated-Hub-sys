@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../platform/prisma/prisma.service';
 
 interface PermissionCacheEntry {
@@ -8,6 +8,7 @@ interface PermissionCacheEntry {
 
 @Injectable()
 export class UserPermissionSnapshotService {
+  private readonly logger = new Logger(UserPermissionSnapshotService.name);
   private readonly ttlMs = 5 * 60 * 1000;
   private readonly cache = new Map<string, PermissionCacheEntry>();
 
@@ -26,7 +27,11 @@ export class UserPermissionSnapshotService {
 
     // DB yielded nothing (first login before roles are cached, or unseeded DB).
     // Apply the same hardcoded fallback using the token roles directly.
-    return this.buildTokenRoleFallback(keycloakTokenRoles);
+    const fallback = this.buildTokenRoleFallback(keycloakTokenRoles);
+    this.logger.warn(
+      `Permission DB lookup empty for ${keycloakUserId} — falling back to token roles [${keycloakTokenRoles.join(', ')}] → ${fallback.length} permissions`,
+    );
+    return fallback;
   }
 
   private buildTokenRoleFallback(tokenRoles: string[]): string[] {
