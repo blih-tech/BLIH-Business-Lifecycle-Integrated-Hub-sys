@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RBAC_ROLE_NAMES } from '@repo/types/rbac';
 import { UserStatus } from '../prisma/prisma-client';
@@ -23,6 +23,7 @@ export interface PrincipalContext {
  */
 @Injectable()
 export class PrincipalEnrichmentService {
+  private readonly logger = new Logger(PrincipalEnrichmentService.name);
   private readonly cache = new Map<
     string,
     { value: PrincipalContext; expiresAt: number }
@@ -305,7 +306,11 @@ export class PrincipalEnrichmentService {
       });
 
       return context;
-    } catch {
+    } catch (error) {
+      this.logger.error(
+        `getContext failed for ${keycloakId}: ${error instanceof Error ? error.message : String(error)}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       this.cache.delete(cacheKey);
       return {};
     }
