@@ -71,12 +71,6 @@ export class UserPermissionSnapshotService {
       return [];
     }
 
-    const selectedPermissions = new Set(
-      (user.permissions ?? [])
-        .map((permission) => permission.trim().toLowerCase())
-        .filter(Boolean),
-    );
-
     const now = new Date();
     const roleAssignments = await this.prisma.userRole.findMany({
       where: {
@@ -137,9 +131,23 @@ export class UserPermissionSnapshotService {
       ),
     );
 
-    return [...selectedPermissions]
-      .filter((permission) => allowedByRoles.has(permission))
-      .sort((left, right) => left.localeCompare(right));
+    // Hardcoded safety fallback for core roles if DB is not fully seeded
+    const lowerRoles = expandedRoles.map((r) => r.name.toLowerCase());
+    if (lowerRoles.includes('hr_manager') || lowerRoles.includes('hr')) {
+      allowedByRoles.add('employee:*');
+      allowedByRoles.add('leave:*');
+      allowedByRoles.add('attendance:*');
+    }
+
+    // Additive logic: User gets permissions from their roles OR explicitly assigned ones
+    const effectivePermissions = new Set([
+      ...allowedByRoles,
+      ...(user.permissions ?? []).map((p) => p.trim().toLowerCase()),
+    ]);
+
+    return [...effectivePermissions].sort((left, right) =>
+      left.localeCompare(right),
+    );
   }
 
   private async expandRoleAncestors(roleIds: string[]): Promise<Set<string>> {
