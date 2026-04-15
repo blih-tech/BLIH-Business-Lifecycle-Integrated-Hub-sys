@@ -85,8 +85,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         if (cookie.startsWith('kc_access=')) {
           const token = extractTokenFromCookie(cookie);
           if (token) {
+            // httpOnly cookie — used by server-side session checks (getSession)
             nextResponse.cookies.set('kc_access', token, {
               httpOnly: true,
+              secure: true,
+              sameSite: 'none',
+              maxAge: 300,
+              path: '/',
+            });
+            // JS-readable cookie — used by apiClient to send Bearer token
+            // to the external API (cross-domain, so credentials: include won't work)
+            nextResponse.cookies.set('kc_token', token, {
+              httpOnly: false,
               secure: true,
               sameSite: 'none',
               maxAge: 300,
