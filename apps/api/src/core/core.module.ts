@@ -3,6 +3,7 @@ import { PlatformModule } from '../platform/platform.module';
 import { OpenApiDocsModule } from '../shared/docs/openapi/openapi-docs.module';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
+import { CountriesModule } from './countries/countries.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { HealthModule } from './health/health.module';
 import { JobGradesModule } from './job-grades/job-grades.module';
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
     PlatformModule,
     AuthModule,
     RbacModule,
+    CountriesModule,
     DepartmentsModule,
     UsersModule,
     JobGradesModule,

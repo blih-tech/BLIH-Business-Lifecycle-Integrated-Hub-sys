@@ -72,7 +72,10 @@ function iconFor(key: HrMainNavItem['icon']) {
 
 function resolveActiveMain(pathname: string): HrMainNavItem {
   const matched = HR_MAIN_NAV.find((item) => {
-    if (pathname.startsWith(item.href)) return true;
+    // Match by section prefix (e.g. /dashboard/hr/people), not the specific
+    // overview href — so /people/create still resolves to the People section.
+    const sectionPrefix = item.href.split('/').slice(0, 5).join('/');
+    if (pathname.startsWith(sectionPrefix)) return true;
     return (
       item.subItems?.some((subItem) => pathname.startsWith(subItem.href)) ??
       false
