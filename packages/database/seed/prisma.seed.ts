@@ -7,6 +7,67 @@ import {
 import { createPrismaPgAdapter } from '../src/prisma-adapter.js';
 import { PrismaClient } from '../src/prisma-client.js';
 
+const ROLE_PERMISSIONS: Record<string, string[]> = {
+  superadmin: ['*'],
+  hr: [
+    'employee:*',
+    'leave:*',
+    'attendance:*',
+    'user:*',
+    'user_profile:*',
+    'user_employment:*',
+    'user_compensation:*',
+    'user_lifecycle:*',
+    'department:*',
+    'position:*',
+    'job_grade:*',
+  ],
+  hr_manager: [
+    'employee:*',
+    'leave:*',
+    'attendance:*',
+    'user:*',
+    'user_profile:*',
+    'user_employment:*',
+    'user_compensation:*',
+    'user_lifecycle:*',
+    'department:*',
+    'position:*',
+    'job_grade:*',
+  ],
+  hr_assistant: [
+    'employee:view',
+    'employee:create',
+    'leave:view',
+    'leave:create',
+    'attendance:view',
+    'user_profile:view',
+    'user_profile:update',
+  ],
+  finance: ['finance_*:*'],
+  finance_manager: ['*_report:*', 'expense:*', 'invoice:*'],
+  finance_accountant: [
+    'expense:view',
+    'expense:create',
+    'invoice:view',
+    'invoice:create',
+  ],
+  project_manager: ['project:*', 'task:*'],
+  pm_lead: ['project:*', 'task:*'],
+  pm_member: ['project:view', 'task:create', 'task:update'],
+  crm_manager: ['crm_client:*', 'deal:*', 'pipeline:*'],
+  crm_lead: ['crm_client:*', 'deal:*', 'pipeline:*'],
+  crm_agent: [
+    'crm_client:view',
+    'crm_client:create',
+    'deal:view',
+    'deal:create',
+  ],
+  brain_operator: ['brain_config:*'],
+  brain_admin: ['brain_config:*'],
+  brain_viewer: ['brain_config:view'],
+};
+
 const getRequiredEnv = (name: string) => {
   const value = process.env[name];
   if (!value) {
@@ -30,7 +91,10 @@ const parseOptionalInt = (value: string | undefined, name: string) => {
 
 const { adapter, pool } = createPrismaPgAdapter({
   connectionString: getRequiredEnv('DATABASE_URL'),
-  max: parseOptionalInt(process.env['DATABASE_POOL_SIZE'], 'DATABASE_POOL_SIZE'),
+  max: parseOptionalInt(
+    process.env['DATABASE_POOL_SIZE'],
+    'DATABASE_POOL_SIZE',
+  ),
   connectionTimeoutMillis: parseOptionalInt(
     process.env['DATABASE_TIMEOUT_MS'],
     'DATABASE_TIMEOUT_MS',
@@ -87,7 +151,9 @@ const ensureCatalog = async (): Promise<Map<string, string>> => {
     select: { id: true, name: true },
   });
 
-  return new Map<string, string>(resources.map((entry) => [entry.name, entry.id]));
+  return new Map<string, string>(
+    resources.map((entry) => [entry.name, entry.id]),
+  );
 };
 
 const ensurePermissions = async (resourceIdByName: Map<string, string>) => {
@@ -174,12 +240,78 @@ const ensureRoles = async () => {
   }
 };
 
+const ensureRolePermissions = async () => {
+  const permissions = await prisma.permission.findMany({
+    select: { id: true, slug: true },
+  });
+  const permissionIdBySlug = new Map<string, string>(
+    permissions.map((p) => [p.slug, p.id]),
+  );
+
+  const roles = await prisma.role.findMany({
+    select: { id: true, name: true },
+  });
+  const roleIdByName = new Map<string, string>(
+    roles.map((r) => [r.name, r.id]),
+  );
+
+  const allPerms = Array.from(permissionIdBySlug.keys());
+
+  const matchPattern = (slug: string, pattern: string): boolean => {
+    if (pattern === '*') return true;
+    if (pattern.includes('*')) {
+      const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+      return regex.test(slug);
+    }
+    return slug === pattern;
+  };
+
+  for (const [roleName, permPatterns] of Object.entries(ROLE_PERMISSIONS)) {
+    const roleId = roleIdByName.get(roleName);
+    if (!roleId) {
+      console.warn(`Role not found: ${roleName}`);
+      continue;
+    }
+
+    for (const pattern of permPatterns) {
+      const matchingPerms = allPerms.filter((slug) =>
+        matchPattern(slug, pattern),
+      );
+
+      if (matchingPerms.length === 0) {
+        console.warn(`No permissions match pattern: ${pattern}`);
+        continue;
+      }
+
+      for (const slug of matchingPerms) {
+        const permId = permissionIdBySlug.get(slug);
+        if (!permId) continue;
+
+        await prisma.rolePermission.upsert({
+          where: {
+            roleId_permissionId: {
+              roleId,
+              permissionId: permId,
+            },
+          },
+          update: {},
+          create: {
+            roleId,
+            permissionId: permId,
+          },
+        });
+      }
+    }
+  }
+};
+
 async function main(): Promise<void> {
   ensureCatalogConsistency();
 
   const resourceIdByName = await ensureCatalog();
   await ensurePermissions(resourceIdByName);
   await ensureRoles();
+  await ensureRolePermissions();
 
   await prisma.moduleConfig.upsert({
     where: { module: 'core' },
