@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { RBAC_ROLE_NAMES } from '@repo/types/rbac';
 import { UserStatus } from '../prisma/prisma-client';
 import { PrismaService } from '../prisma/prisma.service';
 import { KeycloakAdminService } from './keycloak-admin.service';
@@ -190,8 +191,16 @@ export class PrincipalEnrichmentService {
         }
       }
 
-      // Sync roles to the database to ensure permissions can be resolved
+      // Sync roles to the database to ensure permissions can be resolved.
+      // If a known system role exists in the Keycloak token but not in the
+      // DB (e.g. the seed hasn't been run yet), we auto-create it so that
+      // UserRole records can be created and the permission snapshot service
+      // can apply its hardcoded fallback.
       if (roles && roles.length > 0) {
+        const knownRoleNames = new Set(
+          RBAC_ROLE_NAMES.map((r) => r.toLowerCase()),
+        );
+
         const dbRoles = await this.prisma.role.findMany({
           where: {
             name: {
@@ -202,23 +211,44 @@ export class PrincipalEnrichmentService {
           select: { id: true, name: true },
         });
 
-        if (dbRoles.length > 0) {
-          for (const dbRole of dbRoles) {
-            await this.prisma.userRole.upsert({
-              where: {
-                userId_roleId: {
-                  userId: user.id,
-                  roleId: dbRole.id,
-                },
-              },
+        const foundNames = new Set(dbRoles.map((r) => r.name.toLowerCase()));
+
+        // Auto-upsert any token roles that are known system roles but
+        // missing from the DB (graceful unseeded-DB recovery)
+        for (const tokenRole of roles) {
+          const lowerRole = tokenRole.toLowerCase();
+          if (knownRoleNames.has(lowerRole) && !foundNames.has(lowerRole)) {
+            const created = await this.prisma.role.upsert({
+              where: { name: lowerRole },
               update: {},
               create: {
+                name: lowerRole,
+                displayName: tokenRole,
+                description: 'Auto-provisioned from Keycloak realm role',
+                isSystem: true,
+              },
+              select: { id: true, name: true },
+            });
+            dbRoles.push(created);
+            foundNames.add(lowerRole);
+          }
+        }
+
+        for (const dbRole of dbRoles) {
+          await this.prisma.userRole.upsert({
+            where: {
+              userId_roleId: {
                 userId: user.id,
                 roleId: dbRole.id,
-                assignedAt: new Date(),
               },
-            });
-          }
+            },
+            update: {},
+            create: {
+              userId: user.id,
+              roleId: dbRole.id,
+              assignedAt: new Date(),
+            },
+          });
         }
       }
 
