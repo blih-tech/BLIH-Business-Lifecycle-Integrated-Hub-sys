@@ -41,6 +41,7 @@ export class PrincipalEnrichmentService {
   async getContext(
     keycloakId: string,
     profileClaims: KeycloakProfileClaims = {},
+    roles: string[] = [],
   ): Promise<PrincipalContext> {
     const realmName = this.configService.get<string>('KEYCLOAK_REALM', 'blih');
     const cacheKey = keycloakId;
@@ -186,6 +187,38 @@ export class PrincipalEnrichmentService {
               },
             },
           });
+        }
+      }
+
+      // Sync roles to the database to ensure permissions can be resolved
+      if (roles && roles.length > 0) {
+        const dbRoles = await this.prisma.role.findMany({
+          where: {
+            name: {
+              in: roles,
+              mode: 'insensitive',
+            },
+          },
+          select: { id: true, name: true },
+        });
+
+        if (dbRoles.length > 0) {
+          for (const dbRole of dbRoles) {
+            await this.prisma.userRole.upsert({
+              where: {
+                userId_roleId: {
+                  userId: user.id,
+                  roleId: dbRole.id,
+                },
+              },
+              update: {},
+              create: {
+                userId: user.id,
+                roleId: dbRole.id,
+                assignedAt: new Date(),
+              },
+            });
+          }
         }
       }
 
