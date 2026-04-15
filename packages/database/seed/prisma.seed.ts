@@ -69,7 +69,7 @@ const ensureCatalogConsistency = () => {
   }
 };
 
-const ensureCatalog = async () => {
+const ensureCatalog = async (): Promise<Map<string, string>> => {
   for (const resource of RBAC_RESOURCE_CATALOG) {
     await prisma.permissionResource.upsert({
       where: { name: resource.name },
@@ -87,7 +87,7 @@ const ensureCatalog = async () => {
     select: { id: true, name: true },
   });
 
-  return new Map(resources.map((entry) => [entry.name, entry.id] as const));
+  return new Map<string, string>(resources.map((entry) => [entry.name, entry.id]));
 };
 
 const ensurePermissions = async (resourceIdByName: Map<string, string>) => {
@@ -105,12 +105,12 @@ const ensurePermissions = async (resourceIdByName: Map<string, string>) => {
     });
   }
 
-  const actionIdByName = new Map(
+  const actionIdByName = new Map<string, string>(
     (
       await prisma.permissionAction.findMany({
         select: { id: true, name: true },
       })
-    ).map((entry) => [entry.name, entry.id] as const),
+    ).map((entry) => [entry.name, entry.id]),
   );
 
   for (const slug of RBAC_PERMISSIONS) {
