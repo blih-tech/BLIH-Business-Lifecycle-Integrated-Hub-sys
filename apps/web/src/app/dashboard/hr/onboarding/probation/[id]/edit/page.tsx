@@ -1,3 +1,4 @@
+import { EditProbationScreen } from '@/features/hr/onboarding/probation/components';
 import { isAuthorizedForDashboard } from '@/shared/auth/role-routing';
 import { getSession } from '@/shared/auth/session';
 import { redirect } from 'next/navigation';
@@ -26,10 +27,7 @@ export default async function EditProbationPage({
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-4 px-4 py-4 md:px-5 md:py-5">
       <h2 className="text-xl font-semibold">Edit Probation Plan</h2>
-      <p className="text-sm text-muted-foreground">
-        Editing probation plan <code>{id}</code> is now prepared for full form
-        integration.
-      </p>
+      <EditProbationScreen probationId={id} />
     </main>
   );
 }

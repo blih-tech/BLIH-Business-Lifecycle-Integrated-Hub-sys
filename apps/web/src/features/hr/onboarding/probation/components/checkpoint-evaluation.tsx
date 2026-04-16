@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createCheckpointEvaluation } from '@/features/hr/onboarding/probation/api/evaluation.api';
+import { toast } from 'sonner';
+import { useCreateCheckpointEvaluation } from '@/features/hr/onboarding/probation/hooks/use-probation';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 
@@ -15,17 +16,32 @@ export function CheckpointEvaluation({
   probationKpiId,
 }: CheckpointEvaluationProps): React.ReactElement {
   const [score, setScore] = useState('');
-  const [saving, setSaving] = useState(false);
+  const createMutation = useCreateCheckpointEvaluation();
 
   async function onCreate() {
-    setSaving(true);
+    const numericScore = Number(score);
+    if (
+      !Number.isFinite(numericScore) ||
+      numericScore < 0 ||
+      numericScore > 100
+    ) {
+      toast.error('Score must be a number between 0 and 100.');
+      return;
+    }
+
     try {
-      await createCheckpointEvaluation({
+      await createMutation.mutateAsync({
         checkpointId,
-        scores: [{ probationKpiId, score: Number(score || 0) }],
+        scores: [{ probationKpiId, score: numericScore }],
       });
-    } finally {
-      setSaving(false);
+      toast.success('Checkpoint evaluation saved.');
+      setScore('');
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to submit checkpoint evaluation.',
+      );
     }
   }
 
@@ -36,8 +52,12 @@ export function CheckpointEvaluation({
         onChange={(e) => setScore(e.target.value)}
         placeholder="Checkpoint score"
       />
-      <Button type="button" onClick={onCreate} disabled={saving}>
-        {saving ? 'Saving...' : 'Save'}
+      <Button
+        type="button"
+        onClick={onCreate}
+        disabled={createMutation.isPending}
+      >
+        {createMutation.isPending ? 'Saving...' : 'Save'}
       </Button>
     </div>
   );
