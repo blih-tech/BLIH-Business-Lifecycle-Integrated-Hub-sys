@@ -1,7 +1,6 @@
 import {
-  CheckpointEvaluation,
-  FinalEvaluation,
   KpiManagement,
+  ProbationEvaluationsScreen,
 } from '@/features/hr/onboarding/probation/components';
 import { isAuthorizedForDashboard } from '@/shared/auth/role-routing';
 import { getSession } from '@/shared/auth/session';
@@ -32,8 +31,7 @@ export default async function ProbationEvaluationsPage({
     <main className="mx-auto w-full max-w-[1024px] space-y-6 px-4 py-4 md:px-5 md:py-5">
       <h2 className="text-xl font-semibold">Probation Evaluations</h2>
       <KpiManagement probationId={id} />
-      <CheckpointEvaluation checkpointId={id} probationKpiId={id} />
-      <FinalEvaluation probationId={id} probationKpiId={id} />
+      <ProbationEvaluationsScreen probationId={id} />
     </main>
   );
 }
