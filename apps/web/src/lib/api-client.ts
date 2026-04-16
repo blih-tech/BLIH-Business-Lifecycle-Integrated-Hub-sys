@@ -7,6 +7,13 @@ interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
 }
 
+/** Read the JS-accessible kc_token cookie (set during OIDC callback). */
+function getAccessToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(/(?:^|;\s*)kc_token=([^;]+)/);
+  return match ? decodeURIComponent(match[1] ?? '') : null;
+}
+
 class ApiError extends Error {
   constructor(
     public message: string,

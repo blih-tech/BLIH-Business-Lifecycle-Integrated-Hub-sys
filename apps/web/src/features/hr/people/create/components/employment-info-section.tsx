@@ -1,21 +1,43 @@
-import { useFormContext } from "react-hook-form";
-import { Upload } from "lucide-react";
+import { useFormContext } from 'react-hook-form';
+import { Upload } from 'lucide-react';
 
-import type { EmployeeProfileFormValues } from "@/features/hr/people/create/form-schema";
-import { FormSectionCard } from "@/features/hr/people/create/components/form-section-card";
-import { Button } from "@/shared/components/ui/button";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
+import { Button } from '@/shared/components/ui/button';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
+import { useDepartments, usePositions } from '@/hooks/hr/use-reference-data';
 
 export function EmploymentInfoSection() {
   const form = useFormContext<EmployeeProfileFormValues>();
+  const selectedDepartmentId = form.watch('department');
+
+  const { data: departments = [], isLoading: deptsLoading } = useDepartments();
+  const { data: positions = [], isLoading: positionsLoading } = usePositions(
+    selectedDepartmentId || undefined,
+  );
 
   return (
-    <FormSectionCard title="Employment Details" description="Role and employment setup information.">
+    <FormSectionCard
+      title="Employment Details"
+      description="Role and employment setup information."
+    >
       <div className="grid gap-4">
         <FormItem>
-          <FormLabel>Offer Letter *</FormLabel>
+          <FormLabel>Offer Letter</FormLabel>
           <div className="flex items-center gap-3">
             <FormField
               control={form.control}
@@ -28,13 +50,17 @@ export function EmploymentInfoSection() {
                         type="file"
                         className="absolute inset-0 z-10 cursor-pointer opacity-0"
                         onChange={(event) => {
-                          const fileName = event.target.files?.[0]?.name ?? "";
+                          const fileName = event.target.files?.[0]?.name ?? '';
                           field.onChange(fileName);
                         }}
                       />
-                      <Button type="button" variant="outline" className="h-[50px] w-full justify-start rounded-[6px] border-[#e5e5e5] text-[#666]">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-[50px] w-full justify-start rounded-[6px] border-[#e5e5e5] text-[#666]"
+                      >
                         <Upload className="h-4 w-4" />
-                        {field.value || "Upload"}
+                        {field.value || 'Upload'}
                       </Button>
                     </div>
                   </FormControl>
@@ -48,7 +74,10 @@ export function EmploymentInfoSection() {
               name="offerLetterSource"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? ''}
+                  >
                     <FormControl>
                       <SelectTrigger className="h-[50px] w-full rounded-[6px] border-[#e5e5e5] text-[#6b7280]">
                         <SelectValue placeholder="Select" />
@@ -73,18 +102,29 @@ export function EmploymentInfoSection() {
           name="department"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Department</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <FormLabel>Department *</FormLabel>
+              <Select
+                onValueChange={(val) => {
+                  field.onChange(val);
+                  form.setValue('rolePosition', '');
+                }}
+                value={field.value ?? ''}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select" />
+                    <SelectValue
+                      placeholder={
+                        deptsLoading ? 'Loading…' : 'Select department'
+                      }
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Technical Dept.">Technical Dept.</SelectItem>
-                  <SelectItem value="Digital Marketing Dept.">Digital Marketing Dept.</SelectItem>
-                  <SelectItem value="People Operations">People Operations</SelectItem>
-                  <SelectItem value="Finance">Finance</SelectItem>
+                  {departments.map((d) => (
+                    <SelectItem key={d.id} value={d.id}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -97,7 +137,7 @@ export function EmploymentInfoSection() {
           name="reportingTo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Reporting To *</FormLabel>
+              <FormLabel>Reporting To</FormLabel>
               <FormControl>
                 <Input placeholder="Manager name" {...field} />
               </FormControl>
@@ -111,10 +151,35 @@ export function EmploymentInfoSection() {
           name="rolePosition"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role/Position *</FormLabel>
-              <FormControl>
-                <Input placeholder="Senior Software Engineer" {...field} />
-              </FormControl>
+              <FormLabel>Role / Position</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value ?? ''}
+                disabled={!selectedDepartmentId}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue
+                      placeholder={
+                        !selectedDepartmentId
+                          ? 'Select department first'
+                          : positionsLoading
+                            ? 'Loading…'
+                            : positions.length === 0
+                              ? 'No positions in this department'
+                              : 'Select position'
+                      }
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {positions.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

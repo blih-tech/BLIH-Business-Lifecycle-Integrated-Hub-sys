@@ -32,11 +32,8 @@ export class CreateEmployeeUseCase {
         'At least one emergency contact is required',
       );
     }
-    if (dto.educations.length === 0) {
-      throw new BadRequestException(
-        'At least one education record is required',
-      );
-    }
+    // Education records are optional at creation and can be added later
+    // via the employee profile update flow.
 
     const username = await this.provisioning.generateUniqueUsername({
       email: dto.primaryEmail,

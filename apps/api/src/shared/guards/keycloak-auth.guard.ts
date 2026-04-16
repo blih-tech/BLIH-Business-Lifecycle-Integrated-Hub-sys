@@ -135,9 +135,13 @@ export class KeycloakAuthGuard implements CanActivate {
     const contextData = await this.principalEnrichment.getContext(
       principal.sub,
       profileClaims,
+      principal.roles,
     );
     const permissions =
-      await this.userPermissionSnapshot.getPersistedPermissions(principal.sub);
+      await this.userPermissionSnapshot.getPersistedPermissions(
+        principal.sub,
+        principal.roles,
+      );
 
     return {
       ...principal,
