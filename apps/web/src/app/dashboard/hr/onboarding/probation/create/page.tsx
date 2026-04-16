@@ -1,3 +1,4 @@
+import { ProbationForm } from '@/features/hr/onboarding/probation/components';
 import { isAuthorizedForDashboard } from '@/shared/auth/role-routing';
 import { getSession } from '@/shared/auth/session';
 import { redirect } from 'next/navigation';
@@ -18,10 +19,7 @@ export default async function CreateProbationPage() {
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-4 px-4 py-4 md:px-5 md:py-5">
       <h2 className="text-xl font-semibold">Create Probation Plan</h2>
-      <p className="text-sm text-muted-foreground">
-        Probation creation is now connected to the API layer and ready for form
-        integration.
-      </p>
+      <ProbationForm />
     </main>
   );
 }
