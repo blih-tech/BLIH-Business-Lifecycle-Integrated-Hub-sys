@@ -27,6 +27,10 @@ export async function getProbations(): Promise<ProbationPlan[]> {
   return requestJson<ProbationPlan[]>('/hr/probation');
 }
 
+export async function getProbationById(id: string): Promise<ProbationPlan> {
+  return requestJson<ProbationPlan>(`/hr/probation/${id}`);
+}
+
 export async function createProbation(
   data: CreateProbationDto,
 ): Promise<ProbationPlan> {
