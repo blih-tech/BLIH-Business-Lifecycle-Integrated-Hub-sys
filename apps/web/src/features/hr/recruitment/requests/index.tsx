@@ -3,10 +3,6 @@
 import { useMemo } from 'react';
 
 import {
-  emptyRequestsMessage,
-  requestStats,
-} from '@/features/hr/recruitment/requests/mock-data';
-import {
   EmptyRequestsState,
   RequestsSection,
   RequestsStatsCard,
@@ -14,6 +10,7 @@ import {
 } from '@/features/hr/recruitment/requests/components';
 import { useJobs } from '@/features/hr/recruitment/requests/hooks';
 import { mapJobsToRequests } from '@/features/hr/recruitment/shared/mappers';
+import type { RequestsStatItem } from '@/features/hr/recruitment/requests/types';
 
 export * from '@/features/hr/recruitment/requests/components';
 export * from '@/features/hr/recruitment/requests/types';
@@ -42,12 +39,34 @@ export function RecruitmentRequestsContent({
   const declinedRequests = normalizedRequests.filter(
     (request) => request.status === 'closed',
   );
+  const stats: RequestsStatItem[] = [
+    {
+      id: 'pending',
+      label: 'Pending Approvals',
+      value: String(pendingRequests.length),
+      icon: 'pending',
+    },
+    {
+      id: 'approved-by-you',
+      label: 'Approved by You',
+      value: String(pendingByMeRequests.length),
+      icon: 'approved',
+    },
+    {
+      id: 'open-positions',
+      label: 'Open Positions',
+      value: String(
+        jobs?.reduce((total, item) => total + (item.job.openings ?? 0), 0) ?? 0,
+      ),
+      icon: 'open_positions',
+    },
+  ];
   const hasRequests = normalizedRequests.length > 0;
 
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-8 px-4 py-5 md:px-5 md:py-6">
       <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {requestStats.map((item) => (
+        {stats.map((item) => (
           <RequestsStatsCard key={item.id} item={item} />
         ))}
       </section>
@@ -82,7 +101,7 @@ export function RecruitmentRequestsContent({
           />
 
           {!isLoading && !hasRequests ? (
-            <EmptyRequestsState message={emptyRequestsMessage} />
+            <EmptyRequestsState message="No hiring requests found yet." />
           ) : null}
         </>
       )}

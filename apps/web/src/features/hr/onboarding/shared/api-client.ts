@@ -6,7 +6,7 @@ type ApiEnvelope<T> = {
   data: T;
 };
 
-type RequestMethod = 'GET' | 'POST' | 'PATCH';
+type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 function getBaseUrl(): string {
   return getApiBaseUrl();

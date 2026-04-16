@@ -1,6 +1,9 @@
 import { apiClient } from '@/lib/api-client';
 import type {
+  ApproveJobDto,
   ApplicantResponseDto,
+  CloseJobDto,
+  CreateJobDto,
   InterviewResponseDto,
   JobListQueryDto,
   JobResponseDto,
@@ -10,6 +13,7 @@ import type {
   ListOffersResponse,
   OfferResponseDto,
   ScreenCandidatesEnvelope,
+  UpdateJobDto,
 } from '@/types';
 
 const JOBS_BASE = '/hr/recruitment/jobs';
@@ -28,6 +32,43 @@ export async function listJobs(
     : undefined;
   const response = await apiClient.get<ListJobsResponse>(JOBS_BASE, params);
   return response.data ?? [];
+}
+
+export async function createJob(data: CreateJobDto): Promise<JobResponseDto> {
+  return apiClient.post<JobResponseDto>(JOBS_BASE, data);
+}
+
+export async function updateJob(
+  id: string,
+  data: UpdateJobDto,
+): Promise<JobResponseDto> {
+  return apiClient.patch<JobResponseDto>(`${JOBS_BASE}/${id}`, data);
+}
+
+export async function deleteJob(id: string): Promise<void> {
+  await apiClient.delete(`${JOBS_BASE}/${id}`);
+}
+
+export async function submitJob(id: string): Promise<JobResponseDto> {
+  return apiClient.post<JobResponseDto>(`${JOBS_BASE}/${id}/submit`, {});
+}
+
+export async function approveJob(
+  id: string,
+  data: ApproveJobDto,
+): Promise<JobResponseDto> {
+  return apiClient.post<JobResponseDto>(`${JOBS_BASE}/${id}/approve`, data);
+}
+
+export async function publishJob(id: string): Promise<JobResponseDto> {
+  return apiClient.post<JobResponseDto>(`${JOBS_BASE}/${id}/publish`, {});
+}
+
+export async function closeJob(
+  id: string,
+  data: CloseJobDto,
+): Promise<JobResponseDto> {
+  return apiClient.post<JobResponseDto>(`${JOBS_BASE}/${id}/close`, data);
 }
 
 export async function listApplicants(

@@ -1,4 +1,5 @@
 import { requestJson } from '@/features/hr/onboarding/shared/api-client';
+import type { CreateProbationDto, UpdateProbationDto } from '@/types';
 
 export type ProbationPlan = {
   id: string;
@@ -24,6 +25,23 @@ export type EmployeeFull = {
 
 export async function getProbations(): Promise<ProbationPlan[]> {
   return requestJson<ProbationPlan[]>('/hr/probation');
+}
+
+export async function createProbation(
+  data: CreateProbationDto,
+): Promise<ProbationPlan> {
+  return requestJson<ProbationPlan>('/hr/probation', 'POST', data);
+}
+
+export async function updateProbation(
+  id: string,
+  data: UpdateProbationDto,
+): Promise<ProbationPlan> {
+  return requestJson<ProbationPlan>(`/hr/probation/${id}`, 'PATCH', data);
+}
+
+export async function deleteProbation(id: string): Promise<void> {
+  await requestJson<void>(`/hr/probation/${id}`, 'DELETE');
 }
 
 export async function getEmployeeFull(
