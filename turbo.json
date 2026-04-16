@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "stream",
+  "globalEnv": ["VERCEL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -17,7 +18,12 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "env": ["NODE_ENV", "DEMO_MODE", "NEXT_PUBLIC_API_URL"]
+      "env": [
+        "NODE_ENV",
+        "DEMO_MODE",
+        "NEXT_PUBLIC_API_URL",
+        "KEYCLOAK_AUTH_SCOPES"
+      ]
     },
     "check-types": {
       "dependsOn": ["build", "^check-types", "^build"]

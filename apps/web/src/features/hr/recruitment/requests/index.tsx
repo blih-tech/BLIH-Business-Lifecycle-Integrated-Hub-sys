@@ -3,17 +3,14 @@
 import { useMemo } from 'react';
 
 import {
-  emptyRequestsMessage,
-  requestStats,
-} from '@/features/hr/recruitment/requests/mock-data';
-import {
   EmptyRequestsState,
   RequestsSection,
   RequestsStatsCard,
   RequestsErrorState,
 } from '@/features/hr/recruitment/requests/components';
 import { useJobs } from '@/features/hr/recruitment/requests/hooks';
-import { mapJobResponseToRequest } from '@/features/hr/recruitment/requests/job-request-mappers';
+import { mapJobsToRequests } from '@/features/hr/recruitment/shared/mappers';
+import type { RequestsStatItem } from '@/features/hr/recruitment/requests/types';
 
 export * from '@/features/hr/recruitment/requests/components';
 export * from '@/features/hr/recruitment/requests/types';
@@ -30,23 +27,7 @@ export function RecruitmentRequestsContent({
 
   const normalizedRequests = useMemo(() => {
     if (!jobs) return [];
-    return jobs.map((job) => {
-      const workflow = job.requestForm?.status?.workflow;
-      const requestedBy = job.requestForm?.requestedBy ?? '';
-      const isByMe =
-        requestedBy.trim().toLowerCase() ===
-        currentUserName.trim().toLowerCase();
-
-      if (workflow === 'REJECTED') {
-        return mapJobResponseToRequest(job, 'closed');
-      }
-
-      if (workflow === 'PENDING_FOR_APPROVAL') {
-        return mapJobResponseToRequest(job, isByMe ? 'by_me' : 'active');
-      }
-
-      return mapJobResponseToRequest(job, 'posted');
-    });
+    return mapJobsToRequests(jobs, currentUserName);
   }, [currentUserName, jobs]);
 
   const pendingRequests = normalizedRequests.filter(
@@ -58,12 +39,34 @@ export function RecruitmentRequestsContent({
   const declinedRequests = normalizedRequests.filter(
     (request) => request.status === 'closed',
   );
+  const stats: RequestsStatItem[] = [
+    {
+      id: 'pending',
+      label: 'Pending Approvals',
+      value: String(pendingRequests.length),
+      icon: 'pending',
+    },
+    {
+      id: 'approved-by-you',
+      label: 'Approved by You',
+      value: String(pendingByMeRequests.length),
+      icon: 'approved',
+    },
+    {
+      id: 'open-positions',
+      label: 'Open Positions',
+      value: String(
+        jobs?.reduce((total, item) => total + (item.job.openings ?? 0), 0) ?? 0,
+      ),
+      icon: 'open_positions',
+    },
+  ];
   const hasRequests = normalizedRequests.length > 0;
 
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-8 px-4 py-5 md:px-5 md:py-6">
       <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {requestStats.map((item) => (
+        {stats.map((item) => (
           <RequestsStatsCard key={item.id} item={item} />
         ))}
       </section>
@@ -98,7 +101,7 @@ export function RecruitmentRequestsContent({
           />
 
           {!isLoading && !hasRequests ? (
-            <EmptyRequestsState message={emptyRequestsMessage} />
+            <EmptyRequestsState message="No hiring requests found yet." />
           ) : null}
         </>
       )}

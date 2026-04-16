@@ -1,30 +1,93 @@
-import { CalendarDays, CheckSquare } from "lucide-react";
+'use client';
 
-import { checklistSummaryStats, checklistTemplates } from "@/features/hr/onboarding/checklists/mock-data";
-import { ChecklistCard } from "@/features/hr/onboarding/checklists/components";
-import { ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+import { useEffect, useState } from 'react';
+import { ChecklistCard } from '@/features/hr/onboarding/checklists/components';
 
-const ICONS = {
-  "check-square": <CheckSquare className="h-4 w-4" />,
-  calendar: <CalendarDays className="h-4 w-4" />,
-} as const;
+import {
+  getChecklists,
+  submitChecklist,
+  approveChecklist,
+  rejectChecklist,
+} from './api/checklist.api';
+
+import { mapChecklistToTemplate, ChecklistItem, ChecklistUI } from './mapper';
 
 export function OnboardingChecklistsContent() {
-  return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
-      <section className="grid gap-4 md:grid-cols-3">
-        {checklistSummaryStats.map((stat) => (
-          <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
-        ))}
-      </section>
+  const [checklists, setChecklists] = useState<ChecklistItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getChecklists();
+        setChecklists(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const updateLocalState = (id: string, status: ChecklistItem['status']) => {
+    setChecklists((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status } : c)),
+    );
+  };
+
+  const handleSubmit = async (taskId: string, type: string, id: string) => {
+    await submitChecklist(taskId, type);
+    updateLocalState(id, 'SUBMITTED');
+  };
+
+  const handleApprove = async (taskId: string, type: string, id: string) => {
+    await approveChecklist(taskId, type);
+    updateLocalState(id, 'COMPLETED');
+  };
+
+  const handleReject = async (taskId: string, type: string, id: string) => {
+    await rejectChecklist(taskId, type);
+    updateLocalState(id, 'CHANGES_REQUESTED');
+  };
+
+  const mappedChecklists: ChecklistUI[] = mapChecklistToTemplate(checklists);
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <main className="mx-auto max-w-[1024px] space-y-5 px-4 py-4">
       <section>
-        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Onboarding Checklists</h2>
-        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">Create and manage reusable onboarding checklists</p>
+        <h2 className="text-xl font-semibold">Onboarding Checklists</h2>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {checklistTemplates.map((checklist) => (
-            <ChecklistCard key={checklist.id} checklist={checklist} />
+          {mappedChecklists.map((checklist) => (
+            <ChecklistCard
+              key={checklist.id}
+              checklist={checklist}
+              onSubmit={() =>
+                handleSubmit(
+                  checklist.taskId,
+                  checklist.type,
+                  checklist.originalId,
+                )
+              }
+              onApprove={() =>
+                handleApprove(
+                  checklist.taskId,
+                  checklist.type,
+                  checklist.originalId,
+                )
+              }
+              onReject={() =>
+                handleReject(
+                  checklist.taskId,
+                  checklist.type,
+                  checklist.originalId,
+                )
+              }
+            />
           ))}
         </div>
       </section>

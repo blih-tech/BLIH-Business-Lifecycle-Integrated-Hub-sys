@@ -173,6 +173,7 @@ jobs:
       HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
       HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
       HOSTINGER_DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
+      GHCR_PULL_USERNAME: ${{ github.actor }}
       GHCR_PULL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       API_IMAGE: ${{ needs.resolve-images.outputs.api_runtime_image }}
       API_MIGRATOR_IMAGE: ${{ needs.resolve-images.outputs.api_migrator_image }}
@@ -296,6 +297,7 @@ jobs:
           api_image_escaped="$(printf '%q' "${API_IMAGE}")"
           api_migrator_image_escaped="$(printf '%q' "${API_MIGRATOR_IMAGE}")"
           keycloak_image_escaped="$(printf '%q' "${KEYCLOAK_IMAGE}")"
+          ghcr_username_escaped="$(printf '%q' "${GHCR_PULL_USERNAME}")"
           ghcr_token_escaped="$(printf '%q' "${GHCR_PULL_TOKEN}")"
           git_sha_escaped="$(printf '%q' "${GITHUB_SHA}")"
 
@@ -304,6 +306,7 @@ jobs:
             API_IMAGE=${api_image_escaped} \
             API_MIGRATOR_IMAGE=${api_migrator_image_escaped} \
             KEYCLOAK_IMAGE=${keycloak_image_escaped} \
+            GHCR_PULL_USERNAME=${ghcr_username_escaped} \
             GHCR_TOKEN=${ghcr_token_escaped} \
             GIT_SHA=${git_sha_escaped} \
             COMPOSE_FILE=docker-compose.prod.yml \

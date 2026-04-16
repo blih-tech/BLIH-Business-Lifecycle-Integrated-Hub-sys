@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { LocalDevSessionGate } from '@/providers/local-dev-session-gate';
 import { QueryProvider } from '@/providers/query-provider';
 import { Toaster } from '@/shared/components/ui/sonner';
 import './globals.css';
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <LocalDevSessionGate>{children}</LocalDevSessionGate>
+        </QueryProvider>
         <Toaster />
       </body>
     </html>

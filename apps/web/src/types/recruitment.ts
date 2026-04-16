@@ -472,3 +472,346 @@ export interface ApiSuccessEnvelope<T> {
 }
 
 export type ListJobsResponse = ApiSuccessEnvelope<JobResponseDto[]>;
+
+export type ApplicantStatus =
+  | 'APPLIED'
+  | 'SCREENING'
+  | 'SHORTLISTED'
+  | 'INTERVIEW'
+  | 'WAITLIST'
+  | 'OFFER'
+  | 'HIRED'
+  | 'REJECTED'
+  | 'WITHDRAWN';
+
+export interface ApplicantResponseDto {
+  id: string;
+  jobId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  resumeUrl: string | null;
+  linkedinUrl: string | null;
+  portfolioUrl: string | null;
+  yearsExperience: number | null;
+  expectedSalary: string | null;
+  status: ApplicantStatus;
+  profileScore: number | null;
+  appliedAt: string;
+}
+
+export interface CreateApplicantDto {
+  jobId: string;
+  applicationFormId?: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string | null;
+  resumeUrl: string;
+  linkedinUrl?: string | null;
+  portfolioUrl?: string | null;
+  githubUrl?: string | null;
+  source?: string;
+  referredById?: string | null;
+  currentCompany?: string | null;
+  currentPosition?: string | null;
+  yearsExperience?: number | null;
+  location?: string | null;
+  nationality?: string | null;
+  expectedSalary?: number | null;
+  currentSalary?: number | null;
+  educationLevel?: string | null;
+  highestDegree?: string | null;
+  skills?: string[];
+  coverLetter?: string | null;
+  sourceSnapshot?: Record<string, unknown> | null;
+  customFieldValues?: Record<string, unknown> | null;
+  educations?: Array<{
+    institution: string;
+    degree: string;
+    field: string;
+    startDate?: string | null;
+    endDate?: string | null;
+  }>;
+  experiences?: Array<{
+    company: string;
+    title: string;
+    startDate?: string | null;
+    endDate?: string | null;
+    description?: string | null;
+  }>;
+}
+
+export type ListApplicantsResponse = ApiSuccessEnvelope<ApplicantResponseDto[]>;
+
+export type InterviewStatus =
+  | 'SCHEDULED'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'NO_SHOW';
+export type InterviewAttendanceStatus =
+  | 'SCHEDULED'
+  | 'ATTENDING'
+  | 'NO_SHOW'
+  | 'COMPLETED'
+  | 'CANCELLED';
+
+export interface InterviewFeedbackResponseDto {
+  score: number | null;
+}
+
+export interface InterviewParticipantDto {
+  id: string;
+  applicantId: string;
+  attendanceStatus: InterviewAttendanceStatus;
+}
+
+export interface InterviewResponseDto {
+  id: string;
+  jobId: string;
+  status: InterviewStatus;
+  scheduledAt: string;
+  participants: InterviewParticipantDto[];
+  feedbacks: InterviewFeedbackResponseDto[];
+}
+
+export type ListInterviewsResponse = ApiSuccessEnvelope<InterviewResponseDto[]>;
+
+export type OfferStatus =
+  | 'DRAFT'
+  | 'SENT'
+  | 'ACCEPTED'
+  | 'DECLINED'
+  | 'EXPIRED'
+  | 'WITHDRAWN';
+
+export interface OfferResponseDto {
+  id: string;
+  jobId: string;
+  applicantId: string;
+  status: OfferStatus;
+}
+
+export type ListOffersResponse = ApiSuccessEnvelope<OfferResponseDto[]>;
+
+export interface RankedCandidateDto {
+  candidateId: string;
+  score: number;
+  recommendation: string;
+}
+
+export interface ScreenCandidatesResponseDto {
+  totalApplicants: number;
+  rankedApplicants: RankedCandidateDto[];
+}
+
+export type ScreenCandidatesEnvelope =
+  ApiSuccessEnvelope<ScreenCandidatesResponseDto>;
+
+export type UpdateApplicantDto = Partial<CreateApplicantDto>;
+
+export interface UpdateApplicantStatusDto {
+  status: ApplicantStatus;
+  notes?: string | null;
+}
+
+export interface BulkUpdateApplicantStatusDto {
+  applicantIds: string[];
+  status: ApplicantStatus;
+  notes?: string | null;
+}
+
+export type InterviewType = 'PHONE' | 'VIDEO' | 'IN_PERSON' | 'TAKE_HOME';
+
+export interface InterviewerAssignmentInputDto {
+  interviewerId: string;
+  role?: string | null;
+}
+
+export interface CreateInterviewDto {
+  jobId: string;
+  type: InterviewType;
+  round?: number;
+  status?: InterviewStatus;
+  scheduledAt: string;
+  durationMinutes?: number | null;
+  location?: string | null;
+  meetingUrl?: string | null;
+  applicantIds: string[];
+  interviewers: InterviewerAssignmentInputDto[];
+}
+
+export type UpdateInterviewDto = Partial<Omit<CreateInterviewDto, 'jobId'>>;
+
+export interface SubmitFeedbackDto {
+  score?: number | null;
+  endorsement?: 'STRONG_HIRE' | 'HIRE' | 'MAYBE' | 'NO_HIRE' | null;
+  strengths?: string[];
+  weaknesses?: string[];
+  notes?: string | null;
+  isDraft?: boolean;
+}
+
+export interface UpdateAttendanceDto {
+  attendanceStatus: InterviewAttendanceStatus;
+}
+
+export interface CreateOfferDto {
+  jobId: string;
+  applicantId: string;
+  salary?: number | null;
+  currency?: string | null;
+  startDate?: string | null;
+  payFrequency?:
+    | 'HOURLY'
+    | 'WEEKLY'
+    | 'BI_WEEKLY'
+    | 'MONTHLY'
+    | 'YEARLY'
+    | null;
+  employmentType?: EmploymentType | null;
+  bonus?: number | null;
+  equity?: number | null;
+  offerLetterUrl?: string | null;
+  notes?: string | null;
+  expiresAt?: string | null;
+}
+
+export type UpdateOfferDto = Partial<CreateOfferDto>;
+
+export interface SendOfferDto {
+  expiresAt?: string | null;
+}
+
+export interface RespondOfferDto {
+  decision: 'ACCEPTED' | 'DECLINED';
+}
+
+export interface WithdrawOfferDto {
+  reason?: string | null;
+}
+
+export interface InterviewQuestionResponseDto {
+  id: string;
+  question: string;
+  description: string | null;
+  category: string | null;
+  type: string;
+  options: string[];
+  difficulty: number | null;
+  tags: string[];
+  createdById: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateInterviewQuestionDto {
+  question: string;
+  description?: string | null;
+  category?: string | null;
+  type: string;
+  options?: string[];
+  difficulty?: number | null;
+  tags?: string[];
+  isActive?: boolean;
+}
+
+export type UpdateInterviewQuestionDto = Partial<CreateInterviewQuestionDto>;
+
+export type ProbationStatusValue =
+  | 'NOT_STARTED'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'FAILED'
+  | 'EXTENDED';
+
+export interface CreateProbationDto {
+  employeeId: string;
+  startDate: string;
+  endDate: string;
+  status?: ProbationStatusValue;
+  kpis?: Array<{ kpiId: string }>;
+  checkpoints?: Array<{ name: string; checkpointDate: string }>;
+}
+
+export type UpdateProbationDto = Partial<CreateProbationDto>;
+
+export interface ProbationKpiResponseDto {
+  id: string;
+  name: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProbationKpiDto {
+  name: string;
+  description?: string | null;
+}
+
+export type UpdateProbationKpiDto = Partial<CreateProbationKpiDto>;
+
+export interface EvaluationScoreDto {
+  probationKpiId: string;
+  score: number;
+  comment?: string | null;
+}
+
+export interface CheckpointEvaluationResponseDto {
+  id: string;
+  checkpointId: string;
+  checkpointName: string;
+  comment: string | null;
+  totalScore: number;
+  scores: Array<{
+    id: string;
+    probationKpiId: string;
+    kpiName: string;
+    score: number;
+    comment: string | null;
+    createdAt: string;
+  }>;
+  createdAt: string;
+}
+
+export interface CreateCheckpointEvaluationDto {
+  checkpointId: string;
+  comment?: string | null;
+  scores: EvaluationScoreDto[];
+}
+
+export type UpdateCheckpointEvaluationDto =
+  Partial<CreateCheckpointEvaluationDto>;
+
+export type ProbationOutcomeValue =
+  | 'CONFIRMED'
+  | 'EXTENDED'
+  | 'TERMINATED'
+  | 'RESIGNED';
+
+export interface FinalEvaluationResponseDto {
+  id: string;
+  probationId: string;
+  outcome: ProbationOutcomeValue;
+  comment: string | null;
+  totalScore: number;
+  scores: Array<{
+    id: string;
+    probationKpiId: string;
+    kpiName: string;
+    score: number;
+    comment: string | null;
+    createdAt: string;
+  }>;
+  createdAt: string;
+}
+
+export interface CreateFinalEvaluationDto {
+  probationId: string;
+  outcome: ProbationOutcomeValue;
+  comment?: string | null;
+  scores: EvaluationScoreDto[];
+}

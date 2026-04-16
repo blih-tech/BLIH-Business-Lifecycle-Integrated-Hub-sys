@@ -1,7 +1,8 @@
+import { LOCAL_SESSION_COOKIE } from '@/lib/auth-constants';
+import { getApiBaseUrl } from '@/lib/api-base';
 import { type NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
+const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Proxies the logout request to the NestJS API.
@@ -46,6 +47,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   for (const cookie of response.headers.getSetCookie()) {
     nextResponse.headers.append('Set-Cookie', cookie);
   }
+
+  nextResponse.cookies.set(LOCAL_SESSION_COOKIE, '', {
+    path: '/',
+    maxAge: 0,
+  });
 
   return nextResponse;
 }

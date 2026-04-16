@@ -1,15 +1,10 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
+import { getApiBaseUrl } from '@/lib/api-base';
+import { getBrowserAuthorizationHeader } from '@/lib/auth-headers';
+
+const AUTH_DEBUG = process.env.NEXT_PUBLIC_AUTH_DEBUG === 'true';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
-}
-
-/** Read the JS-accessible kc_token cookie (set during OIDC callback). */
-function getAccessToken(): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(/(?:^|;\s*)kc_token=([^;]+)/);
-  return match ? decodeURIComponent(match[1] ?? '') : null;
 }
 
 class ApiError extends Error {
@@ -24,7 +19,7 @@ class ApiError extends Error {
 }
 
 function buildUrl(endpoint: string, params?: Record<string, string>): string {
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
+  const url = new URL(`${getApiBaseUrl()}${endpoint}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.append(key, value);
@@ -40,10 +35,23 @@ async function request<T>(
   const { params, ...fetchOptions } = options;
   const url = buildUrl(endpoint, params);
 
-  const token = getAccessToken();
+  const authHeaders =
+    typeof window !== 'undefined' ? getBrowserAuthorizationHeader() : {};
+
+  if (
+    AUTH_DEBUG &&
+    typeof window !== 'undefined' &&
+    authHeaders.Authorization
+  ) {
+    console.log(
+      '[apiClient] attaching Authorization (Bearer length)',
+      authHeaders.Authorization.length - 'Bearer '.length,
+    );
+  }
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...authHeaders,
     ...fetchOptions.headers,
   };
 

@@ -1,31 +1,50 @@
-import { Award, CalendarDays, TrendingUp } from "lucide-react";
+'use client';
 
-import { probationSummaryStats, probationEmployees } from "@/features/hr/onboarding/probation/mock-data";
-import { ProbationCard } from "@/features/hr/onboarding/probation/components";
-import { ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+import Link from 'next/link';
 
-const ICONS = {
-  calendar: <CalendarDays className="h-4 w-4" />,
-  trend: <TrendingUp className="h-4 w-4" />,
-  award: <Award className="h-4 w-4" />,
-} as const;
+import { ProbationCard } from '@/features/hr/onboarding/probation/components';
+import { useProbationEmployees } from '@/features/hr/onboarding/probation/hooks/use-probation';
+import { Button } from '@/shared/components/ui/button';
 
 export function OnboardingProbationContent() {
+  const {
+    data: employees = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useProbationEmployees();
+
+  if (isLoading) return <p>Loading probation plans...</p>;
+  if (isError) {
+    return (
+      <main className="mx-auto w-full max-w-[1024px] space-y-4 px-4 py-4 md:px-5 md:py-5">
+        <p className="text-sm text-destructive">
+          Failed to load probation data. Please retry.
+        </p>
+        <Button type="button" variant="outline" onClick={() => void refetch()}>
+          Retry
+        </Button>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
-      <section className="grid gap-4 md:grid-cols-3">
-        {probationSummaryStats.map((stat) => (
-          <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
-        ))}
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Performance and Probation</h2>
-        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">KPI tracking, reviews, and results of employees on probation.</p>
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Performance and Probation</h2>
+        <Button asChild size="sm">
+          <Link href="/dashboard/hr/onboarding/probation/create">
+            Create Probation
+          </Link>
+        </Button>
 
         <div className="mt-4 space-y-3">
-          {probationEmployees.map((employee, index) => (
-            <ProbationCard key={employee.id} employee={employee} defaultExpanded={index === 0} />
+          {employees.map((employee, index) => (
+            <ProbationCard
+              key={employee.id}
+              employee={employee}
+              defaultExpanded={index === 0}
+            />
           ))}
         </div>
       </section>

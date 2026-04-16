@@ -1,31 +1,77 @@
-import { Clock3, FileText, Mail } from "lucide-react";
+'use client';
 
-import { ContractCard } from "@/features/hr/onboarding/contract/components";
-import { contractSummaryStats, employmentContracts } from "@/features/hr/onboarding/contract/mock-data";
-import { ProgressStatCard } from "@/features/hr/onboarding/progress/components";
+import { useEffect, useState } from 'react';
 
-const ICONS = {
-  file: <FileText className="h-4 w-4" />,
-  mail: <Mail className="h-4 w-4" />,
-  clock: <Clock3 className="h-4 w-4" />,
-} as const;
+import { ContractCard } from '@/features/hr/onboarding/contract/components';
+import type { EmploymentContract } from '@/features/hr/onboarding/contract/types';
+
+import {
+  getContracts,
+  submitContract,
+  verifyContract,
+} from './api/contract.api';
+
+/* import { ProgressStatCard } from "@/features/hr/onboarding/progress/components"; */
 
 export function OnboardingContractContent() {
-  return (
-    <main className="mx-auto w-full max-w-[1024px] space-y-5 px-4 py-4 md:px-5 md:py-5">
-      <section className="grid gap-4 md:grid-cols-3">
-        {contractSummaryStats.map((stat) => (
-          <ProgressStatCard key={stat.id} stat={stat} icon={ICONS[stat.icon]} />
-        ))}
-      </section>
+  const [contracts, setContracts] = useState<EmploymentContract[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getContracts();
+        setContracts(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const updateLocalState = (
+    taskId: string,
+    status: EmploymentContract['status'],
+  ) => {
+    setContracts((prev) =>
+      prev.map((c) => (c.taskId === taskId ? { ...c, status } : c)),
+    );
+  };
+
+  const handleSubmit = async (taskId: string, contractId: string) => {
+    await submitContract(taskId, contractId);
+    updateLocalState(taskId, 'SUBMITTED');
+  };
+
+  const handleApprove = async (taskId: string) => {
+    await verifyContract(taskId, true);
+    updateLocalState(taskId, 'COMPLETED');
+  };
+
+  const handleReject = async (taskId: string) => {
+    await verifyContract(taskId, false);
+    updateLocalState(taskId, 'CHANGES_REQUESTED');
+  };
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <main className="mx-auto max-w-[1024px] space-y-5 p-4">
       <section>
-        <h2 className="text-xl font-semibold tracking-[-0.3125px] text-black">Employment Contracts</h2>
-        <p className="mt-1 text-sm tracking-[-0.1504px] text-[#666]">Details of signed employment contracts and offers.</p>
+        <h2 className="text-xl font-semibold">Employment Contracts</h2>
 
         <div className="mt-4 space-y-3">
-          {employmentContracts.map((contract, index) => (
-            <ContractCard key={contract.id} contract={contract} defaultExpanded={index === 0} />
+          {contracts.map((contract) => (
+            <ContractCard
+              key={contract.id}
+              contract={contract}
+              onSubmit={() => handleSubmit(contract.taskId, contract.id)}
+              onApprove={() => handleApprove(contract.taskId)}
+              onReject={() => handleReject(contract.taskId)}
+            />
           ))}
         </div>
       </section>

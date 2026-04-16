@@ -24,6 +24,7 @@ import { ApplicationFormStep } from '@/features/hr/recruitment/requests/componen
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
 import { RequestFormStep } from '@/features/hr/recruitment/requests/components/request-form-step';
 import { Button } from '@/shared/components/ui/button';
+import { createJob, updateJob } from '@/features/hr/recruitment/shared/api';
 import {
   Dialog,
   DialogClose,
@@ -34,7 +35,6 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import { Form } from '@/shared/components/ui/form';
-import { delay } from '@/shared/lib/demo-utils';
 
 type CreateRequestDialogProps = {
   open: boolean;
@@ -329,14 +329,10 @@ export function CreateRequestDialog({
       console.log('createJobPayload', payload);
 
       if (isEditMode && editRequest?.jobId) {
-        // Live API call (disabled for now)
-        // await apiClient.patch<CreateJobDto>(`/hr/recruitment/jobs/${editRequest.jobId}`, payload);
-        await delay(2000);
+        await updateJob(editRequest.jobId, payload);
         toast.success('Hiring request updated');
       } else {
-        // Demo mode: simulate API call
-        // await apiClient.post<CreateJobDto>('/hr/recruitment/jobs', payload);
-        await delay(2000);
+        await createJob(payload);
         toast.success('Hiring request created');
       }
       handleClose();
