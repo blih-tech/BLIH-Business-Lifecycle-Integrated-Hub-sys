@@ -1,20 +1,17 @@
-import {
-  KpiManagement,
-  ProbationEvaluationsScreen,
-} from '@/features/hr/onboarding/probation/components';
+import { KpiManagement } from '@/features/hr/onboarding/probation/components';
 import { isAuthorizedForDashboard } from '@/shared/auth/role-routing';
 import { getSession } from '@/shared/auth/session';
 import { redirect } from 'next/navigation';
 
 const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
-type ProbationEvaluationsPageProps = {
+type ProbationKpiPageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default async function ProbationEvaluationsPage({
+export default async function ProbationKpiPage({
   params,
-}: ProbationEvaluationsPageProps) {
+}: ProbationKpiPageProps) {
   if (!DEMO_MODE) {
     const session = await getSession();
     if (!session.authenticated) {
@@ -29,9 +26,8 @@ export default async function ProbationEvaluationsPage({
 
   return (
     <main className="mx-auto w-full max-w-[1024px] space-y-6 px-4 py-4 md:px-5 md:py-5">
-      <h2 className="text-xl font-semibold">Probation Evaluations</h2>
+      <h2 className="text-xl font-semibold">Probation KPI Management</h2>
       <KpiManagement probationId={id} />
-      <ProbationEvaluationsScreen probationId={id} />
     </main>
   );
 }
