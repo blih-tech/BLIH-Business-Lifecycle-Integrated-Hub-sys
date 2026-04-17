@@ -536,6 +536,8 @@ export const PermissionGroups = {
   brain_config: BrainConfigPermissions,
   job: JobPermissions,
   job_approval: JobApprovalPermissions,
+  candidate: CandidatePermissions,
+  job_application: JobApplicationPermissions,
   applicant: ApplicantPermissions,
   interview: InterviewPermissions,
   offer: OfferPermissions,
