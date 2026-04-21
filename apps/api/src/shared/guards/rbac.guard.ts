@@ -1,4 +1,4 @@
-﻿import {
+import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { SCOPES_KEY } from '../decorators/scopes.decorator';
 import { hasWildcardPermission } from '../../platform/keycloak/utils/role.util';
+import { buildBaselinePermissions } from '../../core/rbac/role-permission-baseline';
 
 interface GuardPrincipal {
   roles?: string[];
@@ -61,56 +62,39 @@ export class RbacGuard implements CanActivate {
       );
       const permissions = user.permissions ?? [];
 
+      // Superadmin short-circuit — avoid iterating every check.
+      if (tokenRoles.has('superadmin')) {
+        this.logger.debug('RbacGuard: superadmin — granting full access');
+        return true;
+      }
+
+      // Build the baseline permissions for all roles the user holds so the
+      // guard can fall back to the canonical role-permission table when the
+      // permission snapshot service returns an empty set (e.g. unseeded DB,
+      // first-request race, or transient DB error).
+      const baselinePerms = buildBaselinePermissions([...tokenRoles]);
+
       const hasRole = requiredRoles.every((required) => {
         const requiredLower = required.toLowerCase();
 
+        // Check 1 — literal role name match (used when @Roles carries an
+        // actual Keycloak role name rather than a permission slug).
         if (tokenRoles.has(requiredLower)) {
           return true;
         }
 
+        // Check 2 — snapshot-service permissions (primary path).
         if (hasWildcardPermission(permissions, requiredLower)) {
           return true;
         }
 
-        const roleToPermission: Record<string, string[]> = {
-          hr: [
-            'employee:*',
-            'user:*',
-            'department:*',
-            'position:*',
-            'job_grade:*',
-          ],
-          hr_manager: [
-            'employee:*',
-            'user:*',
-            'department:*',
-            'position:*',
-            'job_grade:*',
-          ],
-          hr_assistant: ['employee:view', 'department:view', 'position:view'],
-          finance: ['finance:*'],
-          finance_manager: ['finance:*', 'hr_payroll:*'],
-          finance_accountant: ['finance:*', 'hr_payroll:view'],
-          project_manager: ['project:*'],
-          pm_lead: ['project:view', 'project:create'],
-          pm_member: ['project:view'],
-          crm: ['crm:*'],
-          crm_lead: ['crm:*'],
-          crm_agent: ['crm:view', 'crm:create'],
-          brain_operator: ['brain:*'],
-          brain_admin: ['brain:*'],
-          brain_viewer: ['brain:view'],
-          superadmin: ['*'],
-        };
-
-        for (const [roleGroup, perms] of Object.entries(roleToPermission)) {
-          if (tokenRoles.has(roleGroup)) {
-            if (
-              hasWildcardPermission([...permissions, ...perms], requiredLower)
-            ) {
-              return true;
-            }
-          }
+        // Check 3 — canonical baseline fallback (safety net when snapshot
+        // service permissions are empty).
+        if (hasWildcardPermission(baselinePerms, requiredLower)) {
+          this.logger.debug(
+            `RbacGuard: granted via baseline fallback for "${requiredLower}" (roles=${JSON.stringify([...tokenRoles])})`,
+          );
+          return true;
         }
 
         return false;
@@ -118,7 +102,9 @@ export class RbacGuard implements CanActivate {
 
       if (!hasRole) {
         this.logger.warn(
-          `RbacGuard: Access denied. user.roles=${JSON.stringify([...tokenRoles])}, user.permissions=${JSON.stringify(permissions)}, requiredRoles=${JSON.stringify(requiredRoles)}`,
+          `RbacGuard: Access denied. user.roles=${JSON.stringify([...tokenRoles])}, ` +
+            `user.permissions=${JSON.stringify(permissions)}, ` +
+            `requiredRoles=${JSON.stringify(requiredRoles)}`,
         );
         throw new ForbiddenException('Required roles are missing');
       }
