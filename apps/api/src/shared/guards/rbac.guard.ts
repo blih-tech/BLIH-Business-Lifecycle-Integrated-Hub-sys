@@ -56,18 +56,69 @@ export class RbacGuard implements CanActivate {
     }
 
     if (requiredRoles.length > 0) {
-      const roles = new Set(
+      const tokenRoles = new Set(
         (user.roles ?? []).map((role) => role.toLowerCase()),
       );
       const permissions = user.permissions ?? [];
-      const hasRole = requiredRoles.every(
-        (role) =>
-          roles.has(role.toLowerCase()) ||
-          hasWildcardPermission(permissions, role.toLowerCase()),
-      );
+
+      const hasRole = requiredRoles.every((required) => {
+        const requiredLower = required.toLowerCase();
+
+        if (tokenRoles.has(requiredLower)) {
+          return true;
+        }
+
+        if (hasWildcardPermission(permissions, requiredLower)) {
+          return true;
+        }
+
+        const roleToPermission: Record<string, string[]> = {
+          hr: [
+            'employee:*',
+            'user:*',
+            'department:*',
+            'position:*',
+            'job_grade:*',
+          ],
+          hr_manager: [
+            'employee:*',
+            'user:*',
+            'department:*',
+            'position:*',
+            'job_grade:*',
+          ],
+          hr_assistant: ['employee:view', 'department:view', 'position:view'],
+          finance: ['finance:*'],
+          finance_manager: ['finance:*', 'hr_payroll:*'],
+          finance_accountant: ['finance:*', 'hr_payroll:view'],
+          project_manager: ['project:*'],
+          pm_lead: ['project:view', 'project:create'],
+          pm_member: ['project:view'],
+          crm: ['crm:*'],
+          crm_lead: ['crm:*'],
+          crm_agent: ['crm:view', 'crm:create'],
+          brain_operator: ['brain:*'],
+          brain_admin: ['brain:*'],
+          brain_viewer: ['brain:view'],
+          superadmin: ['*'],
+        };
+
+        for (const [roleGroup, perms] of Object.entries(roleToPermission)) {
+          if (tokenRoles.has(roleGroup)) {
+            if (
+              hasWildcardPermission([...permissions, ...perms], requiredLower)
+            ) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+      });
+
       if (!hasRole) {
         this.logger.warn(
-          `RbacGuard: Access denied. user.roles=${JSON.stringify([...roles])}, user.permissions=${JSON.stringify(permissions)}, requiredRoles=${JSON.stringify(requiredRoles)}`,
+          `RbacGuard: Access denied. user.roles=${JSON.stringify([...tokenRoles])}, user.permissions=${JSON.stringify(permissions)}, requiredRoles=${JSON.stringify(requiredRoles)}`,
         );
         throw new ForbiddenException('Required roles are missing');
       }
