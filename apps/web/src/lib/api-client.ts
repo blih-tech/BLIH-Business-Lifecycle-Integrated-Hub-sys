@@ -12,6 +12,13 @@ function getAccessToken(): string | null {
   return match ? decodeURIComponent(match[1] ?? '') : null;
 }
 
+/** Read the CSRF token from kc_csrf cookie. */
+function getCsrfToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(/(?:^|;\s*)kc_csrf=([^;]+)/);
+  return match ? decodeURIComponent(match[1] ?? '') : null;
+}
+
 class ApiError extends Error {
   constructor(
     public message: string,
@@ -41,11 +48,27 @@ async function request<T>(
   const url = buildUrl(endpoint, params);
 
   const token = getAccessToken();
-  const headers: HeadersInit = {
+  const method = fetchOptions.method?.toUpperCase() || 'GET';
+  const isNonSafeMethod = !['GET', 'HEAD', 'OPTIONS'].includes(method);
+
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...fetchOptions.headers,
   };
+
+  // Merge additional headers from fetchOptions
+  if (fetchOptions.headers) {
+    const additionalHeaders = fetchOptions.headers as Record<string, string>;
+    Object.assign(headers, additionalHeaders);
+  }
+
+  // Add CSRF token for non-safe HTTP methods when auth cookies are present
+  if (isNonSafeMethod && token) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      headers['x-csrf-token'] = csrfToken;
+    }
+  }
 
   const response = await fetch(url, {
     ...fetchOptions,

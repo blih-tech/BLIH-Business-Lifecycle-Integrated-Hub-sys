@@ -114,6 +114,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
               path: '/',
             });
           }
+        } else if (cookie.startsWith('kc_csrf=')) {
+          const token = extractTokenFromCookie(cookie);
+          if (token) {
+            // JS-readable cookie — used by apiClient to send CSRF token
+            nextResponse.cookies.set('kc_csrf', token, {
+              httpOnly: false,
+              secure: true,
+              sameSite: 'none',
+              maxAge: 2592000,
+              path: '/',
+            });
+          }
         } else {
           nextResponse.headers.append('Set-Cookie', cookie);
         }
