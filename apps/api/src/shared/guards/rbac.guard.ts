@@ -3,6 +3,7 @@
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -17,6 +18,8 @@ interface GuardPrincipal {
 
 @Injectable()
 export class RbacGuard implements CanActivate {
+  private readonly logger = new Logger(RbacGuard.name);
+
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
@@ -31,6 +34,10 @@ export class RbacGuard implements CanActivate {
         context.getClass(),
       ]) ?? [];
 
+    this.logger.debug(
+      `RbacGuard: requiredRoles=${JSON.stringify(requiredRoles)}, requiredScopes=${JSON.stringify(requiredScopes)}`,
+    );
+
     if (requiredRoles.length === 0 && requiredScopes.length === 0) {
       return true;
     }
@@ -39,6 +46,10 @@ export class RbacGuard implements CanActivate {
       .switchToHttp()
       .getRequest<{ user?: GuardPrincipal }>();
     const user = request.user;
+
+    this.logger.debug(
+      `RbacGuard: user.roles=${JSON.stringify(user?.roles)}, user.permissions=${JSON.stringify(user?.permissions)}`,
+    );
 
     if (!user) {
       throw new ForbiddenException('No authenticated user context');
@@ -55,6 +66,9 @@ export class RbacGuard implements CanActivate {
           hasWildcardPermission(permissions, role.toLowerCase()),
       );
       if (!hasRole) {
+        this.logger.warn(
+          `RbacGuard: Access denied. user.roles=${JSON.stringify([...roles])}, user.permissions=${JSON.stringify(permissions)}, requiredRoles=${JSON.stringify(requiredRoles)}`,
+        );
         throw new ForbiddenException('Required roles are missing');
       }
     }

@@ -18,10 +18,22 @@ export class UserPermissionSnapshotService {
     keycloakUserId: string,
     keycloakTokenRoles: string[] = [],
   ): Promise<string[]> {
+    this.logger.debug(
+      `getPersistedPermissions called for ${keycloakUserId} with tokenRoles=${JSON.stringify(keycloakTokenRoles)}`,
+    );
+
     const dbPermissions =
       await this.getEffectivePermissionsByKeycloakId(keycloakUserId);
 
+    this.logger.debug(
+      `getPersistedPermissions: dbPermissions count = ${dbPermissions.length}`,
+    );
+
     const tokenBaseline = this.buildTokenRoleFallback(keycloakTokenRoles);
+
+    this.logger.debug(
+      `getPersistedPermissions: tokenBaseline count = ${tokenBaseline.length}`,
+    );
 
     if (dbPermissions.length === 0 && tokenBaseline.length === 0) {
       return [];
@@ -39,9 +51,15 @@ export class UserPermissionSnapshotService {
     // partial role-permission rows (e.g. partially-seeded or recently-updated DB).
     if (tokenBaseline.length > 0) {
       const merged = new Set([...dbPermissions, ...tokenBaseline]);
+      this.logger.debug(
+        `getPersistedPermissions: merged permissions count = ${merged.size}`,
+      );
       return [...merged];
     }
 
+    this.logger.debug(
+      `getPersistedPermissions: returning dbPermissions count = ${dbPermissions.length}`,
+    );
     return dbPermissions;
   }
 
