@@ -20,7 +20,7 @@
       "env": ["NODE_ENV", "DEMO_MODE", "NEXT_PUBLIC_API_URL"]
     },
     "check-types": {
-      "dependsOn": ["build", "^check-types", "^build"]
+      "dependsOn": ["^check-types", "^build"]
     },
     "test": {
       "dependsOn": ["build"],
