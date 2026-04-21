@@ -132,6 +132,10 @@ export class KeycloakAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid principal subject');
     }
 
+    this.logger.debug(
+      `enrichPrincipal: principal.sub=${principal.sub}, principal.roles=${JSON.stringify(principal.roles)}`,
+    );
+
     const contextData = await this.principalEnrichment.getContext(
       principal.sub,
       profileClaims,
@@ -142,6 +146,10 @@ export class KeycloakAuthGuard implements CanActivate {
         principal.sub,
         principal.roles,
       );
+
+    this.logger.debug(
+      `enrichPrincipal: resolved permissions count = ${permissions.length}`,
+    );
 
     return {
       ...principal,
