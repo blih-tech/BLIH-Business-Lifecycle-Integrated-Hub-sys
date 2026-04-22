@@ -306,15 +306,17 @@ compose_recreate_postgres() {
 }
 
 compose_up_remaining_services() {
-  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --wait --pull always --remove-orphans --force-recreate api keycloak mailhog
+  # Run without --wait: Docker Compose's --wait exits immediately if any container
+  # restarts during Keycloak's slow import-realm phase and triggers a false rollback.
+  # healthcheck.sh owns actual readiness polling with its own retry loop.
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --pull always --remove-orphans --force-recreate api keycloak mailhog
 }
 
 # Main deployment function
 deploy() {
   log_info "Starting BLIH Production Deployment"
   log_info "=================================="
-  deploy_ok=false
-  
+
   # Validation
   validate_environment
   pre_deployment_checks
@@ -407,28 +409,19 @@ deploy() {
     return 1
   fi
   
-  # Health checks
+  # Health checks — bare call so failure propagates to ERR trap → handle_failure → rollback.
+  # The previous if/else wrapper silently swallowed failures and exited 0 without rollback.
   log_step "Running comprehensive health checks..."
-  if ./healthcheck.sh; then
-    log_info "Health checks passed ✅"
-    deploy_ok=true
-  else
-    log_error "Health checks failed"
-    deploy_ok=false
-  fi
-  
-  # Post-deployment actions
-  if [[ "$deploy_ok" == true ]]; then
-    write_release_file
-    cleanup_docker_resources || true
-    docker logout ghcr.io >/dev/null 2>&1 || true
-    
-    log_info "=================================="
-    log_info "Deployment completed successfully ✅"
-    log_info "API is running on port: ${API_PORT:-5000}"
-    log_info "Deployed at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-    exit 0
-  fi
+  ./healthcheck.sh
+
+  write_release_file
+  cleanup_docker_resources || true
+  docker logout ghcr.io >/dev/null 2>&1 || true
+  log_info "=================================="
+  log_info "Deployment completed successfully ✅"
+  log_info "API is running on port: ${API_PORT:-5000}"
+  log_info "Deployed at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  exit 0
 }
 
 # Rollback on failure

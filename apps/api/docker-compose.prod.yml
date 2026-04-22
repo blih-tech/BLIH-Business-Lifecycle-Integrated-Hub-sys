@@ -45,7 +45,7 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KC_DB_SCHEMA: ${KC_DB_SCHEMA:-public}
       KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED:-true}
-      KC_LOG_LEVEL: ${KC_LOG_LEVEL:-debug}
+      KC_LOG_LEVEL: ${KC_LOG_LEVEL:-warn}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
     ports:
@@ -65,7 +65,7 @@ services:
       interval: 15s
       timeout: 10s
       retries: 25
-      start_period: 300s
+      start_period: 480s
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -89,7 +89,7 @@ services:
       mailhog:
         condition: service_started
       keycloak:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test:
         [
