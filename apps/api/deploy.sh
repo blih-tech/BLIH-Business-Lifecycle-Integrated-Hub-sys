@@ -387,6 +387,16 @@ deploy() {
     log_error "Database migrations failed"
     return 1
   fi
+
+  # Run database seed (upsert-based, safe to run on every deploy)
+  log_step "Running database seed..."
+  if docker run --rm --env-file "$ENV_FILE" --network "${COMPOSE_PROJECT_NAME}_default" \
+    "$API_MIGRATOR_IMAGE" \
+    npm run prisma:seed --workspace @repo/database; then
+    log_info "Database seed completed successfully"
+  else
+    log_warn "Database seed failed — non-fatal, deployment will continue"
+  fi
   
   # Start remaining services
   log_step "Starting remaining production services..."
