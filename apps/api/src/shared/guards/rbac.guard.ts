@@ -77,14 +77,24 @@ export class RbacGuard implements CanActivate {
       const hasRole = requiredRoles.every((required) => {
         const requiredLower = required.toLowerCase();
 
+        this.logger.debug(
+          `RbacGuard check: required="${requiredLower}", tokenRoles=${JSON.stringify([...tokenRoles])}, permissions=${JSON.stringify(permissions)}, baselinePerms=${JSON.stringify(baselinePerms)}`,
+        );
+
         // Check 1 — literal role name match (used when @Roles carries an
         // actual Keycloak role name rather than a permission slug).
         if (tokenRoles.has(requiredLower)) {
+          this.logger.debug(
+            `RbacGuard: granted via token role match "${requiredLower}"`,
+          );
           return true;
         }
 
         // Check 2 — snapshot-service permissions (primary path).
         if (hasWildcardPermission(permissions, requiredLower)) {
+          this.logger.debug(
+            `RbacGuard: granted via snapshot permissions for "${requiredLower}"`,
+          );
           return true;
         }
 
@@ -97,6 +107,9 @@ export class RbacGuard implements CanActivate {
           return true;
         }
 
+        this.logger.warn(
+          `RbacGuard: denied. required="${requiredLower}", tokenRoles has it=${tokenRoles.has(requiredLower)}, snapshot_has_it=${hasWildcardPermission(permissions, requiredLower)}, baseline_has_it=${hasWildcardPermission(baselinePerms, requiredLower)}`,
+        );
         return false;
       });
 
