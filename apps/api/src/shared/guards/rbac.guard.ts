@@ -77,7 +77,11 @@ export class RbacGuard implements CanActivate {
       // If baseline is empty but user has permissions from DB, also include
       // a fallback for common system roles to handle unseeded/partial-seeded DBs.
       let fallbackPerms = baselinePerms;
-      if (baselinePerms.length === 0 && permissions.length === 0) {
+      if (
+        tokenRoles.size > 0 &&
+        baselinePerms.length === 0 &&
+        permissions.length === 0
+      ) {
         fallbackPerms = buildBaselinePermissions([
           'hr',
           'hr_manager',
