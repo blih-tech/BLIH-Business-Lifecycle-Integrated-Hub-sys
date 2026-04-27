@@ -76,11 +76,11 @@ export class RbacGuard implements CanActivate {
 
       // If baseline is empty but user has permissions from DB, also include
       // a fallback for common system roles to handle unseeded/partial-seeded DBs.
+      // Apply fallback if: user has token roles OR user has permissions from snapshot.
       let fallbackPerms = baselinePerms;
       if (
-        tokenRoles.size > 0 &&
-        baselinePerms.length === 0 &&
-        permissions.length === 0
+        (tokenRoles.size > 0 || permissions.length > 0) &&
+        baselinePerms.length === 0
       ) {
         fallbackPerms = buildBaselinePermissions([
           'hr',
@@ -97,7 +97,7 @@ export class RbacGuard implements CanActivate {
           'pm_member',
         ]);
         this.logger.debug(
-          `RbacGuard: using fallback perms since no token roles. fallbackPerms count = ${fallbackPerms.length}`,
+          `RbacGuard: using fallback perms. tokenRoles.size=${tokenRoles.size}, baseline empty. fallbackPerms count = ${fallbackPerms.length}`,
         );
       }
 
