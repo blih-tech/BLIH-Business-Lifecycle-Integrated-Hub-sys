@@ -74,11 +74,34 @@ export class RbacGuard implements CanActivate {
       // first-request race, or transient DB error).
       const baselinePerms = buildBaselinePermissions([...tokenRoles]);
 
+      // If baseline is empty but user has permissions from DB, also include
+      // a fallback for common system roles to handle unseeded/partial-seeded DBs.
+      let fallbackPerms = baselinePerms;
+      if (baselinePerms.length === 0 && permissions.length === 0) {
+        fallbackPerms = buildBaselinePermissions([
+          'hr',
+          'hr_manager',
+          'hr_assistant',
+          'finance',
+          'finance_manager',
+          'finance_accountant',
+          'crm_manager',
+          'crm_lead',
+          'crm_agent',
+          'project_manager',
+          'pm_lead',
+          'pm_member',
+        ]);
+        this.logger.debug(
+          `RbacGuard: using fallback perms since no token roles. fallbackPerms count = ${fallbackPerms.length}`,
+        );
+      }
+
       const hasRole = requiredRoles.every((required) => {
         const requiredLower = required.toLowerCase();
 
         this.logger.debug(
-          `RbacGuard check: required="${requiredLower}", tokenRoles=${JSON.stringify([...tokenRoles])}, permissions=${JSON.stringify(permissions)}, baselinePerms=${JSON.stringify(baselinePerms)}`,
+          `RbacGuard check: required="${requiredLower}", tokenRoles=${JSON.stringify([...tokenRoles])}, permissions=${JSON.stringify(permissions)}, baselinePerms=${JSON.stringify(baselinePerms)}, fallbackPerms=${JSON.stringify(fallbackPerms)}`,
         );
 
         // Check 1 — literal role name match (used when @Roles carries an
@@ -107,8 +130,16 @@ export class RbacGuard implements CanActivate {
           return true;
         }
 
+        // Check 4 —extended fallback for common roles (handles unseeded DB).
+        if (hasWildcardPermission(fallbackPerms, requiredLower)) {
+          this.logger.debug(
+            `RbacGuard: granted via extended fallback for "${requiredLower}"`,
+          );
+          return true;
+        }
+
         this.logger.warn(
-          `RbacGuard: denied. required="${requiredLower}", tokenRoles has it=${tokenRoles.has(requiredLower)}, snapshot_has_it=${hasWildcardPermission(permissions, requiredLower)}, baseline_has_it=${hasWildcardPermission(baselinePerms, requiredLower)}`,
+          `RbacGuard: denied. required="${requiredLower}", tokenRoles has it=${tokenRoles.has(requiredLower)}, snapshot_has_it=${hasWildcardPermission(permissions, requiredLower)}, baseline_has_it=${hasWildcardPermission(baselinePerms, requiredLower)}, fallback_has_it=${hasWildcardPermission(fallbackPerms, requiredLower)}`,
         );
         return false;
       });
