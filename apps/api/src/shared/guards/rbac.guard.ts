@@ -74,26 +74,14 @@ export class RbacGuard implements CanActivate {
       // first-request race, or transient DB error).
       const baselinePerms = buildBaselinePermissions([...tokenRoles]);
 
-      // If baseline is empty but user has permissions from DB, also include
-      // a fallback for common system roles to handle unseeded/partial-seeded DBs.
+      // Extended fallback - only apply when user has HR-related role.
+      // This handles unseeded DB where hr_manager/hr are known but baseline lookup failed.
       let fallbackPerms = baselinePerms;
-      if (baselinePerms.length === 0 && permissions.length === 0) {
-        fallbackPerms = buildBaselinePermissions([
-          'hr',
-          'hr_manager',
-          'hr_assistant',
-          'finance',
-          'finance_manager',
-          'finance_accountant',
-          'crm_manager',
-          'crm_lead',
-          'crm_agent',
-          'project_manager',
-          'pm_lead',
-          'pm_member',
-        ]);
+      const hasHrRole = tokenRoles.has('hr') || tokenRoles.has('hr_manager');
+      if (hasHrRole && baselinePerms.length === 0) {
+        fallbackPerms = buildBaselinePermissions(['hr', 'hr_manager']);
         this.logger.debug(
-          `RbacGuard: using fallback perms since no token roles. fallbackPerms count = ${fallbackPerms.length}`,
+          `RbacGuard: HR fallback perms. hasHrRole=${hasHrRole}, fallbackPerms count = ${fallbackPerms.length}`,
         );
       }
 
