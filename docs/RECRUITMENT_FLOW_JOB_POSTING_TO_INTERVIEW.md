@@ -1,4 +1,4 @@
-# BLIH Recruitment Flow: Job Posting to Interview Stage
+# BLIH Recruitment Flow: Job Posting to Hiring
 
 ## Table of Contents
 
@@ -17,9 +17,9 @@
 
 ## Overview
 
-The BLIH Recruitment System implements a comprehensive candidate management workflow from job posting through to interview stage. This documentation covers the post-approval phase where published jobs receive applications, candidates are screened, shortlisted, and scheduled for interviews.
+The BLIH Recruitment System implements a comprehensive candidate management workflow from job posting through to hiring. This documentation covers the complete recruitment lifecycle where published jobs receive applications, candidates are screened, shortlisted, scheduled for interviews, extended offers, and ultimately hired as employees.
 
-**Workflow**: PUBLISHED → Application → APPLIED → SCREENING → SHORTLISTED → INTERVIEW
+**Workflow**: PUBLISHED → Application → APPLIED → SCREENING → SHORTLISTED → INTERVIEW → OFFER → HIRED
 
 ### Key Features
 
@@ -199,7 +199,7 @@ model InterviewSession {
   id              String                  @id @default(uuid())
   jobId           String                  @map("job_id")
   job             Job                     @relation(fields: [jobId])
-  type            InterviewType           // HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, CULTURAL_FIT
+  type            InterviewType           // HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, FINAL
   round           Int                     @default(1)
   status          InterviewStatus         @default(SCHEDULED)
   scheduledAt     DateTime                @map("scheduled_at")
@@ -217,8 +217,8 @@ model InterviewSession {
 
 **Key Fields**:
 
-- `type`: HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, CULTURAL_FIT
-- `status`: SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED
+- `type`: HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, FINAL
+- `status`: SCHEDULED, COMPLETED, CANCELLED, NO_SHOW
 - `round`: Interview round number (1, 2, 3, etc.)
 
 ### InterviewParticipant
@@ -238,7 +238,7 @@ model InterviewParticipant {
 }
 ```
 
-**Attendance Status**: SCHEDULED, CANCELLED, NO_SHOW, COMPLETED
+**Attendance Status**: SCHEDULED, ATTENDING, NO_SHOW, COMPLETED, CANCELLED
 
 ### InterviewerAssignment
 
@@ -281,7 +281,69 @@ model InterviewFeedback {
 }
 ```
 
-**Endorsement Level**: YES, STRONG_YES, NO, STRONG_NO
+**Key Enums**:
+
+- **ApplicantStatus**: APPLIED, SCREENING, SHORTLISTED, INTERVIEW, OFFER, HIRED, REJECTED, WITHDRAWN, WAITLIST
+- **InterviewType**: HR_SCREENING, TECHNICAL, BEHAVIORAL, PANEL, FINAL
+- **InterviewStatus**: SCHEDULED, COMPLETED, CANCELLED, NO_SHOW
+- **InterviewAttendanceStatus**: SCHEDULED, ATTENDING, NO_SHOW, COMPLETED, CANCELLED
+- **EndorsementLevel**: STRONG_YES, YES, UNCERTAIN, NO
+- **OfferStatus**: DRAFT, SENT, ACCEPTED, DECLINED, EXPIRED, WITHDRAWN
+
+### Offer
+
+Stores job offer details and status tracking.
+
+```prisma
+model Offer {
+  id             String          @id @default(uuid())
+  jobId          String          @map("job_id")
+  job            Job             @relation(fields: [jobId], references: [id])
+  applicantId    String          @map("applicant_id")
+  applicant      Applicant       @relation(fields: [applicantId], references: [id])
+  onboardingId   String?         @unique @map("onboarding_id")
+  onboarding     Onboarding?     @relation("OnboardingOffer", fields: [onboardingId], references: [id])
+  createdById    String          @map("created_by_id")
+  createdBy      User            @relation("OfferCreator", fields: [createdById], references: [id])
+  status         OfferStatus     @default(DRAFT)
+  salary         Decimal?        @db.Decimal(12, 2)
+  currency       String?         @db.VarChar(8)
+  startDate      DateTime?       @map("start_date") @db.Date
+  payFrequency   PayFrequency?
+  employmentType EmploymentType?
+  bonus          Decimal?        @db.Decimal(12, 2)
+  equity         Decimal?        @db.Decimal(12, 2)
+  offerLetterUrl String?         @map("offer_letter_url")
+  notes          String?         @db.Text
+  sentAt         DateTime?       @map("sent_at")
+  respondedAt    DateTime?       @map("responded_at")
+  expiresAt      DateTime?       @map("expires_at")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([jobId, applicantId])
+  @@index([jobId])
+  @@index([applicantId])
+  @@index([status])
+  @@index([createdById])
+}
+```
+
+**Key Fields**:
+
+- `status`: DRAFT, SENT, ACCEPTED, DECLINED, EXPIRED, WITHDRAWN
+- `salary`: Base salary amount
+- `currency`: Payment currency (e.g., USD, ETB)
+- `startDate`: Expected employment start date
+- `payFrequency`: MONTHLY, BI_WEEKLY, WEEKLY
+- `employmentType`: FULL_TIME, PART_TIME, CONTRACT, INTERNSHIP
+- `bonus`: Signing or performance bonus
+- `equity`: Stock options or equity grants
+- `sentAt`: Timestamp when offer was sent to candidate
+- `respondedAt`: Timestamp when candidate responded
+- `expiresAt`: Offer expiration deadline
+
+**Unique Constraint**: `jobId + applicantId` prevents duplicate offers
 
 ---
 
@@ -740,7 +802,7 @@ POST /api/v1/hr/recruitment/applicants/bulk-status
 - **TECHNICAL**: Technical skills assessment (60-90 min)
 - **BEHAVIORAL**: Behavioral/cultural fit interview (45-60 min)
 - **PANEL**: Multiple interviewers (60-90 min)
-- **CULTURAL_FIT**: Culture and values alignment (45-60 min)
+- **FINAL**: Final interview with hiring manager (45-60 min)
 
 **Interview Round Structure**:
 
@@ -807,7 +869,7 @@ flowchart TD
    - TECHNICAL: For skills assessment
    - BEHAVIORAL: For soft skills evaluation
    - PANEL: For comprehensive evaluation
-   - CULTURAL_FIT: For values alignment
+   - FINAL: For final decision with hiring manager
 
 2. **Round Assignment**:
    - Round 1: Initial screening/technical
@@ -956,9 +1018,8 @@ flowchart TD
     C --> D{Candidate Confirms Attendance?}
     D -->|No| E[Mark as NO_SHOW or Reschedule]
     D -->|Yes| F[Interview Conducted]
-    F --> G[Update Session Status to IN_PROGRESS]
-    G --> H[Interview Completed]
-    H --> I[Update Session Status to COMPLETED]
+    F --> G[Interview Completed]
+    G --> H[Update Session Status to COMPLETED]
     I --> J[Mark Participant Attendance as COMPLETED]
     J --> K{Interviewer Feedback Submitted?}
     K -->|No| L[Follow Up for Feedback]
@@ -995,9 +1056,9 @@ flowchart TD
    - Adjust interview format
 
 5. **Update Session Status**:
-   - Mark as IN_PROGRESS when interview starts
    - Mark as COMPLETED when interview ends
    - Mark as CANCELLED if cancelled
+   - Mark as NO_SHOW if candidate doesn't attend
 
 **Request Example (Reschedule)**:
 
@@ -1022,7 +1083,7 @@ flowchart TD
 
 ```json
 {
-  "status": "IN_PROGRESS"
+  "status": "COMPLETED"
 }
 ```
 
@@ -1031,7 +1092,7 @@ flowchart TD
 - Cannot remove participants with submitted feedback
 - Cannot remove interviewers with submitted feedback
 - Round change validates no duplicate active round
-- Status transition validated (SCHEDULED → IN_PROGRESS → COMPLETED)
+- Status transition validated (SCHEDULED → COMPLETED, SCHEDULED → CANCELLED, SCHEDULED → NO_SHOW)
 - At least one participant required after removal
 - At least one interviewer required after removal
 
@@ -1044,6 +1105,7 @@ flowchart TD
 **Attendance Status Options**:
 
 - **SCHEDULED**: Interview is scheduled (default)
+- **ATTENDING**: Candidate confirmed attendance
 - **COMPLETED**: Candidate attended and interview completed
 - **NO_SHOW**: Candidate did not attend without prior notice
 - **CANCELLED**: Interview cancelled (by candidate or company)
@@ -1052,12 +1114,14 @@ flowchart TD
 
 ```json
 {
-  "attendanceStatus": "COMPLETED"
+  "attendanceStatus": "ATTENDING"
 }
 ```
 
 **Valid Transitions**:
 
+- SCHEDULED → ATTENDING (confirmed attendance)
+- ATTENDING → COMPLETED (candidate attended)
 - SCHEDULED → COMPLETED (candidate attended)
 - SCHEDULED → CANCELLED (cancelled beforehand)
 - SCHEDULED → NO_SHOW (candidate missed without notice)
@@ -1124,7 +1188,7 @@ flowchart TD
 **Feedback Components**:
 
 - **Overall Score**: Numerical rating (0-100) of candidate performance
-- **Endorsement Level**: YES, STRONG_YES, NO, STRONG_NO
+- **Endorsement Level**: STRONG_YES, YES, UNCERTAIN, NO
 - **Strengths**: Specific positive attributes demonstrated
 - **Weaknesses**: Areas for improvement or concerns
 - **Question Responses**: Detailed answers to structured questions with scores
@@ -1330,8 +1394,8 @@ function computeScoreFromQuestionResponses(items) {
 
 - **STRONG_YES**: Exceptional fit, immediate hire
 - **YES**: Good fit, recommend proceeding
+- **UNCERTAIN**: Mixed signals, needs more review
 - **NO**: Not suitable, do not proceed
-- **STRONG_NO**: Poor fit, immediate rejection
 
 **Feedback Best Practices**:
 
@@ -1371,13 +1435,13 @@ function computeScoreFromQuestionResponses(items) {
 
 **Decision Matrix**:
 
-| Average Score | Endorsement Consensus | Recommendation              |
-| ------------- | --------------------- | --------------------------- |
-| 85+           | All YES/STRONG_YES    | Proceed to offer/next round |
-| 75-84         | Majority YES          | Consider with discussion    |
-| 65-74         | Mixed YES/NO          | Additional review needed    |
-| <65           | Majority NO           | Reject candidate            |
-| Any           | All NO/STRONG_NO      | Reject candidate            |
+| Average Score | Endorsement Consensus  | Recommendation              |
+| ------------- | ---------------------- | --------------------------- |
+| 85+           | All YES/STRONG_YES     | Proceed to offer/next round |
+| 75-84         | Majority YES           | Consider with discussion    |
+| 65-74         | Mixed YES/UNCERTAIN/NO | Additional review needed    |
+| <65           | Majority NO/UNCERTAIN  | Reject candidate            |
+| Any           | All NO                 | Reject candidate            |
 
 **Feedback Metrics**:
 
@@ -1387,9 +1451,765 @@ function computeScoreFromQuestionResponses(items) {
 - Score variance: <15 points between interviewers
 - Endorsement consistency: >80% agreement
 
+### Phase 8: Post-Interview Decision Making
+
+**Overview**: Post-interview decision making is the critical phase where hiring teams review aggregated interview feedback to determine whether to extend an offer, reject the candidate, or conduct additional interviews. This phase involves consensus building, offer preparation, and final hiring decisions.
+
+**Who Makes Decisions**:
+
+- Hiring Managers (primary decision authority)
+- HR Recruiters (coordination and input)
+- HR Managers (for senior/critical positions)
+- Department Heads (for leadership roles)
+- Cross-functional interviewers (input on technical/cultural fit)
+
+**Decision Criteria**:
+
+- **Overall Score**: Aggregated average score from all interviewers
+- **Endorsement Consensus**: Agreement level among interviewers
+- **Skills Alignment**: Match with required and preferred skills
+- **Cultural Fit**: Alignment with company values and team dynamics
+- **Experience Relevance**: Depth and relevance of past experience
+- **Growth Potential**: Capacity for future growth and leadership
+- **Compensation Alignment**: Salary expectations within budget
+- **Availability**: Timeline alignment with hiring needs
+- **Reference Checks**: Background verification results
+- **Risk Assessment**: Potential concerns or red flags
+
+**Decision Workflow**:
+
+```mermaid
+flowchart TD
+    A[Interview Feedback Complete] --> B{All Interviewers Submitted?}
+    B -->|No| C[Follow Up with Pending Interviewers]
+    B -->|Yes| D[Aggregate Feedback]
+    D --> E[Calculate Average Score]
+    E --> F[Review Endorsement Consensus]
+    F --> G{Clear Decision?}
+    G -->|Yes| H{Decision Type?}
+    G -->|No| I[Schedule Additional Review]
+    H -->|Extend Offer| J[Proceed to Offer Creation]
+    H -->|Reject| K[Reject Candidate]
+    H -->|Waitlist| L[Waitlist Candidate]
+    H -->|Additional Round| M[Schedule Another Interview]
+    I --> N[Review with Stakeholders]
+    N --> H
+```
+
+**Decision Process Steps**:
+
+1. **Feedback Aggregation**:
+   - Collect all interviewer feedback
+   - Calculate average score across interviewers
+   - Review endorsement levels and consensus
+   - Identify common themes in strengths/weaknesses
+   - Note any significant score discrepancies
+
+2. **Consensus Building**:
+   - Hold decision meeting with interviewers
+   - Discuss candidate performance
+   - Resolve scoring discrepancies
+   - Address concerns or red flags
+   - Build consensus on recommendation
+
+3. **Risk Assessment**:
+   - Evaluate potential hiring risks
+   - Consider counter-offor scenarios
+   - Assess cultural fit concerns
+   - Review employment gaps or issues
+   - Check reference feedback (if available)
+
+4. **Decision Options**:
+   - **Extend Offer**: Candidate approved for hire
+   - **Reject**: Candidate not suitable for position
+   - **Waitlist**: Qualified but position filled/budget constraints
+   - **Additional Round**: Need more information (another interview)
+
+5. **Decision Documentation**:
+   - Record decision rationale
+   - Document interview feedback summary
+   - Note any conditions or contingencies
+   - Store decision for audit trail
+
+**Endpoint**: `POST /api/v1/hr/recruitment/applicants/{id}/status`
+
+**Request (Extend Offer)**:
+
+```json
+{
+  "status": "OFFER",
+  "notes": "Approved for offer - strong technical interview, excellent cultural fit, salary expectations within range. Hiring manager approved."
+}
+```
+
+**Request (Reject)**:
+
+```json
+{
+  "status": "REJECTED",
+  "notes": "Not selected - insufficient technical depth for senior role, concerns about system design experience."
+}
+```
+
+**Request (Waitlist)**:
+
+```json
+{
+  "status": "WAITLIST",
+  "notes": "Qualified candidate but position filled. Will keep in consideration if offer declined or new position opens."
+}
+```
+
+**Process**:
+
+1. Validates status transition (INTERVIEW → OFFER/REJECTED/WAITLIST)
+2. Updates applicant status
+3. Sets corresponding timestamp (offerAt, rejectedAt, waitlistAt)
+4. Records status history with decision notes
+5. Updates job metrics
+6. Triggers notification to hiring manager
+
+**Valid Transitions from INTERVIEW**:
+
+- To: OFFER, REJECTED, WAITLIST
+
+**Decision Best Practices**:
+
+- Make decisions within 48 hours of feedback completion
+- Document decision rationale clearly
+- Provide constructive feedback to rejected candidates
+- Consider diversity and inclusion goals
+- Review budget constraints before offer approval
+- Assess team fit and dynamics
+- Consider long-term growth potential
+
+**Decision Metrics**:
+
+- Time to decision: target 2-5 business days after feedback
+- Offer acceptance rate: target 70-80%
+- Decision consistency: similar candidates treated similarly
+- Rejection feedback quality: constructive feedback provided
+
+### Phase 9: Offer Creation and Extension
+
+**Overview**: Offer creation and extension involves preparing a formal job offer, determining compensation package, and presenting it to the candidate. This phase includes drafting the offer details, obtaining approvals, and sending the offer to the candidate.
+
+**Who Creates Offers**:
+
+- HR Recruiters (primary)
+- HR Managers (approval)
+- Hiring Managers (input on compensation)
+- Finance/Compensation Team (budget validation)
+
+**Offer Components**:
+
+- **Base Salary**: Monthly/annual compensation
+- **Currency**: Payment currency (e.g., USD, ETB)
+- **Start Date**: Expected start date
+- **Pay Frequency**: MONTHLY, BI_WEEKLY, WEEKLY
+- **Employment Type**: FULL_TIME, PART_TIME, CONTRACT, INTERNSHIP
+- **Bonus**: Signing bonus or performance bonus
+- **Equity**: Stock options or equity grants
+- **Benefits**: Health insurance, retirement, etc.
+- **Offer Letter**: Formal offer document URL
+- **Expiration Date**: Offer validity period
+- **Notes**: Additional terms or conditions
+
+**Offer Status Workflow**:
+
+```mermaid
+stateDiagram-v2
+    [*] --> DRAFT: Offer Created
+    DRAFT --> SENT: Offer Sent
+    SENT --> ACCEPTED: Candidate Accepts
+    SENT --> DECLINED: Candidate Declines
+    SENT --> EXPIRED: Time Limit Reached
+    SENT --> WITHDRAWN: Company Withdraws
+    DRAFT --> WITHDRAWN: Company Withdraws
+    ACCEPTED --> [*]: Proceed to Hire
+    DECLINED --> [*]: End Process
+    EXPIRED --> [*]: End Process
+    WITHDRAWN --> [*]: End Process
+```
+
+**Step 1: Create Draft Offer**
+
+**Endpoint**: `POST /api/v1/hr/recruitment/offers`
+
+**Request**:
+
+```json
+{
+  "jobId": "uuid-job-id",
+  "applicantId": "uuid-applicant-id",
+  "salary": 145000,
+  "currency": "USD",
+  "startDate": "2026-06-01",
+  "payFrequency": "MONTHLY",
+  "employmentType": "FULL_TIME",
+  "bonus": 5000,
+  "equity": 0,
+  "offerLetterUrl": "https://cdn.example.com/offer-letters/offer-123.pdf",
+  "notes": "Offer prepared after final interview - includes signing bonus",
+  "expiresAt": "2026-05-20T23:59:59.000Z"
+}
+```
+
+**Validations**:
+
+- Applicant must exist
+- Applicant must belong to the job
+- No existing offer for this job and applicant
+- CreatedById required (authenticated user)
+
+**Response**:
+
+```json
+{
+  "id": "uuid-offer-id",
+  "jobId": "uuid-job-id",
+  "applicantId": "uuid-applicant-id",
+  "createdById": "uuid-user-id",
+  "status": "DRAFT",
+  "salary": "145000.00",
+  "currency": "USD",
+  "startDate": "2026-06-01",
+  "payFrequency": "MONTHLY",
+  "employmentType": "FULL_TIME",
+  "bonus": "5000.00",
+  "equity": "0.00",
+  "offerLetterUrl": "https://cdn.example.com/offer-letters/offer-123.pdf",
+  "notes": "Offer prepared after final interview - includes signing bonus",
+  "sentAt": null,
+  "respondedAt": null,
+  "expiresAt": "2026-05-20T23:59:59.000Z",
+  "onboardingId": null,
+  "employeeId": null,
+  "userId": null,
+  "createdAt": "2026-05-10T10:00:00.000Z",
+  "updatedAt": "2026-05-10T10:00:00.000Z"
+}
+```
+
+**Step 2: Update Draft Offer**
+
+**Endpoint**: `PATCH /api/v1/hr/recruitment/offers/{id}`
+
+**Use Cases**:
+
+- Adjust salary based on negotiation
+- Change start date
+- Update bonus or equity
+- Modify employment type
+- Update expiration date
+
+**Request**:
+
+```json
+{
+  "salary": 150000,
+  "bonus": 7500,
+  "startDate": "2026-06-15"
+}
+```
+
+**Validations**:
+
+- Only DRAFT offers can be updated
+- Offer must exist
+
+**Response**: Updated offer with new values
+
+**Step 3: Send Offer**
+
+**Endpoint**: `POST /api/v1/hr/recruitment/offers/{id}/send`
+
+**Request**:
+
+```json
+{
+  "expiresAt": "2026-05-27T23:59:59.000Z"
+}
+```
+
+**Validations**:
+
+- Only DRAFT offers can be sent
+- Applicant must be in INTERVIEW or WAITLIST status
+- changedById required (authenticated user)
+
+**Process**:
+
+1. Updates offer status to SENT
+2. Sets sentAt timestamp
+3. Transitions applicant status to OFFER
+4. Sets offerAt timestamp
+5. Updates job metrics
+6. Sends notification to candidate (future enhancement)
+
+**Response**: Sent offer with status SENT
+
+**Offer Creation Best Practices**:
+
+- Research market compensation rates
+- Consider internal equity and fairness
+- Include clear terms and conditions
+- Set reasonable expiration period (7-14 days)
+- Provide detailed benefits information
+- Include start date and onboarding information
+- Document approval chain
+- Keep offer professional and welcoming
+
+**Offer Metrics**:
+
+- Time to offer: target 3-5 business days after decision
+- Offer acceptance rate: target 70-80%
+- Average offer-to-hire time: target 7-14 days
+- Offer withdrawal rate: target <5%
+
+### Phase 10: Offer Negotiation
+
+**Overview**: Offer negotiation occurs when candidates request changes to the offer terms before making their decision. This phase involves reviewing candidate requests, assessing feasibility, and potentially adjusting compensation or other terms.
+
+**Who Handles Negotiation**:
+
+- HR Recruiters (primary point of contact)
+- Hiring Managers (approval for adjustments)
+- HR Managers (for significant changes)
+- Finance/Compensation Team (budget validation)
+
+**Common Negotiation Points**:
+
+- **Base Salary**: Higher salary request
+- **Signing Bonus**: Additional upfront payment
+- **Equity**: More stock options
+- **Start Date**: Delayed or accelerated start
+- **Benefits**: Additional benefits or perks
+- **Work Arrangement**: Remote/hybrid work preferences
+- **Title**: Higher job title request
+
+**Negotiation Workflow**:
+
+```mermaid
+flowchart TD
+    A[Offer Sent] --> B{Candidate Responds?}
+    B -->|No| C[Follow Up Before Expiration]
+    B -->|Yes| D{Accepts as Is?}
+    D -->|Yes| E[Proceed to Acceptance]
+    D -->|No| F{Negotiation Request?}
+    F -->|Yes| G[Review Request]
+    F -->|No| H[Declines Offer]
+    G --> I{Feasible?}
+    I -->|Yes| J[Internal Approval]
+    I -->|No| K[Explain Constraints]
+    J --> L{Approved?}
+    L -->|Yes| M[Update Offer]
+    L -->|No| K
+    M --> N[Send Revised Offer]
+    N --> O{Candidate Accepts?}
+    O -->|Yes| E
+    O -->|No| H
+    K --> P[Final Decision]
+```
+
+**Negotiation Process Steps**:
+
+1. **Receive Request**:
+   - Candidate contacts HR with negotiation points
+   - Document specific requests clearly
+   - Understand candidate's motivations
+
+2. **Internal Review**:
+   - Assess feasibility of requests
+   - Check budget constraints
+   - Review internal equity implications
+   - Consult with hiring manager
+
+3. **Decision Making**:
+   - Approve full request
+   - Approve partial request (counter-offer)
+   - Decline request with explanation
+   - Withdraw offer (if unreasonable)
+
+4. **Counter-Offer**:
+   - Update offer terms if approved
+   - Send revised offer to candidate
+   - Set new expiration date
+   - Explain changes clearly
+
+5. **Final Decision**:
+   - Accept revised offer
+   - Decline offer
+   - Offer expires
+
+**Update Offer for Negotiation**:
+
+**Endpoint**: `PATCH /api/v1/hr/recruitment/offers/{id}`
+
+**Request (Salary Negotiation)**:
+
+````json
+{
+  "salary": 155000,
+  "bonus": 10000,
+  "notes": "Revised offer after negotiation - increased salary and signing bonus based on candidate experience and market rates"
+}
+``**Request (Start Date Negotiation)**:
+
+```json
+{
+  "startDate": "2026-07-01",
+  "notes": "Adjusted start date to accommodate candidate's notice period"
+}
+````
+
+**Validations**:
+
+- Only DRAFT offers can be updated
+- SENT offers cannot be updated (must withdraw and create new)
+
+**Negotiation Best Practices**:
+
+- Respond to negotiation requests within 24-48 hours
+- Be transparent about constraints
+- Document all communications
+- Keep negotiations professional and respectful
+- Consider long-term relationship with candidate
+- Balance fairness with budget constraints
+- Get proper approvals before making commitments
+
+**Negotiation Metrics**:
+
+- Negotiation rate: % of offers that require negotiation
+- Average negotiation rounds: target 1-2 rounds
+- Negotiation success rate: % of negotiated offers accepted
+- Time to resolve negotiation: target 3-5 business days
+
+### Phase 11: Offer Acceptance/Rejection
+
+**Overview**: Offer acceptance/rejection is the final decision point where candidates either accept the job offer, decline it, or let it expire. This phase triggers the hiring process or ends the recruitment cycle.
+
+**Response Options**:
+
+- **ACCEPTED**: Candidate accepts the offer
+- **DECLINED**: Candidate rejects the offer
+- **EXPIRED**: Offer expires without response
+- **WITHDRAWN**: Company withdraws the offer
+
+**Acceptance Workflow**:
+
+```mermaid
+flowchart TD
+    A[Offer Sent] --> B{Candidate Responds?}
+    B -->|Yes| C{Decision?}
+    B -->|No| D{Expires?}
+    D -->|Yes| E[Mark as EXPIRED]
+    D -->|No| F[Wait for Response]
+    C -->|ACCEPTED| G[Update Offer Status]
+    C -->|DECLINED| H[Update Offer Status]
+    G --> I[Update Applicant Status]
+    I --> J[Trigger Hiring Process]
+    H --> K[Update Applicant Status]
+    K --> L[REJECTED Status]
+    E --> M[Update Applicant Status]
+    M --> N[WAITLIST or REJECTED]
+```
+
+**Accept Offer**
+
+**Endpoint**: `POST /api/v1/hr/recruitment/offers/{id}/respond`
+
+**Request**:
+
+```json
+{
+  "decision": "ACCEPTED"
+}
+```
+
+**Validations**:
+
+- Only SENT offers can be responded to
+- changedById required (authenticated user)
+
+**Process**:
+
+1. Updates offer status to ACCEPTED
+2. Sets respondedAt timestamp
+3. Updates job metrics
+4. Triggers hiring workflow
+
+**Response**: Accepted offer with status ACCEPTED
+
+**Decline Offer**
+
+**Endpoint**: `POST /api/v1/hr/recruitment/offers/{id}/respond`
+
+**Request**:
+
+```json
+{
+  "decision": "DECLINED"
+}
+```
+
+**Validations**:
+
+- Only SENT offers can be responded to
+- Applicant must be in OFFER status
+
+**Process**:
+
+1. Updates offer status to DECLINED
+2. Sets respondedAt timestamp
+3. Transitions applicant status to REJECTED
+4. Updates job metrics
+5. Records rejection reason
+
+**Response**: Declined offer with status DECLINED
+
+**Withdraw Offer**
+
+**Endpoint**: `POST /api/v1/hr/recruitment/offers/{id}/withdraw`
+
+**Request**:
+
+```json
+{
+  "reason": "Position budget reallocated"
+}
+```
+
+**Validations**:
+
+- Only DRAFT or SENT offers can be withdrawn
+- Offer must exist
+
+**Process**:
+
+1. Updates offer status to WITHDRAWN
+2. Sets respondedAt timestamp (if SENT)
+3. Records withdrawal reason
+4. Updates applicant activity
+5. Updates job metrics
+
+**Response**: Withdrawn offer with status WITHDRAWN
+
+**Offer Expiration Handling**:
+
+- Offers expire automatically after expiresAt
+- System can mark expired offers (future enhancement)
+- Expired offers transition applicant to REJECTED or WAITLIST
+
+**Acceptance/Rejection Best Practices**:
+
+- Respond to acceptance promptly (within 24 hours)
+- Send welcome package and onboarding information
+- Document rejection reasons for future reference
+- Maintain professional relationship with rejected candidates
+- Consider waitlisting strong candidates for future roles
+- Analyze rejection patterns for improvement
+
+**Response Metrics**:
+
+- Acceptance rate: target 70-80%
+- Rejection rate: target 15-25%
+- Expiration rate: target <5%
+- Withdrawal rate: target <5%
+- Average response time: target 3-5 business days
+
+### Phase 12: Hiring Process (HIRED)
+
+**Overview**: The hiring process converts an accepted applicant into an official employee. This phase involves creating user accounts, employee records, compensation records, and initiating the onboarding workflow.
+
+**Who Handles Hiring**:
+
+- HR Recruiters (coordination)
+- HR Managers (approval)
+- IT/Systems (user account creation)
+- Finance (compensation setup)
+- Onboarding Team (orientation planning)
+
+**Hiring Components**:
+
+- **User Account Creation**: Keycloak authentication account
+- **Employee Record**: Official employee profile
+- **Employment Record**: Position, manager, start date
+- **Compensation Record**: Salary, pay frequency, benefits
+- **Onboarding Setup**: Onboarding checklist and tasks
+- **Welcome Notification**: Account setup instructions
+- **System Access**: Required system permissions
+
+**Hiring Workflow**:
+
+```mermaid
+flowchart TD
+    A[Offer Accepted] --> B[Validate Accepted Offer]
+    B --> C[Generate Username]
+    C --> D[Create Keycloak User]
+    D --> E[Create Local User Record]
+    E --> F[Create Employee Record]
+    F --> G[Create Employment Record]
+    G --> H[Create Compensation Record]
+    H --> I[Connect Applicant to Employee]
+    I --> J[Transition Applicant to HIRED]
+    J --> K[Recalculate Job Metrics]
+    K --> L[Send Welcome Notification]
+    L --> M[Trigger Onboarding Workflow]
+```
+
+**Hiring Process Steps**:
+
+1. **Validation**:
+   - Verify offer exists and is ACCEPTED
+   - Confirm applicant is eligible for hire
+   - Check for duplicate user accounts
+   - Validate required offer data
+
+2. **User Provisioning**:
+   - Generate unique username
+   - Create Keycloak external user
+   - Create local user record
+   - Set initial password (via email)
+   - Assign basic user roles
+
+3. **Employee Creation**:
+   - Create employee profile
+   - Link to user account
+   - Set employment lifecycle status to ONBOARDING
+   - Store recruitment metadata
+
+4. **Employment Setup**:
+   - Create employment record
+   - Assign position from job posting
+   - Set employment type and start date
+   - Assign hiring manager
+   - Record change reason
+
+5. **Compensation Setup**:
+   - Create compensation record
+   - Set base salary from offer
+   - Set currency and pay frequency
+   - Configure bonus eligibility
+   - Set effective date
+
+6. **Applicant Connection**:
+   - Link applicant profile to employee
+   - Transition applicant status to HIRED
+   - Set hiredAt timestamp
+   - Complete recruitment cycle
+
+7. **Notifications**:
+   - Send password setup email
+   - Send welcome notification
+   - Notify hiring manager
+   - Notify onboarding team
+
+**Endpoint**: `POST /api/v1/hr/recruitment/applicants/{id}/hire`
+
+**Request**:
+
+```json
+{
+  "isCompanyEmailPrimary": false,
+  "companyEmail": null,
+  "isCompanyPhonePrimary": false,
+  "companyPhone": null
+}
+```
+
+**Validations**:
+
+- Applicant must exist
+- Applicant must have accepted offer
+- Only applicants with ACCEPTED offers can be hired
+- Email and phone uniqueness validated
+
+**Process**:
+
+1. Fetches applicant with accepted offer
+2. Determines primary email and phone
+3. Generates unique username
+4. Validates availability
+5. Creates Keycloak user
+6. Creates local user and employee records
+7. Sets up employment and compensation
+8. Links applicant to employee
+9. Transitions applicant to HIRED
+10. Sends welcome notification
+
+**Response**:
+
+```json
+{
+  "employeeId": "uuid-employee-id",
+  "userId": "uuid-user-id",
+  "applicantId": "uuid-applicant-id",
+  "jobId": "uuid-job-id"
+}
+```
+
+**Hiring Best Practices**:
+
+- Complete hiring within 24-48 hours of offer acceptance
+- Provide clear onboarding instructions
+- Ensure all systems are ready before start date
+- Coordinate with IT for equipment provisioning
+- Schedule orientation sessions
+- Assign onboarding buddy/mentor
+- Prepare workspace and access cards
+- Document all provisioning steps
+
+**Hiring Metrics**:
+
+- Time to hire: target 2-3 business days after acceptance
+- Account creation success rate: target 100%
+- Onboarding completion rate: target 95%+
+- New hire satisfaction: target 80%+
+
 ---
 
 ## API Endpoints
+
+### Applicant Management Endpoints
+
+| Method | Path                                     | Description        | Permission       | Auth     |
+| ------ | ---------------------------------------- | ------------------ | ---------------- | -------- |
+| GET    | `/hr/recruitment/applicants`             | List applicants    | applicant:view   | Required |
+| GET    | `/hr/recruitment/applicants/{id}`        | Get applicant      | applicant:view   | Required |
+| PATCH  | `/hr/recruitment/applicants/{id}`        | Update applicant   | applicant:update | Required |
+| POST   | `/hr/recruitment/applicants/{id}/status` | Update status      | applicant:update | Required |
+| POST   | `/hr/recruitment/applicants/bulk-status` | Bulk status update | applicant:update | Required |
+| POST   | `/hr/recruitment/applicants/{id}/hire`   | Hire applicant     | applicant:update | Required |
+
+**Public Endpoints**:
+| Method | Path | Description | Auth |
+|--------|------|-------------|------|
+| POST | `/hr/recruitment/jobs/{id}/apply` | Apply to job | None |
+
+### Interview Management Endpoints
+
+| Method | Path                                                                      | Description       | Permission                |
+| ------ | ------------------------------------------------------------------------- | ----------------- | ------------------------- |
+| POST   | `/hr/recruitment/interviews`                                              | Create interview  | interview:create          |
+| GET    | `/hr/recruitment/interviews`                                              | List interviews   | interview:view            |
+| GET    | `/hr/recruitment/interviews/{id}`                                         | Get interview     | interview:view            |
+| PATCH  | `/hr/recruitment/interviews/{id}`                                         | Update interview  | interview:update          |
+| PATCH  | `/hr/recruitment/interviews/{id}/participants/{participantId}/attendance` | Update attendance | interview:update          |
+| POST   | `/hr/recruitment/interviews/{id}/participants/{participantId}/feedback`   | Submit feedback   | interview:submit_feedback |
+| GET    | `/hr/recruitment/interviews/{id}/participants/{participantId}/feedback`   | List feedback     | interview:view            |
+
+### Offer Management Endpoints
+
+| Method | Path                                   | Description          | Permission     |
+| ------ | -------------------------------------- | -------------------- | -------------- |
+| POST   | `/hr/recruitment/offers`               | Create offer (draft) | offer:create   |
+| GET    | `/hr/recruitment/offers`               | List offers          | offer:view     |
+| GET    | `/hr/recruitment/offers/{id}`          | Get offer            | offer:view     |
+| PATCH  | `/hr/recruitment/offers/{id}`          | Update draft offer   | offer:update   |
+| POST   | `/hr/recruitment/offers/{id}/send`     | Send offer           | offer:send     |
+| POST   | `/hr/recruitment/offers/{id}/respond`  | Respond to offer     | offer:respond  |
+| POST   | `/hr/recruitment/offers/{id}/withdraw` | Withdraw offer       | offer:withdraw |
 
 ### Applicant Management Endpoints
 
@@ -1565,11 +2385,12 @@ stateDiagram-v2
     SHORTLISTED --> INTERVIEW: Schedule Interview
     SHORTLISTED --> WAITLIST: Hold for Later
     SHORTLISTED --> REJECTED: Rejected
-    INTERVIEW --> OFFER: Make Offer
+    INTERVIEW --> OFFER: Offer Extended
     INTERVIEW --> WAITLIST: Hold for Later
     INTERVIEW --> REJECTED: Rejected
-    OFFER --> HIRED: Accept Offer
-    OFFER --> REJECTED: Reject Offer
+    OFFER --> HIRED: Hire Process
+    OFFER --> REJECTED: Offer Declined
+    OFFER --> WAITLIST: Offer Expired/Withdrawn
     [*] --> WITHDRAWN: Candidate Withdraws
 ```
 
@@ -1578,12 +2399,12 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
     [*] --> SCHEDULED: Session Created
-    SCHEDULED --> IN_PROGRESS: Interview Started
+    SCHEDULED --> COMPLETED: Interview Completed
     SCHEDULED --> CANCELLED: Cancelled
-    IN_PROGRESS --> COMPLETED: Interview Finished
-    IN_PROGRESS --> CANCELLED: Cancelled Mid-Interview
+    SCHEDULED --> NO_SHOW: Candidate No-Show
     COMPLETED --> [*]: Session Complete
     CANCELLED --> [*]: Session Cancelled
+    NO_SHOW --> [*]: No Show Recorded
 ```
 
 ### Interview Attendance State Machine
@@ -1591,6 +2412,8 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
     [*] --> SCHEDULED: Participant Added
+    SCHEDULED --> ATTENDING: Confirmed Attendance
+    ATTENDING --> COMPLETED: Attended
     SCHEDULED --> COMPLETED: Attended
     SCHEDULED --> NO_SHOW: Missed Interview
     SCHEDULED --> CANCELLED: Cancelled
@@ -1607,8 +2430,10 @@ stateDiagram-v2
 | APPLIED     | SHORTLISTED | Bulk action          | Job published      |
 | SCREENING   | SHORTLISTED | HR approval          | Screening complete |
 | SHORTLISTED | INTERVIEW   | Interview scheduled  | Session created    |
-| INTERVIEW   | OFFER       | Offer extended       | Interview passed   |
-| OFFER       | HIRED       | Offer accepted       | Hire workflow      |
+| INTERVIEW   | OFFER       | Offer extended       | Offer created/sent |
+| OFFER       | HIRED       | Hire process         | Offer accepted     |
+| OFFER       | REJECTED    | Offer declined       | Valid transition   |
+| OFFER       | WAITLIST    | Offer expired        | Valid transition   |
 | Any active  | REJECTED    | Rejection decision   | Valid transition   |
 | Any active  | WITHDRAWN   | Candidate withdrawal | Valid transition   |
 
@@ -1645,6 +2470,17 @@ stateDiagram-v2
 | `interview:create`          | Create interview sessions | HR, HR_MANAGER, HIRING_MANAGER              |
 | `interview:update`          | Update interview sessions | HR, HR_MANAGER, HIRING_MANAGER              |
 | `interview:submit_feedback` | Submit interview feedback | Assigned interviewers only                  |
+
+### Offer Permissions
+
+| Permission       | Description               | Typical Roles                  |
+| ---------------- | ------------------------- | ------------------------------ |
+| `offer:view`     | View offers               | HR, HR_MANAGER, HIRING_MANAGER |
+| `offer:create`   | Create draft offers       | HR, HR_MANAGER                 |
+| `offer:update`   | Update draft offers       | HR, HR_MANAGER                 |
+| `offer:send`     | Send offers to candidates | HR, HR_MANAGER                 |
+| `offer:respond`  | Record candidate response | HR, HR_MANAGER                 |
+| `offer:withdraw` | Withdraw offers           | HR, HR_MANAGER                 |
 
 ### Permission Enforcement
 
@@ -1783,7 +2619,7 @@ stateDiagram-v2
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  RECRUITMENT FLOW: POSTING → INTERVIEW           │
+│              RECRUITMENT FLOW: POSTING → HIRING                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  PUBLISHED JOB                                                   │
@@ -1830,7 +2666,34 @@ stateDiagram-v2
 │       └─► Decision: OFFER or REJECT                             │
 │       │                                                          │
 │       ▼                                                          │
-│  NEXT STAGE: OFFER → HIRED                                      │
+│  OFFER CREATION (if approved)                                   │
+│       │                                                          │
+│       ├─► Create draft offer (salary, benefits, start date)     │
+│       ├─► Update offer terms (negotiation)                      │
+│       └─► Send offer (DRAFT → SENT)                             │
+│       │                                                          │
+│       ▼                                                          │
+│  OFFER RESPONSE                                                  │
+│       │                                                          │
+│       ├─► ACCEPTED → Proceed to hiring                          │
+│       ├─► DECLINED → Applicant rejected                          │
+│       ├─► EXPIRED → Waitlist or reject                          │
+│       └─► WITHDRAWN → End process                               │
+│       │                                                          │
+│       ▼                                                          │
+│  HIRING PROCESS (if ACCEPTED)                                    │
+│       │                                                          │
+│       ├─► Validate accepted offer                                │
+│       ├─► Create Keycloak user account                          │
+│       ├─► Create employee record                                 │
+│       ├─► Create employment record                              │
+│       ├─► Create compensation record                             │
+│       ├─► Link applicant to employee                             │
+│       ├─► Transition applicant to HIRED                         │
+│       └─► Send welcome notification                              │
+│       │                                                          │
+│       ▼                                                          │
+│  ONBOARDING INITIATED                                           │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
