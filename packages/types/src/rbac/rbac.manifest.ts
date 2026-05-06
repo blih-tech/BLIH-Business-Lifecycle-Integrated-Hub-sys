@@ -34,6 +34,8 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
   { name: 'job', description: 'Recruitment job requisition workflows' },
   { name: 'job_approval', description: 'Recruitment job approval workflows' },
   { name: 'candidate', description: 'Recruitment candidate records' },
+  { name: 'applicant', description: 'Job applicant management' },
+  { name: 'offer', description: 'Job offer management' },
   {
     name: 'job_application',
     description: 'Recruitment job application workflows',
@@ -52,6 +54,7 @@ export const RBAC_RESOURCE_CATALOG: RbacResourceCatalogEntry[] = [
     description: 'Policy acknowledgement workflows',
   },
   { name: 'probation_plan', description: 'Probation KPI plan workflows' },
+  { name: 'probation_kpi', description: 'Probation KPI management' },
   {
     name: 'probation_evaluation',
     description: 'Probation evaluation workflows',

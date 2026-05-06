@@ -26,19 +26,9 @@ function buildWhere(
     where.status = query.status;
   }
 
-  if (query.joinDateFrom || query.joinDateTo) {
-    where.joinDate = {
-      ...(query.joinDateFrom && { gte: new Date(query.joinDateFrom) }),
-      ...(query.joinDateTo && { lte: new Date(query.joinDateTo) }),
-    };
-  }
-
   const checklistFilters: Prisma.OnboardingChecklistWhereInput = {};
-  if (query.onboardingTaskId) {
-    checklistFilters.onboardingTaskId = query.onboardingTaskId;
-  }
-  if (query.overseerId) {
-    checklistFilters.overseerId = query.overseerId;
+  if (query.taskInstanceId) {
+    checklistFilters.taskInstanceId = query.taskInstanceId;
   }
   if (query.checklistStatus) {
     checklistFilters.status = query.checklistStatus;

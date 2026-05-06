@@ -271,37 +271,39 @@ export class RespondOfferUseCase {
     }
 
     const now = new Date();
-    const updated =
-      dto.decision === 'ACCEPTED'
-        ? await this.transitions.provisionEmployeeFromAcceptedOffer({
-            offerId: id,
-            changedById,
-          })
-        : await this.prisma.$transaction(async (tx) => {
-            if (existing.applicant.status !== 'OFFER') {
-              throw new BadRequestException(
-                'Applicant must be in OFFER status before offer decline',
-              );
-            }
+    const updated = await this.prisma.$transaction(async (tx) => {
+      if (dto.decision === 'ACCEPTED') {
+        const result = await tx.offer.update({
+          where: { id },
+          data: { status: 'ACCEPTED', respondedAt: now },
+        });
+        await recalculateJobMetrics(tx, existing.jobId);
+        return result;
+      } else {
+        if (existing.applicant.status !== 'OFFER') {
+          throw new BadRequestException(
+            'Applicant must be in OFFER status before offer decline',
+          );
+        }
 
-            await tx.offer.update({
-              where: { id },
-              data: { status: 'DECLINED', respondedAt: now },
-            });
+        const result = await tx.offer.update({
+          where: { id },
+          data: { status: 'DECLINED', respondedAt: now },
+        });
 
-            await transitionApplicantStatus(tx, {
-              applicantId: existing.applicantId,
-              currentStatus: existing.applicant.status,
-              nextStatus: 'REJECTED',
-              notes: 'Offer declined',
-              changedById,
-              at: now,
-            });
+        await transitionApplicantStatus(tx, {
+          applicantId: existing.applicantId,
+          currentStatus: existing.applicant.status,
+          nextStatus: 'REJECTED',
+          notes: 'Offer declined',
+          changedById,
+          at: now,
+        });
 
-            await recalculateJobMetrics(tx, existing.jobId);
-
-            return tx.offer.findUniqueOrThrow({ where: { id } });
-          });
+        await recalculateJobMetrics(tx, existing.jobId);
+        return result;
+      }
+    });
 
     const [enriched] = await attachOfferProvisioningSubjects(this.prisma, [
       updated,

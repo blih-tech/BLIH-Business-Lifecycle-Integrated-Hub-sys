@@ -25,8 +25,7 @@ import { cn } from '@/shared/lib/utils';
 import { useSidebar } from '@/shared/components/ui/sidebar';
 
 const assets = {
-  background:
-    'https://www.figma.com/api/mcp/asset/7e31743a-72ac-4836-87e2-fc85df229e91',
+  background: '/sidebar-bg.jpg',
 };
 
 type HrSidebarShellProps = {
@@ -36,6 +35,7 @@ type HrSidebarShellProps = {
     initials: string;
     name: string;
     email: string;
+    onLogout?: () => void;
   };
 };
 
@@ -72,7 +72,10 @@ function iconFor(key: HrMainNavItem['icon']) {
 
 function resolveActiveMain(pathname: string): HrMainNavItem {
   const matched = HR_MAIN_NAV.find((item) => {
-    if (pathname.startsWith(item.href)) return true;
+    // Match by section prefix (e.g. /dashboard/hr/people), not the specific
+    // overview href — so /people/create still resolves to the People section.
+    const sectionPrefix = item.href.split('/').slice(0, 5).join('/');
+    if (pathname.startsWith(sectionPrefix)) return true;
     return (
       item.subItems?.some((subItem) => pathname.startsWith(subItem.href)) ??
       false
@@ -119,7 +122,7 @@ export function HrSidebarShell({
         title="Blih CORE"
         subtitle="HR Portal"
         backgroundImage={assets.background}
-        logo={(
+        logo={
           <Link
             href="/dashboard/hr"
             aria-label="Go to HR dashboard"
@@ -127,7 +130,7 @@ export function HrSidebarShell({
           >
             <Brain className="h-5 w-5" />
           </Link>
-        )}
+        }
         searchIcon={<Search className="h-2.5 w-2.5 text-white" />}
         items={items}
         user={user}

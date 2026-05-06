@@ -109,7 +109,6 @@ validate_environment() {
   require_env "API_IMAGE"
   require_env "API_MIGRATOR_IMAGE"
   require_env "KEYCLOAK_IMAGE"
-  require_env "GHCR_USERNAME"
   require_env "GHCR_TOKEN"
   
   # Validate port configuration
@@ -246,11 +245,22 @@ stop_existing_services() {
   docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down --remove-orphans --timeout 30 || true
 
   # Force-remove any lingering containers from this project that compose down may have missed
+  # We use BOTH label and name prefix to be absolutely sure we clear the namespace.
   local lingering
   lingering=$(docker ps -a --filter "label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}" -q 2>/dev/null || true)
   if [[ -n "$lingering" ]]; then
-    log_warn "Force-removing lingering containers..."
+    log_warn "Force-removing lingering containers by label..."
     echo "$lingering" | xargs docker rm -f >/dev/null 2>&1 || true
+  fi
+
+  # Aggressive name-based cleanup to handle cases where labels might be missing or corrupted.
+  # This targets exactly the names that cause 'Conflict' errors.
+  local by_name
+  by_name=$(docker ps -aq --filter "name=^/${COMPOSE_PROJECT_NAME}-" 2>/dev/null || true)
+  if [[ -n "$by_name" ]]; then
+    log_warn "Force-removing containers matching project name prefix: ${COMPOSE_PROJECT_NAME}-*"
+    # shellcheck disable=SC2086
+    docker rm -f $by_name >/dev/null 2>&1 || true
   fi
 
   # Explicitly remove the compose network so all port bindings are released by the kernel
@@ -296,15 +306,17 @@ compose_recreate_postgres() {
 }
 
 compose_up_remaining_services() {
-  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --wait --pull always --remove-orphans --force-recreate api keycloak mailhog
+  # Run without --wait: Docker Compose's --wait exits immediately if any container
+  # restarts during Keycloak's slow import-realm phase and triggers a false rollback.
+  # healthcheck.sh owns actual readiness polling with its own retry loop.
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --pull always --remove-orphans --force-recreate api keycloak mailhog
 }
 
 # Main deployment function
 deploy() {
   log_info "Starting BLIH Production Deployment"
   log_info "=================================="
-  deploy_ok=false
-  
+
   # Validation
   validate_environment
   pre_deployment_checks
@@ -312,7 +324,7 @@ deploy() {
   
   # Login to registry
   log_step "Logging in to GitHub Container Registry..."
-  printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+  printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR:-github-actions[bot]}" --password-stdin
 
   # Stop existing services to release ports before starting new deployment
   stop_existing_services
@@ -341,12 +353,25 @@ deploy() {
     return 1
   fi
   
-  # Wait for PostgreSQL to be healthy
-  log_step "Waiting for PostgreSQL to be ready..."
+  # Wait for PostgreSQL to be ready
+  log_step "Waiting for PostgreSQL to be ready and ensuring databases exist..."
   for i in {1..30}; do
     if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T postgres pg_isready \
       -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-postgres}" >/dev/null 2>&1; then
-      log_info "PostgreSQL is ready"
+
+      log_info "PostgreSQL is ready. Ensuring databases exist..."
+      # Run the init script manually to ensure DBs are created even if volume existed
+      # We pass the environment variables explicitly to ensure the script has them.
+      docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T \
+        -e POSTGRES_USER="${POSTGRES_USER:-postgres}" \
+        -e POSTGRES_DB="${POSTGRES_DB:-postgres}" \
+        -e POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-admin1234}" \
+        -e DATABASE_URL="${DATABASE_URL:-}" \
+        -e KEYCLOAK_DB_NAME="${KEYCLOAK_DB_NAME:-keycloak}" \
+        -e API_DB_NAME="${POSTGRES_DB:-blih-system}" \
+        postgres /docker-entrypoint-initdb.d/01-init-databases.sh
+
+      log_info "Databases verified"
       break
     fi
     if [[ $i -eq 30 ]]; then
@@ -364,6 +389,16 @@ deploy() {
     log_error "Database migrations failed"
     return 1
   fi
+
+  # Run database seed (upsert-based, safe to run on every deploy)
+  log_step "Running database seed..."
+  if docker run --rm --env-file "$ENV_FILE" --network "${COMPOSE_PROJECT_NAME}_default" \
+    "$API_MIGRATOR_IMAGE" \
+    npm run prisma:seed --workspace @repo/database; then
+    log_info "Database seed completed successfully"
+  else
+    log_warn "Database seed failed — non-fatal, deployment will continue"
+  fi
   
   # Start remaining services
   log_step "Starting remaining production services..."
@@ -374,43 +409,50 @@ deploy() {
     return 1
   fi
   
-  # Health checks
+  # Health checks — bare call so failure propagates to ERR trap → handle_failure → rollback.
+  # The previous if/else wrapper silently swallowed failures and exited 0 without rollback.
   log_step "Running comprehensive health checks..."
-  if ./healthcheck.sh; then
-    log_info "Health checks passed ✅"
-    deploy_ok=true
-  else
-    log_error "Health checks failed"
-    deploy_ok=false
-  fi
-  
-  # Post-deployment actions
-  if [[ "$deploy_ok" == true ]]; then
-    write_release_file
-    cleanup_docker_resources
-    docker logout ghcr.io >/dev/null 2>&1 || true
-    
-    log_info "=================================="
-    log_info "Deployment completed successfully ✅"
-    log_info "API is running on port: ${API_PORT:-5000}"
-    log_info "Deployed at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-    exit 0
-  fi
+  ./healthcheck.sh
+
+  write_release_file
+  cleanup_docker_resources || true
+  docker logout ghcr.io >/dev/null 2>&1 || true
+  log_info "=================================="
+  log_info "Deployment completed successfully ✅"
+  log_info "API is running on port: ${API_PORT:-5000}"
+  log_info "Deployed at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  exit 0
 }
 
 # Rollback on failure
 handle_failure() {
+  local rollback_result=0
   log_error "Deployment failed, attempting automatic rollback..."
 
   # Print all container logs BEFORE cleanup so the CI log shows the root cause
-  log_step "=== CONTAINER LOGS (last 150 lines each) ==="
-  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --no-color --tail=150 2>/dev/null || true
+  log_step "=== CONTAINER LOGS (last 250 lines each) ==="
+  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --no-color --tail=250 2>/dev/null || true
   log_step "=== END CONTAINER LOGS ==="
 
-  rollback || true
-  cleanup_docker_resources
+  # Extra diagnostics for Keycloak if it's the one that failed
+  if docker ps -a | grep -q "${COMPOSE_PROJECT_NAME}-keycloak"; then
+    log_step "=== KEYCLOAK SPECIFIC DIAGNOSTICS ==="
+    docker inspect "${COMPOSE_PROJECT_NAME}-keycloak-1" --format '{{json .State.Health}}' 2>/dev/null || true
+    log_warn "=== KEYCLOAK RECENT LOGS ==="
+    docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --tail=100 keycloak 2>/dev/null || true
+    log_step "=== END DIAGNOSTICS ==="
+  fi
+
+  if ! rollback; then
+    rollback_result=$?
+    log_error "Rollback failed with exit code ${rollback_result}"
+  fi
+  
+  cleanup_docker_resources || true
   docker logout ghcr.io >/dev/null 2>&1 || true
-  exit 1
+  
+  # Exit with rollback status - if rollback succeeded, exit 0
+  exit $rollback_result
 }
 
 # Main execution

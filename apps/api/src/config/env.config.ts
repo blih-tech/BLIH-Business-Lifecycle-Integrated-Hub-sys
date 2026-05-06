@@ -152,6 +152,7 @@ export type EnvValues = {
   DATABASE_IDLE_TIMEOUT_MS: number;
   KEYCLOAK_ENABLED: boolean;
   KEYCLOAK_URL: string;
+  KEYCLOAK_INTERNAL_URL: string;
   KEYCLOAK_REALM: string;
   KEYCLOAK_CLIENT_ID: string;
   KEYCLOAK_CLIENT_SECRET: string;

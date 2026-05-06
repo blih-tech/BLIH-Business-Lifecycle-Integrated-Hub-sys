@@ -15,12 +15,7 @@ export class DeleteOnboardingTaskUseCase {
       throw new NotFoundException(`Onboarding task with id "${id}" not found`);
     }
 
-    await this.prisma.$transaction([
-      this.prisma.onboardingChecklist.deleteMany({
-        where: { onboardingTaskId: id },
-      }),
-      this.prisma.onboardingTask.delete({ where: { id } }),
-    ]);
+    await this.prisma.onboardingTask.delete({ where: { id } });
 
     return { success: true };
   }

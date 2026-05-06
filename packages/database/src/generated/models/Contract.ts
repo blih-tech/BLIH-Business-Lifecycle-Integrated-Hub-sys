@@ -20,136 +20,64 @@ export type ContractModel = runtime.Types.Result.DefaultSelection<Prisma.$Contra
 
 export type AggregateContract = {
   _count: ContractCountAggregateOutputType | null
-  _avg: ContractAvgAggregateOutputType | null
-  _sum: ContractSumAggregateOutputType | null
   _min: ContractMinAggregateOutputType | null
   _max: ContractMaxAggregateOutputType | null
 }
 
-export type ContractAvgAggregateOutputType = {
-  sequenceNumber: number | null
-}
-
-export type ContractSumAggregateOutputType = {
-  sequenceNumber: number | null
-}
-
 export type ContractMinAggregateOutputType = {
   id: string | null
-  employeeId: string | null
-  contractType: $Enums.ContractType | null
-  sequenceNumber: number | null
-  startDate: Date | null
-  endDate: Date | null
-  trialApplies: boolean | null
-  trialEndDate: Date | null
-  trialConfirmed: boolean | null
-  documentUrl: string | null
-  status: $Enums.ContractStatus | null
-  syncedToFinance: boolean | null
-  syncedAt: Date | null
+  templateId: string | null
+  signedFileUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  employeeContractId: string | null
 }
 
 export type ContractMaxAggregateOutputType = {
   id: string | null
-  employeeId: string | null
-  contractType: $Enums.ContractType | null
-  sequenceNumber: number | null
-  startDate: Date | null
-  endDate: Date | null
-  trialApplies: boolean | null
-  trialEndDate: Date | null
-  trialConfirmed: boolean | null
-  documentUrl: string | null
-  status: $Enums.ContractStatus | null
-  syncedToFinance: boolean | null
-  syncedAt: Date | null
+  templateId: string | null
+  signedFileUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  employeeContractId: string | null
 }
 
 export type ContractCountAggregateOutputType = {
   id: number
-  employeeId: number
-  contractType: number
-  sequenceNumber: number
-  startDate: number
-  endDate: number
-  trialApplies: number
-  trialEndDate: number
-  trialConfirmed: number
-  documentUrl: number
-  status: number
-  syncedToFinance: number
-  syncedAt: number
+  templateId: number
+  signedFileUrl: number
   createdAt: number
   updatedAt: number
+  employeeContractId: number
   _all: number
 }
 
 
-export type ContractAvgAggregateInputType = {
-  sequenceNumber?: true
-}
-
-export type ContractSumAggregateInputType = {
-  sequenceNumber?: true
-}
-
 export type ContractMinAggregateInputType = {
   id?: true
-  employeeId?: true
-  contractType?: true
-  sequenceNumber?: true
-  startDate?: true
-  endDate?: true
-  trialApplies?: true
-  trialEndDate?: true
-  trialConfirmed?: true
-  documentUrl?: true
-  status?: true
-  syncedToFinance?: true
-  syncedAt?: true
+  templateId?: true
+  signedFileUrl?: true
   createdAt?: true
   updatedAt?: true
+  employeeContractId?: true
 }
 
 export type ContractMaxAggregateInputType = {
   id?: true
-  employeeId?: true
-  contractType?: true
-  sequenceNumber?: true
-  startDate?: true
-  endDate?: true
-  trialApplies?: true
-  trialEndDate?: true
-  trialConfirmed?: true
-  documentUrl?: true
-  status?: true
-  syncedToFinance?: true
-  syncedAt?: true
+  templateId?: true
+  signedFileUrl?: true
   createdAt?: true
   updatedAt?: true
+  employeeContractId?: true
 }
 
 export type ContractCountAggregateInputType = {
   id?: true
-  employeeId?: true
-  contractType?: true
-  sequenceNumber?: true
-  startDate?: true
-  endDate?: true
-  trialApplies?: true
-  trialEndDate?: true
-  trialConfirmed?: true
-  documentUrl?: true
-  status?: true
-  syncedToFinance?: true
-  syncedAt?: true
+  templateId?: true
+  signedFileUrl?: true
   createdAt?: true
   updatedAt?: true
+  employeeContractId?: true
   _all?: true
 }
 
@@ -191,18 +119,6 @@ export type ContractAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ContractAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ContractSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ContractMinAggregateInputType
@@ -233,31 +149,18 @@ export type ContractGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: ContractCountAggregateInputType | true
-  _avg?: ContractAvgAggregateInputType
-  _sum?: ContractSumAggregateInputType
   _min?: ContractMinAggregateInputType
   _max?: ContractMaxAggregateInputType
 }
 
 export type ContractGroupByOutputType = {
   id: string
-  employeeId: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date
-  endDate: Date | null
-  trialApplies: boolean
-  trialEndDate: Date | null
-  trialConfirmed: boolean
-  documentUrl: string | null
-  status: $Enums.ContractStatus
-  syncedToFinance: boolean
-  syncedAt: Date | null
+  templateId: string
+  signedFileUrl: string | null
   createdAt: Date
   updatedAt: Date
+  employeeContractId: string | null
   _count: ContractCountAggregateOutputType | null
-  _avg: ContractAvgAggregateOutputType | null
-  _sum: ContractSumAggregateOutputType | null
   _min: ContractMinAggregateOutputType | null
   _max: ContractMaxAggregateOutputType | null
 }
@@ -281,300 +184,131 @@ export type ContractWhereInput = {
   AND?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
   OR?: Prisma.ContractWhereInput[]
   NOT?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
-  id?: Prisma.UuidFilter<"Contract"> | string
-  employeeId?: Prisma.UuidFilter<"Contract"> | string
-  contractType?: Prisma.EnumContractTypeFilter<"Contract"> | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFilter<"Contract"> | number
-  startDate?: Prisma.DateTimeFilter<"Contract"> | Date | string
-  endDate?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
-  trialApplies?: Prisma.BoolFilter<"Contract"> | boolean
-  trialEndDate?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
-  trialConfirmed?: Prisma.BoolFilter<"Contract"> | boolean
-  documentUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
-  status?: Prisma.EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFilter<"Contract"> | boolean
-  syncedAt?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
+  id?: Prisma.StringFilter<"Contract"> | string
+  templateId?: Prisma.StringFilter<"Contract"> | string
+  signedFileUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  employeeContractId?: Prisma.UuidNullableFilter<"Contract"> | string | null
+  template?: Prisma.XOR<Prisma.ContractTemplateScalarRelationFilter, Prisma.ContractTemplateWhereInput>
+  signers?: Prisma.ContractSignerListRelationFilter
+  employeeContract?: Prisma.XOR<Prisma.EmployeeContractNullableScalarRelationFilter, Prisma.EmployeeContractWhereInput> | null
 }
 
 export type ContractOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  contractType?: Prisma.SortOrder
-  sequenceNumber?: Prisma.SortOrder
-  startDate?: Prisma.SortOrder
-  endDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  trialApplies?: Prisma.SortOrder
-  trialEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  trialConfirmed?: Prisma.SortOrder
-  documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  status?: Prisma.SortOrder
-  syncedToFinance?: Prisma.SortOrder
-  syncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  signedFileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  employee?: Prisma.EmployeeOrderByWithRelationInput
+  employeeContractId?: Prisma.SortOrderInput | Prisma.SortOrder
+  template?: Prisma.ContractTemplateOrderByWithRelationInput
+  signers?: Prisma.ContractSignerOrderByRelationAggregateInput
+  employeeContract?: Prisma.EmployeeContractOrderByWithRelationInput
 }
 
 export type ContractWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  employeeId_sequenceNumber?: Prisma.ContractEmployeeIdSequenceNumberCompoundUniqueInput
   AND?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
   OR?: Prisma.ContractWhereInput[]
   NOT?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
-  employeeId?: Prisma.UuidFilter<"Contract"> | string
-  contractType?: Prisma.EnumContractTypeFilter<"Contract"> | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFilter<"Contract"> | number
-  startDate?: Prisma.DateTimeFilter<"Contract"> | Date | string
-  endDate?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
-  trialApplies?: Prisma.BoolFilter<"Contract"> | boolean
-  trialEndDate?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
-  trialConfirmed?: Prisma.BoolFilter<"Contract"> | boolean
-  documentUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
-  status?: Prisma.EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFilter<"Contract"> | boolean
-  syncedAt?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
+  templateId?: Prisma.StringFilter<"Contract"> | string
+  signedFileUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
-  employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-}, "id" | "employeeId_sequenceNumber">
+  employeeContractId?: Prisma.UuidNullableFilter<"Contract"> | string | null
+  template?: Prisma.XOR<Prisma.ContractTemplateScalarRelationFilter, Prisma.ContractTemplateWhereInput>
+  signers?: Prisma.ContractSignerListRelationFilter
+  employeeContract?: Prisma.XOR<Prisma.EmployeeContractNullableScalarRelationFilter, Prisma.EmployeeContractWhereInput> | null
+}, "id">
 
 export type ContractOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  contractType?: Prisma.SortOrder
-  sequenceNumber?: Prisma.SortOrder
-  startDate?: Prisma.SortOrder
-  endDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  trialApplies?: Prisma.SortOrder
-  trialEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  trialConfirmed?: Prisma.SortOrder
-  documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  status?: Prisma.SortOrder
-  syncedToFinance?: Prisma.SortOrder
-  syncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  signedFileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  employeeContractId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ContractCountOrderByAggregateInput
-  _avg?: Prisma.ContractAvgOrderByAggregateInput
   _max?: Prisma.ContractMaxOrderByAggregateInput
   _min?: Prisma.ContractMinOrderByAggregateInput
-  _sum?: Prisma.ContractSumOrderByAggregateInput
 }
 
 export type ContractScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContractScalarWhereWithAggregatesInput | Prisma.ContractScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContractScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContractScalarWhereWithAggregatesInput | Prisma.ContractScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"Contract"> | string
-  employeeId?: Prisma.UuidWithAggregatesFilter<"Contract"> | string
-  contractType?: Prisma.EnumContractTypeWithAggregatesFilter<"Contract"> | $Enums.ContractType
-  sequenceNumber?: Prisma.IntWithAggregatesFilter<"Contract"> | number
-  startDate?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
-  endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
-  trialApplies?: Prisma.BoolWithAggregatesFilter<"Contract"> | boolean
-  trialEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
-  trialConfirmed?: Prisma.BoolWithAggregatesFilter<"Contract"> | boolean
-  documentUrl?: Prisma.StringNullableWithAggregatesFilter<"Contract"> | string | null
-  status?: Prisma.EnumContractStatusWithAggregatesFilter<"Contract"> | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolWithAggregatesFilter<"Contract"> | boolean
-  syncedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+  id?: Prisma.StringWithAggregatesFilter<"Contract"> | string
+  templateId?: Prisma.StringWithAggregatesFilter<"Contract"> | string
+  signedFileUrl?: Prisma.StringNullableWithAggregatesFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
+  employeeContractId?: Prisma.UuidNullableWithAggregatesFilter<"Contract"> | string | null
 }
 
 export type ContractCreateInput = {
   id?: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date | string
-  endDate?: Date | string | null
-  trialApplies?: boolean
-  trialEndDate?: Date | string | null
-  trialConfirmed?: boolean
-  documentUrl?: string | null
-  status?: $Enums.ContractStatus
-  syncedToFinance?: boolean
-  syncedAt?: Date | string | null
+  signedFileUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  template: Prisma.ContractTemplateCreateNestedOneWithoutContractsInput
+  signers?: Prisma.ContractSignerCreateNestedManyWithoutContractInput
+  employeeContract?: Prisma.EmployeeContractCreateNestedOneWithoutContractsInput
 }
 
 export type ContractUncheckedCreateInput = {
   id?: string
-  employeeId: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date | string
-  endDate?: Date | string | null
-  trialApplies?: boolean
-  trialEndDate?: Date | string | null
-  trialConfirmed?: boolean
-  documentUrl?: string | null
-  status?: $Enums.ContractStatus
-  syncedToFinance?: boolean
-  syncedAt?: Date | string | null
+  templateId: string
+  signedFileUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  employeeContractId?: string | null
+  signers?: Prisma.ContractSignerUncheckedCreateNestedManyWithoutContractInput
 }
 
 export type ContractUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  template?: Prisma.ContractTemplateUpdateOneRequiredWithoutContractsNestedInput
+  signers?: Prisma.ContractSignerUpdateManyWithoutContractNestedInput
+  employeeContract?: Prisma.EmployeeContractUpdateOneWithoutContractsNestedInput
 }
 
 export type ContractUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signers?: Prisma.ContractSignerUncheckedUpdateManyWithoutContractNestedInput
 }
 
 export type ContractCreateManyInput = {
   id?: string
-  employeeId: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date | string
-  endDate?: Date | string | null
-  trialApplies?: boolean
-  trialEndDate?: Date | string | null
-  trialConfirmed?: boolean
-  documentUrl?: string | null
-  status?: $Enums.ContractStatus
-  syncedToFinance?: boolean
-  syncedAt?: Date | string | null
+  templateId: string
+  signedFileUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  employeeContractId?: string | null
 }
 
 export type ContractUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ContractUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type ContractEmployeeIdSequenceNumberCompoundUniqueInput = {
-  employeeId: string
-  sequenceNumber: number
-}
-
-export type ContractCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  contractType?: Prisma.SortOrder
-  sequenceNumber?: Prisma.SortOrder
-  startDate?: Prisma.SortOrder
-  endDate?: Prisma.SortOrder
-  trialApplies?: Prisma.SortOrder
-  trialEndDate?: Prisma.SortOrder
-  trialConfirmed?: Prisma.SortOrder
-  documentUrl?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  syncedToFinance?: Prisma.SortOrder
-  syncedAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type ContractAvgOrderByAggregateInput = {
-  sequenceNumber?: Prisma.SortOrder
-}
-
-export type ContractMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  contractType?: Prisma.SortOrder
-  sequenceNumber?: Prisma.SortOrder
-  startDate?: Prisma.SortOrder
-  endDate?: Prisma.SortOrder
-  trialApplies?: Prisma.SortOrder
-  trialEndDate?: Prisma.SortOrder
-  trialConfirmed?: Prisma.SortOrder
-  documentUrl?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  syncedToFinance?: Prisma.SortOrder
-  syncedAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type ContractMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  employeeId?: Prisma.SortOrder
-  contractType?: Prisma.SortOrder
-  sequenceNumber?: Prisma.SortOrder
-  startDate?: Prisma.SortOrder
-  endDate?: Prisma.SortOrder
-  trialApplies?: Prisma.SortOrder
-  trialEndDate?: Prisma.SortOrder
-  trialConfirmed?: Prisma.SortOrder
-  documentUrl?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  syncedToFinance?: Prisma.SortOrder
-  syncedAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type ContractSumOrderByAggregateInput = {
-  sequenceNumber?: Prisma.SortOrder
+  employeeContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ContractListRelationFilter = {
@@ -587,314 +321,461 @@ export type ContractOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type EnumContractTypeFieldUpdateOperationsInput = {
-  set?: $Enums.ContractType
+export type ContractCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  signedFileUrl?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  employeeContractId?: Prisma.SortOrder
 }
 
-export type EnumContractStatusFieldUpdateOperationsInput = {
-  set?: $Enums.ContractStatus
+export type ContractMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  signedFileUrl?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  employeeContractId?: Prisma.SortOrder
 }
 
-export type ContractCreateNestedManyWithoutEmployeeInput = {
-  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeInput, Prisma.ContractUncheckedCreateWithoutEmployeeInput> | Prisma.ContractCreateWithoutEmployeeInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeInput | Prisma.ContractCreateOrConnectWithoutEmployeeInput[]
-  createMany?: Prisma.ContractCreateManyEmployeeInputEnvelope
+export type ContractMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  signedFileUrl?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  employeeContractId?: Prisma.SortOrder
+}
+
+export type ContractScalarRelationFilter = {
+  is?: Prisma.ContractWhereInput
+  isNot?: Prisma.ContractWhereInput
+}
+
+export type ContractCreateNestedManyWithoutTemplateInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutTemplateInput, Prisma.ContractUncheckedCreateWithoutTemplateInput> | Prisma.ContractCreateWithoutTemplateInput[] | Prisma.ContractUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutTemplateInput | Prisma.ContractCreateOrConnectWithoutTemplateInput[]
+  createMany?: Prisma.ContractCreateManyTemplateInputEnvelope
   connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
 }
 
-export type ContractUncheckedCreateNestedManyWithoutEmployeeInput = {
-  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeInput, Prisma.ContractUncheckedCreateWithoutEmployeeInput> | Prisma.ContractCreateWithoutEmployeeInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeInput | Prisma.ContractCreateOrConnectWithoutEmployeeInput[]
-  createMany?: Prisma.ContractCreateManyEmployeeInputEnvelope
+export type ContractUncheckedCreateNestedManyWithoutTemplateInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutTemplateInput, Prisma.ContractUncheckedCreateWithoutTemplateInput> | Prisma.ContractCreateWithoutTemplateInput[] | Prisma.ContractUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutTemplateInput | Prisma.ContractCreateOrConnectWithoutTemplateInput[]
+  createMany?: Prisma.ContractCreateManyTemplateInputEnvelope
   connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
 }
 
-export type ContractUpdateManyWithoutEmployeeNestedInput = {
-  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeInput, Prisma.ContractUncheckedCreateWithoutEmployeeInput> | Prisma.ContractCreateWithoutEmployeeInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeInput | Prisma.ContractCreateOrConnectWithoutEmployeeInput[]
-  upsert?: Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeInput[]
-  createMany?: Prisma.ContractCreateManyEmployeeInputEnvelope
+export type ContractUpdateManyWithoutTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutTemplateInput, Prisma.ContractUncheckedCreateWithoutTemplateInput> | Prisma.ContractCreateWithoutTemplateInput[] | Prisma.ContractUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutTemplateInput | Prisma.ContractCreateOrConnectWithoutTemplateInput[]
+  upsert?: Prisma.ContractUpsertWithWhereUniqueWithoutTemplateInput | Prisma.ContractUpsertWithWhereUniqueWithoutTemplateInput[]
+  createMany?: Prisma.ContractCreateManyTemplateInputEnvelope
   set?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
   disconnect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
   delete?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
   connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
-  update?: Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeInput[]
-  updateMany?: Prisma.ContractUpdateManyWithWhereWithoutEmployeeInput | Prisma.ContractUpdateManyWithWhereWithoutEmployeeInput[]
+  update?: Prisma.ContractUpdateWithWhereUniqueWithoutTemplateInput | Prisma.ContractUpdateWithWhereUniqueWithoutTemplateInput[]
+  updateMany?: Prisma.ContractUpdateManyWithWhereWithoutTemplateInput | Prisma.ContractUpdateManyWithWhereWithoutTemplateInput[]
   deleteMany?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
 }
 
-export type ContractUncheckedUpdateManyWithoutEmployeeNestedInput = {
-  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeInput, Prisma.ContractUncheckedCreateWithoutEmployeeInput> | Prisma.ContractCreateWithoutEmployeeInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeInput[]
-  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeInput | Prisma.ContractCreateOrConnectWithoutEmployeeInput[]
-  upsert?: Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeInput[]
-  createMany?: Prisma.ContractCreateManyEmployeeInputEnvelope
+export type ContractUncheckedUpdateManyWithoutTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutTemplateInput, Prisma.ContractUncheckedCreateWithoutTemplateInput> | Prisma.ContractCreateWithoutTemplateInput[] | Prisma.ContractUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutTemplateInput | Prisma.ContractCreateOrConnectWithoutTemplateInput[]
+  upsert?: Prisma.ContractUpsertWithWhereUniqueWithoutTemplateInput | Prisma.ContractUpsertWithWhereUniqueWithoutTemplateInput[]
+  createMany?: Prisma.ContractCreateManyTemplateInputEnvelope
   set?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
   disconnect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
   delete?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
   connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
-  update?: Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeInput[]
-  updateMany?: Prisma.ContractUpdateManyWithWhereWithoutEmployeeInput | Prisma.ContractUpdateManyWithWhereWithoutEmployeeInput[]
+  update?: Prisma.ContractUpdateWithWhereUniqueWithoutTemplateInput | Prisma.ContractUpdateWithWhereUniqueWithoutTemplateInput[]
+  updateMany?: Prisma.ContractUpdateManyWithWhereWithoutTemplateInput | Prisma.ContractUpdateManyWithWhereWithoutTemplateInput[]
   deleteMany?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
 }
 
-export type ContractCreateWithoutEmployeeInput = {
-  id?: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date | string
-  endDate?: Date | string | null
-  trialApplies?: boolean
-  trialEndDate?: Date | string | null
-  trialConfirmed?: boolean
-  documentUrl?: string | null
-  status?: $Enums.ContractStatus
-  syncedToFinance?: boolean
-  syncedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
+export type ContractCreateNestedOneWithoutSignersInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutSignersInput, Prisma.ContractUncheckedCreateWithoutSignersInput>
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutSignersInput
+  connect?: Prisma.ContractWhereUniqueInput
 }
 
-export type ContractUncheckedCreateWithoutEmployeeInput = {
-  id?: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date | string
-  endDate?: Date | string | null
-  trialApplies?: boolean
-  trialEndDate?: Date | string | null
-  trialConfirmed?: boolean
-  documentUrl?: string | null
-  status?: $Enums.ContractStatus
-  syncedToFinance?: boolean
-  syncedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
+export type ContractUpdateOneRequiredWithoutSignersNestedInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutSignersInput, Prisma.ContractUncheckedCreateWithoutSignersInput>
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutSignersInput
+  upsert?: Prisma.ContractUpsertWithoutSignersInput
+  connect?: Prisma.ContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContractUpdateToOneWithWhereWithoutSignersInput, Prisma.ContractUpdateWithoutSignersInput>, Prisma.ContractUncheckedUpdateWithoutSignersInput>
 }
 
-export type ContractCreateOrConnectWithoutEmployeeInput = {
+export type ContractCreateNestedManyWithoutEmployeeContractInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeContractInput, Prisma.ContractUncheckedCreateWithoutEmployeeContractInput> | Prisma.ContractCreateWithoutEmployeeContractInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeContractInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeContractInput | Prisma.ContractCreateOrConnectWithoutEmployeeContractInput[]
+  createMany?: Prisma.ContractCreateManyEmployeeContractInputEnvelope
+  connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+}
+
+export type ContractUncheckedCreateNestedManyWithoutEmployeeContractInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeContractInput, Prisma.ContractUncheckedCreateWithoutEmployeeContractInput> | Prisma.ContractCreateWithoutEmployeeContractInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeContractInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeContractInput | Prisma.ContractCreateOrConnectWithoutEmployeeContractInput[]
+  createMany?: Prisma.ContractCreateManyEmployeeContractInputEnvelope
+  connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+}
+
+export type ContractUpdateManyWithoutEmployeeContractNestedInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeContractInput, Prisma.ContractUncheckedCreateWithoutEmployeeContractInput> | Prisma.ContractCreateWithoutEmployeeContractInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeContractInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeContractInput | Prisma.ContractCreateOrConnectWithoutEmployeeContractInput[]
+  upsert?: Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeContractInput | Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeContractInput[]
+  createMany?: Prisma.ContractCreateManyEmployeeContractInputEnvelope
+  set?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  disconnect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  delete?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  update?: Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeContractInput | Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeContractInput[]
+  updateMany?: Prisma.ContractUpdateManyWithWhereWithoutEmployeeContractInput | Prisma.ContractUpdateManyWithWhereWithoutEmployeeContractInput[]
+  deleteMany?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
+}
+
+export type ContractUncheckedUpdateManyWithoutEmployeeContractNestedInput = {
+  create?: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeContractInput, Prisma.ContractUncheckedCreateWithoutEmployeeContractInput> | Prisma.ContractCreateWithoutEmployeeContractInput[] | Prisma.ContractUncheckedCreateWithoutEmployeeContractInput[]
+  connectOrCreate?: Prisma.ContractCreateOrConnectWithoutEmployeeContractInput | Prisma.ContractCreateOrConnectWithoutEmployeeContractInput[]
+  upsert?: Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeContractInput | Prisma.ContractUpsertWithWhereUniqueWithoutEmployeeContractInput[]
+  createMany?: Prisma.ContractCreateManyEmployeeContractInputEnvelope
+  set?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  disconnect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  delete?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  connect?: Prisma.ContractWhereUniqueInput | Prisma.ContractWhereUniqueInput[]
+  update?: Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeContractInput | Prisma.ContractUpdateWithWhereUniqueWithoutEmployeeContractInput[]
+  updateMany?: Prisma.ContractUpdateManyWithWhereWithoutEmployeeContractInput | Prisma.ContractUpdateManyWithWhereWithoutEmployeeContractInput[]
+  deleteMany?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
+}
+
+export type ContractCreateWithoutTemplateInput = {
+  id?: string
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  signers?: Prisma.ContractSignerCreateNestedManyWithoutContractInput
+  employeeContract?: Prisma.EmployeeContractCreateNestedOneWithoutContractsInput
+}
+
+export type ContractUncheckedCreateWithoutTemplateInput = {
+  id?: string
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employeeContractId?: string | null
+  signers?: Prisma.ContractSignerUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type ContractCreateOrConnectWithoutTemplateInput = {
   where: Prisma.ContractWhereUniqueInput
-  create: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeInput, Prisma.ContractUncheckedCreateWithoutEmployeeInput>
+  create: Prisma.XOR<Prisma.ContractCreateWithoutTemplateInput, Prisma.ContractUncheckedCreateWithoutTemplateInput>
 }
 
-export type ContractCreateManyEmployeeInputEnvelope = {
-  data: Prisma.ContractCreateManyEmployeeInput | Prisma.ContractCreateManyEmployeeInput[]
+export type ContractCreateManyTemplateInputEnvelope = {
+  data: Prisma.ContractCreateManyTemplateInput | Prisma.ContractCreateManyTemplateInput[]
   skipDuplicates?: boolean
 }
 
-export type ContractUpsertWithWhereUniqueWithoutEmployeeInput = {
+export type ContractUpsertWithWhereUniqueWithoutTemplateInput = {
   where: Prisma.ContractWhereUniqueInput
-  update: Prisma.XOR<Prisma.ContractUpdateWithoutEmployeeInput, Prisma.ContractUncheckedUpdateWithoutEmployeeInput>
-  create: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeInput, Prisma.ContractUncheckedCreateWithoutEmployeeInput>
+  update: Prisma.XOR<Prisma.ContractUpdateWithoutTemplateInput, Prisma.ContractUncheckedUpdateWithoutTemplateInput>
+  create: Prisma.XOR<Prisma.ContractCreateWithoutTemplateInput, Prisma.ContractUncheckedCreateWithoutTemplateInput>
 }
 
-export type ContractUpdateWithWhereUniqueWithoutEmployeeInput = {
+export type ContractUpdateWithWhereUniqueWithoutTemplateInput = {
   where: Prisma.ContractWhereUniqueInput
-  data: Prisma.XOR<Prisma.ContractUpdateWithoutEmployeeInput, Prisma.ContractUncheckedUpdateWithoutEmployeeInput>
+  data: Prisma.XOR<Prisma.ContractUpdateWithoutTemplateInput, Prisma.ContractUncheckedUpdateWithoutTemplateInput>
 }
 
-export type ContractUpdateManyWithWhereWithoutEmployeeInput = {
+export type ContractUpdateManyWithWhereWithoutTemplateInput = {
   where: Prisma.ContractScalarWhereInput
-  data: Prisma.XOR<Prisma.ContractUpdateManyMutationInput, Prisma.ContractUncheckedUpdateManyWithoutEmployeeInput>
+  data: Prisma.XOR<Prisma.ContractUpdateManyMutationInput, Prisma.ContractUncheckedUpdateManyWithoutTemplateInput>
 }
 
 export type ContractScalarWhereInput = {
   AND?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
   OR?: Prisma.ContractScalarWhereInput[]
   NOT?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
-  id?: Prisma.UuidFilter<"Contract"> | string
-  employeeId?: Prisma.UuidFilter<"Contract"> | string
-  contractType?: Prisma.EnumContractTypeFilter<"Contract"> | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFilter<"Contract"> | number
-  startDate?: Prisma.DateTimeFilter<"Contract"> | Date | string
-  endDate?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
-  trialApplies?: Prisma.BoolFilter<"Contract"> | boolean
-  trialEndDate?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
-  trialConfirmed?: Prisma.BoolFilter<"Contract"> | boolean
-  documentUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
-  status?: Prisma.EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFilter<"Contract"> | boolean
-  syncedAt?: Prisma.DateTimeNullableFilter<"Contract"> | Date | string | null
+  id?: Prisma.StringFilter<"Contract"> | string
+  templateId?: Prisma.StringFilter<"Contract"> | string
+  signedFileUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
+  employeeContractId?: Prisma.UuidNullableFilter<"Contract"> | string | null
 }
 
-export type ContractCreateManyEmployeeInput = {
+export type ContractCreateWithoutSignersInput = {
   id?: string
-  contractType: $Enums.ContractType
-  sequenceNumber: number
-  startDate: Date | string
-  endDate?: Date | string | null
-  trialApplies?: boolean
-  trialEndDate?: Date | string | null
-  trialConfirmed?: boolean
-  documentUrl?: string | null
-  status?: $Enums.ContractStatus
-  syncedToFinance?: boolean
-  syncedAt?: Date | string | null
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  template: Prisma.ContractTemplateCreateNestedOneWithoutContractsInput
+  employeeContract?: Prisma.EmployeeContractCreateNestedOneWithoutContractsInput
+}
+
+export type ContractUncheckedCreateWithoutSignersInput = {
+  id?: string
+  templateId: string
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employeeContractId?: string | null
+}
+
+export type ContractCreateOrConnectWithoutSignersInput = {
+  where: Prisma.ContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContractCreateWithoutSignersInput, Prisma.ContractUncheckedCreateWithoutSignersInput>
+}
+
+export type ContractUpsertWithoutSignersInput = {
+  update: Prisma.XOR<Prisma.ContractUpdateWithoutSignersInput, Prisma.ContractUncheckedUpdateWithoutSignersInput>
+  create: Prisma.XOR<Prisma.ContractCreateWithoutSignersInput, Prisma.ContractUncheckedCreateWithoutSignersInput>
+  where?: Prisma.ContractWhereInput
+}
+
+export type ContractUpdateToOneWithWhereWithoutSignersInput = {
+  where?: Prisma.ContractWhereInput
+  data: Prisma.XOR<Prisma.ContractUpdateWithoutSignersInput, Prisma.ContractUncheckedUpdateWithoutSignersInput>
+}
+
+export type ContractUpdateWithoutSignersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  template?: Prisma.ContractTemplateUpdateOneRequiredWithoutContractsNestedInput
+  employeeContract?: Prisma.EmployeeContractUpdateOneWithoutContractsNestedInput
+}
+
+export type ContractUncheckedUpdateWithoutSignersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ContractCreateWithoutEmployeeContractInput = {
+  id?: string
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  template: Prisma.ContractTemplateCreateNestedOneWithoutContractsInput
+  signers?: Prisma.ContractSignerCreateNestedManyWithoutContractInput
+}
+
+export type ContractUncheckedCreateWithoutEmployeeContractInput = {
+  id?: string
+  templateId: string
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  signers?: Prisma.ContractSignerUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type ContractCreateOrConnectWithoutEmployeeContractInput = {
+  where: Prisma.ContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeContractInput, Prisma.ContractUncheckedCreateWithoutEmployeeContractInput>
+}
+
+export type ContractCreateManyEmployeeContractInputEnvelope = {
+  data: Prisma.ContractCreateManyEmployeeContractInput | Prisma.ContractCreateManyEmployeeContractInput[]
+  skipDuplicates?: boolean
+}
+
+export type ContractUpsertWithWhereUniqueWithoutEmployeeContractInput = {
+  where: Prisma.ContractWhereUniqueInput
+  update: Prisma.XOR<Prisma.ContractUpdateWithoutEmployeeContractInput, Prisma.ContractUncheckedUpdateWithoutEmployeeContractInput>
+  create: Prisma.XOR<Prisma.ContractCreateWithoutEmployeeContractInput, Prisma.ContractUncheckedCreateWithoutEmployeeContractInput>
+}
+
+export type ContractUpdateWithWhereUniqueWithoutEmployeeContractInput = {
+  where: Prisma.ContractWhereUniqueInput
+  data: Prisma.XOR<Prisma.ContractUpdateWithoutEmployeeContractInput, Prisma.ContractUncheckedUpdateWithoutEmployeeContractInput>
+}
+
+export type ContractUpdateManyWithWhereWithoutEmployeeContractInput = {
+  where: Prisma.ContractScalarWhereInput
+  data: Prisma.XOR<Prisma.ContractUpdateManyMutationInput, Prisma.ContractUncheckedUpdateManyWithoutEmployeeContractInput>
+}
+
+export type ContractCreateManyTemplateInput = {
+  id?: string
+  signedFileUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employeeContractId?: string | null
+}
+
+export type ContractUpdateWithoutTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signers?: Prisma.ContractSignerUpdateManyWithoutContractNestedInput
+  employeeContract?: Prisma.EmployeeContractUpdateOneWithoutContractsNestedInput
+}
+
+export type ContractUncheckedUpdateWithoutTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signers?: Prisma.ContractSignerUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type ContractUncheckedUpdateManyWithoutTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ContractCreateManyEmployeeContractInput = {
+  id?: string
+  templateId: string
+  signedFileUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type ContractUpdateWithoutEmployeeInput = {
+export type ContractUpdateWithoutEmployeeContractInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  template?: Prisma.ContractTemplateUpdateOneRequiredWithoutContractsNestedInput
+  signers?: Prisma.ContractSignerUpdateManyWithoutContractNestedInput
+}
+
+export type ContractUncheckedUpdateWithoutEmployeeContractInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signers?: Prisma.ContractSignerUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type ContractUncheckedUpdateManyWithoutEmployeeContractInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  signedFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ContractUncheckedUpdateWithoutEmployeeInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+
+/**
+ * Count Type ContractCountOutputType
+ */
+
+export type ContractCountOutputType = {
+  signers: number
 }
 
-export type ContractUncheckedUpdateManyWithoutEmployeeInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
-  sequenceNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialApplies?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trialEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  trialConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-  syncedToFinance?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type ContractCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  signers?: boolean | ContractCountOutputTypeCountSignersArgs
 }
 
+/**
+ * ContractCountOutputType without action
+ */
+export type ContractCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContractCountOutputType
+   */
+  select?: Prisma.ContractCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ContractCountOutputType without action
+ */
+export type ContractCountOutputTypeCountSignersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContractSignerWhereInput
+}
 
 
 export type ContractSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
-  contractType?: boolean
-  sequenceNumber?: boolean
-  startDate?: boolean
-  endDate?: boolean
-  trialApplies?: boolean
-  trialEndDate?: boolean
-  trialConfirmed?: boolean
-  documentUrl?: boolean
-  status?: boolean
-  syncedToFinance?: boolean
-  syncedAt?: boolean
+  templateId?: boolean
+  signedFileUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeeContractId?: boolean
+  template?: boolean | Prisma.ContractTemplateDefaultArgs<ExtArgs>
+  signers?: boolean | Prisma.Contract$signersArgs<ExtArgs>
+  employeeContract?: boolean | Prisma.Contract$employeeContractArgs<ExtArgs>
+  _count?: boolean | Prisma.ContractCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["contract"]>
 
 export type ContractSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
-  contractType?: boolean
-  sequenceNumber?: boolean
-  startDate?: boolean
-  endDate?: boolean
-  trialApplies?: boolean
-  trialEndDate?: boolean
-  trialConfirmed?: boolean
-  documentUrl?: boolean
-  status?: boolean
-  syncedToFinance?: boolean
-  syncedAt?: boolean
+  templateId?: boolean
+  signedFileUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeeContractId?: boolean
+  template?: boolean | Prisma.ContractTemplateDefaultArgs<ExtArgs>
+  employeeContract?: boolean | Prisma.Contract$employeeContractArgs<ExtArgs>
 }, ExtArgs["result"]["contract"]>
 
 export type ContractSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  employeeId?: boolean
-  contractType?: boolean
-  sequenceNumber?: boolean
-  startDate?: boolean
-  endDate?: boolean
-  trialApplies?: boolean
-  trialEndDate?: boolean
-  trialConfirmed?: boolean
-  documentUrl?: boolean
-  status?: boolean
-  syncedToFinance?: boolean
-  syncedAt?: boolean
+  templateId?: boolean
+  signedFileUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  employeeContractId?: boolean
+  template?: boolean | Prisma.ContractTemplateDefaultArgs<ExtArgs>
+  employeeContract?: boolean | Prisma.Contract$employeeContractArgs<ExtArgs>
 }, ExtArgs["result"]["contract"]>
 
 export type ContractSelectScalar = {
   id?: boolean
-  employeeId?: boolean
-  contractType?: boolean
-  sequenceNumber?: boolean
-  startDate?: boolean
-  endDate?: boolean
-  trialApplies?: boolean
-  trialEndDate?: boolean
-  trialConfirmed?: boolean
-  documentUrl?: boolean
-  status?: boolean
-  syncedToFinance?: boolean
-  syncedAt?: boolean
+  templateId?: boolean
+  signedFileUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  employeeContractId?: boolean
 }
 
-export type ContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "contractType" | "sequenceNumber" | "startDate" | "endDate" | "trialApplies" | "trialEndDate" | "trialConfirmed" | "documentUrl" | "status" | "syncedToFinance" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
+export type ContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "signedFileUrl" | "createdAt" | "updatedAt" | "employeeContractId", ExtArgs["result"]["contract"]>
 export type ContractInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  template?: boolean | Prisma.ContractTemplateDefaultArgs<ExtArgs>
+  signers?: boolean | Prisma.Contract$signersArgs<ExtArgs>
+  employeeContract?: boolean | Prisma.Contract$employeeContractArgs<ExtArgs>
+  _count?: boolean | Prisma.ContractCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ContractIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  template?: boolean | Prisma.ContractTemplateDefaultArgs<ExtArgs>
+  employeeContract?: boolean | Prisma.Contract$employeeContractArgs<ExtArgs>
 }
 export type ContractIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  template?: boolean | Prisma.ContractTemplateDefaultArgs<ExtArgs>
+  employeeContract?: boolean | Prisma.Contract$employeeContractArgs<ExtArgs>
 }
 
 export type $ContractPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Contract"
   objects: {
-    employee: Prisma.$EmployeePayload<ExtArgs>
+    template: Prisma.$ContractTemplatePayload<ExtArgs>
+    signers: Prisma.$ContractSignerPayload<ExtArgs>[]
+    employeeContract: Prisma.$EmployeeContractPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    employeeId: string
-    contractType: $Enums.ContractType
-    sequenceNumber: number
-    startDate: Date
-    endDate: Date | null
-    trialApplies: boolean
-    trialEndDate: Date | null
-    trialConfirmed: boolean
-    documentUrl: string | null
-    status: $Enums.ContractStatus
-    syncedToFinance: boolean
-    syncedAt: Date | null
+    templateId: string
+    signedFileUrl: string | null
     createdAt: Date
     updatedAt: Date
+    employeeContractId: string | null
   }, ExtArgs["result"]["contract"]>
   composites: {}
 }
@@ -1289,7 +1170,9 @@ readonly fields: ContractFieldRefs;
  */
 export interface Prisma__ContractClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  template<T extends Prisma.ContractTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContractTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ContractTemplateClient<runtime.Types.Result.GetResult<Prisma.$ContractTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  signers<T extends Prisma.Contract$signersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contract$signersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractSignerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employeeContract<T extends Prisma.Contract$employeeContractArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contract$employeeContractArgs<ExtArgs>>): Prisma.Prisma__EmployeeContractClient<runtime.Types.Result.GetResult<Prisma.$EmployeeContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1320,20 +1203,11 @@ export interface Prisma__ContractClient<T, Null = never, ExtArgs extends runtime
  */
 export interface ContractFieldRefs {
   readonly id: Prisma.FieldRef<"Contract", 'String'>
-  readonly employeeId: Prisma.FieldRef<"Contract", 'String'>
-  readonly contractType: Prisma.FieldRef<"Contract", 'ContractType'>
-  readonly sequenceNumber: Prisma.FieldRef<"Contract", 'Int'>
-  readonly startDate: Prisma.FieldRef<"Contract", 'DateTime'>
-  readonly endDate: Prisma.FieldRef<"Contract", 'DateTime'>
-  readonly trialApplies: Prisma.FieldRef<"Contract", 'Boolean'>
-  readonly trialEndDate: Prisma.FieldRef<"Contract", 'DateTime'>
-  readonly trialConfirmed: Prisma.FieldRef<"Contract", 'Boolean'>
-  readonly documentUrl: Prisma.FieldRef<"Contract", 'String'>
-  readonly status: Prisma.FieldRef<"Contract", 'ContractStatus'>
-  readonly syncedToFinance: Prisma.FieldRef<"Contract", 'Boolean'>
-  readonly syncedAt: Prisma.FieldRef<"Contract", 'DateTime'>
+  readonly templateId: Prisma.FieldRef<"Contract", 'String'>
+  readonly signedFileUrl: Prisma.FieldRef<"Contract", 'String'>
   readonly createdAt: Prisma.FieldRef<"Contract", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Contract", 'DateTime'>
+  readonly employeeContractId: Prisma.FieldRef<"Contract", 'String'>
 }
     
 
@@ -1727,6 +1601,49 @@ export type ContractDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Contracts to delete.
    */
   limit?: number
+}
+
+/**
+ * Contract.signers
+ */
+export type Contract$signersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContractSigner
+   */
+  select?: Prisma.ContractSignerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ContractSigner
+   */
+  omit?: Prisma.ContractSignerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContractSignerInclude<ExtArgs> | null
+  where?: Prisma.ContractSignerWhereInput
+  orderBy?: Prisma.ContractSignerOrderByWithRelationInput | Prisma.ContractSignerOrderByWithRelationInput[]
+  cursor?: Prisma.ContractSignerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContractSignerScalarFieldEnum | Prisma.ContractSignerScalarFieldEnum[]
+}
+
+/**
+ * Contract.employeeContract
+ */
+export type Contract$employeeContractArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeContract
+   */
+  select?: Prisma.EmployeeContractSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeContract
+   */
+  omit?: Prisma.EmployeeContractOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeContractInclude<ExtArgs> | null
+  where?: Prisma.EmployeeContractWhereInput
 }
 
 /**

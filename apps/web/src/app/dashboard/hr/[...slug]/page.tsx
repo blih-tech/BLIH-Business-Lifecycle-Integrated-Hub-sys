@@ -8,7 +8,7 @@ export default async function HrNestedPage() {
   if (!DEMO_MODE) {
     const session = await getSession();
     if (!session.authenticated) {
-      redirect('/dashboard/hr');
+      redirect('/api/auth/login');
     }
     if (!isAuthorizedForDashboard('hr', session.roles)) {
       redirect('/dashboard');

@@ -1,12 +1,27 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
 }
 
+/** Read the JS-accessible kc_token cookie (set during OIDC callback). */
+function getAccessToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(/(?:^|;\s*)kc_token=([^;]+)/);
+  return match ? decodeURIComponent(match[1] ?? '') : null;
+}
+
+/** Read the CSRF token from kc_csrf cookie. */
+function getCsrfToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(/(?:^|;\s*)kc_csrf=([^;]+)/);
+  return match ? decodeURIComponent(match[1] ?? '') : null;
+}
+
 class ApiError extends Error {
   constructor(
-    message: string,
+    public message: string,
     public status: number,
     public statusText: string,
   ) {
@@ -32,10 +47,28 @@ async function request<T>(
   const { params, ...fetchOptions } = options;
   const url = buildUrl(endpoint, params);
 
-  const headers: HeadersInit = {
+  const token = getAccessToken();
+  const method = fetchOptions.method?.toUpperCase() || 'GET';
+  const isNonSafeMethod = !['GET', 'HEAD', 'OPTIONS'].includes(method);
+
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...fetchOptions.headers,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
+
+  // Merge additional headers from fetchOptions
+  if (fetchOptions.headers) {
+    const additionalHeaders = fetchOptions.headers as Record<string, string>;
+    Object.assign(headers, additionalHeaders);
+  }
+
+  // Add CSRF token for non-safe HTTP methods when auth cookies are present
+  if (isNonSafeMethod && token) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      headers['x-csrf-token'] = csrfToken;
+    }
+  }
 
   const response = await fetch(url, {
     ...fetchOptions,
@@ -44,7 +77,10 @@ async function request<T>(
   });
 
   if (response.status === 401) {
-    window.location.href = `${API_BASE_URL}/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+    const redirectUrl = new URL('/api/auth/login', window.location.origin);
+    redirectUrl.searchParams.set('redirect', window.location.pathname);
+    redirectUrl.searchParams.set('redirect_origin', window.location.origin);
+    window.location.href = redirectUrl.toString();
     throw new ApiError('Unauthorized', 401, 'Unauthorized');
   }
 

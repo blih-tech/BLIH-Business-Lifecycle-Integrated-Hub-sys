@@ -9,3 +9,5 @@ export * from './rbac/index.js';
 export * from './notifications/index.js';
 export * from './recruitment/index.js';
 export * from './hr/index.js';
+export * from './brain/index.js';
+export * from './rag/index.js';

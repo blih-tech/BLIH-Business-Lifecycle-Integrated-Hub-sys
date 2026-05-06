@@ -12,6 +12,7 @@ API_HEALTHCHECK_URL="${API_HEALTHCHECK_URL:-${DEFAULT_API_URL}}"
 KEYCLOAK_HEALTHCHECK_URL="${KEYCLOAK_HEALTHCHECK_URL:-http://127.0.0.1:${KEYCLOAK_PORT:-8180}/realms/${KEYCLOAK_HEALTH_REALM:-master}}"
 POSTGRES_HEALTHCHECK_URL="${POSTGRES_HEALTHCHECK_URL:-http://127.0.0.1:${API_PORT:-5000}/${API_PREFIX_VALUE}/health/db}"
 RETRIES="${HEALTHCHECK_RETRIES:-30}"
+KEYCLOAK_RETRIES="${HEALTHCHECK_KEYCLOAK_RETRIES:-72}"
 SLEEP_SECONDS="${HEALTHCHECK_SLEEP_SECONDS:-5}"
 TIMEOUT="${HEALTHCHECK_TIMEOUT:-10}"
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
@@ -114,19 +115,20 @@ validate_api_response() {
     return 1
   fi
   
-  # Check for database connectivity in response
-  if grep -q '"database":"connected"' /tmp/api.health; then
+  # Log additional info but don't fail on warnings
+  if grep -q '"database":"up"' /tmp/api.health || grep -q '"database":"connected"' /tmp/api.health; then
     log_info "Database connection: OK"
   else
     log_warn "Database connection status unclear"
   fi
   
-  # Check for Keycloak connectivity in response
-  if grep -q '"keycloak":"connected"' /tmp/api.health; then
+  if grep -q '"keycloak":"up"' /tmp/api.health || grep -q '"keycloak":"connected"' /tmp/api.health; then
     log_info "Keycloak connection: OK"
   else
     log_warn "Keycloak connection status unclear"
   fi
+  
+  return 0
 }
 
 cleanup() {
@@ -151,7 +153,7 @@ main() {
   check_database_connectivity
   
   # Service health checks
-  wait_for_url "keycloak" "$KEYCLOAK_HEALTHCHECK_URL" "$RETRIES" "$SLEEP_SECONDS" "$TIMEOUT"
+  wait_for_url "keycloak" "$KEYCLOAK_HEALTHCHECK_URL" "$KEYCLOAK_RETRIES" "$SLEEP_SECONDS" "$TIMEOUT"
   wait_for_url "api" "$API_HEALTHCHECK_URL" "$RETRIES" "$SLEEP_SECONDS" "$TIMEOUT"
   
   # Validate API response

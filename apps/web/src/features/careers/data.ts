@@ -1,9 +1,12 @@
 import type {
   ApplicationFieldType,
   CustomApplicationField,
-} from "@/features/hr/recruitment/requests/application-form-schema";
-import { jobRequests } from "@/features/hr/recruitment/requests/mock-data";
-import type { FullJobRequest, JobRequestDepartment } from "@/features/hr/recruitment/requests/types";
+} from '@/features/hr/recruitment/requests/application-form-schema';
+import { jobRequests } from '@/features/hr/recruitment/requests/mock-data';
+import type {
+  FullJobRequest,
+  JobRequestDepartment,
+} from '@/features/hr/recruitment/requests/types';
 
 export type CareerApplicationField = {
   id: string;
@@ -13,7 +16,7 @@ export type CareerApplicationField = {
   required: boolean;
   helpText?: string;
   options: string[];
-  source: "predefined" | "custom";
+  source: 'predefined' | 'custom';
 };
 
 export type CareerJob = {
@@ -41,50 +44,57 @@ function slugify(value: string) {
   return value
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 function requestIdLabel(index: number) {
-  return `REQ-${String(index + 1).padStart(3, "0")}`;
+  return `REQ-${String(index + 1).padStart(3, '0')}`;
 }
 
 function departmentLabel(department: JobRequestDepartment) {
-  if (department === "technical") return "Technical";
-  if (department === "creative") return "Creative";
-  return "Digital Marketing";
+  if (department === 'technical') return 'Technical';
+  if (department === 'creative') return 'Creative';
+  return 'Digital Marketing';
 }
 
-function workModeLabel(value: FullJobRequest["jobDetailsForm"]["workLocationType"]) {
-  if (value === "ON_SITE") return "On-site";
-  if (value === "HYBRID") return "Hybrid";
-  return "Remote";
+function workModeLabel(
+  value: FullJobRequest['jobDetailsForm']['workLocationType'],
+) {
+  if (value === 'ON_SITE') return 'On-site';
+  if (value === 'HYBRID') return 'Hybrid';
+  return 'Remote';
 }
 
-function employmentTypeLabel(value: FullJobRequest["jobDetailsForm"]["employmentType"]) {
-  if (value === "FULL_TIME") return "Full-time";
-  if (value === "PART_TIME") return "Part-time";
-  if (value === "CONTRACT") return "Contract";
-  return "Intern";
+function employmentTypeLabel(
+  value: FullJobRequest['jobDetailsForm']['employmentType'],
+) {
+  if (value === 'FULL_TIME') return 'Full-time';
+  if (value === 'PART_TIME') return 'Part-time';
+  if (value === 'CONTRACT') return 'Contract';
+  return 'Intern';
 }
 
-function experienceLevelLabel(value: FullJobRequest["jobDetailsForm"]["experienceLevel"]) {
-  if (value === "ENTRY") return "Entry Level";
-  if (value === "MID") return "Mid Level";
-  if (value === "SENIOR") return "Senior Level";
-  return "Lead Level";
+function experienceLevelLabel(
+  value: FullJobRequest['jobDetailsForm']['experienceLevel'],
+) {
+  if (value === 'ENTRY') return 'Entry Level';
+  if (value === 'MID') return 'Mid Level';
+  if (value === 'SENIOR') return 'Senior Level';
+  return 'Lead Level';
 }
 
 function salaryLabel(request: FullJobRequest) {
   const { salaryMin, salaryMax, currency } = request.jobDetailsForm;
   const salaryMode = request.jobDetailsForm.salaryMode as string;
-  if (salaryMode === "NEGOTIABLE") return "Negotiable";
-  if (salaryMode === "COMPETITIVE") return "Competitive";
-  if (salaryMode === "FIXED" && salaryMin && currency) return `${currency} ${salaryMin}`;
-  if (salaryMode === "COMPETITIVE" && salaryMin && salaryMax && currency) {
+  if (salaryMode === 'NEGOTIABLE') return 'Negotiable';
+  if (salaryMode === 'COMPETITIVE') return 'Competitive';
+  if (salaryMode === 'FIXED' && salaryMin && currency)
+    return `${currency} ${salaryMin}`;
+  if (salaryMode === 'COMPETITIVE' && salaryMin && salaryMax && currency) {
     return `${currency} ${salaryMin} - ${salaryMax}`;
   }
-  return "Not specified";
+  return 'Not specified';
 }
 
 function mapCustomField(field: CustomApplicationField): CareerApplicationField {
@@ -96,28 +106,28 @@ function mapCustomField(field: CustomApplicationField): CareerApplicationField {
     required: field.required,
     helpText: field.helpText,
     options: field.options.filter(Boolean),
-    source: "custom",
+    source: 'custom',
   };
 }
 
 function labelFromKey(key: string) {
   return key
     .toLowerCase()
-    .replace(/_/g, " ")
+    .replace(/_/g, ' ')
     .replace(/\b\w/g, (match) => match.toUpperCase());
 }
 
 function applicantFieldType(key: string): ApplicationFieldType {
-  if (key.includes("RESUME") || key.includes("CV")) return "FILE";
-  if (key.includes("COVER_LETTER")) return "TEXTAREA";
-  if (key.includes("EXPECTED_SALARY") || key.includes("YEARS")) return "NUMBER";
-  if (key.includes("DATE")) return "DATE";
-  return "TEXT";
+  if (key.includes('RESUME') || key.includes('CV')) return 'FILE';
+  if (key.includes('COVER_LETTER')) return 'TEXTAREA';
+  if (key.includes('EXPECTED_SALARY') || key.includes('YEARS')) return 'NUMBER';
+  if (key.includes('DATE')) return 'DATE';
+  return 'TEXT';
 }
 
 export function getCareerJobs(): CareerJob[] {
   return jobRequests
-    .filter((request) => request.status === "posted")
+    .filter((request) => request.status === 'posted')
     .map((request, index) => {
       const applicationFields = [
         ...request.applicationForm.applicantFields
@@ -129,7 +139,7 @@ export function getCareerJobs(): CareerJob[] {
             type: applicantFieldType(field.key),
             required: field.required,
             options: [],
-            source: "predefined" as const,
+            source: 'predefined' as const,
           })),
         ...request.applicationForm.customFields.map(mapCustomField),
       ];
@@ -139,27 +149,36 @@ export function getCareerJobs(): CareerJob[] {
         requestId: requestIdLabel(index),
         title: request.jobDetailsForm.title,
         department: request.requestForm.department as JobRequestDepartment,
-        departmentLabel: departmentLabel(request.requestForm.department as JobRequestDepartment),
-        location: [request.jobDetailsForm.city, request.jobDetailsForm.country].filter(Boolean).join(", "),
+        departmentLabel: departmentLabel(
+          request.requestForm.department as JobRequestDepartment,
+        ),
+        location: [request.jobDetailsForm.city, request.jobDetailsForm.country]
+          .filter(Boolean)
+          .join(', '),
         workModeLabel: workModeLabel(request.jobDetailsForm.workLocationType),
-        employmentTypeLabel: employmentTypeLabel(request.jobDetailsForm.employmentType),
-        experienceLevelLabel: experienceLevelLabel(request.jobDetailsForm.experienceLevel),
-        summary: request.jobDetailsForm.summary || request.jobDetailsForm.description,
+        employmentTypeLabel: employmentTypeLabel(
+          request.jobDetailsForm.employmentType,
+        ),
+        experienceLevelLabel: experienceLevelLabel(
+          request.jobDetailsForm.experienceLevel,
+        ),
+        summary:
+          request.jobDetailsForm.summary || request.jobDetailsForm.description,
         whyJoinUs: request.jobDetailsForm.summary || undefined,
-        keyResponsibilities: (request.jobDetailsForm.responsibilities ?? "")
-          .split("\n")
+        keyResponsibilities: (request.jobDetailsForm.responsibilities ?? '')
+          .split('\n')
           .map((item) => item.trim())
           .filter(Boolean),
-        requirements: (request.jobDetailsForm.requiredSkills ?? "")
-          .split("\n")
+        requirements: (request.jobDetailsForm.requiredSkills ?? '')
+          .split('\n')
           .map((item) => item.trim())
           .filter(Boolean),
-        preferredSkills: (request.jobDetailsForm.preferredSkills ?? "")
-          .split("\n")
+        preferredSkills: (request.jobDetailsForm.preferredSkills ?? '')
+          .split('\n')
           .map((item) => item.trim())
           .filter(Boolean),
-        benefits: (request.jobDetailsForm.benefits ?? "")
-          .split("\n")
+        benefits: (request.jobDetailsForm.benefits ?? '')
+          .split('\n')
           .map((item) => item.trim())
           .filter(Boolean),
         salaryLabel: salaryLabel(request),

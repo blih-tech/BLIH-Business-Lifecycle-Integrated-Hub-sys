@@ -1,9 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { ResponseMessage } from '../../shared/decorators/response-message.decorator';
 import { ApiDefaultErrors, ApiProtected } from '../../shared/docs/openapi';
 import { KeycloakAuthGuard } from '../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../shared/guards/rbac.guard';
+import type { AuthPrincipal } from '../../shared/interfaces/auth-principal.interface';
 import { AccessEvaluationDto } from './dto/access-evaluation.dto';
 import { EvaluateAccessUseCase } from './evaluate-access.usecase';
 
@@ -60,5 +62,21 @@ export class EvaluateAccessController {
       dto.userId,
       dto.requiredPermissions,
     );
+  }
+
+  @Get('me')
+  @ApiOperation({
+    summary: 'Debug: return resolved roles and permissions for current user',
+  })
+  me(@Req() req: Request & { user?: AuthPrincipal }) {
+    const user = req.user;
+    return {
+      sub: user?.sub,
+      userId: user?.userId,
+      username: user?.username,
+      roles: user?.roles ?? [],
+      permissions: user?.permissions ?? [],
+      permissionCount: (user?.permissions ?? []).length,
+    };
   }
 }

@@ -315,6 +315,7 @@ export const OnboardingPermissions = {
   VIEW: 'onboarding:view',
   CREATE: 'onboarding:create',
   UPDATE: 'onboarding:update',
+  VERIFY: 'onboarding:verify',
   DELETE: 'onboarding:delete',
   ALL: 'onboarding:*',
 } as const;
@@ -356,6 +357,14 @@ export const ProbationPlanPermissions = {
   UPDATE: 'probation_plan:update',
   ENDORSE: 'probation_plan:endorse',
   ALL: 'probation_plan:*',
+} as const;
+
+export const ProbationKpiPermissions = {
+  VIEW: 'probation_kpi:view',
+  CREATE: 'probation_kpi:create',
+  UPDATE: 'probation_kpi:update',
+  DELETE: 'probation_kpi:delete',
+  ALL: 'probation_kpi:*',
 } as const;
 
 export const ProbationEvaluationPermissions = {
@@ -527,6 +536,8 @@ export const PermissionGroups = {
   brain_config: BrainConfigPermissions,
   job: JobPermissions,
   job_approval: JobApprovalPermissions,
+  candidate: CandidatePermissions,
+  job_application: JobApplicationPermissions,
   applicant: ApplicantPermissions,
   interview: InterviewPermissions,
   offer: OfferPermissions,
@@ -536,6 +547,7 @@ export const PermissionGroups = {
   asset_provisioning: AssetProvisioningPermissions,
   policy_acknowledgement: PolicyAcknowledgementPermissions,
   probation_plan: ProbationPlanPermissions,
+  probation_kpi: ProbationKpiPermissions,
   probation_evaluation: ProbationEvaluationPermissions,
   probation_confirmation: ProbationConfirmationPermissions,
   performance: PerformancePermissions,

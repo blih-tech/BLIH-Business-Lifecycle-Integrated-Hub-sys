@@ -113,27 +113,6 @@ export const DocumentType = {
 export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType]
 
 
-export const ContractType = {
-  INITIAL: 'INITIAL',
-  RENEWAL: 'RENEWAL',
-  AMENDMENT: 'AMENDMENT',
-  ADDENDUM: 'ADDENDUM'
-} as const
-
-export type ContractType = (typeof ContractType)[keyof typeof ContractType]
-
-
-export const ContractStatus = {
-  DRAFT: 'DRAFT',
-  ACTIVE: 'ACTIVE',
-  EXPIRED: 'EXPIRED',
-  TERMINATED: 'TERMINATED',
-  RENEWED: 'RENEWED'
-} as const
-
-export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
-
-
 export const JobWorkflowStatus = {
   DRAFT: 'DRAFT',
   PENDING_FOR_APPROVAL: 'PENDING_FOR_APPROVAL',
@@ -473,56 +452,6 @@ export const CvScreeningDecisionType = {
 } as const
 
 export type CvScreeningDecisionType = (typeof CvScreeningDecisionType)[keyof typeof CvScreeningDecisionType]
-
-
-export const OnboardingStatus = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
-} as const
-
-export type OnboardingStatus = (typeof OnboardingStatus)[keyof typeof OnboardingStatus]
-
-
-export const OnboardingChecklistStatus = {
-  NOT_STARTED: 'NOT_STARTED',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  OVERDUE: 'OVERDUE'
-} as const
-
-export type OnboardingChecklistStatus = (typeof OnboardingChecklistStatus)[keyof typeof OnboardingChecklistStatus]
-
-
-export const OnboardingTaskDepartment = {
-  HR: 'HR',
-  IT: 'IT',
-  ADMIN: 'ADMIN',
-  TEAM: 'TEAM'
-} as const
-
-export type OnboardingTaskDepartment = (typeof OnboardingTaskDepartment)[keyof typeof OnboardingTaskDepartment]
-
-
-export const OnboardingTaskStatus = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  OVERDUE: 'OVERDUE'
-} as const
-
-export type OnboardingTaskStatus = (typeof OnboardingTaskStatus)[keyof typeof OnboardingTaskStatus]
-
-
-export const ProbationPlanStatus = {
-  DRAFT: 'DRAFT',
-  ACTIVE: 'ACTIVE',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
-} as const
-
-export type ProbationPlanStatus = (typeof ProbationPlanStatus)[keyof typeof ProbationPlanStatus]
 
 
 export const ProbationEvaluationRound = {
@@ -1117,3 +1046,121 @@ export const ScreeningRecommendation = {
 } as const
 
 export type ScreeningRecommendation = (typeof ScreeningRecommendation)[keyof typeof ScreeningRecommendation]
+
+
+export const OnboardingStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OnboardingStatus = (typeof OnboardingStatus)[keyof typeof OnboardingStatus]
+
+
+export const OnboardingChecklistStatus = {
+  TODO: 'TODO',
+  SUBMITTED: 'SUBMITTED',
+  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type OnboardingChecklistStatus = (typeof OnboardingChecklistStatus)[keyof typeof OnboardingChecklistStatus]
+
+
+export const TaskType = {
+  NON_CUSTOM: 'NON_CUSTOM',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type TaskType = (typeof TaskType)[keyof typeof TaskType]
+
+
+export const TargetDataModel = {
+  USER_PROFILE: 'USER_PROFILE',
+  EMPLOYEE_ADDRESS: 'EMPLOYEE_ADDRESS',
+  EMPLOYEE_BANK_DETAIL: 'EMPLOYEE_BANK_DETAIL',
+  EMPLOYEE_EMERGENCY_CONTACT: 'EMPLOYEE_EMERGENCY_CONTACT',
+  EMPLOYEE_EDUCATION: 'EMPLOYEE_EDUCATION',
+  EMPLOYEE_CONTRACT: 'EMPLOYEE_CONTRACT',
+  EMPLOYEE_POLICY_ACKNOWLEDGEMENT: 'EMPLOYEE_POLICY_ACKNOWLEDGEMENT'
+} as const
+
+export type TargetDataModel = (typeof TargetDataModel)[keyof typeof TargetDataModel]
+
+
+export const ProbationStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED',
+  EXTENDED: 'EXTENDED'
+} as const
+
+export type ProbationStatus = (typeof ProbationStatus)[keyof typeof ProbationStatus]
+
+
+export const ProbationOutcome = {
+  CONFIRMED: 'CONFIRMED',
+  EXTENDED: 'EXTENDED',
+  TERMINATED: 'TERMINATED',
+  RESIGNED: 'RESIGNED'
+} as const
+
+export type ProbationOutcome = (typeof ProbationOutcome)[keyof typeof ProbationOutcome]
+
+
+export const EmailType = {
+  PERSONAL: 'PERSONAL',
+  COMPANY: 'COMPANY'
+} as const
+
+export type EmailType = (typeof EmailType)[keyof typeof EmailType]
+
+
+export const PhoneType = {
+  PERSONAL: 'PERSONAL',
+  COMPANY: 'COMPANY'
+} as const
+
+export type PhoneType = (typeof PhoneType)[keyof typeof PhoneType]
+
+
+export const GovernmentIdCardType = {
+  KEBELE_ID: 'KEBELE_ID',
+  PASSPORT: 'PASSPORT',
+  FAYDA: 'FAYDA',
+  OTHER: 'OTHER'
+} as const
+
+export type GovernmentIdCardType = (typeof GovernmentIdCardType)[keyof typeof GovernmentIdCardType]
+
+
+export const VerificationStatus = {
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type VerificationStatus = (typeof VerificationStatus)[keyof typeof VerificationStatus]
+
+
+export const EducationLevel = {
+  HIGH_SCHOOL: 'HIGH_SCHOOL',
+  DIPLOMA: 'DIPLOMA',
+  BACHELOR: 'BACHELOR',
+  MASTER: 'MASTER',
+  PHD: 'PHD',
+  CERTIFICATION: 'CERTIFICATION'
+} as const
+
+export type EducationLevel = (typeof EducationLevel)[keyof typeof EducationLevel]
+
+
+export const EmployeeStatus = {
+  ONBOARDING: 'ONBOARDING',
+  ON_PROBATION: 'ON_PROBATION',
+  ACTIVE: 'ACTIVE'
+} as const
+
+export type EmployeeStatus = (typeof EmployeeStatus)[keyof typeof EmployeeStatus]

@@ -57,14 +57,15 @@ import {
   buildCookieOptions,
   buildEndSessionUrl,
   buildFrontendRedirectUrl,
-  buildPreferredFrontendRedirectUrl,
+  buildDynamicFrontendRedirectUrl,
   buildReadableCookieOptions,
   createCsrfToken,
   createOidcAuthRequestContext,
   parseAllowedRedirectPathPrefixes,
   readCookie,
-  resolveAllowedFrontendOrigin,
   resolveSafeRedirectPath,
+  extractFrontendOrigin,
+  validateFrontendOrigin,
 } from './utils/oidc.util';
 
 @ApiTags('Auth')
@@ -96,17 +97,17 @@ export class AuthController {
     example: '/dashboard',
   })
   @ApiQuery({
-    name: 'successRedirect',
-    required: false,
-    description:
-      'Alias for redirect. Relative frontend URL path used after successful login.',
-    example: '/dashboard/hr',
-  })
-  @ApiQuery({
     name: 'prompt',
     required: false,
     description: 'Optional OIDC prompt forwarded to Keycloak.',
     example: 'login',
+  })
+  @ApiQuery({
+    name: 'redirect_origin',
+    required: false,
+    description:
+      'Frontend origin URL used for post-login redirects. Takes priority over headers.',
+    example: 'http://localhost:3000',
   })
   @ApiResponse({
     status: 302,
@@ -126,14 +127,13 @@ export class AuthController {
   async login(
     @Query('redirect')
     redirectPath: AuthLoginQueryDtoType['redirect'] | undefined,
-    @Query('successRedirect')
-    successRedirectPath: AuthLoginQueryDtoType['successRedirect'] | undefined,
     @Query('prompt') prompt: AuthLoginQueryDtoType['prompt'] | undefined,
+    @Query('redirect_origin')
+    redirectOrigin: AuthLoginQueryDtoType['redirect_origin'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
     const allowedRedirectPrefixes = this.getAllowedRedirectPrefixes();
-    const allowedOrigins = this.getAllowedOrigins();
     const requestContext = buildRequestContext(request);
     try {
       await this.authRateLimitService.consumeLoginAttempt(
@@ -152,7 +152,7 @@ export class AuthController {
       nonceEnabled: env.AUTH_NONCE_ENABLED,
     });
     const safeRedirectPath = resolveSafeRedirectPath(
-      successRedirectPath ?? redirectPath,
+      redirectPath,
       env.AUTH_POST_LOGIN_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
@@ -175,7 +175,22 @@ export class AuthController {
       this.getCookieSettings(),
       transientCookieMaxAge,
     );
-    const frontendOrigin = this.resolveFrontendOrigin(request, allowedOrigins);
+
+    // Capture and store frontend origin
+    const allowedOrigins = this.getAllowedOrigins();
+    const extractedOrigin = extractFrontendOrigin(request, redirectOrigin);
+    const validatedOrigin = validateFrontendOrigin(
+      extractedOrigin,
+      allowedOrigins,
+    );
+
+    if (validatedOrigin) {
+      response.cookie(
+        AUTH_COOKIE_NAMES.frontendOrigin,
+        validatedOrigin,
+        cookieOptions,
+      );
+    }
 
     response.cookie(AUTH_COOKIE_NAMES.state, authRequest.state, cookieOptions);
     if (authRequest.codeVerifier) {
@@ -197,24 +212,15 @@ export class AuthController {
         cookieOptions,
       );
     }
-    if (frontendOrigin) {
-      response.cookie(
-        AUTH_COOKIE_NAMES.frontendOrigin,
-        frontendOrigin,
-        cookieOptions,
-      );
-    } else {
-      response.clearCookie(
-        AUTH_COOKIE_NAMES.frontendOrigin,
-        buildClearCookieOptions(this.getCookieSettings()),
-      );
-    }
 
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGIN_INITIATED, {
       redirectPath: safeRedirectPath,
-      frontendOrigin,
       pkceEnabled: env.AUTH_PKCE_ENABLED,
       nonceEnabled: env.AUTH_NONCE_ENABLED,
+      frontendOriginStored: Boolean(validatedOrigin),
+      frontendOrigin: validatedOrigin || 'fallback',
+      redirectOriginUsed: Boolean(redirectOrigin),
+      redirectOrigin: redirectOrigin || 'not_provided',
     });
 
     response.redirect(302, authorizeUrl);
@@ -270,6 +276,10 @@ export class AuthController {
       request,
       AUTH_COOKIE_NAMES.frontendOrigin,
     );
+    const storedCallbackUri = readCookie(
+      request,
+      AUTH_COOKIE_NAMES.callbackUri,
+    );
     const requestedRedirectPath = readCookie(
       request,
       AUTH_COOKIE_NAMES.redirect,
@@ -308,7 +318,7 @@ export class AuthController {
         env.KEYCLOAK_REALM,
         env.KEYCLOAK_AUTH_CLIENT_ID,
         env.KEYCLOAK_AUTH_CLIENT_SECRET,
-        env.KEYCLOAK_AUTH_REDIRECT_URI,
+        storedCallbackUri ?? env.KEYCLOAK_AUTH_REDIRECT_URI,
       );
       if (!tokenResponse.refresh_token) {
         throw new UnauthorizedException(
@@ -367,22 +377,6 @@ export class AuthController {
             env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
         ),
       );
-      const preferredOrigin = this.resolveFrontendOrigin(
-        request,
-        this.getAllowedOrigins(),
-        storedFrontendOrigin,
-      );
-      if (preferredOrigin) {
-        response.cookie(
-          AUTH_COOKIE_NAMES.frontendOrigin,
-          preferredOrigin,
-          buildCookieOptions(
-            this.getCookieSettings(),
-            (tokenResponse.refresh_expires_in ??
-              env.AUTH_REFRESH_TOKEN_TTL_SECONDS) * 1000,
-          ),
-        );
-      }
 
       this.clearTransientCookies(response);
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_TOKEN_EXCHANGE_SUCCESS, {
@@ -392,6 +386,8 @@ export class AuthController {
       });
       this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS, {
         subject: validatedIdToken.sub,
+        frontendOriginUsed: Boolean(storedFrontendOrigin),
+        frontendOrigin: storedFrontendOrigin || 'dynamic',
       });
 
       const successRedirectPath = resolveSafeRedirectPath(
@@ -399,25 +395,14 @@ export class AuthController {
         env.AUTH_POST_LOGIN_REDIRECT_URI,
         allowedRedirectPrefixes,
       );
-
-      // Enhanced logging for debugging redirect issues
-      this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_CALLBACK_SUCCESS, {
-        subject: validatedIdToken.sub,
-        requestedRedirectPath,
-        successRedirectPath,
-        storedFrontendOrigin,
-        frontendBaseUrl: env.AUTH_FRONTEND_BASE_URL,
-        allowedOrigins: this.getAllowedOrigins(),
-      });
-
-      const finalRedirectUrl = this.buildFrontendRedirect(
-        successRedirectPath,
-        request,
-        storedFrontendOrigin,
+      response.redirect(
+        302,
+        this.buildFrontendRedirect(
+          successRedirectPath,
+          request,
+          storedFrontendOrigin,
+        ),
       );
-      this.logger.log(`Final redirect URL: ${finalRedirectUrl}`);
-
-      response.redirect(302, finalRedirectUrl);
     } catch (error: unknown) {
       if (error instanceof KeycloakIdTokenValidationError) {
         this.clearTransientCookies(response);
@@ -462,6 +447,13 @@ export class AuthController {
     description: 'Relative URL path used after logout completion.',
     example: '/login',
   })
+  @ApiQuery({
+    name: 'redirect_origin',
+    required: false,
+    description:
+      'Frontend origin URL used for post-logout redirects. Takes priority over headers.',
+    example: 'http://localhost:3000',
+  })
   @ApiResponse({
     status: 302,
     description:
@@ -480,6 +472,8 @@ export class AuthController {
   async logout(
     @Query('redirect')
     redirectPath: AuthLogoutQueryDtoType['redirect'] | undefined,
+    @Query('redirect_origin')
+    redirectOrigin: AuthLogoutQueryDtoType['redirect_origin'] | undefined,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
@@ -487,10 +481,6 @@ export class AuthController {
     const accessToken = readCookie(request, AUTH_COOKIE_NAMES.access);
     const refreshToken = readCookie(request, AUTH_COOKIE_NAMES.refresh);
     const idToken = readCookie(request, AUTH_COOKIE_NAMES.id);
-    const storedFrontendOrigin = readCookie(
-      request,
-      AUTH_COOKIE_NAMES.frontendOrigin,
-    );
     const safePostLogoutPath = resolveSafeRedirectPath(
       redirectPath,
       env.AUTH_POST_LOGOUT_REDIRECT_URI,
@@ -499,7 +489,8 @@ export class AuthController {
     const postLogoutRedirectUrl = this.buildFrontendRedirect(
       safePostLogoutPath,
       request,
-      storedFrontendOrigin,
+      undefined, // Don't use stored origin for logout, use current request
+      redirectOrigin,
     );
     const subject = await this.resolveSubjectFromAccessToken(accessToken);
 
@@ -524,6 +515,8 @@ export class AuthController {
     this.logAuthEvent(request, AUDIT_ACTIONS.AUTH_LOGOUT, {
       hasIdToken: Boolean(idToken),
       subject,
+      redirectOriginUsed: Boolean(redirectOrigin),
+      redirectOrigin: redirectOrigin || 'not_provided',
     });
 
     if (!idToken) {
@@ -963,6 +956,8 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.verifier, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.redirect, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.nonce, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.frontendOrigin, clearOptions);
+    response.clearCookie(AUTH_COOKIE_NAMES.callbackUri, clearOptions);
   }
 
   private clearAuthCookies(response: Response): void {
@@ -972,7 +967,6 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAMES.access, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.refresh, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.id, clearOptions);
-    response.clearCookie(AUTH_COOKIE_NAMES.frontendOrigin, clearOptions);
     response.clearCookie(AUTH_COOKIE_NAMES.csrf, clearReadableOptions);
   }
 
@@ -1012,57 +1006,33 @@ export class AuthController {
     path: string,
     request?: Request,
     storedFrontendOrigin?: string,
+    redirectOrigin?: string,
   ): string {
-    if (!request) {
-      return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
+    // Priority 1: Use redirect_origin query parameter if provided
+    if (redirectOrigin) {
+      const allowedOrigins = this.getAllowedOrigins();
+      const validatedOrigin = validateFrontendOrigin(
+        redirectOrigin,
+        allowedOrigins,
+      );
+      if (validatedOrigin) {
+        return new URL(path, validatedOrigin).toString();
+      }
     }
 
-    return buildPreferredFrontendRedirectUrl(
-      path,
-      this.resolveFrontendOrigin(
-        request,
-        this.getAllowedOrigins(),
-        storedFrontendOrigin,
-      ),
-      env.AUTH_FRONTEND_BASE_URL,
-      this.getAllowedOrigins(),
-    );
-  }
+    // Priority 2: Use stored frontend origin from cookie
+    if (storedFrontendOrigin) {
+      return new URL(path, storedFrontendOrigin).toString();
+    }
 
-  private resolveFrontendOrigin(
-    request: Request,
-    allowedOrigins: string[],
-    preferredOrigin?: string,
-  ): string | undefined {
-    return (
-      resolveAllowedFrontendOrigin(preferredOrigin, allowedOrigins) ??
-      resolveAllowedFrontendOrigin(
-        request.headers.origin as string,
-        allowedOrigins,
-      ) ??
-      resolveAllowedFrontendOrigin(
-        request.headers.referer as string,
-        allowedOrigins,
-      ) ??
-      resolveAllowedFrontendOrigin(
-        request.headers['x-forwarded-proto'] &&
-          request.headers['x-forwarded-host']
-          ? `${request.headers['x-forwarded-proto']}://${request.headers['x-forwarded-host']}`
-          : undefined,
-        allowedOrigins,
-      ) ??
-      resolveAllowedFrontendOrigin(
-        typeof request.headers.host === 'string'
-          ? `${
-              request.headers.host.includes('localhost') ||
-              request.headers.host.includes('127.0.0.1')
-                ? 'http'
-                : 'https'
-            }://${request.headers.host}`
-          : undefined,
-        allowedOrigins,
-      )
-    );
+    // Priority 3: Use dynamic origin extraction from request (existing logic)
+    if (request) {
+      const allowedOrigins = this.getAllowedOrigins();
+      return buildDynamicFrontendRedirectUrl(request, path, allowedOrigins);
+    }
+
+    // Priority 4: Fallback to configured base URL
+    return buildFrontendRedirectUrl(env.AUTH_FRONTEND_BASE_URL, path);
   }
 
   private logAuthEvent(

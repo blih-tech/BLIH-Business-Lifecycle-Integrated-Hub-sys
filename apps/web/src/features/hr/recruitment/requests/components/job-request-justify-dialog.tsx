@@ -32,8 +32,11 @@ type JobRequestJustifyDialogProps = {
   request: FullJobRequest | null;
   requestId: string | null;
   onOpenChange: (isOpen: boolean) => void;
-  onSubmit: (action: "review" | "reject", justification: string) => Promise<void>;
-  submittingAction?: "review" | "reject" | null;
+  onSubmit: (
+    action: 'review' | 'reject',
+    justification: string,
+  ) => Promise<void>;
+  submittingAction?: 'review' | 'reject' | null;
 };
 
 const justifySchema = z.object({
@@ -78,7 +81,7 @@ export function JobRequestJustifyDialog({
     onOpenChange(false);
   }
 
-  function handleSubmit(action: "review" | "reject") {
+  function handleSubmit(action: 'review' | 'reject') {
     return async (values: JustifyFormValues) => {
       if (!request || !requestId) return;
       await onSubmit(action, values.justification);
@@ -101,7 +104,9 @@ export function JobRequestJustifyDialog({
                     <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] border border-[#1e66f7] px-[9px] py-[3px] text-[12px] font-medium leading-[16px] text-[#1e66f7]">
                       {request.jobDetailsForm.experienceLevel
                         .split('_')
-                        .map((value) => value[0]?.toUpperCase() + value.slice(1))
+                        .map(
+                          (value) => value[0]?.toUpperCase() + value.slice(1),
+                        )
                         .join(' ')}
                     </span>
                   </div>
@@ -179,13 +184,13 @@ export function JobRequestJustifyDialog({
                       className="h-[32px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
                       disabled={!form.formState.isValid || !!submittingAction}
                     >
-                      {submittingAction === "review" ? (
+                      {submittingAction === 'review' ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
                           Sending...
                         </>
                       ) : (
-                        "Revise"
+                        'Revise'
                       )}
                     </Button>
                     <Button
@@ -195,13 +200,13 @@ export function JobRequestJustifyDialog({
                       onClick={form.handleSubmit(handleSubmit('reject'))}
                       disabled={!form.formState.isValid || !!submittingAction}
                     >
-                      {submittingAction === "reject" ? (
+                      {submittingAction === 'reject' ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
                           Sending...
                         </>
                       ) : (
-                        "Decline"
+                        'Decline'
                       )}
                     </Button>
                   </div>

@@ -1,65 +1,102 @@
-
-model ProbationKpiPlan {
-  id                   String                @id @default(uuid()) @db.Uuid
-  employeeId           String                @map("employee_id") @db.Uuid
-  employee             Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  supervisorId         String?               @map("supervisor_id") @db.Uuid
-  probationStart       DateTime              @map("probation_start") @db.Date
-  probationEnd         DateTime              @map("probation_end") @db.Date
-  goals                Json?                 @db.JsonB
-  development          Json?                 @db.JsonB
-  employeeEndorsedAt   DateTime?             @map("employee_endorsed_at")
-  supervisorEndorsedAt DateTime?             @map("supervisor_endorsed_at")
-  hrEndorsedAt         DateTime?             @map("hr_endorsed_at")
-  status               ProbationPlanStatus   @default(DRAFT)
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  evaluations          ProbationEvaluation[]
-
-  @@index([employeeId])
-  @@index([supervisorId])
+enum ProbationStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  FAILED
+  EXTENDED
 }
 
-model ProbationEvaluation {
-  id                String                    @id @default(uuid()) @db.Uuid
-  employeeId        String                    @map("employee_id") @db.Uuid
-  employee          Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  probationPlanId   String                    @map("probation_plan_id") @db.Uuid
-  probationPlan     ProbationKpiPlan          @relation(fields: [probationPlanId], references: [id], onDelete: Cascade)
-  round             ProbationEvaluationRound
-  evaluationDate    DateTime                  @map("evaluation_date") @db.Date
-  performanceScore  Int?                      @map("performance_score")
-  attitudeScore     Int?                      @map("attitude_score")
-  potentialScore    Int?                      @map("potential_score")
-  overallScore      Decimal?                  @map("overall_score") @db.Decimal(5, 2)
-  strengths         Json?                     @db.JsonB
-  improvements      Json?                     @db.JsonB
-  recommendation    ProbationRecommendation   @default(CONFIRM)
-  evaluatorComments String?                   @map("evaluator_comments") @db.Text
-  employeeComments  String?                   @map("employee_comments") @db.Text
-  status            ProbationEvaluationStatus @default(DRAFT)
-  createdAt         DateTime                  @default(now())
-  updatedAt         DateTime                  @updatedAt
-
-  @@index([employeeId])
-  @@index([probationPlanId])
+enum ProbationOutcome {
+  CONFIRMED
+  EXTENDED
+  TERMINATED
+  RESIGNED
 }
 
-model ProbationConfirmation {
-  id                     String                       @id @default(uuid()) @db.Uuid
-  employeeId             String                       @map("employee_id") @db.Uuid
-  employee               Employee                     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  reviewSummary          Json?                        @map("review_summary") @db.JsonB
-  verdict                ProbationConfirmationVerdict
-  extension              Json?                        @db.JsonB
-  termination            Json?                        @db.JsonB
-  confirmation           Json?                        @db.JsonB
-  hrCheckedAt            DateTime?                    @map("hr_checked_at")
-  ceoSignOffAt           DateTime?                    @map("ceo_sign_off_at")
-  employeeNotifiedAt     DateTime?                    @map("employee_notified_at")
-  archivedInEmployeeFile Boolean                      @default(false) @map("archived_in_employee_file")
-  createdAt              DateTime                     @default(now())
-  updatedAt              DateTime                     @updatedAt
+model ProbationPlan {
+  id              String                @id @default(uuid()) @db.Uuid
+  employeeId      String                @unique @db.Uuid
+  startDate       DateTime
+  endDate         DateTime
+  status          ProbationStatus       @default(NOT_STARTED)
+  kpis            ProbationKPI[]
+  checkpoints     ProbationCheckpoint[]
+  finalEvaluation FinalEvaluation?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 
-  @@index([employeeId])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model KPI {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  probationKpis ProbationKPI[]
+}
+
+model ProbationKPI {
+  id          String            @id @default(uuid()) @db.Uuid
+  probationId String            @db.Uuid
+  kpiId       String            @db.Uuid
+  scores      EvaluationScore[]
+  createdAt   DateTime          @default(now())
+  probation   ProbationPlan     @relation(fields: [probationId], references: [id], onDelete: Cascade)
+  kpi         KPI               @relation(fields: [kpiId], references: [id])
+
+  @@unique([probationId, kpiId])
+}
+
+model ProbationCheckpoint {
+  id             String                 @id @default(uuid()) @db.Uuid
+  probationId    String                 @db.Uuid
+  name           String // e.g. "Month 1 Review"
+  checkpointDate DateTime
+  createdAt      DateTime               @default(now())
+  evaluations    CheckpointEvaluation[]
+
+  probation ProbationPlan @relation(fields: [probationId], references: [id], onDelete: Cascade)
+}
+
+model CheckpointEvaluation {
+  id           String            @id @default(uuid()) @db.Uuid
+  checkpointId String            @db.Uuid
+  comment      String?
+  totalScore   Float // calculated out of 100
+  createdAt    DateTime          @default(now())
+  scores       EvaluationScore[]
+
+  checkpoint ProbationCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
+}
+
+model EvaluationScore {
+  id                     String   @id @default(uuid()) @db.Uuid
+  probationKpiId         String   @db.Uuid
+  checkpointEvaluationId String?  @db.Uuid
+  finalEvaluationId      String?  @db.Uuid
+  score                  Float // out of 100
+  comment                String?
+  createdAt              DateTime @default(now())
+
+  probationKpi         ProbationKPI          @relation(fields: [probationKpiId], references: [id], onDelete: Cascade)
+  checkpointEvaluation CheckpointEvaluation? @relation(fields: [checkpointEvaluationId], references: [id], onDelete: Cascade)
+  finalEvaluation      FinalEvaluation?      @relation(fields: [finalEvaluationId], references: [id], onDelete: Cascade)
+
+  @@unique([probationKpiId, checkpointEvaluationId])
+}
+
+model FinalEvaluation {
+  id          String            @id @default(uuid()) @db.Uuid
+  probationId String            @unique @db.Uuid
+  comment     String?
+  totalScore  Float // out of 100
+  outcome     ProbationOutcome
+  scores      EvaluationScore[]
+  createdAt   DateTime          @default(now())
+
+  probation ProbationPlan @relation(fields: [probationId], references: [id], onDelete: Cascade)
 }

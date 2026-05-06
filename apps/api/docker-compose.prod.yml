@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     mem_limit: ${POSTGRES_MEMORY_LIMIT:-2g}
     cpus: ${POSTGRES_CPU_LIMIT:-1.0}
+    ports:
+      - '5433:5432'
     env_file:
       - .env.production
     volumes:
@@ -25,26 +27,27 @@ services:
       [
         'start',
         '--http-enabled=true',
+        '--health-enabled=true',
         '--import-realm',
         '--hostname-strict=false',
         '--http-relative-path=/',
         '--proxy-headers=xforwarded',
-        '--hostname=${KEYCLOAK_HOSTNAME:-localhost}',
+        '--hostname=${KC_HOSTNAME:-localhost}',
       ]
     env_file:
       - .env.production
     environment:
       KC_DB: ${KC_DB:-postgres}
       KC_DB_URL: ${KEYCLOAK_DB_URL}
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: keycloak
       KC_DB_USERNAME: ${KEYCLOAK_DB_USERNAME}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_DB_SCHEMA: ${KC_DB_SCHEMA:-public}
       KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED:-true}
+      KC_LOG_LEVEL: ${KC_LOG_LEVEL:-warn}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
-      # Optional hostname overrides — add KC_HOSTNAME_URL, KC_HOSTNAME_ADMIN_URL,
-      # KC_FRONTEND_URL directly to .env.production when deploying behind a
-      # reverse proxy with a real domain. Omitting them here prevents Keycloak
-      # from receiving empty-string values that cause startup validation errors.
     ports:
       - '127.0.0.1:${KEYCLOAK_PORT:-8180}:8080'
     volumes:
@@ -57,12 +60,12 @@ services:
       test:
         [
           'CMD-SHELL',
-          "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000 2>/dev/null && exec 3>&-'",
+          'bash -c ''timeout 1 bash -c "cat < /dev/null > /dev/tcp/127.0.0.1/8080" || exit 1''',
         ]
       interval: 15s
       timeout: 10s
-      retries: 10
-      start_period: 120s
+      retries: 25
+      start_period: 480s
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -86,7 +89,7 @@ services:
       mailhog:
         condition: service_started
       keycloak:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test:
         [
@@ -96,7 +99,7 @@ services:
       interval: ${HEALTH_CHECK_INTERVAL:-15s}
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
       retries: ${HEALTH_CHECK_RETRIES:-8}
-      start_period: 120s
+      start_period: 180s
     logging:
       driver: 'json-file'
       options:

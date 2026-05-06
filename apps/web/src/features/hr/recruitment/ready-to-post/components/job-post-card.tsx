@@ -1,11 +1,11 @@
-import { Eye, Pencil, Send } from "lucide-react";
+import { Eye, Pencil, Send } from 'lucide-react';
 
 import type {
   ReadyToPostDepartment,
   ReadyToPostJob,
   ReadyToPostPriority,
-} from "@/features/hr/recruitment/ready-to-post/types";
-import { Button } from "@/shared/components/ui/button";
+} from '@/features/hr/recruitment/ready-to-post/types';
+import { Button } from '@/shared/components/ui/button';
 
 type JobPostCardProps = {
   item: ReadyToPostJob;
@@ -14,58 +14,58 @@ type JobPostCardProps = {
 };
 
 function departmentLabel(department: ReadyToPostDepartment) {
-  if (department === "technical") return "TECHNICAL DEPT.";
-  if (department === "creative") return "CREATIVE DEPT.";
-  return "DIGITAL MARKETING DEPT.";
+  if (department === 'technical') return 'TECHNICAL DEPT.';
+  if (department === 'creative') return 'CREATIVE DEPT.';
+  return 'DIGITAL MARKETING DEPT.';
 }
 
 function priorityLabel(priority: ReadyToPostPriority) {
-  if (priority === "high") return "High";
-  if (priority === "medium") return "Medium";
-  return "Low";
+  if (priority === 'high') return 'High';
+  if (priority === 'medium') return 'Medium';
+  return 'Low';
 }
 
 function priorityClass(priority: ReadyToPostPriority) {
-  if (priority === "high") return "border-[#1e66f7] text-[#1e66f7]";
-  if (priority === "medium") return "border-black text-black";
-  return "border-[#e5e5e5] text-[#666]";
+  if (priority === 'high') return 'border-[#1e66f7] text-[#1e66f7]';
+  if (priority === 'medium') return 'border-black text-black';
+  return 'border-[#e5e5e5] text-[#666]';
 }
 
 function priorityFromUrgency(
-  urgency: ReadyToPostJob["requestForm"]["urgency"],
+  urgency: ReadyToPostJob['requestForm']['urgency'],
 ): ReadyToPostPriority {
-  if (urgency === "HIGH") return "high";
-  if (urgency === "MEDIUM") return "medium";
-  return "low";
+  if (urgency === 'HIGH') return 'high';
+  if (urgency === 'MEDIUM') return 'medium';
+  return 'low';
 }
 
 function employmentTypeLabel(
-  value: ReadyToPostJob["jobDetailsForm"]["employmentType"],
+  value: ReadyToPostJob['jobDetailsForm']['employmentType'],
 ) {
-  if (value === "FULL_TIME") return "Full-time";
-  if (value === "PART_TIME") return "Part-time";
-  if (value === "CONTRACT") return "Contract";
-  return "Intern";
+  if (value === 'FULL_TIME') return 'Full-time';
+  if (value === 'PART_TIME') return 'Part-time';
+  if (value === 'CONTRACT') return 'Contract';
+  return 'Intern';
 }
 
 function experienceLevelLabel(
-  value: ReadyToPostJob["jobDetailsForm"]["experienceLevel"],
+  value: ReadyToPostJob['jobDetailsForm']['experienceLevel'],
 ) {
-  if (value === "ENTRY") return "Entry";
-  if (value === "MID") return "Mid";
-  if (value === "SENIOR") return "Senior";
-  return "Lead";
+  if (value === 'ENTRY') return 'Entry';
+  if (value === 'MID') return 'Mid';
+  if (value === 'SENIOR') return 'Senior';
+  return 'Lead';
 }
 
 function positionsLabel(value?: string) {
-  if (!value) return "1 Position";
-  return `${value} Position${value === "1" ? "" : "s"}`;
+  if (!value) return '1 Position';
+  return `${value} Position${value === '1' ? '' : 's'}`;
 }
 
 function initials(value: string) {
   const parts = value.trim().split(/\s+/).filter(Boolean);
   const letters = parts.slice(0, 2).map((part) => part[0]?.toUpperCase());
-  return letters.join("") || "--";
+  return letters.join('') || '--';
 }
 
 export function JobPostCard({
@@ -93,7 +93,9 @@ export function JobPostCard({
                 item.requestForm.department as ReadyToPostDepartment,
               )}
             </span>
-            <span>{employmentTypeLabel(item.jobDetailsForm.employmentType)}</span>
+            <span>
+              {employmentTypeLabel(item.jobDetailsForm.employmentType)}
+            </span>
             <span>{positionsLabel(item.requestForm.openings)}</span>
           </div>
         </div>
@@ -152,14 +154,14 @@ export function JobPostCard({
               <p className="text-[12px] text-[#666]">Requested By</p>
               <div className="flex items-center gap-3">
                 <div className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#1e66f7] text-[16px] font-semibold tracking-[-0.4px] text-white">
-                  {initials(item.requestForm.requestedBy ?? "User")}
+                  {initials(item.requestForm.requestedBy ?? 'User')}
                 </div>
                 <div className="space-y-1">
                   <p className="text-[16px] font-semibold leading-[20px] tracking-[-0.4px] text-black">
-                    {item.requestForm.requestedBy ?? "Request Owner"}
+                    {item.requestForm.requestedBy ?? 'Request Owner'}
                   </p>
                   <p className="text-[12px] leading-[16px] text-[#666]">
-                    {item.requestForm.position.replace(/_/g, " ")}
+                    {item.requestForm.position.replace(/_/g, ' ')}
                   </p>
                   <span className="inline-flex rounded-[4px] bg-[#e9f0fe] px-[6px] py-[2px] text-[11px] font-semibold uppercase leading-[14px] text-[#1e66f7]">
                     {departmentLabel(
@@ -187,19 +189,19 @@ export function JobPostCard({
                 Requirements
               </p>
               <ul className="space-y-1">
-                {(item.jobDetailsForm.requiredSkills ?? "")
-                  .split("\n")
+                {(item.jobDetailsForm.requiredSkills ?? '')
+                  .split('\n')
                   .map((requirement) => requirement.trim())
                   .filter(Boolean)
                   .map((requirement) => (
-                  <li
-                    key={requirement}
-                    className="flex items-start gap-2 text-[14px] text-[#666]"
-                  >
-                    <span className="text-[#1e66f7]">•</span>
-                    <span>{requirement}</span>
-                  </li>
-                ))}
+                    <li
+                      key={requirement}
+                      className="flex items-start gap-2 text-[14px] text-[#666]"
+                    >
+                      <span className="text-[#1e66f7]">•</span>
+                      <span>{requirement}</span>
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>
@@ -209,19 +211,19 @@ export function JobPostCard({
                 Qualifications
               </p>
               <ul className="space-y-1">
-                {(item.jobDetailsForm.responsibilities ?? "")
-                  .split("\n")
+                {(item.jobDetailsForm.responsibilities ?? '')
+                  .split('\n')
                   .map((requirement) => requirement.trim())
                   .filter(Boolean)
                   .map((requirement) => (
-                  <li
-                    key={requirement}
-                    className="flex items-start gap-2 text-[14px] text-[#666]"
-                  >
-                    <span className="text-[#1e66f7]">•</span>
-                    <span>{requirement}</span>
-                  </li>
-                ))}
+                    <li
+                      key={requirement}
+                      className="flex items-start gap-2 text-[14px] text-[#666]"
+                    >
+                      <span className="text-[#1e66f7]">•</span>
+                      <span>{requirement}</span>
+                    </li>
+                  ))}
               </ul>
             </div>
             <div className="space-y-2">
@@ -263,5 +265,3 @@ export function JobPostCard({
     </article>
   );
 }
-
-

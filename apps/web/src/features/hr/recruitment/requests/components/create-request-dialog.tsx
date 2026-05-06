@@ -165,14 +165,25 @@ export function CreateRequestDialog({
       jobDetailsForm.reset(defaultJobDetailsValues);
       applicationForm.reset(defaultApplicationValues);
     }
-  }, [applicationForm, currentUserName, editRequest, jobDetailsForm, open, requestForm]);
+  }, [
+    applicationForm,
+    currentUserName,
+    editRequest,
+    jobDetailsForm,
+    open,
+    requestForm,
+  ]);
 
   useEffect(() => {
-    requestForm.setValue('requestedBy', editRequest?.requestForm.requestedBy ?? currentUserName, {
-      shouldDirty: false,
-      shouldTouch: false,
-      shouldValidate: false,
-    });
+    requestForm.setValue(
+      'requestedBy',
+      editRequest?.requestForm.requestedBy ?? currentUserName,
+      {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      },
+    );
   }, [currentUserName, editRequest, requestForm]);
 
   useEffect(() => {
@@ -190,7 +201,14 @@ export function CreateRequestDialog({
       ...defaultApplicationValues,
       ...editRequest.applicationForm,
     });
-  }, [applicationForm, currentUserName, editRequest, jobDetailsForm, open, requestForm]);
+  }, [
+    applicationForm,
+    currentUserName,
+    editRequest,
+    jobDetailsForm,
+    open,
+    requestForm,
+  ]);
 
   async function handleRequestContinue() {
     const isValid = await requestForm.trigger();
@@ -324,7 +342,11 @@ export function CreateRequestDialog({
       handleClose();
     } catch (error) {
       console.error('Failed to save job request:', error);
-      toast.error(isEditMode ? 'Failed to update hiring request' : 'Failed to create hiring request');
+      toast.error(
+        isEditMode
+          ? 'Failed to update hiring request'
+          : 'Failed to create hiring request',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -500,8 +522,10 @@ export function CreateRequestDialog({
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       {isEditMode ? 'Updating...' : 'Creating...'}
                     </>
+                  ) : isEditMode ? (
+                    'Update'
                   ) : (
-                    isEditMode ? 'Update' : 'Create'
+                    'Create'
                   )}
                 </Button>
               </DialogFooter>

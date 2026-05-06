@@ -1,80 +1,88 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
-  ApiDefaultErrors,
-  ApiEnvelopeOkResponse,
-  ApiProtected,
-} from '../../../shared/docs/openapi';
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import type { Request } from 'express';
+import { randomUUID } from 'crypto';
 import { KeycloakAuthGuard } from '../../../shared/guards/keycloak-auth.guard';
 import { RbacGuard } from '../../../shared/guards/rbac.guard';
 import { EmployeePermissions } from '@repo/types/rbac';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { ListEmployeesUseCase } from './use-cases/list-employees.usecase';
-import { GetEmployeeFullUseCase } from './use-cases/get-employee-full.usecase';
+import { CreateEmployeeDto } from './dto/employee-create.dto';
+import { EmployeeListQueryDto } from './dto/employee-list-query.dto';
+import { EmployeeListItemResponseDto } from './dto/employee-response.dto';
+import { UpdateEmployeeDto } from './dto/employee-update.dto';
 import {
-  EmployeeFullResponseDto,
-  EmployeeListResponseDto,
-} from './dto/employee-response.dto';
+  ApiCreateEmployee,
+  ApiEmployeeTag,
+  ApiGetEmployeeById,
+  ApiListAllEmployees,
+  ApiListPaginatedEmployees,
+  ApiUpdateEmployee,
+} from './docs/employees.docs';
+import { CreateEmployeeUseCase } from './use-cases/create-employee.usecase';
+import {
+  GetEmployeeFullUseCase,
+  ListAllEmployeesUseCase,
+  ListPaginatedEmployeesUseCase,
+} from './use-cases/list-employees.usecase';
+import { UpdateEmployeeUseCase } from './use-cases/update-employee.usecase';
 
-@ApiTags('HR Employees')
+@ApiEmployeeTag()
 @Controller('hr/employees')
 @UseGuards(KeycloakAuthGuard, RbacGuard)
 export class EmployeesController {
   constructor(
-    private readonly listEmployeesUseCase: ListEmployeesUseCase,
+    private readonly createEmployee: CreateEmployeeUseCase,
+    private readonly updateEmployee: UpdateEmployeeUseCase,
+    private readonly listAllEmployees: ListAllEmployeesUseCase,
+    private readonly listPaginatedEmployees: ListPaginatedEmployeesUseCase,
     private readonly getEmployeeFullUseCase: GetEmployeeFullUseCase,
   ) {}
 
+  @Post()
+  @Roles(EmployeePermissions.CREATE)
+  @ApiCreateEmployee()
+  create(@Body() body: CreateEmployeeDto) {
+    return this.createEmployee.execute(body);
+  }
+
   @Get()
   @Roles(EmployeePermissions.VIEW)
-  @ApiProtected({
-    path: '/api/v1/hr/employees',
-    roles: [EmployeePermissions.VIEW],
-  })
-  @ApiOperation({ summary: 'List employees with filters' })
-  @ApiEnvelopeOkResponse(EmployeeListResponseDto, 'Paginated list of employees')
-  @ApiDefaultErrors({
-    path: '/api/v1/hr/employees',
-    unauthorized: 'Unauthorized: missing or invalid bearer access token',
-    forbidden: 'Required roles are missing',
-  })
-  list(
-    @Query('departmentId') departmentId?: string,
-    @Query('lifecycleStatus') lifecycleStatus?: string,
-    @Query('employmentType') employmentType?: string,
-    @Query('search') search?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.listEmployeesUseCase.execute({
-      departmentId,
-      lifecycleStatus: lifecycleStatus as never,
-      employmentType: employmentType as never,
-      search,
-      page: page ? parseInt(page, 10) : undefined,
-      limit: limit ? parseInt(limit, 10) : undefined,
-    });
+  @ApiListAllEmployees()
+  listAll(
+    @Query() query: EmployeeListQueryDto,
+  ): Promise<EmployeeListItemResponseDto[]> {
+    return this.listAllEmployees.execute(query);
+  }
+
+  @Get('paginated')
+  @Roles(EmployeePermissions.VIEW)
+  @ApiListPaginatedEmployees()
+  listPaginated(@Query() query: EmployeeListQueryDto, @Req() req: Request) {
+    const requestId =
+      (req.headers['x-request-id'] as string | undefined) ?? randomUUID();
+    return this.listPaginatedEmployees.execute(query, requestId);
   }
 
   @Get(':id')
   @Roles(EmployeePermissions.VIEW)
-  @ApiProtected({
-    path: '/api/v1/hr/employees/:id',
-    roles: [EmployeePermissions.VIEW],
-  })
-  @ApiOperation({ summary: 'Get full employee record' })
-  @ApiParam({
-    name: 'id',
-    description: 'Employee id, user id, or Keycloak subject',
-  })
-  @ApiEnvelopeOkResponse(EmployeeFullResponseDto, 'Full employee')
-  @ApiDefaultErrors({
-    path: '/api/v1/hr/employees/:id',
-    notFound: 'Employee not found',
-    unauthorized: 'Unauthorized: missing or invalid bearer access token',
-    forbidden: 'Required roles are missing',
-  })
+  @ApiGetEmployeeById()
   getFull(@Param('id') id: string) {
     return this.getEmployeeFullUseCase.execute(id);
+  }
+
+  @Patch(':id')
+  @Roles(EmployeePermissions.UPDATE)
+  @ApiUpdateEmployee()
+  update(@Param('id') id: string, @Body() body: UpdateEmployeeDto) {
+    return this.updateEmployee.execute(id, body);
   }
 }

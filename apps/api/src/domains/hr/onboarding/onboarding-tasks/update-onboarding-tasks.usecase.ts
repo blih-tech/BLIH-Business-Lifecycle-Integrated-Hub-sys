@@ -1,53 +1,55 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../../../../platform/prisma/prisma.service';
 import type { UpdateOnboardingTaskDto } from './onboarding-tasks.dto';
-import {
-  mapOnboardingTask,
-  onboardingTaskInclude,
-} from './create-onboarding-tasks.usecase';
+import { mapOnboardingTask } from './create-onboarding-tasks.usecase';
+import { TaskType } from '@repo/database';
 
 @Injectable()
 export class UpdateOnboardingTaskUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(id: string, dto: UpdateOnboardingTaskDto) {
-    // Ensure the task exists
     const existing = await this.prisma.onboardingTask.findUnique({
       where: { id },
-      select: { id: true },
     });
     if (!existing) {
       throw new NotFoundException(`Onboarding task with id "${id}" not found`);
     }
 
-    // Validate completedById if it is being set
-    if (dto.completedById) {
-      const user = await this.prisma.user.findUnique({
-        where: { id: dto.completedById },
-        select: { id: true },
-      });
-      if (!user) {
-        throw new BadRequestException(
-          'completedById does not reference an existing user',
-        );
-      }
+    const newTaskType =
+      dto.taskType !== undefined ? dto.taskType : existing.taskType;
+    const newTargetDataModel =
+      dto.targetDataModel !== undefined
+        ? dto.targetDataModel
+        : existing.targetDataModel;
+
+    if (
+      newTaskType === TaskType.NON_CUSTOM &&
+      !newTargetDataModel &&
+      newTargetDataModel !== undefined
+    ) {
+      throw new BadRequestException(
+        'targetDataModel is required when taskType is NON_CUSTOM',
+      );
     }
 
     const updated = await this.prisma.onboardingTask.update({
       where: { id },
       data: {
-        ...(dto.department !== undefined && { department: dto.department }),
         ...(dto.title !== undefined && { title: dto.title }),
         ...(dto.description !== undefined && { description: dto.description }),
-        ...(dto.completedById !== undefined && {
-          completedById: dto.completedById,
+        ...(dto.taskType !== undefined && { taskType: dto.taskType }),
+        ...(dto.targetDataModel !== undefined && {
+          targetDataModel: dto.targetDataModel,
+        }),
+        ...(dto.requiresHrVerification !== undefined && {
+          requiresHrVerification: dto.requiresHrVerification,
         }),
       },
-      include: onboardingTaskInclude,
     });
 
     return mapOnboardingTask(updated);

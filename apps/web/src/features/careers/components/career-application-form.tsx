@@ -178,7 +178,8 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
               Your application has been received.
             </h2>
             <p className="mt-3 max-w-[480px] text-sm leading-6 text-muted-foreground">
-              We have received your application for {job.title}. You can return to the careers page to explore other open roles.
+              We have received your application for {job.title}. You can return
+              to the careers page to explore other open roles.
             </p>
             <Button asChild className="mt-6">
               <Link href="/careers">Back to see more jobs</Link>

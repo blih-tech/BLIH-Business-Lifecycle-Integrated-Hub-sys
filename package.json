@@ -14,7 +14,7 @@
     "verify": "npm run lint && npm run check-types",
     "verify:full": "npm run lint && npm run check-types && npm run test:ci",
     "lint:api": "npm run lint:check --workspace blih-system-backend",
-    "check-types": "turbo run check-types",
+    "check-types": "turbo run check-types --concurrency=1",
     "typecheck:api": "npm run typecheck --workspace blih-system-backend",
     "test:api": "npm run test --workspace blih-system-backend",
     "api:verify": "npm run lint:check --workspace blih-system-backend && npm run typecheck --workspace blih-system-backend && npm run test --workspace blih-system-backend -- --ci --passWithNoTests",
@@ -43,8 +43,10 @@
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
     "concurrently": "^9.2.1",
     "husky": "^9.1.7",
+    "lightningcss-linux-x64-gnu": "^1.32.0",
     "lint-staged": "^16.3.2",
     "postgres": "^3.4.8",
     "prettier": "^3.7.4",
@@ -65,6 +67,9 @@
   ],
   "dependencies": {
     "@prisma/client": "^7.4.2",
-    "pdf-parse-debugging-disabled": "^1.1.1"
+    "next": "15.1.12",
+    "pdf-parse-debugging-disabled": "^1.1.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   }
 }
