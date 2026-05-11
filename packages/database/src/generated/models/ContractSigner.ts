@@ -184,9 +184,9 @@ export type ContractSignerWhereInput = {
   AND?: Prisma.ContractSignerWhereInput | Prisma.ContractSignerWhereInput[]
   OR?: Prisma.ContractSignerWhereInput[]
   NOT?: Prisma.ContractSignerWhereInput | Prisma.ContractSignerWhereInput[]
-  id?: Prisma.StringFilter<"ContractSigner"> | string
-  contractId?: Prisma.StringFilter<"ContractSigner"> | string
-  userId?: Prisma.StringFilter<"ContractSigner"> | string
+  id?: Prisma.UuidFilter<"ContractSigner"> | string
+  contractId?: Prisma.UuidFilter<"ContractSigner"> | string
+  userId?: Prisma.UuidFilter<"ContractSigner"> | string
   roleInContract?: Prisma.StringFilter<"ContractSigner"> | string
   hasSigned?: Prisma.BoolFilter<"ContractSigner"> | boolean
   signedAt?: Prisma.DateTimeNullableFilter<"ContractSigner"> | Date | string | null
@@ -211,8 +211,8 @@ export type ContractSignerWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ContractSignerWhereInput | Prisma.ContractSignerWhereInput[]
   OR?: Prisma.ContractSignerWhereInput[]
   NOT?: Prisma.ContractSignerWhereInput | Prisma.ContractSignerWhereInput[]
-  contractId?: Prisma.StringFilter<"ContractSigner"> | string
-  userId?: Prisma.StringFilter<"ContractSigner"> | string
+  contractId?: Prisma.UuidFilter<"ContractSigner"> | string
+  userId?: Prisma.UuidFilter<"ContractSigner"> | string
   roleInContract?: Prisma.StringFilter<"ContractSigner"> | string
   hasSigned?: Prisma.BoolFilter<"ContractSigner"> | boolean
   signedAt?: Prisma.DateTimeNullableFilter<"ContractSigner"> | Date | string | null
@@ -236,9 +236,9 @@ export type ContractSignerScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContractSignerScalarWhereWithAggregatesInput | Prisma.ContractSignerScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContractSignerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContractSignerScalarWhereWithAggregatesInput | Prisma.ContractSignerScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"ContractSigner"> | string
-  contractId?: Prisma.StringWithAggregatesFilter<"ContractSigner"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"ContractSigner"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"ContractSigner"> | string
+  contractId?: Prisma.UuidWithAggregatesFilter<"ContractSigner"> | string
+  userId?: Prisma.UuidWithAggregatesFilter<"ContractSigner"> | string
   roleInContract?: Prisma.StringWithAggregatesFilter<"ContractSigner"> | string
   hasSigned?: Prisma.BoolWithAggregatesFilter<"ContractSigner"> | boolean
   signedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ContractSigner"> | Date | string | null
@@ -477,9 +477,9 @@ export type ContractSignerScalarWhereInput = {
   AND?: Prisma.ContractSignerScalarWhereInput | Prisma.ContractSignerScalarWhereInput[]
   OR?: Prisma.ContractSignerScalarWhereInput[]
   NOT?: Prisma.ContractSignerScalarWhereInput | Prisma.ContractSignerScalarWhereInput[]
-  id?: Prisma.StringFilter<"ContractSigner"> | string
-  contractId?: Prisma.StringFilter<"ContractSigner"> | string
-  userId?: Prisma.StringFilter<"ContractSigner"> | string
+  id?: Prisma.UuidFilter<"ContractSigner"> | string
+  contractId?: Prisma.UuidFilter<"ContractSigner"> | string
+  userId?: Prisma.UuidFilter<"ContractSigner"> | string
   roleInContract?: Prisma.StringFilter<"ContractSigner"> | string
   hasSigned?: Prisma.BoolFilter<"ContractSigner"> | boolean
   signedAt?: Prisma.DateTimeNullableFilter<"ContractSigner"> | Date | string | null

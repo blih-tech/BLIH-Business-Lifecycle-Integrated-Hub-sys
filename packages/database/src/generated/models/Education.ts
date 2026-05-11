@@ -240,8 +240,8 @@ export type EducationWhereInput = {
   AND?: Prisma.EducationWhereInput | Prisma.EducationWhereInput[]
   OR?: Prisma.EducationWhereInput[]
   NOT?: Prisma.EducationWhereInput | Prisma.EducationWhereInput[]
-  id?: Prisma.StringFilter<"Education"> | string
-  employeeEducationId?: Prisma.StringFilter<"Education"> | string
+  id?: Prisma.UuidFilter<"Education"> | string
+  employeeEducationId?: Prisma.UuidFilter<"Education"> | string
   institution?: Prisma.StringFilter<"Education"> | string
   degree?: Prisma.StringFilter<"Education"> | string
   fieldOfStudy?: Prisma.StringFilter<"Education"> | string
@@ -280,7 +280,7 @@ export type EducationWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EducationWhereInput | Prisma.EducationWhereInput[]
   OR?: Prisma.EducationWhereInput[]
   NOT?: Prisma.EducationWhereInput | Prisma.EducationWhereInput[]
-  employeeEducationId?: Prisma.StringFilter<"Education"> | string
+  employeeEducationId?: Prisma.UuidFilter<"Education"> | string
   institution?: Prisma.StringFilter<"Education"> | string
   degree?: Prisma.StringFilter<"Education"> | string
   fieldOfStudy?: Prisma.StringFilter<"Education"> | string
@@ -320,8 +320,8 @@ export type EducationScalarWhereWithAggregatesInput = {
   AND?: Prisma.EducationScalarWhereWithAggregatesInput | Prisma.EducationScalarWhereWithAggregatesInput[]
   OR?: Prisma.EducationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EducationScalarWhereWithAggregatesInput | Prisma.EducationScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"Education"> | string
-  employeeEducationId?: Prisma.StringWithAggregatesFilter<"Education"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"Education"> | string
+  employeeEducationId?: Prisma.UuidWithAggregatesFilter<"Education"> | string
   institution?: Prisma.StringWithAggregatesFilter<"Education"> | string
   degree?: Prisma.StringWithAggregatesFilter<"Education"> | string
   fieldOfStudy?: Prisma.StringWithAggregatesFilter<"Education"> | string
@@ -623,8 +623,8 @@ export type EducationScalarWhereInput = {
   AND?: Prisma.EducationScalarWhereInput | Prisma.EducationScalarWhereInput[]
   OR?: Prisma.EducationScalarWhereInput[]
   NOT?: Prisma.EducationScalarWhereInput | Prisma.EducationScalarWhereInput[]
-  id?: Prisma.StringFilter<"Education"> | string
-  employeeEducationId?: Prisma.StringFilter<"Education"> | string
+  id?: Prisma.UuidFilter<"Education"> | string
+  employeeEducationId?: Prisma.UuidFilter<"Education"> | string
   institution?: Prisma.StringFilter<"Education"> | string
   degree?: Prisma.StringFilter<"Education"> | string
   fieldOfStudy?: Prisma.StringFilter<"Education"> | string

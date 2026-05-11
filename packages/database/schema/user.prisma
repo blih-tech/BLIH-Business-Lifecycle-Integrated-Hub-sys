@@ -250,9 +250,9 @@ model EmployeeBankDetail {
 }
 
 model BankAccount {
-  id String @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
 
-  employeeBankDetailId String
+  employeeBankDetailId String             @db.Uuid
   employeeBankDetail   EmployeeBankDetail @relation(fields: [employeeBankDetailId], references: [id])
 
   bankName      String // e.g. Commercial Bank of Ethiopia
@@ -281,8 +281,8 @@ model EmployeeEmergencyContact {
 }
 
 model EmergencyContact {
-  id                         String                   @id @default(uuid())
-  employeeEmergencyContactId String
+  id                         String                   @id @default(uuid()) @db.Uuid
+  employeeEmergencyContactId String                   @db.Uuid
   employeeEmergencyContact   EmployeeEmergencyContact @relation(fields: [employeeEmergencyContactId], references: [id], onDelete: Cascade)
   firstName                  String
   lastName                   String
@@ -321,9 +321,9 @@ model EmployeeEducation {
 }
 
 model Education {
-  id String @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
 
-  employeeEducationId String
+  employeeEducationId String            @db.Uuid
   employeeEducation   EmployeeEducation @relation(fields: [employeeEducationId], references: [id])
 
   institution  String // University / School name

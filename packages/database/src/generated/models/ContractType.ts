@@ -177,7 +177,7 @@ export type ContractTypeWhereInput = {
   AND?: Prisma.ContractTypeWhereInput | Prisma.ContractTypeWhereInput[]
   OR?: Prisma.ContractTypeWhereInput[]
   NOT?: Prisma.ContractTypeWhereInput | Prisma.ContractTypeWhereInput[]
-  id?: Prisma.StringFilter<"ContractType"> | string
+  id?: Prisma.UuidFilter<"ContractType"> | string
   name?: Prisma.StringFilter<"ContractType"> | string
   description?: Prisma.StringFilter<"ContractType"> | string
   createdAt?: Prisma.DateTimeFilter<"ContractType"> | Date | string
@@ -221,7 +221,7 @@ export type ContractTypeScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContractTypeScalarWhereWithAggregatesInput | Prisma.ContractTypeScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContractTypeScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContractTypeScalarWhereWithAggregatesInput | Prisma.ContractTypeScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"ContractType"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"ContractType"> | string
   name?: Prisma.StringWithAggregatesFilter<"ContractType"> | string
   description?: Prisma.StringWithAggregatesFilter<"ContractType"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ContractType"> | Date | string

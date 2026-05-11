@@ -268,8 +268,8 @@ export type EmergencyContactWhereInput = {
   AND?: Prisma.EmergencyContactWhereInput | Prisma.EmergencyContactWhereInput[]
   OR?: Prisma.EmergencyContactWhereInput[]
   NOT?: Prisma.EmergencyContactWhereInput | Prisma.EmergencyContactWhereInput[]
-  id?: Prisma.StringFilter<"EmergencyContact"> | string
-  employeeEmergencyContactId?: Prisma.StringFilter<"EmergencyContact"> | string
+  id?: Prisma.UuidFilter<"EmergencyContact"> | string
+  employeeEmergencyContactId?: Prisma.UuidFilter<"EmergencyContact"> | string
   firstName?: Prisma.StringFilter<"EmergencyContact"> | string
   lastName?: Prisma.StringFilter<"EmergencyContact"> | string
   relationship?: Prisma.StringFilter<"EmergencyContact"> | string
@@ -318,7 +318,7 @@ export type EmergencyContactWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EmergencyContactWhereInput | Prisma.EmergencyContactWhereInput[]
   OR?: Prisma.EmergencyContactWhereInput[]
   NOT?: Prisma.EmergencyContactWhereInput | Prisma.EmergencyContactWhereInput[]
-  employeeEmergencyContactId?: Prisma.StringFilter<"EmergencyContact"> | string
+  employeeEmergencyContactId?: Prisma.UuidFilter<"EmergencyContact"> | string
   firstName?: Prisma.StringFilter<"EmergencyContact"> | string
   lastName?: Prisma.StringFilter<"EmergencyContact"> | string
   relationship?: Prisma.StringFilter<"EmergencyContact"> | string
@@ -367,8 +367,8 @@ export type EmergencyContactScalarWhereWithAggregatesInput = {
   AND?: Prisma.EmergencyContactScalarWhereWithAggregatesInput | Prisma.EmergencyContactScalarWhereWithAggregatesInput[]
   OR?: Prisma.EmergencyContactScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EmergencyContactScalarWhereWithAggregatesInput | Prisma.EmergencyContactScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"EmergencyContact"> | string
-  employeeEmergencyContactId?: Prisma.StringWithAggregatesFilter<"EmergencyContact"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"EmergencyContact"> | string
+  employeeEmergencyContactId?: Prisma.UuidWithAggregatesFilter<"EmergencyContact"> | string
   firstName?: Prisma.StringWithAggregatesFilter<"EmergencyContact"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"EmergencyContact"> | string
   relationship?: Prisma.StringWithAggregatesFilter<"EmergencyContact"> | string
@@ -759,8 +759,8 @@ export type EmergencyContactScalarWhereInput = {
   AND?: Prisma.EmergencyContactScalarWhereInput | Prisma.EmergencyContactScalarWhereInput[]
   OR?: Prisma.EmergencyContactScalarWhereInput[]
   NOT?: Prisma.EmergencyContactScalarWhereInput | Prisma.EmergencyContactScalarWhereInput[]
-  id?: Prisma.StringFilter<"EmergencyContact"> | string
-  employeeEmergencyContactId?: Prisma.StringFilter<"EmergencyContact"> | string
+  id?: Prisma.UuidFilter<"EmergencyContact"> | string
+  employeeEmergencyContactId?: Prisma.UuidFilter<"EmergencyContact"> | string
   firstName?: Prisma.StringFilter<"EmergencyContact"> | string
   lastName?: Prisma.StringFilter<"EmergencyContact"> | string
   relationship?: Prisma.StringFilter<"EmergencyContact"> | string

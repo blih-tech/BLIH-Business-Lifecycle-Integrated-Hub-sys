@@ -219,8 +219,8 @@ export type BankAccountWhereInput = {
   AND?: Prisma.BankAccountWhereInput | Prisma.BankAccountWhereInput[]
   OR?: Prisma.BankAccountWhereInput[]
   NOT?: Prisma.BankAccountWhereInput | Prisma.BankAccountWhereInput[]
-  id?: Prisma.StringFilter<"BankAccount"> | string
-  employeeBankDetailId?: Prisma.StringFilter<"BankAccount"> | string
+  id?: Prisma.UuidFilter<"BankAccount"> | string
+  employeeBankDetailId?: Prisma.UuidFilter<"BankAccount"> | string
   bankName?: Prisma.StringFilter<"BankAccount"> | string
   accountName?: Prisma.StringFilter<"BankAccount"> | string
   accountNumber?: Prisma.StringFilter<"BankAccount"> | string
@@ -253,7 +253,7 @@ export type BankAccountWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BankAccountWhereInput | Prisma.BankAccountWhereInput[]
   OR?: Prisma.BankAccountWhereInput[]
   NOT?: Prisma.BankAccountWhereInput | Prisma.BankAccountWhereInput[]
-  employeeBankDetailId?: Prisma.StringFilter<"BankAccount"> | string
+  employeeBankDetailId?: Prisma.UuidFilter<"BankAccount"> | string
   bankName?: Prisma.StringFilter<"BankAccount"> | string
   accountName?: Prisma.StringFilter<"BankAccount"> | string
   accountNumber?: Prisma.StringFilter<"BankAccount"> | string
@@ -287,8 +287,8 @@ export type BankAccountScalarWhereWithAggregatesInput = {
   AND?: Prisma.BankAccountScalarWhereWithAggregatesInput | Prisma.BankAccountScalarWhereWithAggregatesInput[]
   OR?: Prisma.BankAccountScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BankAccountScalarWhereWithAggregatesInput | Prisma.BankAccountScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"BankAccount"> | string
-  employeeBankDetailId?: Prisma.StringWithAggregatesFilter<"BankAccount"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"BankAccount"> | string
+  employeeBankDetailId?: Prisma.UuidWithAggregatesFilter<"BankAccount"> | string
   bankName?: Prisma.StringWithAggregatesFilter<"BankAccount"> | string
   accountName?: Prisma.StringWithAggregatesFilter<"BankAccount"> | string
   accountNumber?: Prisma.StringWithAggregatesFilter<"BankAccount"> | string
@@ -547,8 +547,8 @@ export type BankAccountScalarWhereInput = {
   AND?: Prisma.BankAccountScalarWhereInput | Prisma.BankAccountScalarWhereInput[]
   OR?: Prisma.BankAccountScalarWhereInput[]
   NOT?: Prisma.BankAccountScalarWhereInput | Prisma.BankAccountScalarWhereInput[]
-  id?: Prisma.StringFilter<"BankAccount"> | string
-  employeeBankDetailId?: Prisma.StringFilter<"BankAccount"> | string
+  id?: Prisma.UuidFilter<"BankAccount"> | string
+  employeeBankDetailId?: Prisma.UuidFilter<"BankAccount"> | string
   bankName?: Prisma.StringFilter<"BankAccount"> | string
   accountName?: Prisma.StringFilter<"BankAccount"> | string
   accountNumber?: Prisma.StringFilter<"BankAccount"> | string

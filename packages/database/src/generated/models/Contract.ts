@@ -184,8 +184,8 @@ export type ContractWhereInput = {
   AND?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
   OR?: Prisma.ContractWhereInput[]
   NOT?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
-  id?: Prisma.StringFilter<"Contract"> | string
-  templateId?: Prisma.StringFilter<"Contract"> | string
+  id?: Prisma.UuidFilter<"Contract"> | string
+  templateId?: Prisma.UuidFilter<"Contract"> | string
   signedFileUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
@@ -212,7 +212,7 @@ export type ContractWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
   OR?: Prisma.ContractWhereInput[]
   NOT?: Prisma.ContractWhereInput | Prisma.ContractWhereInput[]
-  templateId?: Prisma.StringFilter<"Contract"> | string
+  templateId?: Prisma.UuidFilter<"Contract"> | string
   signedFileUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
@@ -238,8 +238,8 @@ export type ContractScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContractScalarWhereWithAggregatesInput | Prisma.ContractScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContractScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContractScalarWhereWithAggregatesInput | Prisma.ContractScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"Contract"> | string
-  templateId?: Prisma.StringWithAggregatesFilter<"Contract"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"Contract"> | string
+  templateId?: Prisma.UuidWithAggregatesFilter<"Contract"> | string
   signedFileUrl?: Prisma.StringNullableWithAggregatesFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
@@ -499,8 +499,8 @@ export type ContractScalarWhereInput = {
   AND?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
   OR?: Prisma.ContractScalarWhereInput[]
   NOT?: Prisma.ContractScalarWhereInput | Prisma.ContractScalarWhereInput[]
-  id?: Prisma.StringFilter<"Contract"> | string
-  templateId?: Prisma.StringFilter<"Contract"> | string
+  id?: Prisma.UuidFilter<"Contract"> | string
+  templateId?: Prisma.UuidFilter<"Contract"> | string
   signedFileUrl?: Prisma.StringNullableFilter<"Contract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string

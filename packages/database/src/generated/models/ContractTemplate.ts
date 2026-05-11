@@ -191,10 +191,10 @@ export type ContractTemplateWhereInput = {
   AND?: Prisma.ContractTemplateWhereInput | Prisma.ContractTemplateWhereInput[]
   OR?: Prisma.ContractTemplateWhereInput[]
   NOT?: Prisma.ContractTemplateWhereInput | Prisma.ContractTemplateWhereInput[]
-  id?: Prisma.StringFilter<"ContractTemplate"> | string
+  id?: Prisma.UuidFilter<"ContractTemplate"> | string
   title?: Prisma.StringFilter<"ContractTemplate"> | string
   description?: Prisma.StringFilter<"ContractTemplate"> | string
-  contractTypeId?: Prisma.StringFilter<"ContractTemplate"> | string
+  contractTypeId?: Prisma.UuidFilter<"ContractTemplate"> | string
   fileUrl?: Prisma.StringFilter<"ContractTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"ContractTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ContractTemplate"> | Date | string
@@ -221,7 +221,7 @@ export type ContractTemplateWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ContractTemplateWhereInput | Prisma.ContractTemplateWhereInput[]
   title?: Prisma.StringFilter<"ContractTemplate"> | string
   description?: Prisma.StringFilter<"ContractTemplate"> | string
-  contractTypeId?: Prisma.StringFilter<"ContractTemplate"> | string
+  contractTypeId?: Prisma.UuidFilter<"ContractTemplate"> | string
   fileUrl?: Prisma.StringFilter<"ContractTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"ContractTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ContractTemplate"> | Date | string
@@ -246,10 +246,10 @@ export type ContractTemplateScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContractTemplateScalarWhereWithAggregatesInput | Prisma.ContractTemplateScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContractTemplateScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContractTemplateScalarWhereWithAggregatesInput | Prisma.ContractTemplateScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"ContractTemplate"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"ContractTemplate"> | string
   title?: Prisma.StringWithAggregatesFilter<"ContractTemplate"> | string
   description?: Prisma.StringWithAggregatesFilter<"ContractTemplate"> | string
-  contractTypeId?: Prisma.StringWithAggregatesFilter<"ContractTemplate"> | string
+  contractTypeId?: Prisma.UuidWithAggregatesFilter<"ContractTemplate"> | string
   fileUrl?: Prisma.StringWithAggregatesFilter<"ContractTemplate"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ContractTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ContractTemplate"> | Date | string
@@ -535,10 +535,10 @@ export type ContractTemplateScalarWhereInput = {
   AND?: Prisma.ContractTemplateScalarWhereInput | Prisma.ContractTemplateScalarWhereInput[]
   OR?: Prisma.ContractTemplateScalarWhereInput[]
   NOT?: Prisma.ContractTemplateScalarWhereInput | Prisma.ContractTemplateScalarWhereInput[]
-  id?: Prisma.StringFilter<"ContractTemplate"> | string
+  id?: Prisma.UuidFilter<"ContractTemplate"> | string
   title?: Prisma.StringFilter<"ContractTemplate"> | string
   description?: Prisma.StringFilter<"ContractTemplate"> | string
-  contractTypeId?: Prisma.StringFilter<"ContractTemplate"> | string
+  contractTypeId?: Prisma.UuidFilter<"ContractTemplate"> | string
   fileUrl?: Prisma.StringFilter<"ContractTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"ContractTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ContractTemplate"> | Date | string

@@ -1,8 +1,8 @@
 model ContractTemplate {
-  id             String       @id @default(uuid())
+  id             String       @id @default(uuid()) @db.Uuid
   title          String // e.g., "Standard NDA", "Senior Developer Offer"
   description    String
-  contractTypeId String
+  contractTypeId String       @db.Uuid
   type           ContractType @relation(fields: [contractTypeId], references: [id])
   fileUrl        String // The URL to the blank, pre-existing file
   createdAt      DateTime     @default(now())
@@ -12,8 +12,8 @@ model ContractTemplate {
 }
 
 model Contract {
-  id            String           @id @default(uuid())
-  templateId    String
+  id            String           @id @default(uuid()) @db.Uuid
+  templateId    String           @db.Uuid
   template      ContractTemplate @relation(fields: [templateId], references: [id])
   signedFileUrl String?
   createdAt DateTime @default(now())
@@ -26,10 +26,10 @@ model Contract {
 }
 
 model ContractSigner {
-  id         String   @id @default(uuid())
-  contractId String
+  id         String   @id @default(uuid()) @db.Uuid
+  contractId String   @db.Uuid
   contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  userId     String
+  userId     String   @db.Uuid
   user       User     @relation(fields: [userId], references: [id])
 
   // e.g., "CEO", "Finance Director", "Witness"
@@ -41,7 +41,7 @@ model ContractSigner {
 }
 
 model ContractType {
-  id                String             @id @default(uuid())
+  id                String             @id @default(uuid()) @db.Uuid
   name              String
   description       String
   createdAt         DateTime           @default(now())

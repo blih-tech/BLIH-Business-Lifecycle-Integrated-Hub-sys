@@ -11,20 +11,10 @@ CREATE TYPE "NotificationStatus" AS ENUM ('PENDING', 'SENT', 'FAILED');
 CREATE TYPE "AuditResult" AS ENUM ('SUCCESS', 'FAILURE');
 
 -- CreateEnum
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'EmploymentType') THEN
-    CREATE TYPE "EmploymentType" AS ENUM ('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN', 'TEMPORARY');
-  END IF;
-END $$;
+CREATE TYPE "EmploymentType" AS ENUM ('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN', 'TEMPORARY');
 
 -- CreateEnum
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'PayFrequency') THEN
-    CREATE TYPE "PayFrequency" AS ENUM ('MONTHLY', 'BIWEEKLY', 'WEEKLY', 'ANNUAL');
-  END IF;
-END $$;
+CREATE TYPE "PayFrequency" AS ENUM ('MONTHLY', 'BIWEEKLY', 'WEEKLY', 'ANNUAL');
 
 -- CreateEnum
 CREATE TYPE "LifecycleStatus" AS ENUM ('ONBOARDING', 'ACTIVE', 'SUSPENDED', 'ON_LEAVE', 'TERMINATED', 'RESIGNED', 'RETIRED');
@@ -37,12 +27,6 @@ CREATE TYPE "MaritalStatus" AS ENUM ('SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED',
 
 -- CreateEnum
 CREATE TYPE "DocumentType" AS ENUM ('CONTRACT', 'ID', 'CERTIFICATE', 'MEDICAL', 'RESUME', 'POLICY_ACK', 'QUALIFICATION', 'OTHER');
-
--- CreateEnum
-CREATE TYPE "ContractType" AS ENUM ('INITIAL', 'RENEWAL', 'AMENDMENT', 'ADDENDUM');
-
--- CreateEnum
-CREATE TYPE "ContractStatus" AS ENUM ('DRAFT', 'ACTIVE', 'EXPIRED', 'TERMINATED', 'RENEWED');
 
 -- CreateEnum
 CREATE TYPE "JobWorkflowStatus" AS ENUM ('DRAFT', 'PENDING_FOR_APPROVAL', 'READY_TO_POST', 'PUBLISHED', 'CLOSED', 'REJECTED');
@@ -72,7 +56,7 @@ CREATE TYPE "JobUrgency" AS ENUM ('HIGH', 'MEDIUM', 'LOW');
 CREATE TYPE "JobApplicationFieldType" AS ENUM ('TEXT', 'TEXTAREA', 'NUMBER', 'SELECT', 'FILE', 'DATE', 'CHECKBOX');
 
 -- CreateEnum
-CREATE TYPE "JobApplicantOptionalFieldKey" AS ENUM ('PHONE', 'LINKEDIN_URL', 'PORTFOLIO_URL', 'GITHUB_URL', 'EXPECTED_SALARY', 'COVER_LETTER');
+CREATE TYPE "JobApplicantOptionalFieldKey" AS ENUM ('FIRST_NAME', 'LAST_NAME', 'EMAIL', 'PHONE', 'RESUME_URL', 'LINKEDIN_URL', 'PORTFOLIO_URL', 'GITHUB_URL', 'CURRENT_COMPANY', 'YEARS_OF_EXPERIENCE', 'EXPECTED_SALARY', 'COVER_LETTER');
 
 -- CreateEnum
 CREATE TYPE "JobApplicationFormSectionKey" AS ENUM ('EDUCATION', 'EXPERIENCE');
@@ -93,7 +77,10 @@ CREATE TYPE "ExperienceLevel" AS ENUM ('ENTRY', 'JUNIOR', 'MID', 'SENIOR', 'LEAD
 CREATE TYPE "CandidateSource" AS ENUM ('COMPANY_SITE', 'LINKEDIN', 'TELEGRAM', 'REFERRAL', 'AGENCY');
 
 -- CreateEnum
-CREATE TYPE "ApplicantStatus" AS ENUM ('APPLIED', 'SCREENING', 'SHORTLISTED', 'INTERVIEW', 'OFFER', 'HIRED', 'REJECTED', 'WITHDRAWN');
+CREATE TYPE "ApplicantStatus" AS ENUM ('APPLIED', 'SCREENING', 'SHORTLISTED', 'INTERVIEW', 'WAITLIST', 'OFFER', 'HIRED', 'REJECTED', 'WITHDRAWN');
+
+-- CreateEnum
+CREATE TYPE "OfferStatus" AS ENUM ('DRAFT', 'SENT', 'ACCEPTED', 'DECLINED', 'EXPIRED', 'WITHDRAWN');
 
 -- CreateEnum
 CREATE TYPE "InterviewType" AS ENUM ('HR_SCREENING', 'TECHNICAL', 'BEHAVIORAL', 'PANEL', 'FINAL');
@@ -102,10 +89,16 @@ CREATE TYPE "InterviewType" AS ENUM ('HR_SCREENING', 'TECHNICAL', 'BEHAVIORAL', 
 CREATE TYPE "InterviewStatus" AS ENUM ('SCHEDULED', 'COMPLETED', 'CANCELLED', 'NO_SHOW');
 
 -- CreateEnum
+CREATE TYPE "InterviewAttendanceStatus" AS ENUM ('SCHEDULED', 'ATTENDING', 'NO_SHOW', 'COMPLETED', 'CANCELLED');
+
+-- CreateEnum
 CREATE TYPE "EndorsementLevel" AS ENUM ('STRONG_YES', 'YES', 'UNCERTAIN', 'NO');
 
 -- CreateEnum
-CREATE TYPE "HiringDecisionOutcome" AS ENUM ('OFFER_APPROVED', 'OFFER_DECLINED', 'SUSPENDED');
+CREATE TYPE "InterviewQuestionCategory" AS ENUM ('TECHNICAL', 'BEHAVIORAL', 'SITUATIONAL', 'PROBLEM_SOLVING', 'LEADERSHIP', 'COMMUNICATION', 'DOMAIN_KNOWLEDGE', 'CULTURAL_FIT', 'GENERAL');
+
+-- CreateEnum
+CREATE TYPE "InterviewQuestionType" AS ENUM ('TEXT', 'TEXTAREA', 'BOOLEAN', 'RATING', 'SINGLE_SELECT', 'MULTI_SELECT');
 
 -- CreateEnum
 CREATE TYPE "CvScreeningRecommendation" AS ENUM ('STRONG_RECOMMEND', 'RECOMMEND', 'CONSIDER', 'REJECT');
@@ -127,21 +120,6 @@ CREATE TYPE "CvScreeningStageType" AS ENUM ('INITIAL_SCREENING', 'TECHNICAL_REVI
 
 -- CreateEnum
 CREATE TYPE "CvScreeningDecisionType" AS ENUM ('APPROVE', 'REJECT', 'REQUEST_CHANGES', 'ESCALATE', 'HOLD');
-
--- CreateEnum
-CREATE TYPE "OnboardingStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED');
-
--- CreateEnum
-CREATE TYPE "OnboardingChecklistStatus" AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'OVERDUE');
-
--- CreateEnum
-CREATE TYPE "OnboardingTaskDepartment" AS ENUM ('HR', 'IT', 'ADMIN', 'TEAM');
-
--- CreateEnum
-CREATE TYPE "OnboardingTaskStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'OVERDUE');
-
--- CreateEnum
-CREATE TYPE "ProbationPlanStatus" AS ENUM ('DRAFT', 'ACTIVE', 'COMPLETED', 'CANCELLED');
 
 -- CreateEnum
 CREATE TYPE "ProbationEvaluationRound" AS ENUM ('DAY_30', 'DAY_55', 'DAY_60_FINAL');
@@ -319,6 +297,42 @@ CREATE TYPE "ApprovalDecision" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
 CREATE TYPE "ScreeningRecommendation" AS ENUM ('STRONG_RECOMMEND', 'RECOMMEND', 'CONSIDER', 'REJECT');
+
+-- CreateEnum
+CREATE TYPE "OnboardingStatus" AS ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "OnboardingChecklistStatus" AS ENUM ('TODO', 'SUBMITTED', 'CHANGES_REQUESTED', 'COMPLETED');
+
+-- CreateEnum
+CREATE TYPE "TaskType" AS ENUM ('NON_CUSTOM', 'CUSTOM');
+
+-- CreateEnum
+CREATE TYPE "TargetDataModel" AS ENUM ('USER_PROFILE', 'EMPLOYEE_ADDRESS', 'EMPLOYEE_BANK_DETAIL', 'EMPLOYEE_EMERGENCY_CONTACT', 'EMPLOYEE_EDUCATION', 'EMPLOYEE_CONTRACT', 'EMPLOYEE_POLICY_ACKNOWLEDGEMENT');
+
+-- CreateEnum
+CREATE TYPE "ProbationStatus" AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'FAILED', 'EXTENDED');
+
+-- CreateEnum
+CREATE TYPE "ProbationOutcome" AS ENUM ('CONFIRMED', 'EXTENDED', 'TERMINATED', 'RESIGNED');
+
+-- CreateEnum
+CREATE TYPE "EmailType" AS ENUM ('PERSONAL', 'COMPANY');
+
+-- CreateEnum
+CREATE TYPE "PhoneType" AS ENUM ('PERSONAL', 'COMPANY');
+
+-- CreateEnum
+CREATE TYPE "GovernmentIdCardType" AS ENUM ('KEBELE_ID', 'PASSPORT', 'FAYDA', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "VerificationStatus" AS ENUM ('PENDING_REVIEW', 'VERIFIED', 'REJECTED');
+
+-- CreateEnum
+CREATE TYPE "EducationLevel" AS ENUM ('HIGH_SCHOOL', 'DIPLOMA', 'BACHELOR', 'MASTER', 'PHD', 'CERTIFICATION');
+
+-- CreateEnum
+CREATE TYPE "EmployeeStatus" AS ENUM ('ONBOARDING', 'ON_PROBATION', 'ACTIVE');
 
 -- CreateTable
 CREATE TABLE "LeaveRequest" (
@@ -808,6 +822,54 @@ CREATE TABLE "BrainKnowledgeSource" (
 );
 
 -- CreateTable
+CREATE TABLE "ContractTemplate" (
+    "id" UUID NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "contractTypeId" UUID NOT NULL,
+    "fileUrl" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ContractTemplate_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Contract" (
+    "id" UUID NOT NULL,
+    "templateId" UUID NOT NULL,
+    "signedFileUrl" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "employeeContractId" UUID,
+
+    CONSTRAINT "Contract_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ContractSigner" (
+    "id" UUID NOT NULL,
+    "contractId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "roleInContract" TEXT NOT NULL,
+    "hasSigned" BOOLEAN NOT NULL DEFAULT false,
+    "signedAt" TIMESTAMP(3),
+
+    CONSTRAINT "ContractSigner_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ContractType" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ContractType_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "EmployeeDocument" (
     "id" UUID NOT NULL,
     "employee_id" UUID NOT NULL,
@@ -827,27 +889,6 @@ CREATE TABLE "EmployeeDocument" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "EmployeeDocument_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Contract" (
-    "id" UUID NOT NULL,
-    "employee_id" UUID NOT NULL,
-    "contract_type" "ContractType" NOT NULL,
-    "sequence_number" INTEGER NOT NULL,
-    "start_date" DATE NOT NULL,
-    "end_date" DATE,
-    "trial_applies" BOOLEAN NOT NULL DEFAULT false,
-    "trial_end_date" DATE,
-    "trial_confirmed" BOOLEAN NOT NULL DEFAULT false,
-    "document_url" TEXT,
-    "status" "ContractStatus" NOT NULL DEFAULT 'DRAFT',
-    "synced_to_finance" BOOLEAN NOT NULL DEFAULT false,
-    "synced_at" TIMESTAMP(3),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Contract_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1279,9 +1320,8 @@ CREATE TABLE "ComplianceChecklist" (
 CREATE TABLE "Onboarding" (
     "id" UUID NOT NULL,
     "employee_id" UUID NOT NULL,
-    "status" "OnboardingStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "OnboardingStatus" NOT NULL DEFAULT 'IN_PROGRESS',
     "started_at" TIMESTAMP(3),
-    "join_date" DATE NOT NULL,
     "completed_at" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -1292,13 +1332,14 @@ CREATE TABLE "Onboarding" (
 -- CreateTable
 CREATE TABLE "OnboardingChecklist" (
     "id" UUID NOT NULL,
-    "onboarding_task_id" UUID,
-    "onboarding_id" UUID,
-    "overseer_id" UUID,
-    "status" "OnboardingChecklistStatus" NOT NULL DEFAULT 'NOT_STARTED',
-    "team_lead_verified_at" TIMESTAMP(3),
-    "ceo_sign_off_required" BOOLEAN NOT NULL DEFAULT false,
-    "ceo_sign_off_at" TIMESTAMP(3),
+    "onboarding_id" UUID NOT NULL,
+    "task_instance_id" UUID NOT NULL,
+    "status" "OnboardingChecklistStatus" NOT NULL DEFAULT 'TODO',
+    "due_date" TIMESTAMP(3),
+    "isRequired" BOOLEAN NOT NULL DEFAULT true,
+    "verified_at" TIMESTAMP(3),
+    "verified_by" UUID,
+    "rejection_reason" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -1308,10 +1349,11 @@ CREATE TABLE "OnboardingChecklist" (
 -- CreateTable
 CREATE TABLE "OnboardingTask" (
     "id" UUID NOT NULL,
-    "department" "OnboardingTaskDepartment" NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
-    "completed_by_id" UUID,
+    "taskType" "TaskType" NOT NULL,
+    "targetDataModel" "TargetDataModel",
+    "requiresHrVerification" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -1319,96 +1361,17 @@ CREATE TABLE "OnboardingTask" (
 );
 
 -- CreateTable
-CREATE TABLE "AssetProvisioning" (
+CREATE TABLE "OnboardingTaskInstance" (
     "id" UUID NOT NULL,
-    "employee_id" UUID NOT NULL,
-    "equipment" JSONB,
-    "platformPermissions" JSONB,
-    "it_supervisor_approved_at" TIMESTAMP(3),
-    "admin_approved_at" TIMESTAMP(3),
-    "finance_approval_required" BOOLEAN NOT NULL DEFAULT false,
-    "status" "AssetProvisioningStatus" NOT NULL DEFAULT 'PENDING',
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "taskType" "TaskType" NOT NULL,
+    "targetDataModel" "TargetDataModel",
+    "requiresHrVerification" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "AssetProvisioning_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "PolicyAcknowledgement" (
-    "id" UUID NOT NULL,
-    "employee_id" UUID NOT NULL,
-    "policies" JSONB,
-    "all_acknowledged" BOOLEAN NOT NULL DEFAULT false,
-    "confirmed_at" TIMESTAMP(3),
-    "system_access_granted_at" TIMESTAMP(3),
-    "verified_by_id" UUID,
-    "verified_at" TIMESTAMP(3),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "PolicyAcknowledgement_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "ProbationKpiPlan" (
-    "id" UUID NOT NULL,
-    "employee_id" UUID NOT NULL,
-    "supervisor_id" UUID,
-    "probation_start" DATE NOT NULL,
-    "probation_end" DATE NOT NULL,
-    "goals" JSONB,
-    "development" JSONB,
-    "employee_endorsed_at" TIMESTAMP(3),
-    "supervisor_endorsed_at" TIMESTAMP(3),
-    "hr_endorsed_at" TIMESTAMP(3),
-    "status" "ProbationPlanStatus" NOT NULL DEFAULT 'DRAFT',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "ProbationKpiPlan_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "ProbationEvaluation" (
-    "id" UUID NOT NULL,
-    "employee_id" UUID NOT NULL,
-    "probation_plan_id" UUID NOT NULL,
-    "round" "ProbationEvaluationRound" NOT NULL,
-    "evaluation_date" DATE NOT NULL,
-    "performance_score" INTEGER,
-    "attitude_score" INTEGER,
-    "potential_score" INTEGER,
-    "overall_score" DECIMAL(5,2),
-    "strengths" JSONB,
-    "improvements" JSONB,
-    "recommendation" "ProbationRecommendation" NOT NULL DEFAULT 'CONFIRM',
-    "evaluator_comments" TEXT,
-    "employee_comments" TEXT,
-    "status" "ProbationEvaluationStatus" NOT NULL DEFAULT 'DRAFT',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "ProbationEvaluation_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "ProbationConfirmation" (
-    "id" UUID NOT NULL,
-    "employee_id" UUID NOT NULL,
-    "review_summary" JSONB,
-    "verdict" "ProbationConfirmationVerdict" NOT NULL,
-    "extension" JSONB,
-    "termination" JSONB,
-    "confirmation" JSONB,
-    "hr_checked_at" TIMESTAMP(3),
-    "ceo_sign_off_at" TIMESTAMP(3),
-    "employee_notified_at" TIMESTAMP(3),
-    "archived_in_employee_file" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "ProbationConfirmation_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "OnboardingTaskInstance_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1613,6 +1576,142 @@ CREATE TABLE "OkrManagerReview" (
 );
 
 -- CreateTable
+CREATE TABLE "Policy" (
+    "id" UUID NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "isMandatory" BOOLEAN NOT NULL DEFAULT true,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "effectiveDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiryDate" TIMESTAMP(3),
+    "dependencies" TEXT[],
+    "priority" INTEGER NOT NULL DEFAULT 1,
+    "currentVersionId" UUID,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Policy_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PolicyVersion" (
+    "id" UUID NOT NULL,
+    "policyId" UUID NOT NULL,
+    "version" INTEGER NOT NULL,
+    "content" TEXT NOT NULL,
+    "fileId" UUID,
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PolicyVersion_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PolicyFile" (
+    "id" UUID NOT NULL,
+    "url" TEXT NOT NULL,
+    "fileName" TEXT NOT NULL,
+    "fileType" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PolicyFile_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PolicyAcknowledgement" (
+    "id" UUID NOT NULL,
+    "employee_policy_acknowledgement_id" UUID NOT NULL,
+    "policyId" UUID NOT NULL,
+    "policyVersionId" UUID NOT NULL,
+    "acknowledgedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "PolicyAcknowledgement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProbationPlan" (
+    "id" UUID NOT NULL,
+    "employeeId" UUID NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "status" "ProbationStatus" NOT NULL DEFAULT 'NOT_STARTED',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ProbationPlan_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "KPI" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "KPI_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProbationKPI" (
+    "id" UUID NOT NULL,
+    "probationId" UUID NOT NULL,
+    "kpiId" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ProbationKPI_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProbationCheckpoint" (
+    "id" UUID NOT NULL,
+    "probationId" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "checkpointDate" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ProbationCheckpoint_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "CheckpointEvaluation" (
+    "id" UUID NOT NULL,
+    "checkpointId" UUID NOT NULL,
+    "comment" TEXT,
+    "totalScore" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CheckpointEvaluation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EvaluationScore" (
+    "id" UUID NOT NULL,
+    "probationKpiId" UUID NOT NULL,
+    "checkpointEvaluationId" UUID,
+    "finalEvaluationId" UUID,
+    "score" DOUBLE PRECISION NOT NULL,
+    "comment" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "EvaluationScore_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "FinalEvaluation" (
+    "id" UUID NOT NULL,
+    "probationId" UUID NOT NULL,
+    "comment" TEXT,
+    "totalScore" DOUBLE PRECISION NOT NULL,
+    "outcome" "ProbationOutcome" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "FinalEvaluation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "JobRequestForm" (
     "id" UUID NOT NULL,
     "job_id" UUID NOT NULL,
@@ -1798,8 +1897,6 @@ CREATE TABLE "Applicant" (
     "current_position" TEXT,
     "years_experience" INTEGER,
     "location" TEXT,
-    "country" TEXT,
-    "city" TEXT,
     "nationality" TEXT,
     "expected_salary" DECIMAL(12,2),
     "current_salary" DECIMAL(12,2),
@@ -1814,6 +1911,7 @@ CREATE TABLE "Applicant" (
     "screening_at" TIMESTAMP(3),
     "shortlisted_at" TIMESTAMP(3),
     "interview_at" TIMESTAMP(3),
+    "waitlist_at" TIMESTAMP(3),
     "offer_at" TIMESTAMP(3),
     "hired_at" TIMESTAMP(3),
     "rejected_at" TIMESTAMP(3),
@@ -1835,7 +1933,6 @@ CREATE TABLE "ApplicantStatusHistory" (
     "to_status" "ApplicantStatus" NOT NULL,
     "notes" TEXT,
     "changed_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ApplicantStatusHistory_pkey" PRIMARY KEY ("id")
 );
@@ -1871,44 +1968,106 @@ CREATE TABLE "ApplicantExperience" (
 );
 
 -- CreateTable
-CREATE TABLE "Interview" (
+CREATE TABLE "InterviewSession" (
     "id" UUID NOT NULL,
     "job_id" UUID NOT NULL,
-    "applicant_id" UUID NOT NULL,
     "type" "InterviewType" NOT NULL,
+    "round" INTEGER NOT NULL DEFAULT 1,
     "status" "InterviewStatus" NOT NULL DEFAULT 'SCHEDULED',
-    "scheduled_at" TIMESTAMP(3),
-    "started_at" TIMESTAMP(3),
-    "completed_at" TIMESTAMP(3),
+    "scheduled_at" TIMESTAMP(3) NOT NULL,
     "duration_minutes" INTEGER,
-    "interviewer_id" UUID NOT NULL,
     "location" VARCHAR(255),
     "meeting_url" TEXT,
-    "notes" TEXT,
-    "feedback" JSONB,
+    "created_by_id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Interview_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "InterviewSession_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "HiringDecision" (
+CREATE TABLE "InterviewParticipant" (
+    "id" UUID NOT NULL,
+    "session_id" UUID NOT NULL,
+    "applicant_id" UUID NOT NULL,
+    "attendance_status" "InterviewAttendanceStatus" NOT NULL DEFAULT 'SCHEDULED',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "InterviewParticipant_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "InterviewerAssignment" (
+    "id" UUID NOT NULL,
+    "session_id" UUID NOT NULL,
+    "interviewer_id" UUID NOT NULL,
+    "role" VARCHAR(100),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "InterviewerAssignment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "InterviewFeedback" (
+    "id" UUID NOT NULL,
+    "participant_id" UUID NOT NULL,
+    "assignment_id" UUID NOT NULL,
+    "score" DOUBLE PRECISION,
+    "endorsement" "EndorsementLevel",
+    "strengths" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "weaknesses" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "question_responses" JSONB,
+    "notes" TEXT,
+    "is_draft" BOOLEAN NOT NULL DEFAULT true,
+    "submitted_at" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "InterviewFeedback_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "InterviewQuestion" (
+    "id" UUID NOT NULL,
+    "question" TEXT NOT NULL,
+    "description" TEXT,
+    "category" "InterviewQuestionCategory",
+    "type" "InterviewQuestionType" NOT NULL,
+    "options" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "difficulty" INTEGER,
+    "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "created_by_id" UUID NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "InterviewQuestion_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Offer" (
     "id" UUID NOT NULL,
     "job_id" UUID NOT NULL,
     "applicant_id" UUID NOT NULL,
     "onboarding_id" UUID,
-    "submitted_by_id" UUID NOT NULL,
-    "outcome" "HiringDecisionOutcome" NOT NULL DEFAULT 'OFFER_APPROVED',
-    "salary_offered" DECIMAL(15,2),
+    "created_by_id" UUID NOT NULL,
+    "status" "OfferStatus" NOT NULL DEFAULT 'DRAFT',
+    "salary" DECIMAL(12,2),
     "currency" VARCHAR(8),
     "start_date" DATE,
-    "decision_notes" TEXT,
-    "decided_at" TIMESTAMP(3),
+    "payFrequency" "PayFrequency",
+    "employmentType" "EmploymentType",
+    "bonus" DECIMAL(12,2),
+    "equity" DECIMAL(12,2),
+    "offer_letter_url" TEXT,
+    "notes" TEXT,
+    "sent_at" TIMESTAMP(3),
+    "responded_at" TIMESTAMP(3),
+    "expires_at" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "HiringDecision_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Offer_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -2347,8 +2506,10 @@ CREATE TABLE "User" (
 CREATE TABLE "Employee" (
     "id" UUID NOT NULL,
     "user_id" UUID,
+    "applicant_id" UUID,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "employeeStatus" "EmployeeStatus" NOT NULL DEFAULT 'ONBOARDING',
 
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("id")
 );
@@ -2357,23 +2518,157 @@ CREATE TABLE "Employee" (
 CREATE TABLE "UserProfile" (
     "id" UUID NOT NULL,
     "employee_id" UUID NOT NULL,
+    "additionalEmail" TEXT,
+    "additionalEmailType" "EmailType",
+    "additionalPhone" TEXT,
+    "additionalPhoneType" "PhoneType" NOT NULL,
     "dateOfBirth" TIMESTAMP(3),
     "gender" "Gender",
     "nationalityId" UUID,
     "maritalStatus" "MaritalStatus",
     "avatarUrl" TEXT,
-    "addressLine1" TEXT,
-    "addressLine2" TEXT,
-    "city" TEXT,
-    "state" TEXT,
-    "countryId" UUID,
-    "postalCode" TEXT,
-    "emergencyContactName" TEXT,
-    "emergencyContactPhone" TEXT,
+    "passportSizePhotoURL" TEXT,
+    "faydaNumber" TEXT,
+    "governmentIdCard" TEXT,
+    "governmentIdCardType" "GovernmentIdCardType",
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "UserProfile_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmployeeAddress" (
+    "id" UUID NOT NULL,
+    "employee_id" UUID NOT NULL,
+    "countryId" UUID NOT NULL,
+    "region" TEXT,
+    "city" TEXT NOT NULL,
+    "subCity" TEXT,
+    "woreda" TEXT,
+    "kebele" TEXT,
+    "street" TEXT,
+    "houseNumber" TEXT,
+    "postalCode" TEXT,
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
+
+    CONSTRAINT "EmployeeAddress_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmployeeBankDetail" (
+    "id" UUID NOT NULL,
+    "employee_id" UUID NOT NULL,
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
+
+    CONSTRAINT "EmployeeBankDetail_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BankAccount" (
+    "id" UUID NOT NULL,
+    "employeeBankDetailId" UUID NOT NULL,
+    "bankName" TEXT NOT NULL,
+    "accountName" TEXT NOT NULL,
+    "accountNumber" TEXT NOT NULL,
+    "branchName" TEXT,
+    "swiftCode" TEXT,
+    "isPrimary" BOOLEAN NOT NULL DEFAULT true,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BankAccount_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmployeeEmergencyContact" (
+    "id" UUID NOT NULL,
+    "employee_id" UUID NOT NULL,
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
+
+    CONSTRAINT "EmployeeEmergencyContact_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmergencyContact" (
+    "id" UUID NOT NULL,
+    "employeeEmergencyContactId" UUID NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "relationship" TEXT NOT NULL,
+    "primaryPhone" TEXT NOT NULL,
+    "email" TEXT,
+    "isFirstToCall" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "countryId" UUID,
+    "city" TEXT,
+    "subCity" TEXT,
+    "woreda" TEXT,
+    "kebele" TEXT,
+    "street" TEXT,
+    "notes" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "EmergencyContact_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmployeeEducation" (
+    "id" UUID NOT NULL,
+    "employee_id" UUID NOT NULL,
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
+
+    CONSTRAINT "EmployeeEducation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Education" (
+    "id" UUID NOT NULL,
+    "employeeEducationId" UUID NOT NULL,
+    "institution" TEXT NOT NULL,
+    "degree" TEXT NOT NULL,
+    "fieldOfStudy" TEXT NOT NULL,
+    "level" "EducationLevel" NOT NULL,
+    "startDate" TIMESTAMP(3),
+    "endDate" TIMESTAMP(3),
+    "grade" TEXT,
+    "description" TEXT,
+    "isCompleted" BOOLEAN NOT NULL DEFAULT true,
+    "documentUrl" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Education_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmployeeContract" (
+    "id" UUID NOT NULL,
+    "employee_id" UUID NOT NULL,
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
+
+    CONSTRAINT "EmployeeContract_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmployeePolicyAcknowledgement" (
+    "id" UUID NOT NULL,
+    "employee_id" UUID NOT NULL,
+    "status" "VerificationStatus" NOT NULL DEFAULT 'PENDING_REVIEW',
+    "hrFeedback" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "EmployeePolicyAcknowledgement_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -2779,6 +3074,9 @@ CREATE INDEX "BrainKnowledgeSource_sourceType_idx" ON "BrainKnowledgeSource"("so
 CREATE INDEX "BrainKnowledgeSource_lastSynced_idx" ON "BrainKnowledgeSource"("lastSynced");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ContractSigner_contractId_userId_key" ON "ContractSigner"("contractId", "userId");
+
+-- CreateIndex
 CREATE INDEX "EmployeeDocument_employee_id_idx" ON "EmployeeDocument"("employee_id");
 
 -- CreateIndex
@@ -2789,18 +3087,6 @@ CREATE INDEX "EmployeeDocument_expiry_date_idx" ON "EmployeeDocument"("expiry_da
 
 -- CreateIndex
 CREATE INDEX "EmployeeDocument_verified_by_id_idx" ON "EmployeeDocument"("verified_by_id");
-
--- CreateIndex
-CREATE INDEX "Contract_employee_id_idx" ON "Contract"("employee_id");
-
--- CreateIndex
-CREATE INDEX "Contract_status_idx" ON "Contract"("status");
-
--- CreateIndex
-CREATE INDEX "Contract_end_date_idx" ON "Contract"("end_date");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Contract_employee_id_sequence_number_key" ON "Contract"("employee_id", "sequence_number");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "JobDescription_code_key" ON "JobDescription"("code");
@@ -3016,6 +3302,9 @@ CREATE INDEX "ComplianceChecklist_employee_id_idx" ON "ComplianceChecklist"("emp
 CREATE INDEX "ComplianceChecklist_resignation_id_idx" ON "ComplianceChecklist"("resignation_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Onboarding_employee_id_key" ON "Onboarding"("employee_id");
+
+-- CreateIndex
 CREATE INDEX "Onboarding_employee_id_idx" ON "Onboarding"("employee_id");
 
 -- CreateIndex
@@ -3028,31 +3317,7 @@ CREATE INDEX "OnboardingChecklist_onboarding_id_idx" ON "OnboardingChecklist"("o
 CREATE INDEX "OnboardingChecklist_status_idx" ON "OnboardingChecklist"("status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "OnboardingChecklist_onboarding_id_onboarding_task_id_key" ON "OnboardingChecklist"("onboarding_id", "onboarding_task_id");
-
--- CreateIndex
-CREATE INDEX "AssetProvisioning_employee_id_idx" ON "AssetProvisioning"("employee_id");
-
--- CreateIndex
-CREATE INDEX "PolicyAcknowledgement_employee_id_idx" ON "PolicyAcknowledgement"("employee_id");
-
--- CreateIndex
-CREATE INDEX "PolicyAcknowledgement_verified_by_id_idx" ON "PolicyAcknowledgement"("verified_by_id");
-
--- CreateIndex
-CREATE INDEX "ProbationKpiPlan_employee_id_idx" ON "ProbationKpiPlan"("employee_id");
-
--- CreateIndex
-CREATE INDEX "ProbationKpiPlan_supervisor_id_idx" ON "ProbationKpiPlan"("supervisor_id");
-
--- CreateIndex
-CREATE INDEX "ProbationEvaluation_employee_id_idx" ON "ProbationEvaluation"("employee_id");
-
--- CreateIndex
-CREATE INDEX "ProbationEvaluation_probation_plan_id_idx" ON "ProbationEvaluation"("probation_plan_id");
-
--- CreateIndex
-CREATE INDEX "ProbationConfirmation_employee_id_idx" ON "ProbationConfirmation"("employee_id");
+CREATE UNIQUE INDEX "OnboardingChecklist_onboarding_id_task_instance_id_key" ON "OnboardingChecklist"("onboarding_id", "task_instance_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Department_name_key" ON "Department"("name");
@@ -3181,6 +3446,30 @@ CREATE INDEX "OkrManagerReview_decision_idx" ON "OkrManagerReview"("decision");
 CREATE UNIQUE INDEX "OkrManagerReview_okr_id_reviewer_id_key" ON "OkrManagerReview"("okr_id", "reviewer_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "PolicyVersion_policyId_version_key" ON "PolicyVersion"("policyId", "version");
+
+-- CreateIndex
+CREATE INDEX "PolicyAcknowledgement_employee_policy_acknowledgement_id_idx" ON "PolicyAcknowledgement"("employee_policy_acknowledgement_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PolicyAcknowledgement_employee_policy_acknowledgement_id_po_key" ON "PolicyAcknowledgement"("employee_policy_acknowledgement_id", "policyVersionId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProbationPlan_employeeId_key" ON "ProbationPlan"("employeeId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "KPI_name_key" ON "KPI"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProbationKPI_probationId_kpiId_key" ON "ProbationKPI"("probationId", "kpiId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EvaluationScore_probationKpiId_checkpointEvaluationId_key" ON "EvaluationScore"("probationKpiId", "checkpointEvaluationId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "FinalEvaluation_probationId_key" ON "FinalEvaluation"("probationId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "JobRequestForm_job_id_key" ON "JobRequestForm"("job_id");
 
 -- CreateIndex
@@ -3295,34 +3584,85 @@ CREATE INDEX "ApplicantEducation_applicant_id_idx" ON "ApplicantEducation"("appl
 CREATE INDEX "ApplicantExperience_applicant_id_idx" ON "ApplicantExperience"("applicant_id");
 
 -- CreateIndex
-CREATE INDEX "Interview_job_id_idx" ON "Interview"("job_id");
+CREATE INDEX "InterviewSession_job_id_idx" ON "InterviewSession"("job_id");
 
 -- CreateIndex
-CREATE INDEX "Interview_applicant_id_idx" ON "Interview"("applicant_id");
+CREATE INDEX "InterviewSession_status_idx" ON "InterviewSession"("status");
 
 -- CreateIndex
-CREATE INDEX "Interview_applicant_id_job_id_idx" ON "Interview"("applicant_id", "job_id");
+CREATE INDEX "InterviewSession_scheduled_at_idx" ON "InterviewSession"("scheduled_at");
 
 -- CreateIndex
-CREATE INDEX "Interview_interviewer_id_idx" ON "Interview"("interviewer_id");
+CREATE INDEX "InterviewSession_job_id_round_idx" ON "InterviewSession"("job_id", "round");
 
 -- CreateIndex
-CREATE INDEX "Interview_status_idx" ON "Interview"("status");
+CREATE INDEX "InterviewSession_created_by_id_idx" ON "InterviewSession"("created_by_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "HiringDecision_onboarding_id_key" ON "HiringDecision"("onboarding_id");
+CREATE INDEX "InterviewParticipant_session_id_idx" ON "InterviewParticipant"("session_id");
 
 -- CreateIndex
-CREATE INDEX "HiringDecision_job_id_idx" ON "HiringDecision"("job_id");
+CREATE INDEX "InterviewParticipant_applicant_id_idx" ON "InterviewParticipant"("applicant_id");
 
 -- CreateIndex
-CREATE INDEX "HiringDecision_applicant_id_idx" ON "HiringDecision"("applicant_id");
+CREATE UNIQUE INDEX "InterviewParticipant_session_id_applicant_id_key" ON "InterviewParticipant"("session_id", "applicant_id");
 
 -- CreateIndex
-CREATE INDEX "HiringDecision_onboarding_id_idx" ON "HiringDecision"("onboarding_id");
+CREATE UNIQUE INDEX "InterviewParticipant_id_session_id_key" ON "InterviewParticipant"("id", "session_id");
 
 -- CreateIndex
-CREATE INDEX "HiringDecision_submitted_by_id_idx" ON "HiringDecision"("submitted_by_id");
+CREATE INDEX "InterviewerAssignment_session_id_idx" ON "InterviewerAssignment"("session_id");
+
+-- CreateIndex
+CREATE INDEX "InterviewerAssignment_interviewer_id_idx" ON "InterviewerAssignment"("interviewer_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "InterviewerAssignment_session_id_interviewer_id_key" ON "InterviewerAssignment"("session_id", "interviewer_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "InterviewerAssignment_id_session_id_key" ON "InterviewerAssignment"("id", "session_id");
+
+-- CreateIndex
+CREATE INDEX "InterviewFeedback_participant_id_idx" ON "InterviewFeedback"("participant_id");
+
+-- CreateIndex
+CREATE INDEX "InterviewFeedback_assignment_id_idx" ON "InterviewFeedback"("assignment_id");
+
+-- CreateIndex
+CREATE INDEX "InterviewFeedback_participant_id_assignment_id_idx" ON "InterviewFeedback"("participant_id", "assignment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "InterviewFeedback_participant_id_assignment_id_key" ON "InterviewFeedback"("participant_id", "assignment_id");
+
+-- CreateIndex
+CREATE INDEX "InterviewQuestion_created_by_id_idx" ON "InterviewQuestion"("created_by_id");
+
+-- CreateIndex
+CREATE INDEX "InterviewQuestion_category_idx" ON "InterviewQuestion"("category");
+
+-- CreateIndex
+CREATE INDEX "InterviewQuestion_type_idx" ON "InterviewQuestion"("type");
+
+-- CreateIndex
+CREATE INDEX "InterviewQuestion_is_active_idx" ON "InterviewQuestion"("is_active");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Offer_onboarding_id_key" ON "Offer"("onboarding_id");
+
+-- CreateIndex
+CREATE INDEX "Offer_job_id_idx" ON "Offer"("job_id");
+
+-- CreateIndex
+CREATE INDEX "Offer_applicant_id_idx" ON "Offer"("applicant_id");
+
+-- CreateIndex
+CREATE INDEX "Offer_status_idx" ON "Offer"("status");
+
+-- CreateIndex
+CREATE INDEX "Offer_created_by_id_idx" ON "Offer"("created_by_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Offer_job_id_applicant_id_key" ON "Offer"("job_id", "applicant_id");
 
 -- CreateIndex
 CREATE INDEX "CvScreening_applicant_id_idx" ON "CvScreening"("applicant_id");
@@ -3583,6 +3923,9 @@ CREATE INDEX "User_status_idx" ON "User"("status");
 CREATE UNIQUE INDEX "Employee_user_id_key" ON "Employee"("user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Employee_applicant_id_key" ON "Employee"("applicant_id");
+
+-- CreateIndex
 CREATE INDEX "Employee_user_id_idx" ON "Employee"("user_id");
 
 -- CreateIndex
@@ -3592,7 +3935,31 @@ CREATE UNIQUE INDEX "UserProfile_employee_id_key" ON "UserProfile"("employee_id"
 CREATE INDEX "UserProfile_nationalityId_idx" ON "UserProfile"("nationalityId");
 
 -- CreateIndex
-CREATE INDEX "UserProfile_countryId_idx" ON "UserProfile"("countryId");
+CREATE UNIQUE INDEX "EmployeeAddress_employee_id_key" ON "EmployeeAddress"("employee_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EmployeeBankDetail_employee_id_key" ON "EmployeeBankDetail"("employee_id");
+
+-- CreateIndex
+CREATE INDEX "BankAccount_employeeBankDetailId_idx" ON "BankAccount"("employeeBankDetailId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EmployeeEmergencyContact_employee_id_key" ON "EmployeeEmergencyContact"("employee_id");
+
+-- CreateIndex
+CREATE INDEX "EmergencyContact_employeeEmergencyContactId_idx" ON "EmergencyContact"("employeeEmergencyContactId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EmployeeEducation_employee_id_key" ON "EmployeeEducation"("employee_id");
+
+-- CreateIndex
+CREATE INDEX "Education_employeeEducationId_idx" ON "Education"("employeeEducationId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EmployeeContract_employee_id_key" ON "EmployeeContract"("employee_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EmployeePolicyAcknowledgement_employee_id_key" ON "EmployeePolicyAcknowledgement"("employee_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserEmployment_employee_id_key" ON "UserEmployment"("employee_id");
@@ -3736,13 +4103,25 @@ ALTER TABLE "AiChunk" ADD CONSTRAINT "AiChunk_documentId_fkey" FOREIGN KEY ("doc
 ALTER TABLE "AiChatMessage" ADD CONSTRAINT "AiChatMessage_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "AiChatSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "ContractTemplate" ADD CONSTRAINT "ContractTemplate_contractTypeId_fkey" FOREIGN KEY ("contractTypeId") REFERENCES "ContractType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Contract" ADD CONSTRAINT "Contract_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "ContractTemplate"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Contract" ADD CONSTRAINT "Contract_employeeContractId_fkey" FOREIGN KEY ("employeeContractId") REFERENCES "EmployeeContract"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ContractSigner" ADD CONSTRAINT "ContractSigner_contractId_fkey" FOREIGN KEY ("contractId") REFERENCES "Contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ContractSigner" ADD CONSTRAINT "ContractSigner_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "EmployeeDocument" ADD CONSTRAINT "EmployeeDocument_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "EmployeeDocument" ADD CONSTRAINT "EmployeeDocument_verified_by_id_fkey" FOREIGN KEY ("verified_by_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Contract" ADD CONSTRAINT "Contract_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "JobDescription" ADD CONSTRAINT "JobDescription_position_id_fkey" FOREIGN KEY ("position_id") REFERENCES "Position"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -3898,37 +4277,10 @@ ALTER TABLE "ComplianceChecklist" ADD CONSTRAINT "ComplianceChecklist_verified_b
 ALTER TABLE "Onboarding" ADD CONSTRAINT "Onboarding_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OnboardingChecklist" ADD CONSTRAINT "OnboardingChecklist_onboarding_id_fkey" FOREIGN KEY ("onboarding_id") REFERENCES "Onboarding"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "OnboardingChecklist" ADD CONSTRAINT "OnboardingChecklist_onboarding_id_fkey" FOREIGN KEY ("onboarding_id") REFERENCES "Onboarding"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OnboardingChecklist" ADD CONSTRAINT "OnboardingChecklist_onboarding_task_id_fkey" FOREIGN KEY ("onboarding_task_id") REFERENCES "OnboardingTask"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "OnboardingChecklist" ADD CONSTRAINT "OnboardingChecklist_overseer_id_fkey" FOREIGN KEY ("overseer_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "OnboardingTask" ADD CONSTRAINT "OnboardingTask_completed_by_id_fkey" FOREIGN KEY ("completed_by_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "AssetProvisioning" ADD CONSTRAINT "AssetProvisioning_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PolicyAcknowledgement" ADD CONSTRAINT "PolicyAcknowledgement_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PolicyAcknowledgement" ADD CONSTRAINT "PolicyAcknowledgement_verified_by_id_fkey" FOREIGN KEY ("verified_by_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProbationKpiPlan" ADD CONSTRAINT "ProbationKpiPlan_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProbationEvaluation" ADD CONSTRAINT "ProbationEvaluation_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProbationEvaluation" ADD CONSTRAINT "ProbationEvaluation_probation_plan_id_fkey" FOREIGN KEY ("probation_plan_id") REFERENCES "ProbationKpiPlan"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProbationConfirmation" ADD CONSTRAINT "ProbationConfirmation_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "OnboardingChecklist" ADD CONSTRAINT "OnboardingChecklist_task_instance_id_fkey" FOREIGN KEY ("task_instance_id") REFERENCES "OnboardingTaskInstance"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Department" ADD CONSTRAINT "Department_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "Department"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -3986,6 +4338,51 @@ ALTER TABLE "OkrManagerReview" ADD CONSTRAINT "OkrManagerReview_okr_id_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "OkrManagerReview" ADD CONSTRAINT "OkrManagerReview_reviewer_id_fkey" FOREIGN KEY ("reviewer_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Policy" ADD CONSTRAINT "Policy_currentVersionId_fkey" FOREIGN KEY ("currentVersionId") REFERENCES "PolicyVersion"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PolicyVersion" ADD CONSTRAINT "PolicyVersion_policyId_fkey" FOREIGN KEY ("policyId") REFERENCES "Policy"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PolicyVersion" ADD CONSTRAINT "PolicyVersion_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "PolicyFile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PolicyAcknowledgement" ADD CONSTRAINT "PolicyAcknowledgement_employee_policy_acknowledgement_id_fkey" FOREIGN KEY ("employee_policy_acknowledgement_id") REFERENCES "EmployeePolicyAcknowledgement"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PolicyAcknowledgement" ADD CONSTRAINT "PolicyAcknowledgement_policyId_fkey" FOREIGN KEY ("policyId") REFERENCES "Policy"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PolicyAcknowledgement" ADD CONSTRAINT "PolicyAcknowledgement_policyVersionId_fkey" FOREIGN KEY ("policyVersionId") REFERENCES "PolicyVersion"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProbationPlan" ADD CONSTRAINT "ProbationPlan_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProbationKPI" ADD CONSTRAINT "ProbationKPI_probationId_fkey" FOREIGN KEY ("probationId") REFERENCES "ProbationPlan"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProbationKPI" ADD CONSTRAINT "ProbationKPI_kpiId_fkey" FOREIGN KEY ("kpiId") REFERENCES "KPI"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProbationCheckpoint" ADD CONSTRAINT "ProbationCheckpoint_probationId_fkey" FOREIGN KEY ("probationId") REFERENCES "ProbationPlan"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CheckpointEvaluation" ADD CONSTRAINT "CheckpointEvaluation_checkpointId_fkey" FOREIGN KEY ("checkpointId") REFERENCES "ProbationCheckpoint"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EvaluationScore" ADD CONSTRAINT "EvaluationScore_probationKpiId_fkey" FOREIGN KEY ("probationKpiId") REFERENCES "ProbationKPI"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EvaluationScore" ADD CONSTRAINT "EvaluationScore_checkpointEvaluationId_fkey" FOREIGN KEY ("checkpointEvaluationId") REFERENCES "CheckpointEvaluation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EvaluationScore" ADD CONSTRAINT "EvaluationScore_finalEvaluationId_fkey" FOREIGN KEY ("finalEvaluationId") REFERENCES "FinalEvaluation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FinalEvaluation" ADD CONSTRAINT "FinalEvaluation_probationId_fkey" FOREIGN KEY ("probationId") REFERENCES "ProbationPlan"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "JobRequestForm" ADD CONSTRAINT "JobRequestForm_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -4060,22 +4457,43 @@ ALTER TABLE "ApplicantEducation" ADD CONSTRAINT "ApplicantEducation_applicant_id
 ALTER TABLE "ApplicantExperience" ADD CONSTRAINT "ApplicantExperience_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Interview" ADD CONSTRAINT "Interview_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "InterviewSession" ADD CONSTRAINT "InterviewSession_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Interview" ADD CONSTRAINT "Interview_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "InterviewSession" ADD CONSTRAINT "InterviewSession_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Interview" ADD CONSTRAINT "Interview_interviewer_id_fkey" FOREIGN KEY ("interviewer_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "InterviewParticipant" ADD CONSTRAINT "InterviewParticipant_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "InterviewSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "HiringDecision" ADD CONSTRAINT "HiringDecision_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "InterviewParticipant" ADD CONSTRAINT "InterviewParticipant_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "HiringDecision" ADD CONSTRAINT "HiringDecision_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "InterviewerAssignment" ADD CONSTRAINT "InterviewerAssignment_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "InterviewSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "HiringDecision" ADD CONSTRAINT "HiringDecision_submitted_by_id_fkey" FOREIGN KEY ("submitted_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "InterviewerAssignment" ADD CONSTRAINT "InterviewerAssignment_interviewer_id_fkey" FOREIGN KEY ("interviewer_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InterviewFeedback" ADD CONSTRAINT "InterviewFeedback_participant_id_fkey" FOREIGN KEY ("participant_id") REFERENCES "InterviewParticipant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InterviewFeedback" ADD CONSTRAINT "InterviewFeedback_assignment_id_fkey" FOREIGN KEY ("assignment_id") REFERENCES "InterviewerAssignment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InterviewQuestion" ADD CONSTRAINT "InterviewQuestion_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Offer" ADD CONSTRAINT "Offer_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Offer" ADD CONSTRAINT "Offer_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Offer" ADD CONSTRAINT "Offer_onboarding_id_fkey" FOREIGN KEY ("onboarding_id") REFERENCES "Onboarding"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Offer" ADD CONSTRAINT "Offer_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CvScreening" ADD CONSTRAINT "CvScreening_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -4210,13 +4628,46 @@ ALTER TABLE "SalaryAdjustmentRequest" ADD CONSTRAINT "SalaryAdjustmentRequest_ap
 ALTER TABLE "Employee" ADD CONSTRAINT "Employee_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Employee" ADD CONSTRAINT "Employee_applicant_id_fkey" FOREIGN KEY ("applicant_id") REFERENCES "Applicant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "UserProfile" ADD CONSTRAINT "UserProfile_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserProfile" ADD CONSTRAINT "UserProfile_nationalityId_fkey" FOREIGN KEY ("nationalityId") REFERENCES "CountryReference"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserProfile" ADD CONSTRAINT "UserProfile_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "CountryReference"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "EmployeeAddress" ADD CONSTRAINT "EmployeeAddress_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmployeeAddress" ADD CONSTRAINT "EmployeeAddress_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "CountryReference"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmployeeBankDetail" ADD CONSTRAINT "EmployeeBankDetail_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BankAccount" ADD CONSTRAINT "BankAccount_employeeBankDetailId_fkey" FOREIGN KEY ("employeeBankDetailId") REFERENCES "EmployeeBankDetail"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmployeeEmergencyContact" ADD CONSTRAINT "EmployeeEmergencyContact_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmergencyContact" ADD CONSTRAINT "EmergencyContact_employeeEmergencyContactId_fkey" FOREIGN KEY ("employeeEmergencyContactId") REFERENCES "EmployeeEmergencyContact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmergencyContact" ADD CONSTRAINT "EmergencyContact_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "CountryReference"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmployeeEducation" ADD CONSTRAINT "EmployeeEducation_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Education" ADD CONSTRAINT "Education_employeeEducationId_fkey" FOREIGN KEY ("employeeEducationId") REFERENCES "EmployeeEducation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmployeeContract" ADD CONSTRAINT "EmployeeContract_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmployeePolicyAcknowledgement" ADD CONSTRAINT "EmployeePolicyAcknowledgement_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserEmployment" ADD CONSTRAINT "UserEmployment_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE CASCADE ON UPDATE CASCADE;
