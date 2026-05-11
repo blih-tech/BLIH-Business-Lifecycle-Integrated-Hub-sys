@@ -399,6 +399,84 @@ const ensureRolePermissions = async () => {
   }
 };
 
+const syncUserPermissions = async () => {
+  console.log('Syncing user permissions based on their roles...');
+
+  // Fetch all users with their roles
+  const users = await prisma.user.findMany({
+    where: {
+      status: 'ACTIVE',
+    },
+    include: {
+      roles: {
+        include: {
+          role: {
+            include: {
+              permissions: {
+                include: {
+                  permission: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  console.log(`Found ${users.length} active users to sync permissions for.`);
+
+  for (const user of users) {
+    const permissionSet = new Set<string>();
+
+    // Collect all permissions from all user's roles
+    for (const userRole of user.roles) {
+      const role = userRole.role;
+
+      // Get all permissions for this role
+      for (const rolePermission of role.permissions) {
+        permissionSet.add(rolePermission.permission.slug);
+      }
+
+      // Handle role hierarchy - if role has parent, include parent's permissions
+      if (role.parentRoleId) {
+        const parentRole = await prisma.role.findUnique({
+          where: { id: role.parentRoleId },
+          include: {
+            permissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        });
+
+        if (parentRole) {
+          for (const parentPermission of parentRole.permissions) {
+            permissionSet.add(parentPermission.permission.slug);
+          }
+        }
+      }
+    }
+
+    // Convert to array and update user
+    const permissionsArray = Array.from(permissionSet);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        permissions: permissionsArray,
+      },
+    });
+
+    console.log(
+      `Updated user ${user.username} (${user.email}) with ${permissionsArray.length} permissions.`,
+    );
+  }
+
+  console.log('User permissions sync completed.');
+};
+
 async function main(): Promise<void> {
   ensureCatalogConsistency();
 
@@ -406,6 +484,7 @@ async function main(): Promise<void> {
   await ensurePermissions(resourceIdByName);
   await ensureRoles();
   await ensureRolePermissions();
+  await syncUserPermissions();
 
   await prisma.moduleConfig.upsert({
     where: { module: 'core' },
