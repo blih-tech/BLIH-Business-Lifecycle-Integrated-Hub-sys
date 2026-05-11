@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../platform/prisma/prisma.service';
-import { buildBaselinePermissions } from './role-permission-baseline';
 
 interface PermissionCacheEntry {
   expiresAt: number;
@@ -30,42 +29,17 @@ export class UserPermissionSnapshotService {
       `getPersistedPermissions: dbPermissions count = ${dbPermissions.length}`,
     );
 
-    const tokenBaseline = this.buildTokenRoleFallback(keycloakTokenRoles);
-
-    this.logger.debug(
-      `getPersistedPermissions: tokenBaseline count = ${tokenBaseline.length}`,
-    );
-
-    if (dbPermissions.length === 0 && tokenBaseline.length === 0) {
-      return [];
-    }
-
     if (dbPermissions.length === 0) {
       this.logger.warn(
-        `Permission DB lookup empty for ${keycloakUserId} — using token roles [${keycloakTokenRoles.join(', ')}] → ${tokenBaseline.length} permissions`,
+        `Permission DB lookup empty for ${keycloakUserId}; returning empty permission set. tokenRoles=${JSON.stringify(keycloakTokenRoles)}`,
       );
-      return tokenBaseline;
-    }
-
-    // Merge DB permissions with the token-role baseline so that Keycloak
-    // roles always grant their minimum permissions even when the DB only has
-    // partial role-permission rows (e.g. partially-seeded or recently-updated DB).
-    if (tokenBaseline.length > 0) {
-      const merged = new Set([...dbPermissions, ...tokenBaseline]);
-      this.logger.debug(
-        `getPersistedPermissions: merged permissions count = ${merged.size}`,
-      );
-      return [...merged];
+      return [];
     }
 
     this.logger.debug(
       `getPersistedPermissions: returning dbPermissions count = ${dbPermissions.length}`,
     );
     return dbPermissions;
-  }
-
-  private buildTokenRoleFallback(tokenRoles: string[]): string[] {
-    return buildBaselinePermissions(tokenRoles.map((r) => r.toLowerCase()));
   }
 
   async getEffectivePermissionsByUserId(userId: string): Promise<string[]> {
@@ -137,8 +111,6 @@ export class UserPermissionSnapshotService {
       roleAssignments.map((assignment) => assignment.roleId),
     );
 
-    // Note: do NOT return early here — we must still run the hardcoded
-    // fallback even when the DB has no role-permission rows (unseeded DB).
     const expandedRoles =
       expandedRoleIds.size > 0
         ? await this.prisma.role.findMany({
@@ -168,15 +140,6 @@ export class UserPermissionSnapshotService {
         rolePermission.permission.slug.toLowerCase(),
       ),
     );
-
-    // Hardcoded safety fallback: if the DB Role rows exist but RolePermission
-    // rows are missing (e.g. partially-seeded DB), apply the canonical baseline
-    // so that known roles always grant their minimum set of permissions.
-    const lowerRoles = expandedRoles.map((r) => r.name.toLowerCase());
-    const baselineForDbRoles = buildBaselinePermissions(lowerRoles);
-    for (const perm of baselineForDbRoles) {
-      allowedByRoles.add(perm);
-    }
 
     // Additive logic: User gets permissions from their roles OR explicitly assigned ones
     const effectivePermissions = new Set([

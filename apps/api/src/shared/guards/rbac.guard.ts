@@ -9,7 +9,6 @@ import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { SCOPES_KEY } from '../decorators/scopes.decorator';
 import { hasWildcardPermission } from '../../platform/keycloak/utils/role.util';
-import { buildBaselinePermissions } from '../../core/rbac/role-permission-baseline';
 
 interface GuardPrincipal {
   roles?: string[];
@@ -68,28 +67,11 @@ export class RbacGuard implements CanActivate {
         return true;
       }
 
-      // Build the baseline permissions for all roles the user holds so the
-      // guard can fall back to the canonical role-permission table when the
-      // permission snapshot service returns an empty set (e.g. unseeded DB,
-      // first-request race, or transient DB error).
-      const baselinePerms = buildBaselinePermissions([...tokenRoles]);
-
-      // Extended fallback - only apply when user has HR-related role.
-      // This handles unseeded DB where hr_manager/hr are known but baseline lookup failed.
-      let fallbackPerms = baselinePerms;
-      const hasHrRole = tokenRoles.has('hr') || tokenRoles.has('hr_manager');
-      if (hasHrRole && baselinePerms.length === 0) {
-        fallbackPerms = buildBaselinePermissions(['hr', 'hr_manager']);
-        this.logger.debug(
-          `RbacGuard: HR fallback perms. hasHrRole=${hasHrRole}, fallbackPerms count = ${fallbackPerms.length}`,
-        );
-      }
-
       const hasRole = requiredRoles.every((required) => {
         const requiredLower = required.toLowerCase();
 
         this.logger.debug(
-          `RbacGuard check: required="${requiredLower}", tokenRoles=${JSON.stringify([...tokenRoles])}, permissions=${JSON.stringify(permissions)}, baselinePerms=${JSON.stringify(baselinePerms)}, fallbackPerms=${JSON.stringify(fallbackPerms)}`,
+          `RbacGuard check: required="${requiredLower}", tokenRoles=${JSON.stringify([...tokenRoles])}, permissions=${JSON.stringify(permissions)}`,
         );
 
         // Check 1 — literal role name match (used when @Roles carries an
@@ -109,25 +91,8 @@ export class RbacGuard implements CanActivate {
           return true;
         }
 
-        // Check 3 — canonical baseline fallback (safety net when snapshot
-        // service permissions are empty).
-        if (hasWildcardPermission(baselinePerms, requiredLower)) {
-          this.logger.debug(
-            `RbacGuard: granted via baseline fallback for "${requiredLower}" (roles=${JSON.stringify([...tokenRoles])})`,
-          );
-          return true;
-        }
-
-        // Check 4 —extended fallback for common roles (handles unseeded DB).
-        if (hasWildcardPermission(fallbackPerms, requiredLower)) {
-          this.logger.debug(
-            `RbacGuard: granted via extended fallback for "${requiredLower}"`,
-          );
-          return true;
-        }
-
         this.logger.warn(
-          `RbacGuard: denied. required="${requiredLower}", tokenRoles has it=${tokenRoles.has(requiredLower)}, snapshot_has_it=${hasWildcardPermission(permissions, requiredLower)}, baseline_has_it=${hasWildcardPermission(baselinePerms, requiredLower)}, fallback_has_it=${hasWildcardPermission(fallbackPerms, requiredLower)}`,
+          `RbacGuard: denied. required="${requiredLower}", tokenRoles has it=${tokenRoles.has(requiredLower)}, snapshot_has_it=${hasWildcardPermission(permissions, requiredLower)}`,
         );
         return false;
       });
