@@ -206,6 +206,8 @@ TRUST_PROXY_PRINCIPAL_HEADERS=false
 INTERNAL_AUTH_SHARED_SECRET=
 ENFORCE_MFA_FOR_PRIVILEGED=false
 AUTH_POLICY_VERSION=1.0
+AUTH_FRONTEND_BASE_URL=http://localhost:3000
+AUTH_ALLOWED_REDIRECT_PATH_PREFIXES=/,/dashboard,/auth,/no-access
 AUTH_LOGIN_ERROR_REDIRECT_URI=/login
 AUTH_POST_LOGIN_REDIRECT_URI=/
 AUTH_POST_LOGOUT_REDIRECT_URI=/login
@@ -244,7 +246,7 @@ EMAIL_FROM=BLIH <noreply@blih.local>
 
 // Application Features (2 variables)
 SWAGGER_ENABLED=true
-CORS_ORIGIN=*
+CORS_ORIGIN=http://localhost:3000,https://myapp.example.com,https://admin.example.com
 
 // Logging & Monitoring (1 variable)
 VERBOSE_REQUEST_LOGGING=false

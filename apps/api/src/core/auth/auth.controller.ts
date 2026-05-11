@@ -156,11 +156,12 @@ export class AuthController {
       env.AUTH_POST_LOGIN_REDIRECT_URI,
       allowedRedirectPrefixes,
     );
+    const callbackUri = this.resolveCallbackUri(request);
     const authorizeUrl = buildAuthorizeUrl({
       keycloakUrl: env.KEYCLOAK_URL,
       realm: env.KEYCLOAK_REALM,
       clientId: env.KEYCLOAK_AUTH_CLIENT_ID,
-      redirectUri: env.KEYCLOAK_AUTH_REDIRECT_URI,
+      redirectUri: callbackUri,
       scopes: env.KEYCLOAK_AUTH_SCOPES,
       authorizationUrl: env.KEYCLOAK_AUTHORIZATION_URL,
       state: authRequest.state,
@@ -205,6 +206,7 @@ export class AuthController {
       safeRedirectPath,
       cookieOptions,
     );
+    response.cookie(AUTH_COOKIE_NAMES.callbackUri, callbackUri, cookieOptions);
     if (authRequest.nonce) {
       response.cookie(
         AUTH_COOKIE_NAMES.nonce,
@@ -1076,6 +1078,48 @@ export class AuthController {
   private appendErrorCode(path: string, code: string): string {
     const separator = path.includes('?') ? '&' : '?';
     return `${path}${separator}error=${encodeURIComponent(code)}`;
+  }
+
+  private resolveCallbackUri(request: Request): string {
+    const protocol = this.resolveCallbackProtocol(request);
+    const host = this.resolveCallbackHost(request);
+    if (!host) {
+      return env.KEYCLOAK_AUTH_REDIRECT_URI;
+    }
+
+    const apiPrefix = env.API_PREFIX.replace(/^\/+|\/+$/g, '');
+    return `${protocol}://${host}/${apiPrefix}/auth/callback`;
+  }
+
+  private resolveCallbackProtocol(request: Request): string {
+    if (env.TRUST_PROXY_PRINCIPAL_HEADERS) {
+      const forwardedProto = request.headers['x-forwarded-proto'];
+      const protocolHeader = Array.isArray(forwardedProto)
+        ? forwardedProto[0]
+        : forwardedProto;
+      const forwardedProtocol = protocolHeader?.split(',')[0]?.trim();
+      if (forwardedProtocol) {
+        return forwardedProtocol;
+      }
+    }
+
+    return request.protocol;
+  }
+
+  private resolveCallbackHost(request: Request): string | undefined {
+    if (env.TRUST_PROXY_PRINCIPAL_HEADERS) {
+      const forwardedHost = request.headers['x-forwarded-host'];
+      const hostHeader = Array.isArray(forwardedHost)
+        ? forwardedHost[0]
+        : forwardedHost;
+      const forwardedHostValue = hostHeader?.split(',')[0]?.trim();
+      if (forwardedHostValue) {
+        return forwardedHostValue;
+      }
+    }
+
+    const hostHeader = request.headers.host;
+    return Array.isArray(hostHeader) ? hostHeader[0] : hostHeader;
   }
 
   private extractKeycloakErrorCode(error: unknown): string | undefined {

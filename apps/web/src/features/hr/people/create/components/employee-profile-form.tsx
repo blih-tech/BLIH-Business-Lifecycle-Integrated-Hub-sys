@@ -175,7 +175,7 @@ export function EmployeeProfileForm({
     try {
       await createEmployee.mutateAsync(buildPayload(values));
       toast.success('Employee created successfully');
-      router.push('/dashboard/hr/people/directory');
+      router.push('/hr/people/directory');
     } catch (error) {
       const message =
         error instanceof ApiError

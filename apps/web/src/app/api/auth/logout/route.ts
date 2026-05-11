@@ -1,51 +1,43 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
-
-/**
- * Proxies the logout request to the NestJS API.
- *
- * The API revokes the refresh token, clears auth cookies, and redirects
- * through Keycloak end-session. By proxying here, the cookie-clearing
- * Set-Cookie headers are applied to the FRONTEND domain, which ensures
- * kc_access (stored on the Vercel domain) is actually removed.
- */
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const targetUrl = new URL(`${API_BASE_URL}/auth/logout`);
-
-  request.nextUrl.searchParams.forEach((value, key) => {
-    targetUrl.searchParams.set(key, value);
-  });
-
-  // Tell the API which origin to redirect to after Keycloak end-session
-  if (!targetUrl.searchParams.has('redirect_origin')) {
-    targetUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
+function getApiBaseUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (configured) {
+    return configured.replace(/\/+$/, '');
   }
 
-  const response = await fetch(targetUrl.toString(), {
-    method: 'GET',
-    headers: {
-      cookie: request.headers.get('cookie') ?? '',
-    },
-    redirect: 'manual',
-  });
+  return 'http://localhost:5000/api/v1';
+}
 
-  const location = response.headers.get('location');
-
-  const redirectTo = location
-    ? location.startsWith('http')
-      ? location
-      : new URL(location, request.nextUrl.origin).toString()
-    : new URL('/', request.nextUrl.origin).toString();
-
-  const nextResponse = NextResponse.redirect(redirectTo);
-
-  // Relay Set-Cookie headers that clear kc_access, kc_refresh, etc.
-  // on the frontend domain.
-  for (const cookie of response.headers.getSetCookie()) {
-    nextResponse.headers.append('Set-Cookie', cookie);
+function normalizeRedirectPath(value: string | null, fallback: string): string {
+  if (!value) {
+    return fallback;
   }
 
-  return nextResponse;
+  const candidate = value.trim();
+  if (!candidate.startsWith('/') || candidate.startsWith('//')) {
+    return fallback;
+  }
+
+  return candidate;
+}
+
+export async function GET(request: NextRequest) {
+  const incomingUrl = new URL(request.url);
+  const apiUrl = new URL('auth/logout', `${getApiBaseUrl()}/`);
+
+  const redirect = normalizeRedirectPath(
+    incomingUrl.searchParams.get('redirect'),
+    '/',
+  );
+  const redirectOrigin =
+    incomingUrl.searchParams.get('redirect_origin') ?? incomingUrl.origin;
+
+  apiUrl.searchParams.set('redirect', redirect);
+
+  if (redirectOrigin) {
+    apiUrl.searchParams.set('redirect_origin', redirectOrigin);
+  }
+
+  return NextResponse.redirect(apiUrl);
 }

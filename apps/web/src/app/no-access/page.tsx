@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Button } from '@/shared/components/ui/button';
 
 export default function NoAccessPage() {
@@ -13,10 +14,10 @@ export default function NoAccessPage() {
         </p>
         <div className="flex justify-center gap-3">
           <Button asChild>
-            <a href="/dashboard">Go to Dashboard</a>
+            <Link href="/">Go to Dashboard</Link>
           </Button>
           <Button variant="secondary" asChild>
-            <a href="/api/auth/logout">Sign Out</a>
+            <Link href="/api/auth/logout?redirect=/">Sign Out</Link>
           </Button>
         </div>
       </div>

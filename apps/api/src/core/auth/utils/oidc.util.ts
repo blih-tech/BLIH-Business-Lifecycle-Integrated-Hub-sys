@@ -391,13 +391,22 @@ export function validateFrontendOrigin(
     return undefined;
   }
 
+  const normalizedOrigin = normalizeOrigin(origin);
+  if (!normalizedOrigin) {
+    return undefined;
+  }
+
   // Check if origin is in allowed list
   const isAllowed = allowedOrigins.some((allowed) => {
     if (allowed === '*') return true;
-    return origin === allowed || origin.startsWith(`${allowed}/`);
+    const normalizedAllowedOrigin = normalizeOrigin(allowed);
+    return (
+      Boolean(normalizedAllowedOrigin) &&
+      normalizedOrigin === normalizedAllowedOrigin
+    );
   });
 
-  return isAllowed ? origin : undefined;
+  return isAllowed ? normalizedOrigin : undefined;
 }
 
 export function buildDynamicFrontendRedirectUrl(
@@ -421,12 +430,17 @@ export function buildDynamicFrontendRedirectUrl(
   }
 
   // Validate origin against allowed origins
+  const normalizedOrigin = normalizeOrigin(origin);
   const isAllowed = allowedOrigins.some((allowed) => {
     if (allowed === '*') return true;
-    return origin === allowed || origin.startsWith(`${allowed}/`);
+    const normalizedAllowedOrigin = normalizeOrigin(allowed);
+    return (
+      Boolean(normalizedAllowedOrigin) &&
+      normalizedOrigin === normalizedAllowedOrigin
+    );
   });
 
-  if (!isAllowed) {
+  if (!isAllowed || !normalizedOrigin) {
     // Fallback to configured base URL for security
     return new URL(
       path,
@@ -435,7 +449,20 @@ export function buildDynamicFrontendRedirectUrl(
   }
 
   // Use request origin for redirect
-  return new URL(path, origin).toString();
+  return new URL(path, normalizedOrigin).toString();
+}
+
+function normalizeOrigin(origin: string): string | undefined {
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      return undefined;
+    }
+
+    return url.origin;
+  } catch {
+    return undefined;
+  }
 }
 
 function normalizeRedirectPath(path: string | undefined): string | undefined {

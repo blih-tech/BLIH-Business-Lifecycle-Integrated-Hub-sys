@@ -248,6 +248,47 @@ describe('AppController (e2e)', () => {
     expect(getCookie(cookies, 'kc_frontend_origin')).toBeDefined();
   });
 
+  it('/api/v1/auth/login (GET) prioritizes redirect_origin over headers', async () => {
+    const response = await request(app.getHttpServer())
+      .get(
+        '/api/v1/auth/login?redirect=/dashboard&redirect_origin=https://example.com',
+      )
+      .set('x-frontend-origin', 'http://localhost:3000')
+      .set('Origin', 'http://localhost:3000')
+      .expect(302);
+
+    const cookies = response.headers['set-cookie'];
+    expect(getCookie(cookies, 'kc_frontend_origin')).toContain(
+      'kc_frontend_origin=https%3A%2F%2Fexample.com',
+    );
+  });
+
+  it('/api/v1/auth/login (GET) uses x-frontend-origin when redirect_origin is missing', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/v1/auth/login?redirect=/dashboard')
+      .set('x-frontend-origin', 'https://example.com')
+      .expect(302);
+
+    const cookies = response.headers['set-cookie'];
+    expect(getCookie(cookies, 'kc_frontend_origin')).toContain(
+      'kc_frontend_origin=https%3A%2F%2Fexample.com',
+    );
+  });
+
+  it('/api/v1/auth/login (GET) falls back to header detection when redirect_origin is invalid', async () => {
+    const response = await request(app.getHttpServer())
+      .get(
+        '/api/v1/auth/login?redirect=/dashboard&redirect_origin=nota-valid-origin',
+      )
+      .set('x-frontend-origin', 'https://example.com')
+      .expect(302);
+
+    const cookies = response.headers['set-cookie'];
+    expect(getCookie(cookies, 'kc_frontend_origin')).toContain(
+      'kc_frontend_origin=https%3A%2F%2Fexample.com',
+    );
+  });
+
   it('/api/v1/auth/callback (GET) redirects to /login when state validation fails', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/v1/auth/callback?code=abc&state=wrong-state')
@@ -303,6 +344,19 @@ describe('AppController (e2e)', () => {
     );
   });
 
+  it('/api/v1/auth/callback (GET) falls back to request origin when frontend origin cookie is missing', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/v1/auth/callback?code=good-code&state=expected-state')
+      .set(
+        'Cookie',
+        'kc_state=expected-state; kc_verifier=test-verifier; kc_redirect=%2Fdashboard; kc_nonce=expected-nonce',
+      )
+      .set('Origin', 'http://localhost:3000')
+      .expect(302);
+
+    expect(response.headers.location).toBe('http://localhost:3000/dashboard');
+  });
+
   it('/api/v1/auth/callback (GET) redirects to invalid_id_token when nonce validation fails', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/v1/auth/callback?code=bad-id-code&state=expected-state')
@@ -352,6 +406,27 @@ describe('AppController (e2e)', () => {
 
     expect(response.headers.location).toBe('http://localhost:3000/auth/signin');
     expect(revokeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('/api/v1/auth/logout (GET) uses redirect_origin query when provided', async () => {
+    const response = await request(app.getHttpServer())
+      .get(
+        '/api/v1/auth/logout?redirect=/auth/signin&redirect_origin=https://example.com',
+      )
+      .expect(302);
+
+    expect(response.headers.location).toBe('https://example.com/auth/signin');
+  });
+
+  it('/api/v1/auth/logout (GET) ignores invalid redirect_origin and falls back safely', async () => {
+    const response = await request(app.getHttpServer())
+      .get(
+        '/api/v1/auth/logout?redirect=/auth/signin&redirect_origin=invalid-origin',
+      )
+      .set('Origin', 'http://localhost:3000')
+      .expect(302);
+
+    expect(response.headers.location).toBe('http://localhost:3000/auth/signin');
   });
 
   it('/api/v1/auth/me (GET) rejects missing token', () => {

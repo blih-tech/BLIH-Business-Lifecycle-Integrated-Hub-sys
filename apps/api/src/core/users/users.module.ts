@@ -48,6 +48,22 @@ import { UpdateUserUseCase } from './use-cases/update-user.usecase';
     GetUserLifecycleUseCase,
     UpdateUserLifecycleUseCase,
   ],
-  exports: [ListUsersUseCase, UserProvisioningService],
+  exports: [
+    ListUsersUseCase,
+    UserProvisioningService,
+    GetUserProfileUseCase,
+    UpdateUserProfileUseCase,
+    GetUserEmploymentUseCase,
+    UpdateUserEmploymentUseCase,
+    GetUserLifecycleUseCase,
+    UpdateUserLifecycleUseCase,
+    GetUserCompensationUseCase,
+    UpdateUserCompensationUseCase,
+    ListUserCompensationHistoryUseCase,
+    ListCompensationComponentsUseCase,
+    CreateCompensationComponentUseCase,
+    UpdateCompensationComponentUseCase,
+    DeleteCompensationComponentUseCase,
+  ],
 })
 export class UsersModule {}

@@ -1,118 +1,86 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://blihapi.blihmarketing.com/api/v1';
+export class ApiError extends Error {
+  status: number;
+  details: unknown;
 
-interface RequestOptions extends RequestInit {
-  params?: Record<string, string>;
-}
-
-/** Read the JS-accessible kc_token cookie (set during OIDC callback). */
-function getAccessToken(): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(/(?:^|;\s*)kc_token=([^;]+)/);
-  return match ? decodeURIComponent(match[1] ?? '') : null;
-}
-
-/** Read the CSRF token from kc_csrf cookie. */
-function getCsrfToken(): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(/(?:^|;\s*)kc_csrf=([^;]+)/);
-  return match ? decodeURIComponent(match[1] ?? '') : null;
-}
-
-class ApiError extends Error {
-  constructor(
-    public message: string,
-    public status: number,
-    public statusText: string,
-  ) {
+  constructor(message: string, status: number, details?: unknown) {
     super(message);
     this.name = 'ApiError';
+    this.status = status;
+    this.details = details;
   }
 }
 
-function buildUrl(endpoint: string, params?: Record<string, string>): string {
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      url.searchParams.append(key, value);
-    });
+type QueryParams = Record<string, string | number | boolean | undefined>;
+
+function getApiBaseUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (configured) {
+    return configured.replace(/\/+$/, '');
+  }
+  return 'http://localhost:5000/api/v1';
+}
+
+function buildUrl(path: string, query?: QueryParams): string {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const url = new URL(`${getApiBaseUrl()}${normalizedPath}`);
+  if (query) {
+    for (const [key, value] of Object.entries(query)) {
+      if (value === undefined) continue;
+      url.searchParams.set(key, String(value));
+    }
   }
   return url.toString();
 }
 
 async function request<T>(
-  endpoint: string,
-  options: RequestOptions = {},
+  method: string,
+  path: string,
+  body?: unknown,
+  query?: QueryParams,
 ): Promise<T> {
-  const { params, ...fetchOptions } = options;
-  const url = buildUrl(endpoint, params);
-
-  const token = getAccessToken();
-  const method = fetchOptions.method?.toUpperCase() || 'GET';
-  const isNonSafeMethod = !['GET', 'HEAD', 'OPTIONS'].includes(method);
-
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-
-  // Merge additional headers from fetchOptions
-  if (fetchOptions.headers) {
-    const additionalHeaders = fetchOptions.headers as Record<string, string>;
-    Object.assign(headers, additionalHeaders);
-  }
-
-  // Add CSRF token for non-safe HTTP methods when auth cookies are present
-  if (isNonSafeMethod && token) {
-    const csrfToken = getCsrfToken();
-    if (csrfToken) {
-      headers['x-csrf-token'] = csrfToken;
-    }
-  }
-
-  const response = await fetch(url, {
-    ...fetchOptions,
-    headers,
+  const response = await fetch(buildUrl(path, query), {
+    method,
     credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    cache: 'no-store',
   });
 
-  if (response.status === 401) {
-    const redirectUrl = new URL('/api/auth/login', window.location.origin);
-    redirectUrl.searchParams.set('redirect', window.location.pathname);
-    redirectUrl.searchParams.set('redirect_origin', window.location.origin);
-    window.location.href = redirectUrl.toString();
-    throw new ApiError('Unauthorized', 401, 'Unauthorized');
-  }
+  const contentType = response.headers.get('content-type') ?? '';
+  const payload = contentType.includes('application/json')
+    ? await response.json()
+    : await response.text();
 
   if (!response.ok) {
-    throw new ApiError(
-      `API request failed: ${response.statusText}`,
-      response.status,
-      response.statusText,
-    );
+    const message =
+      typeof payload === 'object' &&
+      payload &&
+      'message' in payload &&
+      typeof (payload as { message?: unknown }).message === 'string'
+        ? (payload as { message: string }).message
+        : `Request failed with status ${response.status}`;
+    throw new ApiError(message, response.status, payload);
   }
 
-  if (response.status === 204) {
-    return null as T;
-  }
-
-  return response.json();
+  return payload as T;
 }
 
 export const apiClient = {
-  get: <T>(endpoint: string, params?: Record<string, string>) =>
-    request<T>(endpoint, { method: 'GET', params }),
-
-  post: <T>(endpoint: string, data?: unknown) =>
-    request<T>(endpoint, { method: 'POST', body: JSON.stringify(data) }),
-
-  put: <T>(endpoint: string, data?: unknown) =>
-    request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data) }),
-
-  patch: <T>(endpoint: string, data?: unknown) =>
-    request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(data) }),
-
-  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
+  get<T>(path: string, query?: QueryParams): Promise<T> {
+    return request<T>('GET', path, undefined, query);
+  },
+  post<T>(path: string, body?: unknown, query?: QueryParams): Promise<T> {
+    return request<T>('POST', path, body, query);
+  },
+  patch<T>(path: string, body?: unknown, query?: QueryParams): Promise<T> {
+    return request<T>('PATCH', path, body, query);
+  },
+  put<T>(path: string, body?: unknown, query?: QueryParams): Promise<T> {
+    return request<T>('PUT', path, body, query);
+  },
+  delete<T>(path: string, query?: QueryParams): Promise<T> {
+    return request<T>('DELETE', path, undefined, query);
+  },
 };
-
-export { ApiError };

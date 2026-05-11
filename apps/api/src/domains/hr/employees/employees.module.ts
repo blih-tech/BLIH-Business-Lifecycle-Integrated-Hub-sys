@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { SendNotificationUseCase } from '../../../core/notifications/use-cases/send-notification.usecase';
+import { NotificationsModule } from '../../../core/notifications/notifications.module';
+import { UsersModule } from '../../../core/users/users.module';
 import { UserProvisioningService } from '../../../core/users/user-provisioning.service';
 import { PrismaService } from '../../../platform/prisma/prisma.service';
 import { EmployeesController } from './employees.controller';
@@ -13,11 +14,11 @@ import {
 import { UpdateEmployeeUseCase } from './use-cases/update-employee.usecase';
 
 @Module({
+  imports: [NotificationsModule, UsersModule],
   controllers: [EmployeesController, EmployeeRecordsController],
   providers: [
     PrismaService,
     UserProvisioningService,
-    SendNotificationUseCase,
     CreateEmployeeUseCase,
     UpdateEmployeeUseCase,
     ListAllEmployeesUseCase,

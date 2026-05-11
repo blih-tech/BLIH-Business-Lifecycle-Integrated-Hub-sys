@@ -256,6 +256,25 @@ describe('oidc.util', () => {
       expect(validateFrontendOrigin(undefined, allowedOrigins)).toBeUndefined();
     });
 
+    it('normalizes trailing slash origins before allow-list comparison', () => {
+      const allowedOrigins = ['https://app.example.com/'];
+
+      expect(
+        validateFrontendOrigin('https://app.example.com', allowedOrigins),
+      ).toBe('https://app.example.com');
+    });
+
+    it('rejects prefix-based origin bypass attempts', () => {
+      const allowedOrigins = ['https://app.example.com'];
+
+      expect(
+        validateFrontendOrigin(
+          'https://app.example.com.evil.example.org',
+          allowedOrigins,
+        ),
+      ).toBeUndefined();
+    });
+
     it('allows all origins when wildcard is in allowed list', () => {
       const allowedOrigins = ['*'];
 

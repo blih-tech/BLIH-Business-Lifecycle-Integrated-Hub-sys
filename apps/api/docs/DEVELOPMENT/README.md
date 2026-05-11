@@ -77,7 +77,7 @@ JWT_REFRESH_EXPIRES_IN="7d"
 API_PREFIX="api/v1"
 PORT="5000"
 API_HOST="localhost"
-CORS_ORIGIN="*"
+CORS_ORIGIN="http://localhost:3000,https://myapp.example.com,https://admin.example.com"
 SWAGGER_ENABLED="true"
 
 # Notification Configuration
