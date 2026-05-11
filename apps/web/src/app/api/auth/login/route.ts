@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
   const redirect = normalizeRedirectPath(
     incomingUrl.searchParams.get('redirect'),
-    '/hr',
+    '/',
   );
   const prompt = incomingUrl.searchParams.get('prompt');
   const redirectOrigin =

@@ -43,11 +43,11 @@ const createEnvValidationSchema = () =>
     AUTH_POLICY_VERSION: Joi.string().default('1.0'),
     AUTH_FRONTEND_BASE_URL: Joi.string().uri().default('http://localhost:3000'),
     AUTH_ALLOWED_REDIRECT_PATH_PREFIXES: Joi.string().default(
-      '/,/auth,/dashboard,/no-access',
+      '/,/auth,/no-access,/hr,/finance,/crm,/brain,/pm,/superadmin',
     ),
     AUTH_LOGIN_ERROR_REDIRECT_URI: Joi.string().default('/no-access'),
-    AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/dashboard'),
-    AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/dashboard'),
+    AUTH_POST_LOGIN_REDIRECT_URI: Joi.string().default('/'),
+    AUTH_POST_LOGOUT_REDIRECT_URI: Joi.string().default('/'),
     AUTH_STATE_TTL_SECONDS: Joi.number().integer().min(60).default(600),
     AUTH_REFRESH_TOKEN_TTL_SECONDS: Joi.number()
       .integer()
