@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Check, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -23,6 +24,16 @@ import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/typ
 import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
 import { RequestFormStep } from '@/features/hr/recruitment/requests/components/request-form-step';
+import {
+  useCreateJob,
+  useUpdateJob,
+} from '@/features/hr/recruitment/requests/hooks/use-jobs';
+import {
+  useRecruitmentDepartments,
+  useRecruitmentPositions,
+  useRecruitmentUsers,
+} from '@/features/hr/recruitment/requests/hooks/use-recruitment-reference-data';
+import { queryKeys } from '@/lib/query-keys';
 import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
@@ -34,7 +45,6 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import { Form } from '@/shared/components/ui/form';
-import { delay } from '@/shared/lib/demo-utils';
 
 type CreateRequestDialogProps = {
   open: boolean;
@@ -128,6 +138,7 @@ export function CreateRequestDialog({
   currentUserName,
   editRequest,
 }: CreateRequestDialogProps) {
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = Boolean(editRequest?.jobId);
@@ -149,10 +160,44 @@ export function CreateRequestDialog({
     mode: 'onSubmit',
     defaultValues: defaultApplicationValues,
   });
+  const selectedDepartment = requestForm.watch('department');
+  const { data: departments = [], isLoading: isDepartmentsLoading } =
+    useRecruitmentDepartments();
+  const { data: positions = [], isLoading: isPositionsLoading } =
+    useRecruitmentPositions(selectedDepartment || undefined);
+  const { data: users = [], isLoading: isUsersLoading } = useRecruitmentUsers();
+  const createJobMutation = useCreateJob();
+  const updateJobMutation = useUpdateJob(editRequest?.jobId ?? '');
 
   const stepMeta = useMemo(
     () => steps.find((step) => step.id === currentStep) ?? steps[0],
     [currentStep],
+  );
+
+  const departmentOptions = useMemo(
+    () =>
+      departments.map((department) => ({
+        value: department.id,
+        label: department.name,
+      })),
+    [departments],
+  );
+  const positionOptions = useMemo(
+    () =>
+      positions.map((position) => ({
+        value: position.id,
+        label: position.title,
+      })),
+    [positions],
+  );
+  const userOptions = useMemo(
+    () =>
+      users.map((user) => ({
+        value: user.id,
+        label:
+          `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || user.email,
+      })),
+    [users],
   );
 
   useEffect(() => {
@@ -329,16 +374,15 @@ export function CreateRequestDialog({
       console.log('createJobPayload', payload);
 
       if (isEditMode && editRequest?.jobId) {
-        // Live API call (disabled for now)
-        // await apiClient.patch<CreateJobDto>(`/hr/recruitment/jobs/${editRequest.jobId}`, payload);
-        await delay(2000);
+        await updateJobMutation.mutateAsync(payload);
         toast.success('Hiring request updated');
       } else {
-        // Demo mode: simulate API call
-        // await apiClient.post<CreateJobDto>('/hr/recruitment/jobs', payload);
-        await delay(2000);
+        await createJobMutation.mutateAsync(payload);
         toast.success('Hiring request created');
       }
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hr.jobs.all(),
+      });
       handleClose();
     } catch (error) {
       console.error('Failed to save job request:', error);
@@ -440,7 +484,12 @@ export function CreateRequestDialog({
               className="space-y-0"
               onSubmit={(event) => event.preventDefault()}
             >
-              <RequestFormStep form={requestForm} />
+              <RequestFormStep
+                form={requestForm}
+                departmentOptions={departmentOptions}
+                positionOptions={positionOptions}
+                replaceForOptions={userOptions}
+              />
 
               <DialogFooter className="border-t border-border p-4">
                 <DialogClose asChild>
@@ -471,7 +520,10 @@ export function CreateRequestDialog({
               className="space-y-0"
               onSubmit={(event) => event.preventDefault()}
             >
-              <JobDetailsStep form={jobDetailsForm} />
+              <JobDetailsStep
+                form={jobDetailsForm}
+                hiringManagerOptions={userOptions}
+              />
 
               <DialogFooter className="border-t border-border p-4">
                 <Button
@@ -514,7 +566,12 @@ export function CreateRequestDialog({
                 <Button
                   type="button"
                   className="cursor-pointer"
-                  disabled={isLoading}
+                  disabled={
+                    isLoading ||
+                    isDepartmentsLoading ||
+                    isPositionsLoading ||
+                    isUsersLoading
+                  }
                   onClick={handleApplicationComplete}
                 >
                   {isLoading ? (

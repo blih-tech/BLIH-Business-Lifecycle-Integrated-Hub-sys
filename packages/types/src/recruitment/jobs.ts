@@ -58,10 +58,16 @@ export type JobApplicationFieldType =
   | 'CHECKBOX';
 
 export type JobApplicantOptionalFieldKey =
+  | 'FIRST_NAME'
+  | 'LAST_NAME'
+  | 'EMAIL'
   | 'PHONE'
+  | 'RESUME_URL'
   | 'LINKEDIN_URL'
   | 'PORTFOLIO_URL'
   | 'GITHUB_URL'
+  | 'CURRENT_COMPANY'
+  | 'YEARS_OF_EXPERIENCE'
   | 'EXPECTED_SALARY'
   | 'COVER_LETTER';
 
@@ -148,10 +154,16 @@ export const JOB_APPLICATION_FIELD_TYPES = [
   'CHECKBOX',
 ] as const;
 export const JOB_APPLICANT_OPTIONAL_FIELD_KEYS = [
+  'FIRST_NAME',
+  'LAST_NAME',
+  'EMAIL',
   'PHONE',
+  'RESUME_URL',
   'LINKEDIN_URL',
   'PORTFOLIO_URL',
   'GITHUB_URL',
+  'CURRENT_COMPANY',
+  'YEARS_OF_EXPERIENCE',
   'EXPECTED_SALARY',
   'COVER_LETTER',
 ] as const;

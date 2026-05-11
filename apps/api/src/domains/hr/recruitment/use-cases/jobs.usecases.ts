@@ -180,12 +180,18 @@ const currencyOrNull = (value: string | null | undefined) =>
   value?.trim() ? value.trim().toUpperCase() : null;
 
 const defaultApplicantFields = (): JobApplicationFormFieldDto[] => [
-  { key: 'PHONE', enabled: true, required: false, order: 1 },
-  { key: 'LINKEDIN_URL', enabled: false, required: false, order: 2 },
-  { key: 'PORTFOLIO_URL', enabled: false, required: false, order: 3 },
-  { key: 'GITHUB_URL', enabled: false, required: false, order: 4 },
-  { key: 'EXPECTED_SALARY', enabled: false, required: false, order: 5 },
-  { key: 'COVER_LETTER', enabled: false, required: false, order: 6 },
+  { key: 'FIRST_NAME', enabled: true, required: true, order: 1 },
+  { key: 'LAST_NAME', enabled: true, required: true, order: 2 },
+  { key: 'EMAIL', enabled: true, required: true, order: 3 },
+  { key: 'PHONE', enabled: true, required: true, order: 4 },
+  { key: 'RESUME_URL', enabled: false, required: false, order: 5 },
+  { key: 'CURRENT_COMPANY', enabled: false, required: false, order: 6 },
+  { key: 'YEARS_OF_EXPERIENCE', enabled: false, required: false, order: 7 },
+  { key: 'LINKEDIN_URL', enabled: false, required: false, order: 8 },
+  { key: 'PORTFOLIO_URL', enabled: false, required: false, order: 9 },
+  { key: 'GITHUB_URL', enabled: false, required: false, order: 10 },
+  { key: 'EXPECTED_SALARY', enabled: false, required: false, order: 11 },
+  { key: 'COVER_LETTER', enabled: false, required: false, order: 12 },
 ];
 
 const defaultFormSections = (): JobApplicationFormSectionDto[] => [

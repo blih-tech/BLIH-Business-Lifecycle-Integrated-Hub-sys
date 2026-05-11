@@ -27,6 +27,7 @@ import { Textarea } from '@/shared/components/ui/textarea';
 
 type JobDetailsStepProps = {
   form: UseFormReturn<JobDetailsFormValues>;
+  hiringManagerOptions: ReadonlyArray<{ value: string; label: string }>;
 };
 
 type FormSectionCardProps = {
@@ -88,41 +89,6 @@ const salaryModeOptions = [
   value: (typeof salaryModeValues)[number];
   label: string;
 }>;
-
-const hiringManagerOptions = [
-  {
-    value: 'h1a2b3c4d-e5f6-7890-abcd-ef1234567890',
-    label: 'John Smith - Engineering',
-  },
-  {
-    value: 'i2b3c4d5-e6f7-8901-bcde-f23456789012',
-    label: 'Sarah Johnson - Product',
-  },
-  {
-    value: 'j3c4d5e6-f7a8-9012-cdef-345678901234',
-    label: 'Mike Williams - Design',
-  },
-  {
-    value: 'k4d5e6f7-a8b9-0123-defg-456789012345',
-    label: 'Emily Brown - Marketing',
-  },
-  {
-    value: 'l5e6f7a8-b9c0-1234-efgh-567890123456',
-    label: 'David Lee - Operations',
-  },
-  {
-    value: 'm6f7a8b9-c0d1-2345-fghi-678901234567',
-    label: 'Lisa Chen - Finance',
-  },
-  {
-    value: 'n7a8b9c0-d1e2-3456-ghij-789012345678',
-    label: 'Robert Taylor - HR',
-  },
-  {
-    value: 'o8b9c0d1-e2f3-4567-hijk-890123456789',
-    label: 'Amanda White - Sales',
-  },
-] as const;
 
 function optionLabel(
   value: string | undefined,
@@ -192,7 +158,10 @@ function FormSectionCard({
   );
 }
 
-export function JobDetailsStep({ form }: JobDetailsStepProps) {
+export function JobDetailsStep({
+  form,
+  hiringManagerOptions,
+}: JobDetailsStepProps) {
   const [
     title,
     city,

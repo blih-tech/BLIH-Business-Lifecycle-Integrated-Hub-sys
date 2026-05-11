@@ -7,10 +7,15 @@ import type {
   JobResponseDto,
   UpdateJobDto,
 } from '@/types';
-import { delay } from '@/shared/lib/demo-utils';
-import { mockListJobsResponse } from '@/features/hr/recruitment/requests/mock-api';
 
 const API_PREFIX = '/hr/recruitment/jobs';
+type ApiEnvelope<T> = {
+  success: boolean;
+  message: string;
+  data: T | null;
+  error: unknown;
+  meta: { timestamp: string; requestId: string; version: string };
+};
 
 export function useJobs(query?: JobListQueryDto) {
   return useQuery({
@@ -18,14 +23,10 @@ export function useJobs(query?: JobListQueryDto) {
       query as Record<string, string> | undefined,
     ),
     queryFn: async () => {
-      // Live API call (disabled for now)
-      // return apiClient.get<ListJobsResponse>(
-      //   `${API_PREFIX}`,
-      //   query as Record<string, string> | undefined,
-      // );
-
-      await delay(1200);
-      return mockListJobsResponse;
+      return apiClient.get<ApiEnvelope<JobResponseDto[]>>(
+        `${API_PREFIX}`,
+        query as Record<string, string> | undefined,
+      );
     },
     select: (response) => response.data ?? [],
   });
@@ -34,38 +35,61 @@ export function useJobs(query?: JobListQueryDto) {
 export function useJob(id: string) {
   return useQuery({
     queryKey: queryKeys.hr.jobs.detail(id),
-    queryFn: () => apiClient.get<JobResponseDto>(`${API_PREFIX}/${id}`),
+    queryFn: () =>
+      apiClient.get<ApiEnvelope<JobResponseDto>>(`${API_PREFIX}/${id}`),
+    select: (response) => response.data,
     enabled: !!id,
   });
 }
 
 export function useCreateJob() {
-  return useMutation<JobResponseDto, ApiError, CreateJobDto>({
-    mutationFn: (data) => apiClient.post<JobResponseDto>(API_PREFIX, data),
+  return useMutation<JobResponseDto | null, ApiError, CreateJobDto>({
+    mutationFn: async (data) => {
+      const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
+        API_PREFIX,
+        data,
+      );
+      return response.data;
+    },
   });
 }
 
 export function useUpdateJob(id: string) {
-  return useMutation<JobResponseDto, ApiError, UpdateJobDto>({
-    mutationFn: (data) =>
-      apiClient.patch<JobResponseDto>(`${API_PREFIX}/${id}`, data),
+  return useMutation<JobResponseDto | null, ApiError, UpdateJobDto>({
+    mutationFn: async (data) => {
+      const response = await apiClient.patch<ApiEnvelope<JobResponseDto>>(
+        `${API_PREFIX}/${id}`,
+        data,
+      );
+      return response.data;
+    },
   });
 }
 
 export function useApproveJob(id: string) {
   return useMutation<
-    JobResponseDto,
+    JobResponseDto | null,
     ApiError,
     { decision: 'APPROVED' | 'REJECTED'; comments?: string }
   >({
-    mutationFn: (data) =>
-      apiClient.post<JobResponseDto>(`${API_PREFIX}/${id}/approve`, data),
+    mutationFn: async (data) => {
+      const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
+        `${API_PREFIX}/${id}/approve`,
+        data,
+      );
+      return response.data;
+    },
   });
 }
 
 export function useCloseJob(id: string) {
-  return useMutation<JobResponseDto, ApiError, { reason?: string }>({
-    mutationFn: (data) =>
-      apiClient.post<JobResponseDto>(`${API_PREFIX}/${id}/close`, data),
+  return useMutation<JobResponseDto | null, ApiError, { reason?: string }>({
+    mutationFn: async (data) => {
+      const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
+        `${API_PREFIX}/${id}/close`,
+        data,
+      );
+      return response.data;
+    },
   });
 }

@@ -203,10 +203,16 @@ export type JobApplicationFieldType = (typeof JobApplicationFieldType)[keyof typ
 
 
 export const JobApplicantOptionalFieldKey = {
+  FIRST_NAME: 'FIRST_NAME',
+  LAST_NAME: 'LAST_NAME',
+  EMAIL: 'EMAIL',
   PHONE: 'PHONE',
+  RESUME_URL: 'RESUME_URL',
   LINKEDIN_URL: 'LINKEDIN_URL',
   PORTFOLIO_URL: 'PORTFOLIO_URL',
   GITHUB_URL: 'GITHUB_URL',
+  CURRENT_COMPANY: 'CURRENT_COMPANY',
+  YEARS_OF_EXPERIENCE: 'YEARS_OF_EXPERIENCE',
   EXPECTED_SALARY: 'EXPECTED_SALARY',
   COVER_LETTER: 'COVER_LETTER'
 } as const

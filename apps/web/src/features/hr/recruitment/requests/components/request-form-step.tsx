@@ -24,6 +24,9 @@ import { Textarea } from '@/shared/components/ui/textarea';
 
 type RequestFormStepProps = {
   form: UseFormReturn<CreateRequestFormValues>;
+  departmentOptions: ReadonlyArray<{ value: string; label: string }>;
+  positionOptions: ReadonlyArray<{ value: string; label: string }>;
+  replaceForOptions: ReadonlyArray<{ value: string; label: string }>;
 };
 
 type FormSectionCardProps = {
@@ -37,45 +40,6 @@ type SummaryItemProps = {
   label: string;
   value: string;
 };
-
-const departmentOptions = [
-  {
-    value: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
-    label: 'Technical Department',
-  },
-  {
-    value: '2c42b412-eca9-5182-bbc2-ce7cd5902e51',
-    label: 'Creative Department',
-  },
-  {
-    value: '3d53c523-fdb9-6293-ccd3-df8de6a3f62',
-    label: 'Marketing Department',
-  },
-  {
-    value: '4e64d634-aeea-73a4-dde4-eg9ef7b4g73',
-    label: 'Operations Department',
-  },
-  { value: '5f75e745-bffb-84b5-ee5f-fh0gf8c5h84', label: 'Finance Department' },
-] as const;
-
-const positionOptions = [
-  { value: '8b76752b-df18-45bc-af74-1ea9a0db2e40', label: 'Frontend Engineer' },
-  { value: '9c87865c-eg29-56cd-bf85-2fb0b1ec3f51', label: 'Backend Engineer' },
-  {
-    value: 'ad98976d-fh30-67de-cg96-3gc1c2fd4g62',
-    label: 'Fullstack Engineer',
-  },
-  { value: 'be09098e-gi41-78ef-dh07-4hd2d3ge5h73', label: 'QA Engineer' },
-  { value: 'cf10109f-hj52-89fg-ei18-5ie3e4hf6i84', label: 'DevOps Engineer' },
-  { value: 'dg21210g-ik63-90gh-fj29-6jf4f5ig7j95', label: 'UI/UX Designer' },
-  { value: 'eh32311h-jl74-01hi-gk30-7kg5g6jh8k06', label: 'Product Designer' },
-  { value: 'fi43412i-km85-12ij-hl41-8lh6h7ki9l17', label: 'Product Manager' },
-  { value: 'gj54513j-ln96-23jk-im52-9mi7i8lj0m28', label: 'Data Analyst' },
-  {
-    value: 'hk65614k-mp07-34kl-jn63-0nj8j9mk1n39',
-    label: 'Marketing Specialist',
-  },
-] as const;
 
 const requestTypeOptions = [
   { value: 'NEW', label: 'New Role' },
@@ -106,17 +70,6 @@ const priorityOptions = [
   { value: 'HIGH', label: 'High' },
   { value: 'MEDIUM', label: 'Medium' },
   { value: 'LOW', label: 'Low' },
-] as const;
-
-const replaceForOptions = [
-  { value: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', label: 'Alice Njeri' },
-  { value: 'b2c3d4e5-f6a7-8901-bcde-f23456789012', label: 'Mercy Wanjiku' },
-  { value: 'c3d4e5f6-a7b8-9012-cdef-345678901234', label: 'Ian Mwangi' },
-  { value: 'd4e5f6a7-b8c9-0123-defg-456789012345', label: 'Kevin Kiptoo' },
-  { value: 'e5f6a7b8-c9d0-1234-efgh-567890123456', label: 'Ruth Kinyanjui' },
-  { value: 'f6a7b8c9-d0e1-2345-fghi-678901234567', label: 'John Ochieng' },
-  { value: 'a7b8c9d0-e1f2-3456-ghij-789012345678', label: 'Sarah Akinyi' },
-  { value: 'b8c9d0e1-f2a3-4567-hijk-890123456789', label: 'David Kamau' },
 ] as const;
 
 function optionLabel(
@@ -170,7 +123,12 @@ function FormSectionCard({
   );
 }
 
-export function RequestFormStep({ form }: RequestFormStepProps) {
+export function RequestFormStep({
+  form,
+  departmentOptions,
+  positionOptions,
+  replaceForOptions,
+}: RequestFormStepProps) {
   const [
     jobTitle,
     department,
