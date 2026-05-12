@@ -1,18 +1,27 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+import {
+  JobApprovalPermissions,
+  JobPermissions,
+} from '@/shared/auth/recruitment-permission-slugs';
 
 import { CreateRequestDialog } from '@/features/hr/recruitment/requests/components/create-request-dialog';
 import { JobRequestDetailsDialog } from '@/features/hr/recruitment/requests/components/job-request-details-dialog';
 import { JobRequestCard } from '@/features/hr/recruitment/requests/components/job-request-card';
 import { JobRequestJustifyDialog } from '@/features/hr/recruitment/requests/components/job-request-justify-dialog';
 import { JobRequestCardSkeleton } from '@/features/hr/recruitment/requests/components/job-request-card-skeleton';
+import { useApproveJobMutation } from '@/features/hr/recruitment/requests/hooks/use-jobs';
 import type {
   FullJobRequest,
   JobRequestPriority,
 } from '@/features/hr/recruitment/requests/types';
-import { delay } from '@/shared/lib/demo-utils';
+import { queryKeys } from '@/lib/query-keys';
+import { useHrAbility } from '@/shared/auth/hr-ability-context';
+import { notifyPermissionDenied } from '@/shared/components/access/notify-permission-denied';
 import { toast } from 'sonner';
 
 type JobRequestsSectionProps = {
@@ -29,6 +38,14 @@ export function JobRequestsSection({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+  const { hasPermission } = useHrAbility();
+  const approveJob = useApproveJobMutation();
+
+  const canDecideApproval = hasPermission(JobApprovalPermissions.DECIDE);
+  const canEditJob = hasPermission(JobPermissions.UPDATE);
+  const canCreateJob = hasPermission(JobPermissions.CREATE);
+
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<
     number | null
   >(null);
@@ -45,6 +62,19 @@ export function JobRequestsSection({
   const isCreateRequestDialogOpen =
     searchParams.get('create') === 'new-request';
   const requestPriorityOrder: JobRequestPriority[] = ['high', 'medium', 'low'];
+
+  const createIntent = searchParams.get('create');
+
+  useEffect(() => {
+    if (createIntent !== 'new-request' || canCreateJob) return;
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.delete('create');
+    const query = nextParams.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname);
+    notifyPermissionDenied(
+      'You do not have permission to create hiring requests.',
+    );
+  }, [canCreateJob, createIntent, pathname, router, searchParams]);
 
   const filteredItems = useMemo(() => items, [items]);
   const filteredRequestEntries = useMemo(
@@ -107,6 +137,10 @@ export function JobRequestsSection({
   }
 
   async function handleApprove() {
+    if (!canDecideApproval) {
+      notifyPermissionDenied();
+      return;
+    }
     if (!selectedRequest?.jobId) {
       toast.error('Unable to approve this request.');
       return;
@@ -114,14 +148,15 @@ export function JobRequestsSection({
 
     setApprovingRequestId(selectedRequest.jobId);
     try {
-      // Live API call (disabled for now)
-      // await apiClient.post(`/hr/recruitment/jobs/${selectedRequest.jobId}/approve`, {
-      //   decision: "APPROVED",
-      // });
-
-      await delay(1200);
+      await approveJob.mutateAsync({
+        jobId: selectedRequest.jobId,
+        decision: 'APPROVED',
+      });
       toast.success('Approval submitted');
       setSelectedRequestIndex(null);
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hr.jobs.all(),
+      });
     } catch (error) {
       console.error('Failed to approve job request:', error);
       toast.error('Approval failed');
@@ -131,6 +166,10 @@ export function JobRequestsSection({
   }
 
   async function handleCardApprove(request: FullJobRequest) {
+    if (!canDecideApproval) {
+      notifyPermissionDenied();
+      return;
+    }
     if (!request.jobId) {
       toast.error('Unable to approve this request.');
       return;
@@ -138,13 +177,14 @@ export function JobRequestsSection({
 
     setApprovingRequestId(request.jobId);
     try {
-      // Live API call (disabled for now)
-      // await apiClient.post(`/hr/recruitment/jobs/${request.jobId}/approve`, {
-      //   decision: "APPROVED",
-      // });
-
-      await delay(1200);
+      await approveJob.mutateAsync({
+        jobId: request.jobId,
+        decision: 'APPROVED',
+      });
       toast.success('Approval submitted');
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hr.jobs.all(),
+      });
     } catch (error) {
       console.error('Failed to approve job request:', error);
       toast.error('Approval failed');
@@ -157,6 +197,10 @@ export function JobRequestsSection({
     action: 'review' | 'reject',
     justification: string,
   ) {
+    if (!canDecideApproval) {
+      notifyPermissionDenied();
+      return;
+    }
     const request = justifyRequest;
     if (!request?.jobId) {
       toast.error('Unable to submit this request.');
@@ -165,20 +209,23 @@ export function JobRequestsSection({
 
     setSubmittingJustifyAction(action);
     try {
-      void justification;
-      // Live API call (disabled for now)
-      // await apiClient.post(`/hr/recruitment/jobs/${request.jobId}/approve`, {
-      //   decision: "REJECTED",
-      //   comments:
-      //     action === "review"
-      //       ? `REVISION_REQUEST: ${justification}`
-      //       : justification,
-      // });
+      const comments =
+        action === 'review'
+          ? `REVISION_REQUEST: ${justification}`
+          : justification;
 
-      await delay(1200);
+      await approveJob.mutateAsync({
+        jobId: request.jobId,
+        decision: 'REJECTED',
+        comments,
+      });
       toast.success(
         action === 'review' ? 'Revision requested' : 'Request declined',
       );
+      setJustifyRequestIndex(null);
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hr.jobs.all(),
+      });
     } catch (error) {
       console.error('Failed to submit justification:', error);
       toast.error('Request failed');
@@ -209,6 +256,7 @@ export function JobRequestsSection({
               onJustifyClick={() => setJustifyRequestIndex(index)}
               onApproveClick={() => handleCardApprove(request)}
               isApproving={approvingRequestId === request.jobId}
+              showApprovalActions={canDecideApproval}
             />
           ))}
         </div>
@@ -240,6 +288,8 @@ export function JobRequestsSection({
             if (request) setEditRequest(request);
           }}
           isApproving={approvingRequestId === selectedRequest?.jobId}
+          canDecideApproval={canDecideApproval}
+          canEditJob={canEditJob}
         />
       ) : null}
 

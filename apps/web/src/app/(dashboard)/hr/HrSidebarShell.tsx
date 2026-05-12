@@ -20,7 +20,9 @@ import { SearchInput } from '@/shared/components/SearchInput';
 import {
   HR_MAIN_NAV,
   type HrMainNavItem,
+  type HrSubNavItem,
 } from '@/shared/constants/hr-navigation';
+import { useHrAbility } from '@/shared/auth/hr-ability-context';
 import { cn } from '@/shared/lib/utils';
 import { useSidebar } from '@/shared/components/ui/sidebar';
 
@@ -92,10 +94,19 @@ export function HrSidebarShell({
   user,
 }: HrSidebarShellProps) {
   const { setOpen } = useSidebar();
+  const { hasAnyPermission } = useHrAbility();
   const pathname = usePathname();
   const isHrRoot = pathname === '/hr';
   const activeMain = isHrRoot ? null : resolveActiveMain(pathname);
-  const activeSubItems = activeMain?.subItems ?? [];
+  const rawSubItems = activeMain?.subItems ?? [];
+
+  const filterSubItem = (subItem: HrSubNavItem): boolean => {
+    const req = subItem.requiredAnyPermissions;
+    if (!req?.length) return true;
+    return hasAnyPermission(req);
+  };
+
+  const activeSubItems = rawSubItems.filter(filterSubItem);
   const activeSubHref =
     activeSubItems.find((subItem) => pathname.startsWith(subItem.href))?.href ??
     activeSubItems[0]?.href;

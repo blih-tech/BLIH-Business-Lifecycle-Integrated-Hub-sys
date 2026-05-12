@@ -1,4 +1,5 @@
 import type { WebSession } from './session';
+import { userHasPermission } from './permission-check';
 import { isAuthorizedForDashboard, type DashboardArea } from './role-routing';
 
 /** Aligns with API `/auth/me` permission strings (see `packages/types/src/rbac/permissions.constants.ts`). */
@@ -18,11 +19,7 @@ export type DashboardNavItem = {
 };
 
 function hasPermission(session: WebSession, required: string): boolean {
-  const perms = session.permissions;
-  if (perms.includes(required)) return true;
-  const prefix = required.split(':')[0];
-  if (prefix && perms.includes(`${prefix}:*`)) return true;
-  return false;
+  return userHasPermission(session.permissions, session.roles, required);
 }
 
 function canAccessHr(session: WebSession): boolean {

@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
 import { Check, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,6 +35,7 @@ import {
   useRecruitmentUsers,
 } from '@/features/hr/recruitment/requests/hooks/use-recruitment-reference-data';
 import { queryKeys } from '@/lib/query-keys';
+import { notifyPermissionDenied } from '@/shared/components/access/notify-permission-denied';
 import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
@@ -45,6 +47,7 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import { Form } from '@/shared/components/ui/form';
+import { useHrAbility } from '@/shared/auth/hr-ability-context';
 
 type CreateRequestDialogProps = {
   open: boolean;
@@ -139,6 +142,7 @@ export function CreateRequestDialog({
   editRequest,
 }: CreateRequestDialogProps) {
   const queryClient = useQueryClient();
+  const { hasPermission } = useHrAbility();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = Boolean(editRequest?.jobId);
@@ -297,6 +301,14 @@ export function CreateRequestDialog({
   async function handleApplicationComplete() {
     const isValid = await applicationForm.trigger();
     if (!isValid) return;
+
+    const requiredPermission = isEditMode
+      ? JobPermissions.UPDATE
+      : JobPermissions.CREATE;
+    if (!hasPermission(requiredPermission)) {
+      notifyPermissionDenied();
+      return;
+    }
 
     setIsLoading(true);
     try {

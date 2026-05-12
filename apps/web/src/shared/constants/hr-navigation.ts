@@ -1,8 +1,12 @@
+import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+
 export type HrSubNavItem = {
   id: string;
   label: string;
   href: string;
   badge?: string;
+  /** If set, link is shown only when the user has any of these permissions. */
+  requiredAnyPermissions?: readonly string[];
 };
 
 export type HrMainNavItem = {
@@ -41,6 +45,7 @@ export const HR_MAIN_NAV: HrMainNavItem[] = [
         label: 'Requests',
         href: '/hr/recruitment/requests',
         badge: '4',
+        requiredAnyPermissions: [JobPermissions.VIEW],
       },
       {
         id: 'ready-to-post',

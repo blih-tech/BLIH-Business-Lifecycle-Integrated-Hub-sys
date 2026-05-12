@@ -17,7 +17,11 @@ type ApiEnvelope<T> = {
   meta: { timestamp: string; requestId: string; version: string };
 };
 
-export function useJobs(query?: JobListQueryDto) {
+export function useJobs(
+  query?: JobListQueryDto,
+  options?: { enabled?: boolean },
+) {
+  const enabled = options?.enabled ?? true;
   return useQuery({
     queryKey: queryKeys.hr.jobs.list(
       query as Record<string, string> | undefined,
@@ -29,6 +33,7 @@ export function useJobs(query?: JobListQueryDto) {
       );
     },
     select: (response) => response.data ?? [],
+    enabled,
   });
 }
 
@@ -66,16 +71,20 @@ export function useUpdateJob(id: string) {
   });
 }
 
-export function useApproveJob(id: string) {
+export function useApproveJobMutation() {
   return useMutation<
     JobResponseDto | null,
     ApiError,
-    { decision: 'APPROVED' | 'REJECTED'; comments?: string }
+    {
+      jobId: string;
+      decision: 'APPROVED' | 'REJECTED';
+      comments?: string | null;
+    }
   >({
-    mutationFn: async (data) => {
+    mutationFn: async ({ jobId, decision, comments }) => {
       const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
-        `${API_PREFIX}/${id}/approve`,
-        data,
+        `${API_PREFIX}/${jobId}/approve`,
+        { decision, comments: comments ?? undefined },
       );
       return response.data;
     },

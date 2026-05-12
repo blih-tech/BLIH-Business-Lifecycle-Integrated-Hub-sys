@@ -14,6 +14,8 @@ type JobRequestCardProps = {
   onJustifyClick?: () => void;
   onApproveClick?: () => void;
   isApproving?: boolean;
+  /** When false, approval actions are hidden (user lacks job_approval:decide). */
+  showApprovalActions?: boolean;
 };
 
 function departmentLabel(department: JobRequestDepartment) {
@@ -73,6 +75,7 @@ export function JobRequestCard({
   onJustifyClick,
   onApproveClick,
   isApproving = false,
+  showApprovalActions = true,
 }: JobRequestCardProps) {
   function handleActionClick(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
@@ -148,6 +151,8 @@ export function JobRequestCard({
                 Waiting other approvals
               </span>
             </div>
+          ) : !showApprovalActions ? (
+            <span className="text-[12px] text-[#666]">View only</span>
           ) : (
             <>
               <Button

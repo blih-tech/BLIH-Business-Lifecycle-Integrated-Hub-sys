@@ -29,6 +29,8 @@ type JobRequestDetailsDialogProps = {
   onJustify: () => void;
   onEdit?: () => void;
   isApproving?: boolean;
+  canDecideApproval?: boolean;
+  canEditJob?: boolean;
 };
 
 type EmployeeCardProps = {
@@ -187,6 +189,8 @@ export function JobRequestDetailsDialog({
   onJustify,
   onEdit,
   isApproving = false,
+  canDecideApproval = false,
+  canEditJob = false,
 }: JobRequestDetailsDialogProps) {
   const dialogVariant = variant ?? 'active';
   const ownRequest = request
@@ -473,7 +477,7 @@ export function JobRequestDetailsDialog({
                       type="button"
                       className="h-9 w-full rounded-[6px] bg-[#1e66f7] text-sm text-white hover:bg-[#1b5ce0]"
                       onClick={onApprove}
-                      disabled={isApproving}
+                      disabled={isApproving || !canDecideApproval}
                     >
                       {isApproving ? (
                         <>
@@ -489,6 +493,7 @@ export function JobRequestDetailsDialog({
                       variant="outline"
                       className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
                       onClick={onJustify}
+                      disabled={!canDecideApproval}
                     >
                       Justify
                     </Button>
@@ -497,7 +502,7 @@ export function JobRequestDetailsDialog({
                       variant="outline"
                       className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
                       onClick={onEdit}
-                      disabled={!onEdit}
+                      disabled={!onEdit || !canEditJob}
                     >
                       <Pencil className="h-4 w-4" />
                       Edit
@@ -519,7 +524,7 @@ export function JobRequestDetailsDialog({
                     variant="outline"
                     className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
                     onClick={onEdit}
-                    disabled={!onEdit}
+                    disabled={!onEdit || !canEditJob}
                   >
                     <Pencil className="h-4 w-4" />
                     Edit Job
@@ -539,7 +544,7 @@ export function JobRequestDetailsDialog({
                     variant="outline"
                     className="h-9 w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
                     onClick={onEdit}
-                    disabled={!onEdit}
+                    disabled={!onEdit || !canEditJob}
                   >
                     <Pencil className="h-4 w-4" />
                     Edit Job

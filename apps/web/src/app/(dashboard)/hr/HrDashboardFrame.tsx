@@ -3,9 +3,15 @@
 import * as React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { AppHeader } from '@/shared/components/AppHeader';
-import { SidebarProvider, useSidebar } from '@/shared/components/ui/sidebar';
 import { HrSidebarShell } from '@/app/(dashboard)/hr/HrSidebarShell';
+import { AppHeader } from '@/shared/components/AppHeader';
+import {
+  HrAbilityProvider,
+  useHrAbility,
+} from '@/shared/auth/hr-ability-context';
+import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+import { useGuardedAction } from '@/shared/hooks/use-guarded-action';
+import { SidebarProvider, useSidebar } from '@/shared/components/ui/sidebar';
 
 type HrDashboardFrameProps = {
   user: {
@@ -14,12 +20,19 @@ type HrDashboardFrameProps = {
     email: string;
     onLogout?: () => void;
   };
+  roles: string[];
+  permissions: string[];
   children: React.ReactNode;
 };
 
-function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
+function HrDashboardFrameInner({
+  user,
+  children,
+}: Pick<HrDashboardFrameProps, 'user' | 'children'>) {
   const pathname = usePathname();
   const router = useRouter();
+  const { hasPermission } = useHrAbility();
+  const guardCreateNavigation = useGuardedAction(JobPermissions.CREATE);
   const isHrRoot = pathname === '/hr';
   const { toggleSidebar } = useSidebar();
   const [subnavOpen, setSubnavOpen] = React.useState(!isHrRoot);
@@ -29,14 +42,21 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
       '/hr/recruitment/requests': {
         label: 'Create New Request',
         onClick: () =>
-          router.push('/hr/recruitment/requests?create=new-request'),
+          guardCreateNavigation(() =>
+            router.push('/hr/recruitment/requests?create=new-request'),
+          ),
       },
     }),
-    [router],
+    [guardCreateNavigation, router],
   );
 
-  const createAction =
+  const rawCreateAction =
     createActionByPath[pathname as keyof typeof createActionByPath];
+
+  const createAction =
+    rawCreateAction && hasPermission(JobPermissions.CREATE)
+      ? rawCreateAction
+      : undefined;
 
   React.useEffect(() => {
     setSubnavOpen(!isHrRoot);
@@ -74,10 +94,17 @@ function HrDashboardFrameInner({ user, children }: HrDashboardFrameProps) {
   );
 }
 
-export function HrDashboardFrame({ user, children }: HrDashboardFrameProps) {
+export function HrDashboardFrame({
+  user,
+  roles,
+  permissions,
+  children,
+}: HrDashboardFrameProps): React.ReactElement {
   return (
     <SidebarProvider defaultOpen={false} className="w-full">
-      <HrDashboardFrameInner user={user}>{children}</HrDashboardFrameInner>
+      <HrAbilityProvider roles={roles} permissions={permissions}>
+        <HrDashboardFrameInner user={user}>{children}</HrDashboardFrameInner>
+      </HrAbilityProvider>
     </SidebarProvider>
   );
 }

@@ -1,8 +1,6 @@
 import { HrDashboardFrame } from '@/app/(dashboard)/hr/HrDashboardFrame';
 import { getSession } from '@/shared/auth/session';
 
-const DEMO_MODE = process.env.DEMO_MODE === 'true';
-
 type HrDashboardLayoutProps = {
   children: React.ReactNode;
 };
@@ -52,19 +50,7 @@ function getDisplayName(
 export default async function HrDashboardLayout({
   children,
 }: HrDashboardLayoutProps) {
-  const session = DEMO_MODE
-    ? {
-        authenticated: true,
-        roles: ['hr'],
-        permissions: [] as string[],
-        userId: null,
-        sub: null,
-        username: 'demo',
-        email: 'user@blih.local',
-        firstName: 'Demo',
-        lastName: 'User',
-      }
-    : await getSession();
+  const session = await getSession();
 
   const userName = getDisplayName(
     session.firstName,
@@ -86,6 +72,8 @@ export default async function HrDashboardLayout({
         name: userName,
         email: userEmail,
       }}
+      roles={session.roles}
+      permissions={session.permissions}
     >
       {children}
     </HrDashboardFrame>
