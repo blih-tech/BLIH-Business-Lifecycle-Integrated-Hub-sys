@@ -28,7 +28,14 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "passThroughEnv": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "KEYCLOAK_URL",
+        "KEYCLOAK_REALM"
+      ]
     }
   }
 }

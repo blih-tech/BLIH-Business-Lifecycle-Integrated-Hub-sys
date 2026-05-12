@@ -9,7 +9,7 @@ import {
   HrAbilityProvider,
   useHrAbility,
 } from '@/shared/auth/hr-ability-context';
-import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { useGuardedAction } from '@/shared/hooks/use-guarded-action';
 import { SidebarProvider, useSidebar } from '@/shared/components/ui/sidebar';
 

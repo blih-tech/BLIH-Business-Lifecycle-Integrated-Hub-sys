@@ -15,7 +15,7 @@ import {
 import { useJobs } from '@/features/hr/recruitment/requests/hooks';
 import { mapJobResponseToRequest } from '@/features/hr/recruitment/requests/job-request-mappers';
 import { useHrAbility } from '@/shared/auth/hr-ability-context';
-import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { PermissionGate } from '@/shared/components/access/permission-gate';
 
 export * from '@/features/hr/recruitment/requests/components';

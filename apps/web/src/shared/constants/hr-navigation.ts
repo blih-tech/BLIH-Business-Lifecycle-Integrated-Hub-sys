@@ -1,4 +1,4 @@
-import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 
 export type HrSubNavItem = {
   id: string;

@@ -1,5 +1,5 @@
 import { RecruitmentRequestsContent } from '@/features/hr/recruitment/requests';
-import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { userHasPermission } from '@/shared/auth/permission-check';
 import { AccessDeniedCallout } from '@/shared/components/access/access-denied-callout';
 import { getSession } from '@/shared/auth/session';

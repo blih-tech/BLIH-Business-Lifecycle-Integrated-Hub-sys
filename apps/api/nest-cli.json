@@ -4,6 +4,17 @@
   "entryFile": "apps/api/src/main",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "watchAssets": true,
+    "assets": [
+      {
+        "include": "src/**/*",
+        "exclude": "**/apps/web/**",
+        "watchAssets": true
+      },
+      "**/*.json",
+      "**/*.md",
+      "**/*.txt"
+    ]
   }
 }

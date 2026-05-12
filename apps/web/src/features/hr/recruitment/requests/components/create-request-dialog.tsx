@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { JobPermissions } from '@/shared/auth/recruitment-permission-slugs';
+import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { Check, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';

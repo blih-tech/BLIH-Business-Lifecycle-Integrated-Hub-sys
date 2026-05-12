@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   JobApprovalPermissions,
   JobPermissions,
-} from '@/shared/auth/recruitment-permission-slugs';
+} from '@repo/types/rbac/permissions.constants';
 
 import { CreateRequestDialog } from '@/features/hr/recruitment/requests/components/create-request-dialog';
 import { JobRequestDetailsDialog } from '@/features/hr/recruitment/requests/components/job-request-details-dialog';
