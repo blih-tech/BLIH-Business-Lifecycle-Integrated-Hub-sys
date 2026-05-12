@@ -8,9 +8,13 @@ import type { ReadyToPostJob } from '@/features/hr/recruitment/ready-to-post/typ
 
 type ReadyToPostJobsSectionProps = {
   items: ReadyToPostJob[];
+  onPostJob?: (job: ReadyToPostJob) => void;
 };
 
-export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
+export function ReadyToPostJobsSection({
+  items,
+  onPostJob,
+}: ReadyToPostJobsSectionProps) {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const previewItem = useMemo(
@@ -25,12 +29,16 @@ export function ReadyToPostJobsSection({ items }: ReadyToPostJobsSectionProps) {
             key={`${item.jobDetailsForm.title}-${index}`}
             item={item}
             onPreviewClick={() => setPreviewIndex(index)}
+            onPostClick={() => onPostJob?.(item)}
           />
         ))}
       </section>
 
       <JobPostPreviewDialog
         item={previewItem}
+        onPost={() => {
+          if (previewItem) onPostJob?.(previewItem);
+        }}
         onOpenChange={(isOpen) => {
           if (!isOpen) setPreviewIndex(null);
         }}

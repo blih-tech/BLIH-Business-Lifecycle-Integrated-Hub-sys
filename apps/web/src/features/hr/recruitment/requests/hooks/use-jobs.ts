@@ -6,7 +6,7 @@ import type {
   JobListQueryDto,
   JobResponseDto,
   UpdateJobDto,
-} from '@/types';
+} from '@repo/types/recruitment/jobs';
 
 const API_PREFIX = '/hr/recruitment/jobs';
 type ApiEnvelope<T> = {
@@ -97,6 +97,38 @@ export function useCloseJob(id: string) {
       const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
         `${API_PREFIX}/${id}/close`,
         data,
+      );
+      return response.data;
+    },
+  });
+}
+
+export function useCloseJobMutation() {
+  return useMutation<
+    JobResponseDto | null,
+    ApiError,
+    { jobId: string; reason?: string }
+  >({
+    mutationFn: async ({ jobId, reason }) => {
+      const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
+        `${API_PREFIX}/${jobId}/close`,
+        reason ? { reason } : undefined,
+      );
+      return response.data;
+    },
+  });
+}
+
+export function usePublishJobMutation() {
+  return useMutation<
+    JobResponseDto | null,
+    ApiError,
+    { jobId: string; publishedAt?: string }
+  >({
+    mutationFn: async ({ jobId, publishedAt }) => {
+      const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
+        `${API_PREFIX}/${jobId}/publish`,
+        publishedAt ? { publishedAt } : undefined,
       );
       return response.data;
     },

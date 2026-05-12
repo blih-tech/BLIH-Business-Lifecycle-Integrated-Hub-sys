@@ -2,9 +2,9 @@ import type { ApplicationFormValues } from '@/features/hr/recruitment/requests/a
 import type { JobDetailsFormValues } from '@/features/hr/recruitment/requests/job-details-schema';
 import type { CreateRequestFormValues } from '@/features/hr/recruitment/requests/form-schema';
 import type {
-  JobApprovalResponseDto,
+  JobApprovalDto,
   JobResponseDto,
-} from '@/types/recruitment';
+} from '@repo/types/recruitment/jobs';
 import type { ApprovalProgressState, FullJobRequest } from './types';
 
 const fallbackApproval: { status: ApprovalProgressState } = {
@@ -37,9 +37,7 @@ function extractRichTextText(value: unknown): string {
   return pieces.join(' ').trim();
 }
 
-function approvalToProgress(
-  approval?: JobApprovalResponseDto,
-): ApprovalProgressState {
+function approvalToProgress(approval?: JobApprovalDto): ApprovalProgressState {
   if (!approval) return 'pending';
   if (approval.decision === 'APPROVED') return 'approved';
   if (approval.decision === 'REJECTED') return 'rejected';

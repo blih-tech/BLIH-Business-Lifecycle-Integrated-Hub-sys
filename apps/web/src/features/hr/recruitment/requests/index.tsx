@@ -3,10 +3,6 @@
 import { useMemo } from 'react';
 
 import {
-  emptyRequestsMessage,
-  requestStats,
-} from '@/features/hr/recruitment/requests/mock-data';
-import {
   EmptyRequestsState,
   RequestsSection,
   RequestsStatsCard,
@@ -17,6 +13,7 @@ import { mapJobResponseToRequest } from '@/features/hr/recruitment/requests/job-
 import { useHrAbility } from '@/shared/auth/hr-ability-context';
 import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { PermissionGate } from '@/shared/components/access/permission-gate';
+import type { RequestsStatItem } from '@/features/hr/recruitment/requests/types';
 
 export * from '@/features/hr/recruitment/requests/components';
 export * from '@/features/hr/recruitment/requests/types';
@@ -57,6 +54,15 @@ export function RecruitmentRequestsContent({
         return mapJobResponseToRequest(job, isByMe ? 'by_me' : 'active');
       }
 
+      if (workflow === 'READY_TO_POST' || workflow === 'PUBLISHED') {
+        return mapJobResponseToRequest(job, 'posted');
+      }
+
+      if (workflow === 'CLOSED') {
+        return mapJobResponseToRequest(job, 'closed');
+      }
+
+      // Draft and unknown workflow states are currently shown under posted.
       return mapJobResponseToRequest(job, 'posted');
     });
   }, [currentUserName, jobs]);
@@ -71,12 +77,39 @@ export function RecruitmentRequestsContent({
     (request) => request.status === 'closed',
   );
   const hasRequests = normalizedRequests.length > 0;
+  const stats: RequestsStatItem[] = useMemo(
+    () => [
+      {
+        id: 'pending',
+        label: 'Pending approval',
+        value: String(pendingRequests.length),
+        icon: 'pending',
+      },
+      {
+        id: 'approved-by-you',
+        label: 'Approved by you',
+        value: String(pendingByMeRequests.length),
+        icon: 'approved',
+      },
+      {
+        id: 'closed',
+        label: 'Closed / declined',
+        value: String(declinedRequests.length),
+        icon: 'open_positions',
+      },
+    ],
+    [
+      declinedRequests.length,
+      pendingByMeRequests.length,
+      pendingRequests.length,
+    ],
+  );
 
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-8 px-4 py-5 md:px-5 md:py-6">
       <PermissionGate anyOf={[JobPermissions.VIEW]}>
         <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          {requestStats.map((item) => (
+          {stats.map((item) => (
             <RequestsStatsCard key={item.id} item={item} />
           ))}
         </section>
@@ -111,7 +144,7 @@ export function RecruitmentRequestsContent({
             />
 
             {!isLoading && !hasRequests ? (
-              <EmptyRequestsState message={emptyRequestsMessage} />
+              <EmptyRequestsState message="No job requests found." />
             ) : null}
           </>
         )}

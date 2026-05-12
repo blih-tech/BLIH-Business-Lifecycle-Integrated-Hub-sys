@@ -1,10 +1,22 @@
-import type {
-  JobApplicationFormResponseDto,
-  JobResponseDto,
-  ListJobsResponse,
-} from '@/types/recruitment';
+import type { JobResponseDto } from '@repo/types/recruitment/jobs';
 
-const baseApplicationForm: JobApplicationFormResponseDto = {
+type JobApplicationFormInResponse = NonNullable<
+  JobResponseDto['applicationForm']
+>;
+
+export interface MockListJobsResponse {
+  success: boolean;
+  message: string;
+  data: JobResponseDto[];
+  error: null;
+  meta: {
+    timestamp: string;
+    requestId: string;
+    version: string;
+  };
+}
+
+const baseApplicationForm: JobApplicationFormInResponse = {
   id: 'app-form-1',
   jobId: 'job-1',
   applicantFields: [
@@ -362,7 +374,7 @@ const jobs: JobResponseDto[] = [
   },
 ];
 
-export const mockListJobsResponse: ListJobsResponse = {
+export const mockListJobsResponse: MockListJobsResponse = {
   success: true,
   message: 'List of jobs',
   data: jobs,

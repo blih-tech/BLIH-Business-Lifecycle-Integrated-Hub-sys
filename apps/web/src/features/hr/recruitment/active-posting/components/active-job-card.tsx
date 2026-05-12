@@ -1,22 +1,33 @@
-"use client";
+'use client';
 
-import { ChevronDown, ChevronUp, Pencil } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
+import { useState } from 'react';
 
-import { AnalyticsTab } from "@/features/hr/recruitment/active-posting/components/analytics-tab";
-import { ApplicantsTab } from "@/features/hr/recruitment/active-posting/components/applicants-tab";
-import { JobDetailTab } from "@/features/hr/recruitment/active-posting/components/job-detail-tab";
-import type { ActiveJobItem } from "@/features/hr/recruitment/active-posting/types";
-import { Button } from "@/shared/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import { AnalyticsTab } from '@/features/hr/recruitment/active-posting/components/analytics-tab';
+import { ApplicantsTab } from '@/features/hr/recruitment/active-posting/components/applicants-tab';
+import { JobDetailTab } from '@/features/hr/recruitment/active-posting/components/job-detail-tab';
+import type { ActiveJobItem } from '@/features/hr/recruitment/active-posting/types';
+import { Button } from '@/shared/components/ui/button';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/shared/components/ui/tabs';
 
 type ActiveJobCardProps = {
   job: ActiveJobItem;
   defaultExpanded?: boolean;
   historyMode?: boolean;
+  onCloseJob?: (job: ActiveJobItem) => void;
 };
 
-export function ActiveJobCard({ job, defaultExpanded = false, historyMode = false }: ActiveJobCardProps) {
+export function ActiveJobCard({
+  job,
+  defaultExpanded = false,
+  historyMode = false,
+  onCloseJob,
+}: ActiveJobCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
@@ -25,7 +36,9 @@ export function ActiveJobCard({ job, defaultExpanded = false, historyMode = fals
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-2">
             <div className="flex items-center gap-3">
-              <h2 className="text-[18px] font-semibold leading-4 tracking-[-0.3125px] text-black">{job.title}</h2>
+              <h2 className="text-[18px] font-semibold leading-4 tracking-[-0.3125px] text-black">
+                {job.title}
+              </h2>
               {job.levelTag ? (
                 <span className="inline-flex h-[22px] items-center justify-center rounded-[6px] border border-primary px-[9px] py-[3px] text-xs font-medium text-primary">
                   {job.levelTag}
@@ -55,8 +68,12 @@ export function ActiveJobCard({ job, defaultExpanded = false, historyMode = fals
               onClick={() => setIsExpanded((previous) => !previous)}
               aria-expanded={isExpanded}
             >
-              {isExpanded ? <ChevronUp className="h-[14px] w-[14px]" /> : <ChevronDown className="h-[14px] w-[14px]" />}
-              {isExpanded ? "Less" : "More"}
+              {isExpanded ? (
+                <ChevronUp className="h-[14px] w-[14px]" />
+              ) : (
+                <ChevronDown className="h-[14px] w-[14px]" />
+              )}
+              {isExpanded ? 'Less' : 'More'}
             </Button>
           </div>
         </div>
@@ -65,14 +82,20 @@ export function ActiveJobCard({ job, defaultExpanded = false, historyMode = fals
           <span className="inline-flex rounded-[4px] bg-[rgba(30,102,247,0.1)] px-1 py-0.5 text-xs font-semibold uppercase text-primary">
             {job.department}
           </span>
-          <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">{job.employmentType}</span>
-          <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">{job.workMode}</span>
+          <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">
+            {job.employmentType}
+          </span>
+          <span className="text-sm font-normal tracking-[-0.1504px] text-[#666]">
+            {job.workMode}
+          </span>
         </div>
       </div>
 
       <div
         className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          isExpanded
+            ? 'grid-rows-[1fr] opacity-100'
+            : 'grid-rows-[0fr] opacity-0'
         }`}
       >
         <div className="min-h-0 overflow-hidden py-6">
@@ -115,6 +138,7 @@ export function ActiveJobCard({ job, defaultExpanded = false, historyMode = fals
                 type="button"
                 variant="outline"
                 className="h-[36px] w-full rounded-[6px] border-[#ff3b30] text-sm text-[#ff3b30] hover:bg-[#fff1f0]"
+                onClick={() => onCloseJob?.(job)}
               >
                 Close Job
               </Button>

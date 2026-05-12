@@ -20,7 +20,7 @@ import {
   createRequestFormSchema,
   type CreateRequestFormValues,
 } from '@/features/hr/recruitment/requests/form-schema';
-import type { CreateJobDto } from '@/types/recruitment';
+import type { CreateJobDto } from '@repo/types/recruitment/jobs';
 import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/types';
 import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
@@ -378,7 +378,7 @@ export function CreateRequestDialog({
           sections: appFormValues.sections,
           customFields: appFormValues.customFields.map((field) => ({
             ...field,
-            type: field.type as import('@/types/recruitment').JobApplicationFieldType,
+            type: field.type as import('@repo/types/recruitment/jobs').JobApplicationFieldType,
           })),
         },
       };

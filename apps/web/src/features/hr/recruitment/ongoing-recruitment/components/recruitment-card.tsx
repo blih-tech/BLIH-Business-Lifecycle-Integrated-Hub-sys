@@ -1,64 +1,90 @@
-"use client";
+'use client';
 
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 
-import { InterviewReviewDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/interview-review-dialog";
-import { SetupCommitteeDialog } from "@/features/hr/recruitment/ongoing-recruitment/components/setup-committee-dialog";
-import { InterviewTab } from "@/features/hr/recruitment/ongoing-recruitment/components/interview-tab";
-import { ShortlistedTab } from "@/features/hr/recruitment/ongoing-recruitment/components/shortlisted-tab";
-import { TopTriggers } from "@/features/hr/recruitment/ongoing-recruitment/components/top-triggers";
-import { WaitlistedTab } from "@/features/hr/recruitment/ongoing-recruitment/components/waitlisted-tab";
-import { ongoingCommitteePeople } from "@/features/hr/recruitment/ongoing-recruitment/mock-data";
-import type { OngoingCommitteePerson } from "@/features/hr/recruitment/ongoing-recruitment/types";
-import type { OngoingInterviewApplicant, OngoingRecruitmentJob } from "@/features/hr/recruitment/ongoing-recruitment/types";
-import { Button } from "@/shared/components/ui/button";
-import { Tabs, TabsContent } from "@/shared/components/ui/tabs";
+import { InterviewReviewDialog } from '@/features/hr/recruitment/ongoing-recruitment/components/interview-review-dialog';
+import { SetupCommitteeDialog } from '@/features/hr/recruitment/ongoing-recruitment/components/setup-committee-dialog';
+import { InterviewTab } from '@/features/hr/recruitment/ongoing-recruitment/components/interview-tab';
+import { ShortlistedTab } from '@/features/hr/recruitment/ongoing-recruitment/components/shortlisted-tab';
+import { TopTriggers } from '@/features/hr/recruitment/ongoing-recruitment/components/top-triggers';
+import { WaitlistedTab } from '@/features/hr/recruitment/ongoing-recruitment/components/waitlisted-tab';
+import { ongoingCommitteePeople } from '@/features/hr/recruitment/ongoing-recruitment/mock-data';
+import type { OngoingCommitteePerson } from '@/features/hr/recruitment/ongoing-recruitment/types';
+import type {
+  OngoingInterviewApplicant,
+  OngoingRecruitmentJob,
+} from '@/features/hr/recruitment/ongoing-recruitment/types';
+import { Button } from '@/shared/components/ui/button';
+import { Tabs, TabsContent } from '@/shared/components/ui/tabs';
 
 type RecruitmentCardProps = {
   job: OngoingRecruitmentJob;
   currentUserName: string;
   defaultExpanded?: boolean;
+  onInterviewDecision?: (payload: {
+    applicantId: string;
+    action: 'reject' | 'offer' | 'waitlist';
+    reviews: OngoingInterviewApplicant['committeeReviews'];
+  }) => Promise<void> | void;
 };
 
 function namesEqual(left: string, right: string) {
   return left.trim().toLowerCase() === right.trim().toLowerCase();
 }
 
-export function RecruitmentCard({ job, currentUserName, defaultExpanded = false }: RecruitmentCardProps) {
+export function RecruitmentCard({
+  job,
+  currentUserName,
+  defaultExpanded = false,
+  onInterviewDecision,
+}: RecruitmentCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [isCommitteeDialogOpen, setIsCommitteeDialogOpen] = useState(false);
-  const [committeeMembers, setCommitteeMembers] = useState<OngoingCommitteePerson[]>(job.interviewCommittee);
+  const [committeeMembers, setCommitteeMembers] = useState<
+    OngoingCommitteePerson[]
+  >(job.interviewCommittee);
   const [interviews, setInterviews] = useState(job.interviews);
-  const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(null);
+  const [selectedApplicantId, setSelectedApplicantId] = useState<string | null>(
+    null,
+  );
 
   function handleSaveCommittee(members: OngoingCommitteePerson[]) {
     setCommitteeMembers(members);
-    console.log("interviewCommittee", {
+    console.log('interviewCommittee', {
       jobId: job.id,
       committeeMemberIds: members.map((member) => member.id),
     });
   }
 
-  const selectedApplicant = interviews.find((item) => item.id === selectedApplicantId) ?? null;
+  const selectedApplicant =
+    interviews.find((item) => item.id === selectedApplicantId) ?? null;
 
   function handleInterviewDecision(payload: {
     applicantId: string;
-    action: "reject" | "offer" | "waitlist";
-    reviews: OngoingInterviewApplicant["committeeReviews"];
+    action: 'reject' | 'offer' | 'waitlist';
+    reviews: OngoingInterviewApplicant['committeeReviews'];
   }) {
     setInterviews((current) =>
-      current.map((item) => (item.id === payload.applicantId ? { ...item, committeeReviews: payload.reviews } : item)),
+      current.map((item) =>
+        item.id === payload.applicantId
+          ? { ...item, committeeReviews: payload.reviews }
+          : item,
+      ),
     );
 
-    console.log("interviewDecision", {
+    console.log('interviewDecision', {
       jobId: job.id,
       applicantId: payload.applicantId,
       action: payload.action,
       currentUserName,
-      currentUserReview: payload.reviews.find((review) => namesEqual(review.memberName, currentUserName)) ?? null,
+      currentUserReview:
+        payload.reviews.find((review) =>
+          namesEqual(review.memberName, currentUserName),
+        ) ?? null,
       reviews: payload.reviews,
     });
+    void onInterviewDecision?.(payload);
   }
 
   return (
@@ -68,7 +94,9 @@ export function RecruitmentCard({ job, currentUserName, defaultExpanded = false 
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-3">
-                <h2 className="text-[18px] font-medium leading-4 tracking-[-0.3125px] text-black">{job.title}</h2>
+                <h2 className="text-[18px] font-medium leading-4 tracking-[-0.3125px] text-black">
+                  {job.title}
+                </h2>
                 <span className="inline-flex h-[22px] items-center justify-center rounded-[4px] bg-primary px-2 py-[2px] text-xs font-medium text-white">
                   {job.statusLabel}
                 </span>
@@ -91,8 +119,12 @@ export function RecruitmentCard({ job, currentUserName, defaultExpanded = false 
                 onClick={() => setIsExpanded((previous) => !previous)}
                 aria-expanded={isExpanded}
               >
-                {isExpanded ? <ChevronUp className="h-[14px] w-[14px]" /> : <ChevronDown className="h-[14px] w-[14px]" />}
-                {isExpanded ? "Less" : "More"}
+                {isExpanded ? (
+                  <ChevronUp className="h-[14px] w-[14px]" />
+                ) : (
+                  <ChevronDown className="h-[14px] w-[14px]" />
+                )}
+                {isExpanded ? 'Less' : 'More'}
               </Button>
             </div>
           </div>
@@ -100,11 +132,16 @@ export function RecruitmentCard({ job, currentUserName, defaultExpanded = false 
 
         <div
           className={`grid border-t border-[#e5e5e5] transition-[grid-template-rows,opacity] duration-300 ease-out ${
-            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+            isExpanded
+              ? 'grid-rows-[1fr] opacity-100'
+              : 'grid-rows-[0fr] opacity-0'
           }`}
         >
           <div className="min-h-0 overflow-hidden">
-            <Tabs defaultValue="interview" className="w-full space-y-4 px-6 pb-6 pt-4">
+            <Tabs
+              defaultValue="interview"
+              className="w-full space-y-4 px-6 pb-6 pt-4"
+            >
               <TopTriggers
                 onInterviewCount={job.onInterviewCount}
                 shortlistedCount={job.shortlistedCount}
