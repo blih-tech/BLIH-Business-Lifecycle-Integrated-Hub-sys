@@ -51,42 +51,46 @@ describe('RbacGuard', () => {
     expect(guard.canActivate(context)).toBe(true);
   });
 
-  it('allows hr_manager to access employee:view via baseline fallback when permissions empty', () => {
+  it('denies hr_manager when snapshot permissions are empty (no hardcoded role baseline)', () => {
     const guard = new RbacGuard(makeReflector(['employee:view']));
     const context = createContext({
       roles: ['hr_manager'],
       permissions: [],
       scopes: [],
     });
-    expect(guard.canActivate(context)).toBe(true);
+    expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
   });
 
-  it('allows hr user to access leave:view via baseline fallback', () => {
+  it('denies hr role when snapshot permissions are empty (no hardcoded role baseline)', () => {
     const guard = new RbacGuard(makeReflector(['leave:view']));
     const context = createContext({
       roles: ['hr'],
       permissions: [],
       scopes: [],
     });
-    expect(guard.canActivate(context)).toBe(true);
+    expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
   });
 
-  it('allows hr_assistant limited access but denies broader HR actions', () => {
-    const allowGuard = new RbacGuard(makeReflector(['employee:view']));
-    const allowCtx = createContext({
+  it('denies hr_assistant without snapshot permissions for slug-based @Roles', () => {
+    const employeeViewGuard = new RbacGuard(makeReflector(['employee:view']));
+    const employeeViewCtx = createContext({
       roles: ['hr_assistant'],
       permissions: [],
       scopes: [],
     });
-    expect(allowGuard.canActivate(allowCtx)).toBe(true);
+    expect(() => employeeViewGuard.canActivate(employeeViewCtx)).toThrow(
+      ForbiddenException,
+    );
 
-    const denyGuard = new RbacGuard(makeReflector(['employee:terminate']));
-    const denyCtx = createContext({
+    const terminateGuard = new RbacGuard(makeReflector(['employee:terminate']));
+    const terminateCtx = createContext({
       roles: ['hr_assistant'],
       permissions: [],
       scopes: [],
     });
-    expect(() => denyGuard.canActivate(denyCtx)).toThrow(ForbiddenException);
+    expect(() => terminateGuard.canActivate(terminateCtx)).toThrow(
+      ForbiddenException,
+    );
   });
 
   it('allows superadmin access to any permission', () => {
