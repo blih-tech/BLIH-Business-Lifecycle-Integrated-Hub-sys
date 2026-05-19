@@ -20,16 +20,16 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isDashboardRoute(pathname)) {
-    const hasAccessToken = request.cookies.has('kc_access');
-    if (!hasAccessToken) {
-      const loginUrl = new URL('/api/auth/login', request.url);
-      loginUrl.searchParams.set(
-        'redirect',
-        `${pathname}${request.nextUrl.search}`,
-      );
-      loginUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
-      return NextResponse.redirect(loginUrl);
-    }
+    // const hasAccessToken = request.cookies.has('kc_access');
+    // if (!hasAccessToken) {
+    //   const loginUrl = new URL('/api/auth/login', request.url);
+    //   loginUrl.searchParams.set(
+    //     'redirect',
+    //     `${pathname}${request.nextUrl.search}`,
+    //   );
+    //   loginUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
+    //   return NextResponse.redirect(loginUrl);
+    // }
 
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-pathname', pathname);
