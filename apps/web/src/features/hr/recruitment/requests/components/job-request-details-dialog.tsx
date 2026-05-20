@@ -1,12 +1,16 @@
 ﻿'use client';
 
-import { ChevronUp, Clock, Loader2, Pencil } from 'lucide-react';
+import { ChevronUp, Clock, Loader2, Pencil, Send } from 'lucide-react';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import type {
   FullJobRequest,
   JobRequestDepartment,
 } from '@/features/hr/recruitment/requests/types';
+import { useSubmitJobMutation } from '@/features/hr/recruitment/requests/hooks/use-jobs';
+import { queryKeys } from '@/lib/query-keys';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -193,10 +197,27 @@ export function JobRequestDetailsDialog({
   canEditJob = false,
 }: JobRequestDetailsDialogProps) {
   const dialogVariant = variant ?? 'active';
+  const queryClient = useQueryClient();
+  const submitJob = useSubmitJobMutation();
   const ownRequest = request
     ? (request.requestForm.requestedBy ?? '').trim().toLowerCase() ===
       currentUserName.trim().toLowerCase()
     : false;
+
+  async function handleSubmit() {
+    if (!request?.jobId) return;
+    try {
+      await submitJob.mutateAsync({ jobId: request.jobId });
+      toast.success('Job request submitted for approval.');
+      onOpenChange(false);
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hr.jobs.all(),
+      });
+    } catch (error) {
+      console.error('Failed to submit job request', error);
+      toast.error('Failed to submit request.');
+    }
+  }
 
   const [isCommitteeOpen, setIsCommitteeOpen] = useState(true);
   const [isApprovedOpen, setIsApprovedOpen] = useState(true);
@@ -465,6 +486,32 @@ export function JobRequestDetailsDialog({
             </div>
 
             <DialogFooter className="gap-3 border-t border-[#e5e5e5] p-6">
+              {dialogVariant === 'drafts' && (
+                <div className="flex w-full justify-end gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-[#f5f5f5]"
+                    onClick={onEdit}
+                  >
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                  <Button
+                    type="button"
+                    className="h-9 rounded-[6px] bg-[#1e66f7] text-sm text-white hover:bg-[#1b5ce0]"
+                    onClick={handleSubmit}
+                    disabled={submitJob.isPending}
+                  >
+                    {submitJob.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : (
+                      <Send className="h-4 w-4 mr-2" />
+                    )}
+                    Submit for Approval
+                  </Button>
+                </div>
+              )}
               {dialogVariant === 'active' ? (
                 ownRequest ? (
                   <div className="w-full rounded-[8px] border border-[#e5e5e5] bg-[#f3f3f3] px-4 py-3 text-sm text-[#666]">

@@ -4,6 +4,7 @@
   "entryFile": "apps/api/src/main",
   "sourceRoot": "src",
   "compilerOptions": {
+    "tsConfigPath": "tsconfig.build.json",
     "deleteOutDir": true,
     "watchAssets": true,
     "assets": [

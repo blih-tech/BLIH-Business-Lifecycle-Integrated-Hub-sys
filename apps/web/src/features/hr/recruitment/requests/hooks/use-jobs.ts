@@ -134,3 +134,15 @@ export function usePublishJobMutation() {
     },
   });
 }
+
+export function useSubmitJobMutation() {
+  return useMutation<JobResponseDto | null, ApiError, { jobId: string }>({
+    mutationFn: async ({ jobId }) => {
+      const response = await apiClient.post<ApiEnvelope<JobResponseDto>>(
+        `${API_PREFIX}/${jobId}/submit`,
+        {},
+      );
+      return response.data;
+    },
+  });
+}

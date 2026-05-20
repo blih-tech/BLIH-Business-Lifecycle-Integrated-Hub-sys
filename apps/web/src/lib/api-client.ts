@@ -13,13 +13,24 @@ export class ApiError extends Error {
 type QueryParams = Record<string, string | number | boolean | undefined>;
 
 const BEARER_TOKEN_KEYS = ['kc_access'];
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
 function getApiBaseUrl(): string {
   const configured = process.env.NEXT_PUBLIC_API_URL?.trim();
   if (configured) {
     return configured.replace(/\/+$/, '');
   }
-  return 'http://localhost:5000/api/v1';
+
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api/v1';
+    }
+  }
+
+  throw new Error(
+    'NEXT_PUBLIC_API_URL is not set. Configure it to point at your API (e.g. https://.../api/v1).',
+  );
 }
 
 function buildUrl(path: string, query?: QueryParams): string {
@@ -61,12 +72,14 @@ function getBrowserToken(): string | null {
 
   for (const key of BEARER_TOKEN_KEYS) {
     const cookieToken = getCookieValue(key);
+    console.log(`Checking cookie for ${key}:`, !!cookieToken);
     if (cookieToken) {
       return cookieToken;
     }
 
     try {
       const storedToken = window.localStorage.getItem(key);
+      console.log(`Checking localStorage for ${key}:`, !!storedToken);
       if (storedToken) {
         return storedToken;
       }
@@ -76,6 +89,7 @@ function getBrowserToken(): string | null {
 
     try {
       const sessionToken = window.sessionStorage.getItem(key);
+      console.log(`Checking sessionStorage for ${key}:`, !!sessionToken);
       if (sessionToken) {
         return sessionToken;
       }
@@ -87,6 +101,27 @@ function getBrowserToken(): string | null {
   return null;
 }
 
+async function tryRefreshSession(): Promise<boolean> {
+  try {
+    const csrfToken = getCookieValue('kc_csrf');
+    const response = await fetch(buildUrl('/auth/refresh'), {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+      },
+      // Browser cookie mode: API reads kc_refresh from HttpOnly cookie.
+      body: JSON.stringify({}),
+      cache: 'no-store',
+    });
+
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 async function request<T>(
   method: string,
   path: string,
@@ -94,25 +129,68 @@ async function request<T>(
   query?: QueryParams,
 ): Promise<T> {
   const token = getBrowserToken();
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
+  console.log('API Request:', method, path, 'Token found:', !!token);
 
-  const response = await fetch(buildUrl(path, query), {
-    method,
-    credentials: 'include',
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-    cache: 'no-store',
-  });
+  const makeRequest = async (): Promise<Response> => {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    const csrfToken = !SAFE_METHODS.has(method.toUpperCase())
+      ? getCookieValue('kc_csrf')
+      : null;
+    if (csrfToken) {
+      headers['x-csrf-token'] = csrfToken;
+    } else if (!SAFE_METHODS.has(method.toUpperCase())) {
+      console.warn(
+        'API Request: Missing kc_csrf cookie for non-GET request to',
+        path,
+      );
+    }
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return fetch(buildUrl(path, query), {
+      method,
+      credentials: 'include',
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+      cache: 'no-store',
+    });
+  };
+
+  let response = await makeRequest();
 
   const contentType = response.headers.get('content-type') ?? '';
-  const payload = contentType.includes('application/json')
+  let payload: unknown = contentType.includes('application/json')
     ? await response.json()
     : await response.text();
+
+  if (
+    !response.ok &&
+    response.status === 401 &&
+    !token &&
+    typeof payload === 'object' &&
+    payload &&
+    'message' in payload &&
+    typeof (payload as { message?: unknown }).message === 'string'
+  ) {
+    const message = (payload as { message: string }).message;
+    if (
+      message.toLowerCase().includes('missing authorization header') ||
+      message.toLowerCase().includes('unauthorized')
+    ) {
+      const refreshed = await tryRefreshSession();
+      if (refreshed) {
+        response = await makeRequest();
+        const retryContentType = response.headers.get('content-type') ?? '';
+        payload = retryContentType.includes('application/json')
+          ? await response.json()
+          : await response.text();
+      }
+    }
+  }
 
   if (!response.ok) {
     const message =

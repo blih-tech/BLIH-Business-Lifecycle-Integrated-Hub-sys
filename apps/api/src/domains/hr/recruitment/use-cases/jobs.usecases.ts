@@ -885,45 +885,19 @@ export class SubmitJobUseCase {
       });
 
       const now = new Date();
-      if (existing.creatorIsHr && existing.createdById) {
-        const hrStep = await tx.jobApprovalStep.findFirst({
-          where: {
-            jobRequestFormId: requestFormId,
-            department: 'HR',
-          },
-          select: { id: true },
-        });
-        if (!hrStep) {
-          throw new BadRequestException('Missing approval stage configuration');
-        }
-
-        await tx.jobApprovalStep.update({
-          where: { id: hrStep.id },
-          data: {
-            approverId: existing.createdById,
-            status: 'APPROVED',
-            currentNote: 'Auto-approved because creator has HR role',
-            decidedAt: now,
-          },
-        });
-        await tx.jobApprovalHistory.create({
-          data: {
-            approvalStepId: hrStep.id,
-            toStatus: 'APPROVED',
-            changedById: existing.createdById,
-            reason: 'CREATOR_HAS_HR_ROLE',
-          },
-        });
-      }
+      const shouldAutoApproveAll =
+        existing.creatorIsHr && Boolean(existing.createdById);
 
       return tx.job.update({
         where: { id },
         data: {
           requestForm: {
             update: {
-              status: 'PENDING_FOR_APPROVAL',
-              pendingApprovalAt: now,
-              readyToPostAt: null,
+              status: shouldAutoApproveAll
+                ? 'READY_TO_POST'
+                : 'PENDING_FOR_APPROVAL',
+              pendingApprovalAt: shouldAutoApproveAll ? null : now,
+              readyToPostAt: shouldAutoApproveAll ? now : null,
               rejectedAt: null,
             },
           },
@@ -931,6 +905,38 @@ export class SubmitJobUseCase {
         include: jobInclude,
       });
     });
+
+    if (existing.creatorIsHr && existing.createdById) {
+      const now = new Date();
+      await this.prisma.$transaction(async (tx) => {
+        const steps = await tx.jobApprovalStep.findMany({
+          where: { jobRequestFormId: requestFormId },
+          select: { id: true },
+        });
+        if (steps.length === 0) {
+          throw new BadRequestException('Missing approval stage configuration');
+        }
+
+        await tx.jobApprovalStep.updateMany({
+          where: { jobRequestFormId: requestFormId },
+          data: {
+            approverId: existing.createdById,
+            status: 'APPROVED',
+            currentNote: 'Auto-approved (temporary)',
+            decidedAt: now,
+          },
+        });
+
+        await tx.jobApprovalHistory.createMany({
+          data: steps.map((step) => ({
+            approvalStepId: step.id,
+            toStatus: 'APPROVED',
+            changedById: existing.createdById!,
+            reason: 'AUTO_APPROVE_TEMPORARY',
+          })),
+        });
+      });
+    }
 
     return mapJob(submitted);
   }

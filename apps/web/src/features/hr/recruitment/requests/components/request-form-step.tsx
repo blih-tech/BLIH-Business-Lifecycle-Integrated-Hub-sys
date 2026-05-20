@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/components/ui/select';
+import { Button } from '@/shared/components/ui/button';
 import { Textarea } from '@/shared/components/ui/textarea';
 
 type RequestFormStepProps = {
@@ -27,6 +28,10 @@ type RequestFormStepProps = {
   departmentOptions: ReadonlyArray<{ value: string; label: string }>;
   positionOptions: ReadonlyArray<{ value: string; label: string }>;
   replaceForOptions: ReadonlyArray<{ value: string; label: string }>;
+  canCreateDepartment?: boolean;
+  onAddDepartment?: () => void;
+  canCreatePosition?: boolean;
+  onAddPosition?: () => void;
 };
 
 type FormSectionCardProps = {
@@ -128,6 +133,10 @@ export function RequestFormStep({
   departmentOptions,
   positionOptions,
   replaceForOptions,
+  canCreateDepartment = false,
+  onAddDepartment,
+  canCreatePosition = false,
+  onAddPosition,
 }: RequestFormStepProps) {
   const [
     jobTitle,
@@ -187,9 +196,21 @@ export function RequestFormStep({
                 name="department"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="ui-meta text-muted-foreground">
-                      Department
-                    </FormLabel>
+                    <div className="flex items-center justify-between gap-2">
+                      <FormLabel className="ui-meta text-muted-foreground">
+                        Department
+                      </FormLabel>
+                      {canCreateDepartment && onAddDepartment ? (
+                        <Button
+                          type="button"
+                          variant="link"
+                          className="h-auto px-0 text-xs"
+                          onClick={onAddDepartment}
+                        >
+                          Add department
+                        </Button>
+                      ) : null}
+                    </div>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full bg-background">
@@ -214,9 +235,21 @@ export function RequestFormStep({
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="ui-meta text-muted-foreground">
-                      Position
-                    </FormLabel>
+                    <div className="flex items-center justify-between gap-2">
+                      <FormLabel className="ui-meta text-muted-foreground">
+                        Position
+                      </FormLabel>
+                      {canCreatePosition && onAddPosition ? (
+                        <Button
+                          type="button"
+                          variant="link"
+                          className="h-auto px-0 text-xs"
+                          onClick={onAddPosition}
+                        >
+                          Add position
+                        </Button>
+                      ) : null}
+                    </div>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full bg-background">

@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-function getApiBaseUrl(): string {
+function getApiBaseUrl(request: NextRequest): string {
   const configured = process.env.NEXT_PUBLIC_API_URL?.trim();
   if (configured) {
     return configured.replace(/\/+$/, '');
   }
 
-  return 'http://localhost:5000/api/v1';
+  const { hostname } = request.nextUrl;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:5000/api/v1';
+  }
+
+  throw new Error(
+    'NEXT_PUBLIC_API_URL is required when running outside localhost.',
+  );
 }
 
 function normalizeRedirectPath(value: string | null, fallback: string): string {
@@ -24,7 +31,21 @@ function normalizeRedirectPath(value: string | null, fallback: string): string {
 
 export async function GET(request: NextRequest) {
   const incomingUrl = new URL(request.url);
-  const apiUrl = new URL('auth/logout', `${getApiBaseUrl()}/`);
+  let apiUrl: URL;
+  try {
+    apiUrl = new URL('auth/logout', `${getApiBaseUrl(request)}/`);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Unable to resolve API base URL',
+      },
+      { status: 500 },
+    );
+  }
 
   const redirect = normalizeRedirectPath(
     incomingUrl.searchParams.get('redirect'),
