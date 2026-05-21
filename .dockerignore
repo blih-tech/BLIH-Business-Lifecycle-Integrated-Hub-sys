@@ -11,3 +11,35 @@ dist
 coverage
 **/coverage
 *.log
+
+# Non-API workspaces (not needed for API Docker build)
+apps/web
+
+# Documentation & scripts
+docs
+scripts
+*.md
+!packages/database/migrations/**/*.md
+
+# Test files (not needed in production image)
+**/*.spec.ts
+**/*.test.ts
+**/test
+**/__tests__
+
+# Deploy/infra files (not needed inside the image)
+apps/api/docker-compose*
+apps/api/deploy.sh
+apps/api/healthcheck.sh
+apps/api/nginx
+apps/api/backups
+
+# IDE & OS
+.vscode
+.idea
+**/.DS_Store
+
+# Env files (injected at runtime, not baked into image)
+**/.env
+**/.env.*
+**/.env.local
