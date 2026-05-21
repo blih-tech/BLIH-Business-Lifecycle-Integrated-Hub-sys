@@ -206,6 +206,7 @@ const parseOptionalInt = (value: string | undefined, name: string) => {
 };
 
 import { seedOnboardingTasks } from './onboarding-task.seed.js';
+import { seedDemoJobs } from './demo-jobs.seed.js';
 
 const { adapter, pool } = createPrismaPgAdapter({
   connectionString: resolveDatabaseUrl(),
@@ -520,6 +521,7 @@ async function main(): Promise<void> {
   });
 
   await seedOnboardingTasks(prisma);
+  await seedDemoJobs(prisma);
 }
 
 main()
