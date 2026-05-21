@@ -73,6 +73,21 @@ describe('RecruitmentTransitionService', () => {
       },
       offer: {
         count: jest.fn().mockResolvedValue(0),
+        update: jest.fn().mockResolvedValue(undefined),
+      },
+      onboardingTask: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+      onboarding: {
+        create: jest
+          .fn()
+          .mockResolvedValue({ id: 'onboarding-1', status: 'IN_PROGRESS' }),
+      },
+      onboardingTaskInstance: {
+        create: jest.fn().mockResolvedValue({ id: 'task-instance-1' }),
+      },
+      onboardingChecklist: {
+        create: jest.fn().mockResolvedValue(undefined),
       },
     };
 
