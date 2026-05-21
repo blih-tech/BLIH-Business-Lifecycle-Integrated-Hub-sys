@@ -12,6 +12,7 @@ RUN npm ci --workspaces --include-workspace-root --include=dev --omit=optional -
 
 FROM node:22-alpine AS builder
 WORKDIR /workspace
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY . .
