@@ -21,12 +21,22 @@ export class CreatePositionDto implements CreatePositionDtoType {
   @IsString()
   description?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: '1f31a301-dfb8-4071-aab1-ad6bc4891da7',
     description: 'Department id that owns the position.',
   })
+  @IsOptional()
   @IsUUID()
-  departmentId!: string;
+  departmentId?: string;
+
+  @ApiPropertyOptional({
+    example: 'Engineering',
+    description: 'Department name to associate or create.',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  departmentName?: string;
 
   @ApiPropertyOptional({
     example: 'd9fdb6de-2c7b-47e6-9c58-080829f5bd10',

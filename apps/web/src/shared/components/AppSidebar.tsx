@@ -11,6 +11,7 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSkeleton,
 } from '@/shared/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -19,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 import { SearchInput } from '@/shared/components/SearchInput';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 
@@ -50,6 +52,7 @@ type SidebarProps = {
   onSearchChange?: (value: string) => void;
   items: SidebarItem[];
   user?: SidebarUser;
+  isLoading?: boolean;
 };
 
 export function AppSidebar({
@@ -62,6 +65,7 @@ export function AppSidebar({
   onSearchChange,
   items,
   user,
+  isLoading,
 }: SidebarProps) {
   return (
     <Sidebar
@@ -107,65 +111,83 @@ export function AppSidebar({
             </div>
 
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton
-                    asChild
-                    tooltip={item.label}
-                    className={[
-                      'h-7 rounded-[6px] px-1.5 text-white group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0',
-                      item.active
-                        ? item.activeTone === 'inverse'
-                          ? 'border border-sidebar-foreground hover:border-sidebar-foreground/90 hover:bg-white/10'
-                          : 'bg-white text-primary hover:bg-white hover:text-primary'
-                        : 'hover:bg-white/10 text-sidebar-foreground',
-                    ].join(' ')}
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={item.onClick}
-                      className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center"
-                    >
-                      <span
-                        className={[
-                          'flex h-7 w-7 items-center justify-center rounded-[6px]',
-                          item.active
-                            ? item.activeTone === 'inverse'
-                              ? 'text-white'
-                              : 'text-primary'
-                            : 'text-white',
-                        ].join(' ')}
-                      >
-                        {item.icon}
-                      </span>
-                      <span className="text-[12px] font-semibold tracking-[-0.1px] group-data-[collapsible=icon]:hidden">
-                        {item.label}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                  {item.badge ? (
-                    <SidebarMenuBadge
+              {isLoading ? (
+                <>
+                  {[...Array(6)].map((_, i) => (
+                    <SidebarMenuItem key={i}>
+                      <SidebarMenuSkeleton showIcon />
+                    </SidebarMenuItem>
+                  ))}
+                </>
+              ) : (
+                items.map((item) => (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.label}
                       className={[
-                        'right-2 top-1.5 h-3 w-3 rounded-full text-[8px]',
-                        item.active && item.activeTone !== 'inverse'
-                          ? 'bg-primary text-primary-foreground'
-                          : item.active && item.activeTone === 'inverse'
-                            ? 'bg-white text-primary'
-                            : 'bg-white/20 text-white',
+                        'h-7 rounded-[6px] px-1.5 text-white group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0',
+                        item.active
+                          ? item.activeTone === 'inverse'
+                            ? 'border border-sidebar-foreground hover:border-sidebar-foreground/90 hover:bg-white/10'
+                            : 'bg-white text-primary hover:bg-white hover:text-primary'
+                          : 'hover:bg-white/10 text-sidebar-foreground',
                       ].join(' ')}
                     >
-                      {item.badge}
-                    </SidebarMenuBadge>
-                  ) : null}
-                </SidebarMenuItem>
-              ))}
+                      <Link
+                        href={item.href}
+                        onClick={item.onClick}
+                        className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center"
+                      >
+                        <span
+                          className={[
+                            'flex h-7 w-7 items-center justify-center rounded-[6px]',
+                            item.active
+                              ? item.activeTone === 'inverse'
+                                ? 'text-white'
+                                : 'text-primary'
+                              : 'text-white',
+                          ].join(' ')}
+                        >
+                          {item.icon}
+                        </span>
+                        <span className="text-[12px] font-semibold tracking-[-0.1px] group-data-[collapsible=icon]:hidden">
+                          {item.label}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                    {item.badge ? (
+                      <SidebarMenuBadge
+                        className={[
+                          'right-2 top-1.5 h-3 w-3 rounded-full text-[8px]',
+                          item.active && item.activeTone !== 'inverse'
+                            ? 'bg-primary text-primary-foreground'
+                            : item.active && item.activeTone === 'inverse'
+                              ? 'bg-white text-primary'
+                              : 'bg-white/20 text-white',
+                        ].join(' ')}
+                      >
+                        {item.badge}
+                      </SidebarMenuBadge>
+                    ) : null}
+                  </SidebarMenuItem>
+                ))
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="relative border-t border-sidebar-border px-3 py-3 group-data-[collapsible=icon]:px-1.5">
-        {user ? (
+        {isLoading ? (
+          <div className="flex items-center gap-2.5 pl-2">
+            <Skeleton className="size-[28px] rounded-full bg-white/20" />
+            <div className="flex flex-1 flex-col gap-1 group-data-[collapsible=icon]:hidden">
+              <Skeleton className="h-3 w-20 bg-white/20" />
+              <Skeleton className="h-2 w-24 bg-white/20" />
+            </div>
+          </div>
+        ) : user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex w-full items-center gap-2.5 pl-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">

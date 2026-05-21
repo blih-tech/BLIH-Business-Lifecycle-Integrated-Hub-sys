@@ -9,5 +9,5 @@
     "declarationMap": true,
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": ["src/**/*.ts", "seed/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }

@@ -1,8 +1,16 @@
 import { useFormContext } from 'react-hook-form';
 import { Upload } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import {
+  DepartmentPermissions,
+  PositionPermissions,
+} from '@repo/types/rbac/permissions.constants';
 
 import type { EmployeeProfileFormValues } from '@/features/hr/people/create/form-schema';
+import { CreateDepartmentDialog } from '@/features/hr/departments/components/create-department-dialog';
+import { CreatePositionDialog } from '@/features/hr/positions/components/create-position-dialog';
 import { FormSectionCard } from '@/features/hr/people/create/components/form-section-card';
+import { useHrAbility } from '@/shared/auth/hr-ability-context';
 import { Button } from '@/shared/components/ui/button';
 import {
   FormControl,
@@ -23,12 +31,33 @@ import { useDepartments, usePositions } from '@/hooks/hr/use-reference-data';
 
 export function EmploymentInfoSection() {
   const form = useFormContext<EmployeeProfileFormValues>();
+  const { hasPermission } = useHrAbility();
   const selectedDepartmentId = form.watch('department');
+  const [createDepartmentOpen, setCreateDepartmentOpen] = useState(false);
+  const [createPositionOpen, setCreatePositionOpen] = useState(false);
+  const canCreateDepartment = hasPermission(DepartmentPermissions.CREATE);
+  const canCreatePosition = hasPermission(PositionPermissions.CREATE);
 
   const { data: departments = [], isLoading: deptsLoading } = useDepartments();
   const { data: positions = [], isLoading: positionsLoading } = usePositions(
     selectedDepartmentId || undefined,
   );
+
+  const departmentOptions = useMemo(
+    () =>
+      departments.map((department) => ({
+        value: department.id,
+        label: department.name,
+      })),
+    [departments],
+  );
+  const selectedDepartmentName = useMemo(() => {
+    if (!selectedDepartmentId) return '';
+    return (
+      departmentOptions.find((option) => option.value === selectedDepartmentId)
+        ?.label ?? ''
+    );
+  }, [departmentOptions, selectedDepartmentId]);
 
   return (
     <FormSectionCard
@@ -102,7 +131,19 @@ export function EmploymentInfoSection() {
           name="department"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Department *</FormLabel>
+              <div className="flex items-center justify-between gap-2">
+                <FormLabel>Department *</FormLabel>
+                {canCreateDepartment ? (
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="h-auto px-0 text-xs"
+                    onClick={() => setCreateDepartmentOpen(true)}
+                  >
+                    Add department
+                  </Button>
+                ) : null}
+              </div>
               <Select
                 onValueChange={(val) => {
                   field.onChange(val);
@@ -151,17 +192,29 @@ export function EmploymentInfoSection() {
           name="rolePosition"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role / Position</FormLabel>
+              <div className="flex items-center justify-between gap-2">
+                <FormLabel>Role / Position</FormLabel>
+                {canCreatePosition ? (
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="h-auto px-0 text-xs"
+                    onClick={() => setCreatePositionOpen(true)}
+                  >
+                    Add position
+                  </Button>
+                ) : null}
+              </div>
               <Select
                 onValueChange={field.onChange}
                 value={field.value ?? ''}
-                disabled={!selectedDepartmentId}
+                disabled={!selectedDepartmentId && positions.length === 0}
               >
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue
                       placeholder={
-                        !selectedDepartmentId
+                        !selectedDepartmentId && positions.length === 0
                           ? 'Select department first'
                           : positionsLoading
                             ? 'Loading…'
@@ -185,6 +238,46 @@ export function EmploymentInfoSection() {
           )}
         />
       </div>
+
+      <CreateDepartmentDialog
+        open={createDepartmentOpen}
+        onOpenChange={setCreateDepartmentOpen}
+        parentOptions={departmentOptions}
+        onCreated={(department) => {
+          form.setValue('department', department.id, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+          form.setValue('rolePosition', '', {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+        }}
+      />
+
+      <CreatePositionDialog
+        open={createPositionOpen}
+        onOpenChange={setCreatePositionOpen}
+        departmentId={selectedDepartmentId}
+        departmentName={selectedDepartmentName || undefined}
+        onCreated={(position) => {
+          // If the position was created in a different department (newly created), update the department selection
+          if (position.departmentId !== selectedDepartmentId) {
+            form.setValue('department', position.departmentId, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            });
+          }
+          form.setValue('rolePosition', position.id, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+        }}
+      />
     </FormSectionCard>
   );
 }

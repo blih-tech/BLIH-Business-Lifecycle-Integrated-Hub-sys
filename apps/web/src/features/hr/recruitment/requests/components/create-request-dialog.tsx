@@ -1,7 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { JobPermissions } from '@repo/types/rbac/permissions.constants';
+import {
+  DepartmentPermissions,
+  JobPermissions,
+  PositionPermissions,
+} from '@repo/types/rbac/permissions.constants';
 import { Check, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -24,6 +28,8 @@ import type { CreateJobDto } from '@repo/types/recruitment/jobs';
 import type { SubmittedJobRequest } from '@/features/hr/recruitment/requests/types';
 import { ApplicationFormStep } from '@/features/hr/recruitment/requests/components/application-form-step';
 import { JobDetailsStep } from '@/features/hr/recruitment/requests/components/job-details-step';
+import { CreateDepartmentDialog } from '@/features/hr/departments/components/create-department-dialog';
+import { CreatePositionDialog } from '@/features/hr/positions/components/create-position-dialog';
 import { RequestFormStep } from '@/features/hr/recruitment/requests/components/request-form-step';
 import {
   useCreateJob,
@@ -145,7 +151,11 @@ export function CreateRequestDialog({
   const { hasPermission } = useHrAbility();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [createDepartmentOpen, setCreateDepartmentOpen] = useState(false);
+  const [createPositionOpen, setCreatePositionOpen] = useState(false);
   const isEditMode = Boolean(editRequest?.jobId);
+  const canCreateDepartment = hasPermission(DepartmentPermissions.CREATE);
+  const canCreatePosition = hasPermission(PositionPermissions.CREATE);
   const requestForm = useForm<CreateRequestFormValues>({
     resolver: zodResolver(createRequestFormSchema),
     mode: 'onSubmit',
@@ -186,6 +196,13 @@ export function CreateRequestDialog({
       })),
     [departments],
   );
+  const selectedDepartmentName = useMemo(() => {
+    if (!selectedDepartment) return '';
+    return (
+      departmentOptions.find((option) => option.value === selectedDepartment)
+        ?.label ?? ''
+    );
+  }, [departmentOptions, selectedDepartment]);
   const positionOptions = useMemo(
     () =>
       positions.map((position) => ({
@@ -501,6 +518,10 @@ export function CreateRequestDialog({
                 departmentOptions={departmentOptions}
                 positionOptions={positionOptions}
                 replaceForOptions={userOptions}
+                canCreateDepartment={canCreateDepartment}
+                onAddDepartment={() => setCreateDepartmentOpen(true)}
+                canCreatePosition={canCreatePosition}
+                onAddPosition={() => setCreatePositionOpen(true)}
               />
 
               <DialogFooter className="border-t border-border p-4">
@@ -602,6 +623,46 @@ export function CreateRequestDialog({
           </Form>
         ) : null}
       </DialogContent>
+
+      <CreateDepartmentDialog
+        open={createDepartmentOpen}
+        onOpenChange={setCreateDepartmentOpen}
+        parentOptions={departmentOptions}
+        onCreated={(department) => {
+          requestForm.setValue('department', department.id, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+          requestForm.setValue('position', '', {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+        }}
+      />
+
+      <CreatePositionDialog
+        open={createPositionOpen}
+        onOpenChange={setCreatePositionOpen}
+        departmentId={selectedDepartment || undefined}
+        departmentName={selectedDepartmentName || undefined}
+        onCreated={(position) => {
+          // If the position was created in a different department (newly created), update the department selection
+          if (position.departmentId !== selectedDepartment) {
+            requestForm.setValue('department', position.departmentId, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            });
+          }
+          requestForm.setValue('position', position.id, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+        }}
+      />
     </Dialog>
   );
 }

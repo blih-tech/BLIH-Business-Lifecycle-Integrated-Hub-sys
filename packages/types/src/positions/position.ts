@@ -21,7 +21,8 @@ export interface ListPositionsQueryDto {
 export interface CreatePositionDto {
   title: string;
   description?: string;
-  departmentId: string;
+  departmentId?: string;
+  departmentName?: string;
   gradeId?: string | null;
   isActive?: boolean;
 }

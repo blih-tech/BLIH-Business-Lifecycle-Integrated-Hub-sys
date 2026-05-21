@@ -18,7 +18,7 @@ export class CreatePositionUseCase {
       throw new BadRequestException('Position title is required');
     }
 
-    const departmentId = await this.resolveDepartmentId(dto.departmentId);
+    const departmentId = await this.resolveDepartmentId(dto);
     const gradeId = await this.resolveGradeId(dto.gradeId);
 
     try {
@@ -52,23 +52,37 @@ export class CreatePositionUseCase {
     }
   }
 
-  private async resolveDepartmentId(
-    departmentId: string | undefined,
-  ): Promise<string> {
-    const normalized = departmentId?.trim();
-    if (!normalized) {
-      throw new BadRequestException('Department is required');
+  private async resolveDepartmentId(dto: CreatePositionDto): Promise<string> {
+    const { departmentId, departmentName } = dto;
+
+    // 1. Try resolving by ID if provided
+    if (departmentId?.trim()) {
+      const department = await this.prisma.department.findUnique({
+        where: { id: departmentId.trim() },
+        select: { id: true },
+      });
+      if (!department) {
+        throw new NotFoundException('Department not found');
+      }
+      return department.id;
     }
 
-    const department = await this.prisma.department.findUnique({
-      where: { id: normalized },
-      select: { id: true },
-    });
-    if (!department) {
-      throw new NotFoundException('Department not found');
+    // 2. Try resolving by name if provided
+    if (departmentName?.trim()) {
+      const name = departmentName.trim();
+      // Find or create
+      const department = await this.prisma.department.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+        select: { id: true },
+      });
+      return department.id;
     }
 
-    return department.id;
+    throw new BadRequestException(
+      'Department ID or Department Name is required',
+    );
   }
 
   private async resolveGradeId(

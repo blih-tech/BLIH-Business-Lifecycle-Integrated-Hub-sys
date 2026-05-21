@@ -25,6 +25,7 @@ import {
 import { useHrAbility } from '@/shared/auth/hr-ability-context';
 import { cn } from '@/shared/lib/utils';
 import { useSidebar } from '@/shared/components/ui/sidebar';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 
 const assets = {
   background: '/sidebar-bg.jpg',
@@ -39,6 +40,7 @@ type HrSidebarShellProps = {
     email: string;
     onLogout?: () => void;
   };
+  isLoading?: boolean;
 };
 
 const FALLBACK_MAIN_NAV: HrMainNavItem = {
@@ -92,6 +94,7 @@ export function HrSidebarShell({
   subnavOpen,
   onRequestOpenSubnav,
   user,
+  isLoading,
 }: HrSidebarShellProps) {
   const { setOpen } = useSidebar();
   const { hasAnyPermission } = useHrAbility();
@@ -145,6 +148,7 @@ export function HrSidebarShell({
         searchIcon={<Search className="h-2.5 w-2.5 text-white" />}
         items={items}
         user={user}
+        isLoading={isLoading}
       />
 
       <div
@@ -153,7 +157,30 @@ export function HrSidebarShell({
           subnavOpen ? 'w-[304px] opacity-100' : 'w-0 opacity-0',
         )}
       >
-        {activeSubItems.length > 0 ? (
+        {isLoading ? (
+          <aside className="flex h-svh w-[304px] flex-col border-r border-[#e5e7eb] bg-[#f9fafb]">
+            <div className="flex shrink-0 flex-col justify-center border-b border-[#e5e5e5] px-6 pl-8 h-[56px]">
+              <Skeleton className="h-4 w-24 mb-1" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+            <nav className="min-h-0 flex-1 overflow-y-auto bg-[#f8f8f8] px-6 py-4">
+              <div className="mb-3">
+                <Skeleton className="h-8 w-full" />
+              </div>
+              <ul className="w-full space-y-2">
+                {[...Array(5)].map((_, i) => (
+                  <li key={i}>
+                    <Skeleton className="h-[34px] w-full" />
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <div className="flex h-[54px] shrink-0 flex-col justify-center border-t border-[#e5e5e5] px-6 pl-8">
+              <Skeleton className="h-3.5 w-20 mb-1" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+          </aside>
+        ) : activeSubItems.length > 0 ? (
           <aside
             className={cn(
               'flex h-svh w-[304px] flex-col border-r border-[#e5e7eb] bg-[#f9fafb] transition-transform duration-300 ease-out',

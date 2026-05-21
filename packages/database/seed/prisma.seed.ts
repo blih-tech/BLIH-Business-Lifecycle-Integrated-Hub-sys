@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import { config as loadEnv } from 'dotenv';
 import {
   RBAC_PERMISSIONS,
   RBAC_RESOURCE_CATALOG,
@@ -6,6 +6,15 @@ import {
 } from '@repo/types/rbac';
 import { createPrismaPgAdapter } from '../src/prisma-adapter.js';
 import { PrismaClient } from '../src/prisma-client.js';
+
+// Load envs for both package-local and monorepo API workflows.
+loadEnv();
+loadEnv({ path: '../../.env' });
+loadEnv({ path: '../../apps/api/.env' });
+loadEnv({ path: '../../apps/api/.env.local' });
+if (process.env['NODE_ENV'] === 'production') {
+  loadEnv({ path: '../../apps/api/.env.production' });
+}
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   superadmin: ['*'],
@@ -162,12 +171,25 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   brain_viewer: ['brain_config:view'],
 };
 
-const getRequiredEnv = (name: string) => {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
+const resolveDatabaseUrl = (): string => {
+  const explicit = process.env['DATABASE_URL']?.trim();
+  if (explicit) {
+    return explicit;
   }
-  return value;
+
+  const nodeEnv = process.env['NODE_ENV']?.trim() || 'development';
+  const envSpecific =
+    (nodeEnv === 'production'
+      ? process.env['DATABASE_URL_PRODUCTION']
+      : process.env['DATABASE_URL_DEVELOPMENT'])?.trim() || '';
+
+  if (envSpecific) {
+    return envSpecific;
+  }
+
+  throw new Error(
+    'Missing required environment variable: DATABASE_URL (or DATABASE_URL_DEVELOPMENT / DATABASE_URL_PRODUCTION).',
+  );
 };
 
 const parseOptionalInt = (value: string | undefined, name: string) => {
@@ -184,7 +206,7 @@ const parseOptionalInt = (value: string | undefined, name: string) => {
 };
 
 const { adapter, pool } = createPrismaPgAdapter({
-  connectionString: getRequiredEnv('DATABASE_URL'),
+  connectionString: resolveDatabaseUrl(),
   max: parseOptionalInt(
     process.env['DATABASE_POOL_SIZE'],
     'DATABASE_POOL_SIZE',

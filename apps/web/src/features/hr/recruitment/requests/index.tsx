@@ -46,6 +46,10 @@ export function RecruitmentRequestsContent({
         requestedBy.trim().toLowerCase() ===
         currentUserName.trim().toLowerCase();
 
+      if (workflow === 'DRAFT') {
+        return mapJobResponseToRequest(job, 'drafts');
+      }
+
       if (workflow === 'REJECTED') {
         return mapJobResponseToRequest(job, 'closed');
       }
@@ -62,11 +66,13 @@ export function RecruitmentRequestsContent({
         return mapJobResponseToRequest(job, 'closed');
       }
 
-      // Draft and unknown workflow states are currently shown under posted.
-      return mapJobResponseToRequest(job, 'posted');
+      return mapJobResponseToRequest(job, 'drafts');
     });
   }, [currentUserName, jobs]);
 
+  const draftRequests = normalizedRequests.filter(
+    (request) => request.status === 'drafts',
+  );
   const pendingRequests = normalizedRequests.filter(
     (request) => request.status === 'active',
   );
@@ -80,16 +86,16 @@ export function RecruitmentRequestsContent({
   const stats: RequestsStatItem[] = useMemo(
     () => [
       {
+        id: 'drafts',
+        label: 'Drafts',
+        value: String(draftRequests.length),
+        icon: 'pending',
+      },
+      {
         id: 'pending',
         label: 'Pending approval',
         value: String(pendingRequests.length),
         icon: 'pending',
-      },
-      {
-        id: 'approved-by-you',
-        label: 'Approved by you',
-        value: String(pendingByMeRequests.length),
-        icon: 'approved',
       },
       {
         id: 'closed',
@@ -98,11 +104,7 @@ export function RecruitmentRequestsContent({
         icon: 'open_positions',
       },
     ],
-    [
-      declinedRequests.length,
-      pendingByMeRequests.length,
-      pendingRequests.length,
-    ],
+    [declinedRequests.length, draftRequests.length, pendingRequests.length],
   );
 
   return (
@@ -118,6 +120,14 @@ export function RecruitmentRequestsContent({
           <RequestsErrorState onRetry={() => refetch()} />
         ) : (
           <>
+            <RequestsSection
+              title="Draft Requests"
+              subtitle="Submit your created jobs for approval"
+              items={draftRequests}
+              currentUserName={currentUserName}
+              isLoading={isLoading}
+            />
+
             <RequestsSection
               title="Pending Approval Requests"
               subtitle="Review and publish job postings"

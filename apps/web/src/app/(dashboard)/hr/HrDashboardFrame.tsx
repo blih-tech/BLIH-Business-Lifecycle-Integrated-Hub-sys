@@ -23,12 +23,14 @@ type HrDashboardFrameProps = {
   roles: string[];
   permissions: string[];
   children: React.ReactNode;
+  isLoading?: boolean;
 };
 
 function HrDashboardFrameInner({
   user,
   children,
-}: Pick<HrDashboardFrameProps, 'user' | 'children'>) {
+  isLoading,
+}: Pick<HrDashboardFrameProps, 'user' | 'children' | 'isLoading'>) {
   const pathname = usePathname();
   const router = useRouter();
   const { hasPermission } = useHrAbility();
@@ -80,6 +82,7 @@ function HrDashboardFrameInner({
         user={{ ...user, onLogout: handleLogout }}
         subnavOpen={subnavOpen}
         onRequestOpenSubnav={() => setSubnavOpen(true)}
+        isLoading={isLoading}
       />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <AppHeader
@@ -99,11 +102,14 @@ export function HrDashboardFrame({
   roles,
   permissions,
   children,
+  isLoading,
 }: HrDashboardFrameProps): React.ReactElement {
   return (
     <SidebarProvider defaultOpen={false} className="w-full">
       <HrAbilityProvider roles={roles} permissions={permissions}>
-        <HrDashboardFrameInner user={user}>{children}</HrDashboardFrameInner>
+        <HrDashboardFrameInner user={user} isLoading={isLoading}>
+          {children}
+        </HrDashboardFrameInner>
       </HrAbilityProvider>
     </SidebarProvider>
   );

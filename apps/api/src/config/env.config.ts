@@ -9,9 +9,18 @@ const createEnvValidationSchema = () =>
     PORT: Joi.number().port().default(5000),
     API_PREFIX: Joi.string().default('api/v1'),
 
+    // Database URL resolution:
+    // - Prefer DATABASE_URL when set (works for all environments)
+    // - Otherwise pick DATABASE_URL_DEVELOPMENT / DATABASE_URL_PRODUCTION based on NODE_ENV
     DATABASE_URL: Joi.string()
       .uri({ scheme: ['postgres', 'postgresql'] })
+      .optional(),
+    DATABASE_URL_DEVELOPMENT: Joi.string()
+      .uri({ scheme: ['postgres', 'postgresql'] })
       .default('postgresql://postgres:postgres@localhost:5432/blih_core'),
+    DATABASE_URL_PRODUCTION: Joi.string()
+      .uri({ scheme: ['postgres', 'postgresql'] })
+      .optional(),
     SKIP_DATABASE_CONNECT: Joi.boolean().default(false),
     DATABASE_POOL_SIZE: Joi.number().integer().min(1).default(10),
     DATABASE_TIMEOUT_MS: Joi.number().integer().min(1).default(5000),
@@ -100,6 +109,22 @@ const createEnvValidationSchema = () =>
     JWT_EXPECTED_AUDIENCE: Joi.string().default('blih-system-api'),
     JWT_EXPECTED_ISSUER: Joi.string().allow('').default(''),
   }).custom((value, helpers) => {
+    // Resolve DATABASE_URL from the env-specific variants when not explicitly set.
+    if (!value.DATABASE_URL) {
+      if (value.NODE_ENV === 'production') {
+        value.DATABASE_URL = value.DATABASE_URL_PRODUCTION;
+      } else {
+        value.DATABASE_URL = value.DATABASE_URL_DEVELOPMENT;
+      }
+    }
+
+    if (value.NODE_ENV === 'production' && !value.DATABASE_URL) {
+      return helpers.error('any.custom', {
+        message:
+          'DATABASE_URL must be set in production (or provide DATABASE_URL_PRODUCTION).',
+      });
+    }
+
     if (value.NODE_ENV !== 'production') {
       return value;
     }
@@ -146,6 +171,8 @@ export type EnvValues = {
   PORT: number;
   API_PREFIX: string;
   DATABASE_URL: string;
+  DATABASE_URL_DEVELOPMENT: string;
+  DATABASE_URL_PRODUCTION?: string;
   SKIP_DATABASE_CONNECT: boolean;
   DATABASE_POOL_SIZE: number;
   DATABASE_TIMEOUT_MS: number;
@@ -216,6 +243,8 @@ const readRawEnv = () => ({
   PORT: process.env.PORT,
   API_PREFIX: process.env.API_PREFIX,
   DATABASE_URL: process.env.DATABASE_URL,
+  DATABASE_URL_DEVELOPMENT: process.env.DATABASE_URL_DEVELOPMENT,
+  DATABASE_URL_PRODUCTION: process.env.DATABASE_URL_PRODUCTION,
   SKIP_DATABASE_CONNECT: process.env.SKIP_DATABASE_CONNECT,
   DATABASE_POOL_SIZE: process.env.DATABASE_POOL_SIZE,
   DATABASE_TIMEOUT_MS: process.env.DATABASE_TIMEOUT_MS,
