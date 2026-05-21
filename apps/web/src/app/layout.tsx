@@ -1,13 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/providers/query-provider';
 import { Toaster } from '@/shared/components/ui/sonner';
 import './globals.css';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
 
 export const metadata: Metadata = {
   title: 'BLIH CORE - HR Portal',
@@ -21,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className="antialiased">
         <QueryProvider>{children}</QueryProvider>
         <Toaster />
       </body>
