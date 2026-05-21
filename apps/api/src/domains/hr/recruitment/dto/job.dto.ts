@@ -460,7 +460,7 @@ export class JobApprovalResponseDto implements JobApprovalDtoType {
   @ApiProperty()
   id!: string;
 
-  @ApiProperty({ enum: JOB_APPROVAL_DEPARTMENTS })
+  @ApiProperty({ enum: JOB_APPROVAL_DEPARTMENTS, type: String })
   department!: JobApprovalDepartment;
 
   @ApiProperty()
@@ -510,13 +510,13 @@ export class JobResponsibilityValueResponseDto {
 }
 
 export class JobRequestFormApprovalStatusResponseDto {
-  @ApiProperty({ enum: JOB_APPROVAL_STATUSES })
+  @ApiProperty({ enum: JOB_APPROVAL_STATUSES, type: String })
   finance!: JobApprovalStatus;
 
-  @ApiProperty({ enum: JOB_APPROVAL_STATUSES })
+  @ApiProperty({ enum: JOB_APPROVAL_STATUSES, type: String })
   gm!: JobApprovalStatus;
 
-  @ApiProperty({ enum: JOB_APPROVAL_STATUSES })
+  @ApiProperty({ enum: JOB_APPROVAL_STATUSES, type: String })
   hr!: JobApprovalStatus;
 }
 
@@ -790,25 +790,25 @@ export class JobResponseDto implements JobResponseDtoType {
 }
 
 export class JobListQueryDto implements JobListQueryDtoType {
-  @ApiPropertyOptional({ enum: JOB_WORKFLOW_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_WORKFLOW_STATUSES, type: String })
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_WORKFLOW_STATUSES)
   status?: JobWorkflowStatus;
 
-  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES, type: String })
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_APPROVAL_STATUSES)
   financeApprovalStatus?: JobApprovalStatus;
 
-  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES, type: String })
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_APPROVAL_STATUSES)
   gmApprovalStatus?: JobApprovalStatus;
 
-  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES })
+  @ApiPropertyOptional({ enum: JOB_APPROVAL_STATUSES, type: String })
   @IsOptional()
   @Transform(normalizeEnumValue)
   @IsEnum(JOB_APPROVAL_STATUSES)

@@ -193,9 +193,9 @@ export class BrainController {
   })
   async getSessions(
     @Param('userId') userId: string,
-    @Query('module') module?: ModuleType,
+    @Query('module') module?: string,
   ) {
-    return this.brainService.getUserChatSessions(userId, module);
+    return this.brainService.getUserChatSessions(userId, module as ModuleType);
   }
 
   @Get('history/:sessionId')
