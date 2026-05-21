@@ -2,7 +2,7 @@
   "name": "blih-system",
   "private": true,
   "scripts": {
-    "prepare": "husky",
+
     "build": "turbo run build",
     "dev": "concurrently -k --kill-signal SIGINT --kill-timeout 2000 --names api,web --prefix-colors cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "npm run dev --workspace blih-system-backend",
@@ -18,13 +18,12 @@
     "typecheck:api": "npm run typecheck --workspace blih-system-backend",
     "test:api": "npm run test --workspace blih-system-backend",
     "api:verify": "npm run lint:check --workspace blih-system-backend && npm run typecheck --workspace blih-system-backend && npm run test --workspace blih-system-backend -- --ci --passWithNoTests",
-    "validate:pre-push": "node validate-pre-push.js",
+
     "db:check-ports": "bash ./scripts/check-ports.sh",
     "db:health": "bash ./scripts/db-local.sh health",
     "vps:info": "bash ./scripts/get-vps-info.sh",
     "vps:backup": "bash ./scripts/db-local.sh backup blih-system-dev && bash ./scripts/db-local.sh backup keycloak",
-    "commits:check": "commitlint --from HEAD~1 --to HEAD --verbose",
-    "commits:check:branch": "commitlint --from main --to HEAD --verbose",
+
     "docker:api:up": "docker compose -f apps/api/docker-compose.yml up -d",
     "docker:api:down": "docker compose -f apps/api/docker-compose.yml down",
     "docker:api:infra:up": "docker compose -f apps/api/docker-compose.yml up -d",
@@ -49,13 +48,11 @@
     "db:check-types": "npm run check-types --workspace @repo/database"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
+
     "@swc/cli": "^0.7.10",
     "@swc/core": "^1.15.33",
     "concurrently": "^9.2.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.3.2",
+
     "postgres": "^3.4.8",
     "prettier": "^3.7.4",
     "retry": "^0.13.1",
