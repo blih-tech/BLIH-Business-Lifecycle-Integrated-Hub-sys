@@ -11,7 +11,9 @@ process.env.NODE_DEBUG = '';
 process.env.DEBUG = '';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn'],
+  });
   app.enableShutdownHooks();
 
   const configService = app.get(ConfigService);

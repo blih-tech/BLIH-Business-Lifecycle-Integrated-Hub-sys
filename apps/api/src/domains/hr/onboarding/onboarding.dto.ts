@@ -44,7 +44,7 @@ const normalizeEnumValue = ({ value }: { value: unknown }) => {
 
 // ─── Input DTOs ──────────────────────────────────────────────────────────────
 
-export class CreateOnboardingTaskDto {
+export class CreateOnboardingTaskItemDto {
   @ApiProperty({
     description: 'Onboarding task UUID mapping the library template.',
     example: 'task-uuid-1',
@@ -107,14 +107,14 @@ export class CreateOnboardingDto {
   completedAt?: string | null;
 
   @ApiPropertyOptional({
-    type: () => [CreateOnboardingTaskDto],
+    type: () => [CreateOnboardingTaskItemDto],
     description: 'Selected tasks deployed from the library into instances.',
   })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateOnboardingTaskDto)
-  tasks?: CreateOnboardingTaskDto[];
+  @Type(() => CreateOnboardingTaskItemDto)
+  tasks?: CreateOnboardingTaskItemDto[];
 }
 
 export class UpdateOnboardingChecklistItemDto {
