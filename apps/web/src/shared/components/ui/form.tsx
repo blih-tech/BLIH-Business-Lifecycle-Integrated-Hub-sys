@@ -35,19 +35,24 @@ const FormField = <
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
-  const formContext = useFormContext<TFieldValues>();
-  const control = props.control ?? formContext?.control;
+  const context = useFormContext<TFieldValues>();
+  const control = props.control || context?.control;
 
   if (!control) {
     throw new Error(
-      "FormField must be used within a <Form> (FormProvider) or be given an explicit 'control' prop.",
+      `FormField "${props.name}" must be used within a <Form> or be given an explicit 'control' prop.`,
     );
   }
 
-  // Avoid <Controller> here: we were intermittently hitting runtime crashes where
-  // Controller tried to access internal `control._names.mount` from an undefined ref.
-  // `useController` is simpler and avoids that failure mode.
-  const { field, fieldState, formState } = useController<TFieldValues, TName>({
+  // Use useController directly for better error handling and debugging
+  // This helps isolate the "cannot read properties of undefined (reading 'mount')" error
+  if (control && !('_names' in control)) {
+    throw new Error(
+      `FormField "${props.name}" received an invalid control object. It might be a stale context or an uninitialized form methods object.`,
+    );
+  }
+
+  const { field, fieldState, formState } = useController({
     name: props.name,
     control,
     rules: props.rules,

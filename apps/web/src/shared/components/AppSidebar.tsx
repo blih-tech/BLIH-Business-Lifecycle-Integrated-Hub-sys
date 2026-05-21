@@ -32,7 +32,7 @@ type SidebarItem = {
   badge?: string;
   active?: boolean;
   activeTone?: 'primary' | 'inverse';
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
 };
 
 type SidebarUser = {

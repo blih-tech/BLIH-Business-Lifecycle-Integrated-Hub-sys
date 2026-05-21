@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/shared/components/ui/button';
-import { Grip, PanelLeftIcon, Plus, Sparkles } from 'lucide-react';
+import { Grip, Loader2, PanelLeftIcon, Plus, Sparkles } from 'lucide-react';
 
 type AppHeaderProps = {
   onToggleSubnav?: () => void;
@@ -9,6 +9,7 @@ type AppHeaderProps = {
   createLabel?: string;
   showCreate?: boolean;
   onAppsClick?: () => void;
+  isLoading?: boolean;
 };
 
 export function AppHeader({
@@ -17,6 +18,7 @@ export function AppHeader({
   createLabel = 'Create',
   showCreate = true,
   onAppsClick,
+  isLoading,
 }: AppHeaderProps) {
   return (
     <header className="flex h-[56px] w-full items-center justify-between border-b border-border bg-background pl-8 pr-5">
@@ -40,10 +42,15 @@ export function AppHeader({
         {showCreate ? (
           <Button
             type="button"
-            className="h-7 gap-2 rounded-[6px] bg-primary px-3 text-[12px] font-medium text-primary-foreground hover:bg-primary/90 cursor-pointer"
+            className="h-7 gap-2 rounded-[6px] bg-primary px-3 text-[12px] font-medium text-primary-foreground hover:bg-primary/90 cursor-pointer disabled:opacity-70"
             onClick={onCreate}
+            disabled={isLoading}
           >
-            <Plus className="h-3.5 w-3.5" />
+            {isLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Plus className="h-3.5 w-3.5" />
+            )}
             {createLabel}
           </Button>
         ) : null}

@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useTransition } from 'react';
 
 import {
   applicationFormSchema,
@@ -151,6 +152,7 @@ export function CreateRequestDialog({
   const { hasPermission } = useHrAbility();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [, startTransition] = useTransition();
   const [createDepartmentOpen, setCreateDepartmentOpen] = useState(false);
   const [createPositionOpen, setCreatePositionOpen] = useState(false);
   const isEditMode = Boolean(editRequest?.jobId);
@@ -289,13 +291,17 @@ export function CreateRequestDialog({
     jobDetailsForm.setValue('employmentType', requestValues.employmentType, {
       shouldDirty: false,
     });
-    setCurrentStep(2);
+    startTransition(() => {
+      setCurrentStep(2);
+    });
   }
 
   async function handleJobDetailsContinue() {
     const isValid = await jobDetailsForm.trigger();
     if (!isValid) return;
-    setCurrentStep(3);
+    startTransition(() => {
+      setCurrentStep(3);
+    });
   }
 
   const toList = (value: string) =>
@@ -508,7 +514,7 @@ export function CreateRequestDialog({
         </DialogHeader>
 
         {currentStep === 1 ? (
-          <Form {...requestForm}>
+          <Form key="step-1" {...requestForm}>
             <form
               className="space-y-0"
               onSubmit={(event) => event.preventDefault()}
@@ -548,7 +554,7 @@ export function CreateRequestDialog({
         ) : null}
 
         {currentStep === 2 ? (
-          <Form {...jobDetailsForm}>
+          <Form key="step-2" {...jobDetailsForm}>
             <form
               className="space-y-0"
               onSubmit={(event) => event.preventDefault()}
@@ -580,7 +586,7 @@ export function CreateRequestDialog({
         ) : null}
 
         {currentStep === 3 ? (
-          <Form {...applicationForm}>
+          <Form key="step-3" {...applicationForm}>
             <form
               className="space-y-0"
               onSubmit={(event) => event.preventDefault()}

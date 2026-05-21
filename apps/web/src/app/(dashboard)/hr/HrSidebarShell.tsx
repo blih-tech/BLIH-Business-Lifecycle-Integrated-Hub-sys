@@ -8,12 +8,15 @@ import {
   Building2,
   GraduationCap,
   LayoutGrid,
+  Loader2,
   LogOut,
   Search,
   Sparkles,
   Users,
   UserSquare2,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 import { AppSidebar } from '@/shared/components/AppSidebar';
 import { SearchInput } from '@/shared/components/SearchInput';
@@ -99,6 +102,9 @@ export function HrSidebarShell({
   const { setOpen } = useSidebar();
   const { hasAnyPermission } = useHrAbility();
   const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
+  const [pendingPath, setPendingPath] = React.useState<string | null>(null);
   const isHrRoot = pathname === '/hr';
   const activeMain = isHrRoot ? null : resolveActiveMain(pathname);
   const rawSubItems = activeMain?.subItems ?? [];
@@ -114,21 +120,51 @@ export function HrSidebarShell({
     activeSubItems.find((subItem) => pathname.startsWith(subItem.href))?.href ??
     activeSubItems[0]?.href;
 
-  const items = HR_MAIN_NAV.map((item) => ({
-    id: item.id,
-    label: item.label,
-    href: item.href,
-    icon: iconFor(item.icon),
-    badge: item.badge,
-    active: activeMain?.id === item.id,
-    activeTone: activeMain?.id === item.id ? ('primary' as const) : undefined,
-    onClick: item.subItems?.length
-      ? () => {
-          onRequestOpenSubnav();
-          setOpen(false);
-        }
-      : undefined,
-  }));
+  const items = React.useMemo(
+    () =>
+      HR_MAIN_NAV.map((item) => {
+        const isCurrentlyPending = isPending && pendingPath === item.href;
+        return {
+          id: item.id,
+          label: item.label,
+          href: item.href,
+          icon: isCurrentlyPending ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            iconFor(item.icon)
+          ),
+          badge: item.badge,
+          active: activeMain?.id === item.id,
+          activeTone:
+            activeMain?.id === item.id ? ('primary' as const) : undefined,
+          onClick: (e: React.MouseEvent) => {
+            e.preventDefault();
+            setPendingPath(item.href);
+            startTransition(() => {
+              router.push(item.href);
+              if (item.subItems?.length) {
+                onRequestOpenSubnav();
+                setOpen(false);
+              }
+            });
+          },
+        };
+      }),
+    [
+      activeMain?.id,
+      onRequestOpenSubnav,
+      setOpen,
+      isPending,
+      pendingPath,
+      router,
+    ],
+  );
+
+  React.useEffect(() => {
+    if (!isPending) {
+      setPendingPath(null);
+    }
+  }, [isPending]);
 
   return (
     <div className="flex h-full">
@@ -206,24 +242,37 @@ export function HrSidebarShell({
               <ul className="w-full space-y-1">
                 {activeSubItems.map((subItem) => {
                   const isActive = activeSubHref === subItem.href;
+                  const isCurrentlyPending =
+                    isPending && pendingPath === subItem.href;
                   return (
                     <li key={subItem.id}>
-                      <Link
-                        href={subItem.href}
-                        className={[
-                          'flex h-[34px] items-center justify-between rounded-[6px] px-[11px] text-[13px] font-medium tracking-[-0.12px] text-black transition-colors',
+                      <button
+                        onClick={() => {
+                          setPendingPath(subItem.href);
+                          startTransition(() => {
+                            router.push(subItem.href);
+                          });
+                        }}
+                        className={cn(
+                          'flex h-[34px] w-full cursor-pointer items-center justify-between rounded-[6px] px-[11px] text-[13px] font-medium tracking-[-0.12px] text-black transition-colors',
                           isActive
                             ? 'border border-[#e5e5e5] bg-white'
                             : 'border border-transparent hover:bg-[#f3f3f3]',
-                        ].join(' ')}
+                          isCurrentlyPending && 'opacity-70',
+                        )}
                       >
-                        <span>{subItem.label}</span>
+                        <span className="flex items-center gap-2">
+                          {isCurrentlyPending && (
+                            <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                          )}
+                          {subItem.label}
+                        </span>
                         {subItem.badge ? (
                           <span className="flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-medium leading-none text-white">
                             {subItem.badge}
                           </span>
                         ) : null}
-                      </Link>
+                      </button>
                     </li>
                   );
                 })}

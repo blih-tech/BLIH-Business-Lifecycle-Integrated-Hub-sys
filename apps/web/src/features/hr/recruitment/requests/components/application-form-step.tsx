@@ -458,11 +458,6 @@ export function ApplicationFormStep({ form }: ApplicationFormStepProps) {
                 </div>
               ))}
             </div>
-            <FormField
-              control={form.control}
-              name="applicantFields"
-              render={() => <FormMessage />}
-            />
           </FormSectionCard>
 
           <FormSectionCard

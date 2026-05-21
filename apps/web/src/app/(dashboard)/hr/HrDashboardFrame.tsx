@@ -38,15 +38,18 @@ function HrDashboardFrameInner({
   const isHrRoot = pathname === '/hr';
   const { toggleSidebar } = useSidebar();
   const [subnavOpen, setSubnavOpen] = React.useState(!isHrRoot);
+  const [isNavigating, startNavigating] = React.useTransition();
 
   const createActionByPath = React.useMemo(
     () => ({
       '/hr/recruitment/requests': {
         label: 'Create New Request',
         onClick: () =>
-          guardCreateNavigation(() =>
-            router.push('/hr/recruitment/requests?create=new-request'),
-          ),
+          startNavigating(() => {
+            guardCreateNavigation(() =>
+              router.push('/hr/recruitment/requests?create=new-request'),
+            );
+          }),
       },
     }),
     [guardCreateNavigation, router],
@@ -90,6 +93,7 @@ function HrDashboardFrameInner({
           showCreate={Boolean(createAction)}
           createLabel={createAction?.label}
           onCreate={createAction?.onClick}
+          isLoading={isNavigating}
         />
         <main className="min-h-0 flex-1 overflow-auto">{children}</main>
       </div>
