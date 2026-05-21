@@ -12,8 +12,12 @@ coverage
 **/coverage
 *.log
 
-# Non-API workspaces (not needed for API Docker build)
-apps/web
+# Non-API workspaces (exclude source, keep package.json for npm ci --workspaces)
+apps/web/*
+apps/web/**/*
+!apps/web/
+!apps/web/package.json
+!apps/web/package-lock.json
 
 # Documentation & scripts
 docs
