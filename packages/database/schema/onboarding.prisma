@@ -24,6 +24,7 @@ enum TargetDataModel {
   EMPLOYEE_EDUCATION
   EMPLOYEE_CONTRACT
   EMPLOYEE_POLICY_ACKNOWLEDGEMENT
+  EMPLOYEE_DOCUMENT
 }
 
 // One record per employee. @unique on employeeId enforces the one-onboarding-per-employee rule at DB level.

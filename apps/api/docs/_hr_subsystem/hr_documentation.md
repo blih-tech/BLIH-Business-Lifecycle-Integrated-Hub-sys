@@ -2169,3 +2169,3120 @@ Generic document store: ID renewals, certifications, medical, academic, portfoli
 | Offboarding completed          | `UserLifecycle.status=RESIGNED/TERMINATED/RETIRED`                      |
 
 ---
+
+# 8. Subsystem 4 — Attendance, Leave & Time Management
+
+**Purpose:** Track who works when, who's off, and ensure compliance with schedules and labour law.
+**Forms covered (6):** Leave Request, Punctuality Log/Exception, Timesheet, Attendance Correction, Overtime Request, Work-from-Home / Flex.
+
+## 8.1 Subsystem Architecture
+
+```
+              ┌──────────────────────┐
+              │   WorkSchedule       │   (named schedule, e.g., "Standard Mon-Fri")
+              │   + WorkScheduleDay  │
+              └──────────┬───────────┘
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │  UserWorkSchedule    │   (effective-dated per employee)
+              └──────────┬───────────┘
+                         │
+                         ▼
+        ┌────────────────────────────────────────┐
+        │   AttendanceCalendarService            │
+        │   • resolves working day, hours        │
+        │   • applies Holiday + Leave            │
+        └────────┬───────────────────────────────┘
+                 │
+                 ▼
+┌──────────────────────────────────────────────────────────────┐
+│   AttendanceLog  (one per employee per date)                 │
+│   • checkInAt, checkOutAt, totalMinutes                      │
+│   • status: PRESENT/ABSENT/LATE/EARLY_DEPARTURE/             │
+│             ON_LEAVE/HALF_DAY/REMOTE/BUSINESS_TRIP           │
+│   • isAutoCalculated, overtimeMinutes                        │
+└──────────────────────────────────────────────────────────────┘
+                 │
+                 ▼
+        ┌───────────────────────────┐
+        │ AttendanceReconciliation  │  (cron 00:15 daily)
+        │ Service                   │
+        └───────────────────────────┘
+```
+
+## 8.2 Work Schedule Module
+
+### Endpoints
+
+| Method | Path                                   | Permission                   |
+| ------ | -------------------------------------- | ---------------------------- |
+| GET    | `/hr/attendance/schedules`             | `attendance:view`            |
+| POST   | `/hr/attendance/schedules`             | `attendance:manage_schedule` |
+| GET    | `/hr/attendance/schedules/:id`         | `attendance:view`            |
+| PATCH  | `/hr/attendance/schedules/:id`         | `attendance:manage_schedule` |
+| POST   | `/hr/attendance/schedules/:id/days`    | `attendance:manage_schedule` |
+| GET    | `/hr/attendance/schedules/assignments` | `attendance:view`            |
+| POST   | `/hr/attendance/schedules/assignments` | `attendance:manage_schedule` |
+
+### Schedule DTO
+
+```json
+{
+  "name": "Standard Mon-Fri 9-5",
+  "description": "Default office schedule, Addis Ababa",
+  "timezone": "Africa/Addis_Ababa",
+  "isDefault": true,
+  "lateThresholdMinutes": 15,
+  "standardMinutesPerDay": 480,
+  "days": [
+    {
+      "dayOfWeek": "MONDAY",
+      "isWorkingDay": true,
+      "startMinute": 540,
+      "endMinute": 1020,
+      "expectedMinutes": 480,
+      "remoteAllowed": false
+    },
+    {
+      "dayOfWeek": "TUESDAY",
+      "isWorkingDay": true,
+      "startMinute": 540,
+      "endMinute": 1020,
+      "expectedMinutes": 480,
+      "remoteAllowed": false
+    },
+    {
+      "dayOfWeek": "WEDNESDAY",
+      "isWorkingDay": true,
+      "startMinute": 540,
+      "endMinute": 1020,
+      "expectedMinutes": 480,
+      "remoteAllowed": true
+    },
+    {
+      "dayOfWeek": "THURSDAY",
+      "isWorkingDay": true,
+      "startMinute": 540,
+      "endMinute": 1020,
+      "expectedMinutes": 480,
+      "remoteAllowed": false
+    },
+    {
+      "dayOfWeek": "FRIDAY",
+      "isWorkingDay": true,
+      "startMinute": 540,
+      "endMinute": 1020,
+      "expectedMinutes": 480,
+      "remoteAllowed": true
+    },
+    { "dayOfWeek": "SATURDAY", "isWorkingDay": false },
+    { "dayOfWeek": "SUNDAY", "isWorkingDay": false }
+  ]
+}
+```
+
+`startMinute=540` = 540 minutes after midnight = 09:00.
+
+### Resolution Algorithm
+
+```
+function resolveScheduleFor(employeeId, date):
+    # 1. effective-dated user assignment
+    uws = UserWorkSchedule.find({
+        employeeId,
+        effectiveFrom: { lte: date },
+        OR: [{ effectiveTo: null }, { effectiveTo: { gte: date } }]
+    })
+    if uws: return WorkSchedule.findById(uws.scheduleId)
+
+    # 2. default schedule
+    def = WorkSchedule.findFirst({ isDefault: true })
+    if def: return def
+
+    # 3. built-in fallback: Mon-Fri 09:00-17:00, 15min late threshold
+    return BUILTIN_DEFAULT_SCHEDULE
+```
+
+## 8.3 Form 19 — Leave Request
+
+### Endpoints
+
+| Method | Path                                 | Permission                                |
+| ------ | ------------------------------------ | ----------------------------------------- |
+| GET    | `/hr/leave/requests`                 | `leave:view`                              |
+| GET    | `/hr/leave/requests/:id`             | `leave:view`                              |
+| POST   | `/hr/leave/requests`                 | `leave:request`                           |
+| PATCH  | `/hr/leave/requests/:id`             | `leave:request` (only DRAFT)              |
+| POST   | `/hr/leave/requests/:id/submit`      | `leave:request`                           |
+| POST   | `/hr/leave/requests/:id/approve`     | `leave:approve`                           |
+| POST   | `/hr/leave/requests/:id/reject`      | `leave:approve`                           |
+| POST   | `/hr/leave/requests/:id/cancel`      | `leave:request` (self) or `leave:approve` |
+| GET    | `/hr/leave/balance?leaveType=ANNUAL` | `leave:view` (self)                       |
+| GET    | `/hr/leave/balance/:employeeId`      | `leave:view`                              |
+
+### Request Create DTO
+
+```json
+{
+  "leaveType": "ANNUAL", // ANNUAL/SICK/MATERNITY/PATERNITY/
+  //  BEREAVEMENT/UNPAID/STUDY/EMERGENCY/COMPASSIONATE
+  "startDate": "2026-08-10",
+  "endDate": "2026-08-14",
+  "daysRequested": 5, // server-recomputes; must match
+  "startHalfDay": false,
+  "endHalfDay": false,
+  "reason": "Family vacation",
+  "contactDuringLeave": {
+    "phone": "+251911...",
+    "email": "..."
+  },
+  "handoverDelegateId": "user-uuid",
+  "handoverNotes": "Daily standup → delegate. Inbox → email rules.",
+  "submit": true // shortcut: create + submit in one call
+}
+```
+
+### State Machine
+
+```
+DRAFT ──submit──► PENDING ──approve──► APPROVED
+   │                  │
+   │                  └──reject──► REJECTED
+   │
+   └──cancel──► CANCELLED
+
+PENDING ──cancel (by employee, if not yet approved)──► CANCELLED
+```
+
+### Algorithm — Create with Submit
+
+```
+function createLeave(dto, employeeId):
+    transaction:
+        # Lifecycle gate
+        emp = Employee.findById(employeeId)
+        if emp.lifecycle.status in [TERMINATED, RESIGNED, RETIRED]:
+            throw 422 "Employee not active"
+
+        # Date validation
+        assert dto.startDate <= dto.endDate
+        assert dto.startDate.year == dto.endDate.year       # no cross-year
+
+        # Half-day rule
+        if dto.startDate == dto.endDate:
+            assert not (dto.startHalfDay and dto.endHalfDay)
+
+        # Compute working days
+        schedule = AttendanceCalendarService.resolveScheduleFor(employeeId, dto.startDate)
+        workingDays = countWorkingDays(dto.startDate, dto.endDate, schedule, country)
+        if dto.startHalfDay: workingDays -= 0.5
+        if dto.endHalfDay: workingDays -= 0.5
+
+        # Client must match server computation
+        assert dto.daysRequested == workingDays
+
+        # Delegate rule
+        if workingDays >= 5:
+            assert dto.handoverDelegateId
+        if dto.handoverDelegateId:
+            assert dto.handoverDelegateId != currentUser.id
+            assert User.exists(dto.handoverDelegateId)
+
+        # Overlap check
+        overlapping = LeaveRequest.find({
+            employeeId,
+            status: { in: ['PENDING', 'APPROVED'] },
+            startDate: { lte: dto.endDate },
+            endDate: { gte: dto.startDate }
+        })
+        if overlapping: throw 409 "Overlaps with existing request"
+
+        # Balance
+        balance = LeaveBalance.findUnique({ employeeId, leaveType, year })
+        if balance is null:
+            balance = LeaveBalance.create({
+                employeeId, leaveType,
+                year: dto.startDate.year,
+                totalDays: defaultEntitlement(leaveType, employmentType)
+            })
+
+        # Availability check (skipped for UNPAID)
+        if dto.leaveType != 'UNPAID':
+            available = balance.totalDays + balance.carriedOver
+                       - balance.usedDays - balance.pendingDays
+            assert available >= workingDays
+
+        # Create request
+        request = LeaveRequest.create({
+            requestId: generateId('LV', year),
+            employeeId, leaveType,
+            startDate, endDate, daysRequested: workingDays,
+            startHalfDay, endHalfDay,
+            reason, contactDuringLeave,
+            handoverDelegateId, handoverNotes,
+            balanceSnapshot: { totalDays, usedDays, pendingDays, carriedOver },
+            status: dto.submit ? 'PENDING' : 'DRAFT',
+            submittedAt: dto.submit ? now : null
+        })
+
+        # Reserve balance if submitting
+        if dto.submit:
+            balance.pendingDays += workingDays
+            LeaveBalance.update(...)
+            # Pick approver (employee.manager)
+            LeaveApproval.create({
+                leaveRequestId: request.id,
+                approverId: manager.userId,
+                level: 1,
+                decision: 'PENDING'
+            })
+            notify manager (IN_APP + EMAIL)
+
+        return request
+```
+
+### Approve Algorithm
+
+```
+function approveLeave(requestId, approverUserId):
+    transaction:
+        req = LeaveRequest.findById(requestId)
+        assert req.status == 'PENDING'
+
+        balance = LeaveBalance.findUnique({ employeeId: req.employeeId, ... })
+
+        # Move from pending to used (skip for UNPAID)
+        if req.leaveType != 'UNPAID':
+            balance.pendingDays -= req.daysRequested
+            balance.usedDays += req.daysRequested
+            LeaveBalance.update(...)
+
+        LeaveApproval.update({
+            where: { leaveRequestId: requestId, level: 1 },
+            data: { decision: 'APPROVED', decidedAt: now, approverId: approverUserId, comments: dto.comments }
+        })
+
+        LeaveRequest.update({
+            status: 'APPROVED',
+            approvedAt: now,
+            approvedById: approverUserId
+        })
+
+        # Update attendance for each day in range
+        for date in range(startDate, endDate):
+            AttendanceLog.upsert({
+                where { employeeId_date },
+                update { status: 'ON_LEAVE', isAutoCalculated: true },
+                create { employeeId, date, status: 'ON_LEAVE', isAutoCalculated: true }
+            })
+
+    notify employee (IN_APP + EMAIL)
+```
+
+### Reject Algorithm
+
+```
+function rejectLeave(requestId, approverUserId, reason):
+    transaction:
+        req = LeaveRequest.findById(requestId)
+        assert req.status == 'PENDING'
+
+        # Return reserved balance
+        if req.leaveType != 'UNPAID':
+            balance.pendingDays -= req.daysRequested
+            LeaveBalance.update(...)
+
+        LeaveApproval.create({ ..., decision: 'REJECTED', ... })
+        LeaveRequest.update({ status: 'REJECTED', rejectionReason: reason })
+
+    notify employee
+```
+
+### Leave Balance Defaults (Ethiopian Labour Law-aware)
+
+| Leave Type      | Default Days/Year                                  | Notes                                                   |
+| --------------- | -------------------------------------------------- | ------------------------------------------------------- |
+| `ANNUAL`        | 14 (years 1-3), 16 (year 4), then +1 every 2 years | Per Article 76, Ethiopian Labour Proclamation 1156/2019 |
+| `SICK`          | 6 months max with reducing pay scale               | Per Article 86                                          |
+| `MATERNITY`     | 120 days (30 pre + 90 post-natal)                  | Per Article 88                                          |
+| `PATERNITY`     | 3 days                                             | Per Article 81(3)                                       |
+| `BEREAVEMENT`   | 3 days                                             | Per Article 81                                          |
+| `EMERGENCY`     | 5 days                                             |                                                         |
+| `STUDY`         | configured per policy                              |                                                         |
+| `COMPASSIONATE` | configured per policy                              |                                                         |
+| `UNPAID`        | unlimited (skips balance)                          |                                                         |
+
+These defaults are seedable via `ModuleConfig.leave.defaultEntitlements` and overridable per employment type.
+
+### Identifiers
+
+- `requestId`: `LV-<year>-NNNN`.
+
+## 8.4 Form 20 — Punctuality Log / Exception
+
+This maps to either:
+
+- A normal `AttendanceLog` entry where the system already detected `LATE` or `EARLY_DEPARTURE`, OR
+- An `AttendanceCorrectionRequest` (Form 22) when the employee wants to dispute or annotate.
+
+Many systems use this for **manual log entry** by HR if hardware/software didn't capture.
+
+### Endpoints (covered by AttendanceLog)
+
+| Method | Path                       | Permission                         |
+| ------ | -------------------------- | ---------------------------------- |
+| GET    | `/hr/attendance/logs`      | `attendance:view`                  |
+| POST   | `/hr/attendance/logs`      | `attendance:log` (HR manual entry) |
+| GET    | `/hr/attendance/logs/:id`  | `attendance:view`                  |
+| POST   | `/hr/attendance/check-in`  | (self, `attendance:log`)           |
+| POST   | `/hr/attendance/check-out` | (self, `attendance:log`)           |
+
+### Check-In/Out DTO
+
+```json
+{
+  "method": "WEB", // WEB | BIOMETRIC | NFC | MOBILE_APP | HR_MANUAL
+  "location": { "lat": 9.005, "lng": 38.763 },
+  "ip": "10.0.0.42",
+  "notes": "Working from home, network issue earlier"
+}
+```
+
+### Auto-Calculation
+
+`AttendanceReconciliationService` runs daily and on each upsert. Status rules:
+
+```
+if approvedLeave covers date:
+    status = ON_LEAVE
+elif date is not a working day for this employee:
+    if any punches: keep PRESENT/REMOTE based on schedule.remoteAllowed
+    else: no log written (or status=ABSENT skipped)
+elif date is working day and no punches:
+    status = ABSENT
+elif worked minutes < (expectedMinutes / 2):
+    status = HALF_DAY
+elif checkInAt > scheduleStart + lateThresholdMinutes:
+    status = LATE
+elif checkOutAt < scheduleEnd - lateThresholdMinutes:
+    status = EARLY_DEPARTURE
+else:
+    status = PRESENT
+overtimeMinutes = max(0, totalMinutes - expectedMinutes)
+```
+
+`isAutoCalculated=true` flag protects from cron overwriting manual edits.
+
+## 8.5 Form 21 — Weekly Timesheet
+
+### Endpoints
+
+| Method | Path                             | Permission          |
+| ------ | -------------------------------- | ------------------- |
+| GET    | `/hr/timesheets?period=2026-W21` | `timesheet:view`    |
+| POST   | `/hr/timesheets`                 | `timesheet:submit`  |
+| POST   | `/hr/timesheets/:id/submit`      | `timesheet:submit`  |
+| POST   | `/hr/timesheets/:id/approve`     | `timesheet:approve` |
+| POST   | `/hr/timesheets/:id/reject`      | `timesheet:approve` |
+
+### Auto-Build from Attendance
+
+`Timesheet` aggregates a week's `AttendanceLog` rows into computed metrics:
+
+```
+trackedDays, workedDays, leaveDays, absenceDays, remoteDays,
+lateCount, earlyDepartureCount,
+totalWorkedMinutes, overtimeMinutes,
+attendanceRate %, punctualityRate %,
+sourceSnapshot: { dates: [{ date, status, totalMinutes }, ...] }
+```
+
+### Workflow
+
+```
+DRAFT ──submit──► PENDING ──approve──► APPROVED
+   │                            └──reject──► REJECTED
+   │
+   └──cancel──► CANCELLED
+```
+
+### Business Rules
+
+1. One timesheet per `(employeeId, periodStart, periodEnd)`.
+2. Period typically Mon-Sun; configurable.
+3. Auto-generation cron (Sunday 23:30) pre-fills timesheets in `DRAFT`.
+4. Approval pushes approved overtime minutes to Finance via webhook.
+
+## 8.6 Form 22 — Attendance Correction Request
+
+### Endpoints
+
+| Method | Path                                     | Permission                      |
+| ------ | ---------------------------------------- | ------------------------------- |
+| POST   | `/hr/attendance/corrections`             | `attendance:correct` (self)     |
+| GET    | `/hr/attendance/corrections`             | `attendance:view`               |
+| POST   | `/hr/attendance/corrections/:id/submit`  | `attendance:correct`            |
+| POST   | `/hr/attendance/corrections/:id/approve` | `attendance:approve_correction` |
+| POST   | `/hr/attendance/corrections/:id/reject`  | `attendance:approve_correction` |
+
+### DTO
+
+```json
+{
+  "attendanceLogId": "uuid", // or null when no existing log
+  "date": "2026-05-21",
+  "requestedCheckInAt": "2026-05-21T09:00:00+03:00",
+  "requestedCheckOutAt": "2026-05-21T17:30:00+03:00",
+  "requestedStatus": "PRESENT",
+  "reason": "Biometric system down, used paper signin",
+  "notes": "Witnessed by team lead"
+}
+```
+
+### Business Rules
+
+1. Cannot correct dates older than 14 days (configurable).
+2. Approval rewrites the `AttendanceLog` for that date with `isAutoCalculated=false` (so cron won't undo).
+3. Audit trail captures `before`/`after` snapshots.
+4. Identifier: `AC-<year>-NNNN`.
+
+## 8.7 Form 23 — Overtime Request
+
+### Endpoints
+
+| Method | Path                                  | Permission         |
+| ------ | ------------------------------------- | ------------------ |
+| POST   | `/hr/attendance/overtime`             | `overtime:request` |
+| GET    | `/hr/attendance/overtime`             | `attendance:view`  |
+| POST   | `/hr/attendance/overtime/:id/submit`  | `overtime:request` |
+| POST   | `/hr/attendance/overtime/:id/approve` | `overtime:approve` |
+
+### DTO
+
+```json
+{
+  "date": "2026-05-21",
+  "attendanceLogId": "uuid", // optional auto-link
+  "requestedMinutes": 120,
+  "reason": "Client deadline - production deploy"
+}
+```
+
+### Business Rules
+
+1. Must be pre-approved OR submitted within 48 hours of the day.
+2. On approval, `AttendanceLog.overtimeApproved=true` and minutes synced to `Timesheet.overtimeMinutes`.
+3. Finance webhook fires on approval — pay multiplier applied per labour law.
+4. Identifier: `OT-<year>-NNNN`.
+
+## 8.8 Form 24 — Work-from-Home / Flex Request
+
+### Endpoints
+
+| Method | Path                                   | Permission          |
+| ------ | -------------------------------------- | ------------------- |
+| POST   | `/hr/attendance/flex-work`             | `flex_work:request` |
+| GET    | `/hr/attendance/flex-work`             | `attendance:view`   |
+| POST   | `/hr/attendance/flex-work/:id/submit`  | `flex_work:request` |
+| POST   | `/hr/attendance/flex-work/:id/approve` | `flex_work:approve` |
+
+### DTO
+
+```json
+{
+  "requestType": "WORK_FROM_HOME", // WORK_FROM_HOME | FLEX_TIME
+  "startDate": "2026-05-25",
+  "endDate": "2026-05-29",
+  "requestedStartMinute": null, // only for FLEX_TIME
+  "requestedEndMinute": null,
+  "reason": "Family commitments / focused work",
+  "details": { "patternDescription": "Wed/Fri remote weekly" }
+}
+```
+
+### Business Rules
+
+1. `WORK_FROM_HOME` requires the date range; on approval, attendance status for those days becomes `REMOTE` (not `PRESENT`).
+2. `FLEX_TIME` shifts the schedule window for those days (`requestedStartMinute` / `requestedEndMinute`).
+3. Position/department may have a `remoteAllowed=false` policy — approval blocked.
+4. Identifier: `FW-<year>-NNNN`.
+
+## 8.9 Daily Attendance Reconciliation Job
+
+```
+CronJob: AttendanceReconciliationJob
+Schedule: 0 15 0 * * *   (00:15 daily)
+
+forEach employee where lifecycle.status != TERMINATED:
+    forEach date in [yesterday, today]:
+        reconcileAttendance(employeeId, date)
+
+function reconcileAttendance(empId, date):
+    log = AttendanceLog.find({ employeeId: empId, date })
+    if log and log.isAutoCalculated == false:
+        skip  # do not overwrite manual entries
+
+    schedule = resolveScheduleFor(empId, date)
+    leave = ApprovedLeave.covers(empId, date)
+    holiday = Holiday.matches(date, country)
+
+    if leave:
+        upsert log with status=ON_LEAVE
+    elif holiday or not schedule.isWorkingDay(date):
+        if no punches: skip (no log)
+        else: keep punches, mark as PRESENT/REMOTE
+    elif no punches:
+        upsert log with status=ABSENT
+    else:
+        compute totalMinutes, overtime, status (LATE / HALF_DAY / etc.)
+        upsert log with isAutoCalculated=true
+```
+
+---
+
+# 9. Subsystem 5 — Performance, OKRs & Career Development
+
+**Purpose:** Drive performance through reviews, OKRs, training plans, promotions, transfers, and compensation.
+**Forms covered (9):** Performance Review (Quarterly), Personal OKR Creation, Manager OKR Review, Annual Performance Summary, Training Needs Assessment, Career Development Plan, Internal Transfer Request, Promotion Request, Salary Adjustment.
+
+## 9.1 Architecture
+
+```
+ReviewPeriodConfig (year, quarter, windows)
+        │
+        ├──► PerformanceReview (per employee per period)
+        │      ├── selfAssessment (JSON)
+        │      ├── managerReview (JSON)
+        │      ├── PerformanceReviewFeedback[]  (SELF/MANAGER/PEER/SKIP_LEVEL/DIRECT_REPORT)
+        │      ├── finalRating (computed)
+        │      ├── category (computed: UNSATISFACTORY..OUTSTANDING)
+        │      ├── raiseRecommendation (JSON)
+        │      └── promotionEligible
+        │
+        └──► PerformanceCalibration (per department per period)
+
+Okr (scope: COMPANY / DEPARTMENT / USER)
+        ├── parentOkr → child OKR alignment
+        ├── KeyResult[] (NUMERIC/PERCENTAGE/BOOLEAN/MILESTONE)
+        │      └── KeyResultUpdate[] (check-in history)
+        └── OkrManagerReview (per OKR per reviewer)
+              └── decision: APPROVED | CHANGES_REQUESTED
+
+TrainingNeedsAssessment (linked to PerformanceReview)
+
+CareerDevelopmentPlan (goals, dev actions, success metrics, progress %)
+
+PromotionProposal (fromPos → toPos, requires high perf + OKR progress)
+SuccessionPlan (per Position: candidate + readiness + risk)
+
+InternalTransferRequest (PROMOTION | TRANSFER)
+SalaryAdjustmentRequest (linked to Review or Transfer)
+```
+
+## 9.2 Form 25 — Performance Review (Quarterly)
+
+### Endpoints
+
+| Method | Path                                        | Permission                       |
+| ------ | ------------------------------------------- | -------------------------------- |
+| GET    | `/hr/performance/periods`                   | `performance:view`               |
+| POST   | `/hr/performance/periods`                   | `performance:manage_periods`     |
+| GET    | `/hr/performance/reviews`                   | `performance:view`               |
+| GET    | `/hr/performance/reviews/:id`               | `performance:view`               |
+| POST   | `/hr/performance/reviews`                   | `performance:start`              |
+| PATCH  | `/hr/performance/reviews/:id/self`          | `performance:self_review` (self) |
+| PATCH  | `/hr/performance/reviews/:id/manager`       | `performance:manager_review`     |
+| POST   | `/hr/performance/reviews/:id/complete`      | `performance:complete`           |
+| GET    | `/hr/performance/reviews/:id/feedback`      | `performance:view`               |
+| POST   | `/hr/performance/reviews/:id/feedback`      | `performance:peer_feedback`      |
+| GET    | `/hr/performance/calibrations`              | `performance:view`               |
+| POST   | `/hr/performance/calibrations`              | `performance:calibrate`          |
+| GET    | `/hr/performance/summary/:employeeId/:year` | `performance:view`               |
+
+### Period DTO
+
+```json
+{
+  "year": 2026,
+  "quarter": 2,
+  "type": "QUARTERLY", // QUARTERLY | ANNUAL
+  "windowOpensAt": "2026-06-25T00:00:00Z",
+  "selfAssessmentDueAt": "2026-07-05T23:59:59Z",
+  "managerReviewDueAt": "2026-07-15T23:59:59Z",
+  "windowClosesAt": "2026-07-20T23:59:59Z"
+}
+```
+
+Unique by `(year, quarter)`.
+
+### Review Lifecycle
+
+```
+NOT_STARTED ──HR opens period & creates reviews──► SELF_PENDING
+                                                       │
+                                                       ▼
+                                                 (employee files self-assessment)
+                                                       │
+                                                       ▼
+                                                  SELF_SUBMITTED
+                                                       │
+                                                       ▼
+                                                  MANAGER_PENDING
+                                                       │
+                                                       ▼
+                                              (manager files review)
+                                                       │
+                                                       ▼
+                                                  MANAGER_SUBMITTED
+                                                       │
+                                                       ▼
+                                              (HR completes)
+                                                       │
+                                                       ▼
+                                                   COMPLETED
+```
+
+### Self-Assessment DTO (PATCH /self)
+
+```json
+{
+  "okrScore": {
+    "<okrId>": { "selfRating": 4, "comment": "Exceeded targets" }
+  },
+  "achievements": "What went well... textarea",
+  "improvementAreas": "What can improve... textarea",
+  "trainingNeeds": ["Public speaking", "AWS Solutions Architect"],
+  "selfRating": 4
+}
+```
+
+Merged into `PerformanceReview.selfAssessment` (JSONB). Status moves `NOT_STARTED → SELF_SUBMITTED` (skipping `SELF_PENDING` if filled in one shot).
+
+### Manager Review DTO (PATCH /manager)
+
+```json
+{
+  "okrScore": {
+    "<okrId>": { "managerRating": 4, "comment": "..." }
+  },
+  "achievements": "...",
+  "challenges": "...",
+  "managerRating": 4,
+  "promotionEligible": false,
+  "raiseRecommendation": {
+    "recommended": true,
+    "percentage": 10,
+    "rationale": "..."
+  }
+}
+```
+
+Status: `SELF_SUBMITTED → MANAGER_SUBMITTED`. Only allowed when current status is `SELF_SUBMITTED` or `MANAGER_PENDING`.
+
+### Peer / Skip-Level / Direct-Report Feedback
+
+`POST /hr/performance/reviews/:id/feedback`:
+
+```json
+{
+  "reviewerId": "user-uuid",
+  "role": "PEER", // SELF/MANAGER/PEER/SKIP_LEVEL/DIRECT_REPORT
+  "ratings": { "overall": 4, "teamwork": 5, "leadership": 3 },
+  "comments": { "strengths": "...", "improvements": "..." }
+}
+```
+
+Unique by `(reviewId, reviewerId, role)`.
+
+### Complete Review — Computation Algorithm
+
+```
+function completeReview(reviewId):
+    r = PerformanceReview.findById(reviewId)
+    assert r.status == 'MANAGER_SUBMITTED'
+    assert r.selfAssessment.selfRating != null
+    assert r.managerReview.managerRating != null
+
+    selfRating = r.selfAssessment.selfRating
+    managerRating = r.managerReview.managerRating
+
+    peerFeedbacks = r.feedbackEntries.filter(role='PEER' and submittedAt)
+    drFeedbacks = r.feedbackEntries.filter(role='DIRECT_REPORT' and submittedAt)
+    slFeedbacks = r.feedbackEntries.filter(role='SKIP_LEVEL' and submittedAt)
+
+    peerAvg = avg(f.ratings.overall for f in peerFeedbacks) if any else null
+    drAvg = avg(f.ratings.overall for f in drFeedbacks) if any else null
+    slAvg = avg(f.ratings.overall for f in slFeedbacks) if any else null
+
+    # Weighted average — normalize over present components
+    weights = {
+        self:     20,
+        manager:  50,
+        peer:     15,
+        direct_report: 10,
+        skip_level: 5
+    }
+
+    components = [
+        (selfRating, weights.self),
+        (managerRating, weights.manager)
+    ]
+    if peerAvg: components.append((peerAvg, weights.peer))
+    if drAvg:   components.append((drAvg, weights.direct_report))
+    if slAvg:   components.append((slAvg, weights.skip_level))
+
+    totalWeight = sum(w for _, w in components)
+    finalRating = sum(score * w for score, w in components) / totalWeight
+
+    # Category mapping
+    if finalRating >= 4.5: category = OUTSTANDING
+    elif finalRating >= 4.0: category = EXCEEDS_EXPECTATIONS
+    elif finalRating >= 3.0: category = MEETS_EXPECTATIONS
+    elif finalRating >= 2.0: category = BELOW_EXPECTATIONS
+    else: category = UNSATISFACTORY
+
+    promotionEligible = (category in [EXCEEDS_EXPECTATIONS, OUTSTANDING])
+                        and !hasActiveDisciplinaryAction(employeeId)
+
+    update:
+        finalRating, category, promotionEligible,
+        status: 'COMPLETED', completedAt: now
+```
+
+### Calibration
+
+`PerformanceCalibration` allows department-level adjustments to ratings. Pattern:
+
+```json
+{
+  "periodId": "uuid",
+  "departmentId": "uuid",
+  "adjustments": [
+    { "reviewId": "uuid", "originalRating": 4.2, "adjustedRating": 4.0, "rationale": "..." },
+    ...
+  ]
+}
+```
+
+Unique by `(periodId, departmentId)`.
+
+## 9.3 Form 26 — Personal OKR Creation
+
+### Endpoints
+
+| Method | Path                                     | Permission           |
+| ------ | ---------------------------------------- | -------------------- |
+| GET    | `/hr/okrs`                               | `okr:view`           |
+| POST   | `/hr/okrs`                               | `okr:create`         |
+| GET    | `/hr/okrs/:id`                           | `okr:view`           |
+| PATCH  | `/hr/okrs/:id`                           | `okr:update`         |
+| GET    | `/hr/okrs/:id/progress`                  | `okr:view`           |
+| POST   | `/hr/okrs/:id/key-results`               | `okr:update`         |
+| PATCH  | `/hr/okrs/:id/key-results/:krId`         | `okr:update`         |
+| POST   | `/hr/okrs/:id/key-results/weights`       | `okr:update`         |
+| POST   | `/hr/okrs/:id/key-results/:krId/updates` | `okr:update`         |
+| GET    | `/hr/okrs/:id/key-results/:krId/updates` | `okr:view`           |
+| POST   | `/hr/okrs/:id/manager-review`            | `okr:manager_review` |
+
+### Create DTO
+
+```json
+{
+  "scope": "USER", // COMPANY | DEPARTMENT | USER
+  "employeeId": "uuid", // required if scope=USER
+  "departmentId": "uuid", // required if scope=DEPARTMENT
+  "parentOkrId": "uuid", // optional alignment to parent
+  "periodYear": 2026,
+  "periodQuarter": 2,
+  "title": "Reduce API p95 latency by 40%",
+  "description": "...",
+  "startDate": "2026-04-01",
+  "endDate": "2026-06-30",
+  "keyResults": [
+    {
+      "title": "Cache hit ratio above 80%",
+      "type": "PERCENTAGE", // NUMERIC | PERCENTAGE | BOOLEAN | MILESTONE
+      "targetValue": 80,
+      "weight": 40
+    },
+    {
+      "title": "DB query count per request",
+      "type": "NUMERIC",
+      "targetValue": 5, // lower is better — semantic in title
+      "weight": 30
+    },
+    {
+      "title": "Tracing fully deployed",
+      "type": "BOOLEAN",
+      "targetValue": 1,
+      "weight": 30
+    }
+  ]
+}
+```
+
+### Business Rules
+
+1. Date range validation: `startDate <= endDate`; both within the quarter window.
+2. Scope-driven validation:
+   - `USER`: `employeeId` required.
+   - `DEPARTMENT`: `departmentId` required.
+   - `COMPANY`: neither required.
+3. Parent OKR compatibility: child cannot have a wider scope than parent (e.g., USER OKR can have DEPARTMENT or COMPANY parent, but not vice-versa).
+4. KR weights must sum to **100**.
+5. Status starts `DRAFT`; moves to `ACTIVE` on manager approval (via OKR Manager Review).
+6. KR progress computed:
+   - `NUMERIC`: `min(100, currentValue / targetValue * 100)`
+   - `PERCENTAGE`: same formula with implicit 100 max
+   - `BOOLEAN`: 0 or 100
+   - `MILESTONE`: client-set integer 0–100
+7. OKR overall progress = weighted average of KR progress.
+8. Status auto-adjusts:
+   - `ON_TRACK` if progress ≥ expected for time elapsed.
+   - `AT_RISK` if progress < expected by 10%.
+   - `DELAYED` if progress < expected by 25%.
+   - `ACHIEVED` if progress ≥ 100 by endDate.
+   - `PARTIALLY_ACHIEVED` if progress ≥ 70% but < 100% at endDate.
+   - `MISSED` if progress < 70% at endDate.
+
+### KR Update DTO
+
+```json
+{
+  "newValue": 75,
+  "comment": "Cache layer deployed, monitoring uptick in hits"
+}
+```
+
+Algorithm:
+
+```
+function updateKeyResult(krId, dto, updatedById):
+    transaction:
+        kr = KeyResult.findById(krId)
+        previousValue = kr.currentValue
+
+        kr.currentValue = dto.newValue
+        kr.progress = computeProgress(kr.type, dto.newValue, kr.targetValue)
+        kr.status = computeStatus(kr.progress, kr.okr.endDate)
+        KeyResult.update(...)
+
+        KeyResultUpdate.create({
+            keyResultId: krId,
+            previousValue,
+            newValue: dto.newValue,
+            comment: dto.comment,
+            updatedById
+        })
+
+        # Recompute parent OKR
+        recomputeOkrAggregates(kr.okrId)
+```
+
+### Reweight KRs
+
+`POST /hr/okrs/:id/key-results/weights`:
+
+```json
+{
+  "weights": [
+    { "keyResultId": "uuid", "weight": 35 },
+    { "keyResultId": "uuid", "weight": 35 },
+    { "keyResultId": "uuid", "weight": 30 }
+  ]
+}
+```
+
+Sum must equal 100; transaction-bound update.
+
+## 9.4 Form 27 — Manager OKR Review
+
+`OkrManagerReview` records a manager's review per OKR per period.
+
+### DTO
+
+```json
+{
+  "decision": "APPROVED", // APPROVED | CHANGES_REQUESTED
+  "overallConfidence": 4, // 1-5
+  "comments": "...",
+  "strengths": ["Clear KRs", "Strong alignment"],
+  "risks": ["Cache layer dependency on infra team"],
+  "supportActions": ["Pair with infra weekly"],
+  "reviewedAt": "2026-04-15T10:00:00Z"
+}
+```
+
+Unique by `(okrId, reviewerId)`. `APPROVED` flips OKR.status from `DRAFT` → `ACTIVE`.
+
+## 9.5 Form 28 — Annual Performance Summary
+
+Computed view, not a form. Aggregates all reviews and OKRs of an employee for a year.
+
+`GET /hr/performance/summary/:employeeId/:year` returns:
+
+```json
+{
+  "employee": { "id": "...", "name": "...", "position": "..." },
+  "year": 2026,
+  "reviews": [
+    { "quarter": 1, "category": "EXCEEDS_EXPECTATIONS", "finalRating": 4.3 },
+    { "quarter": 2, "category": "MEETS_EXPECTATIONS", "finalRating": 3.8 }
+  ],
+  "averageRating": 4.05,
+  "okrSummary": {
+    "totalOkrs": 8,
+    "averageProgress": 78,
+    "achieved": 5,
+    "partiallyAchieved": 2,
+    "missed": 1
+  },
+  "trainingsCompleted": 4,
+  "recognitionsReceived": 2,
+  "promotionEligible": true,
+  "raiseRecommendation": { ... }
+}
+```
+
+## 9.6 Form 29 — Training Needs Assessment
+
+Links to a `PerformanceReview` and feeds into Training subsystem.
+
+### Endpoints
+
+| Method | Path                                        | Permission         |
+| ------ | ------------------------------------------- | ------------------ |
+| POST   | `/hr/training-needs/assessments`            | `training:request` |
+| GET    | `/hr/training-needs/assessments`            | `training:view`    |
+| GET    | `/hr/training-needs/assessments/:id`        | `training:view`    |
+| POST   | `/hr/training-needs/assessments/:id/submit` | `training:request` |
+| POST   | `/hr/training-needs/assessments/:id/review` | `training:approve` |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "basedOnReviewId": "uuid",
+  "periodYear": 2026,
+  "developmentAreas": [
+    {
+      "skill": "AWS Architecture",
+      "currentLevel": "BEGINNER",
+      "targetLevel": "INTERMEDIATE"
+    }
+  ],
+  "requestedTrainings": [
+    { "title": "AWS SA Associate", "provider": "AWS", "estimatedCost": 15000 }
+  ],
+  "skillGapSummary": "...",
+  "managerNotes": "...",
+  "priority": "MEDIUM"
+}
+```
+
+## 9.7 Form 30 — Career Development Plan
+
+### Endpoints
+
+| Method | Path                            | Permission           |
+| ------ | ------------------------------- | -------------------- |
+| GET    | `/hr/career-plans`              | `career_plan:view`   |
+| POST   | `/hr/career-plans`              | `career_plan:create` |
+| GET    | `/hr/career-plans/:id`          | `career_plan:view`   |
+| PATCH  | `/hr/career-plans/:id`          | `career_plan:update` |
+| POST   | `/hr/career-plans/:id/progress` | `career_plan:update` |
+| POST   | `/hr/career-plans/:id/complete` | `career_plan:update` |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "currentPositionId": "uuid",
+  "targetPositionId": "uuid",
+  "planYear": 2026,
+  "title": "Path to Engineering Manager",
+  "summary": "...",
+  "goals": [
+    {
+      "title": "Lead a feature delivery",
+      "status": "IN_PROGRESS",
+      "dueDate": "2026-09-30"
+    },
+    {
+      "title": "Complete leadership training",
+      "status": "NOT_STARTED",
+      "dueDate": "2026-08-15"
+    }
+  ],
+  "developmentActions": [
+    { "action": "Pair with current EM weekly", "frequency": "weekly" }
+  ],
+  "successMetrics": [
+    { "metric": "Feature delivered on time", "target": "Q3 2026" }
+  ]
+}
+```
+
+### Business Rules
+
+1. `progressPercent` auto-recomputed from goals: `(completedGoals / totalGoals) * 100`.
+2. `status: DRAFT → ACTIVE → COMPLETED / CANCELLED`.
+3. On `COMPLETED`, sets `completedAt`.
+
+## 9.8 Form 31 — Internal Transfer Request
+
+### Endpoints
+
+| Method | Path                                | Permission                 |
+| ------ | ----------------------------------- | -------------------------- |
+| POST   | `/hr/transfer-requests`             | `transfer_request:create`  |
+| GET    | `/hr/transfer-requests`             | `transfer_request:view`    |
+| GET    | `/hr/transfer-requests/:id`         | `transfer_request:view`    |
+| POST   | `/hr/transfer-requests/:id/submit`  | `transfer_request:create`  |
+| POST   | `/hr/transfer-requests/:id/approve` | `transfer_request:approve` |
+| POST   | `/hr/transfer-requests/:id/reject`  | `transfer_request:approve` |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "requestType": "PROMOTION", // PROMOTION | TRANSFER
+  "currentPositionId": "uuid",
+  "targetPositionId": "uuid",
+  "reason": "...",
+  "businessCase": {
+    "rationale": "...",
+    "expectedImpact": "..."
+  },
+  "desiredEffectiveDate": "2026-09-01",
+  "compensationChange": {
+    "newBaseSalary": 40000,
+    "currency": "ETB",
+    "percentChange": 14.3
+  }
+}
+```
+
+### Approval Chain
+
+`Department Head → HR → CEO` (for senior / cross-department) or `Department Head → HR` (for within-dept).
+On approval:
+
+1. Update `UserEmployment` to new position.
+2. Append `UserEmploymentHistory` row with `changeReason="Transfer/Promotion"`.
+3. If `compensationChange` provided, auto-create `SalaryAdjustmentRequest` (linked).
+4. Identifier: `TR-<year>-NNNN`.
+
+## 9.9 Form 32 — Promotion Request (Promotion Proposal)
+
+Distinct from `InternalTransferRequest` — this is an HR-driven proposal grounded in performance.
+
+### Endpoints
+
+| Method | Path                                 | Permission                   |
+| ------ | ------------------------------------ | ---------------------------- |
+| GET    | `/hr/promotion-proposals`            | `promotion_proposal:view`    |
+| POST   | `/hr/promotion-proposals`            | `promotion_proposal:create`  |
+| GET    | `/hr/promotion-proposals/:id`        | `promotion_proposal:view`    |
+| POST   | `/hr/promotion-proposals/:id/review` | `promotion_proposal:approve` |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "fromPositionId": "uuid",
+  "toPositionId": "uuid",
+  "justification": {
+    "summary": "...",
+    "performanceHighlights": ["Q1 OUTSTANDING", "Q2 EXCEEDS_EXPECTATIONS"],
+    "okrProgress": 87
+  }
+}
+```
+
+### Eligibility Rules (server-enforced)
+
+1. Current employment position must exist and equal `fromPositionId`.
+2. `toPositionId` must differ from current.
+3. Latest **completed** `PerformanceReview` must have `promotionEligible=true`.
+4. Average current-year OKR progress must be ≥ **70%**.
+5. No active `DisciplinaryAction` with `status=ACTIVE`.
+
+### Approval Side Effects
+
+On approval:
+
+1. Update `UserEmployment.positionId`.
+2. Append `UserEmploymentHistory`.
+3. Optionally trigger compensation update (validates against `JobGrade` band).
+4. Notify employee + finance.
+5. Generate promotion letter.
+
+## 9.10 Form 33 — Salary Adjustment Request
+
+### Endpoints
+
+| Method | Path                                 | Permission                  |
+| ------ | ------------------------------------ | --------------------------- |
+| POST   | `/hr/salary-adjustments`             | `salary_adjustment:propose` |
+| GET    | `/hr/salary-adjustments`             | `salary_adjustment:view`    |
+| POST   | `/hr/salary-adjustments/:id/submit`  | `salary_adjustment:propose` |
+| POST   | `/hr/salary-adjustments/:id/approve` | `salary_adjustment:approve` |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "linkedReviewId": "uuid", // optional
+  "linkedTransferRequestId": "uuid", // optional
+  "reason": "MERIT", // MERIT/EQUITY/PROMOTION/TRANSFER/RETENTION/MARKET
+  "currentBaseSalary": 30000,
+  "proposedBaseSalary": 33000,
+  "percentChange": 10,
+  "currency": "ETB",
+  "effectiveFrom": "2026-08-01",
+  "justification": {
+    "rationale": "...",
+    "marketBenchmark": { "source": "...", "p50": 32000, "p75": 35000 }
+  }
+}
+```
+
+### Business Rules
+
+1. `percentChange` server-recomputed from `currentBaseSalary` and `proposedBaseSalary`.
+2. Salary band check against `JobGrade` (if linked).
+3. Approval triggers `UserCompensation` update via the algorithm in §7.3.
+4. Identifier: `SA-<year>-NNNN`.
+
+## 9.11 Succession Planning (Cross-Cutting)
+
+### Endpoints
+
+| Method | Path                       | Permission               |
+| ------ | -------------------------- | ------------------------ |
+| GET    | `/hr/succession-plans`     | `succession_plan:view`   |
+| POST   | `/hr/succession-plans`     | `succession_plan:create` |
+| GET    | `/hr/succession-plans/:id` | `succession_plan:view`   |
+| PATCH  | `/hr/succession-plans/:id` | `succession_plan:update` |
+
+### DTO
+
+```json
+{
+  "positionId": "uuid",
+  "candidateEmployeeId": "uuid",
+  "readiness": "ONE_YEAR", // READY_NOW | ONE_YEAR | TWO_YEARS
+  "riskLevel": "MEDIUM", // LOW | MEDIUM | HIGH | CRITICAL
+  "notes": "Strong technical, needs management training"
+}
+```
+
+Unique by `(positionId, candidateEmployeeId)`.
+
+---
+
+# 10. Subsystem 6 — Training & Skill Development
+
+**Purpose:** Capture employee skills, identify gaps, approve trainings, track completion, and gather feedback to improve future offerings.
+**Forms covered (4):** Training Request, Training Feedback, Skill Gap Assessment, Training Completion & Certification.
+
+## 10.1 Architecture
+
+```
+Skill (library — global catalog)
+   │
+   ├─► EmployeeSkill (per employee × skill)
+   │     ├── level: BEGINNER/INTERMEDIATE/ADVANCED/EXPERT
+   │     ├── source: SELF/MANAGER/ASSESSMENT/TRAINING
+   │     └── attestedAt
+   │
+   └─► SkillGapAssessment (per department)
+         ├── requiredSkills (JSONB)
+         ├── currentState (JSONB)
+         ├── trainingRecommendations (JSONB)
+         └── hireRecommendations (JSONB)
+
+TrainingBudget (per department per year)
+   │
+   ▼
+TrainingRequest ──approved──► TrainingCompletion ──► TrainingFeedback
+   │                              │                      │
+   │                              ├── certificate         └── TrainingFeedbackTemplate
+   │                              ├── expiryDate
+   │                              └── skillsAcquired (JSONB) ──► auto-update EmployeeSkill
+```
+
+## 10.2 Skill Library
+
+### Endpoints
+
+| Method | Path                    | Permission     |
+| ------ | ----------------------- | -------------- |
+| GET    | `/hr/skills`            | `skill:view`   |
+| POST   | `/hr/skills`            | `skill:manage` |
+| GET    | `/hr/skills/:id`        | `skill:view`   |
+| PATCH  | `/hr/skills/:id`        | `skill:manage` |
+| DELETE | `/hr/skills/:id`        | `skill:manage` |
+| GET    | `/hr/skills/categories` | `skill:view`   |
+
+### Skill DTO
+
+```json
+{
+  "name": "TypeScript",
+  "category": "Programming Languages",
+  "description": "Statically typed superset of JavaScript"
+}
+```
+
+`name` is unique site-wide; `category` enables grouping in UI.
+
+## 10.3 Employee Skills (Per-Person)
+
+### Endpoints
+
+| Method | Path                                       | Permission                                 |
+| ------ | ------------------------------------------ | ------------------------------------------ |
+| GET    | `/hr/employees/:id/skills`                 | `employee:view`                            |
+| POST   | `/hr/employees/:id/skills`                 | `employee:update` (self) or `skill:manage` |
+| PATCH  | `/hr/employees/:id/skills/:skillId`        | `employee:update`                          |
+| DELETE | `/hr/employees/:id/skills/:skillId`        | `employee:update`                          |
+| POST   | `/hr/employees/:id/skills/:skillId/attest` | `skill:manage`                             |
+
+### DTO
+
+```json
+{
+  "skillId": "uuid",
+  "level": "INTERMEDIATE",
+  "source": "SELF"
+}
+```
+
+### Business Rules
+
+1. Unique `(employeeId, skillId)`.
+2. When `source=TRAINING`, set `attestedAt=now` and trigger auto-population from a completed `TrainingCompletion.skillsAcquired`.
+3. Self-claimed (`SELF`) skills are unattested until a manager attestation flips `source=MANAGER` and sets `attestedAt`.
+4. `ASSESSMENT` source comes from `SkillGapAssessment` results.
+
+## 10.4 Training Budget
+
+### Endpoints
+
+| Method | Path                                       | Permission               |
+| ------ | ------------------------------------------ | ------------------------ |
+| GET    | `/hr/training-budgets`                     | `training:view`          |
+| POST   | `/hr/training-budgets`                     | `training:manage_budget` |
+| PATCH  | `/hr/training-budgets/:id`                 | `training:manage_budget` |
+| GET    | `/hr/training-budgets/:departmentId/:year` | `training:view`          |
+
+### DTO
+
+```json
+{
+  "departmentId": "uuid",
+  "year": 2026,
+  "totalBudget": 500000,
+  "perPersonAmount": 25000
+}
+```
+
+### Business Rules
+
+1. Unique `(departmentId, year)`.
+2. `usedYtd` auto-increments on `TrainingRequest` approval where `costPayer=COMPANY`.
+3. Approval is blocked when `usedYtd + request.cost > totalBudget` (unless override permission).
+
+## 10.5 Form 34 — Training Request
+
+### Endpoints
+
+| Method | Path                                | Permission                      |
+| ------ | ----------------------------------- | ------------------------------- |
+| POST   | `/hr/training/requests`             | `training:request`              |
+| GET    | `/hr/training/requests`             | `training:view`                 |
+| GET    | `/hr/training/requests/:id`         | `training:view`                 |
+| PATCH  | `/hr/training/requests/:id`         | `training:request` (DRAFT only) |
+| POST   | `/hr/training/requests/:id/submit`  | `training:request`              |
+| POST   | `/hr/training/requests/:id/approve` | `training:approve`              |
+| POST   | `/hr/training/requests/:id/reject`  | `training:approve`              |
+| POST   | `/hr/training/requests/:id/cancel`  | `training:request`              |
+
+### Create DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "departmentId": "uuid",
+  "trainingType": "SKILL", // SKILL/COMPLIANCE/LEADERSHIP/OTHER
+  "title": "AWS Solutions Architect Associate",
+  "provider": "AWS / Coursera",
+  "startDate": "2026-07-01",
+  "endDate": "2026-07-15",
+  "durationHours": 40,
+  "justification": "Needed to support new cloud projects",
+  "skillGapLinkId": "uuid", // optional — links to Skill
+  "cost": 15000,
+  "costPayer": "COMPANY" // COMPANY | SELF
+}
+```
+
+### State Machine
+
+```
+DRAFT ──submit──► PENDING ──approve──► APPROVED ──► (creates TrainingCompletion placeholder)
+   │                  │
+   │                  └──reject──► REJECTED
+   │
+   └──cancel──► CANCELLED
+```
+
+### Approval Algorithm
+
+```
+function approveTraining(requestId, approverId):
+    transaction:
+        req = TrainingRequest.findById(requestId)
+        assert req.status == 'PENDING'
+
+        if req.costPayer == 'COMPANY':
+            budget = TrainingBudget.findUnique({
+                departmentId: req.departmentId,
+                year: req.startDate.year
+            })
+            if budget is null:
+                throw 422 "No training budget for department/year"
+            if budget.usedYtd + req.cost > budget.totalBudget:
+                throw 422 "Exceeds annual budget"
+            budget.usedYtd += req.cost
+            TrainingBudget.update(...)
+
+        req.status = 'APPROVED'
+        req.approvedById = approverId
+        req.approvedAt = now
+        TrainingRequest.update(...)
+
+    notify employee (training approved + calendar invite for start date)
+```
+
+### Approval Chain
+
+`Employee → Department Head → HR Manager` (sequence enforced by client/process; the schema only tracks final approver, but extending with `ApprovalStep` is recommended for parity with Recruitment Form 1).
+
+## 10.6 Form 37 — Training Completion & Certification
+
+A `TrainingCompletion` row is created on `TrainingRequest` approval (or manually for unsanctioned trainings).
+
+### Endpoints
+
+| Method | Path                                        | Permission          |
+| ------ | ------------------------------------------- | ------------------- |
+| POST   | `/hr/training/completions`                  | `training:complete` |
+| GET    | `/hr/training/completions`                  | `training:view`     |
+| GET    | `/hr/training/completions/:id`              | `training:view`     |
+| PATCH  | `/hr/training/completions/:id`              | `training:complete` |
+| POST   | `/hr/training/completions/:id/attest`       | `training:complete` |
+| GET    | `/hr/training/completions/expiring?days=60` | `training:view`     |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "trainingRequestId": "uuid", // optional
+  "title": "AWS SA Associate",
+  "provider": "AWS",
+  "startDate": "2026-07-01",
+  "endDate": "2026-07-15",
+  "completionStatus": "COMPLETED", // COMPLETED | PARTIAL | DROPPED
+  "scoreOrGrade": "920/1000",
+  "certificateNumber": "AWS-SAA-12345",
+  "certificateUrl": "https://storage.../cert.pdf",
+  "expiryDate": "2029-07-15",
+  "skillsAcquired": [{ "skillId": "uuid", "level": "INTERMEDIATE" }]
+}
+```
+
+### Business Rules
+
+1. On `COMPLETED` and attestation:
+   - For each `skillsAcquired[i]`, upsert `EmployeeSkill` with `source=TRAINING`, `attestedAt=now`. Only upgrade level (never downgrade automatically).
+   - Set `syncedToProfile=true`.
+2. `expiryDate` non-null triggers reminders via `CertificationExpiryJob` at 60/30/7 days before.
+3. `DROPPED` or `PARTIAL` does not push skills to profile.
+
+## 10.7 Form 35 — Training Feedback
+
+Feedback templates allow consistent feedback across many trainings.
+
+### Endpoints
+
+| Method | Path                                              | Permission                  |
+| ------ | ------------------------------------------------- | --------------------------- |
+| GET    | `/hr/training/feedback-templates`                 | `training:view`             |
+| POST   | `/hr/training/feedback-templates`                 | `training:manage_templates` |
+| PATCH  | `/hr/training/feedback-templates/:id`             | `training:manage_templates` |
+| POST   | `/hr/training/completions/:completionId/feedback` | `training:feedback`         |
+| GET    | `/hr/training/feedback`                           | `training:view`             |
+| GET    | `/hr/training/feedback/:id`                       | `training:view`             |
+| POST   | `/hr/training/feedback/:id/review`                | `training:approve`          |
+
+### Template DTO
+
+```json
+{
+  "name": "Course Feedback Standard v1",
+  "description": "Standard course feedback",
+  "feedbackType": "COURSE", // COURSE | TRAINER | PROVIDER
+  "ratingScale": "ONE_TO_FIVE", // ONE_TO_FIVE | ONE_TO_TEN
+  "questions": [
+    { "id": "q1", "text": "How relevant was the content?", "type": "rating" },
+    {
+      "id": "q2",
+      "text": "How well did the trainer explain?",
+      "type": "rating"
+    },
+    {
+      "id": "q3",
+      "text": "Would you recommend to colleagues?",
+      "type": "boolean"
+    },
+    { "id": "q4", "text": "What can be improved?", "type": "text" }
+  ]
+}
+```
+
+### Feedback Submission DTO
+
+```json
+{
+  "templateId": "uuid",
+  "submissionType": "IDENTIFIED", // ANONYMOUS | IDENTIFIED | MANAGER_ONLY
+  "responses": {
+    "q1": 5,
+    "q2": 4,
+    "q3": true,
+    "q4": "More hands-on labs would help"
+  },
+  "overallRating": 4.5,
+  "comments": "Excellent overall"
+}
+```
+
+### Business Rules
+
+1. `submissionType=ANONYMOUS` → strip `participantId` on read for non-HR users.
+2. `submissionType=MANAGER_ONLY` → only the participant's manager + HR sees the response.
+3. `overallRating` may be client-computed but server validates against responses.
+4. `FeedbackStatus`: `DRAFT → SUBMITTED → REVIEWED`.
+5. `reviewedById` + `actionTaken` capture HR's follow-up action.
+
+## 10.8 Form 36 — Skill Gap Assessment
+
+### Endpoints
+
+| Method | Path                             | Permission         |
+| ------ | -------------------------------- | ------------------ |
+| GET    | `/hr/skills/gap-assessments`     | `skill:gap_assess` |
+| POST   | `/hr/skills/gap-assessments`     | `skill:gap_assess` |
+| GET    | `/hr/skills/gap-assessments/:id` | `skill:gap_assess` |
+| PATCH  | `/hr/skills/gap-assessments/:id` | `skill:gap_assess` |
+
+### DTO
+
+```json
+{
+  "departmentId": "uuid",
+  "assessedAt": "2026-05-15T10:00:00Z",
+  "requiredSkills": [
+    {
+      "skillId": "uuid",
+      "name": "TypeScript",
+      "neededLevel": "ADVANCED",
+      "headcount": 5
+    },
+    {
+      "skillId": "uuid",
+      "name": "AWS",
+      "neededLevel": "INTERMEDIATE",
+      "headcount": 8
+    }
+  ],
+  "currentState": [
+    {
+      "skillId": "uuid",
+      "actualCount": 3,
+      "byLevel": { "INTERMEDIATE": 1, "ADVANCED": 2 }
+    }
+  ],
+  "criticalGapsSummary": "AWS expertise concentrated in 1 team; bus-factor risk.",
+  "trainingRecommendations": [
+    {
+      "skillId": "uuid",
+      "targetHires": 4,
+      "estimatedCost": 60000,
+      "priority": "HIGH"
+    }
+  ],
+  "hireRecommendations": [
+    { "role": "Senior AWS Engineer", "headcount": 1, "justification": "..." }
+  ]
+}
+```
+
+### Algorithm — Auto-Compute Current State
+
+```
+function autoCurrentState(departmentId, requiredSkills):
+    employees = Employee.find({ departmentId, lifecycle.status: 'ACTIVE' })
+    result = []
+    for req in requiredSkills:
+        skills = EmployeeSkill.find({
+            employeeId: { in: employees.map(e => e.id) },
+            skillId: req.skillId,
+            level: { in: levelsAtOrAbove(req.neededLevel) }
+        })
+        result.push({
+            skillId: req.skillId,
+            actualCount: skills.length,
+            byLevel: groupByLevel(skills)
+        })
+    return result
+```
+
+### Business Rules
+
+1. `trainingRecommendations` can be one-click converted into `TrainingRequest` rows.
+2. `hireRecommendations` can be one-click converted into `JobRequestForm` rows.
+
+---
+
+# 11. Subsystem 7 — Employee Relations
+
+**Purpose:** Maintain a healthy culture by tracking incidents, disciplinary actions, grievances, recognitions, surveys, and conflicts.
+**Forms covered (7):** Satisfaction Survey, Disciplinary Action / Grievance, Incident Report, Employee Suggestion, Recognition, Culture Pulse Survey, Conflict Mediation.
+
+## 11.1 Overview
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                      EMPLOYEE RELATIONS                          │
+└──────────────────────────────────────────────────────────────────┘
+
+  POSITIVE          ┌─► Recognition (nominator → nominee)
+  ────────────      └─► Survey (Satisfaction, Pulse, Suggestion)
+
+  CORRECTIVE        ┌─► IncidentReport ── escalates ──► DisciplinaryAction
+  ────────────      ├─► Grievance (employee files complaint)
+                    └─► ConflictMediation (third-party mediated)
+```
+
+## 11.2 Form 40 — Incident Report
+
+Operational record of a workplace incident. Drives investigations and may escalate to disciplinary action.
+
+### Endpoints
+
+| Method | Path                                              | Permission             |
+| ------ | ------------------------------------------------- | ---------------------- |
+| POST   | `/hr/relations/incidents`                         | `incident:report`      |
+| GET    | `/hr/relations/incidents`                         | `incident:view`        |
+| GET    | `/hr/relations/incidents/:id`                     | `incident:view`        |
+| PATCH  | `/hr/relations/incidents/:id`                     | `incident:investigate` |
+| POST   | `/hr/relations/incidents/:id/assign-investigator` | `incident:investigate` |
+| POST   | `/hr/relations/incidents/:id/resolve`             | `incident:investigate` |
+
+### DTO
+
+```json
+{
+  "incidentType": "HARASSMENT", // SAFETY/SECURITY/CONFLICT/HARASSMENT/OTHER
+  "severity": "HIGH", // LOW/MEDIUM/HIGH/CRITICAL
+  "description": "Witnessed inappropriate language in team chat",
+  "location": "Slack #engineering channel",
+  "occurredAt": "2026-05-20T15:30:00Z",
+  "peopleInvolved": [
+    { "employeeId": "uuid", "role": "REPORTER" },
+    { "employeeId": "uuid", "role": "SUBJECT" },
+    { "employeeId": "uuid", "role": "WITNESS" }
+  ],
+  "immediateActions": ["Pulled affected channel logs", "Notified HR"]
+}
+```
+
+### State Machine
+
+```
+OPEN ──assign──► INVESTIGATING ──resolve──► RESOLVED
+                       │
+                       └──escalate──► (creates DisciplinaryAction or Mediation)
+```
+
+### Business Rules
+
+1. **SLA computation (server-side):**
+   - `CRITICAL` → 24h
+   - `HIGH` → 72h
+   - `MEDIUM` → 7 days
+   - `LOW` → 14 days
+   - `investigationDueAt = createdAt + slaHours`
+2. Identifier: `INC-<year>-NNNN`.
+3. Cron `IncidentSlaJob` (every hour) escalates breaches.
+4. Resolution requires `rootCause` and `preventiveActions`.
+5. Confidential — `incident:view` is HR-only by default; reporter can see their own report status only.
+
+## 11.3 Form 39 — Disciplinary Action / Grievance
+
+### 11.3.1 Disciplinary Action
+
+Issued by management following misconduct (often referencing an `IncidentReport`).
+
+### Endpoints
+
+| Method | Path                                             | Permission                         |
+| ------ | ------------------------------------------------ | ---------------------------------- |
+| POST   | `/hr/relations/disciplinary-actions`             | `disciplinary:create`              |
+| GET    | `/hr/relations/disciplinary-actions`             | `disciplinary:view`                |
+| GET    | `/hr/relations/disciplinary-actions/:id`         | `disciplinary:view`                |
+| POST   | `/hr/relations/disciplinary-actions/:id/approve` | `disciplinary:approve`             |
+| POST   | `/hr/relations/disciplinary-actions/:id/appeal`  | `disciplinary:view` (subject only) |
+
+### DTO
+
+```json
+{
+  "employeeId": "uuid",
+  "incidentType": "ATTENDANCE_VIOLATION", // ATTENDANCE_VIOLATION/PERFORMANCE_ISSUE/CODE_OF_CONDUCT
+  "actionType": "WRITTEN_WARNING", // VERBAL_WARNING/WRITTEN_WARNING/FINAL_WARNING/PERFORMANCE_IMPROVEMENT_PLAN/SUSPENSION/TERMINATION
+  "incidentReportId": "uuid", // optional
+  "description": "Repeated late arrivals: 5 within 30 days",
+  "effectiveFrom": "2026-05-22",
+  "expiresAt": "2026-08-22", // expiration of disciplinary record
+  "durationDays": 90
+}
+```
+
+### State Machine
+
+```
+PENDING ──approve──► ACTIVE ──(time passes)──► EXPIRED
+              │
+              └──employee appeals──► APPEALED
+                                          │
+                                          └──HR decides──► ACTIVE / EXPIRED
+```
+
+### Side Effects
+
+| Action Type                    | Side Effect                                                               |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| `VERBAL_WARNING`               | Notification only                                                         |
+| `WRITTEN_WARNING`              | Generates document, mailed to employee                                    |
+| `FINAL_WARNING`                | Blocks promotions; triggers HR review                                     |
+| `PERFORMANCE_IMPROVEMENT_PLAN` | Creates a sub-plan tracker (similar to probation)                         |
+| `SUSPENSION`                   | `UserLifecycle.status=SUSPENSED`, `suspendedAt=now`, blocks system access |
+| `TERMINATION`                  | Triggers offboarding flow with `terminationType=TERMINATION`              |
+
+### Business Rules
+
+1. `TERMINATION` requires CEO/GM approval (separate `approvedById` step).
+2. Active disciplinary actions block promotion eligibility (referenced in §9.9).
+3. Disciplinary records auto-expire on `expiresAt`; soft-archive after expiry.
+
+### 11.3.2 Grievance
+
+Employee-filed complaint.
+
+### Endpoints
+
+| Method | Path                                   | Permission          |
+| ------ | -------------------------------------- | ------------------- |
+| POST   | `/hr/relations/grievances`             | `grievance:file`    |
+| GET    | `/hr/relations/grievances`             | `grievance:view`    |
+| GET    | `/hr/relations/grievances/:id`         | `grievance:view`    |
+| POST   | `/hr/relations/grievances/:id/assign`  | `grievance:assign`  |
+| POST   | `/hr/relations/grievances/:id/resolve` | `grievance:resolve` |
+| POST   | `/hr/relations/grievances/:id/close`   | `grievance:resolve` |
+
+### DTO
+
+```json
+{
+  "subject": "Unfair workload distribution",
+  "description": "...",
+  "category": "WORKLOAD"
+}
+```
+
+### State Machine
+
+```
+OPEN ──HR assigns──► INVESTIGATING ──resolve──► RESOLVED ──close──► CLOSED
+```
+
+### Business Rules
+
+1. Subject (the employee being complained about) is **not** notified during `INVESTIGATING` — only after resolution decision.
+2. Visibility: only the reporter, HR, and assigned investigator can read.
+3. SLA: HR must assign within 24h of `OPEN`.
+
+## 11.4 Form 38 — Employee Satisfaction Survey & Form 43 — Culture Pulse Survey
+
+Both use the same `Survey` model with different `type` values.
+
+### Endpoints
+
+| Method | Path                                  | Permission       |
+| ------ | ------------------------------------- | ---------------- |
+| GET    | `/hr/relations/surveys`               | `survey:view`    |
+| POST   | `/hr/relations/surveys`               | `survey:create`  |
+| GET    | `/hr/relations/surveys/:id`           | `survey:view`    |
+| POST   | `/hr/relations/surveys/:id/publish`   | `survey:create`  |
+| POST   | `/hr/relations/surveys/:id/close`     | `survey:create`  |
+| POST   | `/hr/relations/surveys/:id/responses` | `survey:respond` |
+| GET    | `/hr/relations/surveys/:id/results`   | `survey:view`    |
+
+### Survey DTO
+
+```json
+{
+  "title": "Q2 2026 Satisfaction Survey",
+  "description": "Quarterly check-in on workplace satisfaction",
+  "type": "SATISFACTION", // SATISFACTION | PULSE
+  "anonymous": true,
+  "questions": [
+    { "id": "q1", "text": "I am satisfied with my role", "type": "rating_1_5" },
+    {
+      "id": "q2",
+      "text": "I feel supported by my manager",
+      "type": "rating_1_5"
+    },
+    {
+      "id": "q3",
+      "text": "What would improve your day-to-day?",
+      "type": "text"
+    },
+    {
+      "id": "q4",
+      "text": "Would you recommend BLIH as a workplace?",
+      "type": "nps_1_10"
+    }
+  ],
+  "opensAt": "2026-06-25T00:00:00Z",
+  "closesAt": "2026-07-05T23:59:59Z"
+}
+```
+
+### State Machine
+
+```
+DRAFT ──publish──► ACTIVE ──close (manual or auto)──► CLOSED
+```
+
+### Response DTO
+
+```json
+{
+  "responses": {
+    "q1": 4,
+    "q2": 5,
+    "q3": "More flexibility on remote days",
+    "q4": 9
+  }
+}
+```
+
+### Business Rules
+
+1. `anonymous=true` → `SurveyResponse.employeeId` is set to `null`.
+2. Auto-close when `closesAt` passes (cron `SurveyAutoCloseJob`).
+3. Results endpoint returns:
+   - Per-question averages, distribution, NPS.
+   - Departmental cuts if non-anonymous.
+   - Text response sampling (anonymised).
+4. Unique constraint not enforced — a user can update responses if not anonymous.
+
+## 11.5 Form 41 — Employee Suggestion
+
+The `Survey` model is reused with `type=PULSE` + an open-ended-only questions list, OR a dedicated `EmployeeSuggestion` model (not in current schema — recommended addition).
+
+### Recommended Addition
+
+```prisma
+model EmployeeSuggestion {
+  id          String   @id @default(uuid()) @db.Uuid
+  employeeId  String?  @db.Uuid             // null if anonymous
+  category    String                        // PROCESS / TOOL / CULTURE / OTHER
+  title       String
+  description String   @db.Text
+  status      String   @default("OPEN")     // OPEN / UNDER_REVIEW / ACCEPTED / IMPLEMENTED / DECLINED
+  upvotes     Int      @default(0)
+  reviewedById String? @db.Uuid
+  reviewedAt   DateTime?
+  responseNotes String? @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+```
+
+Endpoints under `/hr/relations/suggestions`.
+
+## 11.6 Form 42 — Employee Recognition
+
+### Endpoints
+
+| Method | Path                                     | Permission             |
+| ------ | ---------------------------------------- | ---------------------- |
+| POST   | `/hr/relations/recognitions`             | `recognition:nominate` |
+| GET    | `/hr/relations/recognitions`             | `recognition:view`     |
+| GET    | `/hr/relations/recognitions/:id`         | `recognition:view`     |
+| POST   | `/hr/relations/recognitions/:id/approve` | `recognition:approve`  |
+| POST   | `/hr/relations/recognitions/:id/reject`  | `recognition:approve`  |
+| GET    | `/hr/relations/recognitions/wall`        | `recognition:view`     |
+
+### DTO
+
+```json
+{
+  "nomineeEmployeeId": "uuid",
+  "category": "INNOVATION", // EXCELLENCE/TEAMWORK/INNOVATION/SERVICE/OTHER
+  "description": "Built the new caching layer that reduced costs by 30%",
+  "impact": "Estimated $5K/mo savings",
+  "suggestedAward": "GIFT_CARD_3000",
+  "publicRecognition": true
+}
+```
+
+### State Machine
+
+```
+PENDING ──HR approves──► APPROVED ──► (broadcast to wall if publicRecognition=true)
+   │
+   └──HR rejects──► REJECTED
+```
+
+### Business Rules
+
+1. Nominator cannot be the same as nominee (self-recognition blocked).
+2. `approvals` JSONB stores multi-level reviewers if needed (`{ manager: { decision, at }, hr: { ... } }`).
+3. On approval with `publicRecognition=true`, broadcast via WebSocket to a `recognition-wall` room.
+4. Recognitions feed into annual performance reviews as a positive signal.
+
+## 11.7 Form 44 — Conflict Mediation
+
+### Endpoints
+
+| Method | Path                                           | Permission          |
+| ------ | ---------------------------------------------- | ------------------- |
+| POST   | `/hr/relations/mediations`                     | `mediation:request` |
+| GET    | `/hr/relations/mediations`                     | `mediation:view`    |
+| GET    | `/hr/relations/mediations/:id`                 | `mediation:view`    |
+| POST   | `/hr/relations/mediations/:id/assign-mediator` | `mediation:mediate` |
+| POST   | `/hr/relations/mediations/:id/log-session`     | `mediation:mediate` |
+| POST   | `/hr/relations/mediations/:id/close`           | `mediation:mediate` |
+
+### DTO
+
+```json
+{
+  "otherPartyEmployeeId": "uuid",
+  "nature": "Disagreement on project ownership and credit",
+  "duration": "Past 3 months",
+  "attemptedResolutions": "Direct conversations had limited success",
+  "workImpact": "Slowed sprint velocity, team tension",
+  "desiredOutcome": "Clear roles + shared ownership agreement"
+}
+```
+
+### State Machine
+
+```
+PENDING ──mediator assigned──► IN_PROGRESS ──agreement──► AGREEMENT_REACHED ──close──► CLOSED
+                                      │
+                                      └──no agreement──► CLOSED
+```
+
+### Business Rules
+
+1. Mediator must be neutral — neither manager of involved parties; HR or external.
+2. `sessionDates` JSONB: array of session metadata `{ date, durationMinutes, summary }`.
+3. Confidentiality: only requester, other party, mediator, and HR see records.
+
+---
+
+# 12. Subsystem 8 — Exit, Offboarding & Compliance
+
+**Purpose:** Cleanly close out an employee's tenure: collect notice, run offboarding tasks, return assets, conduct exit interview, compute final settlement, and meet labour-law compliance.
+**Forms covered (6):** Resignation, Exit Interview, Offboarding Checklist, Asset Return & Clearance, Experience Letter & Final Pay Request, Compliance Checklist.
+
+## 12.1 End-to-End Offboarding Flow
+
+```
+[Employee]
+   │  submits resignation
+   ▼
+┌──────────────────────────┐
+│  Resignation (DRAFT)     │
+└─────────┬────────────────┘
+          │ submit
+          ▼
+┌──────────────────────────┐
+│  Resignation (SUBMITTED) │ ──► Manager + HR notified
+└─────────┬────────────────┘
+          │ Manager + HR approves
+          ▼
+┌──────────────────────────┐
+│  Resignation             │
+│   (NOTICE_PERIOD)        │ ──► OffboardingChecklist + tasks created
+└─────────┬────────────────┘                   │
+          │                                    ▼
+          ▼                          ┌─────────────────────┐
+┌─────────────────────────┐          │ OffboardingTask×N   │
+│  Resignation            │          │  (HR/IT/ADMIN/FIN/  │
+│   (HANDOVER)            │          │   MANAGER)          │
+└─────────┬───────────────┘          └─────────────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│  Resignation            │ ──► ExitInterview scheduled
+│   (EXIT_PENDING)        │
+└─────────┬───────────────┘                    │
+          │ all tasks done                     ▼
+          │                              ┌─────────────────────┐
+          ▼                              │  AssetReturn        │
+┌─────────────────────────┐              │   IT→Admin→Finance  │
+│  Resignation            │ ◄────────────┤   signoff chain     │
+│   (COMPLETED)           │              └─────────────────────┘
+└─────────┬───────────────┘
+          │
+          ├─► FinalSettlement (computed + approved + paid)
+          ├─► ComplianceChecklist (verified)
+          ├─► UserLifecycle.status = RESIGNED/TERMINATED/RETIRED
+          ├─► Keycloak user deactivated
+          └─► Experience Letter generated
+```
+
+## 12.2 Form 45 — Employee Resignation
+
+### Endpoints
+
+| Method | Path                                        | Permission                           |
+| ------ | ------------------------------------------- | ------------------------------------ |
+| POST   | `/hr/offboarding/resignations`              | `resignation:submit` (self)          |
+| GET    | `/hr/offboarding/resignations`              | `resignation:view`                   |
+| GET    | `/hr/offboarding/resignations/:id`          | `resignation:view`                   |
+| PATCH  | `/hr/offboarding/resignations/:id`          | `resignation:submit` (DRAFT only)    |
+| POST   | `/hr/offboarding/resignations/:id/submit`   | `resignation:submit`                 |
+| POST   | `/hr/offboarding/resignations/:id/approve`  | `resignation:approve`                |
+| POST   | `/hr/offboarding/resignations/:id/withdraw` | `resignation:submit` (within window) |
+| POST   | `/hr/offboarding/resignations/:id/complete` | `offboarding:complete`               |
+
+### DTO
+
+```json
+{
+  "proposedLastDay": "2026-07-20",
+  "reason": "CAREER_GROWTH", // CAREER_GROWTH / SALARY / FAMILY / HEALTH / OTHER
+  "reasonNotes": "Joining a senior role at a fintech startup",
+  "handoverPlan": {
+    "projects": [
+      { "name": "Migration", "currentStatus": "70%", "handoverTo": "user-uuid" }
+    ],
+    "documentation": "Will draft runbook for cron jobs",
+    "knowledgeTransfer": "2 sessions with team scheduled"
+  }
+}
+```
+
+### State Machine
+
+```
+DRAFT ──submit──► SUBMITTED ──HR/Mgr approve──► NOTICE_PERIOD ──► HANDOVER ──► EXIT_PENDING ──► COMPLETED
+   │                  │
+   │                  └──HR rejects (rare)──► (stays SUBMITTED for revision)
+   │
+   └──withdraw (within 24h after submit)──► (deleted)
+```
+
+### Notice Period & Validation Algorithm
+
+```
+function validateResignation(employeeId, proposedLastDay):
+    emp = Employee.findById(employeeId)
+    employment = emp.employment
+
+    today = startOfDay(now)
+    daysNotice = workingDaysBetween(today, proposedLastDay)
+
+    # Ethiopian Labour Law notice periods (Article 35)
+    requiredNotice = 0
+    if onProbation(emp):
+        requiredNotice = 7          # 1 week during probation
+    elif employment.tenureYears < 1:
+        requiredNotice = 30         # 1 month
+    elif employment.tenureYears < 5:
+        requiredNotice = 60         # 2 months
+    else:
+        requiredNotice = 90         # 3 months
+
+    # Stored on Resignation as a validationResult JSON snapshot
+    return {
+        ok: daysNotice >= requiredNotice,
+        daysNotice,
+        requiredNotice,
+        warnings: [...],
+        criticalProjectsWarning: pendingCriticalProjects(employeeId),
+        leaveBalanceOptions: {
+          accruedLeaveDays: balance.unused,
+          options: ['ENCASHMENT', 'USE_AS_NOTICE']
+        }
+    }
+```
+
+### Side Effects on Approval
+
+`NOTICE_PERIOD` transition triggers:
+
+1. Create `OffboardingChecklist` (see §12.4).
+2. Auto-create department-segmented `OffboardingTask` rows.
+3. Notify IT/Admin/Finance/Manager.
+4. Block role/salary changes via guard.
+5. Mark `Employee.employeeStatus` unchanged but `UserLifecycle` marked with `terminationReason`.
+
+## 12.3 Form 46 — Exit Interview
+
+### Endpoints
+
+| Method | Path                                          | Permission                |
+| ------ | --------------------------------------------- | ------------------------- |
+| POST   | `/hr/offboarding/exit-interviews`             | `offboarding:task_update` |
+| GET    | `/hr/offboarding/exit-interviews`             | `offboarding:view`        |
+| GET    | `/hr/offboarding/exit-interviews/:id`         | `offboarding:view`        |
+| POST   | `/hr/offboarding/exit-interviews/:id/conduct` | `offboarding:task_update` |
+
+### Conduct DTO
+
+```json
+{
+  "conductedAt": "2026-07-18T14:00:00Z",
+  "questions": [
+    { "id": "q1", "text": "Primary reason for leaving?" },
+    { "id": "q2", "text": "What would have made you stay?" },
+    { "id": "q3", "text": "Rate your overall experience (1-10)" }
+  ],
+  "answers": {
+    "q1": "Career growth opportunities",
+    "q2": "Clearer promotion path",
+    "q3": 8
+  },
+  "wouldRecommend": true,
+  "wouldReturn": true,
+  "improvementNotes": "More structured 1:1s with manager"
+}
+```
+
+### Business Rules
+
+1. Mandatory before resignation can reach `COMPLETED` (configurable via `ModuleConfig.offboarding.requireExitInterview`).
+2. Conducted by HR; recorded answers stored as JSONB.
+3. Aggregated reports for trends (separate analytics endpoint).
+4. Confidentiality: only HR sees individual answers; aggregates anonymized.
+
+## 12.4 Form 47 — Offboarding Checklist
+
+### Endpoints
+
+| Method | Path                                                    | Permission                |
+| ------ | ------------------------------------------------------- | ------------------------- |
+| GET    | `/hr/offboarding/checklists`                            | `offboarding:view`        |
+| GET    | `/hr/offboarding/checklists/:id`                        | `offboarding:view`        |
+| POST   | `/hr/offboarding/checklists`                            | `offboarding:complete`    |
+| POST   | `/hr/offboarding/checklists/:id/tasks/:taskId/complete` | `offboarding:task_update` |
+| POST   | `/hr/offboarding/checklists/:id/complete`               | `offboarding:complete`    |
+
+### Task Generation
+
+On `Resignation.approve`, the system auto-creates tasks segmented by department:
+
+| Department | Typical Tasks                                                            |
+| ---------- | ------------------------------------------------------------------------ |
+| `HR`       | Final paperwork, exit interview, experience letter, compliance checklist |
+| `IT`       | Disable email, revoke system access, archive accounts, collect laptop    |
+| `ADMIN`    | Recover access card, office key, parking permit                          |
+| `FINANCE`  | Compute final settlement, pension/loan recovery, tax filing              |
+| `MANAGER`  | Knowledge transfer sessions, project handover documentation              |
+
+Each task has `dueDate` (typically `lastWorkingDay - N days`).
+
+### Task State Machine
+
+```
+PENDING ──assignee starts──► IN_PROGRESS ──complete──► COMPLETED
+                                  │
+                                  └──missed deadline──► OVERDUE
+```
+
+### Business Rules
+
+1. **Mandatory tasks** (`mandatory=true`) must be `COMPLETED` before checklist completes.
+2. `OffboardingChecklistStatus`:
+   - `PENDING` (no tasks done)
+   - `IN_PROGRESS` (some done)
+   - `COMPLETED` (all mandatory done)
+3. Cron `OffboardingOverdueJob` flags tasks past `dueDate`.
+
+## 12.5 Form 48 — Asset Return & Clearance
+
+### Endpoints
+
+| Method | Path                                                 | Permission                |
+| ------ | ---------------------------------------------------- | ------------------------- |
+| POST   | `/hr/offboarding/asset-returns`                      | `offboarding:task_update` |
+| GET    | `/hr/offboarding/asset-returns/:id`                  | `offboarding:view`        |
+| POST   | `/hr/offboarding/asset-returns/:id/it-sign-off`      | `asset:approve_it`        |
+| POST   | `/hr/offboarding/asset-returns/:id/admin-sign-off`   | `asset:approve_admin`     |
+| POST   | `/hr/offboarding/asset-returns/:id/finance-sign-off` | `asset:approve_finance`   |
+
+### DTO
+
+```json
+{
+  "checklistId": "uuid",
+  "items": [
+    {
+      "assetType": "LAPTOP",
+      "serialNumber": "BLIH-LAP-0042",
+      "condition": "GOOD",
+      "returnedAt": "2026-07-19",
+      "notes": "Charger included"
+    },
+    {
+      "assetType": "ACCESS_CARD",
+      "serialNumber": "AC-1234",
+      "condition": "DAMAGED",
+      "notes": "Strap missing"
+    }
+  ],
+  "depositReturn": 5000,
+  "damageDeductions": 1500
+}
+```
+
+### State Machine (Sequential Sign-Off)
+
+```
+PENDING ──IT signs off──► IT_SIGNED ──Admin signs off──► ADMIN_SIGNED ──Finance signs off──► FINANCE_SIGNED ──► COMPLETED
+```
+
+### Business Rules
+
+1. `netAmount = depositReturn - damageDeductions`.
+2. Each sign-off records `signedAt`; previous step must be complete.
+3. On `COMPLETED`, link to `FinalSettlement` so deductions flow through.
+
+## 12.6 Form 49 — Final Settlement & Experience Letter
+
+### Endpoints
+
+| Method | Path                                               | Permission                 |
+| ------ | -------------------------------------------------- | -------------------------- |
+| POST   | `/hr/offboarding/final-settlements`                | `final_settlement:compute` |
+| GET    | `/hr/offboarding/final-settlements/:id`            | `final_settlement:view`    |
+| POST   | `/hr/offboarding/final-settlements/:id/approve`    | `final_settlement:approve` |
+| POST   | `/hr/offboarding/final-settlements/:id/mark-paid`  | `final_settlement:approve` |
+| POST   | `/hr/offboarding/:resignationId/experience-letter` | `offboarding:complete`     |
+
+### Final Settlement Computation Algorithm
+
+```
+function computeFinalSettlement(employeeId, resignationId, lastWorkingDay):
+    emp = Employee.findById(employeeId)
+    comp = emp.compensation
+
+    # Earnings
+    daysWorkedInLastMonth = workingDaysBetween(monthStart, lastWorkingDay)
+    daysInLastMonth = workingDaysBetween(monthStart, monthEnd)
+    proratedSalary = comp.baseSalary * (daysWorkedInLastMonth / daysInLastMonth)
+
+    # Leave encashment (unused annual leave)
+    leaveBalance = LeaveBalance.findUnique({ employeeId, leaveType: 'ANNUAL', year })
+    unusedDays = leaveBalance.totalDays + leaveBalance.carriedOver - leaveBalance.usedDays
+    dailyRate = comp.baseSalary / 22                # 22 working days standard
+    leaveEncashment = unusedDays * dailyRate
+
+    # Pro-rated bonus
+    monthsServedThisYear = monthsBetween(jan1, lastWorkingDay)
+    proratedBonus = (comp.bonusEligible && comp.bonusRate)
+                    ? (comp.baseSalary * comp.bonusRate / 100 * monthsServedThisYear / 12)
+                    : 0
+
+    # Approved unpaid overtime in last cycle
+    unpaidOvertimeMinutes = OvertimeRequest.sum where status='APPROVED' and not yet paid
+    overtimePay = unpaidOvertimeMinutes / 60 * (dailyRate / 8) * 1.25       # 25% OT multiplier (Ethiopian Labour Law base; nights 50%, holidays 200%)
+
+    # Allowances pro-rated
+    allowances = sum(CompensationComponent where type='ALLOWANCE' and active)
+                 * (daysWorkedInLastMonth / daysInLastMonth)
+
+    grossEarnings = proratedSalary + leaveEncashment + proratedBonus + overtimePay + allowances
+
+    # Deductions
+    incomeTax = computeProgressiveTax(grossEarnings)         # Ethiopian PIT brackets
+    pension = comp.baseSalary * 0.07                          # Employee 7%
+    loanRecovery = sum(EmployeeLoanBalance.outstanding for employeeId)
+    assetDeductions = assetReturn.damageDeductions ?? 0
+
+    totalDeductions = incomeTax + pension + loanRecovery + assetDeductions
+
+    netPayable = grossEarnings - totalDeductions
+
+    return {
+        earnings: {
+            proratedSalary, leaveEncashment, proratedBonus,
+            overtimePay, allowances, grossEarnings
+        },
+        deductions: {
+            incomeTax, pension, loanRecovery, assetDeductions, totalDeductions
+        },
+        netPayable
+    }
+```
+
+Result persisted as `FinalSettlement.earnings` and `FinalSettlement.deductions` (JSONB).
+
+### Settlement Workflow
+
+```
+COMPUTED ──HR submits──► PENDING_APPROVAL ──Finance approves──► APPROVED ──paid out──► PAID
+```
+
+### Experience Letter
+
+`POST /hr/offboarding/:resignationId/experience-letter`:
+
+- Generates a templated PDF with:
+  - Employee name, position, department, hire date, last working day
+  - Brief role description
+  - HR/CEO signature placeholders
+- Stores in `EmployeeDocument` (type=`OTHER`, typeOther=`EXPERIENCE_LETTER`).
+- Emails to employee's personal email.
+
+## 12.7 Form 50 — Compliance Checklist (Labour Law)
+
+### Endpoints
+
+| Method | Path                                               | Permission             |
+| ------ | -------------------------------------------------- | ---------------------- |
+| POST   | `/hr/offboarding/compliance-checklists`            | `offboarding:complete` |
+| GET    | `/hr/offboarding/compliance-checklists/:id`        | `offboarding:view`     |
+| POST   | `/hr/offboarding/compliance-checklists/:id/verify` | `offboarding:complete` |
+
+### DTO
+
+```json
+{
+  "resignationId": "uuid",
+  "terminationType": "RESIGNATION", // RESIGNATION | END_OF_CONTRACT | TERMINATION | LAYOFF
+  "noticePeriodContractual": 60,
+  "noticePeriodActual": 45,
+  "payInLieu": true, // pay for shortfall
+  "finalDues": {
+    "noticePayInLieu": 15000,
+    "severance": null
+  },
+  "terminationLetterSent": true,
+  "exitInterviewDone": true,
+  "clearanceCertificateDone": true,
+  "unionNotified": false,
+  "laborOfficeFiled": false,
+  "noPendingClaims": true
+}
+```
+
+### Verification Rules
+
+Cannot mark resignation `COMPLETED` until:
+
+- All `mandatory=true` offboarding tasks `COMPLETED`.
+- `AssetReturn.status = COMPLETED`.
+- `FinalSettlement.paidAt != null`.
+- `ComplianceChecklist`:
+  - `terminationLetterSent = true`
+  - `exitInterviewDone = true` (if required by `ModuleConfig`)
+  - `clearanceCertificateDone = true`
+  - `noPendingClaims = true`
+- `verifiedBy` set by HR.
+
+### Side Effects on Completion
+
+```
+function completeResignation(resignationId):
+    transaction:
+        res = Resignation.findById(resignationId)
+        assert allComplianceMet(res)
+
+        res.status = 'COMPLETED'
+        res.actualLastDay = ... (set from compliance)
+        Resignation.update(...)
+
+        # UserLifecycle update
+        lifecycle = res.employee.lifecycle
+        lifecycle.status = mapTerminationToLifecycle(compliance.terminationType)
+        # RESIGNATION → RESIGNED
+        # END_OF_CONTRACT or TERMINATION → TERMINATED
+        # (RETIRED set manually elsewhere)
+        lifecycle.terminatedAt = now
+        lifecycle.terminationReason = res.reason
+        lifecycle.offboardingCompleted = true
+        lifecycle.noPendingClaims = compliance.noPendingClaims
+        lifecycle.verifiedById = verifierId
+        lifecycle.verifiedAt = now
+        UserLifecycle.update(...)
+
+        # Disable accounts
+        KeycloakAdminService.disableUser(emp.user.keycloakId)
+        User.update({ status: 'DISABLED' })
+
+    notify HR + finance + manager (offboarding complete)
+```
+
+## 12.8 Notification Schedule
+
+| Event                    | Channels     | Recipients                   |
+| ------------------------ | ------------ | ---------------------------- |
+| Resignation submitted    | IN_APP+EMAIL | Direct manager, HR           |
+| Resignation approved     | IN_APP+EMAIL | Employee, IT, Admin, Finance |
+| Task overdue             | IN_APP+EMAIL | Task assignee, HR            |
+| Asset return signed-off  | IN_APP       | Next sign-off role           |
+| Settlement approved      | IN_APP+EMAIL | Employee                     |
+| Compliance verified      | IN_APP+EMAIL | HR + CEO                     |
+| Last working day reached | IN_APP+EMAIL | All stakeholders             |
+
+---
+
+# 13. Cross-Cutting Modules
+
+## 13.1 Audit Log
+
+`AuditLog` is the immutable record of every state change.
+
+### Endpoints
+
+| Method | Path                          | Permission            |
+| ------ | ----------------------------- | --------------------- |
+| GET    | `/audit/records`              | `system_audit:view`   |
+| GET    | `/audit/records/:id`          | `system_audit:view`   |
+| POST   | `/audit/export`               | `system_audit:export` |
+| GET    | `/audit/exports/:id`          | `system_audit:export` |
+| GET    | `/audit/exports/:id/download` | `system_audit:export` |
+
+### Filters
+
+```
+?action=leave.approve
+&module=attendance
+&resource=LeaveRequest
+&resourceId=<uuid>
+&actorUserId=<uuid>
+&result=SUCCESS|FAILURE
+&fromDate=2026-05-01
+&toDate=2026-05-31
+&page=1&pageSize=50
+```
+
+### Auto-Capture Decorator
+
+```ts
+@Audit({
+  action: 'leave.approve',
+  resource: 'LeaveRequest',
+  loadBefore: true,           // snapshot state before mutation
+  loadAfter: true,            // snapshot state after mutation
+  metadata: (req) => ({ approverNotes: req.body.comments })
+})
+```
+
+The interceptor:
+
+1. **Pre-handler**: fetches `before` state if `loadBefore=true`.
+2. **Post-handler**: fetches `after` state, builds the audit row, persists asynchronously.
+3. **On exception**: persists row with `result=FAILURE`, `statusCode=4xx/5xx`, and error message.
+
+### Export
+
+`POST /audit/export` enqueues an async export job:
+
+```json
+{
+  "format": "CSV",                     // CSV | JSON | PDF
+  "filters": { ... }                   // same as list filters
+}
+```
+
+Returns an `AuditExport` row with `status=PROCESSING`. Cron processes and updates `filePath` + `status=COMPLETED`.
+
+### Retention
+
+`AUDIT_RETENTION_DAYS` (env, default 365) — `CleanupAuditJob` purges older rows daily at 02:00.
+
+## 13.2 Notifications
+
+### Endpoints
+
+| Method | Path                             | Permission                |
+| ------ | -------------------------------- | ------------------------- |
+| GET    | `/notifications`                 | (self)                    |
+| GET    | `/notifications/:id`             | (self)                    |
+| POST   | `/notifications/:id/read`        | (self)                    |
+| POST   | `/notifications/read-all`        | (self)                    |
+| GET    | `/notifications/unread-count`    | (self)                    |
+| GET    | `/notifications/admin`           | `notifications:admin`     |
+| POST   | `/notifications/admin/broadcast` | `notifications:broadcast` |
+| GET    | `/webhooks`                      | `webhook:manage`          |
+| POST   | `/webhooks`                      | `webhook:manage`          |
+| PATCH  | `/webhooks/:id`                  | `webhook:manage`          |
+| DELETE | `/webhooks/:id`                  | `webhook:manage`          |
+
+### Notification DTO (admin broadcast)
+
+```json
+{
+  "userIds": ["uuid", "uuid"], // or "all", or "byRole:hr_manager"
+  "type": "ANNOUNCEMENT",
+  "priority": "MEDIUM", // LOW | MEDIUM | HIGH | URGENT
+  "title": "System maintenance Sunday 02:00",
+  "body": "Brief downtime expected...",
+  "payload": { "linkUrl": "/announcements/12" },
+  "channels": ["IN_APP", "EMAIL"]
+}
+```
+
+### Socket.IO Namespace
+
+```
+Namespace: /notifications
+Auth: JWT in handshake.auth.token
+Rooms: user:<userId>
+
+Events emitted by server:
+  - notification:new        { id, type, priority, title, body, createdAt }
+  - notification:updated    { id, readAt }
+
+Events from client:
+  - mark-read               { id }
+  - mark-all-read
+```
+
+### Webhook Endpoint Registry
+
+`WebhookEndpoint` stores subscribed external listeners:
+
+```json
+{
+  "name": "Finance Payroll Sync",
+  "url": "https://finance.blih.local/hooks/payroll",
+  "secret": "shared-hmac-secret",
+  "enabled": true,
+  "events": [
+    "compensation.changed",
+    "overtime.approved",
+    "leave.approved",
+    "resignation.completed"
+  ]
+}
+```
+
+On event publish, the system POSTs:
+
+```json
+{
+  "event": "compensation.changed",
+  "timestamp": "2026-05-21T10:00:00Z",
+  "data": { ... },
+  "signature": "sha256=hmac..."
+}
+```
+
+Retry strategy: 3 attempts with exponential backoff (1m, 5m, 30m). Failures logged in `NotificationDelivery` (channel=`WEBHOOK`).
+
+## 13.3 System Configuration
+
+### Endpoints
+
+| Method | Path                             | Permission             |
+| ------ | -------------------------------- | ---------------------- |
+| GET    | `/system-config`                 | `system_config:view`   |
+| GET    | `/system-config/:key`            | `system_config:view`   |
+| PUT    | `/system-config/:key`            | `system_config:update` |
+| GET    | `/system-config/modules`         | `system_config:view`   |
+| PATCH  | `/system-config/modules/:module` | `system_config:update` |
+| GET    | `/system-config/security`        | `system_config:view`   |
+| PATCH  | `/system-config/security`        | `system_config:update` |
+
+### Conventions
+
+- `SystemConfig.key` is a dot-namespaced string (`recruitment.allowHrAutoApprove`, `leave.defaultEntitlements.ANNUAL`, etc.).
+- Values are JSON (always — even primitives wrapped).
+- `ModuleConfig.module` is the module name (`recruitment`, `onboarding`, `attendance`, etc.). `enabled` toggles entire module. `settings` is the module's config JSON.
+- `SecurityPolicy` is a single row managed via `/security`.
+
+### Key Module Settings (Recommended Initial)
+
+```json
+{
+  "recruitment": {
+    "allowHrAutoApprove": true,
+    "requireFinanceApprovalForOffers": true,
+    "minDaysToNeededBy": 7
+  },
+  "onboarding": {
+    "requireExitInterview": true
+  },
+  "leave": {
+    "defaultEntitlements": {
+      "ANNUAL": { "FULL_TIME": 14 },
+      "SICK": { "FULL_TIME": 180 },
+      "MATERNITY": { "FULL_TIME": 120 },
+      "PATERNITY": { "FULL_TIME": 3 },
+      "BEREAVEMENT": { "FULL_TIME": 3 },
+      "EMERGENCY": { "FULL_TIME": 5 }
+    },
+    "minHandoverDelegateThresholdDays": 5
+  },
+  "attendance": {
+    "correctionWindowDays": 14
+  },
+  "probation": {
+    "durationDaysByType": { "FULL_TIME": 60, "CONTRACT": 30, "INTERN": 30 }
+  },
+  "training": {
+    "financeApprovalThreshold": 10000
+  },
+  "asset": {
+    "financeApprovalThreshold": 5000
+  },
+  "audit": {
+    "retentionDays": 365
+  }
+}
+```
+
+## 13.4 Policy Management
+
+### Endpoints
+
+| Method | Path                                            | Permission      |
+| ------ | ----------------------------------------------- | --------------- |
+| GET    | `/hr/policies`                                  | `policy:view`   |
+| GET    | `/hr/policies/:id`                              | `policy:view`   |
+| POST   | `/hr/policies`                                  | `policy:manage` |
+| PATCH  | `/hr/policies/:id`                              | `policy:manage` |
+| POST   | `/hr/policies/:id/versions`                     | `policy:manage` |
+| POST   | `/hr/policies/:id/versions/:versionId/activate` | `policy:manage` |
+| GET    | `/hr/policies/active`                           | `policy:view`   |
+
+### Policy DTO
+
+```json
+{
+  "title": "Code of Conduct",
+  "description": "Behavioural standards for all employees",
+  "isMandatory": true,
+  "isActive": true,
+  "effectiveDate": "2026-01-01",
+  "expiryDate": null,
+  "dependencies": [],
+  "priority": 1
+}
+```
+
+### Version DTO
+
+```json
+{
+  "version": 2,
+  "content": "Markdown body or plain text...",
+  "fileId": "uuid" // optional reference to PolicyFile
+}
+```
+
+### Business Rules
+
+1. Only one `PolicyVersion.isActive=true` per policy at a time (enforced in `activate` transaction — flips others to `false`).
+2. Activating a new version creates a re-acknowledgement task for every active employee.
+3. `priority` orders the acknowledgement screen.
+
+## 13.5 RBAC Management
+
+### Endpoints
+
+| Method | Path                                        | Permission           |
+| ------ | ------------------------------------------- | -------------------- |
+| GET    | `/rbac/roles`                               | `system_role:view`   |
+| POST   | `/rbac/roles`                               | `system_role:manage` |
+| PATCH  | `/rbac/roles/:id`                           | `system_role:manage` |
+| DELETE | `/rbac/roles/:id`                           | `system_role:manage` |
+| POST   | `/rbac/roles/:id/permissions`               | `system_role:manage` |
+| DELETE | `/rbac/roles/:id/permissions/:permissionId` | `system_role:manage` |
+| GET    | `/rbac/permissions`                         | `system_role:view`   |
+| GET    | `/rbac/users/:userId/roles`                 | `system_role:view`   |
+| POST   | `/rbac/users/:userId/roles`                 | `system_role:manage` |
+| DELETE | `/rbac/users/:userId/roles/:roleId`         | `system_role:manage` |
+| GET    | `/rbac/users/:userId/effective-permissions` | `system_role:view`   |
+
+### Business Rules
+
+1. `Role.isSystem=true` rows are immutable (cannot delete or rename, only edit permission set).
+2. Role hierarchy (`parentRoleId`) enables permission inheritance with cycle detection.
+3. `UserRole.expiresAt` enables time-bound role grants (e.g., temporary admin during cover).
+4. Permissions are seeded by `seed:rbac` migration with the catalog in §3.4.4.
+
+---
+
+# 14. Background Jobs & Automation
+
+## 14.1 Cron Job Catalog
+
+| Job                            | Schedule             | Purpose                                                      |
+| ------------------------------ | -------------------- | ------------------------------------------------------------ |
+| `SyncUsersJob`                 | every 15 min         | Pull Keycloak users → upsert local `User` rows               |
+| `SyncRolesJob`                 | every 30 min (gated) | Pull Keycloak realm roles if `SYNC_ROLES_FROM_KEYCLOAK=true` |
+| `RotateClientSecretsJob`       | daily 03:00          | (stub) — rotate service account secrets                      |
+| `CleanupAuditJob`              | daily 02:00          | Purge `AuditLog` older than `AUDIT_RETENTION_DAYS`           |
+| `AttendanceReconciliationJob`  | daily 00:15          | Reconcile yesterday's attendance, mark ABSENT/HALF_DAY       |
+| `DocumentExpiryJob`            | daily 09:00          | Notify on `EmployeeDocument.expiryDate` within 60/30/7 days  |
+| `CertificationExpiryJob`       | daily 09:00          | Same for `TrainingCompletion.expiryDate`                     |
+| `TimesheetGenerationJob`       | Sunday 23:30         | Pre-fill weekly timesheets in `DRAFT`                        |
+| `OfferExpiryJob`               | daily 08:00          | Move `SENT` offers past `expiresAt` to `EXPIRED`             |
+| `ProbationCheckpointReminders` | daily 08:00          | Day 25 (heads-up), Day 50 (urgent), Day 58 (escalation)      |
+| `LeaveReminderJob`             | daily 08:00          | Remind approvers of pending leave > 24h                      |
+| `OkrStatusRefreshJob`          | hourly               | Recompute OKR/KR `status` based on time-vs-progress          |
+| `SurveyAutoCloseJob`           | hourly               | Close surveys past `closesAt`                                |
+| `IncidentSlaJob`               | hourly               | Escalate incidents past `investigationDueAt`                 |
+| `OffboardingOverdueJob`        | daily 09:00          | Flag tasks past `dueDate` as `OVERDUE`                       |
+| `BalanceCarryoverJob`          | yearly 1 Jan 00:30   | Carry over unused annual leave per policy                    |
+| `ContractRenewalReminders`     | daily 09:00          | 90/60/30/7 days before contract `effectiveTo`                |
+
+## 14.2 Job Implementation Pattern
+
+```ts
+@Injectable()
+export class AttendanceReconciliationJob {
+  constructor(
+    private prisma: PrismaService,
+    private reconciler: AttendanceReconciliationService,
+    private logger: Logger,
+  ) {}
+
+  @Cron('0 15 0 * * *', { name: 'attendance-reconciliation' })
+  async handleCron() {
+    const correlationId = randomUUID();
+    this.logger.log(
+      { correlationId, job: 'AttendanceReconciliationJob' },
+      'Start',
+    );
+    try {
+      const yesterday = subDays(startOfDay(new Date()), 1);
+      const employees = await this.prisma.employee.findMany({
+        where: {
+          lifecycle: {
+            status: { notIn: ['TERMINATED', 'RESIGNED', 'RETIRED'] },
+          },
+        },
+        select: { id: true },
+      });
+      for (const e of employees) {
+        await this.reconciler.reconcile(e.id, yesterday);
+      }
+      this.logger.log(
+        { correlationId, processed: employees.length },
+        'Complete',
+      );
+    } catch (err) {
+      this.logger.error({ correlationId, err }, 'Job failed');
+      // Never throw — cron should keep running
+    }
+  }
+}
+```
+
+## 14.3 HR Automation Opportunities (Per Source Spec)
+
+| #   | Process                  | What's Automated                           | Trigger                             | Potential                 |
+| --- | ------------------------ | ------------------------------------------ | ----------------------------------- | ------------------------- |
+| 1   | Leave Management         | Balance deduction on approval              | `LeaveRequest.approve`              | 95%                       |
+| 2   | Attendance & Punctuality | Late detection, exception generation       | Punch-in event                      | 85%                       |
+| 3   | Overtime Tracking        | Pull approved minutes to payroll           | `OvertimeRequest.approve` → webhook | 90%                       |
+| 4   | Recruitment Request      | Multi-level approval w/ deadlines          | `JobRequestForm.submit`             | 80%                       |
+| 5   | Job Application          | Scoring, invite, rejection emails          | `Applicant.create`                  | 75% (95% with AI parsing) |
+| 6   | Interview Evaluation     | Real-time ranking                          | `InterviewFeedback.submit`          | 85%                       |
+| 7   | Onboarding               | Account setup, checklist, doc verification | `Offer.accept`                      | 90%                       |
+| 8   | Probation Reviews        | Day 30/55 auto-schedule                    | `ProbationPlan.start`               | 95%                       |
+| 9   | Performance Reviews      | Pull OKRs, average scores                  | `Review.complete`                   | 80%                       |
+| 10  | Training Requests        | Calendar + reminders                       | `TrainingRequest.approve`           | 85%                       |
+| 11  | Satisfaction Surveys     | Aggregate to dashboard                     | `SurveyResponse.create`             | 90%                       |
+| 12  | Promotion / Transfer     | Sync profile, salary, role                 | `InternalTransferRequest.approve`   | 85%                       |
+| 13  | Resignation / Exit       | Handover + access deactivation             | `Resignation.complete`              | 95%                       |
+| 14  | Payroll Generation       | Payslips + email                           | Approved timesheets + adjustments   | 90%                       |
+| 15  | Employee Analytics       | Weekly/monthly summaries                   | Cron                                | 80%                       |
+| 16  | Knowledge Capture        | Lessons to BLIH Brain                      | Post-exit + performance             | 70%                       |
+
+**Target:** ≈ 85% of HR operations automated within 3–6 months of go-live.
+
+---
+
+# 15. API Conventions & Catalog
+
+## 15.1 URL Conventions
+
+- All endpoints prefixed with `/api/v1`.
+- Resource paths use kebab-case (`/training-needs/assessments`).
+- Domain prefixes: `/auth/...`, `/users/...`, `/rbac/...`, `/audit/...`, `/notifications/...`, `/system-config/...`, `/org/...`, `/hr/...`, `/public/...`.
+
+## 15.2 Standard Verbs
+
+| HTTP   | Pattern                  | Use                                                             |
+| ------ | ------------------------ | --------------------------------------------------------------- |
+| GET    | `/resource`              | List with filters + pagination                                  |
+| GET    | `/resource/:id`          | Fetch one                                                       |
+| POST   | `/resource`              | Create                                                          |
+| PATCH  | `/resource/:id`          | Partial update                                                  |
+| PUT    | `/resource/:id`          | Full replace (rare; prefer PATCH)                               |
+| DELETE | `/resource/:id`          | Delete (soft when supported)                                    |
+| POST   | `/resource/:id/<action>` | Domain action (submit, approve, reject, cancel, complete, etc.) |
+
+## 15.3 Pagination
+
+Standard query params:
+
+```
+?page=1&pageSize=20&sort=createdAt:desc
+```
+
+Response `meta.pagination`:
+
+```json
+{ "page": 1, "pageSize": 20, "total": 187, "totalPages": 10 }
+```
+
+`pageSize` capped at 100.
+
+## 15.4 Filtering Conventions
+
+- Equality: `?status=APPROVED`
+- Multiple values: `?status=PENDING,APPROVED`
+- Date range: `?fromDate=2026-01-01&toDate=2026-12-31`
+- Full-text search: `?search=<term>`
+- Nested association: `?departmentId=<uuid>` (server resolves the join)
+
+## 15.5 Endpoint Catalog (Domain Index)
+
+| Domain          | Path Root                                                                                                                                                                                                                 | Permission Prefix                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Authentication  | `/auth/*`                                                                                                                                                                                                                 | —                                                                                                         |
+| Identity & RBAC | `/users/*`, `/rbac/*`                                                                                                                                                                                                     | `employee:*`, `system_role:*`                                                                             |
+| Audit           | `/audit/*`                                                                                                                                                                                                                | `system_audit:*`                                                                                          |
+| Notifications   | `/notifications/*`, `/webhooks/*`                                                                                                                                                                                         | —                                                                                                         |
+| System Config   | `/system-config/*`                                                                                                                                                                                                        | `system_config:*`                                                                                         |
+| Organization    | `/org/departments/*`, `/org/positions/*`, `/org/job-grades/*`, `/org/countries/*`, `/org/holidays/*`                                                                                                                      | `department:*`, `position:*`, `job_grade:*`                                                               |
+| Recruitment     | `/hr/recruitment/*`                                                                                                                                                                                                       | `recruitment_request:*`, `job_posting:*`, `applicant:*`, `interview:*`, `offer:*`                         |
+| Public Careers  | `/public/jobs/*`                                                                                                                                                                                                          | —                                                                                                         |
+| Onboarding      | `/hr/onboarding/*`, `/hr/onboarding-tasks/*`                                                                                                                                                                              | `onboarding:*`                                                                                            |
+| Probation       | `/hr/probation/*`, `/hr/kpis/*`                                                                                                                                                                                           | `probation:*`, `kpi:*`                                                                                    |
+| Employees       | `/hr/employees/*`, `/hr/job-descriptions/*`, `/hr/contract-templates/*`                                                                                                                                                   | `employee:*`, `job_description:*`, `contract:*`                                                           |
+| Attendance      | `/hr/attendance/*`, `/hr/leave/*`, `/hr/timesheets/*`                                                                                                                                                                     | `attendance:*`, `leave:*`, `timesheet:*`, `overtime:*`, `flex_work:*`                                     |
+| Performance     | `/hr/performance/*`, `/hr/okrs/*`                                                                                                                                                                                         | `performance:*`, `okr:*`                                                                                  |
+| Career          | `/hr/career-plans/*`, `/hr/transfer-requests/*`, `/hr/promotion-proposals/*`, `/hr/salary-adjustments/*`, `/hr/succession-plans/*`, `/hr/training-needs/*`                                                                | `career_plan:*`, `transfer_request:*`, `promotion_proposal:*`, `salary_adjustment:*`, `succession_plan:*` |
+| Training        | `/hr/training/*`, `/hr/skills/*`, `/hr/training-budgets/*`                                                                                                                                                                | `training:*`, `skill:*`                                                                                   |
+| Relations       | `/hr/relations/incidents/*`, `/hr/relations/disciplinary-actions/*`, `/hr/relations/grievances/*`, `/hr/relations/recognitions/*`, `/hr/relations/surveys/*`, `/hr/relations/mediations/*`, `/hr/relations/suggestions/*` | `incident:*`, `disciplinary:*`, `grievance:*`, `recognition:*`, `survey:*`, `mediation:*`                 |
+| Offboarding     | `/hr/offboarding/*`                                                                                                                                                                                                       | `resignation:*`, `offboarding:*`, `final_settlement:*`                                                    |
+| Policies        | `/hr/policies/*`                                                                                                                                                                                                          | `policy:*`                                                                                                |
+
+---
+
+# 16. Implementation Roadmap
+
+## 16.1 Phased Delivery
+
+```
+PHASE 1 — Foundation (Weeks 1–3)
+├── Identity + Keycloak integration
+├── RBAC + permissions catalog seed
+├── Organization (Departments, Positions, JobGrades)
+├── Employee core model + lifecycle
+└── Audit + notifications + system config skeleton
+
+PHASE 2 — People Pipeline (Weeks 4–6)
+├── Recruitment subsystem (forms 1-6)
+├── Onboarding (forms 7-10)
+├── Profile sub-entities + verification flow
+└── Document store + contract module
+
+PHASE 3 — Time & Attendance (Weeks 7–9)
+├── Work schedules + holidays
+├── Leave (form 19) with balance + Ethiopian Labour Law defaults
+├── Attendance reconciliation + timesheet (forms 20-22)
+├── Overtime + flex work (forms 23-24)
+└── Probation (forms 11-13)
+
+PHASE 4 — Growth & Development (Weeks 10–12)
+├── Performance reviews + calibration (form 25)
+├── OKR + key results + manager review (forms 26-28)
+├── Training catalog + requests + budget (forms 34-37)
+├── Career planning + skill gap (forms 29-30, 36)
+├── Internal transfers + promotions + salary adjustment (forms 31-33)
+└── Succession planning
+
+PHASE 5 — Culture & Exit (Weeks 13–14)
+├── Surveys + recognitions + incidents + grievances (forms 38-44)
+├── Resignation + offboarding checklists (forms 45-47)
+├── Asset return + final settlement + compliance (forms 48-50)
+└── End-to-end smoke tests, performance load tests
+
+PHASE 6 — Automation Layer (Weeks 15–16)
+├── Webhook integration with Finance/IT
+├── n8n workflow stitching
+├── Cron jobs hardened
+├── Dashboard + analytics endpoints
+└── Production cutover + change management
+```
+
+**Total estimate:** 12–16 weeks (matches gap analysis in `Recruitment-Onboarding-Flow-Analysis.md`).
+
+## 16.2 Definition of Done (Per Subsystem)
+
+A subsystem is "done" when:
+
+1. **Schema migration** committed & rollback-safe.
+2. **Seed data** provided (KPI library, default schedules, policies, holidays).
+3. **All endpoints** documented in OpenAPI, accessible at `/docs`.
+4. **Permission slugs** seeded in `Permission` table and assigned to default roles.
+5. **State machine** tested with unit tests for every transition (valid + invalid).
+6. **Audit** decorator applied to every state-changing endpoint.
+7. **Notifications** for state changes implemented (at minimum `IN_APP`).
+8. **Integration tests** cover happy path + 2 edge cases per main entity.
+9. **Cron jobs** registered and idempotent.
+10. **README** in `domains/hr/<subsystem>/README.md` with quickstart.
+
+## 16.3 Cross-Cutting Standards
+
+### Naming
+
+- DTOs: `Create<Resource>Dto`, `Update<Resource>Dto`, `<Action><Resource>Dto`.
+- Services: `<Resource>Service`, `<UseCase>UseCase`.
+- Controllers: `<Resource>Controller`.
+
+### Error Handling
+
+- Use `HttpException` subclasses (`BadRequestException`, `UnprocessableEntityException`, etc.).
+- Custom `DomainRuleViolationException` (422) for business-rule failures.
+- Never expose stack traces to clients.
+
+### Logging
+
+- Use structured logger (`pino` or NestJS Logger configured for JSON).
+- Always include `correlationId`.
+- Levels: `error`, `warn`, `info`, `debug`. Use `info` for state changes.
+
+### Testing
+
+- Unit tests: business logic, state machines, validation.
+- Integration tests: Prisma + service composition with test DB.
+- E2E tests: real HTTP requests with Keycloak token stubs.
+- Target ≥ 80% coverage on domain modules.
+
+### Performance
+
+- Index every foreign key (`@@index` in Prisma — already comprehensive).
+- Avoid N+1 queries: use Prisma's `include`/`select` carefully.
+- Pagination is mandatory on list endpoints (no unbounded fetches).
+- Heavy aggregations (audit exports, payroll calc) run as async jobs.
+
+### Security Checklist
+
+- All endpoints require `KeycloakAuthGuard` except `/public/*` and `/auth/*`.
+- All state-changing endpoints have explicit `@Roles(...)` permission.
+- DTO validation via `class-validator`; whitelist mode on (`ValidationPipe { whitelist: true, forbidNonWhitelisted: true }`).
+- File uploads validated for mime type and size limits.
+- Rate-limiting at edge (NGINX/CloudFront) for public endpoints.
+- SQL injection: not possible via Prisma; raw queries forbidden.
+- CSRF: handled by token-based auth (no cookies for state-changing requests).
+
+---
+
+## Appendix A — Enum Reference
+
+A consolidated cheat-sheet of enums used across the system:
+
+**Workflow / Generic:**
+
+- `RequestWorkflowStatus`: DRAFT, PENDING, APPROVED, REJECTED, CANCELLED
+- `ApprovalDecision`: PENDING, APPROVED, REJECTED
+- `VerificationStatus`: PENDING_REVIEW, VERIFIED, REJECTED
+
+**User / Employee:**
+
+- `UserStatus`: ACTIVE, DISABLED, PENDING
+- `LifecycleStatus`: ONBOARDING, ACTIVE, SUSPENDED, ON_LEAVE, TERMINATED, RESIGNED, RETIRED
+- `EmployeeStatus`: ONBOARDING, ON_PROBATION, ACTIVE
+- `EmploymentType`: FULL_TIME, PART_TIME, CONTRACT, INTERN, TEMPORARY
+- `PayFrequency`: MONTHLY, BIWEEKLY, WEEKLY, ANNUAL
+- `Gender`: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY
+- `MaritalStatus`: SINGLE, MARRIED, DIVORCED, WIDOWED, SEPARATED
+- `GovernmentIdCardType`: KEBELE_ID, PASSPORT, FAYDA, OTHER
+
+**Recruitment:**
+
+- `JobWorkflowStatus`: DRAFT, PENDING_FOR_APPROVAL, READY_TO_POST, PUBLISHED, CLOSED, REJECTED
+- `JobApprovalStage`: FINANCE, GM, HR_REVIEW
+- `ApplicantStatus`: APPLIED, SCREENING, SHORTLISTED, INTERVIEW, WAITLIST, OFFER, HIRED, REJECTED, WITHDRAWN
+- `OfferStatus`: DRAFT, SENT, ACCEPTED, DECLINED, EXPIRED, WITHDRAWN
+- `InterviewStatus`: SCHEDULED, COMPLETED, CANCELLED, NO_SHOW
+- `EndorsementLevel`: STRONG_YES, YES, UNCERTAIN, NO
+- `CvScreeningRecommendation`: STRONG_RECOMMEND, RECOMMEND, CONSIDER, REJECT
+- `CvScreeningStageType`: INITIAL_SCREENING, TECHNICAL_REVIEW, HR_REVIEW, MANAGER_REVIEW, FINAL_DECISION, CUSTOM
+
+**Probation:**
+
+- `ProbationStatus`: NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED, FAILED, EXTENDED
+- `ProbationOutcome`: CONFIRMED, EXTENDED, TERMINATED, RESIGNED
+
+**Attendance / Leave:**
+
+- `LeaveType`: ANNUAL, SICK, MATERNITY, PATERNITY, BEREAVEMENT, UNPAID, STUDY, EMERGENCY, COMPASSIONATE
+- `LeaveRequestStatus`: DRAFT, PENDING, APPROVED, REJECTED, CANCELLED
+- `AttendanceStatus`: PRESENT, ABSENT, LATE, EARLY_DEPARTURE, ON_LEAVE, HALF_DAY, REMOTE, BUSINESS_TRIP
+- `FlexWorkRequestType`: WORK_FROM_HOME, FLEX_TIME
+
+**Performance / OKR:**
+
+- `ReviewStatus`: NOT_STARTED, SELF_PENDING, SELF_SUBMITTED, MANAGER_PENDING, MANAGER_SUBMITTED, COMPLETED
+- `PerformanceCategory`: UNSATISFACTORY, BELOW_EXPECTATIONS, MEETS_EXPECTATIONS, EXCEEDS_EXPECTATIONS, OUTSTANDING
+- `PerformanceFeedbackRole`: SELF, MANAGER, PEER, SKIP_LEVEL, DIRECT_REPORT
+- `OkrStatus`: DRAFT, ACTIVE, AT_RISK, DELAYED, ACHIEVED, PARTIALLY_ACHIEVED, MISSED, COMPLETED
+- `KeyResultType`: NUMERIC, PERCENTAGE, BOOLEAN, MILESTONE
+- `OkrScope`: COMPANY, DEPARTMENT, USER
+
+**Training:**
+
+- `TrainingRequestStatus`: DRAFT, PENDING, APPROVED, REJECTED, CANCELLED
+- `TrainingType`: SKILL, COMPLIANCE, LEADERSHIP, OTHER
+- `CompletionStatus`: COMPLETED, PARTIAL, DROPPED
+- `SkillLevel`: BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
+- `SkillSource`: SELF, MANAGER, ASSESSMENT, TRAINING
+- `CostPayer`: COMPANY, SELF
+- `FeedbackType`: COURSE, TRAINER, PROVIDER
+- `FeedbackRatingScale`: ONE_TO_FIVE, ONE_TO_TEN
+- `FeedbackSubmissionType`: ANONYMOUS, IDENTIFIED, MANAGER_ONLY
+
+**Talent / Career:**
+
+- `SuccessionReadiness`: READY_NOW, ONE_YEAR, TWO_YEARS
+- `SuccessionRiskLevel`: LOW, MEDIUM, HIGH, CRITICAL
+- `PromotionProposalStatus`: PENDING, APPROVED, REJECTED
+- `CareerDevelopmentPlanStatus`: DRAFT, ACTIVE, COMPLETED, CANCELLED
+- `InternalTransferType`: PROMOTION, TRANSFER
+- `SalaryAdjustmentReason`: MERIT, EQUITY, PROMOTION, TRANSFER, RETENTION, MARKET
+
+**Relations:**
+
+- `IncidentType`: SAFETY, SECURITY, CONFLICT, HARASSMENT, OTHER
+- `IncidentSeverity`: LOW, MEDIUM, HIGH, CRITICAL
+- `IncidentReportStatus`: OPEN, INVESTIGATING, RESOLVED
+- `DisciplinaryIncidentType`: ATTENDANCE_VIOLATION, PERFORMANCE_ISSUE, CODE_OF_CONDUCT
+- `DisciplinaryActionType`: VERBAL_WARNING, WRITTEN_WARNING, FINAL_WARNING, PERFORMANCE_IMPROVEMENT_PLAN, SUSPENSION, TERMINATION
+- `DisciplinaryStatus`: PENDING, ACTIVE, EXPIRED, APPEALED
+- `GrievanceStatus`: OPEN, INVESTIGATING, RESOLVED, CLOSED
+- `RecognitionCategory`: EXCELLENCE, TEAMWORK, INNOVATION, SERVICE, OTHER
+- `RecognitionStatus`: PENDING, APPROVED, REJECTED
+- `SurveyType`: SATISFACTION, PULSE
+- `SurveyStatus`: DRAFT, ACTIVE, CLOSED
+- `MediationStatus`: PENDING, IN_PROGRESS, AGREEMENT_REACHED, CLOSED
+
+**Offboarding:**
+
+- `ResignationStatus`: DRAFT, SUBMITTED, NOTICE_PERIOD, HANDOVER, EXIT_PENDING, COMPLETED
+- `OffboardingTaskDepartment`: HR, IT, ADMIN, FINANCE, MANAGER
+- `OffboardingTaskStatus`: PENDING, IN_PROGRESS, COMPLETED, OVERDUE
+- `OffboardingChecklistStatus`: PENDING, IN_PROGRESS, COMPLETED
+- `TerminationType`: RESIGNATION, END_OF_CONTRACT, TERMINATION, LAYOFF
+- `AssetReturnStatus`: PENDING, IT_SIGNED, ADMIN_SIGNED, FINANCE_SIGNED, COMPLETED
+
+---
+
+## Appendix B — Identifier Formats
+
+| Entity                | Format                   | Example                           |
+| --------------------- | ------------------------ | --------------------------------- |
+| Job Request           | `REQ-<year>-NNNN`        | `REQ-2026-0042`                   |
+| Job Posting           | `slug` (unique URL key)  | `senior-backend-engineer-2026-q3` |
+| Offer                 | `OFR-<year>-NNNN`        | `OFR-2026-0017`                   |
+| Employee Code         | `BLIH-EMP-NNNN`          | `BLIH-EMP-0042`                   |
+| Leave Request         | `LV-<year>-NNNN`         | `LV-2026-0123`                    |
+| Attendance Correction | `AC-<year>-NNNN`         | `AC-2026-0045`                    |
+| Overtime Request      | `OT-<year>-NNNN`         | `OT-2026-0089`                    |
+| Flex Work Request     | `FW-<year>-NNNN`         | `FW-2026-0012`                    |
+| Internal Transfer     | `TR-<year>-NNNN`         | `TR-2026-0008`                    |
+| Salary Adjustment     | `SA-<year>-NNNN`         | `SA-2026-0014`                    |
+| Timesheet             | `TS-<year>-WW-<empCode>` | `TS-2026-21-BLIH-EMP-0042`        |
+| Incident Report       | `INC-<year>-NNN`         | `INC-2026-007`                    |
+
+---
+
+## Appendix C — Ethiopian Labour Law Defaults
+
+The system encodes these defaults; all overridable per `ModuleConfig`.
+
+| Area                            | Default                             | Source                                       |
+| ------------------------------- | ----------------------------------- | -------------------------------------------- |
+| Probation period                | 60 days                             | Article 11(3), Labour Proclamation 1156/2019 |
+| Notice during probation         | 7 days                              | Article 35                                   |
+| Notice for <1 year service      | 30 days                             | Article 35                                   |
+| Notice for 1–5 years service    | 60 days                             | Article 35                                   |
+| Notice for 5+ years service     | 90 days                             | Article 35                                   |
+| Annual leave (years 1–3)        | 14 working days                     | Article 76                                   |
+| Annual leave year 4             | 16 working days                     | Article 76                                   |
+| Annual leave year 6+            | 16 + 1 day per 2 years thereafter   | Article 76                                   |
+| Sick leave                      | 6 months max with sliding pay scale | Article 86                                   |
+| Maternity leave                 | 120 days (30 pre + 90 post)         | Article 88                                   |
+| Paternity leave                 | 3 days                              | Article 81(3)                                |
+| Bereavement leave               | 3 days                              | Article 81                                   |
+| Overtime — base                 | +25%                                | Article 68                                   |
+| Overtime — nights               | +50%                                | Article 68                                   |
+| Overtime — public holidays      | +100% (i.e., 200% total)            | Article 68                                   |
+| Pension contribution (employee) | 7%                                  | Pension proclamation                         |
+| Pension contribution (employer) | 11%                                 | Pension proclamation                         |
+
+---
+
+## Appendix D — Glossary
+
+| Term                  | Meaning                                                                                  |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| **Aggregate Root**    | The primary entity controlling a domain (e.g., `Employee`, `Resignation`)                |
+| **Approval Step**     | One row in a multi-stage approval chain                                                  |
+| **Checklist**         | Collection of `OnboardingTaskInstance` or `OffboardingTask` rows assigned to an employee |
+| **Effective Date**    | When a change becomes operationally true                                                 |
+| **History Row**       | Append-only record of a past state                                                       |
+| **Lifecycle State**   | The operational employee status (`UserLifecycle.status`)                                 |
+| **Permission Slug**   | `<resource>:<action>` string used in `@Roles()`                                          |
+| **Snapshot Pattern**  | Cloning a library template into an instance to preserve historical accuracy              |
+| **State Machine**     | Explicit enumerated states with documented transitions                                   |
+| **Sub-Entity**        | Profile section that goes through PENDING_REVIEW → VERIFIED/REJECTED                     |
+| **Verification Gate** | HR step required before personal data is treated as truth                                |
+
+---
+
+## End of Document
+
+> **Total scope covered:** 8 subsystems · 50 forms · ~100 models · ~250+ endpoints · Ethiopian Labour Law compliance · ≈85% automation target.
+>
+> Maintain this document alongside the Prisma schema. When you add a new model or endpoint, add the corresponding section here and bump the version at the top.

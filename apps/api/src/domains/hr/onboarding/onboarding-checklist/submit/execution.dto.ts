@@ -157,3 +157,33 @@ export class SubmitPolicyTaskDto {
   @Type(() => SubmitPolicyItemDto)
   acknowledgements!: SubmitPolicyItemDto[];
 }
+
+export class SubmitDocumentTaskDto {
+  @ApiProperty({
+    enum: [
+      'CONTRACT',
+      'ID',
+      'CERTIFICATE',
+      'MEDICAL',
+      'RESUME',
+      'QUALIFICATION',
+      'OTHER',
+    ],
+  })
+  @IsString()
+  type!: string;
+
+  @ApiProperty()
+  @IsString()
+  fileUrl!: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  fileName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  expiryDate?: string;
+}
