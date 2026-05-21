@@ -12,6 +12,7 @@ import { SubmitEmergencyContactUseCase } from './submit/submit-emergency-contact
 import { SubmitEducationUseCase } from './submit/submit-education.usecase';
 import { SubmitContractUseCase } from './submit/submit-contract.usecase';
 import { SubmitPolicyUseCase } from './submit/submit-policy.usecase';
+import { SubmitDocumentUseCase } from './submit/submit-document.usecase';
 import { SubmitCustomTaskUseCase } from './submit/submit-custom-task.usecase';
 
 // Verify use cases
@@ -22,6 +23,7 @@ import { VerifyEmergencyContactUseCase } from './verify/verify-emergency-contact
 import { VerifyEducationUseCase } from './verify/verify-education.usecase';
 import { VerifyContractUseCase } from './verify/verify-contract.usecase';
 import { VerifyPolicyUseCase } from './verify/verify-policy.usecase';
+import { VerifyDocumentUseCase } from './verify/verify-document.usecase';
 import { VerifyCustomTaskUseCase } from './verify/verify-custom-task.usecase';
 
 @Module({
@@ -41,6 +43,7 @@ import { VerifyCustomTaskUseCase } from './verify/verify-custom-task.usecase';
     SubmitEducationUseCase,
     SubmitContractUseCase,
     SubmitPolicyUseCase,
+    SubmitDocumentUseCase,
     SubmitCustomTaskUseCase,
     // Phase 5 – Verify
     VerifyProfileUseCase,
@@ -50,6 +53,7 @@ import { VerifyCustomTaskUseCase } from './verify/verify-custom-task.usecase';
     VerifyEducationUseCase,
     VerifyContractUseCase,
     VerifyPolicyUseCase,
+    VerifyDocumentUseCase,
     VerifyCustomTaskUseCase,
   ],
   exports: [EvaluateOnboardingUseCase],

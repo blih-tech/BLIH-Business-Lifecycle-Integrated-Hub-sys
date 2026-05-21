@@ -200,17 +200,20 @@ export class TrainingAnalyticsService {
       : [];
 
     const feedbackRatings = feedback
-      .map((item) => dec(item.overallRating))
-      .filter((value) => Number.isFinite(value) && value > 0);
+      .map((item: { overallRating: unknown }) => dec(item.overallRating))
+      .filter((value: number) => Number.isFinite(value) && value > 0);
     const completionScores = completions
       .map((item) => Number(item.scoreOrGrade))
-      .filter((value) => Number.isFinite(value));
+      .filter((value: number) => Number.isFinite(value));
 
     const avgFeedbackRating =
       feedbackRatings.length === 0
         ? null
         : Math.round(
-            (feedbackRatings.reduce((sum, value) => sum + value, 0) /
+            (feedbackRatings.reduce(
+              (sum: number, value: number) => sum + value,
+              0,
+            ) /
               feedbackRatings.length) *
               100,
           ) / 100;

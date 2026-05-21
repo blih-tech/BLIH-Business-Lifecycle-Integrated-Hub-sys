@@ -14,14 +14,14 @@ export class UploadCvDto {
     example: 'app_123456789',
     required: true,
   })
-  applicantId: string;
+  applicantId!: string;
 
   @ApiProperty({
     description: 'ID of the job',
     example: 'job_987654321',
     required: true,
   })
-  jobId: string;
+  jobId!: string;
 }
 
 export class UploadCvResponseDto {
@@ -29,7 +29,7 @@ export class UploadCvResponseDto {
     description: 'ID of the applicant',
     example: 'app_123456789',
   })
-  applicantId: string;
+  applicantId!: string;
 
   @ApiProperty({
     description: 'Match score if auto-screening was performed',
@@ -49,7 +49,7 @@ export class UploadCvResponseDto {
     description: 'Status of the upload operation',
     example: 'Success: CV Uploaded and AI Screened',
   })
-  status: string;
+  status!: string;
 
   @ApiProperty({
     description: 'Extracted text from CV (only if AI screening failed)',

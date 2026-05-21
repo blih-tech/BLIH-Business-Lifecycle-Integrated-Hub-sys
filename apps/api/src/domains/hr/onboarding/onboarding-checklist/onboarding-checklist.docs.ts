@@ -13,6 +13,7 @@ import {
   SubmitAddressTaskDto,
   SubmitBankDetailTaskDto,
   SubmitContractTaskDto,
+  SubmitDocumentTaskDto,
   SubmitEducationTaskDto,
   SubmitEmergencyContactTaskDto,
   SubmitPolicyTaskDto,
@@ -366,6 +367,40 @@ export function ApiSubmitPolicyTask() {
   );
 }
 
+export function ApiSubmitDocumentTask() {
+  const path = '/api/v1/hr/onboarding/tasks/:taskId/document';
+  return applyDecorators(
+    ApiOperation({
+      summary: 'Employee: upload a required document',
+      description:
+        'Creates an `EmployeeDocument` record with the uploaded file URL. ' +
+        'Checklist transitions to `SUBMITTED` (or `COMPLETED` if no HR verify required).',
+    }),
+    ApiParam({ name: 'taskId', description: 'OnboardingTaskInstance UUID' }),
+    ApiBody({
+      type: SubmitDocumentTaskDto,
+      examples: {
+        document: {
+          summary: 'Upload national ID',
+          value: {
+            type: 'ID',
+            fileUrl: 'https://storage.example.com/docs/national-id.pdf',
+            fileName: 'national-id.pdf',
+          },
+        },
+      },
+    }),
+    ApiProtected({ path, roles: [OnboardingPermissions.UPDATE] }),
+    ApiDefaultErrors({
+      path,
+      badRequest: 'Task does not map to EMPLOYEE_DOCUMENT',
+      notFound: 'Task instance not found',
+      unauthorized: 'Unauthorized: missing or invalid bearer access token',
+      forbidden: 'Required roles are missing',
+    }),
+  );
+}
+
 export function ApiMarkCustomTaskDone() {
   const path = '/api/v1/hr/onboarding/tasks/:taskId/done';
   return applyDecorators(
@@ -416,6 +451,10 @@ export function ApiVerifyContractTask() {
 
 export function ApiVerifyPolicyTask() {
   return buildVerifyDecorator('PolicyAcknowledgement', 'policy');
+}
+
+export function ApiVerifyDocumentTask() {
+  return buildVerifyDecorator('EmployeeDocument', 'document');
 }
 
 export function ApiVerifyCustomTask() {

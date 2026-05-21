@@ -14,6 +14,7 @@ import {
   ApiSubmitEducationTask,
   ApiSubmitContractTask,
   ApiSubmitPolicyTask,
+  ApiSubmitDocumentTask,
   ApiMarkCustomTaskDone,
   ApiVerifyProfileTask,
   ApiVerifyAddressTask,
@@ -22,6 +23,7 @@ import {
   ApiVerifyEducationTask,
   ApiVerifyContractTask,
   ApiVerifyPolicyTask,
+  ApiVerifyDocumentTask,
   ApiVerifyCustomTask,
   ApiOnboardingChecklistTag,
 } from './onboarding-checklist.docs';
@@ -31,6 +33,7 @@ import {
   SubmitAddressTaskDto,
   SubmitBankDetailTaskDto,
   SubmitContractTaskDto,
+  SubmitDocumentTaskDto,
   SubmitEducationTaskDto,
   SubmitEmergencyContactTaskDto,
   SubmitPolicyTaskDto,
@@ -42,6 +45,7 @@ import { SubmitAddressUseCase } from './submit/submit-address.usecase';
 import { SubmitBankDetailUseCase } from './submit/submit-bank-detail.usecase';
 import { SubmitContractUseCase } from './submit/submit-contract.usecase';
 import { SubmitCustomTaskUseCase } from './submit/submit-custom-task.usecase';
+import { SubmitDocumentUseCase } from './submit/submit-document.usecase';
 import { SubmitEducationUseCase } from './submit/submit-education.usecase';
 import { SubmitEmergencyContactUseCase } from './submit/submit-emergency-contact.usecase';
 import { SubmitPolicyUseCase } from './submit/submit-policy.usecase';
@@ -53,6 +57,7 @@ import { VerifyAddressUseCase } from './verify/verify-address.usecase';
 import { VerifyBankDetailUseCase } from './verify/verify-bank-detail.usecase';
 import { VerifyContractUseCase } from './verify/verify-contract.usecase';
 import { VerifyCustomTaskUseCase } from './verify/verify-custom-task.usecase';
+import { VerifyDocumentUseCase } from './verify/verify-document.usecase';
 import { VerifyEducationUseCase } from './verify/verify-education.usecase';
 import { VerifyEmergencyContactUseCase } from './verify/verify-emergency-contact.usecase';
 import { VerifyPolicyUseCase } from './verify/verify-policy.usecase';
@@ -79,6 +84,7 @@ export class OnboardingTaskExecutionController {
     private readonly submitEducation: SubmitEducationUseCase,
     private readonly submitContract: SubmitContractUseCase,
     private readonly submitPolicy: SubmitPolicyUseCase,
+    private readonly submitDocument: SubmitDocumentUseCase,
     private readonly submitCustomTask: SubmitCustomTaskUseCase,
     // Verify
     private readonly verifyProfile: VerifyProfileUseCase,
@@ -88,6 +94,7 @@ export class OnboardingTaskExecutionController {
     private readonly verifyEducation: VerifyEducationUseCase,
     private readonly verifyContract: VerifyContractUseCase,
     private readonly verifyPolicy: VerifyPolicyUseCase,
+    private readonly verifyDocument: VerifyDocumentUseCase,
     private readonly verifyCustomTask: VerifyCustomTaskUseCase,
   ) {}
 
@@ -161,6 +168,16 @@ export class OnboardingTaskExecutionController {
     @Body() body: SubmitPolicyTaskDto,
   ) {
     return this.submitPolicy.execute(taskId, body);
+  }
+
+  @Post(':taskId/document')
+  @Roles(OnboardingPermissions.UPDATE)
+  @ApiSubmitDocumentTask()
+  submitDocumentTask(
+    @Param('taskId') taskId: string,
+    @Body() body: SubmitDocumentTaskDto,
+  ) {
+    return this.submitDocument.execute(taskId, body);
   }
 
   /** Employee marks CUSTOM task done → COMPLETED or SUBMITTED (if HR verify required) */
@@ -248,6 +265,17 @@ export class OnboardingTaskExecutionController {
     @Req() req: Request,
   ) {
     return this.verifyPolicy.execute(taskId, getHrUserId(req), body);
+  }
+
+  @Post(':taskId/document/verify')
+  @Roles(OnboardingPermissions.VERIFY)
+  @ApiVerifyDocumentTask()
+  verifyDocumentTask(
+    @Param('taskId') taskId: string,
+    @Body() body: VerifyPayloadDto,
+    @Req() req: Request,
+  ) {
+    return this.verifyDocument.execute(taskId, getHrUserId(req), body);
   }
 
   /** HR approves or rejects a CUSTOM task that was submitted for review */

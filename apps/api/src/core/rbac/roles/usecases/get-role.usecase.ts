@@ -66,10 +66,11 @@ export class GetRoleUseCase {
 
     while (cursor && !visited.has(cursor)) {
       visited.add(cursor);
-      const node = await this.prisma.role.findUnique({
-        where: { id: cursor },
-        select: { parentRoleId: true },
-      });
+      const node: { parentRoleId: string | null } | null =
+        await this.prisma.role.findUnique({
+          where: { id: cursor },
+          select: { parentRoleId: true },
+        });
       cursor = node?.parentRoleId ?? null;
     }
 

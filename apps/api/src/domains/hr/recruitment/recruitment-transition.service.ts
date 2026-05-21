@@ -129,9 +129,6 @@ export class RecruitmentTransitionService {
           provisionedUserId = provisioned.user.id;
           provisionedEmployeeId = provisioned.employee.id;
 
-          // Note: Onboarding module Phase 2 explicitly does not generate checking lists natively.
-          // An Onboarding record and Task Checklists are generated manually by HR in Phase 3.
-
           // Connect applicant profile to new Employee
           await tx.applicant.update({
             where: { id: applicantId },
@@ -153,11 +150,66 @@ export class RecruitmentTransitionService {
 
           await recalculateJobMetrics(tx, applicant.jobId);
 
+          // ── Auto-create Onboarding record and checklist ──────────────
+          const allTasks = await tx.onboardingTask.findMany({
+            orderBy: { createdAt: 'asc' },
+          });
+
+          const onboarding = await tx.onboarding.create({
+            data: {
+              employeeId: provisioned.employee.id,
+              status: 'IN_PROGRESS',
+              startedAt: joinDate,
+            },
+          });
+
+          const defaultDueDate = new Date(joinDate);
+          defaultDueDate.setDate(defaultDueDate.getDate() + 14);
+
+          for (const task of allTasks) {
+            const instance = await tx.onboardingTaskInstance.create({
+              data: {
+                title: task.title,
+                description: task.description,
+                taskType: task.taskType,
+                targetDataModel: task.targetDataModel,
+                requiresHrVerification: task.requiresHrVerification,
+              },
+            });
+
+            await tx.onboardingChecklist.create({
+              data: {
+                onboardingId: onboarding.id,
+                taskInstanceId: instance.id,
+                status: 'TODO',
+                dueDate: defaultDueDate,
+                isRequired: true,
+              },
+            });
+          }
+
+          // Link offer to the new onboarding record
+          await tx.offer.update({
+            where: { id: offer.id },
+            data: { onboardingId: onboarding.id },
+          });
+
+          this.logger.log(
+            JSON.stringify({
+              action: 'recruitment.onboarding.auto_created',
+              onboardingId: onboarding.id,
+              employeeId: provisioned.employee.id,
+              offerId: offer.id,
+              checklistCount: allTasks.length,
+            }),
+          );
+
           return {
             employeeId: provisioned.employee.id,
             userId: provisioned.user.id,
             applicantId: applicantId,
             jobId: applicant.jobId,
+            onboardingId: onboarding.id,
           };
         },
       );
@@ -170,6 +222,7 @@ export class RecruitmentTransitionService {
         employeeId: provisionedEmployeeId,
         jobId: hiredTransactionResult.jobId,
         applicantId: hiredTransactionResult.applicantId,
+        onboardingId: hiredTransactionResult.onboardingId,
       });
 
       return hiredTransactionResult;
@@ -286,6 +339,7 @@ export class RecruitmentTransitionService {
     employeeId: string | null;
     jobId: string;
     applicantId: string;
+    onboardingId: string;
   }): Promise<void> {
     try {
       await this.provisioning.sendRequiredActionsEmail({
@@ -311,7 +365,7 @@ export class RecruitmentTransitionService {
         type: 'onboarding',
         priority: 'high',
         title: 'Welcome to BLIH',
-        body: `Your account is ready. Log in to wait for the HR department to assign onboarding tasks.`,
+        body: `Your account is ready. Log in to complete your onboarding tasks.`,
         userId: input.userId ?? undefined,
         recipients: [input.email],
         channels: ['email', 'in_app'],
@@ -319,6 +373,7 @@ export class RecruitmentTransitionService {
           employeeId: input.employeeId,
           jobId: input.jobId,
           applicantId: input.applicantId,
+          onboardingId: input.onboardingId,
         },
       });
     } catch (error) {

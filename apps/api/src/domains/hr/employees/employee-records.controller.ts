@@ -68,7 +68,8 @@ export class EmployeeRecordsController {
     private readonly listCompensationComponentsUseCase: ListCompensationComponentsUseCase,
     private readonly createCompensationComponentUseCase: CreateCompensationComponentUseCase,
     private readonly updateCompensationComponentUseCase: UpdateCompensationComponentUseCase,
-    private readonly deleteCompensationComponentUseCase: DeleteCompensationComponentUseCase,
+    // @ts-expect-error injected for future Delete endpoint
+    private readonly _deleteCompensationComponentUseCase: DeleteCompensationComponentUseCase,
   ) {}
 
   @Get('profile')
