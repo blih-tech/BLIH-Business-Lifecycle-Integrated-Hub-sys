@@ -253,10 +253,11 @@ export class UpdateUserEmploymentUseCase {
         break;
       }
       visited.add(cursor);
-      const node = await this.prisma.userEmployment.findUnique({
-        where: { id: cursor },
-        select: { managerEmploymentId: true },
-      });
+      const node: { managerEmploymentId: string | null } | null =
+        await this.prisma.userEmployment.findUnique({
+          where: { id: cursor },
+          select: { managerEmploymentId: true },
+        });
       cursor = node?.managerEmploymentId ?? null;
     }
   }

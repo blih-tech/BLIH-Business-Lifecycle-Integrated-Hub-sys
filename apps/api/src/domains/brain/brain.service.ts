@@ -12,7 +12,7 @@ import { parseCv } from './utils/cv-parser';
 import { ScreeningRecommendation } from '@repo/database';
 import FormData from 'form-data';
 
-const recommendationMap = {
+const recommendationMap: Record<string, ScreeningRecommendation> = {
   SHORTLIST: ScreeningRecommendation.STRONG_RECOMMEND,
   REVIEW: ScreeningRecommendation.RECOMMEND,
   REJECT: ScreeningRecommendation.REJECT,
@@ -82,8 +82,10 @@ export class BrainService {
         text: extractedText,
         vectorData: response.data,
       };
-    } catch (error) {
-      this.logger.error(`Ingestion failed: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `Ingestion failed: ${error instanceof Error ? error.message : error}`,
+      );
       throw new BadRequestException('Failed to process document');
     }
   }
@@ -119,9 +121,9 @@ export class BrainService {
         recommendation: aiResult.recommendation,
         status: 'Success: CV Uploaded and AI Screened',
       };
-    } catch (aiError) {
+    } catch (aiError: unknown) {
       this.logger.error(
-        `Auto-screening failed for ${applicantId}: ${aiError.message}`,
+        `Auto-screening failed for ${applicantId}: ${aiError instanceof Error ? aiError.message : aiError}`,
       );
       return {
         applicantId,
@@ -187,8 +189,11 @@ export class BrainService {
         },
         include: { messages: true },
       });
-      this.generateSmartTitle(session.id, processedQuestion).catch((err) =>
-        this.logger.error(`Title generation failed: ${err.message}`),
+      this.generateSmartTitle(session.id, processedQuestion).catch(
+        (err: unknown) =>
+          this.logger.error(
+            `Title generation failed: ${err instanceof Error ? err.message : err}`,
+          ),
       );
     }
 
@@ -316,8 +321,10 @@ export class BrainService {
       );
 
       return response.data.description;
-    } catch (error) {
-      this.logger.error(`Vision analysis failed: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `Vision analysis failed: ${error instanceof Error ? error.message : error}`,
+      );
       return 'Unable to analyze image at this time.';
     }
   }
@@ -333,8 +340,10 @@ export class BrainService {
         this.httpService.post(`${this.ragUrl}/rag/ai/transcribe`, formData),
       );
       return response.data.text;
-    } catch (error) {
-      this.logger.error(`Transcription failed: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `Transcription failed: ${error instanceof Error ? error.message : error}`,
+      );
       return '[Voice message - transcription failed]';
     }
   }
@@ -396,8 +405,10 @@ export class BrainService {
       });
 
       this.logger.log(`Session ${sessionId} renamed to: ${smartTitle}`);
-    } catch (error) {
-      this.logger.error(`Failed to generate smart title: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `Failed to generate smart title: ${error instanceof Error ? error.message : error}`,
+      );
     }
   }
 
@@ -506,9 +517,9 @@ export class BrainService {
           score: result.score,
           recommendation: result.recommendation,
         };
-      } catch (err) {
+      } catch (err: unknown) {
         this.logger.error(
-          `Failed screening for ${applicant.id}: ${err.message}`,
+          `Failed screening for ${applicant.id}: ${err instanceof Error ? err.message : err}`,
         );
         return null;
       }
@@ -620,8 +631,10 @@ export class BrainService {
           },
         }),
       );
-    } catch (error) {
-      this.logger.error(`RAG Sync failed: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `RAG Sync failed: ${error instanceof Error ? error.message : error}`,
+      );
     }
 
     return policy;

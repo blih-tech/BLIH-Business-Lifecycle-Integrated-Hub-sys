@@ -54,7 +54,7 @@ function buildValidationExample(error: string | Record<string, unknown>) {
   });
 }
 
-export function ApiUnauthorizedError(path: string, message: string) {
+export function ApiUnauthorizedError(_path: string, message: string) {
   return ApiUnauthorizedResponse({
     type: ApiErrorResponseDto,
     description: message,
@@ -68,7 +68,7 @@ export function ApiUnauthorizedError(path: string, message: string) {
   });
 }
 
-export function ApiForbiddenError(path: string, message: string) {
+export function ApiForbiddenError(_path: string, message: string) {
   return ApiForbiddenResponse({
     type: ApiErrorResponseDto,
     description: message,
@@ -96,7 +96,7 @@ export function ApiValidationError(
   });
 }
 
-export function ApiNotFoundError(path: string, message: string) {
+export function ApiNotFoundError(_path: string, message: string) {
   return ApiNotFoundResponse({
     type: ApiErrorResponseDto,
     description: message,
@@ -110,7 +110,7 @@ export function ApiNotFoundError(path: string, message: string) {
   });
 }
 
-export function ApiConflictError(path: string, message: string) {
+export function ApiConflictError(_path: string, message: string) {
   return ApiConflictResponse({
     type: ApiErrorResponseDto,
     description: message,

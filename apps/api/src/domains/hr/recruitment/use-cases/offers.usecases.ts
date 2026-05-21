@@ -239,7 +239,8 @@ export class SendOfferUseCase {
 export class RespondOfferUseCase {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly transitions: RecruitmentTransitionService,
+    // Pre-wired for future auto-hire trigger on offer acceptance
+    readonly transitions: RecruitmentTransitionService,
   ) {}
 
   async execute(

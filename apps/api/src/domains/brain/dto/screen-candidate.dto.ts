@@ -6,7 +6,7 @@ export class ScreenCandidatesDto {
     example: 'job_987654321',
     required: true,
   })
-  jobId: string;
+  jobId!: string;
 }
 
 export class RankedCandidateDto {
@@ -14,20 +14,20 @@ export class RankedCandidateDto {
     description: 'Candidate ID',
     example: 'app_123456789',
   })
-  candidateId: string;
+  candidateId!: string;
 
   @ApiProperty({
     description: 'Match score (0-100)',
     example: 85,
   })
-  score: number;
+  score!: number;
 
   @ApiProperty({
     description: 'Recommendation',
     enum: ['STRONG_RECOMMEND', 'RECOMMEND', 'CONSIDER', 'REJECT'],
     example: 'RECOMMEND',
   })
-  recommendation: string;
+  recommendation!: string;
 }
 
 export class ScreenCandidatesResponseDto {
@@ -35,11 +35,11 @@ export class ScreenCandidatesResponseDto {
     description: 'Total number of applicants screened',
     example: 25,
   })
-  totalApplicants: number;
+  totalApplicants!: number;
 
   @ApiProperty({
     description: 'Ranked list of candidates by match score',
     type: [RankedCandidateDto],
   })
-  rankedApplicants: RankedCandidateDto[];
+  rankedApplicants!: RankedCandidateDto[];
 }

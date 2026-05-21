@@ -2,7 +2,6 @@ import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { OpenAPIObject } from '@nestjs/swagger';
-import type { Request } from 'express';
 import { RESPONSE_MESSAGE_EXTENSION } from '../../decorators/response-message.decorator';
 import {
   SWAGGER_BEARER_AUTH_NAME,

@@ -6,21 +6,21 @@ export class AnalyzeCvDto {
     example: 'app_123456789',
     required: true,
   })
-  applicantId: string;
+  applicantId!: string;
 
   @ApiProperty({
     description: 'ID of the job to analyze against',
     example: 'job_987654321',
     required: true,
   })
-  jobId: string;
+  jobId!: string;
 
   @ApiProperty({
     description: 'Keycloak ID of the user making the request',
     example: 'keycloak-user-123',
     required: true,
   })
-  keycloakId: string;
+  keycloakId!: string;
 }
 
 export class CvAnalysisResponseDto {
@@ -30,34 +30,34 @@ export class CvAnalysisResponseDto {
     minimum: 0,
     maximum: 100,
   })
-  score: number;
+  score!: number;
 
   @ApiProperty({
     description: 'Recommendation based on analysis',
     enum: ['STRONG_RECOMMEND', 'RECOMMEND', 'CONSIDER', 'REJECT'],
     example: 'RECOMMEND',
   })
-  recommendation: string;
+  recommendation!: string;
 
   @ApiProperty({
     description: 'Key strengths identified in the CV',
     type: [String],
     example: ['Strong technical skills', 'Relevant experience'],
   })
-  strengths: string[];
+  strengths!: string[];
 
   @ApiProperty({
     description: 'Areas for improvement',
     type: [String],
     example: ['Limited leadership experience', 'Gap in employment'],
   })
-  weaknesses: string[];
+  weaknesses!: string[];
 
   @ApiProperty({
     description: 'AI-generated summary of the analysis',
     example: 'Candidate shows strong alignment with technical requirements...',
   })
-  summary: string;
+  summary!: string;
 
   @ApiProperty({
     description: 'Confidence score of the analysis (0-1)',
@@ -65,11 +65,11 @@ export class CvAnalysisResponseDto {
     minimum: 0,
     maximum: 1,
   })
-  confidence: number;
+  confidence!: number;
 
   @ApiProperty({
     description: 'Version of the model used',
     example: 'v2.1.0',
   })
-  modelVersion: string;
+  modelVersion!: string;
 }

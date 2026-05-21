@@ -5,19 +5,19 @@ export class ApiResponseMetaDto {
     description: 'Response timestamp',
     example: '2026-03-26T09:21:00.000Z',
   })
-  timestamp: string;
+  timestamp!: string;
 
   @ApiProperty({
     description: 'Unique request ID for tracing',
     example: 'req_123456789',
   })
-  requestId: string;
+  requestId!: string;
 
   @ApiProperty({
     description: 'API version',
     example: 'v1',
   })
-  version: string;
+  version!: string;
 }
 
 export class ApiErrorDetailDto {
@@ -31,7 +31,7 @@ export class ApiErrorDetailDto {
     description: 'Error message',
     example: 'User ID is required',
   })
-  message: string;
+  message!: string;
 }
 
 export class ApiErrorDto {
@@ -39,13 +39,13 @@ export class ApiErrorDto {
     description: 'Error code',
     example: 'VALIDATION_ERROR',
   })
-  code: string;
+  code!: string;
 
   @ApiProperty({
     description: 'Error details',
     example: 'Validation failed',
   })
-  details: string;
+  details!: string;
 
   @ApiProperty({
     description: 'Field-specific errors',
@@ -60,19 +60,19 @@ export class ApiResponseDto<T> {
     description: 'Indicates if the request was successful',
     example: true,
   })
-  success: boolean;
+  success!: boolean;
 
   @ApiProperty({
     description: 'Response message',
     example: 'Request processed successfully',
   })
-  message: string;
+  message!: string;
 
   @ApiProperty({
     description: 'Response data',
     required: false,
   })
-  data: T;
+  data!: T;
 
   @ApiProperty({
     description: 'Error details if request failed',

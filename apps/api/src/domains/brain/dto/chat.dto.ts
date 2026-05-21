@@ -7,14 +7,14 @@ export class BrainChatDto {
     example: 'user-123',
     required: true,
   })
-  userId: string;
+  userId!: string;
 
   @ApiProperty({
     description: 'User question or query',
     example: 'What is our company policy on remote work?',
     required: true,
   })
-  question: string;
+  question!: string;
 
   @ApiProperty({
     description: 'Module to query',
@@ -22,7 +22,7 @@ export class BrainChatDto {
     example: ModuleType.HR, // Changed to enum value
     required: true,
   })
-  module: ModuleType; // Changed from string to ModuleType type
+  module!: ModuleType; // Changed from string to ModuleType type
 
   @ApiPropertyOptional({
     description: 'Existing session ID for continuing conversation',
@@ -36,19 +36,19 @@ export class ChatResponseDto {
     description: 'Chat session ID',
     example: 'sess_123456789',
   })
-  sessionId: string;
+  sessionId!: string;
 
   @ApiProperty({
     description: 'AI generated response',
     example:
       'According to our company policy, remote work is allowed up to 3 days per week...',
   })
-  answer: string;
+  answer!: string;
 
   @ApiProperty({
     description: 'Sources used to generate the response',
     type: [Object],
     example: [{ title: 'HR Policy Document', relevance: 0.95 }],
   })
-  sources: any[];
+  sources!: any[];
 }

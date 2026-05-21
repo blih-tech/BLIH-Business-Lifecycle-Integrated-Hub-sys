@@ -1,4 +1,6 @@
 // This version uses ES module import for modern Node.js compatibility
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore -- no types available for pdf-parse-debugging-disabled
 import pdf from 'pdf-parse-debugging-disabled';
 
 export async function parseCv(buffer: Buffer): Promise<string> {
@@ -11,8 +13,9 @@ export async function parseCv(buffer: Buffer): Promise<string> {
     }
 
     return data.text;
-  } catch (error) {
-    console.error('PDF PARSER ERROR:', error.message);
-    throw new Error(`Failed to parse PDF: ${error.message}`);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('PDF PARSER ERROR:', message);
+    throw new Error(`Failed to parse PDF: ${message}`);
   }
 }

@@ -5,7 +5,7 @@ export class PerformanceInsightsResponseDto {
     description: 'Employee ID',
     example: 'emp_123456789',
   })
-  employeeId: string;
+  employeeId!: string;
 
   @ApiProperty({
     description: 'AI-generated insights about employee performance',
@@ -15,7 +15,7 @@ export class PerformanceInsightsResponseDto {
       'Strong collaboration with cross-functional teams',
     ],
   })
-  insights: string[];
+  insights!: string[];
 
   @ApiProperty({
     description: 'AI-generated recommendations for development',
@@ -25,11 +25,11 @@ export class PerformanceInsightsResponseDto {
       'Opportunity to mentor junior developers',
     ],
   })
-  recommendations: string[];
+  recommendations!: string[];
 
   @ApiProperty({
     description: 'Timestamp of analysis',
     example: '2026-03-26T09:21:00.000Z',
   })
-  createdAt: Date;
+  createdAt!: Date;
 }
