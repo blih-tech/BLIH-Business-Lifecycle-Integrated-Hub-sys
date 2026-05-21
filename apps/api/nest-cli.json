@@ -5,17 +5,8 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "tsConfigPath": "tsconfig.build.json",
-    "deleteOutDir": true,
-    "watchAssets": true,
-    "assets": [
-      {
-        "include": "src/**/*",
-        "exclude": "**/apps/web/**",
-        "watchAssets": true
-      },
-      "**/*.json",
-      "**/*.md",
-      "**/*.txt"
-    ]
+    "deleteOutDir": false,
+    "watchAssets": false,
+    "assets": []
   }
 }

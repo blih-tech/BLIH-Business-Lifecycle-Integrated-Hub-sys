@@ -1,0 +1,59 @@
+{
+  "clientId": "blih-system-auth",
+  "name": "BLIH System Auth Backend",
+  "description": "",
+  "rootUrl": "",
+  "adminUrl": "",
+  "baseUrl": "",
+  "surrogateAuthRequired": false,
+  "enabled": true,
+  "alwaysDisplayInConsole": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "my-blih-auth-secret-2026",
+  "redirectUris": [
+    "http://localhost:5000/api/v1/auth/callback",
+    "https://project-k22it.vercel.app/",
+    "https://blihapi.blihmarketing.com/api/v1/auth/callback"
+  ],
+  "webOrigins": [
+    "https://blihapi.blihmarketing.com",
+    "https://project-k22it.vercel.app",
+    "http://localhost:3000"
+  ],
+  "notBefore": 0,
+  "bearerOnly": false,
+  "consentRequired": false,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": false,
+  "serviceAccountsEnabled": false,
+  "publicClient": false,
+  "frontchannelLogout": false,
+  "protocol": "openid-connect",
+  "attributes": {
+    "realm_client": "false",
+    "oidc.ciba.grant.enabled": "false",
+    "backchannel.logout.session.required": "true",
+    "post.logout.redirect.uris": "https://project-k22it.vercel.app/*##http://localhost:3000/*##https://blihapi.blihmarketing.com/*",
+    "display.on.consent.screen": "false",
+    "oauth2.device.authorization.grant.enabled": "false",
+    "pkce.code.challenge.method": "S256",
+    "backchannel.logout.revoke.offline.tokens": "false"
+  },
+  "authenticationFlowBindingOverrides": {},
+  "fullScopeAllowed": true,
+  "nodeReRegistrationTimeout": -1,
+  "defaultClientScopes": [
+    "audience-blih-api",
+    "openid",
+    "roles",
+    "profile",
+    "email"
+  ],
+  "optionalClientScopes": [],
+  "access": {
+    "view": true,
+    "configure": true,
+    "manage": true
+  }
+}
