@@ -8,7 +8,7 @@ COPY packages/database/package*.json packages/database/
 COPY packages/types/package*.json packages/types/
 COPY packages/typescript-config/package*.json packages/typescript-config/
 COPY packages/eslint-config/package*.json packages/eslint-config/
-RUN npm ci --workspaces --include-workspace-root --include=dev --omit=optional --ignore-scripts
+RUN npm ci --workspaces --include-workspace-root --include=dev --ignore-scripts
 
 FROM node:22-alpine AS builder
 WORKDIR /workspace
