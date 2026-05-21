@@ -41,10 +41,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: |
-          # Use npm install instead of ci for better compatibility
-          # and to avoid Windows file permission issues
-          npm install --workspaces --include-workspace-root --include=optional
+        run: npm ci --workspaces --include-workspace-root --ignore-scripts
 
       - name: Verify shared types
         run: |
@@ -58,7 +55,7 @@ jobs:
           npm run test --workspace blih-system-backend -- --ci --passWithNoTests
 
   build-images:
-    needs: verify
+    # Runs in PARALLEL with verify — deploy gates on both
     if: github.event_name != 'workflow_dispatch' || inputs.image_tag == ''
     runs-on: ubuntu-latest
     outputs:
@@ -105,6 +102,8 @@ jobs:
           target: runtime
           push: true
           tags: ${{ steps.meta.outputs.api_runtime_image }}
+          cache-from: type=gha,scope=api-build
+          cache-to: type=gha,mode=max,scope=api-build
 
       - name: Build and push API migrator image
         uses: docker/build-push-action@v6
@@ -114,6 +113,8 @@ jobs:
           target: migrator
           push: true
           tags: ${{ steps.meta.outputs.api_migrator_image }}
+          cache-from: type=gha,scope=api-build
+          cache-to: type=gha,mode=max,scope=api-build
 
       - name: Build and push Keycloak image
         uses: docker/build-push-action@v6
@@ -123,20 +124,22 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.keycloak_image }}
 
-  resolve-images:
+  deploy:
     needs:
       - verify
       - build-images
-    if: needs.verify.result == 'success'
+    if: always() && needs.verify.result == 'success' && (needs.build-images.result == 'success' || needs.build-images.result == 'skipped')
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.resolve.outputs.image_tag }}
-      api_runtime_image: ${{ steps.resolve.outputs.api_runtime_image }}
-      api_migrator_image: ${{ steps.resolve.outputs.api_migrator_image }}
-      keycloak_image: ${{ steps.resolve.outputs.keycloak_image }}
     defaults:
       run:
         shell: bash
+    env:
+      HOSTINGER_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      HOSTINGER_SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+      HOSTINGER_DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
+      GHCR_PULL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Resolve deploy image tags
         id: resolve
@@ -151,34 +154,15 @@ jobs:
           fi
 
           if [[ -z "${image_tag}" ]]; then
-            echo "Unable to resolve image tag for deployment."
+            echo "::error::Unable to resolve image tag for deployment."
             exit 1
           fi
 
-          echo "image_tag=${image_tag}" >> "$GITHUB_OUTPUT"
-          echo "api_runtime_image=ghcr.io/${owner_lc}/blih-api-runtime:${image_tag}" >> "$GITHUB_OUTPUT"
-          echo "api_migrator_image=ghcr.io/${owner_lc}/blih-api-migrator:${image_tag}" >> "$GITHUB_OUTPUT"
-          echo "keycloak_image=ghcr.io/${owner_lc}/blih-keycloak:${image_tag}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_TAG=${image_tag}" >> "$GITHUB_ENV"
+          echo "API_IMAGE=ghcr.io/${owner_lc}/blih-api-runtime:${image_tag}" >> "$GITHUB_ENV"
+          echo "API_MIGRATOR_IMAGE=ghcr.io/${owner_lc}/blih-api-migrator:${image_tag}" >> "$GITHUB_ENV"
+          echo "KEYCLOAK_IMAGE=ghcr.io/${owner_lc}/blih-keycloak:${image_tag}" >> "$GITHUB_ENV"
 
-  deploy:
-    needs:
-      - resolve-images
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    env:
-      HOSTINGER_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
-      HOSTINGER_SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
-      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
-      HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-      HOSTINGER_DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
-      GHCR_PULL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      API_IMAGE: ${{ needs.resolve-images.outputs.api_runtime_image }}
-      API_MIGRATOR_IMAGE: ${{ needs.resolve-images.outputs.api_migrator_image }}
-      KEYCLOAK_IMAGE: ${{ needs.resolve-images.outputs.keycloak_image }}
-      IMAGE_TAG: ${{ needs.resolve-images.outputs.image_tag }}
-    steps:
       - name: Checkout
         uses: actions/checkout@v5
 

@@ -53,10 +53,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: |
-          # Use npm install instead of ci for better compatibility
-          # and to avoid Windows file permission issues
-          npm install --workspaces --include-workspace-root --include=optional
+        run: npm ci --workspaces --include-workspace-root --ignore-scripts
 
       - name: Validate Vercel secrets
         run: |
@@ -110,10 +107,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: |
-          # Use npm install instead of ci for better compatibility
-          # and to avoid Windows file permission issues
-          npm install --workspaces --include-workspace-root --include=optional
+        run: npm ci --workspaces --include-workspace-root --ignore-scripts
 
       - name: Validate Vercel secrets
         run: |

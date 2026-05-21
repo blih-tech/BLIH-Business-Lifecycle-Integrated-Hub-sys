@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         env:
           NODE_AUTH_TOKEN: ''
-        run: npm ci --include=optional
+        run: npm ci --ignore-scripts
 
       - name: Detect changed workspaces
         id: changes
