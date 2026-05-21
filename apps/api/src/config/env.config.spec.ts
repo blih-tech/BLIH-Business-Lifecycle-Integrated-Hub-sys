@@ -291,6 +291,8 @@ describe('env.config', () => {
   it('derives AUTH_COOKIE_SECURE default from production node env', () => {
     process.env.NODE_ENV = 'production';
     process.env.CORS_ORIGIN = 'https://app.example.com';
+    process.env.DATABASE_URL_PRODUCTION =
+      'postgresql://postgres:postgres@localhost:5432/blih_core_test';
     process.env.KEYCLOAK_AUTH_REDIRECT_URI =
       'https://blihapi.blihmarketing.com/api/v1/auth/callback';
     process.env.AUTH_FRONTEND_BASE_URL = 'https://app.example.com';
@@ -303,6 +305,8 @@ describe('env.config', () => {
   it('rejects insecure auth cookies in production', () => {
     process.env.NODE_ENV = 'production';
     process.env.CORS_ORIGIN = 'https://project-k22it.vercel.app';
+    process.env.DATABASE_URL_PRODUCTION =
+      'postgresql://postgres:postgres@localhost:5432/blih_core_test';
     process.env.KEYCLOAK_AUTH_REDIRECT_URI =
       'https://blihapi.blihmarketing.com/api/v1/auth/callback';
     process.env.AUTH_FRONTEND_BASE_URL = 'https://project-k22it.vercel.app';
@@ -317,6 +321,8 @@ describe('env.config', () => {
   it('rejects non-https auth redirect URIs in production', () => {
     process.env.NODE_ENV = 'production';
     process.env.CORS_ORIGIN = 'https://project-k22it.vercel.app';
+    process.env.DATABASE_URL_PRODUCTION =
+      'postgresql://postgres:postgres@localhost:5432/blih_core_test';
     process.env.KEYCLOAK_AUTH_REDIRECT_URI =
       'http://blihapi.blihmarketing.com/api/v1/auth/callback';
     process.env.AUTH_FRONTEND_BASE_URL = 'https://project-k22it.vercel.app';

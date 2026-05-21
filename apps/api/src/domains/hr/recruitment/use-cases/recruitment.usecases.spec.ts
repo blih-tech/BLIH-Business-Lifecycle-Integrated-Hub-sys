@@ -279,30 +279,39 @@ describe('Recruitment UseCases', () => {
   });
 
   it('auto-approves HR stage at submit when creator is HR', async () => {
-    const hrDecidedAt = new Date('2026-03-06T09:00:00.000Z');
     const autoApprovedApprovals = [
-      makeApprovalStep('FINANCE', 1),
-      makeApprovalStep('GM', 2),
+      makeApprovalStep('FINANCE', 1, 'APPROVED', {
+        approverId: 'hr-creator-1',
+        currentNote: 'Auto-approved (temporary)',
+        decidedAt: fixedNow,
+      }),
+      makeApprovalStep('GM', 2, 'APPROVED', {
+        approverId: 'hr-creator-1',
+        currentNote: 'Auto-approved (temporary)',
+        decidedAt: fixedNow,
+      }),
       makeApprovalStep('HR', 3, 'APPROVED', {
         approverId: 'hr-creator-1',
-        currentNote: 'Auto-approved because creator has HR role',
-        decidedAt: hrDecidedAt,
-        history: [{ reason: 'CREATOR_HAS_HR_ROLE', createdAt: hrDecidedAt }],
+        currentNote: 'Auto-approved (temporary)',
+        decidedAt: fixedNow,
       }),
     ];
     const tx = {
       jobApprovalStep: {
         deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
         createMany: jest.fn().mockResolvedValue({ count: 3 }),
+        findMany: jest.fn().mockResolvedValue([{ id: 'approval-hr' }]),
         findFirst: jest.fn().mockResolvedValue({ id: 'approval-hr' }),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
         update: jest.fn().mockResolvedValue(undefined),
       },
       jobApprovalHistory: {
         create: jest.fn().mockResolvedValue(undefined),
+        createMany: jest.fn().mockResolvedValue({ count: 1 }),
       },
       job: {
         update: jest.fn().mockResolvedValue(
-          buildJob('PENDING_FOR_APPROVAL', autoApprovedApprovals, {
+          buildJob('READY_TO_POST', autoApprovedApprovals, {
             creatorIsHr: true,
             createdById: 'hr-creator-1',
           }),
@@ -332,24 +341,18 @@ describe('Recruitment UseCases', () => {
     const usecase = new SubmitJobUseCase(prisma as never);
     const result = await usecase.execute('job-1');
 
-    expect(tx.jobApprovalStep.update).toHaveBeenCalledWith({
-      where: { id: 'approval-hr' },
+    expect(tx.jobApprovalStep.updateMany).toHaveBeenCalledWith({
+      where: { jobRequestFormId: 'request-1' },
       data: expect.objectContaining({
         approverId: 'hr-creator-1',
         status: 'APPROVED',
-        currentNote: 'Auto-approved because creator has HR role',
+        currentNote: 'Auto-approved (temporary)',
       }),
     });
-    expect(tx.jobApprovalHistory.create).toHaveBeenCalledWith({
-      data: {
-        approvalStepId: 'approval-hr',
-        toStatus: 'APPROVED',
-        changedById: 'hr-creator-1',
-        reason: 'CREATOR_HAS_HR_ROLE',
-      },
+    expect(tx.jobApprovalHistory.createMany).toHaveBeenCalledWith({
+      data: expect.any(Array),
     });
-    expect(result.requestForm?.status.workflow).toBe('PENDING_FOR_APPROVAL');
-    expect(result.requestForm?.status.approvals.hr).toBe('APPROVED');
+    expect(result.requestForm?.status.workflow).toBe('READY_TO_POST');
   });
 
   it('allows HR approval while finance and gm are still pending', async () => {
