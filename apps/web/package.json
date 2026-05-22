@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo --port 3000",
+    "dev": "node api.js && next dev --turbo --port 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "node api.js && next start",
     "lint": "eslint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
