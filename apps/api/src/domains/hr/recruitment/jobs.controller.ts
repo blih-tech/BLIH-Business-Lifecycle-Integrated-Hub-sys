@@ -1,4 +1,4 @@
-﻿import {
+import {
   Body,
   Controller,
   ForbiddenException,
@@ -60,6 +60,7 @@ import {
   ApproveJobUseCase,
   CloseJobUseCase,
   CreateJobUseCase,
+  GetJobBySlugUseCase,
   GetJobUseCase,
   ListJobsUseCase,
   PublishJobUseCase,
@@ -84,6 +85,7 @@ export class JobsController {
     private readonly approveJobById: ApproveJobUseCase,
     private readonly publishJobById: PublishJobUseCase,
     private readonly closeJobById: CloseJobUseCase,
+    private readonly getJobBySlug: GetJobBySlugUseCase,
     private readonly upsertJobSkills: UpsertJobSkillsUseCase,
     private readonly upsertJobTools: UpsertJobToolsUseCase,
     private readonly upsertJobResponsibilities: UpsertJobResponsibilitiesUseCase,
@@ -259,6 +261,22 @@ export class JobsController {
   })
   list(@Query() query: JobListQueryDto): Promise<JobResponseContract[]> {
     return this.listJobs.execute(query);
+  }
+
+  @Public()
+  @Get('public')
+  @ApiOperation({ summary: 'List public jobs' })
+  @ApiEnvelopeArrayResponse(JobResponseDto, 'List of published jobs')
+  listPublic(): Promise<JobResponseContract[]> {
+    return this.listJobs.execute({ status: 'PUBLISHED' });
+  }
+
+  @Public()
+  @Get('public/:slug')
+  @ApiOperation({ summary: 'Get public job by slug' })
+  @ApiParam({ name: 'slug', description: 'Job slug' })
+  getPublic(@Param('slug') slug: string): Promise<JobResponseContract> {
+    return this.getJobBySlug.execute(slug);
   }
 
   @Get(':id')

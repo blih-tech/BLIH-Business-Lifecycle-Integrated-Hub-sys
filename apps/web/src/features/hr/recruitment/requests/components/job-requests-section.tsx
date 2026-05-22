@@ -14,7 +14,10 @@ import { JobRequestDetailsDialog } from '@/features/hr/recruitment/requests/comp
 import { JobRequestCard } from '@/features/hr/recruitment/requests/components/job-request-card';
 import { JobRequestJustifyDialog } from '@/features/hr/recruitment/requests/components/job-request-justify-dialog';
 import { JobRequestCardSkeleton } from '@/features/hr/recruitment/requests/components/job-request-card-skeleton';
-import { useApproveJobMutation } from '@/features/hr/recruitment/requests/hooks/use-jobs';
+import {
+  useApproveJobMutation,
+  useSubmitJobMutation,
+} from '@/features/hr/recruitment/requests/hooks/use-jobs';
 import type {
   FullJobRequest,
   JobRequestPriority,
@@ -41,8 +44,10 @@ export function JobRequestsSection({
   const queryClient = useQueryClient();
   const { hasPermission } = useHrAbility();
   const approveJob = useApproveJobMutation();
+  const submitJob = useSubmitJobMutation();
 
   const canDecideApproval = hasPermission(JobApprovalPermissions.DECIDE);
+  const canSubmitForApproval = hasPermission(JobPermissions.SUBMIT);
   const canEditJob = hasPermission(JobPermissions.UPDATE);
   const canCreateJob = hasPermission(JobPermissions.CREATE);
 
@@ -193,6 +198,31 @@ export function JobRequestsSection({
     }
   }
 
+  async function handleCardSubmitForApproval(request: FullJobRequest) {
+    if (!canSubmitForApproval) {
+      notifyPermissionDenied();
+      return;
+    }
+    if (!request.jobId) {
+      toast.error('Unable to submit this request.');
+      return;
+    }
+
+    setApprovingRequestId(request.jobId);
+    try {
+      await submitJob.mutateAsync({ jobId: request.jobId });
+      toast.success('Submitted for approval');
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hr.jobs.all(),
+      });
+    } catch (error) {
+      console.error('Failed to submit job request:', error);
+      toast.error('Submit failed');
+    } finally {
+      setApprovingRequestId(null);
+    }
+  }
+
   async function handleJustify(
     action: 'review' | 'reject',
     justification: string,
@@ -245,6 +275,7 @@ export function JobRequestsSection({
       ) : filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {filteredRequestEntries.map(({ request }, index) => (
+            // Drafts are submitted into the approval workflow; non-drafts are approved/justified by approvers.
             <JobRequestCard
               key={`${request.requestForm.jobTitle}-${index}`}
               item={request}
@@ -254,9 +285,20 @@ export function JobRequestsSection({
               }
               onClick={() => setSelectedRequestIndex(index)}
               onJustifyClick={() => setJustifyRequestIndex(index)}
-              onApproveClick={() => handleCardApprove(request)}
+              onPrimaryActionClick={() =>
+                request.status === 'drafts'
+                  ? handleCardSubmitForApproval(request)
+                  : handleCardApprove(request)
+              }
+              primaryActionLabel={
+                request.status === 'drafts' ? 'Submit for approval' : 'Approve'
+              }
               isApproving={approvingRequestId === request.jobId}
-              showApprovalActions={canDecideApproval}
+              showApprovalActions={
+                request.status === 'drafts'
+                  ? canSubmitForApproval
+                  : canDecideApproval
+              }
             />
           ))}
         </div>

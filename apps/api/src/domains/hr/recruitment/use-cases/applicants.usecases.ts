@@ -64,7 +64,11 @@ const hasValue = (value: unknown) => {
 const applicantFieldValue = (
   key: string,
   payload: {
+    firstName: string | null | undefined;
+    lastName: string | null | undefined;
+    email: string | null | undefined;
     phone: string | null | undefined;
+    resumeUrl: string | null | undefined;
     linkedinUrl: string | null | undefined;
     portfolioUrl: string | null | undefined;
     githubUrl: string | null | undefined;
@@ -73,8 +77,16 @@ const applicantFieldValue = (
   },
 ) => {
   switch (key) {
+    case 'FIRST_NAME':
+      return payload.firstName;
+    case 'LAST_NAME':
+      return payload.lastName;
+    case 'EMAIL':
+      return payload.email;
     case 'PHONE':
       return payload.phone;
+    case 'RESUME_URL':
+      return payload.resumeUrl;
     case 'LINKEDIN_URL':
       return payload.linkedinUrl;
     case 'PORTFOLIO_URL':
@@ -122,7 +134,6 @@ const assertRequiredFormFields = (input: {
     ['firstName', input.payload.firstName],
     ['lastName', input.payload.lastName],
     ['email', input.payload.email],
-    ['resumeUrl', input.payload.resumeUrl],
   ]
     .filter((entry) => !hasValue(entry[1]))
     .map((entry) => entry[0]);

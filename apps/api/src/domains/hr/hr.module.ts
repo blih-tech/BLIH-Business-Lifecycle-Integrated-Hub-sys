@@ -57,6 +57,7 @@ import {
   UpsertJobResponsibilitiesUseCase,
   UpsertJobSkillsUseCase,
   UpsertJobToolsUseCase,
+  GetJobBySlugUseCase,
 } from './recruitment/use-cases';
 
 import { LeaveController } from './leave/leave.controller';
@@ -290,6 +291,7 @@ import { ContractsModule } from './contracts/contracts.module';
     UpsertJobSkillsUseCase,
     UpsertJobToolsUseCase,
     UpsertJobResponsibilitiesUseCase,
+    GetJobBySlugUseCase,
     CreateApplicantUseCase,
     ListApplicantsUseCase,
     BulkUpdateApplicantStatusUseCase,

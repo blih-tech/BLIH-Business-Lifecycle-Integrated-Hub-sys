@@ -7,6 +7,7 @@ import type {
   CareerApplicationField,
   CareerJob,
 } from '@/features/careers/data';
+import { apiClient } from '@/lib/api-client';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
@@ -94,6 +95,8 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const enabledFields = useMemo(
     () => job.applicationFields,
@@ -115,6 +118,11 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    void submitApplication();
+  }
+
+  async function submitApplication() {
+    if (isSubmitting) return;
 
     const nextErrors = enabledFields.reduce<Record<string, string>>(
       (acc, field) => {
@@ -125,26 +133,67 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
       {},
     );
 
+    // Backend requires resumeUrl even if the UI config doesn't.
+    const resumeValue = values['RESUME_URL'];
+    if (
+      resumeValue === null ||
+      (typeof resumeValue === 'string' && resumeValue.trim().length === 0)
+    ) {
+      nextErrors['RESUME_URL'] = 'Resume URL is required';
+    }
+
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       setIsSubmitted(false);
       return;
     }
 
-    const payload = {
-      requestId: job.requestId,
-      jobSlug: job.slug,
-      jobTitle: job.title,
-      answers: enabledFields.map((field) => ({
-        key: field.key,
-        label: field.label,
-        type: field.type,
-        value: serialiseValue(values[field.key] ?? null),
-      })),
-    };
+    setIsSubmitting(true);
+    setSubmitError(null);
 
-    console.log('careerApplicationPayload', payload);
-    setIsSubmitted(true);
+    const customFieldValues: Record<string, unknown> = {};
+    for (const field of enabledFields) {
+      if (field.source !== 'custom') continue;
+      const value = values[field.key] ?? null;
+      customFieldValues[field.key] = serialiseValue(value);
+    }
+
+    try {
+      await apiClient.post(`/hr/recruitment/jobs/${job.id}/apply`, {
+        firstName: String(values['FIRST_NAME'] ?? ''),
+        lastName: String(values['LAST_NAME'] ?? ''),
+        email: String(values['EMAIL'] ?? ''),
+        phone: String(values['PHONE'] ?? '') || null,
+        resumeUrl: String(values['RESUME_URL'] ?? ''),
+        linkedinUrl: String(values['LINKEDIN_URL'] ?? '') || null,
+        portfolioUrl: String(values['PORTFOLIO_URL'] ?? '') || null,
+        githubUrl: String(values['GITHUB_URL'] ?? '') || null,
+        currentCompany: String(values['CURRENT_COMPANY'] ?? '') || null,
+        yearsExperience:
+          typeof values['YEARS_OF_EXPERIENCE'] === 'string' &&
+          values['YEARS_OF_EXPERIENCE'].trim()
+            ? Number(values['YEARS_OF_EXPERIENCE'])
+            : null,
+        expectedSalary:
+          typeof values['EXPECTED_SALARY'] === 'string' &&
+          values['EXPECTED_SALARY'].trim()
+            ? Number(values['EXPECTED_SALARY'])
+            : null,
+        coverLetter: String(values['COVER_LETTER'] ?? '') || null,
+        customFieldValues:
+          Object.keys(customFieldValues).length > 0 ? customFieldValues : null,
+      });
+
+      setIsSubmitted(true);
+    } catch (error) {
+      const message =
+        error && typeof error === 'object' && 'message' in error
+          ? String((error as { message?: unknown }).message ?? '')
+          : '';
+      setSubmitError(message || 'Failed to submit application');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -197,6 +246,11 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
             </div>
 
             <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+              {submitError ? (
+                <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  {submitError}
+                </div>
+              ) : null}
               {enabledFields.map((field) => {
                 const error = errors[field.key];
                 const value = values[field.key] ?? null;
@@ -324,7 +378,9 @@ export function CareerApplicationForm({ job }: CareerApplicationFormProps) {
                 <p className="text-sm text-muted-foreground">
                   Required fields must be completed before submission.
                 </p>
-                <Button type="submit">Submit Application</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Submitting…' : 'Submit Application'}
+                </Button>
               </div>
             </form>
           </>
