@@ -9,6 +9,7 @@ import {
   HrAbilityProvider,
   useHrAbility,
 } from '@/shared/auth/hr-ability-context';
+import { useSession } from '@/shared/auth/use-session';
 import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { useGuardedAction } from '@/shared/hooks/use-guarded-action';
 import { SidebarProvider, useSidebar } from '@/shared/components/ui/sidebar';
@@ -20,11 +21,41 @@ type HrDashboardFrameProps = {
     email: string;
     onLogout?: () => void;
   };
-  roles: string[];
-  permissions: string[];
   children: React.ReactNode;
   isLoading?: boolean;
 };
+
+function getInitialsFromName(
+  firstName: string | null,
+  lastName: string | null,
+  fallback: string | null,
+): string {
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  }
+  const value = firstName ?? lastName ?? fallback;
+  if (!value) return '??';
+  const trimmed = value.trim();
+  if (!trimmed) return '??';
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    const only = parts[0];
+    return only ? only.slice(0, 2).toUpperCase() : '??';
+  }
+  const first = parts[0]?.[0] ?? '';
+  const last = parts.at(-1)?.[0] ?? '';
+  return (first + last).toUpperCase() || '??';
+}
+
+function getDisplayName(
+  firstName: string | null,
+  lastName: string | null,
+  username: string | null,
+  email: string | null,
+): string {
+  if (firstName && lastName) return `${firstName} ${lastName}`;
+  return firstName ?? lastName ?? username ?? email ?? 'User';
+}
 
 function HrDashboardFrameInner({
   user,
@@ -102,15 +133,31 @@ function HrDashboardFrameInner({
 }
 
 export function HrDashboardFrame({
-  user,
-  roles,
-  permissions,
   children,
   isLoading,
-}: HrDashboardFrameProps): React.ReactElement {
+}: Pick<HrDashboardFrameProps, 'children' | 'isLoading'>): React.ReactElement {
+  const session = useSession();
+  const user = {
+    initials: getInitialsFromName(
+      session.firstName,
+      session.lastName,
+      session.username ?? session.email,
+    ),
+    name: getDisplayName(
+      session.firstName,
+      session.lastName,
+      session.username,
+      session.email,
+    ),
+    email: session.email ?? 'user@blih.local',
+  };
+
   return (
     <SidebarProvider defaultOpen={false} className="w-full">
-      <HrAbilityProvider roles={roles} permissions={permissions}>
+      <HrAbilityProvider
+        roles={session.roles}
+        permissions={session.permissions}
+      >
         <HrDashboardFrameInner user={user} isLoading={isLoading}>
           {children}
         </HrDashboardFrameInner>
