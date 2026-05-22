@@ -19,34 +19,15 @@ function isDashboardRoute(pathname: string): boolean {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Auth gating cannot happen here. The API issues HttpOnly cookies scoped
+  // to its own host (blihapi.blihmarketing.com); they are never visible to
+  // this Vercel-hosted middleware. Gating runs client-side in <AuthGate />.
   if (isDashboardRoute(pathname)) {
-    // const hasAccessToken = request.cookies.has('kc_access');
-    // if (!hasAccessToken) {
-    //   const loginUrl = new URL('/api/auth/login', request.url);
-    //   loginUrl.searchParams.set(
-    //     'redirect',
-    //     `${pathname}${request.nextUrl.search}`,
-    //   );
-    //   loginUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
-    //   return NextResponse.redirect(loginUrl);
-    // }
-
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-pathname', pathname);
     return NextResponse.next({
       request: { headers: requestHeaders },
     });
-  }
-
-  if (pathname === '/') {
-    const hasAccessToken = request.cookies.has('kc_access');
-    if (!hasAccessToken) {
-      const loginUrl = new URL('/api/auth/login', request.url);
-      loginUrl.searchParams.set('redirect', '/');
-      loginUrl.searchParams.set('redirect_origin', request.nextUrl.origin);
-      return NextResponse.redirect(loginUrl);
-    }
-    return NextResponse.next();
   }
 
   return NextResponse.next();
