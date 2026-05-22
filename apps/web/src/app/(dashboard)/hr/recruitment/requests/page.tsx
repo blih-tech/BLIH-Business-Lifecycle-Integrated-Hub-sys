@@ -1,11 +1,13 @@
+'use client';
+
 import { RecruitmentRequestsContent } from '@/features/hr/recruitment/requests';
 import { JobPermissions } from '@repo/types/rbac/permissions.constants';
 import { userHasPermission } from '@/shared/auth/permission-check';
 import { AccessDeniedCallout } from '@/shared/components/access/access-denied-callout';
-import { getSession } from '@/shared/auth/session';
+import { useSession } from '@/shared/auth/use-session';
 
-export default async function RecruitmentRequestsPage() {
-  const session = await getSession();
+export default function RecruitmentRequestsPage() {
+  const session = useSession();
   const canViewJobs = userHasPermission(
     session.permissions,
     session.roles,
