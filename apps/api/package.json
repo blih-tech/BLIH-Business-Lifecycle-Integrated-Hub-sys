@@ -28,8 +28,6 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "validate:commits": "commitlint --from HEAD~1 --to HEAD --verbose",
-    "validate:commits:branch": "commitlint --from main --to HEAD --verbose",
     "verify": "npm run lint:check && npm run typecheck && npm run test -- --ci --passWithNoTests",
     "prisma:generate": "npm run build --workspace @repo/database",
     "prisma:migrate:dev": "npm run prisma:migrate:dev --workspace @repo/database",
