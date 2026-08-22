@@ -44,6 +44,7 @@ function createApplicant(applicant: {
 export const activePostingJobs: ActiveJobItem[] = [
   {
     id: "job-marketing-manager-001",
+    slug: "marketing-manager",
     title: "Marketing Manager",
     levelTag: "Intern",
     statusLabel: "Active Job",
@@ -391,6 +392,7 @@ export const activePostingJobs: ActiveJobItem[] = [
   },
   {
     id: "job-ui-ux-designer-002",
+    slug: "ui-ux-designer",
     title: "UI/UX Designer",
     levelTag: "Senior",
     statusLabel: "Active Job",
@@ -554,6 +556,7 @@ export const activePostingJobs: ActiveJobItem[] = [
   },
   {
     id: "job-data-analyst-003",
+    slug: "data-analyst",
     title: "Data Analyst",
     levelTag: "Mid-level",
     statusLabel: "Active Job",

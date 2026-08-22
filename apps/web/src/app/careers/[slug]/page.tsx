@@ -1,5 +1,5 @@
-import { CareerApplicationForm, getCareerJobBySlug } from "@/features/careers";
-import { notFound } from "next/navigation";
+import { CareerApplicationForm, getCareerJobBySlug } from '@/features/careers';
+import { notFound } from 'next/navigation';
 
 type CareerApplicationPageProps = {
   params: Promise<{
@@ -7,9 +7,11 @@ type CareerApplicationPageProps = {
   }>;
 };
 
-export default async function CareerApplicationPage({ params }: CareerApplicationPageProps) {
+export default async function CareerApplicationPage({
+  params,
+}: CareerApplicationPageProps) {
   const { slug } = await params;
-  const job = getCareerJobBySlug(slug);
+  const job = await getCareerJobBySlug(slug);
 
   if (!job) {
     notFound();

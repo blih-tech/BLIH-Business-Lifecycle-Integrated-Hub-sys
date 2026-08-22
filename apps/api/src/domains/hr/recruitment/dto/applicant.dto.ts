@@ -254,7 +254,16 @@ export class CreateApplicantDto implements CreateApplicantDtoType {
 
 export class ApplyToJobDto
   extends OmitType(CreateApplicantDto, ['jobId'] as const)
-  implements ApplyToJobDtoType {}
+  implements ApplyToJobDtoType
+{
+  @ApiPropertyOptional({
+    nullable: true,
+    example: 'https://cdn.example.com/cv/abel.pdf',
+  })
+  @IsOptional()
+  @IsString()
+  resumeUrl?: string | null;
+}
 
 export class UpdateApplicantDto
   extends PartialType(CreateApplicantDto)

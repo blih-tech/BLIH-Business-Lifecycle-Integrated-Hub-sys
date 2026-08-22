@@ -14,6 +14,7 @@ type QueryParams = Record<string, string | number | boolean | undefined>;
 
 const BEARER_TOKEN_KEYS = ['kc_access'];
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+let refreshInFlight: Promise<boolean> | null = null;
 
 function getApiBaseUrl(): string {
   const configured = process.env.NEXT_PUBLIC_API_URL?.trim();
@@ -122,6 +123,15 @@ async function tryRefreshSession(): Promise<boolean> {
   }
 }
 
+async function refreshSessionSingleFlight(): Promise<boolean> {
+  if (!refreshInFlight) {
+    refreshInFlight = tryRefreshSession().finally(() => {
+      refreshInFlight = null;
+    });
+  }
+  return refreshInFlight;
+}
+
 async function request<T>(
   method: string,
   path: string,
@@ -167,21 +177,13 @@ async function request<T>(
     ? await response.json()
     : await response.text();
 
-  if (
-    !response.ok &&
-    response.status === 401 &&
-    !token &&
-    typeof payload === 'object' &&
-    payload &&
-    'message' in payload &&
-    typeof (payload as { message?: unknown }).message === 'string'
-  ) {
-    const message = (payload as { message: string }).message;
-    if (
-      message.toLowerCase().includes('missing authorization header') ||
-      message.toLowerCase().includes('unauthorized')
-    ) {
-      const refreshed = await tryRefreshSession();
+  if (!response.ok && (response.status === 401 || response.status === 403)) {
+    // Avoid infinite loops when refresh itself fails with 401/403.
+    const isRefreshEndpoint =
+      typeof path === 'string' && path.replace(/^\//, '') === 'auth/refresh';
+
+    if (!isRefreshEndpoint) {
+      const refreshed = await refreshSessionSingleFlight();
       if (refreshed) {
         response = await makeRequest();
         const retryContentType = response.headers.get('content-type') ?? '';

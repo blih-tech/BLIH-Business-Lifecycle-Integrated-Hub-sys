@@ -12,7 +12,8 @@ type JobRequestCardProps = {
   priority: JobRequestPriority;
   onClick?: () => void;
   onJustifyClick?: () => void;
-  onApproveClick?: () => void;
+  onPrimaryActionClick?: () => void;
+  primaryActionLabel?: string;
   isApproving?: boolean;
   /** When false, approval actions are hidden (user lacks job_approval:decide). */
   showApprovalActions?: boolean;
@@ -73,7 +74,8 @@ export function JobRequestCard({
   priority,
   onClick,
   onJustifyClick,
-  onApproveClick,
+  onPrimaryActionClick,
+  primaryActionLabel = 'Approve',
   isApproving = false,
   showApprovalActions = true,
 }: JobRequestCardProps) {
@@ -158,17 +160,17 @@ export function JobRequestCard({
               <Button
                 type="button"
                 size="sm"
-                className="h-[32px] w-[88px] rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
+                className="h-[32px] w-fit rounded-[6px] bg-[#1e66f7] px-[16px] py-[6px] text-[14px] font-medium leading-[20px] tracking-[-0.2px] text-white hover:bg-[#1e66f7]"
                 disabled={isApproving}
                 onClick={(event) => {
                   handleActionClick(event);
-                  onApproveClick?.();
+                  onPrimaryActionClick?.();
                 }}
               >
                 {isApproving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  'Approve'
+                  primaryActionLabel
                 )}
               </Button>
               <Button

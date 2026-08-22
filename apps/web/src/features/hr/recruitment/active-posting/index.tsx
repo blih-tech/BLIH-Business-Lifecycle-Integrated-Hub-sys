@@ -124,6 +124,7 @@ export function RecruitmentActivePostingContent() {
 
       return {
         id: job.job.id,
+        slug: job.job.slug,
         title: job.job.title,
         levelTag: job.job.experienceLevel ?? undefined,
         statusLabel: 'Active Job',

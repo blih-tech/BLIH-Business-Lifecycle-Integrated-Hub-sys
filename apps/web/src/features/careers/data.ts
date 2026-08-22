@@ -1,12 +1,6 @@
-import type {
-  ApplicationFieldType,
-  CustomApplicationField,
-} from '@/features/hr/recruitment/requests/application-form-schema';
-import { jobRequests } from '@/features/hr/recruitment/requests/mock-data';
-import type {
-  FullJobRequest,
-  JobRequestDepartment,
-} from '@/features/hr/recruitment/requests/types';
+import { apiClient } from '@/lib/api-client';
+import type { JobResponseDto } from '@repo/types/recruitment/jobs';
+import type { ApplicationFieldType } from '@/features/hr/recruitment/requests/application-form-schema';
 
 export type CareerApplicationField = {
   id: string;
@@ -21,9 +15,10 @@ export type CareerApplicationField = {
 
 export type CareerJob = {
   slug: string;
+  id: string;
   requestId: string;
   title: string;
-  department: JobRequestDepartment;
+  department: string;
   departmentLabel: string;
   location: string;
   workModeLabel: string;
@@ -37,157 +32,128 @@ export type CareerJob = {
   benefits: string[];
   salaryLabel: string;
   applicationFields: CareerApplicationField[];
-  request: FullJobRequest;
 };
 
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+function extractRichTextText(value: unknown): string {
+  if (!value || typeof value !== 'object') return '';
+  const node = value as { text?: string; content?: unknown[] };
+  const pieces: string[] = [];
+  const walk = (item: unknown) => {
+    if (!item || typeof item !== 'object') return;
+    const asNode = item as { text?: string; content?: unknown[] };
+    if (typeof asNode.text === 'string') pieces.push(asNode.text);
+    if (Array.isArray(asNode.content)) {
+      asNode.content.forEach(walk);
+    }
+  };
+  walk(node);
+  return pieces.join(' ').trim();
 }
 
-function requestIdLabel(index: number) {
-  return `REQ-${String(index + 1).padStart(3, '0')}`;
-}
+function mapApiJobToCareerJob(apiJob: JobResponseDto): CareerJob {
+  const { job, applicationForm } = apiJob;
 
-function departmentLabel(department: JobRequestDepartment) {
-  if (department === 'technical') return 'Technical';
-  if (department === 'creative') return 'Creative';
-  return 'Digital Marketing';
-}
+  const applicationFields: CareerApplicationField[] = [];
+  const applicantFields = applicationForm?.applicantFields ?? [];
+  const customFields = applicationForm?.customFields ?? [];
 
-function workModeLabel(
-  value: FullJobRequest['jobDetailsForm']['workLocationType'],
-) {
-  if (value === 'ON_SITE') return 'On-site';
-  if (value === 'HYBRID') return 'Hybrid';
-  return 'Remote';
-}
-
-function employmentTypeLabel(
-  value: FullJobRequest['jobDetailsForm']['employmentType'],
-) {
-  if (value === 'FULL_TIME') return 'Full-time';
-  if (value === 'PART_TIME') return 'Part-time';
-  if (value === 'CONTRACT') return 'Contract';
-  return 'Intern';
-}
-
-function experienceLevelLabel(
-  value: FullJobRequest['jobDetailsForm']['experienceLevel'],
-) {
-  if (value === 'ENTRY') return 'Entry Level';
-  if (value === 'MID') return 'Mid Level';
-  if (value === 'SENIOR') return 'Senior Level';
-  return 'Lead Level';
-}
-
-function salaryLabel(request: FullJobRequest) {
-  const { salaryMin, salaryMax, currency } = request.jobDetailsForm;
-  const salaryMode = request.jobDetailsForm.salaryMode as string;
-  if (salaryMode === 'NEGOTIABLE') return 'Negotiable';
-  if (salaryMode === 'COMPETITIVE') return 'Competitive';
-  if (salaryMode === 'FIXED' && salaryMin && currency)
-    return `${currency} ${salaryMin}`;
-  if (salaryMode === 'COMPETITIVE' && salaryMin && salaryMax && currency) {
-    return `${currency} ${salaryMin} - ${salaryMax}`;
+  for (const field of applicantFields) {
+    if (!field.enabled) continue;
+    applicationFields.push({
+      id: field.id,
+      key: field.key,
+      label: field.label ?? field.key,
+      type: (field.type ?? 'TEXT') as ApplicationFieldType,
+      required: field.required,
+      helpText: field.helpText ?? undefined,
+      options: field.options ?? [],
+      source: 'predefined',
+    });
   }
-  return 'Not specified';
-}
 
-function mapCustomField(field: CustomApplicationField): CareerApplicationField {
+  for (const field of customFields) {
+    applicationFields.push({
+      id: field.id,
+      key: field.id,
+      label: field.label,
+      type: field.type as ApplicationFieldType,
+      required: field.required,
+      helpText: field.helpText ?? undefined,
+      options: field.options ?? [],
+      source: 'custom',
+    });
+  }
+
+  if (applicationFields.length === 0) {
+    // Helpful for debugging missing form config.
+
+    console.warn('Career job has no application fields', {
+      slug: job.slug,
+      jobId: job.id,
+      hasApplicationForm: Boolean(applicationForm),
+      applicantFieldsCount: applicantFields.length,
+      customFieldsCount: customFields.length,
+    });
+  }
+
   return {
-    id: field.id,
-    key: field.id,
-    label: field.label,
-    type: field.type,
-    required: field.required,
-    helpText: field.helpText,
-    options: field.options.filter(Boolean),
-    source: 'custom',
+    slug: job.slug,
+    id: job.id,
+    requestId: apiJob.requestForm?.id ?? job.id.slice(0, 8).toUpperCase(),
+    title: job.title,
+    department: job.departmentId,
+    departmentLabel: job.departmentId, // In a real app, this might be a name from a join, but JobResponseDto returns IDs currently or we need to map them
+    location: [job.city, job.country].filter(Boolean).join(', ') || 'Remote',
+    workModeLabel: job.workLocationType.toLowerCase().replace('_', ' '),
+    employmentTypeLabel:
+      job.employmentType?.toLowerCase().replace('_', ' ') || 'Full-time',
+    experienceLevelLabel: job.experienceLevel?.toLowerCase() || 'Entry',
+    summary: extractRichTextText(job.summary || job.description),
+    whyJoinUs: extractRichTextText(job.summary),
+    keyResponsibilities: job.responsibilities,
+    requirements: job.requiredSkills,
+    preferredSkills: job.preferredSkills,
+    benefits: job.benefits,
+    salaryLabel:
+      job.salaryMode === 'NEGOTIABLE'
+        ? 'Negotiable'
+        : job.salaryMode === 'COMPETITIVE'
+          ? 'Competitive'
+          : job.salaryMin && job.salaryMax
+            ? `${job.currency} ${job.salaryMin} - ${job.salaryMax}`
+            : job.salaryMin
+              ? `${job.currency} ${job.salaryMin}`
+              : 'Not specified',
+    applicationFields,
   };
 }
 
-function labelFromKey(key: string) {
-  return key
-    .toLowerCase()
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (match) => match.toUpperCase());
+export async function getCareerJobs(): Promise<CareerJob[]> {
+  try {
+    const response = await apiClient.get<{
+      success: boolean;
+      message: string;
+      data: JobResponseDto[] | null;
+    }>('hr/recruitment/jobs/public');
+    return (response.data ?? []).map(mapApiJobToCareerJob);
+  } catch (error) {
+    console.error('Failed to fetch public jobs:', error);
+    return [];
+  }
 }
 
-function applicantFieldType(key: string): ApplicationFieldType {
-  if (key.includes('RESUME') || key.includes('CV')) return 'FILE';
-  if (key.includes('COVER_LETTER')) return 'TEXTAREA';
-  if (key.includes('EXPECTED_SALARY') || key.includes('YEARS')) return 'NUMBER';
-  if (key.includes('DATE')) return 'DATE';
-  return 'TEXT';
-}
-
-export function getCareerJobs(): CareerJob[] {
-  return jobRequests
-    .filter((request) => request.status === 'posted')
-    .map((request, index) => {
-      const applicationFields = [
-        ...request.applicationForm.applicantFields
-          .filter((field) => field.enabled)
-          .map((field) => ({
-            id: field.key,
-            key: field.key,
-            label: labelFromKey(field.key),
-            type: applicantFieldType(field.key),
-            required: field.required,
-            options: [],
-            source: 'predefined' as const,
-          })),
-        ...request.applicationForm.customFields.map(mapCustomField),
-      ];
-
-      return {
-        slug: `${slugify(request.jobDetailsForm.title)}-${index + 1}`,
-        requestId: requestIdLabel(index),
-        title: request.jobDetailsForm.title,
-        department: request.requestForm.department as JobRequestDepartment,
-        departmentLabel: departmentLabel(
-          request.requestForm.department as JobRequestDepartment,
-        ),
-        location: [request.jobDetailsForm.city, request.jobDetailsForm.country]
-          .filter(Boolean)
-          .join(', '),
-        workModeLabel: workModeLabel(request.jobDetailsForm.workLocationType),
-        employmentTypeLabel: employmentTypeLabel(
-          request.jobDetailsForm.employmentType,
-        ),
-        experienceLevelLabel: experienceLevelLabel(
-          request.jobDetailsForm.experienceLevel,
-        ),
-        summary:
-          request.jobDetailsForm.summary || request.jobDetailsForm.description,
-        whyJoinUs: request.jobDetailsForm.summary || undefined,
-        keyResponsibilities: (request.jobDetailsForm.responsibilities ?? '')
-          .split('\n')
-          .map((item) => item.trim())
-          .filter(Boolean),
-        requirements: (request.jobDetailsForm.requiredSkills ?? '')
-          .split('\n')
-          .map((item) => item.trim())
-          .filter(Boolean),
-        preferredSkills: (request.jobDetailsForm.preferredSkills ?? '')
-          .split('\n')
-          .map((item) => item.trim())
-          .filter(Boolean),
-        benefits: (request.jobDetailsForm.benefits ?? '')
-          .split('\n')
-          .map((item) => item.trim())
-          .filter(Boolean),
-        salaryLabel: salaryLabel(request),
-        applicationFields,
-        request,
-      };
-    });
-}
-
-export function getCareerJobBySlug(slug: string) {
-  return getCareerJobs().find((job) => job.slug === slug) ?? null;
+export async function getCareerJobBySlug(
+  slug: string,
+): Promise<CareerJob | null> {
+  try {
+    const response = await apiClient.get<{
+      success: boolean;
+      message: string;
+      data: JobResponseDto | null;
+    }>(`hr/recruitment/jobs/public/${slug}`);
+    return response.data ? mapApiJobToCareerJob(response.data) : null;
+  } catch (error) {
+    console.error(`Failed to fetch public job by slug ${slug}:`, error);
+    return null;
+  }
 }

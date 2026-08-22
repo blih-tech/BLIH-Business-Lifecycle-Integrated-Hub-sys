@@ -1,5 +1,6 @@
-import { careerJobs, CareersPageContent } from "@/features/careers";
+import { getCareerJobs, CareersPageContent } from '@/features/careers';
 
-export default function CareersPage() {
-  return <CareersPageContent jobs={careerJobs} />;
+export default async function CareersPage() {
+  const jobs = await getCareerJobs();
+  return <CareersPageContent jobs={jobs} />;
 }

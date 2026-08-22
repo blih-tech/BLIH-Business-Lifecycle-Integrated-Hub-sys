@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
+import { ChevronDown, ChevronUp, Eye, Pencil } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 import { AnalyticsTab } from '@/features/hr/recruitment/active-posting/components/analytics-tab';
@@ -149,6 +150,17 @@ export function ActiveJobCard({
               >
                 <Pencil className="h-4 w-4" />
                 Edit Job
+              </Button>
+              <Button
+                asChild
+                type="button"
+                variant="outline"
+                className="h-[36px] w-full rounded-[6px] border-[#e5e5e5] text-sm text-black hover:bg-white"
+              >
+                <Link href={`/careers/${job.slug}`} target="_blank">
+                  <Eye className="h-4 w-4" />
+                  View Public Listing
+                </Link>
               </Button>
             </div>
           </div>

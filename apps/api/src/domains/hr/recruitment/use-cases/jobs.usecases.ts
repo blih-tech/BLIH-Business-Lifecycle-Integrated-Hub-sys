@@ -387,15 +387,21 @@ export class CreateJobUseCase {
       dto.job.responsibilities ?? [],
     );
     const jobTools = normalizeStringArray(dto.job.tools ?? []);
-    const applicantFields = dto.applicationForm.applicantFields.map(
-      (field, index) => ({
-        key: field.key,
-        enabled: field.enabled,
-        required: field.required,
-        order: field.order ?? index + 1,
-      }),
-    );
-    const sections = dto.applicationForm.sections.map((section, index) => ({
+    const applicantFieldsInput =
+      dto.applicationForm.applicantFields?.length > 0
+        ? dto.applicationForm.applicantFields
+        : defaultApplicantFields();
+    const applicantFields = applicantFieldsInput.map((field, index) => ({
+      key: field.key,
+      enabled: field.enabled,
+      required: field.required,
+      order: field.order ?? index + 1,
+    }));
+    const sectionsInput =
+      dto.applicationForm.sections?.length > 0
+        ? dto.applicationForm.sections
+        : defaultFormSections();
+    const sections = sectionsInput.map((section, index) => ({
       key: section.key,
       enabled: section.enabled,
       required: section.required,
@@ -565,6 +571,30 @@ export class GetJobUseCase {
         }
         throw error;
       });
+    return mapJob(job);
+  }
+}
+
+@Injectable()
+export class GetJobBySlugUseCase {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async execute(slug: string): Promise<JobResponseDto> {
+    const job = await this.prisma.job.findUnique({
+      where: { slug },
+      include: jobInclude,
+    });
+
+    if (!job) {
+      throw new NotFoundException('Job not found');
+    }
+
+    // Increment views
+    await this.prisma.job.update({
+      where: { id: job.id },
+      data: { viewsCount: { increment: 1 } },
+    });
+
     return mapJob(job);
   }
 }
@@ -801,6 +831,7 @@ export class SubmitJobUseCase {
         positionId: true,
         experienceLevel: true,
         contractType: true,
+        employmentType: true,
         workLocationType: true,
         openings: true,
         salaryMin: true,
@@ -820,17 +851,40 @@ export class SubmitJobUseCase {
       },
     });
     if (!existing) throw new NotFoundException('Job not found');
-    if (!existing.requestForm) {
-      throw new BadRequestException('Job request form is missing');
-    }
-    if (!['DRAFT', 'REJECTED'].includes(existing.requestForm.status)) {
-      throw new BadRequestException(
-        'Only draft or rejected jobs can be submitted',
-      );
-    }
+
     if (!existing.departmentId || !existing.positionId) {
       throw new BadRequestException(
         'departmentId and positionId are required before submit',
+      );
+    }
+
+    const requestForm =
+      existing.requestForm ??
+      (await this.prisma.jobRequestForm.upsert({
+        where: { jobId: existing.id },
+        update: {},
+        create: {
+          jobId: existing.id,
+          jobTitle: existing.title,
+          departmentId: existing.departmentId,
+          positionId: existing.positionId,
+          requestedBy: existing.createdById ? 'User' : 'System',
+          requestType: 'NEW',
+          businessJustification: 'Auto-generated request form',
+          employmentType: existing.employmentType ?? 'FULL_TIME',
+          workMode: existing.workLocationType,
+          urgency: 'MEDIUM',
+          neededByDate: new Date(),
+          status: 'DRAFT',
+          priority: 'MEDIUM',
+          draftedAt: new Date(),
+        },
+        select: { id: true, status: true },
+      }));
+
+    if (!['DRAFT', 'REJECTED'].includes(requestForm.status)) {
+      throw new BadRequestException(
+        'Only draft or rejected jobs can be submitted',
       );
     }
 
@@ -856,7 +910,7 @@ export class SubmitJobUseCase {
       responsibilities: existing.responsibilities,
     });
 
-    const requestFormId = existing.requestForm.id;
+    const requestFormId = requestForm.id;
     const submitted = await this.prisma.$transaction(async (tx) => {
       await tx.jobApprovalStep.deleteMany({
         where: { jobRequestFormId: requestFormId },
